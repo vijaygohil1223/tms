@@ -1,0 +1,93 @@
+<?php
+class dashboard {
+
+    public function __construct() {
+        $this->_db = db::getInstance();
+    }
+
+    public function OrderGet() {
+        $qry = "SELECT gen.heads_up,gen.order_no AS orderNumber,gen.due_date AS DueDate,gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer,gen.project_name AS projectName, c.vUserName AS contactName,stus.status_name AS clientStatus,gen.company_code AS companyCode,cust.contact AS contactPerson,its.item_status AS itemStatus,gen.project_status AS projectStatus,gen.project_type AS projectType,plang.source_lang AS sourceLanguage,plang.target_lang AS targetLanguage,its.total_amount AS totalAmount FROM tms_general AS gen LEFT JOIN tms_customer AS cust ON gen.order_id=cust.order_id LEFT JOIN tms_items AS its ON gen.order_id=its.order_id LEFT JOIN tms_proj_language As plang ON gen.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id group by gen.order_no";
+        $data = $this->_db->rawQuery($qry);
+        return $data;
+    }
+    
+    public function userActivityGet($data) {
+        $info = array();
+        foreach($data AS $key=>$value) {
+            $this->_db->where('iUserId', $value);
+            $info[$key] = $this->_db->getOne('tms_users');
+        }
+        return $info;
+    }
+    
+    public function userActivityGetOne($id) {
+        $this->_db->where('iUserId', $id);
+        $data = $this->_db->get('tms_users');
+        return $data;
+    }
+    
+    public function  jobActivityGet($data) {
+        $info = array();
+        foreach($data AS $key=>$value) {
+            $this->_db->where('job_summmeryId', $value);
+            $info[$key] = $this->_db->getOne('tms_summmery_view');
+        }
+        return $info;
+    }
+
+    public function taskJobget($id) {
+        $currentDate = date("Y-m-d");
+        $this->_db->orderBy("tsv.due_date","asc");
+        $this->_db->where("tsv.due_date",$currentDate,">=");
+        $this->_db->where("tc.project_manager",$id);
+        $this->_db->join('tms_customer tc','tsv.order_id = tc.order_id','INNER');
+        return $data = $this->_db->get('tms_summmery_view tsv');
+    }
+    
+    public function holidayGet($country) {
+        $url = 'https://www.timeanddate.com/holidays/'.strtolower($country).'/';
+        $cSession = curl_init();
+        curl_setopt($cSession,CURLOPT_URL,$url);
+         curl_setopt($cSession, CURLOPT_HTTPHEADER, ['Accept-Language: en']);
+        curl_setopt($cSession,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($cSession,CURLOPT_HEADER, false);
+        $html=curl_exec($cSession);
+        curl_close($cSession);
+
+        $dom = new DOMDocument();
+        # The @ before the method call suppresses any warnings that
+        # loadHTML might throw because of invalid HTML in the page.
+            @$dom->loadHTML($html);
+            $holidays=array();
+            $items = $dom->getElementsByTagName('tr');
+            function tdrows($elements) {
+                $str = "";
+                foreach ($elements as $element) {
+                    $str .= $element->nodeValue . ", ";
+                }
+
+                //This pplaces the items into an array
+                $tempArray=explode(',',$str);
+                //This gets rid of empty array elements
+                unset($tempArray[4]);
+                unset($tempArray[5]);
+                return $tempArray;
+            }
+
+            foreach ($items as $key=>$node) {
+                $holidays[]=tdrows($node->childNodes);
+            }
+        //The first and secone items in the array were the titles of the table and a blank row 
+        //so we unset them
+        unset($holidays[0]);
+        unset($holidays[1]);
+        //then reindex the array
+        $holidays = array_values($holidays);
+        return $holidays;
+    }
+
+    public function getCountry () {
+        return $this->_db->get('tms_country');
+    }
+
+}

@@ -1,0 +1,44 @@
+    <style type="text/css">
+    .nav-pills.nav-wizard > >ul>li {
+        border-right:78px solid #eef5fa !important;
+    }
+    .hrght {
+        float: right;
+        color: red;
+        margin-top: -1.5%;
+    }
+</style>
+  <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' " >
+  </div>
+  <div layout="row">
+    <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs" data-ng-include=" 'tpl/material.aside.html' ">
+    </div>
+    <div flex layout="column">
+      <div ui-butterbar></div>
+      <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside" ></a>
+      <div class="md-content">
+        
+        <div class="bg-light lter b-b wrapper-md ng-scope">
+            <a href="javascript:history.back()"  class="btn btn-info pull-right" style="    margin-top: -16px;">  Back</a>
+          <!-- <h1 class="m-n font-thin h3">
+            Jobs -
+          <span id="itemCode" ng-bind="projectOrderName"></span>
+          <span>{{indirectCustomerName}}</span>
+        </h1> -->
+        </div>
+        <div class="wrapper-md ng-scope">
+ 
+          <div class="panel panel-default" style="margin-top:1%">
+            <div class="panel-heading font-bold"><h4>Discussion Board</h4></div>
+            <div class="panel-body">
+                 <div class="col-sm-12">
+                                                    <div id="comments-container"></div>
+                                                </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
