@@ -52,7 +52,10 @@
     padding: 10px 10px;
 }
 .projecttable .media-body {
-  width: auto;;
+  width: auto;
+}
+.mainprojectdv.hbox{
+    height: auto;
 }
 .mainprojectdv .tab-container{
     margin-bottom: initial;
@@ -160,7 +163,6 @@
             <!-- tasks -->
             <div class="row">
                 <div class="col-md-12">
-                    <!-- Job List For Status New Start -->
                     <div class="panel panel-default">
                       <tabset class="tab-container projecttable">
                         <tab>
@@ -168,7 +170,7 @@
                               <i class="glyphicon glyphicon-triangle-bottom"></i> Due Today <span class="badge bg-info">{{projectsDueTodayCount}}</span>
                             </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="example" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -341,7 +343,7 @@
                                   <i class="glyphicon glyphicon-plus-sign"></i> To be Assigned <span class="badge bg-info">{{projectsAssignedCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="example" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -514,7 +516,7 @@
                                   <i class="glyphicon glyphicon-tree-deciduous"></i> In Progress <span class="badge bg-info">{{projectsInprogressCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="example" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -687,7 +689,7 @@
                                   <i class="glyphicon glyphicon-ok-circle"></i> QA Ready <span class="badge bg-info">{{projectsQaReadyCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="example" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -860,7 +862,7 @@
                                   <i class="glyphicon glyphicon-send"></i> To be Delivered <span class="badge bg-info">{{projectsDeliveredCount}}</span> 
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="example" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -1034,7 +1036,7 @@
                                   <i class="glyphicon glyphicon-ice-lolly"></i> Due Tomorrow <span class="badge bg-info">{{projectsDueTomorrowCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="example" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
                                       <thead>
                                       <th>Project Number</th>
                                       <th>Customer</th>
@@ -1207,7 +1209,7 @@
                               <i class="glyphicon glyphicon-list"></i> My Projects <span class="badge bg-info">{{projectsAllCount}}</span>
                             </tab-heading>
                               <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="example" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
                                       <thead>
                                       <th>Project Number</th>
                                       <th>Customer</th>
