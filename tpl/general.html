@@ -114,7 +114,7 @@
                                     <div class="col-md-5">
                                         <div class="panel panel-default panel-labeled">
                                             <div class="panel-body">
-                                                <div class="col-sm-11">
+                                                <div class="col-sm-10">
                                                     <div class="form-group" style="margin-top:5px;">
                                                         <label>Client</label>
                                                         <input type="text" select2-client class="form-control" name="client" ng-model="customer.client" ng-change="getContact(customer.client, 'conatct-person')" required ng-hide="customerField" />
@@ -129,7 +129,7 @@
                                                         <i class="fa fa-user fa-lg"></i>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-11">
+                                                <div class="col-sm-10">
                                                     <div class="form-group">
                                                         <label>Contact Person</label>
                                                         <input type="text" id="conatct-person" class="form-control" name="contact" ng-model="customer.contact" ng-disabled="!customer.client" required/>
@@ -142,7 +142,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-10">
                                                     <div class="form-group">
                                                         <label>Account</label>
                                                         <input type="text" select2-indirect class="form-control" name="indirect_customer" id="indirect_customer" ng-model="customer.indirect_customer" ng-change="AccountChange()" required />
@@ -154,12 +154,18 @@
                                                         <input select2-specialization-project type="text" class="form-control" name="specialization" id="specialization" ng-model="general.specialization" required>
                                                     </div>
                                                 </div>
+                                                <div class="col-sm-12">
+                                                    <div class="form-group" style="margin-top:5px;">
+                                                        <label>Project Name</label>
+                                                        <input type="text" class="form-control" name="project_name" id="project_name" ng-model="general.project_name" required />
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-5">
-                                        <div class="panel panel-default panel-labeled" style="height:340px;margin-left:0px">
+                                        <div class="panel panel-default panel-labeled" style="min-height:430px;margin-left:0px">
                                             <div class="panel-body">
                                                 <div class="col-sm-12">
                                                     <div class="form-group" style="margin-top:2px;">
@@ -177,6 +183,18 @@
                                                     <div class="form-group">
                                                         <label>Quality Assurance Specialist</label>
                                                         <input type="text" select2-qaspa id="qaSpecialist" class="form-control" name="vProjectSpecialist" ng-model="customer.QA_specialist" required/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Due Date</label>
+                                                        <input ng-datetimepicker1 id="due_date" type="text" class="form-control" name="due_date" ng-model="general.due_date" required onkeydown="return false"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Project Price</label>
+                                                        <input type="number" id="project_price" class="form-control" name="project_price" ng-model="general.project_price" required/>
                                                     </div>
                                                 </div>
                                                 <!-- <div class="col-sm-12">

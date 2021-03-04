@@ -881,6 +881,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $window.localStorage.jobstatusName = " ";
     $window.localStorage.countSt = " ";
 
+    $scope.proejctsToDisplay = [];
+        
+
+          
     //Getting Jobs from getJobsFromTmsSummeryView
     $scope.getJobList = function() {
         rest.path = 'getJobsFromTmsSummeryView';
@@ -959,7 +963,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     };
     
     $scope.getJobList();
-    
+    //$scope.getAllProjects();
+
     $scope.DtTblOption = {
         "dom": '<"pull-right"l><<t>p><"clear">'
     }
@@ -1076,7 +1081,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     //Project Get From DashBoard Recent Activity
     $scope.edit = function(id) {
-
         if (id) {
             rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function(data) {
@@ -1349,7 +1353,98 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
             });
         }
+        
     };
+    // Tab view 
+    $scope.projectsAll= [];
+    $scope.projectsInProgress= [];
+    $scope.projectsDueToday= [];
+    $scope.projectsDueTomorrow= [];
+    $scope.projectsAssigned= [];
+    $scope.projectsQaready= [];
+    $scope.projectsToBeDelivered= [];
+    $scope.projectsCompletedByLng= [];
+    $scope.projectsToDisplay= [];
+
+    $scope.projectsAllCount = 0;
+    $scope.projectsInprogressCount = 0;
+    $scope.projectsDueTodayCount = 0;
+    $scope.projectsDueTomorrowCount = 0;
+    $scope.projectsDeliveredCount = 0;
+    $scope.projectsQaReadyCount = 0;
+    $scope.projectsAssignedCount = 0;
+    
+    $scope.allProjectListing = function() {
+        rest.path = "dashboardOrderGet";
+        rest.get().success(function(data) {
+            angular.forEach(data,function(val,i){
+                val.progrss_precentage = "";
+                $scope.projectsAll = data;
+                
+                /*    val.items.source_lang ='[]';
+                    val.source_lang  = JSON.parse(val.items[0].source_lang);
+                    val.target_lang = JSON.parse(val.items[0].target_lang);
+                */
+                angular.forEach(val.items,function(val2,i2){
+                    data[i].items[i2].source_lang  = JSON.parse(val2.source_lang);
+                    data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
+                });
+                //console.log(data[i].items[0].source_lang);
+                
+                /*angular.forEach(val.items,function(val2,i2){
+                    val2.source_lang = JSON.parse(val2.source_lang);
+                    val2.target_lang = JSON.parse(val2.target_lang);
+                });*/
+                /*angular.forEach(val.items,function(val2,i2){
+                    data[i].items[i2].source_lang  = JSON.parse(val2.source_lang);
+                    data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
+                });*/
+            
+                $scope.projectsAllCount++;
+                if(val.projectStatus == 12){
+                    val.progrss_precentage = 0;
+                    $scope.projectsAssigned.push(val);
+                    $scope.projectsAssignedCount++;
+                }
+                if(val.projectStatus == 4){
+                    val.progrss_precentage = 25;
+                    $scope.projectsInProgress.push(val);
+                    $scope.projectsInprogressCount++;
+                }
+                if(val.projectStatus == 13){
+                    val.progrss_precentage = 50;
+                    $scope.projectsCompletedByLng.push(val);
+                    //$scope.projectsInprogressCount++;
+                }
+                if(val.projectStatus == 14){
+                    val.progrss_precentage = 75;
+                    $scope.projectsQaready.push(val);
+                    $scope.projectsQaReadyCount++;
+                }
+                if(val.projectStatus == 15){
+                    val.progrss_precentage = 100;
+                    $scope.projectsToBeDelivered.push(val);
+                    $scope.projectsDeliveredCount++;
+                }
+                if(val.DueDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")){
+                    $scope.projectsDueToday.push(val);
+                    $scope.projectsDueTodayCount++;
+                }
+                if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                    $scope.projectsDueTomorrow.push(val);
+                    $scope.projectsDueTomorrowCount++;
+                }
+                if(val.heads_up == 1){
+                    $scope.projectsToDisplay.push(val);
+                }
+                
+            });
+            console.log($scope.projectsAll);
+            
+        });
+    };
+    $scope.allProjectListing();
+
      $scope.goTojobsList = function(jobStatus,count) {
         if(count == 0){
             notification("Nothing jobs available in "+jobStatus+".","warning");
@@ -1743,6 +1838,50 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
 
     $scope.holidayStatus("Upcoming");
+
+    $scope.jobDiscussion = (orderId)=> {
+        $location.path('discussion/' + orderId);
+    }
+
+    $scope.viewProject = (orderId) =>{
+        $location.path('/viewProject/'+orderId);
+    }
+
+    $scope.editProject = function(id) {
+        if (id) {
+            rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function(data) {
+                if (data.userName != null) {
+                    $scope.orderdata = data;
+                    
+                    $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
+                    $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
+                    $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
+
+                    $window.localStorage.orderNo = $scope.orderdata.order_number;
+                    $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+                    $window.localStorage.orderID = id;
+                    $window.localStorage.iUserId = id;
+                    $window.localStorage.userType = 3;
+                    $window.localStorage.currentUserName = data.vClientName;
+                    $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject","false");
+
+                    $location.path('/general');
+                    $window.localStorage.orderBlock = 1;
+                    /*$timeout(function() {
+                        $scope.cancel();
+                    },500);*/
+                } else {
+                    notification('Information not available', 'warning');
+                }
+            }).error(errorCallback);
+        }
+        
+    };
+
 }).controller('usertypeController', function($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
     rest.path = 'usertype';
     rest.get().success(function(data) {
@@ -10891,13 +11030,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $window.localStorage.orderNumber = $scope.general.order_no;
                     $scope.general.properties = JSON.stringify($scope.properties);
                     $routeParams.id = $scope.general.general_id;
-                    $scope.general.due_date = angular.element('#end_date').val();
+                    $scope.general.due_date = angular.element('#due_date').val();
+                    if($scope.general.due_date){
+                        $scope.general.due_date = originalDateFormatNew($scope.general.due_date);
+                        $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm:ss');
+                    }
 
                     $scope.general.expected_start_date = angular.element('#expected_start_date').val();
                     if($scope.general.expected_start_date){
                         $scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
                         $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
                     }
+                    //$scope.general.due_date = angular.element('#due_date').val();
+                    $scope.general.project_price = parseFloat(angular.element('#project_price').val());
+                    $scope.general.project_name = angular.element('#project_name').val();
+                    
                     //Project start recent activity store in cookie
                     if ($scope.general && $cookieStore.get('generalEdit')) {
                         var arr1 = $.map($scope.general, function(el) {
@@ -10981,7 +11128,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
                     }
 
-                    $scope.general.due_date = angular.element('#end_date').val();
+                    $scope.general.due_date = angular.element('#due_date').val();
+                    if($scope.general.due_date){
+                        $scope.general.due_date = originalDateFormatNew($scope.general.due_date);
+                        $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm:ss');
+                    }
 
                     $window.localStorage.orderNumber = $scope.general.order_no;
                     $scope.general.order_id = $window.localStorage.orderID;

@@ -393,3 +393,17 @@ app.filter('filterJobs', function() {
             return filtered;
         };
 });
+
+
+//------------ Currency formate ----------------//
+app.filter('currencyCommaformat', function($filter) {
+
+    return function(input) {
+        if (input == undefined || input == 0 || input == '') {
+            return '$ None';
+        } else {
+            var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
+            return currencydata.replace(".", ',');
+        }
+    }
+});

@@ -1,13 +1,13 @@
 <?php
 
 define('SITE_URL', "http://" . $_SERVER['SERVER_NAME'] . "/");
-define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . "/");
+define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . "/tms/");
 define('UPLOADS_ROOT', DOCUMENT_ROOT . "uploads/");
 
 //db constants
 define('DB_SERVER', 'localhost'); //please enter mysql server name
 define('DB_USERNAME', 'root'); // please enter mysql user name
-define('DB_PASSWORD', 'admin'); // please enter mysql user password
+define('DB_PASSWORD', 'kWb24pEBdUj4uKOA'); // please enter mysql user password
 define('DB_DATABASE', 'kanhawhp_tms'); // please enter your database name
 
 define('DB_PREFIX', 'tms_');
