@@ -1355,7 +1355,42 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
         
     };
-    // Tab view 
+
+    $scope.goToProjectViewdetail = function(viewType) {
+        if(viewType){
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/projectViewdetailPopup.html',
+                controller: 'viewProjectController',
+                size: '',
+                resolve: {
+                    items: function() {
+                        return viewType;
+                    }
+                }
+            });
+        }
+        
+    };
+
+    $scope.goTocommentChat = function(viewType) {
+        if(viewType){
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/commentchatPopup.html',
+                controller: 'commentchatController',
+                size: '',
+                resolve: {
+                    items: function() {
+                        return viewType;
+                    }
+                }
+            });
+        }
+    }
+
+
+    // Tab view Project List
     $scope.projectsAll= [];
     $scope.projectsInProgress= [];
     $scope.projectsDueToday= [];
@@ -1378,28 +1413,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = "dashboardOrderGet";
         rest.get().success(function(data) {
             angular.forEach(data,function(val,i){
-                val.progrss_precentage = "";
+                val.progrss_precentage = '';
                 $scope.projectsAll = data;
                 
-                /*    val.items.source_lang ='[]';
-                    val.source_lang  = JSON.parse(val.items[0].source_lang);
-                    val.target_lang = JSON.parse(val.items[0].target_lang);
-                */
                 angular.forEach(val.items,function(val2,i2){
                     data[i].items[i2].source_lang  = JSON.parse(val2.source_lang);
                     data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
                 });
-                //console.log(data[i].items[0].source_lang);
-                
                 /*angular.forEach(val.items,function(val2,i2){
                     val2.source_lang = JSON.parse(val2.source_lang);
                     val2.target_lang = JSON.parse(val2.target_lang);
                 });*/
-                /*angular.forEach(val.items,function(val2,i2){
-                    data[i].items[i2].source_lang  = JSON.parse(val2.source_lang);
-                    data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
-                });*/
-            
+                
                 $scope.projectsAllCount++;
                 if(val.projectStatus == 12){
                     val.progrss_precentage = 0;
@@ -1882,6 +1907,19 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         
     };
 
+        $(document).ready(function() {
+        $('#projectlist').DataTable( {
+            "dom": '<"top"i>rt<"bottom"flp><"clear">'
+        } );
+    } );
+
+ $scope.dtOptions = {
+  "pageLength"  : 100,
+  'dom': 'frtilp'
+ };
+
+
+
 }).controller('usertypeController', function($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
     rest.path = 'usertype';
     rest.get().success(function(data) {
@@ -1928,6 +1966,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         });
     };
+
 
 }).controller('knowledgeCalendarController', function($rootScope, $scope, $log, $location, rest, $window, $cookieStore, $timeout, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -18877,8 +18916,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $location.path('/invoice-detail');
     }
 
-}).controller('viewProjectController', function($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {
+}).controller('viewProjectController', function($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout,items, $uibModalInstance) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    if(items){
+     $routeParams.id = items   
+    }
     if ($routeParams.id) {
         $routeParams.id;
         rest.path = 'viewProjectCustomerDetail';
@@ -18992,6 +19034,45 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         } else {
             notification('Please Add Email', 'warning');
         }
+    };
+
+    $scope.cancel = function() {
+        $uibModalInstance.close();
+    }
+
+    $scope.editProjectDetail = function(id) {
+        if (id) {
+            rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function(data) {
+                if (data.userName != null) {
+                    $scope.orderdata = data;
+                    
+                    $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
+                    $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
+                    $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
+
+                    $window.localStorage.orderNo = $scope.orderdata.order_number;
+                    $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+                    $window.localStorage.orderID = id;
+                    $window.localStorage.iUserId = id;
+                    $window.localStorage.userType = 3;
+                    $window.localStorage.currentUserName = data.vClientName;
+                    $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject","false");
+
+                    $location.path('/general');
+                    $window.localStorage.orderBlock = 1;
+                    $timeout(function() {
+                        $scope.cancel();
+                    },500);
+                } else {
+                    notification('Information not available', 'warning');
+                }
+            }).error(errorCallback);
+        }
+        
     };
 
 }).controller('resourceAdvanceSearchController', function($timeout, $scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $filter) {
@@ -19780,4 +19861,154 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             });
         }
     };
+}).controller('commentchatController', function($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $uibModalInstance, items) {
+    if(items){
+        $routeParams.id = items;    
+    }
+
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    if($scope.isNewProject === 'true' && $scope.userRight == 1){
+        $location.path('/dashboard1');
+        notification('Please create project.','warning');
+    }
+    $window.localStorage.getItem("session_iUserId");
+    $window.localStorage.getItem("session_vUserName");
+    $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.backtoPage = function() {
+        if ($window.localStorage.getItem("session_iFkUserTypeId") == 1) {
+            $location.path('jobs-detail/' + $window.localStorage.orderID);
+        } else {
+            $location.path('dashboard1');
+        }
+    }
+    if ($routeParams.id) {
+        var commentsArray = [];
+        rest.path = "discussionOrder/" + $routeParams.id;
+        rest.get().success(function(data) {
+            setTimeout(function() {
+                angular.forEach(data, function(val, i) {
+                    if (val.content == "") {
+                        var dataId = val.id;
+                        var hrefClass = 'attachment';
+                        var hrefTarget = '_blank';
+                        var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
+                        $('li[data-id=' + dataId + ']').find('.content').html(data);
+                        $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                    }
+                });
+                
+                $(".comment-wrapper").each(function(i,v) {
+                    var dateTime = $(this).find('time')[0].innerText;
+                    dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
+                    $(this).find('time')[0].innerText = dateTime;
+                });
+            }, 600);
+
+            commentsArray = data;
+        }).error(errorCallback);
+    }
+
+    var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
+        roundProfilePictures: true,
+        textareaRows: 1,
+        enableAttachments: true,
+        getComments: function(success, error) {
+            $timeout(function() {
+                success(commentsArray);
+            }, 500);
+        },
+        postComment: function(data, success, error) {
+            data.order_id = $routeParams.id;
+            data.user_id = $window.localStorage.getItem("session_iUserId");
+            data.fullname = $window.localStorage.getItem("session_vUserName");
+            data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+            rest.path = "discussionOrder";
+            rest.post(data).success(function(info) {
+
+            }).error(errorCallback);
+            $timeout(function() {
+                success(data);
+            }, 500);
+        },
+        putComment: function(data, success, error) {
+            $routeParams.id = data.id;
+            data.login_userid = $window.localStorage.getItem("session_iUserId");
+            rest.path = 'discussionOrder';
+            rest.put(data).success(function(res) {
+                if (res.Status == 401) {
+                    notification("You can not edit other user message", "error");
+                    $timeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else if (res.Status == 200) {
+                    notification("Successfully edited", "success");
+                } else {
+                    notification("Please try later", "warning");
+                }
+            }).error(errorCallback);
+            $timeout(function() {
+                success(data);
+            }, 500);
+        },
+        deleteComment: function(data, success, error) {
+            data.login_userid = $window.localStorage.getItem("session_iUserId");
+            rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
+            rest.delete(data).success(function(data) {
+                if (data.Status == 401) {
+                    notification("You can not edit other user message", "error");
+                    $timeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else if (data.Status == 200) {
+                    notification("Successfully edited", "success");
+                } else {
+                    notification("Please try later", "warning");
+                }
+            }).error(errorCallback);
+            $timeout(function() {
+                success();
+            }, 500);
+        },
+        upvoteComment: function(data, success, error) {
+            $routeParams.id = data.id;
+            rest.path = 'discussionOrder';
+            rest.put(data).success(function(data) {
+
+            }).error(errorCallback);
+            $timeout(function() {
+                success(data);
+            }, 500);
+        },
+        uploadAttachments: function(dataArray, success, error, data) {
+            /*"fileURL":dataArray[0].file_url,*/
+            var obj = {
+                "order_id": $routeParams.id,
+                "user_id": $window.localStorage.getItem("session_iUserId"),
+                "fullname": $window.localStorage.getItem("session_vUserName"),
+                "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
+                "fileURL": " uploads/discussionfile/" + dataArray[0].file.name2,
+                "fileMimeType": dataArray[0].file.type,
+                "created": dataArray[0].created,
+                "modified": dataArray[0].modified,
+                "created_by_current_user": '1',
+                "upvote_count": '0',
+                "user_has_upvoted": '0'
+
+            }
+            rest.path = "discussionOrder";
+            rest.post(obj).success(function(info) {
+
+            }).error(errorCallback);
+            dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
+            dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+            $timeout(function() {
+                success(dataArray);
+            }, 500);
+        }
+    });
+    
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+
 });
