@@ -870,7 +870,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
     /*Recent Activity Code End*/
 
-}).controller('dashboardController', function($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams) {
+}).controller('dashboardController', function($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.jobfolderId = " ";
     $window.localStorage.pId = " ";
@@ -1413,7 +1413,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = "dashboardOrderGet";
         rest.get().success(function(data) {
             angular.forEach(data,function(val,i){
-                val.progrss_precentage = '';
+                val.progrss_precentage = -1;
                 $scope.projectsAll = data;
                 
                 angular.forEach(val.items,function(val2,i2){
@@ -1907,16 +1907,33 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         
     };
 
-        $(document).ready(function() {
-        $('#projectlist').DataTable( {
-            "dom": '<"top"i>rt<"bottom"flp><"clear">'
-        } );
+/*$(document).ready(function() {
+    $('#projectlist').DataTable( {
+        "dom": '<"top"i>rt<"bottom"flp><"clear">'
     } );
+} );*/
 
- $scope.dtOptions = {
+$scope.dtOptions = {
   "pageLength"  : 100,
-  'dom': 'frtilp'
- };
+  'dom': 'frtilp',
+  "oLanguage": {
+    //<span class="fa fa-search searchicon"> Search</span>
+      "sSearch": ' _INPUT_' //search
+    }
+};
+$timeout(function() {
+    $('.dataTables_filter input').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    /*$('#new-serach').on('keyup', function() {
+        var input = $(this);
+        if(input.val().length === 0) {
+            
+            angular.element('.searchicon').show();
+        } else {
+            angular.element('.searchicon').hide();
+        }
+    })*/
+},2000);   
+
 
 
 
@@ -19905,6 +19922,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }, 600);
 
             commentsArray = data;
+            //console.log(commentsArray);
         }).error(errorCallback);
     }
 

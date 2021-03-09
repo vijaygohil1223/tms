@@ -19,6 +19,7 @@
 .list-group-item a{
   text-decoration:underline;
 }
+
 /* The navigation menu links */
 
     
@@ -118,11 +119,31 @@
 .projectpopup{
   width: 80%;
 }
-#projectlist_info,#projectlist_length,#projectlist_paginate{
+.projecttable .dataTables_info{
   float:left;
-  width: 33.33%;
+  width: 35.33%;
 }
-   
+.projecttable .dataTables_length,.projecttable .dataTables_paginate{
+  float:left;
+  width: 30.33%;
+}
+.searchicon{
+  margin-right:-82px;
+  position: relative;
+  color: #CFDAE3;
+}
+#new-serach::-webkit-input-placeholder { /* Edge */
+  font-family: FontAwesome;
+}
+
+#new-serach:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  font-family: FontAwesome;
+}
+
+#new-serach::placeholder {
+  font-family: FontAwesome;
+
+}
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
@@ -138,7 +159,10 @@
   function closeNav() {
       document.getElementById("mySidenav").style.width = "0";
   }
+
+
 </script>
+
 <div layout="row">
     <!-- menu -->
     <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs" data-ng-include=" 'tpl/material.aside.html' ">
@@ -177,7 +201,7 @@
                               <i class="glyphicon glyphicon-triangle-bottom"></i> Due Today <span class="badge bg-info">{{projectsDueTodayCount}}</span>
                             </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="projectlist" dt-options="dtOptions" >
+                                    <table class="table table-striped projectlist" datatable="ng" dt-options="dtOptions">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -290,8 +314,8 @@
                                                   </span>  
                                               </td>
                                               <td style="">
-                                                <span ng-if="!order.progrss_precentage">-</span>
-                                                <div class="inline" ng-if="order.progrss_precentage">
+                                                <span ng-if="order.progrss_precentage < 0 ">-</span>
+                                                <div class="inline" ng-if="order.progrss_precentage >= 0">
                                                     
                                                     <div ui-jq="easyPieChart" ui-options="{
                                                       percent: '{{order.progrss_precentage}}',
@@ -322,14 +346,11 @@
                                                 {{order.ponumber}}
                                               </td> -->
                                               <td style="">
-                                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                                   <i class="fa fa-commenting-o fa-2x"></i>
                                                 <!-- <span class="badge badge-sm up bg-danger pull-right-xs">2</span> -->
                                                 </a>   
                                               </td>
-                                              <!-- <td style="">
-                                                <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
-                                              </td> -->
                                           </tr>
                                       </tbody>
                                   </table>
@@ -340,7 +361,7 @@
                                   <i class="glyphicon glyphicon-plus-sign"></i> To be Assigned <span class="badge bg-info">{{projectsAssignedCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng"  dt-options="dtOptions">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -453,8 +474,8 @@
                                                   </span>  
                                               </td>
                                               <td style="">
-                                                <span ng-if="!order.progrss_precentage">-</span>
-                                                <div class="inline" ng-if="order.progrss_precentage">
+                                                <span ng-if="order.progrss_precentage < 0 ">-</span>
+                                                <div class="inline" ng-if="order.progrss_precentage >= 0">
                                                     
                                                     <div ui-jq="easyPieChart" ui-options="{
                                                       percent: '{{order.progrss_precentage}}',
@@ -485,7 +506,7 @@
                                                 {{order.ponumber}}
                                               </td> -->
                                               <td style="">
-                                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                                   <i class="fa fa-commenting-o fa-2x"></i>
                                                 <!-- <span class="badge badge-sm up bg-danger pull-right-xs">2</span> -->
                                                 </a>   
@@ -503,7 +524,7 @@
                                   <i class="glyphicon glyphicon-tree-deciduous"></i> In Progress <span class="badge bg-info">{{projectsInprogressCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng"  dt-options="dtOptions">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -616,8 +637,8 @@
                                                   </span>  
                                               </td>
                                               <td style="">
-                                                <span ng-if="!order.progrss_precentage">-</span>
-                                                <div class="inline" ng-if="order.progrss_precentage">
+                                                <span ng-if="order.progrss_precentage < 0 ">-</span>
+                                                <div class="inline" ng-if="order.progrss_precentage >= 0">
                                                     
                                                     <div ui-jq="easyPieChart" ui-options="{
                                                       percent: '{{order.progrss_precentage}}',
@@ -648,14 +669,12 @@
                                                 {{order.ponumber}}
                                               </td> -->
                                               <td style="">
-                                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                                   <i class="fa fa-commenting-o fa-2x"></i>
                                                 <!-- <span class="badge badge-sm up bg-danger pull-right-xs">2</span> -->
                                                 </a>   
                                               </td>
-                                              <!-- <td style="">
-                                                <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
-                                              </td> -->
+                                              
                                           </tr>
                                       </tbody>
                                   </table>
@@ -666,7 +685,7 @@
                                   <i class="glyphicon glyphicon-ok-circle"></i> QA Ready <span class="badge bg-info">{{projectsQaReadyCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -779,8 +798,8 @@
                                                   </span>  
                                               </td>
                                               <td style="">
-                                                <span ng-if="!order.progrss_precentage">-</span>
-                                                <div class="inline" ng-if="order.progrss_precentage">
+                                                <span ng-if="order.progrss_precentage < 0 ">-</span>
+                                                <div class="inline" ng-if="order.progrss_precentage >= 0">
                                                     
                                                     <div ui-jq="easyPieChart" ui-options="{
                                                       percent: '{{order.progrss_precentage}}',
@@ -811,14 +830,11 @@
                                                 {{order.ponumber}}
                                               </td> -->
                                               <td style="">
-                                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                                   <i class="fa fa-commenting-o fa-2x"></i>
                                                 <!-- <span class="badge badge-sm up bg-danger pull-right-xs">2</span> -->
                                                 </a>   
                                               </td>
-                                              <!-- <td style="">
-                                                <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
-                                              </td> -->
                                           </tr>
                                       </tbody>
                                   </table>
@@ -829,7 +845,7 @@
                                   <i class="glyphicon glyphicon-send"></i> To be Delivered <span class="badge bg-info">{{projectsDeliveredCount}}</span> 
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -942,8 +958,8 @@
                                                   </span>  
                                               </td>
                                               <td style="">
-                                                <span ng-if="!order.progrss_precentage">-</span>
-                                                <div class="inline" ng-if="order.progrss_precentage">
+                                                <span ng-if="order.progrss_precentage < 0 ">-</span>
+                                                <div class="inline" ng-if="order.progrss_precentage >= 0">
                                                     
                                                     <div ui-jq="easyPieChart" ui-options="{
                                                       percent: '{{order.progrss_precentage}}',
@@ -974,14 +990,10 @@
                                                 {{order.ponumber}}
                                               </td> -->
                                               <td style="">
-                                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                                   <i class="fa fa-commenting-o fa-2x"></i>
-                                                <!-- <span class="badge badge-sm up bg-danger pull-right-xs">2</span> -->
                                                 </a>   
                                               </td>
-                                              <!-- <td style="">
-                                                <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
-                                              </td> -->
                                           </tr>
                                       </tbody>
                                   </table>
@@ -993,7 +1005,7 @@
                                   <i class="glyphicon glyphicon-ice-lolly"></i> Due Tomorrow <span class="badge bg-info">{{projectsDueTomorrowCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="" dt-options="{pageLength:100}">
+                                    <table class="table table-striped projectlist" datatable="ng" dt-options="dtOptions">
                                       <thead>
                                       <th>Project Number</th>
                                       <th>Customer</th>
@@ -1106,8 +1118,8 @@
                                                   </span>  
                                               </td>
                                               <td style="">
-                                                <span ng-if="!order.progrss_precentage">-</span>
-                                                <div class="inline" ng-if="order.progrss_precentage">
+                                                <span ng-if="order.progrss_precentage < 0 ">-</span>
+                                                <div class="inline" ng-if="order.progrss_precentage >= 0">
                                                     
                                                     <div ui-jq="easyPieChart" ui-options="{
                                                       percent: '{{order.progrss_precentage}}',
@@ -1138,14 +1150,10 @@
                                                 {{order.ponumber}}
                                               </td> -->
                                               <td style="">
-                                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                                   <i class="fa fa-commenting-o fa-2x"></i>
-                                                <!-- <span class="badge badge-sm up bg-danger pull-right-xs">2</span> -->
                                                 </a>   
                                               </td>
-                                              <!-- <td style="">
-                                                <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
-                                              </td> -->
                                           </tr>
                                       </tbody>
                                   </table>
@@ -1156,7 +1164,7 @@
                               <i class="glyphicon glyphicon-list"></i> My Projects <span class="badge bg-info">{{projectsAllCount}}</span>
                             </tab-heading>
                               <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng" id="projectlist_tbl" dt-options="{pageLength:100}">
+                                    <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                                       <thead>
                                       <th>Project Number</th>
                                       <th>Customer</th>
@@ -1269,8 +1277,8 @@
                                                   </span>  
                                               </td>
                                               <td style="">
-                                                <span ng-if="!order.progrss_precentage">-</span>
-                                                <div class="inline" ng-if="order.progrss_precentage">
+                                                <span ng-if="order.progrss_precentage < 0 ">-</span>
+                                                <div class="inline" ng-if="order.progrss_precentage >= 0">
                                                     
                                                     <div ui-jq="easyPieChart" ui-options="{
                                                       percent: '{{order.progrss_precentage}}',
@@ -1303,7 +1311,6 @@
                                               <td style="">
                                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                                   <i class="fa fa-commenting-o fa-2x"></i>
-                                                <!-- <span class="badge badge-sm up bg-danger pull-right-xs">2</span> -->
                                                 </a>
                                               </td>
                                           </tr>
@@ -1905,10 +1912,3 @@
         <div data-ng-include="'tpl/copyRight.html'"></div>
     </div>
 </div>
-<script type="text/javascript">
-  /*$(document).ready(function() {
-    $('#projectlist').DataTable( {
-        "dom": '<"top">rt<"bottom"flp>'
-    } );
-} );*/
-</script>

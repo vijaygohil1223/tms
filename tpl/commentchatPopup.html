@@ -2,6 +2,9 @@
   .modal-dialog{
     width: 80%;
   }
+  .arrow.left:after {
+      border-right-color: #edf1f2;
+  }
 </style>
 <div class="modal-header" style="min-height:60px;">
     <div class="modal-title">
@@ -21,23 +24,27 @@
           </div>
 
           <div class="m-b">
-            <a href class="pull-left thumb-sm avatar"><img src="img/a2.jpg" alt="..."></a>
-            <div class="m-l-xxl">
-              <div class="pos-rlt wrapper b b-light r r-2x">
-                <span class="arrow left pull-up"></span>
-                <p class="m-b-none">Hi John, What's up...</p>
+            <div class="pull-left" style="width:60%;">  
+              <a href class="pull-left thumb-sm avatar"><img src="img/a2.jpg" alt="..."></a>
+              <div class="m-l-xxl">
+                <div class="pos-rlt wrapper b bg-light r r-2x">
+                  <span class="arrow left pull-up"></span>
+                  <p class="m-b-none">Hi John, What's up...</p>
+                </div>
+                <small class="text-muted"><i class="fa fa-ok text-success"></i> 2 minutes ago</small>
               </div>
-              <small class="text-muted"><i class="fa fa-ok text-success"></i> 2 minutes ago</small>
             </div>
           </div>
           <div class="m-b">
-            <a href class="pull-right thumb-sm avatar"><img src="img/a3.jpg" class="img-circle" alt="..."></a>
-            <div class="m-r-xxl">
-              <div class="pos-rlt wrapper bg-primary r r-2x">
-                <span class="arrow right pull-up arrow-primary"></span>
-                <p class="m-b-none">Lorem ipsum dolor sit amet, conse <br>adipiscing eli...<br>:)</p>
+            <div class="pull-right" style="width:60%;">
+              <a href class="pull-right thumb-sm avatar"><img src="img/a3.jpg" class="img-circle" alt="..."></a>
+              <div class="m-r-xxl">
+                <div class="pos-rlt wrapper bg-info r r-2x">
+                  <span class="arrow right pull-up arrow-info"></span>
+                  <p class="m-b-none">Yeah <br>It's working fine...</p>
+                </div>
+                <small class="text-muted">1 minutes ago</small>
               </div>
-              <small class="text-muted">1 minutes ago</small>
             </div>
           </div>                          
         </div>
@@ -47,9 +54,9 @@
             <a class="pull-left thumb-xs avatar"><img src="img/a3.jpg" class="img-circle" alt="..."></a>
             <form class="m-b-none m-l-xl">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Say something">
+                <input type="text" class="form-control" placeholder="Type your message...">
                 <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">SEND</button>
+                  <button class="btn btn-dark bg-primary" type="button">SEND</button>
                 </span>
               </div>
             </form>
