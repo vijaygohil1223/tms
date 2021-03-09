@@ -127,26 +127,28 @@
   float:left;
   width: 30.33%;
 }
-.searchicon{
-  margin-right:-82px;
-  position: relative;
-  color: #CFDAE3;
-}
 #new-serach::-webkit-input-placeholder { /* Edge */
   font-family: FontAwesome;
 }
-
 #new-serach:-ms-input-placeholder { /* Internet Explorer 10-11 */
   font-family: FontAwesome;
 }
-
 #new-serach::placeholder {
   font-family: FontAwesome;
-
 }
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
+}
+@media (min-width: 1370px) {
+  .projecttable .nav-tabs > li > a{
+      padding: 15px 18px;
+  }
+}
+@media (min-width: 1500px) {
+  .projecttable .nav-tabs > li > a{
+      padding: 15px 25px;
+  }
 }
 </style>
 <script type="text/javascript">

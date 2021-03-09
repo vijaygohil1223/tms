@@ -1359,7 +1359,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.goToProjectViewdetail = function(viewType) {
         if(viewType){
             var modalInstance = $uibModal.open({
-                animation: $scope.animationsEnabled,
+                //animation: $scope.animationsEnabled,
                 templateUrl: 'tpl/projectViewdetailPopup.html',
                 controller: 'viewProjectController',
                 size: '',
@@ -1376,7 +1376,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.goTocommentChat = function(viewType) {
         if(viewType){
             var modalInstance = $uibModal.open({
-                animation: $scope.animationsEnabled,
+                //animation: $scope.animationsEnabled,
                 templateUrl: 'tpl/commentchatPopup.html',
                 controller: 'commentchatController',
                 size: '',
@@ -1917,21 +1917,11 @@ $scope.dtOptions = {
   "pageLength"  : 100,
   'dom': 'frtilp',
   "oLanguage": {
-    //<span class="fa fa-search searchicon"> Search</span>
       "sSearch": ' _INPUT_' //search
     }
 };
 $timeout(function() {
     $('.dataTables_filter input').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-    /*$('#new-serach').on('keyup', function() {
-        var input = $(this);
-        if(input.val().length === 0) {
-            
-            angular.element('.searchicon').show();
-        } else {
-            angular.element('.searchicon').hide();
-        }
-    })*/
 },2000);   
 
 
