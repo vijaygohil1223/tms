@@ -1907,12 +1907,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         
     };
 
-/*$(document).ready(function() {
-    $('#projectlist').DataTable( {
-        "dom": '<"top"i>rt<"bottom"flp><"clear">'
-    } );
-} );*/
-
 $scope.dtOptions = {
   "pageLength"  : 100,
   'dom': 'frtilp',
