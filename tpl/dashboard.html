@@ -4,6 +4,7 @@
   /* th { font-size: 12px; }
   td { font-size: 11px; } */
   /* The side navigation menu */
+
 .sidenav {
     z-index:1000;
     height: 100%; /* 100% Full-height */
@@ -31,7 +32,42 @@
     font-size: 36px;
     margin-left: 50px;
 }
-
+.projecttable table{
+  width: 1387px !important;
+}
+.projecttable th{
+  white-space: nowrap;
+}
+.projecttable th:nth-child(1) {
+  width: 100px;
+}
+.projecttable th:nth-child(2) {
+  width: 100px;
+}
+.projecttable th:nth-child(3) {
+  width: 150px;
+}
+.projecttable th:nth-child(4) {
+  width: 100px;
+}
+.projecttable th:nth-child(5) {
+  width: 120px;
+}
+.projecttable th:nth-child(6) {
+  width: 70px;
+}
+.projecttable th:nth-child(7) {
+  width: 80px;
+}
+.projecttable th:nth-child(8) {
+  width: 80px;
+}
+.projecttable th:nth-child(9) {
+  width: 60px;
+}
+.projecttable .dataTables_wrapper{
+/*  float: left;*/
+}
 .projecttable .table-striped > tbody > tr > td {
     padding: 30px !important;
     /*border: none;*/
@@ -52,6 +88,10 @@
     border-radius: 2px 25px 0 0;
     padding: 14px 12px;
 }
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus{
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 .projecttable .media-body {
   width: auto;
 }
@@ -81,7 +121,8 @@
   text-align: center;
   border-radius: 6px;
   padding: 5px 10px;
-  position: absolute;
+  position: relative;
+  /*position: absolute;*/
   z-index: 1;
   bottom: 125%;
   left: auto;
@@ -90,15 +131,17 @@
   transition: opacity 0.3s;
 }
 
-.mytooltip .mytooltip_div::after {
+.mytooltip .mytooltip_div::before {
   content: "";
   position: absolute;
-  top: 100%;
+  bottom: 100%;
+  /*top: 100%;*/
   left: 50%;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
   border-color: #000 transparent transparent transparent;
+  transform: rotate(180deg);
 }
 .mytooltip:hover .mytooltip_div {
   visibility: visible;
@@ -120,8 +163,9 @@
   width: 80%;
 }
 .projecttable .dataTables_info,.projecttable .dataTables_length,.projecttable .dataTables_paginate{
+  padding-top:15px; 
   float:left;
-  width: 33.33%;
+  width:33.33%;
 }
 .projecttable .dataTables_length{
   text-align: center;
@@ -202,7 +246,7 @@
                               <i class="glyphicon glyphicon-triangle-bottom"></i> Due Today <span class="badge bg-info">{{projectsDueTodayCount}}</span>
                             </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped projectlist" datatable="ng" dt-options="dtOptions">
+                                    <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -221,8 +265,10 @@
                                       <tbody>
                                           <tr ng-repeat="order in projectsDueToday">
                                               <td style="">
-                                                <a ng-click="goToProjectViewdetail(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)"
+                                                >
                                                     {{order.orderNumber}}
+
                                                   </a>
                                                 <small class="block m-t-sm">
                                                   <span class="labeltitle">PO Number : </span><br><span class="label bg-light ">{{order.ponumber}}</span>
@@ -362,7 +408,7 @@
                                   <i class="glyphicon glyphicon-plus-sign"></i> To be Assigned <span class="badge bg-info">{{projectsAssignedCount}}</span>
                                 </tab-heading>
                                 <div class="table-responsive">
-                                    <table class="table table-striped" datatable="ng"  dt-options="dtOptions">
+                                    <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                                       <thead>
                                         <th>Project Number</th>
                                         <th>Customer</th>
@@ -381,7 +427,7 @@
                                       <tbody>
                                           <tr ng-repeat="order in projectsAssigned">
                                               <td style="">
-                                                <a ng-click="goToProjectViewdetail(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                                     {{order.orderNumber}}
                                                 </a>
                                                 <small class="block m-t-sm">
@@ -544,7 +590,7 @@
                                       <tbody>
                                           <tr ng-repeat="order in projectsInProgress">
                                               <td style="">
-                                                <a ng-click="goToProjectViewdetail(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                                     {{order.orderNumber}}
                                                 </a>
                                                 <small class="block m-t-sm">
@@ -705,7 +751,7 @@
                                       <tbody>
                                           <tr ng-repeat="order in projectsQaready">
                                               <td style="">
-                                                <a ng-click="goToProjectViewdetail(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                                     {{order.orderNumber}}
                                                 </a>
                                                 <small class="block m-t-sm">
@@ -865,7 +911,7 @@
                                       <tbody>
                                           <tr ng-repeat="order in projectsToBeDelivered">
                                               <td style="">
-                                                <a ng-click="goToProjectViewdetail(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                                     {{order.orderNumber}}
                                                 </a>
                                                 <small class="block m-t-sm">
@@ -1184,7 +1230,7 @@
                                       <tbody>
                                           <tr ng-repeat="order in projectsAll">
                                               <td style="">
-                                                <a ng-click="goToProjectViewdetail(order.orderId)">
+                                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                                     {{order.orderNumber}}
                                                 </a>
                                                 <small class="block m-t-sm">

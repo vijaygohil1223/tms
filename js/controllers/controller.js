@@ -1907,18 +1907,30 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         
     };
 
-$scope.dtOptions = {
+/*$scope.dtOptions = {
   "pageLength"  : 100,
   'dom': 'frtilp',
   "oLanguage": {
       "sSearch": ' _INPUT_' //search
-    }
-};
+    },
+  'scrollX': true,  
+  'scrolly': true,  
+};*/
+$scope.dtOptions = DTOptionsBuilder.newOptions().
+                    //withOption('scrollY', '100%').
+                    withOption('scrollX', '100%').
+                    withOption('sScrollXInner', '110%').
+                    withOption('responsive', true).
+                    withOption('oLanguage', {
+                                  "sSearch": ' _INPUT_',
+                                }).
+                    withOption('pageLength', 100).
+                   // withOption('scrollCollapse', true).
+                    withOption('dom', 'frtilp');
+
 $timeout(function() {
-    $('.dataTables_filter input').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    $('.projecttable input').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
 },2000);   
-
-
 
 
 }).controller('usertypeController', function($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
