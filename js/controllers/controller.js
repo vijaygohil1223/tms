@@ -1386,6 +1386,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
                 }
             });
+    
         }
     }
 
@@ -1918,8 +1919,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 };*/
 $scope.dtOptions = DTOptionsBuilder.newOptions().
                     //withOption('scrollY', '100%').
-                    withOption('scrollX', '100%').
-                    withOption('sScrollXInner', '110%').
+                    //withOption('scrollX', '100%').
                     withOption('responsive', true).
                     withOption('oLanguage', {
                                   "sSearch": ' _INPUT_',
@@ -19952,7 +19952,7 @@ $timeout(function() {
                 if (res.Status == 401) {
                     notification("You can not edit other user message", "error");
                     $timeout(function() {
-                        location.reload();
+                        /*location.reload();*/
                     }, 1000);
                 } else if (res.Status == 200) {
                     notification("Successfully edited", "success");
@@ -19971,7 +19971,7 @@ $timeout(function() {
                 if (data.Status == 401) {
                     notification("You can not edit other user message", "error");
                     $timeout(function() {
-                        location.reload();
+                        /*location.reload();*/
                     }, 1000);
                 } else if (data.Status == 200) {
                     notification("Successfully edited", "success");

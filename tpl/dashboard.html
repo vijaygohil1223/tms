@@ -32,8 +32,26 @@
     font-size: 36px;
     margin-left: 50px;
 }
-.projecttable table{
-  width: 1387px !important;
+
+.projecttable .tab-content{
+  position: relative;
+  padding: 30px 4px;  
+}    
+.projecttable .dataTables_filter{
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+.projecttable .dataTables_paginate{
+  position: absolute;
+  right: 5px;
+}
+    
+/*.projecttable table{
+  width: 1400px !important;
+}
+.projecttable .dataTables_scrollHeadInner{
+  width: 1400px !important;
 }
 .projecttable th{
   white-space: nowrap;
@@ -64,7 +82,7 @@
 }
 .projecttable th:nth-child(9) {
   width: 60px;
-}
+}*/
 .projecttable .dataTables_wrapper{
 /*  float: left;*/
 }
@@ -86,7 +104,7 @@
 } 
 .projecttable .nav-tabs > li > a{
     border-radius: 2px 25px 0 0;
-    padding: 14px 12px;
+    padding: 14px 11px;
 }
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus{
   background-color: rgba(0, 0, 0, 0.05);
@@ -163,7 +181,7 @@
   width: 80%;
 }
 .projecttable .dataTables_info,.projecttable .dataTables_length,.projecttable .dataTables_paginate{
-  padding-top:15px; 
+  padding:15px 0; 
   float:left;
   width:33.33%;
 }
