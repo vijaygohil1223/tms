@@ -46,52 +46,12 @@
   position: absolute;
   right: 5px;
 }
-    
-/*.projecttable table{
-  width: 1400px !important;
-}
-.projecttable .dataTables_scrollHeadInner{
-  width: 1400px !important;
-}
-.projecttable th{
-  white-space: nowrap;
-}
-.projecttable th:nth-child(1) {
-  width: 100px;
-}
-.projecttable th:nth-child(2) {
-  width: 100px;
-}
-.projecttable th:nth-child(3) {
-  width: 150px;
-}
-.projecttable th:nth-child(4) {
-  width: 100px;
-}
-.projecttable th:nth-child(5) {
-  width: 120px;
-}
-.projecttable th:nth-child(6) {
-  width: 70px;
-}
-.projecttable th:nth-child(7) {
-  width: 80px;
-}
-.projecttable th:nth-child(8) {
-  width: 80px;
-}
-.projecttable th:nth-child(9) {
-  width: 60px;
-}*/
-.projecttable .dataTables_wrapper{
-/*  float: left;*/
-}
 .projecttable .table-striped > tbody > tr > td {
-    padding: 30px !important;
-    /*border: none;*/
-    border-top: 7px solid #edf1f2;
-    border-bottom: 7px solid #edf1f2;
-    background-color: #FFFF;
+  padding: 25px !important;
+  /*border: none;*/
+  border-top: 7px solid #edf1f2;
+  border-bottom: 7px solid #edf1f2;
+  background-color: #FFFF;
 }
 .projecttable .tab-content{
   background: #edf1f2;
@@ -101,15 +61,24 @@
   padding: 5px 10px 5px 5px;
   border-radius: 0px 15px 15px 15px;
   white-space: nowrap;
-} 
+}
+.projecttable .nav-tabs > li{
+  border-radius: 0 25px 0 0;
+  border: 1px solid #dee5e7;
+  background-color: rgba(0, 0, 0, 0.07);
+}
 .projecttable .nav-tabs > li > a{
-    border-radius: 2px 25px 0 0;
-    padding: 14px 11px;
+  border-radius: 2px 25px 0 0;
+  padding: 14px 10px;
 }
-.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus{
-  background-color: rgba(0, 0, 0, 0.05);
+.projecttable .nav-tabs > li > a{
+  border: none;
+  margin-right: initial;
 }
-
+.projecttable .nav-tabs > li.active > li, .nav-tabs > li.active > a:focus, .projecttable .nav-tabs > li.active > a:hover{
+  background-color: #FFF;
+  border: none;
+}
 .projecttable .media-body {
   width: auto;
 }
@@ -124,7 +93,7 @@
   font-weight: normal;
 }
 .labeltitle{
-    white-space: nowrap;
+  white-space: nowrap;
 }
 .mytooltip {
   position: relative;
@@ -181,7 +150,7 @@
   width: 80%;
 }
 .projecttable .dataTables_info,.projecttable .dataTables_length,.projecttable .dataTables_paginate{
-  padding:15px 0; 
+  padding:10px 0; 
   float:left;
   width:33.33%;
 }
