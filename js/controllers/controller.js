@@ -1376,7 +1376,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.goTocommentChat = function(viewType) {
         if(viewType){
             var modalInstance = $uibModal.open({
-                //animation: $scope.animationsEnabled,
+                animation: $scope.animationsEnabled,
                 templateUrl: 'tpl/commentchatPopup.html',
                 controller: 'commentchatController',
                 size: '',
@@ -19878,13 +19878,13 @@ $timeout(function() {
     if(items){
         $routeParams.id = items;    
     }
-
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     if($scope.isNewProject === 'true' && $scope.userRight == 1){
         $location.path('/dashboard1');
         notification('Please create project.','warning');
     }
-    $window.localStorage.getItem("session_iUserId");
+    var loginid = $window.localStorage.getItem("session_iUserId");
+    var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
     $window.localStorage.getItem("session_vUserName");
     $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.backtoPage = function() {
@@ -19894,133 +19894,182 @@ $timeout(function() {
             $location.path('dashboard1');
         }
     }
+
     if ($routeParams.id) {
         var commentsArray = [];
         rest.path = "discussionOrder/" + $routeParams.id;
         rest.get().success(function(data) {
             setTimeout(function() {
                 angular.forEach(data, function(val, i) {
-                    if (val.content == "") {
+                    /*if (val.content == "") {
                         var dataId = val.id;
                         var hrefClass = 'attachment';
                         var hrefTarget = '_blank';
                         var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
+                        if(val.user_id == 1){
+                            //$('li[data-id=' + dataId + ']').addClass('cmtright');
+                            //$(time).addClass('cmtright');
+                        }
                         $('li[data-id=' + dataId + ']').find('.content').html(data);
                         $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                    }*/
+                    
+                    //$('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
+                    if(userprofilepic){                    
+                        $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/'+userprofilepic+'" class="img-circle round userpic" alt="...">');
                     }
+                    if(val.user_id == loginid){
+                        $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                        
+                        if (val.content == "") {
+                            var dataId = val.id;
+                            var hrefClass = 'attachment';
+                            var hrefTarget = '_blank';
+                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
+                            $('li[data-id=' + dataId + ']').find('.content').html(data);
+                            $('li[data-id=' + dataId + ']').find('.content').addClass("bgclr");
+                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                        }else{
+                            //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
+                            //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
+                        }   
+                        //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-right thumb-sm avatar');
+                    }else{
+                        $('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
+                        $('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
+                    }
+
+                    $(".comment-wrapper").each(function(i,v) {
+                        var dateTime = $(this).find('time')[0].innerText;
+                        dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
+                        //dateTime = originalDateFormatNew(dateTime);
+                        $(this).find('time')[0].innerText = dateTime;
+
+                    });
+                
                 });
                 
                 $(".comment-wrapper").each(function(i,v) {
                     var dateTime = $(this).find('time')[0].innerText;
                     dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
+                    //dateTime = originalDateFormatNew(dateTime);
                     $(this).find('time')[0].innerText = dateTime;
+
                 });
-            }, 600);
+            }, 2000);
 
             commentsArray = data;
-            //console.log(commentsArray);
         }).error(errorCallback);
     }
 
-    var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
-        roundProfilePictures: true,
-        textareaRows: 1,
-        enableAttachments: true,
-        getComments: function(success, error) {
-            $timeout(function() {
-                success(commentsArray);
-            }, 500);
-        },
-        postComment: function(data, success, error) {
-            data.order_id = $routeParams.id;
-            data.user_id = $window.localStorage.getItem("session_iUserId");
-            data.fullname = $window.localStorage.getItem("session_vUserName");
-            data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-            rest.path = "discussionOrder";
-            rest.post(data).success(function(info) {
+    $timeout(function() {
+        var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
+            roundProfilePictures: true,
+            textareaRows: 1,
+            enableAttachments: true,
 
-            }).error(errorCallback);
-            $timeout(function() {
-                success(data);
-            }, 500);
-        },
-        putComment: function(data, success, error) {
-            $routeParams.id = data.id;
-            data.login_userid = $window.localStorage.getItem("session_iUserId");
-            rest.path = 'discussionOrder';
-            rest.put(data).success(function(res) {
-                if (res.Status == 401) {
-                    notification("You can not edit other user message", "error");
-                    $timeout(function() {
-                        /*location.reload();*/
-                    }, 1000);
-                } else if (res.Status == 200) {
-                    notification("Successfully edited", "success");
-                } else {
-                    notification("Please try later", "warning");
+            /*currentUserId: 1,
+            enableHashtags: true,
+            enablePinging: true,*/
+            textareaPlaceholderText: 'Type message here...',
+
+            getComments: function(success, error) {
+                    console.log("commentsArray", commentsArray);
+                $timeout(function() {
+                    success(commentsArray);
+                }, 500);
+            },
+            postComment: function(data, success, error) {
+                data.order_id = $routeParams.id;
+                data.user_id = $window.localStorage.getItem("session_iUserId");
+                data.fullname = $window.localStorage.getItem("session_vUserName");
+                data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                rest.path = "discussionOrder";
+                rest.post(data).success(function(info) {
+
+                }).error(errorCallback);
+                $timeout(function() {
+                    success(data);
+                }, 500);
+            },
+            putComment: function(data, success, error) {
+                $routeParams.id = data.id;
+                data.login_userid = $window.localStorage.getItem("session_iUserId");
+                rest.path = 'discussionOrder';
+                rest.put(data).success(function(res) {
+                    if (res.Status == 401) {
+                        notification("You can not edit other user message", "error");
+                        $timeout(function() {
+                            /*location.reload();*/
+                        }, 1000);
+                    } else if (res.Status == 200) {
+                        notification("Successfully edited", "success");
+                    } else {
+                        notification("Please try later", "warning");
+                    }
+                }).error(errorCallback);
+                $timeout(function() {
+                    success(data);
+                }, 500);
+            },
+            deleteComment: function(data, success, error) {
+                data.login_userid = $window.localStorage.getItem("session_iUserId");
+                rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
+                rest.delete(data).success(function(data) {
+                    if (data.Status == 401) {
+                        notification("You can not edit other user message", "error");
+                        $timeout(function() {
+                            /*location.reload();*/
+                        }, 1000);
+                    } else if (data.Status == 200) {
+                        notification("Successfully edited", "success");
+                    } else {
+                        notification("Please try later", "warning");
+                    }
+                }).error(errorCallback);
+                $timeout(function() {
+                    success();
+                }, 500);
+            },
+            upvoteComment: function(data, success, error) {
+                $routeParams.id = data.id;
+                rest.path = 'discussionOrder';
+                rest.put(data).success(function(data) {
+
+                }).error(errorCallback);
+                $timeout(function() {
+                    success(data);
+                }, 500);
+            },
+            uploadAttachments: function(dataArray, success, error, data) {
+                /*"fileURL":dataArray[0].file_url,*/
+                var obj = {
+                    "order_id": $routeParams.id,
+                    "user_id": $window.localStorage.getItem("session_iUserId"),
+                    "fullname": $window.localStorage.getItem("session_vUserName"),
+                    "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
+                    "fileURL": " uploads/discussionfile/" + dataArray[0].file.name2,
+                    "fileMimeType": dataArray[0].file.type,
+                    "created": dataArray[0].created,
+                    "modified": dataArray[0].modified,
+                    "created_by_current_user": '1',
+                    "upvote_count": '0',
+                    "user_has_upvoted": '0'
+
                 }
-            }).error(errorCallback);
-            $timeout(function() {
-                success(data);
-            }, 500);
-        },
-        deleteComment: function(data, success, error) {
-            data.login_userid = $window.localStorage.getItem("session_iUserId");
-            rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
-            rest.delete(data).success(function(data) {
-                if (data.Status == 401) {
-                    notification("You can not edit other user message", "error");
-                    $timeout(function() {
-                        /*location.reload();*/
-                    }, 1000);
-                } else if (data.Status == 200) {
-                    notification("Successfully edited", "success");
-                } else {
-                    notification("Please try later", "warning");
-                }
-            }).error(errorCallback);
-            $timeout(function() {
-                success();
-            }, 500);
-        },
-        upvoteComment: function(data, success, error) {
-            $routeParams.id = data.id;
-            rest.path = 'discussionOrder';
-            rest.put(data).success(function(data) {
+                rest.path = "discussionOrder";
+                rest.post(obj).success(function(info) {
 
-            }).error(errorCallback);
-            $timeout(function() {
-                success(data);
-            }, 500);
-        },
-        uploadAttachments: function(dataArray, success, error, data) {
-            /*"fileURL":dataArray[0].file_url,*/
-            var obj = {
-                "order_id": $routeParams.id,
-                "user_id": $window.localStorage.getItem("session_iUserId"),
-                "fullname": $window.localStorage.getItem("session_vUserName"),
-                "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
-                "fileURL": " uploads/discussionfile/" + dataArray[0].file.name2,
-                "fileMimeType": dataArray[0].file.type,
-                "created": dataArray[0].created,
-                "modified": dataArray[0].modified,
-                "created_by_current_user": '1',
-                "upvote_count": '0',
-                "user_has_upvoted": '0'
-
+                }).error(errorCallback);
+                dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
+                dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                $timeout(function() {
+                    success(dataArray);
+                }, 1000);
             }
-            rest.path = "discussionOrder";
-            rest.post(obj).success(function(info) {
+        });
+    }, 1000);
 
-            }).error(errorCallback);
-            dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
-            dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-            $timeout(function() {
-                success(dataArray);
-            }, 500);
-        }
-    });
-    
     $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
