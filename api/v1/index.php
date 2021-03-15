@@ -2723,6 +2723,7 @@ $app->post('/discussionOrder','authenticate', function () use($app) {
 
     $discuss = new discussion();
     $data = json_decode($app->request->getBody(), TRUE);
+    //echo '<pre>'; print_r($data); echo '</pre>';exit;
     $result = $discuss->discussionOrder($data);
     echoResponse(200, $result);
 });

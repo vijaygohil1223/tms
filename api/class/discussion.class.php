@@ -15,6 +15,8 @@ class discussion {
     }
     
     public function discussionOrder($data) {
+        echo '<pre>'; print_r($_FILES); echo '</pre>';
+        echo '<pre>'; print_r($data); echo '</pre>';exit;
         if($data['created_by_current_user'] == 1) 
             $data['created_by_current_user'] = "true";
         else
