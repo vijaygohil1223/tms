@@ -19961,11 +19961,11 @@ $timeout(function() {
                 
                 console.log("data", data);
                 
-                $(".comment-wrapper").each(function(i,v) {
+                /*$(".comment-wrapper").each(function(i,v) {
                     var dateTime = $(this).find('time')[0].innerText;
                     dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
                     $(this).find('time')[0].innerText = dateTime;
-                });
+                });*/
 
             }, 2000);
 
@@ -19992,38 +19992,14 @@ $timeout(function() {
                 
 
             }, 0);
-
             
             console.log("usersArray",$scope.usersArray);
         }).error(errorCallback);
     }
-
-
-var usersArray2 = [{
-id: 2, fullname: "Jack Hemsworth", email: "jack.hemsworth@viima.com", profile_picture_url: "https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png"
-},
-{id: 3, fullname: "Hank Smith", email: "hank.smith@viima.com", profile_picture_url: "https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png"},
-{id: 4, fullname: "Todd Brown", email: "todd.brown@viima.com", profile_picture_url: "https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png"},
-{id: 5, fullname: "Administrator", email: "administrator@viima.com", profile_picture_url: "https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png"},
-{id: 6, fullname: "Simon Powell", email: "simon.powell@viima.com", profile_picture_url: "https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png"},
-{id: 7, fullname: "Bryan Connery", email: "bryan.connery@viima.com", profile_picture_url: "https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png"}];
     
 
     $timeout(function() {
         
-            var saveComment = function(data) {
-
-                    // Convert pings to human readable format
-                    /*$(Object.keys(data.pings)).each(function(index, userId) {
-                        var fullname = data.pings[userId];
-                        var pingText = '@' + fullname;
-                        data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
-                    });*/
-                    var pingText = '@' + 'Anil Nadiya';
-                        data.content = data.content.replace(new RegExp('@' + 4, 'g'), pingText);
-
-                    return data;
-                }
         var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
             roundProfilePictures: true,
             textareaRows: 1,
@@ -20042,7 +20018,7 @@ id: 2, fullname: "Jack Hemsworth", email: "jack.hemsworth@viima.com", profile_pi
                     success($scope.usersArray.filter(function(user) {
                 
                         var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
-                        var isNotSelf = user.id != 1;
+                        var isNotSelf = user.id != loginid;
                         return containsSearchTerm && isNotSelf;
                     }));
                 }, 500);

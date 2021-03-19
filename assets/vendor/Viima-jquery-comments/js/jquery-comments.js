@@ -118,10 +118,10 @@
                 
                 // Strings to be formatted (for example localization)     
                 textareaPlaceholderText: 'Discussion start',     
-                newestText: 'Newest',     
-                oldestText: 'Oldest',     
+                newestText: '',     
+                oldestText: 'Comments',     
                 //popularText: 'Popular',       
-                //attachmentsText: 'Attachments',       
+                attachmentsText: 'Attachments',       
                 sendText: 'Send',     
                 replyText: 'Reply',       
                 editText: 'Edit',     
@@ -148,7 +148,7 @@
                 postCommentOnEnter: false,        
                 forceResponsive: false,       
                 readOnly: false,      
-                defaultNavigationSortKey: 'newest',       
+                defaultNavigationSortKey: 'oldest',       
                 
                 // Colors     
                 highlightColor: '#2793e6',
@@ -464,14 +464,14 @@
 
             // Case: main level comment
             } else {
-                commentList.prepend(commentEl);
+                commentList.append(commentEl);
             }
         },
 
         addAttachment: function(commentModel, commentList) {
             commentList = commentList || this.$el.find('#attachment-list');
             var commentEl = this.createCommentElement(commentModel);
-            commentList.prepend(commentEl);
+            commentList.append(commentEl);
         },
 
         removeComment: function(commentId) {
@@ -1506,7 +1506,7 @@
 
             // Newest
             var newest = $('<li/>', {
-                text: this.options.textFormatter(this.options.newestText),
+                //text: this.options.textFormatter(this.options.newestText),
                 'data-sort-key': 'newest',
                 'data-container-name': 'comments'
             });
