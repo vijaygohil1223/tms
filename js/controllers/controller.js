@@ -19918,6 +19918,8 @@ $timeout(function() {
                     
                     $('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
                     
+                    $('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
+                                                
                     if(userprofilepic){                    
                         $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/'+userprofilepic+'" class="img-circle round userpic" alt="...">');
                     }
@@ -19951,21 +19953,14 @@ $timeout(function() {
                         }
                     }
 
-                    /*$(".comment-wrapper").each(function(i2,v2) {
-                        var dateTime = $(this).find('time')[0].innerText;
-                        //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
-                        dateTime = originalDateFormatNew(dateTime);
-                        $(this).find('time')[0].innerText = dateTime;
-                    });*/
                 });
                 
-                console.log("data", data);
-                
-                /*$(".comment-wrapper").each(function(i,v) {
+                $(".comment-wrapper").each(function(i,v) {
                     var dateTime = $(this).find('time')[0].innerText;
-                    dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
+                    //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
+                    dateTime = moment(dateTime).format('DD-MM-YYYY');
                     $(this).find('time')[0].innerText = dateTime;
-                });*/
+                });
 
             }, 2000);
 
@@ -19978,7 +19973,6 @@ $timeout(function() {
         rest.path = "users";
         
         rest.get().success(function(data) {
-            console.log("datadata",data);
             setTimeout(function() {
                 angular.forEach(data.data, function(val, i) {
                     var uObj = {
@@ -19993,7 +19987,6 @@ $timeout(function() {
 
             }, 0);
             
-            console.log("usersArray",$scope.usersArray);
         }).error(errorCallback);
     }
     

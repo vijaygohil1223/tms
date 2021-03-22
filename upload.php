@@ -3,6 +3,7 @@
         echo 'Error: ' . $_FILES['file']['error'] . '<br>';
     }
     else {
-    	move_uploaded_file($_FILES['file']['tmp_name'], 'uploads/discussionfile/' . $_REQUEST['file2']);
+    	$filename = str_replace(" ", "_",$_REQUEST['file2']);
+    	move_uploaded_file($_FILES['file']['tmp_name'], 'uploads/discussionfile/' .$filename);
     }
 ?>

@@ -558,7 +558,7 @@
                     // Create comment JSON
                     var commentJSON = self.createCommentJSON(textarea);
                     newFileName1 = file.name.split('.')[0]+'_'+jQuery.now()+'.'+file.type.split('/')[1];
-                    file.name2=newFileName1;
+                    file.name2=newFileName1.replace(/ /g, "_");
                     commentJSON.id += '-' + index;
                     commentJSON.content = '';
                     //pings: this.getPings(textarea);
@@ -566,12 +566,11 @@
                     commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     
-                    
                     var file_data = $('#discussionFileUpload').prop('files')[0];
                     newFileName = file_data.name.split('.')[0]+'_'+jQuery.now()+'.'+file_data.type.split('/')[1];
                     
-                    file_data.name2=newFileName;
-                    
+                    //file_data.name2=newFileName;
+                    file_data.name2=newFileName.replace(/ /g, "_");
                     var form_data = new FormData();                  
                     form_data.append('file', file_data);
                     form_data.append('file2', newFileName);
