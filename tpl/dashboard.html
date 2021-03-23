@@ -47,8 +47,9 @@
   right: 5px;
 }
 .projecttable .table-striped > tbody > tr > td {
-  padding: 25px !important;
+  padding: 25px ​20px 0px 20px !important;
   /*border: none;*/
+  /*vertical-align:middle;*/
   border-top: 7px solid #edf1f2;
   border-bottom: 7px solid #edf1f2;
   background-color: #FFFF;
@@ -69,8 +70,11 @@
 }
 .projecttable .nav-tabs > li > a{
   border-radius: 2px 25px 0 0;
-  padding: 14px 10px;
+  padding: 14px 11px;
 }
+.projecttable .nav-tabs > li{
+  /*clip-path: polygon( 0% 5%, 0% 0%, 100% 0%, 80% 0%,  100% 100%, 100% 100%, 0% 100%, 0 95% );*/
+}  
 .projecttable .nav-tabs > li > a{
   border: none;
   margin-right: initial;
@@ -165,6 +169,20 @@
 #new-serach::placeholder {
   font-family: FontAwesome;
 }
+.projecttable ul.nav.nav-tabs{
+  padding-top: 25px !important;
+}
+.projecttable ul.nav.nav-tabs a{
+  color: #4285F4;
+}
+.projecttable .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus{
+    color: #4285F4;
+}
+.projecttable li .badge{
+  background-color: #4285F4;
+}.projecttable th{
+  white-space: nowrap;
+}    
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
@@ -221,7 +239,7 @@
     <!-- main -->
     <div class="col">
         <!-- / main header -->
-        <div class="wrapper-md">
+        <div class="wrapper-md" style="padding-top:0px;">
             <!-- tasks -->
             <div class="row">
                 <div class="col-md-12">

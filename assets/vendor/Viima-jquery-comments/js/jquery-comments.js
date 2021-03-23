@@ -298,7 +298,7 @@
             // Loading indicator
             var spinner = this.createSpinner();
             this.$el.find('ul#comment-list').append(spinner);
-
+            
             var success = function (commentModels) {
                 $(commentModels).each(function(index, commentModel) {
                     self.createComment(commentModel);
@@ -1313,7 +1313,7 @@
                         'class': 'enabled upload'
                     });
                     var uploadIcon = $('<i/>', {
-                        'class': 'fa fa-upload'
+                        'class': 'fa fa-paperclip'
                     });
                     var fileInput = $('<input/>', {
                         id:'discussionFileUpload',

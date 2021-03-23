@@ -19887,6 +19887,8 @@ $timeout(function() {
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
     $window.localStorage.getItem("session_vUserName");
     $window.localStorage.getItem("session_iFkUserTypeId");
+    
+
     $scope.backtoPage = function() {
         if ($window.localStorage.getItem("session_iFkUserTypeId") == 1) {
             $location.path('jobs-detail/' + $window.localStorage.orderID);
@@ -19896,13 +19898,15 @@ $timeout(function() {
     }
 
     if ($routeParams.id) {
+
         var commentsArray = [];
         rest.path = "discussionOrder/" + $routeParams.id;
         
         rest.get().success(function(data) {
             setTimeout(function() {
                 angular.forEach(data, function(val, i) {
-                    
+                    var dataId = val.id;
+                            
                     /*if (val.content == "") {
                         var dataId = val.id;
                         var hrefClass = 'attachment';
@@ -19918,7 +19922,7 @@ $timeout(function() {
                     
                     $('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
                     
-                    $('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
+                    //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
                                                 
                     if(userprofilepic){                    
                         $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/'+userprofilepic+'" class="img-circle round userpic" alt="...">');
@@ -19926,8 +19930,7 @@ $timeout(function() {
                     if(val.user_id == loginid){
                         $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
                         
-                        if (val.content == "") {
-                            var dataId = val.id;
+                        if (val.fileURL != "") {
                             var hrefClass = 'attachment';
                             var hrefTarget = '_blank';
                             var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
@@ -19943,7 +19946,6 @@ $timeout(function() {
                         $('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
                         //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
                         if (val.content == "") {
-                            var dataId = val.id;
                             var hrefClass = 'attachment';
                             var hrefTarget = '_blank';
                             var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
@@ -19962,7 +19964,7 @@ $timeout(function() {
                     $(this).find('time')[0].innerText = dateTime;
                 });
 
-            }, 2000);
+            }, 1500);
 
             commentsArray = data;
         }).error(errorCallback);
@@ -19973,6 +19975,7 @@ $timeout(function() {
         rest.path = "users";
         
         rest.get().success(function(data) {
+            console.log("datadata",data);
             setTimeout(function() {
                 angular.forEach(data.data, function(val, i) {
                     var uObj = {
@@ -19987,9 +19990,15 @@ $timeout(function() {
 
             }, 0);
             
+            console.log("usersArray",$scope.usersArray);
         }).error(errorCallback);
     }
-    
+
+//    
+$timeout(function() {
+    jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+},2000);
+
 
     $timeout(function() {
         
