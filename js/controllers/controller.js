@@ -1902,11 +1902,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     },500);*/
                 } else {
                     notification('Information not available', 'warning');
-                }
+                    }
             }).error(errorCallback);
         }
         
     };
+
+$timeout(function() {
+    $('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+},2000);   
 
 /*$scope.dtOptions = {
   "pageLength"  : 100,
@@ -1922,15 +1926,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     //withOption('scrollX', '100%').
                     withOption('responsive', true).
                     withOption('oLanguage', {
-                                  "sSearch": ' _INPUT_',
+                                  "sSearch": '_INPUT_ ',
                                 }).
                     withOption('pageLength', 100).
                    // withOption('scrollCollapse', true).
                     withOption('dom', 'frtilp');
-
-$timeout(function() {
-    $('.projecttable input').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-},2000);   
 
 
 }).controller('usertypeController', function($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
@@ -19927,16 +19927,25 @@ $timeout(function() {
                     if(userprofilepic){                    
                         $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/'+userprofilepic+'" class="img-circle round userpic" alt="...">');
                     }
+                    if (val.fileURL != "") {
+                            var filetype = val.fileMimeType;
+                            var filetype1 = filetype.includes("image/");
+                            if(filetype1 == true){
+                               var filehtml = '<img src=' + val.fileURL + '></img>';                     
+                            }else{
+                               var filehtml = '<i class="fa fa-file-o"></i>' + val.fileURL ;                     
+                            }
+                    }        
                     if(val.user_id == loginid){
                         $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
                         
                         if (val.fileURL != "") {
                             var hrefClass = 'attachment';
                             var hrefTarget = '_blank';
-                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
+                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
                             $('li[data-id=' + dataId + ']').find('.content').html(data);
                             $('li[data-id=' + dataId + ']').find('.content').addClass("bgclr");
-                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                            //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }else{
                             //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
                             //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
@@ -19948,7 +19957,7 @@ $timeout(function() {
                         if (val.content == "") {
                             var hrefClass = 'attachment';
                             var hrefTarget = '_blank';
-                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
+                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
                             $('li[data-id=' + dataId + ']').find('.content').html(data);
                             $('li[data-id=' + dataId + ']').find('.content').addClass("bgclr");
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
@@ -19982,7 +19991,7 @@ $timeout(function() {
                         id              : val.iUserId,
                         fullname        : val.vUserName,
                         email          : val.vEmailAddress,
-                        profile_picture_url: "https://viima-app.s3.amazonaws.com/media/public/defaults/user-icon.png"
+                        profile_picture_url: "uploads/profilePic/user-icon.png"
                     }
                     $scope.usersArray.push(uObj);
                 });

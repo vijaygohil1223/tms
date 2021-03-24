@@ -351,6 +351,7 @@
             this.$el.find('> .spinner').remove();
 
             this.options.refresh();
+
         },
 
         showActiveContainer: function() {
@@ -397,6 +398,7 @@
 
             // Appned list to DOM
             this.$el.find('[data-container="comments"]').prepend(commentList);
+
         },
 
         createTagElement: function(text, extraClasses, value, extraAttributes) {
@@ -466,6 +468,7 @@
             } else {
                 commentList.append(commentEl);
             }
+
         },
 
         addAttachment: function(commentModel, commentList) {
@@ -543,6 +546,9 @@
                     uploadButton.addClass('enabled');
                     commentListSpinner.remove();
                     attachmentListSpinner.remove();
+
+
+
                 };
 
                 var error = function() {
@@ -557,7 +563,11 @@
 
                     // Create comment JSON
                     var commentJSON = self.createCommentJSON(textarea);
-                    newFileName1 = file.name.split('.')[0]+'_'+jQuery.now()+'.'+file.type.split('/')[1];
+                    //var randomno = Math.random().toString(36).substring(7);
+                    var randomno = jQuery.now(); 
+
+                    //newFileName1 = file.name.split('.')[0]+'_'+jQuery.now()+'.'+file.type.split('/')[1];
+                    newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.type.split('/')[1];
                     file.name2=newFileName1.replace(/ /g, "_");
                     commentJSON.id += '-' + index;
                     commentJSON.content = '';
@@ -567,7 +577,8 @@
                     commentJSON.fileMimeType = file.type;
                     
                     var file_data = $('#discussionFileUpload').prop('files')[0];
-                    newFileName = file_data.name.split('.')[0]+'_'+jQuery.now()+'.'+file_data.type.split('/')[1];
+                    //newFileName = file_data.name.split('.')[0]+'_'+jQuery.now()+'.'+file_data.type.split('/')[1];
+                    newFileName = file_data.name.split('.')[0]+'_'+randomno+'.'+file_data.type.split('/')[1];
                     
                     //file_data.name2=newFileName;
                     file_data.name2=newFileName.replace(/ /g, "_");
@@ -593,6 +604,9 @@
 
                 self.options.uploadAttachments(commentArray, success, error);
                 // self.render();
+                setTimeout(function() {
+                    $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                },2000);
             }
 
             // Clear the input field
@@ -852,6 +866,9 @@
             } else {
                 saveButton.removeClass('enabled');
             }
+
+
+
         },
 
         removeCommentingField: function(ev) {
@@ -893,12 +910,17 @@
             };
 
             this.options.postComment(commentJSON, success, error);
+
+            setTimeout(function() {
+                $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+            },2000);
         },
 
         createComment: function(commentJSON) {
             var commentModel = this.createCommentModel(commentJSON);
             this.addCommentToDataModel(commentModel);
             this.addComment(commentModel);
+
         },
 
         putComment: function(ev) {
