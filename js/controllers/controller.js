@@ -19930,8 +19930,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     if (val.fileURL != "") {
                             var filetype = val.fileMimeType;
                             var filetype1 = filetype.includes("image/");
+                            var imgbaseurl = window.location.origin + '/' +val.fileURL;
                             if(filetype1 == true){
-                               var filehtml = '<img src=' + val.fileURL + '></img>';                     
+                               var filehtml = '<img src=' + imgbaseurl + '></img>';                     
                             }else{
                                var filehtml = '<i class="fa fa-file-o"></i>' + val.fileURL ;                     
                             }
@@ -20122,7 +20123,6 @@ $timeout(function() {
                     "fullname": $window.localStorage.getItem("session_vUserName"),
                     "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
                     "fileURL": "uploads/discussionfile/" + dataArray[0].file.name2,
-                    //"fileURL": imgbaseurl + "uploads/discussionfile/" + dataArray[0].file.name2,
                     "fileMimeType": dataArray[0].file.type,
                     "created": dataArray[0].created,
                     "modified": dataArray[0].modified,
