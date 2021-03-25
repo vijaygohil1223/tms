@@ -572,10 +572,11 @@
                     commentJSON.id += '-' + index;
                     commentJSON.content = '';
                     commentJSON.file = file;
-                    window.localStorage.setItem("chatimgC_"+file.name2, file.name2);
+                    var fullimgName = 'uploads/discussionfile/' + file.name2;
+                    window.localStorage.setItem("chatimgC_"+file.name2, fullimgName);
                     var cmtimgName = window.localStorage.getItem("chatimgC_"+file.name2);
                     console.log("cmtimg",cmtimgName);        
-                    commentJSON.fileURL =  'uploads/discussionfile/'+cmtimgName;
+                    commentJSON.fileURL =  cmtimgName;
                     //commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     
