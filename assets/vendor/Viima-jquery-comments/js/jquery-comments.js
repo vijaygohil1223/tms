@@ -571,7 +571,6 @@
                     file.name2=newFileName1.replace(/ /g, "_");
                     commentJSON.id += '-' + index;
                     commentJSON.content = '';
-                    //pings: this.getPings(textarea);
                     commentJSON.file = file;
                     window.localStorage.setItem("chatimgC_"+file.name2, file.name2);
                     var cmtimgName = window.localStorage.getItem("chatimgC_"+file.name2);

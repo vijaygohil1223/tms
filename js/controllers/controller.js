@@ -19933,7 +19933,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             $window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
                             var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
                             console.log(cmtimgName);
-                            //var imgbaseurl = cmtimgurl;
                             if(filetype1 == true){
                                var filehtml = '<img src=' + cmtimgName + '></img>';                     
                             }else{
