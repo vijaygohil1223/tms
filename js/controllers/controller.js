@@ -19939,13 +19939,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     if(val.user_id == loginid){
                         $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
                         
-                        if (val.fileURL != "") {
+                        if (val.content == "") {
                             var hrefClass = 'attachment';
                             var hrefTarget = '_blank';
                             var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
                             $('li[data-id=' + dataId + ']').find('.content').html(data);
                             $('li[data-id=' + dataId + ']').find('.content').addClass("bgclr");
-                            //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }else{
                             //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
                             //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
@@ -19973,7 +19973,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $(this).find('time')[0].innerText = dateTime;
                 });
 
-            }, 1500);
+            }, 2000);
 
             commentsArray = data;
         }).error(errorCallback);
@@ -20115,12 +20115,14 @@ $timeout(function() {
             },*/
             uploadAttachments: function(dataArray, success, error, data) {
                 /*"fileURL":dataArray[0].file_url,*/
+                var imgbaseurl = window.location.origin + '/tms/';
                 var obj = {
                     "order_id": $routeParams.id,
                     "user_id": $window.localStorage.getItem("session_iUserId"),
                     "fullname": $window.localStorage.getItem("session_vUserName"),
                     "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
                     "fileURL": "uploads/discussionfile/" + dataArray[0].file.name2,
+                    //"fileURL": imgbaseurl + "uploads/discussionfile/" + dataArray[0].file.name2,
                     "fileMimeType": dataArray[0].file.type,
                     "created": dataArray[0].created,
                     "modified": dataArray[0].modified,

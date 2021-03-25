@@ -573,7 +573,9 @@
                     commentJSON.content = '';
                     //pings: this.getPings(textarea);
                     commentJSON.file = file;
-                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
+                    var imgbaseurl = window.location.origin + '/tms/';
+                    commentJSON.fileURL =  imgbaseurl + 'uploads/discussionfile/'+file.name2;
+                    //commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     
                     var file_data = $('#discussionFileUpload').prop('files')[0];
