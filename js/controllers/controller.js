@@ -19930,7 +19930,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     if (val.fileURL != "") {
                             var filetype = val.fileMimeType;
                             var filetype1 = filetype.includes("image/");
-                            var imgbaseurl = window.location.origin + '/' +val.fileURL;
+                            $window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                            var chatimg = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                            console.log(chatimg);
+                            var imgbaseurl = val.fileURL;
                             if(filetype1 == true){
                                var filehtml = '<img src=' + imgbaseurl + '></img>';                     
                             }else{
@@ -19974,7 +19977,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $(this).find('time')[0].innerText = dateTime;
                 });
 
-            }, 2000);
+            }, 1500);
 
             commentsArray = data;
         }).error(errorCallback);
@@ -20004,11 +20007,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }).error(errorCallback);
     }
 
-//    
+//  Scroll bottom  
 $timeout(function() {
     jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-},2000);
-
+},2200);
 
     $timeout(function() {
         
