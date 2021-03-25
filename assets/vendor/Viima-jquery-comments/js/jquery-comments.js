@@ -573,8 +573,10 @@
                     commentJSON.content = '';
                     //pings: this.getPings(textarea);
                     commentJSON.file = file;
-                    var imgbaseurl = window.location.origin + '/';
-                    commentJSON.fileURL =  imgbaseurl + 'uploads/discussionfile/'+file.name2;
+                    window.localStorage.setItem("chatimgC_"+file.name2, file.name2);
+                    var cmtimgName = window.localStorage.getItem("chatimgC_"+file.name2);
+                    console.log("cmtimg",cmtimgName);        
+                    commentJSON.fileURL =  'uploads/discussionfile/'+cmtimgName;
                     //commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     

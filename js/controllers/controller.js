@@ -19931,11 +19931,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             var filetype = val.fileMimeType;
                             var filetype1 = filetype.includes("image/");
                             $window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
-                            var chatimg = $window.localStorage.getItem("chatimg_"+val.fileURL);
-                            console.log(chatimg);
-                            var imgbaseurl = val.fileURL;
+                            var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                            console.log(cmtimgName);
+                            //var imgbaseurl = cmtimgurl;
                             if(filetype1 == true){
-                               var filehtml = '<img src=' + imgbaseurl + '></img>';                     
+                               var filehtml = '<img src=' + cmtimgName + '></img>';                     
                             }else{
                                var filehtml = '<i class="fa fa-file-o"></i>' + val.fileURL ;                     
                             }
