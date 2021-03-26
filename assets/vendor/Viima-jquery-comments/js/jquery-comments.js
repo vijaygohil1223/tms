@@ -575,7 +575,7 @@
                     commentJSON.content = '';
                     commentJSON.file = file;
 
-                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2+'?v='+versimgno;
+                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2+'?v='+jQuery.now();
                     commentJSON.fileMimeType = file.type;
                     
                     var file_data = $('#discussionFileUpload').prop('files')[0];
