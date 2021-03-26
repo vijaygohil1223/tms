@@ -1909,7 +1909,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     };
 
 $timeout(function() {
-    $('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    jQuery.fn.init('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
 },2000);   
 
 /*$scope.dtOptions = {

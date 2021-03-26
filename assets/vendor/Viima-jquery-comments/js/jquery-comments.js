@@ -269,7 +269,7 @@
             this.commentsById = {};
 
             var success = function(commentsArray) {
-                console.log(commentsArray);
+                //console.log("fileary",commentsArray);
                 // Convert comments to custom data model
                 var commentModels = commentsArray.map(function(commentsJSON){
                     return self.createCommentModel(commentsJSON)
@@ -428,7 +428,7 @@
             });
 
             var attachments = this.getAttachments();
-            this.sortComments(attachments, 'newest');
+            this.sortComments(attachments, 'oldest');
             //this.sortComments(attachments, 'newest');
             attachments.reverse();    // Reverse the order as they are prepended to DOM
             $(attachments).each(function(index, commentModel) {
@@ -574,11 +574,7 @@
                     commentJSON.id += '-' + index;
                     commentJSON.content = '';
                     commentJSON.file = file;
-                    /*var fullimgName = 'uploads/discussionfile/' + file.name2;
-                    window.localStorage.setItem("chatimg_"+file.name2, fullimgName);
-                    var cmtimgName = window.localStorage.getItem("chatimg_"+file.name2);
-                    console.log("cmtimg",cmtimgName);        
-                    commentJSON.fileURL =  cmtimgName;*/
+
                     commentJSON.fileURL =  'uploads/discussionfile/'+file.name2+'?v='+randomno;
                     commentJSON.fileMimeType = file.type;
                     
