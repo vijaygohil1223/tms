@@ -575,7 +575,7 @@
                     commentJSON.content = '';
                     commentJSON.file = file;
 
-                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2+'?v='+jQuery.now();
+                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     
                     var file_data = $('#discussionFileUpload').prop('files')[0];
@@ -1729,7 +1729,7 @@
                 // Case: image preview
                 if(type == 'image') {
                     var image = $('<img/>', {
-                        src: commentModel.fileURL+'abn'
+                        src: commentModel.fileURL+'?v='+jQuery.now()
                     });
                     link.html(image);
 

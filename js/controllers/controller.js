@@ -1909,8 +1909,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     };
 
 $timeout(function() {
-    jQuery.fn.init('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-},2000);   
+    //jQuery.fn.init('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    jQuery.fn.init('.projecttable #DataTables_Table_0_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    jQuery.fn.init('.projecttable #DataTables_Table_1_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    jQuery.fn.init('.projecttable #DataTables_Table_2_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    jQuery.fn.init('.projecttable #DataTables_Table_3_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    jQuery.fn.init('.projecttable #DataTables_Table_4_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    jQuery.fn.init('.projecttable #DataTables_Table_5_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+    jQuery.fn.init('.projecttable #DataTables_Table_6_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
+},2500);   
 
 /*$scope.dtOptions = {
   "pageLength"  : 100,
