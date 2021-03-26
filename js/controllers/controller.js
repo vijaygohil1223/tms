@@ -19930,9 +19930,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     if (val.fileURL != "") {
                             var filetype = val.fileMimeType;
                             var filetype1 = filetype.includes("image/");
-                            $window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
-                            var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
-                            console.log(cmtimgName);
+                            //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                            //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                            var cmtimgName = val.fileURL +'?v='+jQuery.now();
+                            //console.log(cmtimgName);
                             if(filetype1 == true){
                                var filehtml = '<img src=' + cmtimgName + '></img>';                     
                             }else{
