@@ -1729,7 +1729,7 @@
                 // Case: image preview
                 if(type == 'image') {
                     var image = $('<img/>', {
-                        src: commentModel.fileURL
+                        src: commentModel.fileURL+'abn'
                     });
                     link.html(image);
 
