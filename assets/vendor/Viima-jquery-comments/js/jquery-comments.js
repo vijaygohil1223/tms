@@ -565,7 +565,7 @@
 
                     // Create comment JSON
                     var commentJSON = self.createCommentJSON(textarea);
-                    //var randomno = Math.random().toString(36).substring(7);
+                    var versimgno = Math.random().toString(36).substring(7);
                     var randomno = jQuery.now(); 
 
                     //newFileName1 = file.name.split('.')[0]+'_'+jQuery.now()+'.'+file.type.split('/')[1];
@@ -575,7 +575,7 @@
                     commentJSON.content = '';
                     commentJSON.file = file;
 
-                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2+'?v='+randomno;
+                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2+'?v='+versimgno;
                     commentJSON.fileMimeType = file.type;
                     
                     var file_data = $('#discussionFileUpload').prop('files')[0];
