@@ -1910,14 +1910,58 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
 $timeout(function() {
     //jQuery.fn.init('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-    jQuery.fn.init('.projecttable #DataTables_Table_0_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-    jQuery.fn.init('.projecttable #DataTables_Table_1_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-    jQuery.fn.init('.projecttable #DataTables_Table_2_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-    jQuery.fn.init('.projecttable #DataTables_Table_3_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-    jQuery.fn.init('.projecttable #DataTables_Table_4_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-    jQuery.fn.init('.projecttable #DataTables_Table_5_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-    jQuery.fn.init('.projecttable #DataTables_Table_6_filter input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-},2500);   
+
+    $(".projecttable #DataTables_Table_0_filter input[type='search']").keyup(function() {
+        if ($(this).val().length) {
+          $('.projecttable #DataTables_Table_0_filter .searchicn').addClass("sicon1")
+        }else{
+          $('.projecttable #DataTables_Table_0_filter .searchicn').removeClass("sicon1")
+        }
+    });
+    $(".projecttable #DataTables_Table_1_filter input[type='search']").keyup(function() {
+        if ($(this).val().length) {
+          $('.projecttable #DataTables_Table_1_filter .searchicn').addClass("sicon2")
+        }else{
+          $('.projecttable #DataTables_Table_1_filter .searchicn').removeClass("sicon2")
+        }
+    });
+    $(".projecttable #DataTables_Table_2_filter input[type='search']").keyup(function() {
+        if ($(this).val().length) {
+          $('.projecttable #DataTables_Table_2_filter .searchicn').addClass("sicon3")
+        }else{
+          $('.projecttable #DataTables_Table_2_filter .searchicn').removeClass("sicon3")
+        }
+    });
+    $(".projecttable #DataTables_Table_3_filter input[type='search']").keyup(function() {
+        if ($(this).val().length) {
+          $('.projecttable #DataTables_Table_3_filter .searchicn').addClass("sicon4")
+        }else{
+          $('.projecttable #DataTables_Table_3_filter .searchicn').removeClass("sicon4")
+        }
+    });
+    $(".projecttable #DataTables_Table_4_filter input[type='search']").keyup(function() {
+        if ($(this).val().length) {
+          $('.projecttable #DataTables_Table_4_filter .searchicn').addClass("sicon5")
+        }else{
+          $('.projecttable #DataTables_Table_4_filter .searchicn').removeClass("sicon5")
+        }
+    });
+    $(".projecttable #DataTables_Table_5_filter input[type='search']").keyup(function() {
+        if ($(this).val().length) {
+          $('.projecttable #DataTables_Table_5_filter .searchicn').addClass("sicon6")
+        }else{
+          $('.projecttable #DataTables_Table_5_filter .searchicn').removeClass("sicon6")
+        }
+    });
+    $(".projecttable #DataTables_Table_6_filter input[type='search']").keyup(function() {
+        if ($(this).val().length) {
+          $('.projecttable #DataTables_Table_6_filter .searchicn').addClass("sicon7")
+        }else{
+          $('.projecttable #DataTables_Table_6_filter .searchicn').removeClass("sicon7")
+        }
+    });
+    
+},2000);   
 
 /*$scope.dtOptions = {
   "pageLength"  : 100,
@@ -1933,7 +1977,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     //withOption('scrollX', '100%').
                     withOption('responsive', true).
                     withOption('oLanguage', {
-                                  "sSearch": '_INPUT_ ',
+                                  "sSearch": '<i class="fa fa-search searchicn" aria-hidden="true"></i> _INPUT_ ',
+                                  "sSearchPlaceholder": "Search",
                                 }).
                     withOption('pageLength', 100).
                    // withOption('scrollCollapse', true).
