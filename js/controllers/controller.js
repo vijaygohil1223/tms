@@ -1961,7 +1961,7 @@ $timeout(function() {
         }
     });
     
-},2000);   
+},500);   
 
 /*$scope.dtOptions = {
   "pageLength"  : 100,
