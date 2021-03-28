@@ -531,7 +531,6 @@
                 }
 
                 var success = function(commentArray) {
-                    console.log('testA');
                     $(commentArray).each(function(index, commentJSON) {
                         var commentModel = self.createCommentModel(commentJSON);
                         self.addCommentToDataModel(commentModel);
@@ -578,7 +577,6 @@
 
                     window.localStorage.setItem("uploadfilepath", 'uploads/discussionfile/'+file.name2);
                     commentJSON.fileURL = window.localStorage.getItem("uploadfilepath")+'?v='+randomno;
-                    console.log(commentJSON.fileURL);
                     //commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     
@@ -608,11 +606,13 @@
                     commentArray.push(commentJSON);
                 });
 
+                setTimeout(function() {
                 self.options.uploadAttachments(commentArray, success, error);
+                },500);
                 // self.render();
                 setTimeout(function() {
-                    //$('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                },2000);
+                    $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                },1000);
             }
 
             // Clear the input field
