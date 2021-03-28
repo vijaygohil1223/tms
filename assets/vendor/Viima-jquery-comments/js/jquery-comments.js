@@ -531,6 +531,7 @@
                 }
 
                 var success = function(commentArray) {
+                    console.log('testA');
                     $(commentArray).each(function(index, commentJSON) {
                         var commentModel = self.createCommentModel(commentJSON);
                         self.addCommentToDataModel(commentModel);
@@ -575,7 +576,10 @@
                     commentJSON.content = '';
                     commentJSON.file = file;
 
-                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
+                    window.localStorage.setItem("uploadfilepath", 'uploads/discussionfile/'+file.name2);
+                    commentJSON.fileURL = window.localStorage.getItem("uploadfilepath")+'?v='+randomno;
+                    console.log(commentJSON.fileURL);
+                    //commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     
                     var file_data = $('#discussionFileUpload').prop('files')[0];
@@ -607,7 +611,7 @@
                 self.options.uploadAttachments(commentArray, success, error);
                 // self.render();
                 setTimeout(function() {
-                    $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                    //$('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
                 },2000);
             }
 
@@ -1729,7 +1733,7 @@
                 // Case: image preview
                 if(type == 'image') {
                     var image = $('<img/>', {
-                        src: commentModel.fileURL+'?v='+jQuery.now()
+                        src: commentModel.fileURL
                     });
                     link.html(image);
 
