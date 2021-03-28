@@ -612,7 +612,7 @@
                 // self.render();
                 setTimeout(function() {
                     $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                },1000);
+                },2000);
             }
 
             // Clear the input field
@@ -1733,7 +1733,7 @@
                 // Case: image preview
                 if(type == 'image') {
                     var image = $('<img/>', {
-                        src: commentModel.fileURL
+                        src: commentModel.fileURL+"rifgd"
                     });
                     link.html(image);
 
