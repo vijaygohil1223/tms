@@ -1726,7 +1726,7 @@
                 // Attachment link
                 var link = $('<a/>', {
                     'class': 'attachment',
-                    href: commentModel.fileURL+jQuery.now(),
+                    href: commentModel.fileURL+'chngnm',
                     target: '_blank'
                 });
 
