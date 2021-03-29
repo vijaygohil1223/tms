@@ -1726,14 +1726,14 @@
                 // Attachment link
                 var link = $('<a/>', {
                     'class': 'attachment',
-                    href: commentModel.fileURL,
+                    href: commentModel.fileURL+jQuery.now(),
                     target: '_blank'
                 });
 
                 // Case: image preview
                 if(type == 'image') {
                     var image = $('<img/>', {
-                        src: commentModel.fileURL+"rifgd"
+                        src: commentModel.fileURL+jQuery.now()
                     });
                     link.html(image);
 
