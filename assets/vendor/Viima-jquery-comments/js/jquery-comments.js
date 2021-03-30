@@ -576,7 +576,7 @@
                     commentJSON.file = file;
 
                     window.localStorage.setItem("uploadfilepath", 'uploads/discussionfile/'+file.name2);
-                    commentJSON.fileURL = window.localStorage.getItem("uploadfilepath")+'?v='+randomno;
+                    commentJSON.fileURL = window.localStorage.getItem("uploadfilepath");
                     //commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     
@@ -608,11 +608,11 @@
 
                 setTimeout(function() {
                     self.options.uploadAttachments(commentArray, success, error);
-                },1500);
+                },2000);
                 // self.render();
                 setTimeout(function() {
                     $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                },2000);
+                },2500);
             }
 
             // Clear the input field
@@ -812,7 +812,7 @@
             this.clearTextarea(mainTextarea);
             this.adjustTextareaHeight(mainTextarea, false);
 
-            mainControlRow.hide();
+            //mainControlRow.hide();
             closeButton.hide();
             mainTextarea.blur();
         },
@@ -1728,14 +1728,20 @@
                 var veraimgno = Math.random().toString(36).substring(7);
                 var link = $('<a/>', {
                     'class': 'attachment',
-                    href: commentModel.fileURL+veraimgno,
+                    href: commentModel.fileURL,
                     target: '_blank'
                 });
 
                 // Case: image preview
+                var vurl =''
+                if(format =='png'){
+                    vurl = ''; 
+                }else{
+                    vurl = '?v='+jQuery.now(); 
+                }
                 if(type == 'image') {
                     var image = $('<img/>', {
-                        src: commentModel.fileURL+jQuery.now()
+                        src: commentModel.fileURL+vurl
                     });
                     link.html(image);
 
