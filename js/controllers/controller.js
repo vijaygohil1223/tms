@@ -14304,6 +14304,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             data.user_id = $window.localStorage.getItem("session_iUserId");
             data.fullname = $window.localStorage.getItem("session_vUserName");
             data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+            data.pings = '';
             rest.path = "discussionOrder";
             rest.post(data).success(function(info) {
 
@@ -19939,7 +19940,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
     $window.localStorage.getItem("session_vUserName");
     $window.localStorage.getItem("session_iFkUserTypeId");
-    
+     
 
     $scope.backtoPage = function() {
         if ($window.localStorage.getItem("session_iFkUserTypeId") == 1) {
@@ -20170,7 +20171,6 @@ $timeout(function() {
             },*/
             uploadAttachments: function(dataArray, success, error, data) {
                 /*"fileURL":dataArray[0].file_url,*/
-                var imgbaseurl = window.location.origin + '/tms/';
                 var obj = {
                     "order_id": $routeParams.id,
                     "user_id": $window.localStorage.getItem("session_iUserId"),

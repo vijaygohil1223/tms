@@ -608,7 +608,7 @@
 
                 setTimeout(function() {
                 self.options.uploadAttachments(commentArray, success, error);
-                },500);
+                },1000);
                 // self.render();
                 setTimeout(function() {
                     $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
@@ -1169,8 +1169,9 @@
 
             // Hide control row and close button
             var mainControlRow = mainCommentingField.find('.control-row');
-            mainControlRow.hide();
-            mainCommentingField.find('.close').hide();
+            // Hide send buuton 
+            //mainControlRow.hide();
+            //mainCommentingField.find('.close').hide();
 
             // Navigation bar
             if (this.options.enableNavigation) {
@@ -1724,9 +1725,10 @@
                 }
 
                 // Attachment link
+                var veraimgno = Math.random().toString(36).substring(7);
                 var link = $('<a/>', {
                     'class': 'attachment',
-                    href: commentModel.fileURL+'chngnm',
+                    href: commentModel.fileURL+veraimgno,
                     target: '_blank'
                 });
 
