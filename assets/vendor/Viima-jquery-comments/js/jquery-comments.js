@@ -562,7 +562,10 @@
 
                 var commentArray = [];
                 $(files).each(function(index, file) {
-
+                    console.log(file.size/100);
+                    // 267099 
+                    // 6199.48 
+                    // 533601    
                     // Create comment JSON
                     var commentJSON = self.createCommentJSON(textarea);
                     var versimgno = Math.random().toString(36).substring(7);
@@ -608,7 +611,7 @@
 
                 setTimeout(function() {
                     self.options.uploadAttachments(commentArray, success, error);
-                },5000);
+                },3000);
                 // self.render();
                 setTimeout(function() {
                     $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
