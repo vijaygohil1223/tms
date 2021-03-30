@@ -562,17 +562,17 @@
 
                 var commentArray = [];
                 var filesz_tout = 2000;
-                var filesz_tout2 = 2500;
+                var filesz_tout2 = 3000;
                 $(files).each(function(index, file) {
                     var filesz  = file.size/100;
                     filesz_tout = (Math.ceil(filesz)/2)+500;
-                    if(filesz_tout > 2000){
+                    if(filesz_tout > 1500){
                         filesz_tout2 = filesz_tout + 1000;
                         if(filesz_tout>5000){
-                            filesz_tout = 0;
+                            filesz_tout = 2000;
                             filesz_tout2 = 2500;
                         }
-                    }
+                    }else{ filesz_tout = 2000; }
                     
                     var commentJSON = self.createCommentJSON(textarea);
                     var versimgno = Math.random().toString(36).substring(7);
@@ -1742,7 +1742,6 @@
                 }
 
                 // Attachment link
-                var veraimgno = Math.random().toString(36).substring(7);
                 var link = $('<a/>', {
                     'class': 'attachment',
                     href: commentModel.fileURL,
@@ -1750,15 +1749,10 @@
                 });
 
                 // Case: image preview
-                var vurl =''
-                if(format =='png'){
-                    vurl = ''; 
-                }else{
-                    vurl = '?v='+jQuery.now(); 
-                }
+                
                 if(type == 'image') {
                     var image = $('<img/>', {
-                        src: commentModel.fileURL+vurl
+                        src: commentModel.fileURL+'?v='+jQuery.now()
                     });
                     link.html(image);
 
