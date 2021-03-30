@@ -561,12 +561,15 @@
                 };
 
                 var commentArray = [];
+                var filesz_tout = 1000;
+                var filesz_tout2 = 2000;
                 $(files).each(function(index, file) {
-                    console.log(file.size/100);
-                    // 267099 
-                    // 6199.48 
-                    // 533601    
-                    // Create comment JSON
+                    var filesz  = file.size/100;
+                    if(filesz > 1000){
+                        filesz_tout = (Math.ceil(filesz)/2)+500;
+                        filesz_tout2 = filesz_tout + 1000;
+                    }
+                    
                     var commentJSON = self.createCommentJSON(textarea);
                     var versimgno = Math.random().toString(36).substring(7);
                     var randomno = jQuery.now(); 
@@ -608,14 +611,17 @@
                     commentJSON = self.applyExternalMappings(commentJSON);
                     commentArray.push(commentJSON);
                 });
-
+                
+                console.log(filesz_tout);
+                console.log(filesz_tout2);
+                    
                 setTimeout(function() {
                     self.options.uploadAttachments(commentArray, success, error);
-                },3000);
+                },filesz_tout);
                 // self.render();
                 setTimeout(function() {
                     $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                },500);
+                },filesz_tout2);
             }
 
             // Clear the input field
