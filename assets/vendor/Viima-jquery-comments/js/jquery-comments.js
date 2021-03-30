@@ -608,11 +608,11 @@
 
                 setTimeout(function() {
                     self.options.uploadAttachments(commentArray, success, error);
-                },2000);
+                },5000);
                 // self.render();
                 setTimeout(function() {
                     $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                },2500);
+                },500);
             }
 
             // Clear the input field
