@@ -597,7 +597,6 @@
                                 processData: false,
                                 data: form_data,                         
                                 type: 'POST',
-                                timeout: 2000,
                                 success: function(){
                                      // display response from the PHP script, if any
                                 }
@@ -609,7 +608,7 @@
 
                 setTimeout(function() {
                     self.options.uploadAttachments(commentArray, success, error);
-                },2200);
+                },1500);
                 // self.render();
                 setTimeout(function() {
                     $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
