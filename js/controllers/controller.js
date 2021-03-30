@@ -19983,14 +19983,35 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     if (val.fileURL != "") {
                             var filetype = val.fileMimeType;
                             var filetype1 = filetype.includes("image/");
+                            var file_format = '';
+                            var file_type = '';
+                            var mimeTypeParts = val.fileMimeType.split('/');
+                            if(mimeTypeParts.length == 2) {
+                                file_format = mimeTypeParts[1];
+                                file_type = mimeTypeParts[0];
+                            }
+                            console.log(mimeTypeParts);
+                            // Icon
+                            var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                                'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'];
+                            
+                            var iconClass = 'fa fa-file-o';
+                            if(availableIcons.indexOf(file_format) > 0) {
+                                iconClass = 'fa fa-file-' + file_format + '-o';
+                            } else if(availableIcons.indexOf(file_type) > 0) {
+                                iconClass = 'fa fa-file-' + file_type + '-o';
+                            }
+                            console.log(iconClass);
+                            
+
                             //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
                             //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
                             var cmtimgName = val.fileURL +'?v='+jQuery.now();
                             //console.log(cmtimgName);
-                            if(filetype1 == true){
+                            if(file_type == 'image'){
                                var filehtml = '<img src=' + cmtimgName + '></img>';                     
                             }else{
-                               var filehtml = '<i class="fa fa-file-o"></i>' + val.fileURL ;                     
+                               var filehtml = '<i class="'+iconClass+'"></i> ' + val.fileURL ;                     
                             }
                     }        
                     if(val.user_id == loginid){
@@ -20063,7 +20084,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 //  Scroll bottom  
 $timeout(function() {
     jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-},2200);
+},2500);
 
     $timeout(function() {
         
