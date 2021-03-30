@@ -561,13 +561,17 @@
                 };
 
                 var commentArray = [];
-                var filesz_tout = 1000;
-                var filesz_tout2 = 2000;
+                var filesz_tout = 2000;
+                var filesz_tout2 = 2500;
                 $(files).each(function(index, file) {
                     var filesz  = file.size/100;
-                    if(filesz > 1000){
-                        filesz_tout = (Math.ceil(filesz)/2)+500;
+                    filesz_tout = (Math.ceil(filesz)/2)+500;
+                    if(filesz_tout > 2000){
                         filesz_tout2 = filesz_tout + 1000;
+                        if(filesz_tout>5000){
+                            filesz_tout = 0;
+                            filesz_tout2 = 2500;
+                        }
                     }
                     
                     var commentJSON = self.createCommentJSON(textarea);
@@ -615,9 +619,13 @@
                 console.log(filesz_tout);
                 console.log(filesz_tout2);
                     
-                setTimeout(function() {
+                if(filesz_tout>0){
+                    setTimeout(function() {
+                        self.options.uploadAttachments(commentArray, success, error);
+                    },filesz_tout);
+                }else{
                     self.options.uploadAttachments(commentArray, success, error);
-                },filesz_tout);
+                }
                 // self.render();
                 setTimeout(function() {
                     $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
