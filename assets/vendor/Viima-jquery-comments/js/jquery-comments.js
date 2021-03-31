@@ -269,7 +269,6 @@
             this.commentsById = {};
 
             var success = function(commentsArray) {
-                //console.log("fileary",commentsArray);
                 // Convert comments to custom data model
                 var commentModels = commentsArray.map(function(commentsJSON){
                     return self.createCommentModel(commentsJSON)
@@ -563,6 +562,7 @@
                 var commentArray = [];
                 var filesz_tout = 2000;
                 var filesz_tout2 = 3000;
+                var file_response_time = 0;
                 $(files).each(function(index, file) {
                     var filesz  = file.size/100;
                     filesz_tout = (Math.ceil(filesz)/2)+500;
@@ -607,28 +607,23 @@
                                 processData: false,
                                 data: form_data,                         
                                 type: 'POST',
-                                success: function(){
-                                     // display response from the PHP script, if any
+                                success: function(file_response){
+                                    file_response_time = file_response;// display response from the PHP script, if any
                                 }
                      });
+                    //return file_response_time;
                     // Reverse mapping
                     commentJSON = self.applyExternalMappings(commentJSON);
                     commentArray.push(commentJSON);
                 });
-                
-                console.log(filesz_tout);
-                console.log(filesz_tout2);
-                    
-                if(filesz_tout>0){
-                    setTimeout(function() {
-                        self.options.uploadAttachments(commentArray, success, error);
-                    },filesz_tout);
-                }else{
+                console.log(file_response_time);
+                setTimeout(function() {
                     self.options.uploadAttachments(commentArray, success, error);
-                }
+                },filesz_tout);
+                //self.options.uploadAttachments(commentArray, success, error);
                 // self.render();
                 setTimeout(function() {
-                    $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                   $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
                 },filesz_tout2);
             }
 
@@ -753,6 +748,10 @@
 
             // Show active container
             this.showActiveContainer();
+
+            setTimeout(function() {
+                jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+            },2000);
         },
 
         forceResponsive: function() {

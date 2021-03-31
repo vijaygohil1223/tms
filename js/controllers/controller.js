@@ -890,7 +890,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function(data) {
             $scope.dashboardJobList = data;
-            console.log("$scope.dashboardJobList", $scope.dashboardJobList);
+            //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
 
             var Requested = [];
             var NewJob = [];
@@ -1465,7 +1465,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 
             });
-            console.log($scope.projectsAll);
+            //console.log($scope.projectsAll);
             
         });
     };
@@ -2416,7 +2416,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }).error(errorCallback);
         }
     }
-    console.log('a');
     $scope.filemanagerSource = function(name) {
         if ($routeParams.id) {
             // var obj = [];
@@ -2553,9 +2552,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     //project root get display front
     if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
-        console.log('a');
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            console.log('b');
             rest.path = 'filefrontroot/' + $window.localStorage.orderID + '/' + $routeParams.id;
             rest.get().success(function(data) {
                 $window.localStorage.setItem("parentId", data.fmanager_id);
@@ -2563,9 +2560,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }).error(errorCallback);
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $window.localStorage.countSt == " " && $scope.userRight == '1') {
-        console.log('c');
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            console.log('d');
             rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
             rest.get().success(function(data) {
                 console.log("data", data);
@@ -2582,7 +2577,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $scope.userRight == '2') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            console.log('e');
             rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
             rest.get().success(function(data) {
                 $window.localStorage.pId = data[0].fmanager_id;
@@ -2918,7 +2912,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     if ($window.localStorage.getItem("parentId") != " ") {
         var id = $window.localStorage.getItem("parentId");
-        console.log("id", id);
         var externalResourceUserId = null;
         console.log("$routeParams.id", $routeParams.id);
         rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
@@ -5327,10 +5320,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         console.log("currentStatus", currentStatus);
 
         if (currentStatus == 3) {
-            console.log('a');
             currentStatus = 4;
         }else if(currentStatus != 3){
-            console.log('b');
             currentStatus = 3;
         }
         console.log("currentStatus", currentStatus);
@@ -5677,10 +5668,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         console.log("currentStatus", currentStatus);
 
         if (currentStatus == 3) {
-            console.log('a');
             currentStatus = 4;
         }else if(currentStatus != 3){
-            console.log('b');
             currentStatus = 3;
         }
         console.log("currentStatus", currentStatus);
@@ -19980,6 +19969,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     if(userprofilepic){                    
                         $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/'+userprofilepic+'" class="img-circle round userpic" alt="...">');
                     }
+                    var filedata = '';
                     if (val.fileURL != "") {
                             var filetype = val.fileMimeType;
                             var filetype1 = filetype.includes("image/");
@@ -19990,7 +19980,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 file_format = mimeTypeParts[1];
                                 file_type = mimeTypeParts[0];
                             }
-                            console.log(mimeTypeParts);
                             // Icon
                             var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
                                 'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'];
@@ -20001,8 +19990,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             } else if(availableIcons.indexOf(file_type) > 0) {
                                 iconClass = 'fa fa-file-' + file_type + '-o';
                             }
-                            console.log(iconClass);
-                            
 
                             //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
                             //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
@@ -20013,31 +20000,27 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             }else{
                                var filehtml = '<i class="'+iconClass+'"></i> ' + val.fileURL ;                     
                             }
+                        var hrefClass = 'attachment';
+                        var hrefTarget = '_blank';
+                        filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+                            
                     }        
                     if(val.user_id == loginid){
                         $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
                         
-                        if (val.content == "") {
-                            var hrefClass = 'attachment';
-                            var hrefTarget = '_blank';
-                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
-                            $('li[data-id=' + dataId + ']').find('.content').html(data);
-                            $('li[data-id=' + dataId + ']').find('.content').addClass("bgclr");
+                        if (val.content =='') {
+                            
+                            $('li[data-id=' + dataId + ']').find('.content').html(filedata);
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }else{
                             //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
                             //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
                         }   
-                        //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-right thumb-sm avatar');
                     }else{
                         $('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
                         //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
                         if (val.content == "") {
-                            var hrefClass = 'attachment';
-                            var hrefTarget = '_blank';
-                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
-                            $('li[data-id=' + dataId + ']').find('.content').html(data);
-                            $('li[data-id=' + dataId + ']').find('.content').addClass("bgclr");
+                            $('li[data-id=' + dataId + ']').find('.content').html(filedata);
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }
                     }
@@ -20049,10 +20032,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
                     dateTime = moment(dateTime).format('DD-MM-YYYY');
                     $(this).find('time')[0].innerText = dateTime;
+                    
                 });
 
             }, 1500);
-
             commentsArray = data;
         }).error(errorCallback);
     }
@@ -20062,7 +20045,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = "users";
         
         rest.get().success(function(data) {
-            console.log("datadata",data);
+            //console.log("datadata",data);
             setTimeout(function() {
                 angular.forEach(data.data, function(val, i) {
                     var uObj = {
@@ -20077,14 +20060,15 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
             }, 0);
             
-            console.log("usersArray",$scope.usersArray);
         }).error(errorCallback);
     }
 
 //  Scroll bottom  
 $timeout(function() {
     jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-},2500);
+    jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+},2800);
+
 
     $timeout(function() {
         
@@ -20099,6 +20083,8 @@ $timeout(function() {
             getComments: function(success, error) {
                 $timeout(function() {
                     success(commentsArray);
+                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');    
+            
                 }, 500);
             },
             searchUsers: function(term, success, error) {
