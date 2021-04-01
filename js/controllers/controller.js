@@ -1357,9 +1357,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     };
 
     $scope.goToProjectViewdetail = function(viewType) {
-        
         if(viewType){
-            
             var modalInstance = $uibModal.open({
                 //animation: $scope.animationsEnabled,
                 templateUrl: 'tpl/projectViewdetailPopup.html',
@@ -1372,8 +1370,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
             });
         }
-
+        
     };
+
     $scope.goTocommentChat = function(viewType) {
         if(viewType){
             var modalInstance = $uibModal.open({

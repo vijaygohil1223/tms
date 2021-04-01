@@ -609,24 +609,14 @@
                                 type: 'POST',
                                 success: function(file_response){
                                     file_response_time = file_response;// display response from the PHP script, if any
-                                    window.localStorage.setItem("file_response_time", file_response_time);
-                                    console.log('resptme',window.localStorage.getItem("file_response_time"));
                                 }
                      });
+                    //return file_response_time;
                     // Reverse mapping
                     commentJSON = self.applyExternalMappings(commentJSON);
                     commentArray.push(commentJSON);
                 });
-                var file_response_time = window.localStorage.getItem("file_response_time");
-                if(Number(file_response_time)>0){ 
-                    if(file_response_time!=undefined)
-                    {
-                        filesz_tout= file_response_time*2000;
-                        filesz_tout2= filesz_tout+1000;
-                        console.log('filesz_tout',filesz_tout);
-                    } 
-                }
-                
+                console.log(file_response_time);
                 setTimeout(function() {
                     self.options.uploadAttachments(commentArray, success, error);
                 },filesz_tout);
@@ -635,7 +625,6 @@
                 setTimeout(function() {
                    $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
                 },filesz_tout2);
-                
             }
 
             // Clear the input field
