@@ -35,7 +35,7 @@ spl_autoload_register('api_autoloader');
 function authenticate(\Slim\Route $route) {
     // Getting request headers
     $headers = getallheaders();
-    //echo '<pre>'; print_r($headers); echo '</pre>';exit;
+    //echo '<pre>'; print_r($headers); echo '</pre>'; exit;
     $response = array();
     $app = \Slim\Slim::getInstance();
     
@@ -2695,6 +2695,12 @@ $app->get('/getCountry','authenticate', function () use ($app) {
     $result = $dashboard->getCountry();
     echoResponse(200, $result);
 });
+$app->get('/dashboardProjectsOrderGet/:id', function ($id) use ($app) {
+    $dashboard = new dashboard ();
+    $result = $dashboard->ProjectsOrderGet($id);
+    echoResponse(200, $result);
+});
+
 //---------------Resource asserts------------------//
 $app->post('/resourceAssets', 'authenticate',function () use($app) {
     $assets = new asserts ();
@@ -2740,6 +2746,13 @@ $app->put('/discussionOrder/:id','authenticate', function ($id) use($app) {
     $discuss = new discussion ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $discuss->discussionOrderUpdate($data, $id);
+    echoResponse(200, $result);
+});
+//---------Comment Read Unread--------- //
+$app->put('/discussionCommentread/:orderId','authenticate', function ($orderId) use($app) {
+    $discuss = new discussion ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $discuss->discussionCommentread($data, $orderId);
     echoResponse(200, $result);
 });
 //-----------------Knowledge Category---------------------//

@@ -91,4 +91,18 @@ class discussion {
         return $result;
     }
 
+
+    public function discussionCommentread($data,$orderId) {
+        //$this->_db->where('order_id',$orderId);
+        //$cmtData = $this->_db->get("tms_discussion");
+        /*$menu_access = $this->_db->rawQuery("SELECT * FROM " . tms_discussion . " WHERE user_id = '" . $orderId . "' AND FIND_IN_SET('" . 1 . "', read_id)");*/
+        foreach ($data as $value) {
+            $reead_id = "'".$value['read_id'].",'";    
+            $qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE id = " . $value['id'] ;
+
+            $this->_db->rawQuery($qry);
+        }
+        return 0;
+    }
+
 }

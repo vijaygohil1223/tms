@@ -177,7 +177,8 @@
                     createdByAdmin: 'created_by_admin',       
                     createdByCurrentUser: 'created_by_current_user',      
                     upvoteCount: 'upvote_count',      
-                    userHasUpvoted: 'user_has_upvoted'        
+                    userHasUpvoted: 'user_has_upvoted',
+                    //read_id:'readId'        
                 },        
                 
                 searchUsers: function(term, success, error) {success([])},
@@ -617,6 +618,7 @@
                     commentArray.push(commentJSON);
                 });
                 console.log(file_response_time);
+                console.log(filesz_tout);
                 setTimeout(function() {
                     self.options.uploadAttachments(commentArray, success, error);
                 },filesz_tout);

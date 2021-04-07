@@ -1388,6 +1388,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             });
     
         }
+        //$timeout(function() {
+                //modalInstance.result.then(function() {
+                    // debugger;
+                    //$scope.allProjectListing();
+                    //$route.reload();
+                //});
+            //jQuery('#myid').find('#s90').html('<i style="color:green" class="fa fa-commenting-o fa-2x"></i>');
+        //},5000);        
+
     }
 
 
@@ -1411,7 +1420,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectsAssignedCount = 0;
     
     $scope.allProjectListing = function() {
-        rest.path = "dashboardOrderGet";
+        //$routeParams.id = 5;
+        rest.path = "dashboardProjectsOrderGet/"+$window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
             angular.forEach(data,function(val,i){
                 val.progrss_precentage = -1;
@@ -1425,6 +1435,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     val2.source_lang = JSON.parse(val2.source_lang);
                     val2.target_lang = JSON.parse(val2.target_lang);
                 });*/
+
+                val.comment = data[i].comment[0].comment_status;
                 
                 $scope.projectsAllCount++;
                 if(val.projectStatus == 12){
@@ -1465,7 +1477,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 
             });
-            //console.log($scope.projectsAll);
+            //console.log("allproj",$scope.projectsAll);
             
         });
     };
@@ -19917,19 +19929,22 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
     };
 }).controller('commentchatController', function($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $uibModalInstance, items) {
+
+    var loginid = $window.localStorage.getItem("session_iUserId");
+    var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
+
     if(items){
-        $routeParams.id = items;    
+        $routeParams.id = items;
+        
+        $scope.login_userid = $window.localStorage.getItem("session_iUserId");
+        
+
     }
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     if($scope.isNewProject === 'true' && $scope.userRight == 1){
         $location.path('/dashboard1');
         notification('Please create project.','warning');
     }
-    var loginid = $window.localStorage.getItem("session_iUserId");
-    var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
-    $window.localStorage.getItem("session_vUserName");
-    $window.localStorage.getItem("session_iFkUserTypeId");
-     
 
     $scope.backtoPage = function() {
         if ($window.localStorage.getItem("session_iFkUserTypeId") == 1) {
@@ -19942,6 +19957,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     if ($routeParams.id) {
 
         var commentsArray = [];
+        $scope.commentReadArray=[];
         rest.path = "discussionOrder/" + $routeParams.id;
         
         rest.get().success(function(data) {
@@ -20025,6 +20041,19 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }
                     }
 
+                    var msgRead_id = val.read_id;
+                    if( msgRead_id.match(new RegExp("(?:^|,)"+loginid+"(?:,|$)"))) {
+                        console.log(msgRead_id);
+                    }else{
+                        console.log(loginid);
+                        var cmtObj = {
+                            id   : val.id,
+                            read_id : loginid
+                        }
+                        $scope.commentReadArray.push(cmtObj);    
+                    }    
+                    // Read/ Unread - check comment id exist in db 
+
                 });
                 
                 $(".comment-wrapper").each(function(i,v) {
@@ -20058,12 +20087,20 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 });
                 
 
-            }, 0);
+            }, 500);
             
         }).error(errorCallback);
     }
 
-//  Scroll bottom  
+if($routeParams.id){
+    $timeout(function() {
+        rest.path = "discussionCommentread";    
+        rest.put($scope.commentReadArray).success(function(res) {
+        });
+        //console.log($scope.commentReadArray);
+    },2000);
+}    
+//  Scroll to bottom  
 $timeout(function() {
     jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
     jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
@@ -20103,6 +20140,7 @@ $timeout(function() {
                 data.user_id = $window.localStorage.getItem("session_iUserId");
                 data.fullname = $window.localStorage.getItem("session_vUserName");
                 data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                data.read_id = $window.localStorage.getItem("session_iUserId")+',';
                 var pingsvalue =[];
                 if(data.content){
                     $(Object.keys(data.pings)).each(function(index, userId) {
@@ -20189,8 +20227,9 @@ $timeout(function() {
                     "modified": dataArray[0].modified,
                     "created_by_current_user": '1',
                     "upvote_count": '0',
-                    "user_has_upvoted": '0'
-
+                    "user_has_upvoted": '0',
+                    "read_id": $window.localStorage.getItem("session_iUserId")+',',
+                    
                 }
                 rest.path = "discussionOrder";
                 rest.post(obj).success(function(info) {
@@ -20207,6 +20246,8 @@ $timeout(function() {
 
     $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
+
     };
+
 
 });
