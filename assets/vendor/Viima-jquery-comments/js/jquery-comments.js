@@ -93,7 +93,11 @@
             'dragleave .droppable-overlay .droppable' : 'handleDragLeaveForDroppable',
 
             'dragover .droppable-overlay' : 'handleDragOverForOverlay',
-            'drop .droppable-overlay' : 'handleDrop'
+            'drop .droppable-overlay' : 'handleDrop',
+
+            // emoji
+            'click .emojibtn ': 'emojiButtonClicked',
+
         },
 
 
@@ -189,6 +193,7 @@
                 upvoteComment: function(commentJSON, success, error) {success(commentJSON)},      
                 uploadAttachments: function(commentArray, success, error) {success(commentArray)},        
                 pingClicked: function(userId) {},
+                emojiButtonClicked: function() {},
                 refresh: function() {},       
                 timeFormatter: function(time) {return new Date(time).toLocaleDateString()}
             }
@@ -209,7 +214,7 @@
             if($.browser.mobile) this.$el.addClass('mobile');
 
             // Init options
-            this.options = $.extend(true, {}, this.getDefaultOptions(), options);;
+            this.options = $.extend(true, {}, this.getDefaultOptions(), options);
 
             // Read-only mode
             if(this.options.readOnly) this.$el.addClass('read-only');
@@ -1113,6 +1118,10 @@
             // Move cursor to end
             this.moveCursorToEnd(textarea);
         },
+
+        emojiButtonClicked: function(ev) {
+            $('.send').addClass('enabled');
+        },    
 
         showDroppableOverlay: function(ev) {
             if(this.options.enableAttachments) {
@@ -2103,7 +2112,7 @@
             var text = ce.text().replace(/^\s+/g, '');
             return text;
         },*/
-                getTextareaContent: function(textarea, humanReadable) {
+        getTextareaContent: function(textarea, humanReadable) {
             var textareaClone = textarea.clone();
 
             // Remove reply-to tag
@@ -2116,6 +2125,9 @@
             textareaClone.find('.tag.ping').replaceWith(function(){
                 return humanReadable ? $(this).val() : '@' + $(this).attr('data-value');
             });
+            
+            
+textareaClone.find('#addemoji').html;
 
             var ce = $('<pre/>').html(textareaClone.html());
             ce.find('div, p, br').replaceWith(function() { return '\n' + this.innerHTML; });
@@ -2268,6 +2280,8 @@
         }
 
     };
+
+
 
     $.fn.comments = function(options) {
         return this.each(function() {

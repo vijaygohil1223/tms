@@ -136,7 +136,8 @@ class db {
 
         $this->_mysqli = new mysqli($this->host, $this->username, $this->password, $this->db, $this->port) or die('There was a problem connecting to the database');
 
-        $this->_mysqli->set_charset('utf8');
+        $this->_mysqli->set_charset('utf8mb4');
+        //$this->_mysqli->set_charset('utf8');
     }
 
     /**

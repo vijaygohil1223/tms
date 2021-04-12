@@ -1373,6 +1373,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         
     };
 
+
     $scope.goTocommentChat = function(viewType) {
         if(viewType){
             var modalInstance = $uibModal.open({
@@ -1388,14 +1389,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             });
     
         }
-        //$timeout(function() {
+        $timeout(function() {
                 //modalInstance.result.then(function() {
                     // debugger;
                     //$scope.allProjectListing();
                     //$route.reload();
                 //});
             //jQuery('#myid').find('#s90').html('<i style="color:green" class="fa fa-commenting-o fa-2x"></i>');
-        //},5000);        
+            
+
+        },5000);        
 
     }
 
@@ -20010,7 +20013,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
                             //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
                             var cmtimgName = val.fileURL +'?v='+jQuery.now();
-                            //console.log(cmtimgName);
+                            
                             if(file_type == 'image'){
                                var filehtml = '<img src=' + cmtimgName + '></img>';                     
                             }else{
@@ -20023,9 +20026,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     }        
                     if(val.user_id == loginid){
                         $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
-                        
-                        if (val.content =='') {
-                            
+                        if (val.content =='' || val.content == null) {
                             $('li[data-id=' + dataId + ']').find('.content').html(filedata);
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }else{
@@ -20035,7 +20036,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     }else{
                         $('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
                         //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
-                        if (val.content == "") {
+                        if (val.content == "" || val.content == null) {
                             $('li[data-id=' + dataId + ']').find('.content').html(filedata);
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }
@@ -20043,9 +20044,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                     var msgRead_id = val.read_id;
                     if( msgRead_id.match(new RegExp("(?:^|,)"+loginid+"(?:,|$)"))) {
-                        console.log(msgRead_id);
+                        //console.log(msgRead_id);
                     }else{
-                        console.log(loginid);
                         var cmtObj = {
                             id   : val.id,
                             read_id : loginid
@@ -20066,6 +20066,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
             }, 1500);
             commentsArray = data;
+            //console.log('commentsArray',commentsArray);
         }).error(errorCallback);
     }
 
@@ -20098,6 +20099,15 @@ if($routeParams.id){
         rest.put($scope.commentReadArray).success(function(res) {
         });
         //console.log($scope.commentReadArray);
+
+$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');    
+
+     jQuery("#addemoji").emojioneArea({
+        autoHideFilters: true,
+        useSprite : true, 
+        //pickerPosition: "bottom"
+      });        
+
     },2000);
 }    
 //  Scroll to bottom  
@@ -20106,6 +20116,16 @@ $timeout(function() {
     jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 },2800);
 
+$timeout(function() {
+    var el = $("#addemoji").emojioneArea();
+
+    el[0].emojioneArea.on("emojibtn.click",function() {
+        const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+        const emoji = $('.emojionearea-editor').find('img[src="'+emoji1+'"]').attr('alt');
+        $('.textarea').append(emoji);
+    });
+
+}, 3000);
 
     $timeout(function() {
         
