@@ -1396,8 +1396,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     //$route.reload();
                 //});
             //jQuery('#myid').find('#s90').html('<i style="color:green" class="fa fa-commenting-o fa-2x"></i>');
-            
-
+            //jQuery('.fa-commenting-o').addClass('btn-success');
         },5000);        
 
     }
@@ -20174,8 +20173,7 @@ if($routeParams.id){
         rest.put($scope.commentReadArray).success(function(res) {
         });
         //console.log($scope.commentReadArray);
-
-$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');    
+    $('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');    
 
      jQuery("#addemoji").emojioneArea({
         autoHideFilters: true,

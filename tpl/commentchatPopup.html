@@ -211,18 +211,22 @@
       
       <div class="panel panel-default">
         <!-- <div class="panel-heading">Chat </div> -->
-        <div class="panel-body chatbox">
+        <div class="panel-body chatbox" style="background: #F4F8FB;">
           <div class="row">
+            <div class="col-md-9 livemsg" id="comments-container">
+
+            </div>
             <div class="col-md-3">
+              <div style="margin-bottom: 10px;"> <span style="padding:0px 30px 10px 5px;border-bottom: 2px solid #2793e6;">Stutus</span> </div>
               <div class="navside white r box-shadow-z0 m-b nav-center" layout="column" >
-                <div flex-no-shrink="" style="margin-top:35px;">
+                <div flex-no-shrink="" style="padding-top:15px;margin-top:0px;background-color: #fff;min-height:320px; ">
                    <nav ui-nav="" >
                       <ul class="nav">
 
                         <li class="no-bg"><a>
                           <span class="nav-icon"><i class="material-icons"></i></span> 
                           <span class="nav-text">
-                            <span class="projstatus m-t-sm"><i class="fa  fa-circle text-xs" style="color: {{general.status_color}}"></i> {{general.project_status}}</span>
+                            <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs" style="color: {{general.status_color}}"></i> {{general.project_status}}</span>
                           <small class="block text-muted"> </small></span></a>
                         </li>        
                         <li>
@@ -258,9 +262,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-9 livemsg" id="comments-container">
-
-            </div>
+            
 
             </div>
           </div>
