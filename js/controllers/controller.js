@@ -19940,9 +19940,84 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         $routeParams.id = items;
         
         $scope.login_userid = $window.localStorage.getItem("session_iUserId");
-        
+
+        rest.path = 'viewProjectCustomerDetail';
+        rest.model().success(function(data) {
+            $scope.customer = data;
+            $window.localStorage.clientproCustomerName = $scope.customer.client;
+            $window.localStorage.ContactPerson = $scope.customer.contact;
+            $routeParams.ClientIdd = data['client'];
+            $window.localStorage.ClientName = $routeParams.ClientIdd;
+            if ($scope.customer.memo) {
+                $scope.warn = true;
+                $timeout(function() {
+                    $scope.warn = false;
+                }, 10000);
+            }
+        }).error(errorCallback);
+
+        $routeParams.id;
+        rest.path = 'contactPerson';
+        rest.model().success(function(data) {
+            angular.forEach(data, function(val, i) {
+                if (val.vResourcePosition == 3) {
+                    angular.element('#coordinator').html(val.vUserName);
+                } else if (val.vResourcePosition == 2) {
+                    angular.element('#manager').html(val.vUserName);
+                } else if (val.vResourcePosition == 4) {
+                    angular.element('#QASpecialist').html(val.vUserName);
+                }
+            })
+        }).error(errorCallback);
+
+        $routeParams.id = $routeParams.id;
+        rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
+        rest.get().success(function(data) {
+            $scope.general = data;
+            //console.log("$scope.general", $scope.general);
+            // $scope.properties = JSON.parse($scope.general.properties);
+            var properties = [];
+            if ($scope.general.properties) {
+                angular.forEach(JSON.parse($scope.general.properties), function(val, i) {
+                    rest.path = 'generalPropertiesView/' + val;
+                    rest.get().success(function(data) {
+                        angular.element('#' + i).html(data);
+                    })
+                    properties.push({
+                        id: i
+                    });
+                })
+            }
+            $scope.properties = properties;
+            $scope.item_number = data;
+            
+            //$scope.general.order_date = $scope.general.order_date;
+            $scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
+
+            $scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
+            $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY");
+            if ($scope.general.order_date == undefined) {
+                var currentdate = new Date();
+                $scope.general.order_date = getDatetime(currentdate);
+            }
+            $scope.generaldata = {};
+            $scope.generaldata.order_no = $window.localStorage.orderNo;
+            $scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+
+            if ($scope.general == null) {
+                $scope.general = {};
+                $scope.generaldata = {};
+                $scope.generaldata.order_no = $window.localStorage.orderNo;
+                $scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+                if ($scope.general.order_no == "") {
+
+                }
+            }
+        }).error(errorCallback);
+
 
     }
+
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     if($scope.isNewProject === 'true' && $scope.userRight == 1){
         $location.path('/dashboard1');

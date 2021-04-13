@@ -1,6 +1,6 @@
 <style type="text/css">
   .modal-dialog{
-    width: 80%;
+    width: 85%;
   }
 
   .chatbox{
@@ -176,7 +176,7 @@
     margin-right: 15px;
   }
   li[data-sort-key='oldest']{
-    margin-left: -14px;
+    margin-left: -27px;
   }
 
   .emojionearea-editor{
@@ -202,19 +202,67 @@
 <div class="modal-header" style="min-height:60px;">
     <div class="modal-title">
         <div class="pull-left">Discussion Board</div>
+        <div class="pull-right" ng-click="cancel()" style="margin-rigth:10px;"><a><i class="fa fa-times-circle"></i></a></div>
     </div>
 </div>
-<div class="modal-body" style="padding-top:0">
+<div class="modal-body" style="padding:0 15px;">
     
-    <div class="wrapper-md ng-scope" style="padding-top:0">
+    <div class="wrapper-md ng-scope" style="padding:0 10px;">
       
       <div class="panel panel-default">
         <!-- <div class="panel-heading">Chat </div> -->
         <div class="panel-body chatbox">
           <div class="row">
-                <div class="col-md-12 livemsg" id="comments-container">
+            <div class="col-md-3">
+              <div class="navside white r box-shadow-z0 m-b nav-center" layout="column" >
+                <div flex-no-shrink="" style="margin-top:35px;">
+                   <nav ui-nav="" >
+                      <ul class="nav">
 
+                        <li class="no-bg"><a>
+                          <span class="nav-icon"><i class="material-icons"></i></span> 
+                          <span class="nav-text">
+                            <span class="projstatus m-t-sm"><i class="fa  fa-circle text-xs" style="color: {{general.status_color}}"></i> {{general.project_status}}</span>
+                          <small class="block text-muted"> </small></span></a>
+                        </li>        
+                        <li>
+                            <div class="b-b b m-v-sm"></div>
+                        </li>
+                        <li class="no-bg">
+                          <a>
+                          <span class="nav-icon"><i class="fa fa-clock-o"></i></span> 
+                          <span class="nav-text">
+                              {{general.due_date}}
+                          <small class="block text-muted">Deadline</small></span></a>
+                        </li>        
+                        <li>
+                            <div class="b-b b m-v-sm"></div>
+                        </li>
+                        <li class="no-bg"><a>
+                          <span class="nav-icon"><i class="fa fa-user"></i></span> 
+                          <span class="nav-text"><span id="manager"></span><small class="block text-muted">Project Manager</small></span></a>
+                        </li>        
+                        <li>
+                            <div class="b-b b m-v-sm"></div>
+                        </li>
+                        <li class="no-bg"><a>
+                          <span class="nav-icon"><i class="fa fa-indent"></i></span> 
+                          <span class="nav-text">{{general.project_price | currencyCommaformat}} USD<small class="block text-muted">Project Price</small></span></a>
+                        </li>
+                         <li>
+                            <div class="b-b b m-t-sm"></div>
+                         </li>
+                         
+                      </ul>
+                   </nav>
                 </div>
+              </div>
+            </div>
+            <div class="col-md-9 livemsg" id="comments-container">
+
+            </div>
+
+            </div>
           </div>
         </div>
       </div>      

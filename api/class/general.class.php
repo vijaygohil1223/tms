@@ -138,7 +138,8 @@ class general {
         if(isset($results['project_status'])){
             $this->_db->where('pr_status_id',$results['project_status']);
             $data = $this->_db->getone('tms_project_status');
-            $results['project_status'] = $data['project_status_name'];   
+            $results['project_status'] = $data['project_status_name'];
+            $results['status_color'] = $data['status_color'];   
         }
         return $results;
     }
