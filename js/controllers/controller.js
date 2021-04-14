@@ -20175,21 +20175,21 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }).error(errorCallback);
     }
 
-if($routeParams.id){
-    $timeout(function() {
+    
+//  Scroll to bottom  
+$timeout(function() {
+    if($routeParams.id){
+    //$timeout(function() {
         rest.path = "discussionCommentread";    
         rest.put($scope.commentReadArray).success(function(res) {
             console.log('res',res);
             if(res.status==1){
                 jQuery('.cmtclr'+$routeParams.id).css({"color":"green"});
-
             }
         });
+    //},2300);
+    }
 
-    },2300);
-}    
-//  Scroll to bottom  
-$timeout(function() {
     jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
     jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
