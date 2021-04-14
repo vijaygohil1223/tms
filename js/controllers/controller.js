@@ -20186,7 +20186,7 @@ if($routeParams.id){
             }
         });
 
-    },2000);
+    },2300);
 }    
 //  Scroll to bottom  
 $timeout(function() {
