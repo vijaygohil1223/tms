@@ -1437,8 +1437,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     val2.source_lang = JSON.parse(val2.source_lang);
                     val2.target_lang = JSON.parse(val2.target_lang);
                 });*/
-
-                val.comment = data[i].comment[0].comment_status;
+                
+                var cmtcolor = '#337ab7';
+                var cmtval = data[i].comment[0].comment_status;
+                if(cmtval > 0 && val.comment_id > 0){
+                    cmtcolor = 'red';
+                }
+                if(cmtval == 0 && val.comment_id > 0){
+                    cmtcolor = 'green';
+                }
+                val.comment = cmtcolor;
                 
                 $scope.projectsAllCount++;
                 if(val.projectStatus == 12){
@@ -20118,14 +20126,14 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                     var msgRead_id = val.read_id;
                     if( msgRead_id.match(new RegExp("(?:^|,)"+loginid+"(?:,|$)"))) {
-                        //console.log(msgRead_id);
+                        console.log(msgRead_id);
                     }else{
                         var cmtObj = {
                             id   : val.id,
                             read_id : loginid
                         }
                         $scope.commentReadArray.push(cmtObj);    
-                    }    
+                    }   
                     // Read/ Unread - check comment id exist in db 
 
                 });
@@ -20171,15 +20179,12 @@ if($routeParams.id){
     $timeout(function() {
         rest.path = "discussionCommentread";    
         rest.put($scope.commentReadArray).success(function(res) {
-        });
-        //console.log($scope.commentReadArray);
-    $('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');    
+            console.log('res',res);
+            if(res.status==1){
+                jQuery('.cmtclr'+$routeParams.id).css({"color":"green"});
 
-     jQuery("#addemoji").emojioneArea({
-        autoHideFilters: true,
-        useSprite : true, 
-        //pickerPosition: "bottom"
-      });        
+            }
+        });
 
     },2000);
 }    
@@ -20187,6 +20192,14 @@ if($routeParams.id){
 $timeout(function() {
     jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
     jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+
+    $('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');    
+
+     jQuery("#addemoji").emojioneArea({
+        autoHideFilters: true,
+        useSprite : true, 
+        //pickerPosition: "bottom"
+      });
 },2800);
 
 $timeout(function() {

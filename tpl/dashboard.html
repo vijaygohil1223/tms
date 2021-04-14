@@ -274,6 +274,10 @@ color: transparent;
 .projecttable #DataTables_Table_5_filter .sicon6, .projecttable #DataTables_Table_5_filter:focus-within .searchicn{ color: transparent; }
 .projecttable #DataTables_Table_6_filter .sicon7,  .projecttable #DataTables_Table_6_filter:focus-within .searchicn{ color: transparent; }
 
+.cmtclrgrn{
+  color: green;
+}
+
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
@@ -487,9 +491,7 @@ color: transparent;
                                               </td> -->
                                               <td style="">
                                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                                  <i ng-if="order.comment == 0 && order.comment_id != null" style="color:red" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment > 0 && order.comment_id != null" style="color:green" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment_id == null" class="fa fa-commenting-o fa-2x"></i>
+                                                  <i style="color:{{order.comment}}" class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                                 </a>   
                                               </td>
                                           </tr>
@@ -648,9 +650,7 @@ color: transparent;
                                               </td> -->
                                               <td style="">
                                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                                  <i ng-if="order.comment == 0 && order.comment_id != null" style="color:red" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment > 0 && order.comment_id != null" style="color:green" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment_id == null" class="fa fa-commenting-o fa-2x"></i>
+                                                  <i style="color:{{order.comment}}" class="fa fa-commenting-o fa-2x  cmtclr{{order.orderId}}"></i>
                                                 </a>   
                                               </td>
                                               <!-- <td style="">
@@ -812,9 +812,7 @@ color: transparent;
                                               </td> -->
                                               <td style="">
                                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                                  <i ng-if="order.comment == 0 && order.comment_id != null" style="color:red" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment > 0 && order.comment_id != null" style="color:green" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment_id == null" class="fa fa-commenting-o fa-2x"></i>
+                                                  <i style="color:{{order.comment}}" class="fa fa-commenting-o fa-2x"></i>
                                                 </a>   
                                               </td>
                                               
@@ -974,9 +972,7 @@ color: transparent;
                                               </td> -->
                                               <td style="">
                                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                                  <i ng-if="order.comment == 0 && order.comment_id != null" style="color:red" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment > 0 && order.comment_id != null" style="color:green" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment_id == null" class="fa fa-commenting-o fa-2x"></i>
+                                                  <i style="color:{{order.comment}}" class="fa fa-commenting-o fa-2x"></i>
                                                 </a>   
                                               </td>
                                           </tr>
@@ -1135,9 +1131,7 @@ color: transparent;
                                               </td> -->
                                               <td style="">
                                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                                  <i ng-if="order.comment == 0 && order.comment_id != null" style="color:red" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment > 0 && order.comment_id != null" style="color:green" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment_id == null" class="fa fa-commenting-o fa-2x"></i>
+                                                  <i style="color:{{order.comment}}" class="fa fa-commenting-o fa-2x"></i>
                                                 </a>   
                                               </td>
                                           </tr>
@@ -1297,9 +1291,7 @@ color: transparent;
                                               </td> -->
                                               <td style="">
                                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                                  <i ng-if="order.comment == 0 && order.comment_id != null" style="color:red" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment > 0 && order.comment_id != null" style="color:green" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment_id == null" class="fa fa-commenting-o fa-2x"></i>
+                                                  <i style="color:{{order.comment}}" class="fa fa-commenting-o fa-2x"></i>
                                                 </a>   
                                               </td>
                                           </tr>
@@ -1458,9 +1450,7 @@ color: transparent;
                                               </td> -->
                                               <td style="">
                                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                                  <i ng-if="order.comment == 0 && order.comment_id != null" style="color:red" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment > 0 && order.comment_id != null" style="color:green" class="fa fa-commenting-o fa-2x"></i>
-                                                  <i ng-if="order.comment_id == null" class="fa fa-commenting-o fa-2x"></i>
+                                                  <i style="color:{{order.comment}}" class="fa fa-commenting-o fa-2x"></i>
                                                 </a>
                                               </td>
                                           </tr>
