@@ -1388,16 +1388,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
             });
     
-        }
-        $timeout(function() {
-                //modalInstance.result.then(function() {
-                    // debugger;
-                    //$scope.allProjectListing();
-                    //$route.reload();
-                //});
-            //jQuery('#myid').find('#s90').html('<i style="color:green" class="fa fa-commenting-o fa-2x"></i>');
-            //jQuery('.fa-commenting-o').addClass('btn-success');
-        },5000);        
+        }        
 
     }
 
@@ -20126,7 +20117,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                     var msgRead_id = val.read_id;
                     if( msgRead_id.match(new RegExp("(?:^|,)"+loginid+"(?:,|$)"))) {
-                        console.log(msgRead_id);
+                        //console.log(msgRead_id);
                     }else{
                         var cmtObj = {
                             id   : val.id,
@@ -20176,13 +20167,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     }
 
     
-//  Scroll to bottom  
 $timeout(function() {
     if($routeParams.id){
     //$timeout(function() {
         rest.path = "discussionCommentread";    
         rest.put($scope.commentReadArray).success(function(res) {
-            console.log('res',res);
+            //console.log('res',res);
             if(res.status==1){
                 jQuery('.cmtclr'+$routeParams.id).css({"color":"green"});
             }
@@ -20190,6 +20180,7 @@ $timeout(function() {
     //},2300);
     }
 
+//  Scroll to bottom  
     jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
     jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
