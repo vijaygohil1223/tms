@@ -125,9 +125,16 @@
                                                             <input type="text" class="form-control price" name="itemPrice" id="itemPrice{{it.itemId}}" ng-change="changeItemField(it.itemId,$index,$parent.$index)" ng-model="it1.itemPrice" allow-decimal-numbers/>
                                                          </div>
                                                       </div>
-                                                      <div class="col-sm-2" style="margin-top:1%;">
-                                                         <span id="itemTotal{{it.itemId}}">{{it1.itemTotal |customNumber}}</span>
+                                                      <div class="col-sm-2">
+                                                         <div class="form-group">
+                                                            <input type="text" class="form-control price" name="itemTotal" id="itemTotal{{it.itemId}}" ng-change="changeItemField(it.itemId,$index,$parent.$index,1)" ng-model="it1.itemTotal" allow-decimal-numbers/>
+                                                          <span id="amtSum{{it.itemId}}" style="visibility: hidden;">{{it1.itemTotal |customNumber}}</span>  
+                                                         </div>
                                                       </div>
+                                                      
+                                                      <!-- <div class="col-sm-2" style="margin-top:1%;">
+                                                         <span id="itemTotal{{it.itemId}}">{{it1.itemTotal |customNumber}}</span>
+                                                      </div> -->
                                                       <!-- <div class="col-sm-2">
                                                          <input type="text" select2-item-tax class="form-control" id="itemTaxP{{index+1}}" name="itemTaxP" ng-model="it.itemTaxP"/>
                                                       </div> -->
@@ -170,6 +177,7 @@
                                                          <!-- <input select2-languages-data id="source_lang" type="text" name="sourcelang" ng-model="item.source_lang" class="form-control sourcelanguages" ng-change="itemsNamechange()" required /> -->
                                                          <div id="source_lang{{it.itemId}}" style="display:none"></div>
                                                          <pls id="plsSourceLang{{it.itemId}}" open-mode="hover" grid-columns="4" show-flag="true" selected-lang="en_US" items="plsModel.languages40" language-changed-callback="onLanguageChanged(lang,$index)"></pls>
+                                                         
                                                          <div id="indexItemSource{{it.itemId}}" style="display: none;">{{$index}}</div>
                                                       </div>    
                                                     </div>

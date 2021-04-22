@@ -121,4 +121,74 @@ class language {
         return $data;
     }
 
+    //------------------- Language Translation -----------------//
+    public function languagesGetAll() {
+        $results = $this->_db->get('tms_languages');
+        return $results;
+    }
+    public function langsgetOne($id){
+        $this->_db->where('lang_id',$id);
+        $data = $this->_db->getone('tms_languages');
+        return $data;
+    }        
+    public function langsupdate($id, $data) {
+        $this->_db->where('lang_id',$data['lang_id']);
+        $match = $this->_db->getOne('tms_languages');
+        if($match['lang_id'] != $id) {
+                $return['status'] = 422;
+                //$return['msg'] = 'Language  already exists.';
+                $return['msg'] = 'Not inserted';
+        } else {
+            $data['modified_date'] = date('Y-m-d H:i:s');
+            $this->_db->where('lang_id', $id);
+            $id = $this->_db->update('tms_languages', $data);
+            if ($id) {
+                $return['status'] = 200;
+                $return['msg'] = 'Updated Successfully';
+            } else {
+                $return['status'] = 422;
+                $return['msg'] = 'Not Updated.';
+            }
+        } 
+        return $return;
+    }
+
+    public function deletelangs($id) {
+        $this->_db->where('lang_id', $id);
+        $id = $this->_db->delete('tms_languages');
+        if ($id) {
+            $return['status'] = 200;
+            $return['msg'] = 'Deleted Successfully.';
+        } else {
+            $return['status'] = 422;
+            $return['msg'] = 'Not Deleted.';
+        }
+
+        return $return;
+
+    }
+    public function languagesave($data) {
+        $this->_db->where('name',$data['name']);
+        $match = $this->_db->getOne('tms_languages');
+        if($match) {
+                $return['status'] = 422;
+                $return['msg'] = 'Language  already exists.';
+        }else{
+            $data['created_date'] = date('Y-m-d H:i:s');
+            $data['modified_date'] = date('Y-m-d H:i:s');
+            $id = $this->_db->insert('tms_languages', $data);
+            if ($id) {
+                $return['status'] = 200;
+                $return['msg'] = 'Insert Successfully.';
+            } else {
+                $return['status'] = 422;
+                $return['msg'] = 'Not inserted.';
+            }
+        }    
+
+        return $return;
+    }
+
+
+
 }

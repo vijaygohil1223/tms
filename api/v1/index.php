@@ -1359,6 +1359,35 @@ $app->get('/activelanguageGet','authenticate', function () use($app) {
     $result = $language->activelanguageGet();
     echoResponse(200, $result);
 });
+//----------------- Language Translation -----------------//
+$app->post('/languageSave','authenticate', function () use($app) {
+    $language = new language ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $language->languagesave($data);
+    echoResponse($result ['status'], $result);
+});
+$app->get('/languagesGet','authenticate', function () {
+    $language = new language ();
+    $result = $language->languagesGetAll();
+    echoResponse(200, $result);
+});
+$app->get('/LangsgetOne/:id','authenticate', function ($id) {
+    $language = new language ();
+    $result = $language->langsgetOne($id);
+    echoResponse(200, $result);
+});
+$app->put('/langsupdate/:id','authenticate', function ($id) use($app) {
+    $language = new language ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $language->langsupdate($id, $data);
+    echoResponse($result ['status'], $result);
+});
+$app->delete('/deleteLangs/:id','authenticate', function ($id) {
+    $language = new language ();
+    $result = $language->deletelangs($id);
+    echoResponse(200, $result);
+});
+
 // ---------------- product section----------------------//
 $app->get('/products', 'authenticate',function () {
     $product = new product ();
@@ -1831,6 +1860,12 @@ $app->get('/orderCurrencyMatch/:id','authenticate', function ($id) {
 $app->get('/itemCurrency/:id','authenticate', function ($id) {
     $item = new item ();
     $result = $item->itemCurrencyGet($id);
+    echoResponse(200, $result);
+});
+// ---------All Languages List ----------//
+$app->get('/allLanguages', 'authenticate',function () {
+    $currency = new item ();
+    $result = $currency->languagesGet();
     echoResponse(200, $result);
 });
 // ---------------------- master price unit ------------------//

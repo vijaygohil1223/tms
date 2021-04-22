@@ -181,10 +181,57 @@ app.directive("ngDatetimepicker1", function($window) {
                 },
                 // minDate: moment().subtract(1,'d'),
                 minDate:new Date(),
-                format:globalDateFormat+' '+'HH:mm'
+                format:globalDateFormat+' - '+'HH:mm'
             }).on('dp.change', function(ev) {
                 ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat+' '+'HH:mm'));
                 /*element.blur();*/
+            });
+        }
+    };
+});
+app.directive("ngDatepicker2", function($window) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        scope: {
+            ngModel: '='
+        },
+        link: function(scope, element, attrs, ngModelCtrl) {
+            var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
+            element.datetimepicker({
+                widgetPositioning:{
+                    horizontal: 'auto',
+                    vertical: 'bottom'
+                },
+                // minDate: moment().subtract(1,'d'),
+                minDate:new Date(),
+                format:globalDateFormat
+            }).on('dp.change', function(ev) {
+                ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
+                /*element.blur();*/
+            });
+        }
+    };
+});
+app.directive("timepicker1", function($window) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        scope: {
+            ngModel: '='
+        },
+        link: function(scope, element, attrs, ngModelCtrl) {
+            element.datetimepicker({
+                widgetPositioning:{
+                    horizontal: 'auto',
+                    vertical: 'bottom'
+                },
+                // minDate: moment().subtract(1,'d'),
+                //minDate:new Date(),
+                format:'HH:mm'
+            }).on('dp.change', function(ev) {
+                ngModelCtrl.$setViewValue(ev.date);
+                scope.$apply();
             });
         }
     };

@@ -79,6 +79,27 @@ function originalDateFormatNew(input) {
     return newDate;
 }
 
+function originalDateFormatDash(input) {
+    if(input == undefined){
+        return false;
+    }
+    var dtSeparator = window.localStorage.getItem('dtSeparator');
+    
+    var date = input.split(" ")[0].split(dtSeparator);
+    var time = input.split(" - ")[1];
+
+    if(window.localStorage.getItem('global_dateFormat') == 'DD'+dtSeparator+'MM'+dtSeparator+'YYYY'){
+        var newDate = date[2] + '-' + date[1] + '-' + date[0];
+    }else{
+        var newDate = date[0] + '-' + date[1] + '-' + date[2];
+    }
+    if (time) {
+        newDate = newDate + ' ' + time;
+    }
+
+    return newDate;
+}
+
 function getAge(year, month, day) {
     var now = new Date()
     var age = now.getFullYear() - year;
@@ -10934,8 +10955,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                     $scope.item_number = data;
                     $scope.general.order_date = $scope.general.order_date;
+                    $scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat')+' - HH:mm');
                     
-                    $scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm A');
+                    var due_timeval = $scope.general.due_date.split(" ")[1];
+                    $scope.general.due_date = moment($scope.general.due_date).format($window.localStorage.getItem('global_dateFormat'));
+                    angular.element('#due_time').val(due_timeval);
                     if($scope.general.expected_start_date){
                         $scope.general.expected_start_date = moment($scope.general.expected_start_date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm A');
                     }
@@ -11129,19 +11153,20 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.general.company_code = angular.element("[id^=companyCode]").val();
                     
                     $scope.general.order_date = angular.element("[id^=order_date]").val();
-                    $scope.general.order_date = originalDateFormatNew($scope.general.order_date);
+                    $scope.general.order_date = originalDateFormatDash($scope.general.order_date);
                     $scope.general.order_date = moment($scope.general.order_date).format('YYYY-MM-DD HH:mm:ss');
                     
                     
                     $window.localStorage.orderNumber = $scope.general.order_no;
                     $scope.general.properties = JSON.stringify($scope.properties);
                     $routeParams.id = $scope.general.general_id;
-                    $scope.general.due_date = angular.element('#due_date').val();
+                    var due_timeval1 = angular.element('#due_time').val();
+                    $scope.general.due_date = angular.element('#due_date').val() ;
                     if($scope.general.due_date){
-                        $scope.general.due_date = originalDateFormatNew($scope.general.due_date);
+                        $scope.general.due_date = originalDateFormatDash($scope.general.due_date+' - '+due_timeval1);
                         $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm:ss');
                     }
-
+                    
                     $scope.general.expected_start_date = angular.element('#expected_start_date').val();
                     if($scope.general.expected_start_date){
                         $scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
@@ -11759,21 +11784,32 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.itemPriceUni = [];
     //change item price module
-    $scope.changeItemField = function(id,index,parentIndex) {
+    $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
         var quantity = $scope.itemPriceUni[id][index].quantity;
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
+        var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
         
         if(!quantity || !itemPrice){
             quantity = 0;
             itemPrice = 0;
+            //itemTtl = 0;
         }
         
         var price = quantity * parseFloat(itemPrice);
         var oldPrice = $scope.itemPriceUni[id][index].itemTotal;
+        if(itemChng>0){
+            price = itemTtl;
+            //oldPrice = amtTotal;    
+        var oldPrice = $scope.itemPriceUni[id][index].amtSum;
+        
+        }
+
         var total = $scope.itemList[parentIndex].total_price;
+        
         var totalPrice = parseFloat(total) + parseFloat(price) - parseFloat(oldPrice);
         
         $scope.itemPriceUni[id][index].itemTotal = price;
+        $scope.itemPriceUni[id][index].amtSum = price;
         $scope.itemList[parentIndex].total_price = totalPrice;
     }
     
@@ -19929,6 +19965,69 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             });
         }
     };
+}).controller('languagesController', function($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.CurrentDate = new Date();
+    $scope.editOn = 0;
+
+    $scope.save = function(formId) {
+        if (angular.element('#' + formId).valid()) {
+            if ($scope.langs.lang_id) {
+
+                $routeParams.id = $scope.langs.lang_id;
+                rest.path = 'langsupdate';
+                rest.put($scope.langs).success(function(data) {
+                    notification('Record updated successfully.','success');
+                    $route.reload();
+                }).error(errorCallback);
+            } else {
+                if ($scope.langs.is_active == undefined) {
+                    $scope.langs.is_active = '0';
+                }
+                if ($scope.langs.is_favourite == undefined) {
+                    $scope.langs.is_favourite = '0';
+                }
+                rest.path = 'languageSave';
+                rest.post($scope.langs).success(function(data) {
+                    notification('Record inserted successfully.','success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        }
+    }
+
+    rest.path = 'languagesGet';
+    rest.get().success(function(data) {
+        $scope.langsList = data;
+    }).error(errorCallback);
+
+    $scope.disableField = false;
+    $scope.LangEdit = function(id, eID) {
+        $scope.editOn=1;
+        rest.path = 'LangsgetOne/' + id;
+        rest.get().success(function(data) {
+            $scope.langs = data;
+            $scope.disableField = true;
+        }).error(errorCallback);
+        scrollToId(eID);
+    }
+
+    $scope.deleteLang = function(id) {
+        bootbox.confirm("Are you sure you want to delete?", function(result) {
+            if (result == true) {
+                rest.path = 'deleteLangs/' + id;
+                rest.delete().success(function(data) {
+                    if (data.status == 422) {
+                        notification('You can not delete this record.', 'warning');
+                    } else {
+                        notification('Record deleted successfully.','success');
+                        $route.reload();
+                    }
+                }).error(errorCallback);
+            }
+        });
+    }
+
 }).controller('commentchatController', function($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $uibModalInstance, items) {
 
     var loginid = $window.localStorage.getItem("session_iUserId");
@@ -20188,7 +20287,9 @@ $timeout(function() {
 
      jQuery("#addemoji").emojioneArea({
         autoHideFilters: true,
-        useSprite : true, 
+        useSprite : true,
+        //default: 'unicode',
+        //accepts values: 'unicode' | 'shortname' | 'image'
         //pickerPosition: "bottom"
       });
 },2800);

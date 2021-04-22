@@ -338,7 +338,7 @@
 
     </li>
 
-    <li ng-class="{active: activetab == '/resourcetype' || activetab == '/resourcestatus' || activetab == '/currency' || activetab == '/to-do-lists' || activetab == '/property' || activetab == '/language' || activetab == '/project-type' || activetab == '/customer-status' || activetab == '/tax-status' || activetab == '/item-status' || activetab == '/jobs' || activetab == '/services' || activetab == '/price1' || activetab == '/price2' || activetab == '/master-price' || activetab == '/child-price' || activetab == '/customer-types' || activetab == '/newjob' || activetab == '/business-units' || activetab == '/sign' || activetab == '/project-status' || activetab == '/knowledge_category' || activetab == '/knowledge_article' || activetab == '/customer-price-list' || activetab == '/resource-price-list' || activetab == '/rounding-price' || activetab == '/knowledge_news' || activetab == '/calendar-event-add' || activetab == '/funny-picture' || activetab == '/national-holiday' || activetab == '/invoice-due-period' || activetab == '/job-chain' || activetab == '/resource-position' || activetab == '/reported-images'|| activetab == '/resources' || activetab == '/dateformat' || activetab == '/decimal-separator'}" ng-if="adminRole==1" class="sidebarArrow">
+    <li ng-class="{active: activetab == '/resourcetype' || activetab == '/resourcestatus' || activetab == '/currency' || activetab == '/to-do-lists' || activetab == '/property' || activetab == '/language'  || activetab == '/languages' || activetab == '/project-type' || activetab == '/customer-status' || activetab == '/tax-status' || activetab == '/item-status' || activetab == '/jobs' || activetab == '/services' || activetab == '/price1' || activetab == '/price2' || activetab == '/master-price' || activetab == '/child-price' || activetab == '/customer-types' || activetab == '/newjob' || activetab == '/business-units' || activetab == '/sign' || activetab == '/project-status' || activetab == '/knowledge_category' || activetab == '/knowledge_article' || activetab == '/customer-price-list' || activetab == '/resource-price-list' || activetab == '/rounding-price' || activetab == '/knowledge_news' || activetab == '/calendar-event-add' || activetab == '/funny-picture' || activetab == '/national-holiday' || activetab == '/invoice-due-period' || activetab == '/job-chain' || activetab == '/resource-position' || activetab == '/reported-images'|| activetab == '/resources' || activetab == '/dateformat' || activetab == '/decimal-separator'}" ng-if="adminRole==1" class="sidebarArrow">
 
         <a href class="auto" md-ink-ripple>
 
@@ -442,7 +442,7 @@
 
             </li>
 
-            <li ng-class="{active: activetab == '/currency' || activetab == '/property' || activetab == '/language' || activetab == '/business-units' || activetab == '/sign' || activetab == '/to-do-lists' || activetab == '/national-holiday' || activetab == '/dateformat' || activetab == '/decimal-separator'}" class="sidebarArrow">
+            <li ng-class="{active: activetab == '/currency' || activetab == '/property' || activetab == '/language'  || activetab == '/languages' || activetab == '/business-units' || activetab == '/sign' || activetab == '/to-do-lists' || activetab == '/national-holiday' || activetab == '/dateformat' || activetab == '/decimal-separator'}" class="sidebarArrow">
 
                 <a href="javascript:void(0)" md-ink-ripple>
 
@@ -498,6 +498,13 @@
 
                         <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="languagesMenu" title="Add to Favourite"></i>
 
+                    </li>
+
+                    <li ng-class="{'active menuBg': activetab == '/languages'}" ng-mouseover="menuHoverIn('languagestransMenu');" ng-mouseleave="menuHoverOut('languagestransMenu')">
+                        <a href="#/languages" md-ink-ripple>
+                            <span class="font-bol underSubmenu">Languages (Translate)</span>
+                        </a>
+                        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="languagestransMenu" title="Add to Favourite"></i>
                     </li>
 
                     <li ng-class="{'active menuBg': activetab == '/business-units'}" ng-mouseover="menuHoverIn('businessUnitsMenu');" ng-mouseleave="menuHoverOut('businessUnitsMenu')">

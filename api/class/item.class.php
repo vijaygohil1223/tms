@@ -314,6 +314,12 @@ class item {
 
         return $return;
     }
+
+    public function languagesGet() {
+        $data = $this->_db->rawQuery("SELECT * FROM `tms_languages` WHERE is_active=1 ORDER BY `is_favourite`=1 DESC");
+        return $data;
+    }
+
 }
 
 ?>

@@ -157,13 +157,24 @@ app.service('anchorSmoothScroll', function() {
 
 });
 app.factory('allLanguages', function($http, $location, $routeParams,rest) {
-    // rest.path = 'userCoordinator/1';
-    // rest.get().success(function(data) {
-    //     console.log("data", data);
+    var allLanguages = [];
+    rest.path = 'allLanguages';
+    rest.get().success(function(data) {
+        
+        angular.forEach(data, function(val, i) {
+            allLanguages.push({
+                'id': val.id,
+                'title': val.title,
+                'name': val.name,
+                'flagImg': 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/'+val.flagImg,
+                'flagTitle': val.flagTitle,
+            });
+        });
+        console.log("data lang", allLanguages);
+    
+    }).error(function(data, error, status) {});
 
-    // }).error(function(data, error, status) {});
-
-    var allLanguages = [
+/*    var allLanguages = [
         { id: 'ca_ES', title: 'Catalan', name: ' Català', flagImg: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/catalonia.png', flagTitle: 'Catalonia' },
         { id: 'cz_CZ', title: 'Czech', name: ' Čeština', flagImg: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/cz.png', flagTitle: 'Czech Republic' },
         { id: 'dk_DK', title: 'Danish', name: ' Dansk', flagImg: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/dk.png', flagTitle: 'Denmark' },
@@ -204,6 +215,7 @@ app.factory('allLanguages', function($http, $location, $routeParams,rest) {
         { id: 'cn_HK', title: 'Traditional Chinese (Hong Kong)', name: ' 中文(香港)', flagImg: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/hk.png', flagTitle: 'Hong Kong' },
         { id: 'jp_JP', title: 'Japanese', name: ' 日本語', flagImg: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/jp.png', flagTitle: 'Japan' },
         { id: 'ka_JP', title: 'Japanese (Kansai)', name: ' 日本語(関西)', flagImg: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/jp.png', flagTitle: 'Japan' }
-    ];
+    ];*/
+    console.log('all lang', allLanguages);
     return allLanguages;
 });
