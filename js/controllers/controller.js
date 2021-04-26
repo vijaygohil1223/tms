@@ -3543,6 +3543,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         uploadObj = $("#multipleupload").uploadFile({
             multiple: true,
             dragDrop: true,
+            dragDropStr: "<span><b>Drag & Drop Files</b></span>",
             fileName: "myfile",
             acceptFiles: "png",
             showPreview: true,
@@ -3552,7 +3553,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             maxFileSize: 15*1024*1024,
             showDelete: true,
             autoSubmit: false,
-            uploadStr: "Select",
+            uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
             afterUploadAll: function(obj) {
                 notification('Files uploaded successfully', 'success');
@@ -11164,7 +11165,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.general.due_date = angular.element('#due_date').val() ;
                     if($scope.general.due_date){
                         $scope.general.due_date = originalDateFormatDash($scope.general.due_date+' - '+due_timeval1);
-                        $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm:ss');
+                        $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
                     }
                     
                     $scope.general.expected_start_date = angular.element('#expected_start_date').val();
