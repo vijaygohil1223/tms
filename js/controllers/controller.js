@@ -20230,11 +20230,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 });
                 
                 $(".comment-wrapper").each(function(i,v) {
-                    var dateTime = $(this).find('time')[0].innerText;
+                    /*var dateTime = $(this).find('time')[0].innerText;
+                    console.log(dateTime);
                     //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
                     dateTime = moment(dateTime).format('DD-MM-YYYY');
-                    $(this).find('time')[0].innerText = dateTime;
-                    
+                    $(this).find('time')[0].innerText = dateTime;*/
                 });
 
             }, 1500);
@@ -20265,7 +20265,19 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             
         }).error(errorCallback);
     }
-
+$timeout(function() {
+$scope.emojitxt = [{
+    "<3": "\u2764\uFE0F",
+    "</3": "\uD83D\uDC94",
+    ":D": "\uD83D\uDE00",
+    ":)": "\uD83D\uDE03",
+    ";)": "\uD83D\uDE09",
+    " :(": "\uD83D\uDE12",
+    ":p": "\uD83D\uDE1B",
+    ";p": "\uD83D\uDE1C",
+    ":'(": "\uD83D\uDE22"
+}];
+},500);
     
 $timeout(function() {
     if($routeParams.id){
@@ -20294,6 +20306,8 @@ $timeout(function() {
         //pickerPosition: "bottom"
       });
 },2800);
+
+
 
 $timeout(function() {
     var el = $("#addemoji").emojioneArea();
@@ -20330,6 +20344,16 @@ $timeout(function() {
                         var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
                         var isNotSelf = user.id != loginid;
                         return containsSearchTerm && isNotSelf;
+                    }));
+                }, 500);
+            },
+
+            searchEmojitext: function(term, success, error) {
+                setTimeout(function() {
+                    success($scope.emojitxt.filter(function(emojitxt1) {
+                        //console.log('term',indexOf(term);
+                        var containsSearchTerm = emojitxt1;
+                        return containsSearchTerm;
                     }));
                 }, 500);
             },

@@ -98,6 +98,10 @@
             // emoji
             'click .emojibtn ': 'emojiButtonClicked',
 
+            //emojitest
+            'keyup .textarea' : 'emojitextChange',
+            
+
         },
 
 
@@ -194,6 +198,7 @@
                 uploadAttachments: function(commentArray, success, error) {success(commentArray)},        
                 pingClicked: function(userId) {},
                 emojiButtonClicked: function() {},
+                emojitextChange: function() {},
                 refresh: function() {},       
                 timeFormatter: function(time) {return new Date(time).toLocaleDateString()}
             }
@@ -1121,7 +1126,52 @@
 
         emojiButtonClicked: function(ev) {
             $('.send').addClass('enabled');
-        },    
+        },
+
+        emojitextChange: function(ev) {
+
+            el = $(ev.currentTarget);
+            var emojimap = {
+                "<3": "\u2764\uFE0F",
+                "</3": "\uD83D\uDC94",
+                ":D": "\uD83D\uDE00",
+                ":)": "\uD83D\uDE03",
+                ";)": "\uD83D\uDE09",
+                " :(": "\uD83D\uDE12",
+                ":p": "\uD83D\uDE1B",
+                ";p": "\uD83D\uDE1C",
+                ":'(": "\uD83D\uDE22"
+            };
+
+             function escapeSpecialChars(regex) {
+               return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+             }
+             var emojitext ='';
+             var strMessage = document.getElementsByClassName("textarea") ;
+             for (var i in emojimap) {
+                var regex = new RegExp(escapeSpecialChars(i), 'gim');
+                var newmsg = strMessage[0].innerText;
+                newmsg = newmsg.replace(regex, emojimap[i]);
+                strMessage[0].innerText = newmsg;
+               }
+
+                // Move cursor to end
+                if (typeof window.getSelection != 'undefined' && typeof document.createRange != 'undefined') {
+                    var range = document.createRange();
+                    range.selectNodeContents(el[0]);
+                    range.collapse(false);
+                    var sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } else if (typeof document.body.createTextRange != 'undefined') {
+                    var textRange = document.body.createTextRange();
+                    textRange.moveToElementText(el[0]);
+                    textRange.collapse(false);
+                    textRange.select();
+                }
+
+
+        },   
 
         showDroppableOverlay: function(ev) {
             if(this.options.enableAttachments) {
@@ -1422,6 +1472,8 @@
                     textarea.prepend(replyToBadge);
                 }
             }
+
+               
             // Pinging users
             if(this.options.enablePinging) {
                 textarea.textcomplete([{
@@ -1681,8 +1733,15 @@
             var profilePicture = this.createProfilePictureElement(commentModel.profilePictureURL);
 
             // Time
+            var ndt = new Date(commentModel.created);
+            var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+;
+            var dd = ("0" + ndt.getDate() ).slice(-2);
+            var yy = ndt.getFullYear();
+            var timeText = dd + '-' + mm + '-' + yy;
             var time = $('<time/>', {
-                text: this.options.timeFormatter(commentModel.created),
+                text: timeText,
+                //text: this.options.timeFormatter(commentModel.created),
                 'data-original': commentModel.created
             });
             // Name
@@ -1902,7 +1961,6 @@
                 upvoteIcon.addClass('image');
             }
 
-            //console.log(commentModel.userHasUpvoted);
             var upvoteEl = $('<button/>', {
                 'class': 'action upvote hide' + (commentModel.userHasUpvoted ? '' : ' highlight-font' )
             }).append($('<span/>', {
@@ -2126,9 +2184,8 @@
                 return humanReadable ? $(this).val() : '@' + $(this).attr('data-value');
             });
             
-            
-textareaClone.find('#addemoji').html;
-
+            //emoji
+            textareaClone.find('#addemoji').html;
             var ce = $('<pre/>').html(textareaClone.html());
             ce.find('div, p, br').replaceWith(function() { return '\n' + this.innerHTML; });
 
@@ -2137,6 +2194,7 @@ textareaClone.find('#addemoji').html;
 
             // Normalize spaces
             var text = this.normalizeSpaces(text);
+
             return text;
         },
 
@@ -2190,6 +2248,8 @@ textareaClone.find('#addemoji').html;
         },
 
         normalizeSpaces: function(inputText) {
+
+            //console.log('inputText',inputText)
             return inputText.replace(new RegExp('\u00a0', 'g'), ' ');   // Convert non-breaking spaces to reguar spaces
         },
 
