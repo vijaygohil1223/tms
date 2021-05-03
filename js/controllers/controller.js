@@ -11789,24 +11789,28 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         var quantity = $scope.itemPriceUni[id][index].quantity;
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
         var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
-        
+        var itemAmt = $scope.itemPriceUni[id][index].amtSum;
         if(!quantity || !itemPrice){
             quantity = 0;
             itemPrice = 0;
-            //itemTtl = 0;
         }
-        
+        if(!itemTtl){
+            itemTtl = 0;
+        }
         var price = quantity * parseFloat(itemPrice);
         var oldPrice = $scope.itemPriceUni[id][index].itemTotal;
         if(itemChng>0){
             price = itemTtl;
-            //oldPrice = amtTotal;    
-        var oldPrice = $scope.itemPriceUni[id][index].amtSum;
-        
-        }
 
+            //oldPrice = amtTotal;    
+            if (typeof itemAmt !== 'undefined'){
+                var oldPrice = $scope.itemPriceUni[id][index].amtSum;
+            }
+            if (typeof itemAmt === 'undefined'){
+                var oldPrice = quantity * parseFloat(itemPrice);
+            }
+        }
         var total = $scope.itemList[parentIndex].total_price;
-        
         var totalPrice = parseFloat(total) + parseFloat(price) - parseFloat(oldPrice);
         
         $scope.itemPriceUni[id][index].itemTotal = price;
@@ -11814,8 +11818,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         $scope.itemList[parentIndex].total_price = totalPrice;
     }
     
-    
-   
     //create item
     $scope.createItems = function() {
         $scope.order_idddd = $window.localStorage.orderID;
@@ -12294,7 +12296,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         //log file end
                         //$route.reload();
                         notification('Item successfully updated.', 'success');
-                        console.log('g');
                     });
                 } else {
                     //if source and target language not selected
@@ -12322,7 +12323,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         var pricelist = angular.element('#priceList' + i).text();
                         var itemPrice = angular.element('#itemPrice' + i).val();
                         var itemTotal = angular.element('#itemTotal' + i).text();
-
                         itemPriceUnit.push({
                             'quantity': quantity,
                             'pricelist': pricelist,
@@ -20266,17 +20266,49 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }).error(errorCallback);
     }
 $timeout(function() {
-$scope.emojitxt = [{
-    "<3": "\u2764\uFE0F",
-    "</3": "\uD83D\uDC94",
-    ":D": "\uD83D\uDE00",
-    ":)": "\uD83D\uDE03",
-    ";)": "\uD83D\uDE09",
-    " :(": "\uD83D\uDE12",
-    ":p": "\uD83D\uDE1B",
-    ";p": "\uD83D\uDE1C",
-    ":'(": "\uD83D\uDE22"
-}];
+$scope.emojitext = [
+    {
+      id: 1,
+      emojiname: ":)",
+      emojipic: "\uD83D\uDE03"
+    },
+    {
+      id: 2,
+      emojiname: ":p",
+      emojipic: "\uD83D\uDE1B"
+    },
+    {
+      id: 3,
+      emojiname: "<3",
+      emojipic: "\u2764\uFE0F"
+    },
+    {
+      id: 4,
+      emojiname: ":D",
+      emojipic: "\uD83D\uDE00"
+    },
+    {
+      id: 5,
+      emojiname: ";)",
+      emojipic: "\uD83D\uDE09"
+    },
+    {
+      id: 6,
+      emojiname: ":(",
+      emojipic: "\uD83D\uDE12"
+    },
+    {
+      id: 7,
+      emojiname: ";p",
+      emojipic: "\uD83D\uDE1C"
+    },
+    {
+      id: 8,
+      emojiname: ":'(",
+      emojipic: "\uD83D\uDE22"
+    },
+
+];
 },500);
     
 $timeout(function() {
@@ -20350,9 +20382,8 @@ $timeout(function() {
 
             searchEmojitext: function(term, success, error) {
                 setTimeout(function() {
-                    success($scope.emojitxt.filter(function(emojitxt1) {
-                        //console.log('term',indexOf(term);
-                        var containsSearchTerm = emojitxt1;
+                    success($scope.emojitext.filter(function(emojitxt) {
+                        var containsSearchTerm = emojitxt.emojiname.toLowerCase().indexOf(term.toLowerCase()) != -1;
                         return containsSearchTerm;
                     }));
                 }, 500);

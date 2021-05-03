@@ -98,7 +98,7 @@
             // emoji
             'click .emojibtn ': 'emojiButtonClicked',
 
-            //emojitest
+            //emoji typing text
             'keyup .textarea' : 'emojitextChange',
             
 
@@ -153,6 +153,7 @@
                 enableDeletingCommentWithReplies: false,      
                 enableNavigation: true, 
                 enablePinging: true,      
+                enableEmojitext: false,      
                 postCommentOnEnter: false,        
                 forceResponsive: false,       
                 readOnly: false,      
@@ -1137,10 +1138,23 @@
                 ":D": "\uD83D\uDE00",
                 ":)": "\uD83D\uDE03",
                 ";)": "\uD83D\uDE09",
-                " :(": "\uD83D\uDE12",
+                ":(": "\uD83D\uDE12",
                 ":p": "\uD83D\uDE1B",
                 ";p": "\uD83D\uDE1C",
-                ":'(": "\uD83D\uDE22"
+                ":'(": "\uD83D\uDE22",
+                ":o)": "\uD83D\uDE2E",
+                ":*": "\uD83D\uDC8B",
+                ":>": "\uD83D\uDE06",
+                ":blush": "\uD83D\uDE0A",
+                ">:(": "\uD83D\uDE20",
+                ":-)": "\uD83D\uDE42",
+                ":'(": "\uD83D\uDE22",
+                "):": "\uD83D\uDE1E",
+                ":-\\\\": "\uD83D\uDE15",
+                "<\\/3": "\uD83D\uDC94",
+                "8)": "\uD83D\uDE0E",
+                ":|": "\uD83D\uDE10",
+                ":o": "\uD83D\uDE2E",
             };
 
              function escapeSpecialChars(regex) {
@@ -1152,25 +1166,14 @@
                 var regex = new RegExp(escapeSpecialChars(i), 'gim');
                 var newmsg = strMessage[0].innerText;
                 newmsg = newmsg.replace(regex, emojimap[i]);
-                strMessage[0].innerText = newmsg;
-               }
-
+                strMessage[0].innerHTML = newmsg;
+                newmsg = strMessage[0].innerHTML;
+            }
+                
                 // Move cursor to end
-                if (typeof window.getSelection != 'undefined' && typeof document.createRange != 'undefined') {
-                    var range = document.createRange();
-                    range.selectNodeContents(el[0]);
-                    range.collapse(false);
-                    var sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                } else if (typeof document.body.createTextRange != 'undefined') {
-                    var textRange = document.body.createTextRange();
-                    textRange.moveToElementText(el[0]);
-                    textRange.collapse(false);
-                    textRange.select();
-                }
-
-
+                this.moveCursorToEnd(strMessage);
+                
+                
         },   
 
         showDroppableOverlay: function(ev) {
@@ -1473,7 +1476,50 @@
                 }
             }
 
-               
+            // emoji text
+            if(this.options.enableEmojitext) {
+                textarea.textcomplete([{
+                    match: /(^|\s):([^:]*)$/i,
+                    index: 2,
+                    search: function (term, callback) {
+                        term = self.normalizeSpaces(term);
+
+                        // Return empty array on error
+                        var error = function() {
+                            callback([]);
+                        }
+
+                        self.options.searchEmojitext(term, callback, error);
+                    },
+                    template: function(emojitxt) {
+                        var wrapper = $('<div/>');
+
+                        var emojipic = emojitxt.emojipic;
+                        
+                        var detailsEml = $('<div/>', {
+                            'class': 'details',
+                        });
+                        var nameEl = $('<div/>', {
+                            'class': 'name',
+                        }).html(emojitxt.emojiname);
+
+                        detailsEml.append(nameEl);
+                        
+                        wrapper.append(emojipic).append(detailsEml);
+                        return wrapper.html();
+                    },
+                    replace: function (emojitxt) {
+                        return ' ' + emojitxt.emojipic + ' ';
+                    },
+                }], {
+                    appendTo: '.jquery-comments',
+                    dropdownClassName: 'dropdown autocomplete',
+                    maxCount: 5,
+                    //rightEdgeOffset: 0,
+                    //debounce: 250
+                });
+            }    
+   
             // Pinging users
             if(this.options.enablePinging) {
                 textarea.textcomplete([{

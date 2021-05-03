@@ -125,10 +125,10 @@
                                                             <input type="text" class="form-control price" name="itemPrice" id="itemPrice{{it.itemId}}" ng-change="changeItemField(it.itemId,$index,$parent.$index)" ng-model="it1.itemPrice" allow-decimal-numbers/>
                                                          </div>
                                                       </div>
-                                                      <div class="col-sm-2">
+                                                      <div class="col-sm-2" style="padding-left:5px;padding-right:5px;">
                                                          <div class="form-group">
                                                             <input type="text" class="form-control price" name="itemTotal" id="itemTotal{{it.itemId}}" ng-change="changeItemField(it.itemId,$index,$parent.$index,1)" ng-model="it1.itemTotal" allow-decimal-numbers/>
-                                                          <span id="amtSum{{it.itemId}}" style="visibility: hidden;">{{it1.itemTotal |customNumber}}</span>  
+                                                          <span name="amtSum" id="amtSum{{it.itemId}}" ng-model="it1.amtSum"  style="visibility: hidden;">{{it1.itemTotal |customNumber}}</span>  
                                                          </div>
                                                       </div>
                                                       
