@@ -522,9 +522,7 @@ class filemanager {
         $img = str_replace(' ', '+', $img);
         $data = base64_decode($img);
         $filename = rand(0,1000).'_'.$ex;
-        //$output_file = UPLOADS_ROOT . "fileupload/" . $filename;
-        $output_file = "uploads/fileupload/" . $filename;
-        
+        $output_file = UPLOADS_ROOT . "fileupload/" . $filename;
         $ifp = fopen($output_file, "wb");
         fwrite($ifp, $finalstring);
         fclose($ifp);

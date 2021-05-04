@@ -2690,7 +2690,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.parent_id = $window.localStorage.getItem("parentId");
                 if ($scope.filedata == undefined || $scope.filedata == " " || $scope.filedata == null) {
                     $scope.filedata = {};
-                    console.log('$scope.filedata=',$scope.filedata);
                 }
                 $scope.role_id = $scope.userRight;
                 $scope.filedata.role_id = $scope.role_id;
@@ -2702,9 +2701,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.filedata.size = getFileSize[1];
 
                 rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) {
-                    console.log('file uplooaded');
-                }).error(errorCallback);
+                rest.post($scope.filedata).success(function(data) {}).error(errorCallback);
             },
             onSelect: function(files) {
                 var isFilesAvailable = angular.element('.ajax-file-upload-container').css('border', '1px dotted #ddd');
@@ -10348,7 +10345,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.userPaymentData = dataUser.userPaymentData;
                 var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
-                console.log('a');
                 //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
                 $scope.currencyType = vBankInfo.currency_code;
 
@@ -11752,13 +11748,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
         var indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
         if (source && !target) {
-            console.log('a');
            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - English (US)';
         } else if (!source && target) {
-            console.log('b');
             $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | English (US) - ' + target;
         } else {
-            console.log('c');
             $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + '-' + target;
         }
 
@@ -12086,16 +12079,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             notification('workflow already attached', 'warning');
                         }
                     } else {
-                        console.log('b');
                         if ($('#jobchainName'+formId).val() == 'select' || $('#jobDropDown'+formId).val() == 'select') {
                             notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
                             $scope.TblItemList[formIndex].total_amount = 0;
                             return false;
                         } else {
-                            console.log('c');
                             if ($scope.jobi.jobSummery) {
-                                console.log('d');
                                 // gettingName of selected workflow job chain
                                 $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName'+formId).find(':selected').text();
 
@@ -12176,13 +12166,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                         }
                                     }).error(errorCallback);
                                 } else {
-                                    console.log('e');
                                     var chainId = $scope.itemList[formIndex].item_number;
 
                                     // gettingName of selected workflow job chain
                                     $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
                                     if (chainId != undefined) {
-                                        console.log('f');
                                         rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $window.localStorage.orderID + '/' + chainId;
                                         rest.get().success(function(data) {
                                             $scope.jobnumchain = data.job_no += 1;
