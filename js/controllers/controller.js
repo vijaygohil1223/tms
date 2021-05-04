@@ -12079,6 +12079,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             notification('workflow already attached', 'warning');
                         }
                     } else {
+                        console.log('b');
                         if ($('#jobchainName'+formId).val() == 'select' || $('#jobDropDown'+formId).val() == 'select') {
                             notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
