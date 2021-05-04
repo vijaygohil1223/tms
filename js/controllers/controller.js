@@ -2690,6 +2690,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.parent_id = $window.localStorage.getItem("parentId");
                 if ($scope.filedata == undefined || $scope.filedata == " " || $scope.filedata == null) {
                     $scope.filedata = {};
+                    console.log('$scope.filedata=',$scope.filedata);
                 }
                 $scope.role_id = $scope.userRight;
                 $scope.filedata.role_id = $scope.role_id;
@@ -2701,7 +2702,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.filedata.size = getFileSize[1];
 
                 rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) {}).error(errorCallback);
+                rest.post($scope.filedata).success(function(data) {
+                    console.log('file uplooaded');
+                }).error(errorCallback);
             },
             onSelect: function(files) {
                 var isFilesAvailable = angular.element('.ajax-file-upload-container').css('border', '1px dotted #ddd');
