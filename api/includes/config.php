@@ -1,7 +1,6 @@
 <?php
-
 define('SITE_URL', "http://" . $_SERVER['SERVER_NAME'] . "/");
-define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . "/tms/");
+define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . "/");
 define('UPLOADS_ROOT', DOCUMENT_ROOT . "uploads/");
 
 //db constants
