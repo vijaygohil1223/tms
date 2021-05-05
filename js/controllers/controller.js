@@ -3882,7 +3882,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.get().success(function(data) {
             $timeout(function() {
                 $scope.displayfolder = data;
-
+                console.log('$scope.displayfolder=',$scope.displayfolder);
                 //Change ItemFolder Name to item001 -> Files-001
                 angular.forEach($scope.displayfolder, function(val, i) {
                     if (val.item_id != 0) {
@@ -4146,7 +4146,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $('#propertyModal').modal('show');
                     }],
                 ];
-            }, 200);
+            }, 500);
         }).error(errorCallback);
     } else {
         rest.path = 'fileManagerGet';
