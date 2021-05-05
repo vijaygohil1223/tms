@@ -120,6 +120,10 @@
     content: "\f00d";
     color:#0086be !important;
 }
+.ajax-upload-dragdrop{
+  padding-top: 30px;
+  min-height: 100px;
+}
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }
@@ -183,9 +187,9 @@ vendor-prefixes.less:76
             <div id="uploadContainer" class="hideShowClass">
                <div id="w4-tab1" class="tab-pane active" style="display: block;">
                   <div class="panel panel-default">
-                     <div class="panel-heading filehead" style="height: 80px;">
-                        <div id="multipleupload" style="float:left;">Upload</div>
-                        <a href="javascript:void(0)" style="margin-top:-2px;margin-left:0px;padding:4px 10px;" ng-click="uploadClick();"
+                     <div class="panel-heading filehead" style="height: 125px;">
+                        <div id="multipleupload" style="float:left;height: 125px;">Upload</div>
+                        <a href="javascript:void(0)" style="margin-top:38px;margin-left:0px;padding:4px 10px;" ng-click="uploadClick();"
                            class="btn btn-info">Upload</a>
                      </div>
                   </div>
@@ -208,7 +212,7 @@ vendor-prefixes.less:76
             <!-- loader image -->
             <div ng-if="showLoder" id="loader"></div>
 
-            <div ng-if="displayfolder.length == 1  || (displayfolder|filter:filters.search).length==1" style="margin-top:5px;">
+            <div ng-if="displayfolder.length >= 1 || (displayfolder|filter:filters.search).length>=1" style="margin-top:5px;">
               <div style="text-align: center;margin:0 auto;">
                 <a href="javascript:void(0);" ng-click="uploadbtn()" class="glyphicon glyphicon-upload uploadicon" style="font-size:50px;"  title="Click to Add or Drag & Drop files"></a>
               </div>
