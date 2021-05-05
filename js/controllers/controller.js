@@ -4146,7 +4146,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $('#propertyModal').modal('show');
                     }],
                 ];
-            }, 500);
+            }, 1000);
         }).error(errorCallback);
     } else {
         rest.path = 'fileManagerGet';
