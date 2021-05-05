@@ -3624,10 +3624,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                 return true; //to allow file submission.
             },
-        });
+        }); 
 
         $('.ajax-upload-dragdrop:eq(1)').hide();
-
     }, 100);
 
     $scope.addToCopy = function(fid) {
