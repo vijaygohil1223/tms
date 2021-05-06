@@ -3628,7 +3628,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             },
         }); 
         $('.ajax-upload-dragdrop:eq(1)').hide();
-    }, 200);
+    }, 1000);
 
     $scope.addToCopy = function(fid) {
         var chkForClass = angular.element('#' + fid).hasClass('activeselect');
