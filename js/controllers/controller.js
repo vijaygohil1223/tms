@@ -3560,7 +3560,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
                     $route.reload();
-                }, 500);
+                }, 5000);
 
             },
             onCancel: function(files, pd) {
