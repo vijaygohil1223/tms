@@ -3884,16 +3884,19 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.displayfolder = data;
                 console.log('$scope.displayfolder=',$scope.displayfolder);
                 //Change ItemFolder Name to item001 -> Files-001
-                angular.forEach($scope.displayfolder, function(val, i) {
-                    if (val.item_id != 0) {
-                        var ItemNo;
-                        ItemNo = val.name.match(/\d+$/);
-                        if (ItemNo) {
-                            $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
+                $timeout(function() {
+                    angular.forEach($scope.displayfolder, function(val, i) {
+                        if (val.item_id != 0) {
+                            var ItemNo;
+                            ItemNo = val.name.match(/\d+$/);
+                            if (ItemNo) {
+                                $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
 
+                            }
                         }
-                    }
-                })
+                    })
+                },1500);
+
 
 
                 // $timeout(function() {
