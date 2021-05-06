@@ -3481,6 +3481,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         } else {
             angular.element('#uploadContainer').toggleClass('hideShowClass');
         }
+        $('.ajax-upload-dragdrop:eq(1)').hide();
     }
 
     
@@ -3559,7 +3560,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
                     $route.reload();
-                }, 500);
+                }, 1500);
 
             },
             onCancel: function(files, pd) {
@@ -3626,7 +3627,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             },
         }); 
         $('.ajax-upload-dragdrop:eq(1)').hide();
-    }, 100);
+    }, 500);
 
     $scope.addToCopy = function(fid) {
         var chkForClass = angular.element('#' + fid).hasClass('activeselect');
@@ -3882,22 +3883,17 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.get().success(function(data) {
             $timeout(function() {
                 $scope.displayfolder = data;
-                console.log('$scope.displayfolder=',$scope.displayfolder);
                 //Change ItemFolder Name to item001 -> Files-001
-                $timeout(function() {
-                    angular.forEach($scope.displayfolder, function(val, i) {
-                        if (val.item_id != 0) {
-                            var ItemNo;
-                            ItemNo = val.name.match(/\d+$/);
-                            if (ItemNo) {
-                                $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
+                angular.forEach($scope.displayfolder, function(val, i) {
+                    if (val.item_id != 0) {
+                        var ItemNo;
+                        ItemNo = val.name.match(/\d+$/);
+                        if (ItemNo) {
+                            $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
 
-                            }
                         }
-                    })
-                },2000);
-
-
+                    }
+                })
 
                 // $timeout(function() {
                 //  var exProjectFolderId = '';
@@ -4149,9 +4145,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $('#propertyModal').modal('show');
                     }],
                 ];
-            }, 2100);
+            }, 200);
         }).error(errorCallback);
     } else {
+        console.log('else');
         rest.path = 'fileManagerGet';
         rest.get().success(function(data) {
             $scope.displayfolder = data;
