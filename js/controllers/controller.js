@@ -3560,7 +3560,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
                     $route.reload();
-                }, 5000);
+                }, 100);
 
             },
             onCancel: function(files, pd) {
@@ -3813,7 +3813,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
     }
     $scope.getFile = function(file) {
-        console.log('getfile',file);
         fileReader.readAsDataUrl(file, $scope).then(function(result) {
             if (file.size > 15000000) {
                 notification('Please select file less than 15 MB.', 'warning');
@@ -3854,9 +3853,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             $scope.filedata.filetype = $scope.filetype;
             $scope.filedata.size = $scope.size;
             rest.path = 'fileAdd';
-            rest.post($scope.filedata).success(function(data) {
-                $route.reload();
-            }).error(errorCallback);
+
+
         } else {
             notification('Please Select filedata', 'information');
         }
@@ -3875,19 +3873,286 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             $scope.parentName = data.name;
         }).error(errorCallback);
     }
-$timeout(function() {
-    if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
-        var id = $window.localStorage.getItem("parentId");
-        console.log('id',id);
-        var externalResourceUserId = null;
-        if ($window.sessionStorage.getItem("ExternalUserId") != null) {
-            var externalResourceUserId = $window.sessionStorage.getItem("ExternalUserId");
-        }
-        rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
-        rest.get().success(function(data) {
-            $timeout(function() {
+    $timeout(function() {
+        if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
+            var id = $window.localStorage.getItem("parentId");
+            var externalResourceUserId = null;
+            if ($window.sessionStorage.getItem("ExternalUserId") != null) {
+                var externalResourceUserId = $window.sessionStorage.getItem("ExternalUserId");
+            }
+            rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
+            rest.get().success(function(data) {
+                $timeout(function() {
+                    $scope.displayfolder = data;
+                    
+                    //Change ItemFolder Name to item001 -> Files-001
+                    angular.forEach($scope.displayfolder, function(val, i) {
+                        if (val.item_id != 0) {
+                            var ItemNo;
+                            ItemNo = val.name.match(/\d+$/);
+                            if (ItemNo) {
+                                $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
+
+                            }
+                        }
+                    })
+
+                    // $timeout(function() {
+                    //  var exProjectFolderId = '';
+                    //  var keepGoing = true;
+                    //  angular.forEach($scope.displayfolder,function(val,i){
+                    //      if(keepGoing){
+                    //          if(val.is_ex_project_folder == 1){
+                    //        exProjectFolderId = val.fmanager_id;
+                    //    }
+                    //    if(val.is_project_folder == 1){
+
+                    //        
+                    //        val.parent_id = exProjectFolderId;
+                    //        
+                    //    }
+                    //    keepGoing = false;
+                    //      }
+                    //  })
+                    // },100);
+
+                    $scope.headerfilename(id);
+
+                    // context-menu for file paste
+                    $scope.menuOptionsPaste = [
+                        ['Paste', function($itemScope) {
+                            angular.forEach($scope.copyfile, function(value, key) {
+                                value.parent = $window.localStorage.getItem("parentId");
+                            });
+                            $scope.copyfile = JSON.stringify($scope.copyfile);
+                            $routeParams.id = JSON.parse($scope.copyfile)[0].id;
+                            rest.path = 'fileManagerPaste';
+                            rest.put($scope.copyfile).success(function(data) {
+                                $route.reload();
+                            }).error(errorCallback);
+
+                        }, function($itemScope, $event, modelValue) {
+                            if ($itemScope.copyfile.length > 0) {
+                                return true;
+                            } else {
+                                return false
+                            }
+                        }],
+
+                        ['Refresh', function($itemScope) {
+                            $route.reload();
+                        }],
+                    ];
+
+                    // context-menu for folder
+                    $scope.menuOptionsFolder = [
+                        ['Open', function($itemScope) {
+                            $scope.findfile($itemScope.display.fmanager_id, $itemScope.display.name);
+                        }],
+
+                        ['Delete', function($itemScope) {
+                            if ($itemScope.display.is_default_folder == 1) {
+                                notification('You can not delete default folders', 'warning');
+                            } else {
+                                bootbox.confirm("Are you sure you want to delete this folder?", function(result) {
+                                    var folderId = $itemScope.display.fmanager_id;
+                                    var image = $itemScope.display.name;
+                                    if (folderId != undefined) {
+                                        $scope.showLoder = true;
+                                        if (result == true) {
+                                            rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
+                                            rest.delete().success(function(data) {
+                                                $scope.copyfile = [];
+                                                $route.reload();
+                                            })
+                                        } else {
+                                            $scope.showLoder = false;
+                                        }
+                                    }
+                                });
+                            }
+                        }],
+
+                        ['Rename', function($itemScope) {
+                            if ($itemScope.display.is_default_folder == 1) {
+                                notification('You can rename default folders', 'warning');
+                            } else {
+                                var newName = prompt("Please enter name");
+                                if (newName) {
+                                    var folderId = $itemScope.display.fmanager_id;
+                                    var image = $itemScope.display.name;
+                                    if (folderId != undefined) {
+                                        if ($scope.folderData == undefined || $scope.folderData == null || $scope.folderData == "") {
+                                            $scope.folderData = {};
+                                        }
+                                        $scope.name = newName;
+                                        $scope.image = image;
+                                        $scope.folderData.name = $scope.name;
+                                        $scope.folderData.image = $scope.image;
+                                        $routeParams.id = folderId;
+
+                                        rest.path = 'fileManagerUpdate';
+                                        rest.put($scope.folderData).success(function(data) {
+                                            $route.reload();
+                                        }).error(errorCallback);
+                                    }
+                                }
+                            }
+
+                        }],
+                    ];
+
+                    // context-menu for files
+                    $scope.menuOptionsFiles = [
+                        ['Download', function($itemScope) {
+                            var a = document.createElement('a');
+                            document.body.appendChild(a);
+                            a.download = $itemScope.display.name;
+                            a.href = $("#download" + $itemScope.display.fmanager_id).attr('href');
+                            a.click();
+                        }],
+
+                        ['Delete', function($itemScope) {
+                            bootbox.confirm("Are you sure you want to delete?", function(result) {
+                                if (result == true) {
+                                    $scope.copyfile = [];
+                                    FilesLength = angular.element('file').hasClass('activeselect');
+                                    if (FilesLength) {
+                                        $.each($('file'), function() {
+                                            if (angular.element('#' + this.id).hasClass('activeselect')) {
+                                                $scope.copyfile.push({
+                                                    id: this.id
+                                                });
+                                            }
+                                        });
+                                        $scope.copyfile = JSON.stringify($scope.copyfile);
+                                        $routeParams.id = JSON.parse($scope.copyfile)[0].id
+                                        $scope.showLoder = true;
+                                        rest.path = 'filemanagerfolderDeleteMultiple';
+                                        rest.put($scope.copyfile).success(function(data) {
+                                            $scope.copyfile = [];
+                                            $route.reload();
+                                        })
+                                    } else {
+                                        var folderId = $itemScope.display.fmanager_id;
+                                        var image = $itemScope.display.name;
+                                        if (folderId != undefined) {
+                                            $scope.showLoder = false;
+                                            if (result == true) {
+                                                rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
+                                                rest.delete().success(function(data) {
+                                                    $scope.copyfile = [];
+                                                    $route.reload();
+                                                })
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    $.each($('file'), function() {
+                                        if (angular.element('#' + this.id).hasClass('activeselect')) {
+                                            angular.element('#' + this.id).removeClass('activeselect');
+                                        }
+                                    });
+                                    $scope.copyfile = [];
+                                }
+                            });
+                        }],
+
+                        ['Rename', function($itemScope) {
+                            $.each($('file'), function() {
+                                if (angular.element('#' + this.id).hasClass('activeselect')) {
+                                    angular.element('#' + this.id).removeClass('activeselect');
+                                }
+                            });
+                            $timeout(function() {
+                                var newName = prompt("Please enter name");
+                                if (newName) {
+                                    var folderId = $itemScope.display.fmanager_id;
+                                    var image = $itemScope.display.name;
+                                    if (folderId != undefined) {
+                                        if ($scope.folderData == undefined || $scope.folderData == null || $scope.folderData == "") {
+                                            $scope.folderData = {};
+                                        }
+                                        $scope.name = newName;
+                                        $scope.image = image;
+                                        $scope.folderData.name = $scope.name;
+                                        $scope.folderData.image = $scope.image;
+                                        $routeParams.id = folderId;
+
+                                        rest.path = 'fileManagerUpdate';
+                                        rest.put($scope.folderData).success(function(data) {
+                                            $route.reload();
+                                        }).error(errorCallback);
+                                    }
+                                } //else{
+                                // notification('Please enter Name', 'information');
+                                //}
+                            }, 100);
+                        }],
+
+                        ['Copy', function($itemScope) {
+                            angular.forEach($scope.copyfile, function(value, key) {
+                                angular.element('#' + value.id).removeClass('activeselect');
+                            });
+                            FilesLength = angular.element('file').hasClass('activeselect');
+                            if (FilesLength) {
+                                $.each($('file'), function() {
+                                    if (angular.element('#' + this.id).hasClass('activeselect')) {
+                                        $scope.copyfile.push({
+                                            id: this.id
+                                        });
+                                        angular.element('#' + this.id).addClass('activeselect');
+                                        angular.element('#files_count').text($scope.copyfile.length);
+                                    }
+                                });
+                                angular.forEach($scope.copyfile, function(value, key) {
+                                    angular.element('#' + value.id).addClass('activeselect');
+                                });
+                            } else {
+                                var alreadyInCopy = false;
+                                angular.forEach($scope.copyfile, function(value, key) {
+                                    if (value.id == $itemScope.display.fmanager_id) {
+                                        alreadyInCopy = true;
+                                    }
+                                });
+                                if (alreadyInCopy) {
+                                    angular.forEach($scope.copyfile, function(value, key) {
+                                        angular.element('#' + value.id).addClass('activeselect');
+                                    });
+                                    alert('File already copied');
+                                    angular.element('#' + $itemScope.display.fmanager_id).addClass('activeselect');
+                                } else {
+                                    $scope.copyfile = [];
+                                    angular.element('#' + $itemScope.display.fmanager_id).addClass('activeselect');
+                                    $scope.copyfile.push({
+                                        id: $itemScope.display.fmanager_id
+                                    });
+                                    angular.element('#files_count').text($scope.copyfile.length);
+                                }
+                            }
+                        }],
+
+                        ['Properties', function($itemScope) {
+                            var fileName = $itemScope.display.name;
+                            var fileSize = $itemScope.display.size;
+                            var fileExt = $itemScope.display.ext;
+                            var FileCreatedDate = $itemScope.display.created_date;
+                            var propertyHtml = '<div class="alert" style="word-wrap: break-word;">' +
+                                '<strong>Name&nbsp;:&nbsp;</strong>&nbsp;' + fileName + '<br><br>' +
+                                '<strong>Size&nbsp;:&nbsp;</strong>' + fileSize + '<br><br>' +
+                                '<strong>Extention&nbsp;:&nbsp;</strong>' + fileExt + '<br><br>' +
+                                '<strong>Created Date&nbsp;:&nbsp;</strong>' + moment(FileCreatedDate).format($window.localStorage.getItem('global_dateFormat')+' '+'HH:mm:ss') +
+                                '</div>';
+                            $('#propertyModal').find('.modal-body').html(propertyHtml);
+                            $('#propertyModal').modal('show');
+                        }],
+                    ];
+                }, 200);
+            }).error(errorCallback);
+        } else {
+            rest.path = 'fileManagerGet';
+            rest.get().success(function(data) {
                 $scope.displayfolder = data;
-                
                 //Change ItemFolder Name to item001 -> Files-001
                 angular.forEach($scope.displayfolder, function(val, i) {
                     if (val.item_id != 0) {
@@ -3900,279 +4165,10 @@ $timeout(function() {
                     }
                 })
 
-                // $timeout(function() {
-                //  var exProjectFolderId = '';
-                //  var keepGoing = true;
-                //  angular.forEach($scope.displayfolder,function(val,i){
-                //      if(keepGoing){
-                //          if(val.is_ex_project_folder == 1){
-                //        exProjectFolderId = val.fmanager_id;
-                //    }
-                //    if(val.is_project_folder == 1){
-
-                //        
-                //        val.parent_id = exProjectFolderId;
-                //        
-                //    }
-                //    keepGoing = false;
-                //      }
-                //  })
-                // },100);
-
-                $scope.headerfilename(id);
-
-                // context-menu for file paste
-                $scope.menuOptionsPaste = [
-                    ['Paste', function($itemScope) {
-                        angular.forEach($scope.copyfile, function(value, key) {
-                            value.parent = $window.localStorage.getItem("parentId");
-                        });
-                        $scope.copyfile = JSON.stringify($scope.copyfile);
-                        $routeParams.id = JSON.parse($scope.copyfile)[0].id;
-                        rest.path = 'fileManagerPaste';
-                        rest.put($scope.copyfile).success(function(data) {
-                            $route.reload();
-                        }).error(errorCallback);
-
-                    }, function($itemScope, $event, modelValue) {
-                        if ($itemScope.copyfile.length > 0) {
-                            return true;
-                        } else {
-                            return false
-                        }
-                    }],
-
-                    ['Refresh', function($itemScope) {
-                        $route.reload();
-                    }],
-                ];
-
-                // context-menu for folder
-                $scope.menuOptionsFolder = [
-                    ['Open', function($itemScope) {
-                        $scope.findfile($itemScope.display.fmanager_id, $itemScope.display.name);
-                    }],
-
-                    ['Delete', function($itemScope) {
-                        if ($itemScope.display.is_default_folder == 1) {
-                            notification('You can not delete default folders', 'warning');
-                        } else {
-                            bootbox.confirm("Are you sure you want to delete this folder?", function(result) {
-                                var folderId = $itemScope.display.fmanager_id;
-                                var image = $itemScope.display.name;
-                                if (folderId != undefined) {
-                                    $scope.showLoder = true;
-                                    if (result == true) {
-                                        rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
-                                        rest.delete().success(function(data) {
-                                            $scope.copyfile = [];
-                                            $route.reload();
-                                        })
-                                    } else {
-                                        $scope.showLoder = false;
-                                    }
-                                }
-                            });
-                        }
-                    }],
-
-                    ['Rename', function($itemScope) {
-                        if ($itemScope.display.is_default_folder == 1) {
-                            notification('You can rename default folders', 'warning');
-                        } else {
-                            var newName = prompt("Please enter name");
-                            if (newName) {
-                                var folderId = $itemScope.display.fmanager_id;
-                                var image = $itemScope.display.name;
-                                if (folderId != undefined) {
-                                    if ($scope.folderData == undefined || $scope.folderData == null || $scope.folderData == "") {
-                                        $scope.folderData = {};
-                                    }
-                                    $scope.name = newName;
-                                    $scope.image = image;
-                                    $scope.folderData.name = $scope.name;
-                                    $scope.folderData.image = $scope.image;
-                                    $routeParams.id = folderId;
-
-                                    rest.path = 'fileManagerUpdate';
-                                    rest.put($scope.folderData).success(function(data) {
-                                        $route.reload();
-                                    }).error(errorCallback);
-                                }
-                            }
-                        }
-
-                    }],
-                ];
-
-                // context-menu for files
-                $scope.menuOptionsFiles = [
-                    ['Download', function($itemScope) {
-                        var a = document.createElement('a');
-                        document.body.appendChild(a);
-                        a.download = $itemScope.display.name;
-                        a.href = $("#download" + $itemScope.display.fmanager_id).attr('href');
-                        a.click();
-                    }],
-
-                    ['Delete', function($itemScope) {
-                        bootbox.confirm("Are you sure you want to delete?", function(result) {
-                            if (result == true) {
-                                $scope.copyfile = [];
-                                FilesLength = angular.element('file').hasClass('activeselect');
-                                if (FilesLength) {
-                                    $.each($('file'), function() {
-                                        if (angular.element('#' + this.id).hasClass('activeselect')) {
-                                            $scope.copyfile.push({
-                                                id: this.id
-                                            });
-                                        }
-                                    });
-                                    $scope.copyfile = JSON.stringify($scope.copyfile);
-                                    $routeParams.id = JSON.parse($scope.copyfile)[0].id
-                                    $scope.showLoder = true;
-                                    rest.path = 'filemanagerfolderDeleteMultiple';
-                                    rest.put($scope.copyfile).success(function(data) {
-                                        $scope.copyfile = [];
-                                        $route.reload();
-                                    })
-                                } else {
-                                    var folderId = $itemScope.display.fmanager_id;
-                                    var image = $itemScope.display.name;
-                                    if (folderId != undefined) {
-                                        $scope.showLoder = false;
-                                        if (result == true) {
-                                            rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
-                                            rest.delete().success(function(data) {
-                                                $scope.copyfile = [];
-                                                $route.reload();
-                                            })
-                                        }
-                                    }
-                                }
-                            } else {
-                                $.each($('file'), function() {
-                                    if (angular.element('#' + this.id).hasClass('activeselect')) {
-                                        angular.element('#' + this.id).removeClass('activeselect');
-                                    }
-                                });
-                                $scope.copyfile = [];
-                            }
-                        });
-                    }],
-
-                    ['Rename', function($itemScope) {
-                        $.each($('file'), function() {
-                            if (angular.element('#' + this.id).hasClass('activeselect')) {
-                                angular.element('#' + this.id).removeClass('activeselect');
-                            }
-                        });
-                        $timeout(function() {
-                            var newName = prompt("Please enter name");
-                            if (newName) {
-                                var folderId = $itemScope.display.fmanager_id;
-                                var image = $itemScope.display.name;
-                                if (folderId != undefined) {
-                                    if ($scope.folderData == undefined || $scope.folderData == null || $scope.folderData == "") {
-                                        $scope.folderData = {};
-                                    }
-                                    $scope.name = newName;
-                                    $scope.image = image;
-                                    $scope.folderData.name = $scope.name;
-                                    $scope.folderData.image = $scope.image;
-                                    $routeParams.id = folderId;
-
-                                    rest.path = 'fileManagerUpdate';
-                                    rest.put($scope.folderData).success(function(data) {
-                                        $route.reload();
-                                    }).error(errorCallback);
-                                }
-                            } //else{
-                            // notification('Please enter Name', 'information');
-                            //}
-                        }, 100);
-                    }],
-
-                    ['Copy', function($itemScope) {
-                        angular.forEach($scope.copyfile, function(value, key) {
-                            angular.element('#' + value.id).removeClass('activeselect');
-                        });
-                        FilesLength = angular.element('file').hasClass('activeselect');
-                        if (FilesLength) {
-                            $.each($('file'), function() {
-                                if (angular.element('#' + this.id).hasClass('activeselect')) {
-                                    $scope.copyfile.push({
-                                        id: this.id
-                                    });
-                                    angular.element('#' + this.id).addClass('activeselect');
-                                    angular.element('#files_count').text($scope.copyfile.length);
-                                }
-                            });
-                            angular.forEach($scope.copyfile, function(value, key) {
-                                angular.element('#' + value.id).addClass('activeselect');
-                            });
-                        } else {
-                            var alreadyInCopy = false;
-                            angular.forEach($scope.copyfile, function(value, key) {
-                                if (value.id == $itemScope.display.fmanager_id) {
-                                    alreadyInCopy = true;
-                                }
-                            });
-                            if (alreadyInCopy) {
-                                angular.forEach($scope.copyfile, function(value, key) {
-                                    angular.element('#' + value.id).addClass('activeselect');
-                                });
-                                alert('File already copied');
-                                angular.element('#' + $itemScope.display.fmanager_id).addClass('activeselect');
-                            } else {
-                                $scope.copyfile = [];
-                                angular.element('#' + $itemScope.display.fmanager_id).addClass('activeselect');
-                                $scope.copyfile.push({
-                                    id: $itemScope.display.fmanager_id
-                                });
-                                angular.element('#files_count').text($scope.copyfile.length);
-                            }
-                        }
-                    }],
-
-                    ['Properties', function($itemScope) {
-                        var fileName = $itemScope.display.name;
-                        var fileSize = $itemScope.display.size;
-                        var fileExt = $itemScope.display.ext;
-                        var FileCreatedDate = $itemScope.display.created_date;
-                        var propertyHtml = '<div class="alert" style="word-wrap: break-word;">' +
-                            '<strong>Name&nbsp;:&nbsp;</strong>&nbsp;' + fileName + '<br><br>' +
-                            '<strong>Size&nbsp;:&nbsp;</strong>' + fileSize + '<br><br>' +
-                            '<strong>Extention&nbsp;:&nbsp;</strong>' + fileExt + '<br><br>' +
-                            '<strong>Created Date&nbsp;:&nbsp;</strong>' + moment(FileCreatedDate).format($window.localStorage.getItem('global_dateFormat')+' '+'HH:mm:ss') +
-                            '</div>';
-                        $('#propertyModal').find('.modal-body').html(propertyHtml);
-                        $('#propertyModal').modal('show');
-                    }],
-                ];
-            }, 200);
-        }).error(errorCallback);
-    } else {
-        rest.path = 'fileManagerGet';
-        rest.get().success(function(data) {
-            $scope.displayfolder = data;
-            console.log('displayfolder=else=',$scope.displayfolder);
-            //Change ItemFolder Name to item001 -> Files-001
-            angular.forEach($scope.displayfolder, function(val, i) {
-                if (val.item_id != 0) {
-                    var ItemNo;
-                    ItemNo = val.name.match(/\d+$/);
-                    if (ItemNo) {
-                        $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
-
-                    }
-                }
-            })
-
-            $window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
-        }).error(errorCallback);
-    }
-},1000);
+                $window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
+            }).error(errorCallback);
+        }
+    },1000);
     //nested file
     $scope.findfile = function(id, name) {
         var externalResourceUserId = null;
