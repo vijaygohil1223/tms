@@ -3196,7 +3196,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'fileManagerGet';
         rest.get().success(function(data) {
             $scope.displayfolder = data;
-
+            console.log('$scope.displayfolder-1=',$scope.displayfolder);
             //Change ItemFolder Name to item001 -> Files-001
             angular.forEach($scope.displayfolder, function(val, i) {
                 if (val.item_id != 0) {
@@ -3560,7 +3560,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
                     $route.reload();
-                }, 1500);
+                }, 5000);
 
             },
             onCancel: function(files, pd) {
@@ -3581,6 +3581,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 if (fileDivText) {
                     var dataU = $('.upimg' + fileDivText.charAt(0)).text();
                 }
+                
                 var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
                 var regExp = /\(([^)]+)\)/;
                 var getFileSize = regExp.exec(size);
@@ -3627,7 +3628,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             },
         }); 
         $('.ajax-upload-dragdrop:eq(1)').hide();
-    }, 500);
+    }, 1000);
 
     $scope.addToCopy = function(fid) {
         var chkForClass = angular.element('#' + fid).hasClass('activeselect');
@@ -3812,6 +3813,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
     }
     $scope.getFile = function(file) {
+        console.log('getfile',file);
         fileReader.readAsDataUrl(file, $scope).then(function(result) {
             if (file.size > 15000000) {
                 notification('Please select file less than 15 MB.', 'warning');
@@ -3873,8 +3875,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             $scope.parentName = data.name;
         }).error(errorCallback);
     }
+$timeout(function() {
     if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
         var id = $window.localStorage.getItem("parentId");
+        console.log('id',id);
         var externalResourceUserId = null;
         if ($window.sessionStorage.getItem("ExternalUserId") != null) {
             var externalResourceUserId = $window.sessionStorage.getItem("ExternalUserId");
@@ -3883,6 +3887,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.get().success(function(data) {
             $timeout(function() {
                 $scope.displayfolder = data;
+                
                 //Change ItemFolder Name to item001 -> Files-001
                 angular.forEach($scope.displayfolder, function(val, i) {
                     if (val.item_id != 0) {
@@ -4148,11 +4153,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }, 200);
         }).error(errorCallback);
     } else {
-        console.log('else');
         rest.path = 'fileManagerGet';
         rest.get().success(function(data) {
             $scope.displayfolder = data;
-
+            console.log('displayfolder=else=',$scope.displayfolder);
             //Change ItemFolder Name to item001 -> Files-001
             angular.forEach($scope.displayfolder, function(val, i) {
                 if (val.item_id != 0) {
@@ -4168,7 +4172,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             $window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
         }).error(errorCallback);
     }
-
+},1000);
     //nested file
     $scope.findfile = function(id, name) {
         var externalResourceUserId = null;
