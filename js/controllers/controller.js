@@ -20183,7 +20183,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             if(file_type == 'image'){
                                var filehtml = '<img src=' + cmtimgName + '></img>';                     
                             }else{
-                               var filehtml = '<i class="'+iconClass+'"></i> ' + val.fileURL ;                     
+                               var filename = val.fileURL; 
+                               var filehtml = '<i class="'+iconClass+'"></i> ' + filename.replace('uploads/discussionfile/','') ;                     
                             }
                         var hrefClass = 'attachment';
                         var hrefTarget = '_blank';

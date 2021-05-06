@@ -591,7 +591,13 @@
                     var randomno = jQuery.now(); 
 
                     //newFileName1 = file.name.split('.')[0]+'_'+jQuery.now()+'.'+file.type.split('/')[1];
-                    newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.type.split('/')[1];
+                    //newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.type.split('/')[1];
+                    var ftype_1 = file.type.split('/')[0];
+                    if(ftype_1 != 'image'){
+                        newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.name.split('.').pop();
+                    }else{
+                        newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.type.split('/')[1];
+                    }
                     file.name2=newFileName1.replace(/ /g, "_");
                     commentJSON.id += '-' + index;
                     commentJSON.content = '';
@@ -604,8 +610,13 @@
                     
                     var file_data = $('#discussionFileUpload').prop('files')[0];
                     //newFileName = file_data.name.split('.')[0]+'_'+jQuery.now()+'.'+file_data.type.split('/')[1];
-                    newFileName = file_data.name.split('.')[0]+'_'+randomno+'.'+file_data.type.split('/')[1];
-                    
+                    //newFileName = file_data.name.split('.')[0]+'_'+randomno+'.'+file_data.type.split('/')[1];
+                    var ftype_0 = file.type.split('/')[0];
+                    if(ftype_0 != 'image'){
+                        newFileName = file.name.split('.')[0]+'_'+randomno+'.'+file.name.split('.').pop();
+                    }else{
+                        newFileName = file.name.split('.')[0]+'_'+randomno+'.'+file.type.split('/')[1];
+                    }
                     //file_data.name2=newFileName;
                     file_data.name2=newFileName.replace(/ /g, "_");
                     var form_data = new FormData();                  
