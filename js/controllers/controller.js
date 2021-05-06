@@ -3895,7 +3895,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             }
                         }
                     })
-                },1500);
+                },2000);
 
 
 
@@ -4149,7 +4149,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $('#propertyModal').modal('show');
                     }],
                 ];
-            }, 1500);
+            }, 2100);
         }).error(errorCallback);
     } else {
         rest.path = 'fileManagerGet';
