@@ -106,5 +106,9 @@ class discussion {
         }
         return $cmtval;
     }
+    public function discussionEmojitext() {
+        $data = $this->_db->get('tms_emojitext');
+        return $data;
+    }
 
 }

@@ -20237,30 +20237,47 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }).error(errorCallback);
     }
 
+
     if ($routeParams.id) {
         $scope.usersArray = [];
         rest.path = "users";
-        
-        rest.get().success(function(data) {
-            //console.log("datadata",data);
-            setTimeout(function() {
-                angular.forEach(data.data, function(val, i) {
-                    var uObj = {
-                        id              : val.iUserId,
-                        fullname        : val.vUserName,
-                        email          : val.vEmailAddress,
-                        profile_picture_url: "uploads/profilePic/user-icon.png"
-                    }
-                    $scope.usersArray.push(uObj);
-                });
+        $timeout(function() {
+            rest.get().success(function(data) {
+                //console.log("datadata",data);
+                    angular.forEach(data.data, function(val, i) {
+                        var uObj = {
+                            id              : val.iUserId,
+                            fullname        : val.vUserName,
+                            email          : val.vEmailAddress,
+                            profile_picture_url: "uploads/profilePic/user-icon.png"
+                        }
+                        $scope.usersArray.push(uObj);
+                    });
                 
-
-            }, 500);
-            
-        }).error(errorCallback);
+            }).error(errorCallback);
+        }, 200);        
+        // emoji text
+        $scope.emojitext = [];
+        rest.path = "emojitext";
+        $timeout(function() {
+            rest.get().success(function(data) {
+                //console.log("emojidata",data);
+                    angular.forEach(data, function(val, i) {
+                        var eObj = {
+                            id              : val.id,
+                            emojiname        : val.emojiname,
+                            emojipic          : val.emojipic,
+                        }
+                        $scope.emojitext.push(eObj);
+                    });
+                
+            }).error(errorCallback);
+        }, 200);    
     }
+
+
 $timeout(function() {
-$scope.emojitext = [
+$scope.emojitext2 = [
     {
       id: 1,
       emojiname: ":)",
@@ -20273,8 +20290,13 @@ $scope.emojitext = [
     },
     {
       id: 3,
-      emojiname: "<3",
-      emojipic: "\u2764\uFE0F"
+      emojiname: ":blush",
+      emojipic: "\uD83D\uDE0A"
+    },
+    {
+      id: 4,
+      emojiname: ":o",
+      emojipic: "\uD83D\uDE2E"
     },
     {
       id: 5,
@@ -20318,56 +20340,51 @@ $scope.emojitext = [
     },
     {
       id: 13,
-      emojiname: ":blush",
-      emojipic: "\uD83D\uDE0A"
-    },
-    {
-      id: 14,
       emojiname: ">:(",
       emojipic: "\uD83D\uDE20"
     },
     {
-      id: 15,
+      id: 14,
       emojiname: ":-)",
       emojipic: "\uD83D\uDE42"
     },
     {
-      id: 16,
+      id: 15,
       emojiname: ":'(",
       emojipic: "\uD83D\uDE22"
     },
     {
-      id: 17,
+      id: 16,
       emojiname: "):",
       emojipic: "\uD83D\uDE1E"
     },
     {
-      id: 18,
+      id: 17,
       emojiname: ":-\\\\",
       emojipic: "\uD83D\uDE15"
     },
     {
-      id: 19,
+      id: 18,
       emojiname: "<\\/3",
       emojipic: "\uD83D\uDC94"
     },
     {
-      id: 20,
+      id: 19,
       emojiname: "8)",
       emojipic: "\uD83D\uDE0E"
     },
     {
-      id: 21,
+      id: 20,
       emojiname: ":|",
       emojipic: "\uD83D\uDE10"
     },
     {
-      id: 22,
-      emojiname: ":o",
-      emojipic: "\uD83D\uDE2E"
+      id: 21,
+      emojiname: "<3",
+      emojipic: "\u2764\uFE0F"
     },
     {
-      id: 23,
+      id: 22,
       emojiname: ":D",
       emojipic: "\uD83D\uDE00"
     },

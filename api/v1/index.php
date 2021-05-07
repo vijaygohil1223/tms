@@ -2790,6 +2790,12 @@ $app->put('/discussionCommentread/:orderId','authenticate', function ($orderId) 
     $result = $discuss->discussionCommentread($data, $orderId);
     echoResponse(200, $result);
 });
+//---------Emoji text--------- //
+$app->get('/emojitext','authenticate', function () use($app) {
+    $discuss = new discussion ();
+    $result = $discuss->discussionEmojitext();
+    echoResponse(200, $result);
+});
 //-----------------Knowledge Category---------------------//
 $app->post('/KcategorySave', 'authenticate',function () use($app) {
     $category = new Category ();
