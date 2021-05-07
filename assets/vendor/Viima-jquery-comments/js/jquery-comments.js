@@ -153,7 +153,7 @@
                 enableDeletingCommentWithReplies: false,      
                 enableNavigation: true, 
                 enablePinging: true,      
-                enableEmojitext: false,      
+                enableEmojitext: true,      
                 postCommentOnEnter: false,        
                 forceResponsive: false,       
                 readOnly: false,      
@@ -1177,14 +1177,10 @@
                 var regex = new RegExp(escapeSpecialChars(i), 'gim');
                 var newmsg = strMessage[0].innerText;
                 newmsg = newmsg.replace(regex, emojimap[i]);
-                strMessage[0].innerHTML = newmsg;
-                newmsg = strMessage[0].innerHTML;
+                //strMessage[0].innerHTML = newmsg;
             }
-                
                 // Move cursor to end
-                this.moveCursorToEnd(strMessage);
-                
-                
+                //this.moveCursorToEnd(strMessage);
         },   
 
         showDroppableOverlay: function(ev) {

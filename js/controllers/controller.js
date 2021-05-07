@@ -20277,11 +20277,6 @@ $scope.emojitext = [
       emojipic: "\u2764\uFE0F"
     },
     {
-      id: 4,
-      emojiname: ":D",
-      emojipic: "\uD83D\uDE00"
-    },
-    {
       id: 5,
       emojiname: ";)",
       emojipic: "\uD83D\uDE09"
@@ -20300,6 +20295,81 @@ $scope.emojitext = [
       id: 8,
       emojiname: ":'(",
       emojipic: "\uD83D\uDE22"
+    },
+    {
+      id: 9,
+      emojiname: ":o)",
+      emojipic: "\uD83D\uDE2E"
+    },
+    {
+      id: 10,
+      emojiname: ":*",
+      emojipic: "\uD83D\uDC8B"
+    },
+    {
+      id: 11,
+      emojiname: "</3",
+      emojipic: "\uD83D\uDC94"
+    },
+    {
+      id: 12,
+      emojiname: ":>",
+      emojipic: "\uD83D\uDE06"
+    },
+    {
+      id: 13,
+      emojiname: ":blush",
+      emojipic: "\uD83D\uDE0A"
+    },
+    {
+      id: 14,
+      emojiname: ">:(",
+      emojipic: "\uD83D\uDE20"
+    },
+    {
+      id: 15,
+      emojiname: ":-)",
+      emojipic: "\uD83D\uDE42"
+    },
+    {
+      id: 16,
+      emojiname: ":'(",
+      emojipic: "\uD83D\uDE22"
+    },
+    {
+      id: 17,
+      emojiname: "):",
+      emojipic: "\uD83D\uDE1E"
+    },
+    {
+      id: 18,
+      emojiname: ":-\\\\",
+      emojipic: "\uD83D\uDE15"
+    },
+    {
+      id: 19,
+      emojiname: "<\\/3",
+      emojipic: "\uD83D\uDC94"
+    },
+    {
+      id: 20,
+      emojiname: "8)",
+      emojipic: "\uD83D\uDE0E"
+    },
+    {
+      id: 21,
+      emojiname: ":|",
+      emojipic: "\uD83D\uDE10"
+    },
+    {
+      id: 22,
+      emojiname: ":o",
+      emojipic: "\uD83D\uDE2E"
+    },
+    {
+      id: 23,
+      emojiname: ":D",
+      emojipic: "\uD83D\uDE00"
     },
 
 ];
