@@ -20258,7 +20258,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }, 200);        
         // emoji text
         $scope.emojitext = [];
-        rest.path = "emojitext";
+        /*rest.path = "emojitext";
         $timeout(function() {
             rest.get().success(function(data) {
                 //console.log("emojidata",data);
@@ -20272,11 +20272,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     });
                 
             }).error(errorCallback);
-        }, 200);    
+        }, 200);*/    
     }
 
 
-$timeout(function() {
+//$timeout(function() {
 $scope.emojitext2 = [
     {
       id: 1,
@@ -20390,8 +20390,35 @@ $scope.emojitext2 = [
     },
 
 ];
-},500);
-    
+//},500);
+//emoji text change
+//$timeout(function() {
+//$scope.emojimap=[];
+var emojimap = {
+    "<3": "\u2764\uFE0F",
+    "</3": "\uD83D\uDC94",
+    ":D": "\uD83D\uDE00",
+    ":)": "\uD83D\uDE03",
+    ";)": "\uD83D\uDE09",
+    ":(": "\uD83D\uDE12",
+    ":p": "\uD83D\uDE1B",
+    ";p": "\uD83D\uDE1C",
+    ":'(": "\uD83D\uDE22",
+    ":o)": "\uD83D\uDE2E",
+    ":*": "\uD83D\uDC8B",
+    ":>": "\uD83D\uDE06",
+    ":blush": "\uD83D\uDE0A",
+    ">:(": "\uD83D\uDE20",
+    ":-)": "\uD83D\uDE42",
+    ":'(": "\uD83D\uDE22",
+    "):": "\uD83D\uDE1E",
+    ":-\\\\": "\uD83D\uDE15",
+    "<\\/3": "\uD83D\uDC94",
+    "8)": "\uD83D\uDE0E",
+    ":|": "\uD83D\uDE10",
+    ":o": "\uD83D\uDE2E"
+};    
+
 $timeout(function() {
     if($routeParams.id){
     //$timeout(function() {
@@ -20476,6 +20503,17 @@ $timeout(function() {
                 data.fullname = $window.localStorage.getItem("session_vUserName");
                 data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
                 data.read_id = $window.localStorage.getItem("session_iUserId")+',';
+
+                
+
+             function escapeSpecialChars(regex) {
+               return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+             }
+             for (var i in emojimap) {
+                var regex = new RegExp(escapeSpecialChars(i), 'gim');
+                data.content = data.content.replace(regex, emojimap[i]);
+            }
+
                 var pingsvalue =[];
                 if(data.content){
                     $(Object.keys(data.pings)).each(function(index, userId) {

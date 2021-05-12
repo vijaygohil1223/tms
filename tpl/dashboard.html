@@ -277,10 +277,14 @@ color: transparent;
 .cmtclrgrn{
   color: green;
 }
+article.media.acmt5 a {
+    white-space: nowrap;
+    pointer-events: none;
+}
 .acmt5{ margin-top: 5px; }
 .acmt5 a{ white-space: nowrap; pointer-events: none;}
 .acmt5 .customerthumb{padding-left: 7px;}
-.projecttable tr > td:nth-child(2){ text-align: left; }
+.projecttable tr > td:nth-child(2){ text-align: left; } 
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
@@ -388,6 +392,7 @@ color: transparent;
                                                   </div>
 
                                                 </article>
+                                              <br/>  
                                                 <article class="media acmt5">
                                                   <span class="customerthumb pull-left thumb-sm" >
                                                     <i class="fa fa-address-card"></i>
@@ -396,12 +401,6 @@ color: transparent;
                                                     <a href="" class="h5">{{order.accountname}}</a>
                                                   </div>
                                                 </article>
-                                                
-                                                <!-- <small class="block">
-                                                  <span class="label bg-light ">{{order.accountname}}</span>
-                                                </small> -->
-                                                <!-- <br>
-                                                <small class="block"><b>Account:</b> {{order.accountname }}</small> -->
                                                 
                                               </td>
                                               <td style="">
@@ -548,6 +547,7 @@ color: transparent;
                                                   </div>
 
                                                 </article>
+                                              <br />  
                                                 <article class="media acmt5">
                                                   <span class="customerthumb pull-left thumb-sm" >
                                                     <i class="fa fa-address-card"></i>
@@ -556,13 +556,7 @@ color: transparent;
                                                     <a href="" class="h5">{{order.accountname}}</a>
                                                   </div>
                                                 </article>
-                                                
-                                                
                                               </td>
-                                              <!-- <td style="">
-                                                <small>{{order.accountname}}</small>
-                                                <small class="block m-t-sm"><b>PO Number:</b> <span>{{order.ponumber}}</span></small>
-                                              </td> -->
                                               <td style="">
                                                 <!-- <div ng-repeat="item in order.items">
                                                   <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
@@ -714,6 +708,7 @@ color: transparent;
                                                   </div>
 
                                                 </article>
+                                              <br/>  
                                                 <article class="media acmt5">
                                                   <span class="customerthumb pull-left thumb-sm" >
                                                     <i class="fa fa-address-card"></i>
@@ -873,6 +868,7 @@ color: transparent;
                                                   </div>
 
                                                 </article>
+                                            <br/>  
                                               <article class="media acmt5">
                                                   <span class="customerthumb pull-left thumb-sm" >
                                                     <i class="fa fa-address-card"></i>
@@ -883,10 +879,6 @@ color: transparent;
                                                 </article>
                                                   
                                               </td>
-                                              <!-- <td style="">
-                                                <small>{{order.accountname}}</small>
-                                                <small class="block m-t-sm"><b>PO Number:</b> <span>{{order.ponumber}}</span></small>
-                                              </td> -->
                                               <td style="">
                                                 <!-- <div ng-repeat="item in order.items">
                                                   <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
@@ -1035,6 +1027,7 @@ color: transparent;
                                                   </div>
 
                                                 </article>
+                                              <br/>  
                                                 <article class="media acmt5">
                                                   <span class="customerthumb pull-left thumb-sm" >
                                                     <i class="fa fa-address-card"></i>
@@ -1045,15 +1038,7 @@ color: transparent;
                                                 </article>
                                                 
                                               </td>
-                                              <!-- <td style="">
-                                                <small>{{order.accountname}}</small>
-                                                <small class="block m-t-sm"><b>PO Number:</b> <span>{{order.ponumber}}</span></small>
-                                              </td> -->
                                               <td style="">
-                                                <!-- <div ng-repeat="item in order.items">
-                                                  <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
-                                                  </span>
-                                                </div> -->
                                                 <div class="langtd" ng-if="order.items[0]">
                                                   <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}" alt="..." ></span>
                                                   <div class="media-body">
@@ -1198,6 +1183,7 @@ color: transparent;
                                                   </div>
 
                                                 </article>
+                                              <br/>
                                                 <article class="media acmt5">
                                                   <span class="customerthumb pull-left thumb-sm" >
                                                     <i class="fa fa-address-card"></i>
@@ -1207,15 +1193,7 @@ color: transparent;
                                                   </div>
                                                 </article>
                                               </td>
-                                              <!-- <td style="">
-                                                <small>{{order.accountname}}</small>
-                                                <small class="block m-t-sm"><b>PO Number:</b> <span>{{order.ponumber}}</span></small>
-                                              </td> -->
                                               <td style="">
-                                                <!-- <div ng-repeat="item in order.items">
-                                                  <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
-                                                  </span>
-                                                </div> -->
                                                 <div class="langtd" ng-if="order.items[0]">
                                                   <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}" alt="..." ></span>
                                                   <div class="media-body">
@@ -1359,6 +1337,7 @@ color: transparent;
                                                   </div>
 
                                                 </article>
+                                              <br/>
                                                 <article class="media acmt5">
                                                   <span class="customerthumb pull-left thumb-sm" >
                                                     <i class="fa fa-address-card"></i>

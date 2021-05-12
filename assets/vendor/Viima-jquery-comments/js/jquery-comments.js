@@ -1168,17 +1168,17 @@
                 ":o": "\uD83D\uDE2E",
             };
 
-             function escapeSpecialChars(regex) {
-               return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
-             }
-             var emojitext ='';
+            function escapeSpecialChars(regex) {
+                return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+            }
+            /* var emojitext ='';
              var strMessage = document.getElementsByClassName("textarea") ;
              for (var i in emojimap) {
                 var regex = new RegExp(escapeSpecialChars(i), 'gim');
                 var newmsg = strMessage[0].innerText;
                 newmsg = newmsg.replace(regex, emojimap[i]);
                 //strMessage[0].innerHTML = newmsg;
-            }
+            }*/
                 // Move cursor to end
                 //this.moveCursorToEnd(strMessage);
         },   
