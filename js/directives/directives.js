@@ -208,7 +208,7 @@ app.directive("ngDatepicker2", function($window) {
                 format:globalDateFormat
             }).on('dp.change', function(ev) {
                 ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
-                /*element.blur();*/
+                element.blur();
             });
         }
     };
@@ -3118,6 +3118,92 @@ app.directive('itemsAdd', ['$compile', function($compile) { // inject $compile s
         link: function(scope, element, attrs, rootScope) {
             scope.counter = 0;
             element.bind('click', function() {
+                if(angular.element('[id^=totalItem_'+scope.it.itemId+']').length == 0){
+                    scope.counter = 0;
+
+                }else if (angular.element('[id^=totalItem_'+scope.it.itemId+']').length > 0) {
+                    var len = angular.element('[id^=totalItem_'+scope.it.itemId+']').length;
+                    scope.counter = len + 1;
+                }
+                
+                var totaPrice = scope.it.total_price;
+                
+                var quantity = angular.element('#Quantity'+scope.it.itemId).val();
+
+                if (!quantity) {
+                    quantity = 1;
+                }
+
+                var price = angular.element('#priceUnit'+scope.it.itemId).val();
+                if(price == 0){
+                    notification('please select price','warning');
+                    return false;
+                }
+                var temp = price.split(',');
+                var Price_unit = temp[0];
+
+                //check if priceUitt already exists
+                var exists = true;
+                 if(scope.itemPriceUni[scope.it.itemId]){
+                    if(scope.itemPriceUni[scope.it.itemId].length > 0){
+                        angular.forEach(scope.itemPriceUni[scope.it.itemId], function(val,i){
+                            if(exists){
+                                if(val.pricelist == Price_unit){
+                                  exists = false;  
+                                }
+                            }
+                        })
+                    }
+                }else{
+                    scope.itemPriceUni[scope.it.itemId] = [];
+                }
+
+                if(exists){
+                    var amount = temp[1];
+                    var total = amount * quantity;
+
+                    if(scope.it == undefined) {
+                        scope.it = {};
+                    }
+
+                    if(scope.it.quantity==undefined || scope.it.itemPrice==undefined) {
+                        scope.it.quantity = [];
+                        scope.it.itemPrice = [];
+                    }
+                    
+                    scope.it.quantity[scope.counter] = quantity;
+                    scope.it.itemPrice[scope.counter] = amount;
+
+
+                    if (quantity && price != 0) {
+                        var totalItemPrice = parseFloat(total) + parseFloat(totaPrice);
+                        scope.it.total_price = totalItemPrice;
+                        $('#priceUnit'+scope.it.itemId).val(0);
+                        $('#Quantity').val('');
+                        scope.counter++;
+                        scope.itemPriceUni[scope.it.itemId].push({
+                            'quantity': quantity,
+                            'pricelist':Price_unit,
+                            'itemPrice':amount,
+                            'itemTotal':quantity*amount
+                        });
+                        angular.element('#Quantity'+scope.it.itemId).val('');
+                    } else {
+                        notification('Please select item', 'warning');
+                    }
+                }else{
+                    notification('Price list already exists.', 'warning');
+                }
+            });
+        }
+    }
+}]);
+app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile service as dependency
+    return {
+        restrict: 'E',
+        link: function(scope, element, attrs, rootScope) {
+            scope.counter = 0;
+            element.bind('change', function() {
                 if(angular.element('[id^=totalItem_'+scope.it.itemId+']').length == 0){
                     scope.counter = 0;
 

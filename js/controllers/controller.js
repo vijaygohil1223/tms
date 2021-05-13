@@ -11813,8 +11813,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         $scope.itemPriceUni[id][index].itemTotal = price;
         $scope.itemPriceUni[id][index].amtSum = price;
         $scope.itemList[parentIndex].total_price = totalPrice;
+
     }
-    
     //create item
     $scope.createItems = function() {
         $scope.order_idddd = $window.localStorage.orderID;
@@ -12080,7 +12080,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             notification('workflow already attached', 'warning');
                         }
                     } else {
-                        console.log('b');
                         if ($('#jobchainName'+formId).val() == 'select' || $('#jobDropDown'+formId).val() == 'select') {
                             notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
@@ -12260,10 +12259,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }
                     }
 
-                    
-                    $scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
-                    $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
-
+                    $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
+                    $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
+                    var due_timevl1 = angular.element('#due_time'+ formIndex).val();
+                    $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' +due_timevl1).format("YYYY-MM-DD HH:mm");
+            
+                    //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
+                    //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
                     $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
                     $routeParams.id = $scope.itemList[formIndex].itemId
@@ -12274,8 +12276,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $scope.getItems();
 
                         //After update change to global date format dates
-                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
-                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal+' '+'HH:mm');
+                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
+                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
 
                         //log file start
                         $scope.logMaster = {};
@@ -12385,7 +12387,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal+' '+'HH:mm');
                     
                     if($scope.itemList[i].due_date){
-                        $scope.itemList[i].due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
+                        var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
+                        //console.log('vt=',new_due_date.split(" ")[0]);
+                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                        var due_timevl = new_due_date.split(" ")[1];
+                        $scope.itemList[i].due_date = moment($scope.itemList[i].due_date).format($window.localStorage.getItem('global_dateFormat'));
+                        angular.element('#due_time'+i).val(due_timevl);
+
                     }
 
                     if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
