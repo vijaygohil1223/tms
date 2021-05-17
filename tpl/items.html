@@ -117,7 +117,7 @@
                                                          </div>
                                                       </div>
                                                       <div class="col-sm-4">
-                                                      <span>{{ClientCurrency}}</span> <span id="totalItemPrice">{{it.total_price |customNumber}}</span>
+                                                      <span>{{ClientCurrency}}</span> <span id="totalItemPrice">{{it.total_price | NumbersCommaformat}}</span>
                                                       </div>
                                                    </div>
                                                    <div class="col-sm-12 itemsheader">
@@ -209,7 +209,8 @@
                                                       </div>  
                                                     </div>
                                                     <div class="col-sm-2" style="margin-top: 20px;">
-                                                      <a href="javascript:void(0);" ng-click="itemfolderOpen(it.itemId)"><i class="itemFolder" title="Item file folder"></i></a>
+                                                      <a href="javascript:void(0);" ng-click="itemfolderOpen(it.itemId)" style="float: left;"><i class="itemFolder" title="Item file folder"></i></a>
+                                                      <p id="filescount{{$index}}" style="float: right;    margin-top: 5px;"></p>
                                                     </div>
                                                    <div class="col-sm-12">
                                                       <div class="form-group">

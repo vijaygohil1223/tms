@@ -1862,6 +1862,11 @@ $app->get('/itemCurrency/:id','authenticate', function ($id) {
     $result = $item->itemCurrencyGet($id);
     echoResponse(200, $result);
 });
+$app->get('/getFilestotal/:id', 'authenticate',function ($id) {
+    $item = new item ();
+    $result = $item->getFilestotal($id);
+    echoResponse(200, $result);
+});
 // ---------All Languages List ----------//
 $app->get('/allLanguages', 'authenticate',function () {
     $currency = new item ();

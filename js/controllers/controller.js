@@ -11693,11 +11693,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             localStorage['parentId'] = ' ';
             return false;
         }, false);
+
         openWindows.push(itemPopup);
     }
 
     $scope.closeItem = function(frmId) {
         $route.reload();
+
     }
 
     $scope.itemAmountChilprice = function(id) {
@@ -12495,6 +12497,18 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 rest.get().success(function(data) {
                     $scope.dueDate = data;
                 }).error(errorCallback);
+
+                $scope.Filestotal = 0;    
+                rest.path = 'getFilestotal/' + val.itemId;
+                rest.get().success(function(data) {
+                    if(data){
+                        $scope.Filestotal = data[0].totalfile;
+                    }
+                    angular.element('#filescount' + i).text(' ('+$scope.Filestotal+') ');
+                }).error(errorCallback);
+                            
+                
+
             })
         });
     }

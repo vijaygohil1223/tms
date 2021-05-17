@@ -320,6 +320,11 @@ class item {
         return $data;
     }
 
+    public function getFilestotal($id) {
+        $data = $this->_db->rawQuery("SELECT COUNT(`parent_id`) as totalfile FROM `tms_filemanager` WHERE parent_id IN (SELECT `fmanager_id` FROM tms_filemanager WHERE `item_id`=$id) ");
+        return $data;
+    }
+
 }
 
 ?>

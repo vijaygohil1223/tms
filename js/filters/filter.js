@@ -407,3 +407,22 @@ app.filter('currencyCommaformat', function($filter) {
         }
     }
 });
+app.filter('NumbersCommaformat', function($filter) {
+    return function(input) {
+        if (input == undefined || input == 0 || input == '') {
+            return '$ None';
+        } else {
+            var str=input.toString();
+            var numarray=str.split('.');
+            var a=new Array();
+            a=numarray;
+            var a1=a[0];
+            var a2=',00';
+            if(a[1]==undefined && a[1]!=='00'){
+                a[1]='';
+            }else{ var a2 = ','+a[1].slice(0, 2); }
+            var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            return n1 + a2;
+        }
+    }
+});
