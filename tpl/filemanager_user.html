@@ -9,7 +9,7 @@
    .app-header-fixed {
    padding-top:0px;
    }
-   folder,file{
+   folder{
    height: 74px;
    overflow:hidden;
    background-repeat: no-repeat;
@@ -29,6 +29,26 @@
    position: relative;
    box-sizing: border-box;
    }
+   file{
+    height: 40px;
+    /* overflow: hidden; */
+    background-repeat: no-repeat;
+    /* background-position: center 5px; */
+    background-size: 24px 24px;
+    font-size: 11px;
+    /* text-align: center; */
+    font-weight: bold;
+    display: inline-block;
+    cursor: default;
+    width: 100%;
+    /* padding-top: 35px; */
+    margin: 5px 15px;
+    /* vertical-align: top; */
+    border: 1px solid transparent;
+    /* word-wrap: break-word; */
+    position: relative;
+    box-sizing: border-box;
+  }
    .video{background-image: url(assets/img/file_icon/video.png);}
    .png{background-image: url(assets/img/file_icon/png.png);}
    folder { background-image: url(assets/img/file_icon/folder1.png);}
@@ -124,6 +144,45 @@
   padding-top: 30px;
   min-height: 100px;
 }
+.ajax-file-upload-container{
+  margin-bottom: 10px;
+}
+.ajax-file-upload-statusbar{
+  padding: 10px;
+  text-align: initial;
+  min-height: auto;
+  max-height: initial;
+  box-shadow: none;
+  width: 100% !important;
+  float: none;
+  display: inline-flex;
+}
+.ajax-file-upload-preview{
+  margin-left: initial !important; 
+}
+.ajax-file-upload-filename {
+    width: auto;
+    text-align: left;
+    padding-top: initial;
+    margin: auto 15px;
+    bottom: initial;
+    height: initial;
+    float: right;
+    position: relative;
+}
+.ajax-file-upload-cancel {
+    padding: 4px 15px;
+    margin: auto 10px;
+    position: relative;
+    bottom: initial;
+    left: initial;
+    float: right;
+    width: auto;
+}
+.fileshow p{
+  margin:5px 40px;
+}
+
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }
@@ -183,12 +242,13 @@ vendor-prefixes.less:76
                </div>
             </div>
          </nav>
+         <!-- hideShowClass -->
          <div id="filesContainer" context-menu="menuOptionsPaste">
-            <div id="uploadContainer" class="hideShowClass">
+            <div id="uploadContainer" class="">
                <div id="w4-tab1" class="tab-pane active" style="display: block;">
                   <div class="panel panel-default">
                      <div class="panel-heading filehead" style="height: 125px;">
-                        <div id="multipleupload" style="float:left;height: 125px;">Upload</div>
+                        <div id="multipleupload" style="float:left;height: 125px;"><!-- Upload --></div>
                         <a href="javascript:void(0)" style="margin-top:38px;margin-left:0px;padding:4px 10px;" ng-click="uploadClick();"
                            class="btn btn-info">Upload</a>
                      </div>
@@ -202,7 +262,7 @@ vendor-prefixes.less:76
               <div id="no-downloads">
                 <div>
                   <!-- <img src="assets/img/file_icon/nothing.png"/> -->
-                  <a href="javascript:void(0);" ng-click="uploadbtn()" class="glyphicon glyphicon-upload uploadicon" style="font-size:80px;" title="Click to Add or Drag & Drop files"> </a>
+                  <!-- <a href="javascript:void(0);" ng-click="uploadbtn()" class="glyphicon glyphicon-upload uploadicon" style="font-size:80px;" title="Click to Add or Drag & Drop files"> </a> -->
                   <br>
                   <span>Nothing to see here…</span>
                 </div>
@@ -212,13 +272,13 @@ vendor-prefixes.less:76
             <!-- loader image -->
             <div ng-if="showLoder" id="loader"></div>
 
-            <div ng-if="displayfolder.length >= 1 || (displayfolder|filter:filters.search).length>=1" style="margin-top:5px;">
+            <!-- <div ng-if="displayfolder.length >= 1 || (displayfolder|filter:filters.search).length>=1" style="margin-top:5px;">
               <div style="text-align: center;margin:0 auto;">
                 <a href="javascript:void(0);" ng-click="uploadbtn()" class="glyphicon glyphicon-upload uploadicon" style="font-size:50px;"  title="Click to Add or Drag & Drop files"></a>
               </div>
-            </div>
+            </div> -->
 
-            <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" style="float:left" >
+            <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" style="" class="fileshow">
 
                <!-- Folder display -->
                <folder ng-if="display.f_id=='0' && display.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)"><p>{{display.name.substr(0,22)}}</p></folder>

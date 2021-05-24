@@ -142,7 +142,7 @@
                                                       </div>
                                                       <div class="col-sm-2" style="padding-left:5px;padding-right:5px;">
                                                          <div class="form-group">
-                                                            <input type="text" class="form-control price" name="itemTotal" id="itemTotal{{it.itemId}}" ng-change="changeItemField(it.itemId,$index,$parent.$index,1)" ng-model="it1.itemTotal" allow-decimal-numbers/>
+                                                            <input type="text" class="form-control price" name="itemTotal" id="itemTotal{{it.itemId}}" ng-change="changeItemField(it.itemId,$index,$parent.$index,1)" ng-model="it1.itemTotal" allow-decimal-comma-number/>
                                                           <span name="amtSum" id="amtSum{{it.itemId}}" ng-model="it1.amtSum"  style="visibility: hidden;">{{it1.itemTotal |customNumber}}</span>  
                                                          </div>
                                                       </div>
@@ -230,7 +230,7 @@
                                                     <div class="form-group">
                                                         <label>Due Time</label>
                                                         <input timepicker1 id="due_time{{$index}}" type="text" class="form-control" name="due_time" 
-                                                        ng-model="due_time" required onkeydown="return true"/>
+                                                        ng-model="due_time" required onkeydown="return true" allowtest/>
                                                     </div>
                                                 </div>
                                                    <!-- <div class="col-sm-12">

@@ -397,7 +397,6 @@ app.filter('filterJobs', function() {
 
 //------------ Currency formate ----------------//
 app.filter('currencyCommaformat', function($filter) {
-
     return function(input) {
         if (input == undefined || input == 0 || input == '') {
             return '$ None';
@@ -410,9 +409,10 @@ app.filter('currencyCommaformat', function($filter) {
 app.filter('NumbersCommaformat', function($filter) {
     return function(input) {
         if (input == undefined || input == 0 || input == '') {
-            return '$ None';
+            return 0;
         } else {
-            var str=input.toString();
+            var str1 = input.toFixed(2);
+            var str=str1.toString();
             var numarray=str.split('.');
             var a=new Array();
             a=numarray;

@@ -474,6 +474,46 @@ function pasteHtmlAtCaret(html, selectPastedContent) {
         }
     }
 }
+function numberFormatComma(input) {
+    if (input == undefined || input == 0 || input == '') {
+        return '';
+    } else {
+        var str=input.toString();
+        var numarray=str.split('.');
+        var a=new Array();
+        a=numarray;
+        var a1=a[0];
+        var n1='';
+        var n2='';
+        if(a[1]==undefined && a[1]!=='00'){
+            a[1]='';
+        }else{ 
+            var n2 = ','+a[1].slice(0, 2);
+            //var n2 = ','+a[1];
+        }
+        var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+        return n1 + n2;
+    }
+}
+function numberFormatCommaToPoint(input) {
+    if (input == undefined || input == 0 || input == '') {
+        return '';
+    } else {
+        var str=input.toString();
+        var numarray=str.split(',');
+        var a=new Array();
+        a=numarray;
+        var a1=a[0];
+        var n2='';
+        var n1='';
+        if(a[1]==undefined && a[1]!=='00'){
+            a[1]='';
+        }else{ var n2 = '.'+a[1].slice(0, 2); }
+        //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "");
+        var n1 = a1.toString().replace('.', "");
+        return n1 + n2;
+    }
+}
 app.controller('loginController', function($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope) {
     /*-------Check for login--------*/
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -3483,7 +3523,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
         $('.ajax-upload-dragdrop:eq(1)').hide();
     }
-
     
     if($scope.clientId != null){
         if($scope.clientId.trim().length == 0){
@@ -3548,8 +3587,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             fileName: "myfile",
             acceptFiles: "png",
             showPreview: true,
-            previewHeight: "100px",
-            previewWidth: "100px",
+            previewHeight: "50px",
+            previewWidth: "50px",
             maxFileCount: 5,
             maxFileSize: 15*1024*1024,
             showDelete: true,
@@ -11766,14 +11805,21 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.itemQuentityDelete = function(id,index,parentIndex) {
         
-        var totalPrice = $scope.itemList[parentIndex].total_price;
+        var totalPrice1 = $scope.itemList[parentIndex].total_price;
+        console.log('totalPrice',totalPrice1);
+        var totalPrice = totalPrice1.toFixed(2);
+        console.log('totalPrice=',totalPrice);
         
-        var price = $scope.itemPriceUni[id][index].itemTotal;
+        var price1 = $scope.itemPriceUni[id][index].itemTotal;
+        console.log('price1',price1);
+        
+        var price = numberFormatCommaToPoint(price1);
+        console.log('price',price);
         
         if (totalPrice == price) {
            $scope.itemList[parentIndex].total_price = 0;
         } else {
-            var total = totalPrice - price;
+           var total = totalPrice - price;
            $scope.itemList[parentIndex].total_price = total;
         }
         
@@ -11784,7 +11830,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.itemPriceUni = [];
     //change item price module
-    $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
+$scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
         var quantity = $scope.itemPriceUni[id][index].quantity;
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
         var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
@@ -11797,10 +11843,25 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             itemTtl = 0;
         }
         var price = quantity * parseFloat(itemPrice);
-        var oldPrice = $scope.itemPriceUni[id][index].itemTotal;
+        var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
+        if(!oldPrice1){
+            var oldPrice = 0;
+        }else{
+            //var oldPrice = numberFormatCommaToPoint(oldPrice1);
+            
+            if(oldPrice1.toString().includes(',')==true){
+                var oldPrice = numberFormatCommaToPoint(oldPrice1);
+            console.log('AA');
+            }else{
+                var oldPrice = oldPrice1;
+                console.log('BB');
+            }
+        }
         if(itemChng>0){
-            price = itemTtl;
-
+            price = numberFormatCommaToPoint(itemTtl);
+            if(!price){
+                price=0;
+            }
             //oldPrice = amtTotal;    
             if (typeof itemAmt !== 'undefined'){
                 var oldPrice = $scope.itemPriceUni[id][index].amtSum;
@@ -11809,15 +11870,20 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 var oldPrice = quantity * parseFloat(itemPrice);
             }
         }
+        console.log('oldPrice',oldPrice);
+        var price2 = price;
         var total = $scope.itemList[parentIndex].total_price;
         var totalPrice = parseFloat(total) + parseFloat(price) - parseFloat(oldPrice);
-        
-        $scope.itemPriceUni[id][index].itemTotal = price;
+        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
+        if(itemChng>0){
+            $scope.itemPriceUni[id][index].itemTotal = itemTtl;
+        }else{
+            $scope.itemPriceUni[id][index].itemTotal = price;
+        }
         $scope.itemPriceUni[id][index].amtSum = price;
         $scope.itemList[parentIndex].total_price = totalPrice;
-
     }
-    //create item
+        //create item
     $scope.createItems = function() {
         $scope.order_idddd = $window.localStorage.orderID;
 
@@ -12030,6 +12096,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 if ($scope.itemList[formIndex].itemId) {
                     var itemPriceUnit = [];
                     itemPriceUnit = $scope.itemPriceUni[formId];
+                    if(itemPriceUnit){
+                        for(var j=0;j<itemPriceUnit.length;j++){
+                            itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                        }
+                    }
+                    console.log('itemPriceUnit',itemPriceUnit);
                     
                     $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
                     delete $scope.itemList[formIndex]['itemPrice'];
@@ -12265,7 +12337,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
                     var due_timevl1 = angular.element('#due_time'+ formIndex).val();
                     $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' +due_timevl1).format("YYYY-MM-DD HH:mm");
-            
                     //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
                     //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
@@ -12314,12 +12385,16 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.item.item_number = id;
                     $scope.item.item_number = $scope.item.item_number.replace(/^0+/, '');
                     var itemPriceUnit = [];
-
+                    console.log('here we go');
                     for (var i = 1; i <= angular.element("[id^=totalItem_]").length; i++) {
                         var quantity = angular.element('#itemQuantity' + i).val();
                         var pricelist = angular.element('#priceList' + i).text();
                         var itemPrice = angular.element('#itemPrice' + i).val();
-                        var itemTotal = angular.element('#itemTotal' + i).text();
+                        var itemTotal1 = angular.element('#itemTotal' + i).text();
+                        console.log('itemTotal1=',itemTotal1);
+                        var itemTotal = numberFormatCommaToPoint(itemTotal1);
+                        console.log('itemTotal=',itemTotal);
+                        
                         itemPriceUnit.push({
                             'quantity': quantity,
                             'pricelist': pricelist,
@@ -12328,7 +12403,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                         });
                     }
-
+                    
                     $scope.price = JSON.stringify(itemPriceUnit);
                     $scope.total_price = angular.element('#totalItemPrice').text();
                     $scope.item_name = angular.element('#item_name').text();
@@ -12383,8 +12458,14 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.itemList[i].manager = data.project_manager;
                     $scope.itemList[i].coordinator = data.project_coordinator;
                     if(val.price){
+
                         $scope.itemPriceUni[val.itemId]= JSON.parse(val.price);
+                        for(var j=0;j<$scope.itemPriceUni[val.itemId].length;j++){
+                            $scope.itemPriceUni[val.itemId][j].itemTotal = numberFormatComma($scope.itemPriceUni[val.itemId][j].itemTotal);
+                        }
                     }
+                    console.log('dttt=',$scope.itemPriceUni[val.itemId][0].itemTotal);
+                    console.log('length=',$scope.itemPriceUni[val.itemId].length);
                     
                     $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal+' '+'HH:mm');
                     

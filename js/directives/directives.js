@@ -3267,11 +3267,14 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                         $('#priceUnit'+scope.it.itemId).val(0);
                         $('#Quantity').val('');
                         scope.counter++;
+                        var itemTotal1 = quantity*amount;
+                        var itemTotal = itemTotal1.toString().replace('.', ',');  
+                
                         scope.itemPriceUni[scope.it.itemId].push({
                             'quantity': quantity,
                             'pricelist':Price_unit,
                             'itemPrice':amount,
-                            'itemTotal':quantity*amount
+                            'itemTotal':itemTotal
                         });
                         angular.element('#Quantity'+scope.it.itemId).val('');
                     } else {
@@ -4275,6 +4278,66 @@ app.directive('allowDecimalNumbers', function () {
                 } else {  
                     event.preventDefault();
                     return false;  
+                }  
+            });  
+        }  
+    }  
+});
+
+app.directive('allowDecimalCommaNumber', function () {  
+    return {  
+        restrict: 'A',  
+        link: function (scope, elm, attrs, ctrl) {  
+            elm.on('keydown', function (event) {  
+                var $input = $(this);  
+                var value = $input.val();  
+                //value1 = value.replace(/[a-z]/g, '')  
+                value = value.replace(/[^0-9\,\.]/g, '')  
+                var findsComma = new RegExp(/\,/g)  
+                var findsComma = value.match(findsComma)  
+                if (findsComma != null && ([188].indexOf(event.which) > -1)) {  
+                    event.preventDefault();  
+                    return false;  
+                }  
+                $input.val(value);  
+                //$input.val(value1);  
+                var containsDot = new RegExp(/\./g)  
+                var containsDot = $input.val().match(containsDot)  
+                if (containsDot != null) {  
+                    return true;  
+                }
+                if (event.which == 64 || event.which == 16) {  
+                    // numbers  
+                    return false;  
+                } if ([8, 13, 27, 37, 38, 39, 40, 110].indexOf(event.which) > -1) {  
+                    // backspace, enter, escape, arrows  
+                    return true;  
+                } else if (event.which >= 48 && event.which <= 57) {  
+                    // numbers  
+                    return true;  
+                } else if (event.which >= 96 && event.which <= 105) {  
+                    // numpad number  
+                    return true;  
+                } else if ([46, 110, 190, 188].indexOf(event.which) > -1) {  
+                    // dot and numpad dot comma 
+                    return true;  
+                } else {  
+                    event.preventDefault();
+                    return false;  
+                }  
+            });  
+        }  
+    }  
+}); 
+
+app.directive('allowtest', function () {  
+    return {  
+        restrict: 'A',  
+        link: function (scope, elm, attrs, ctrl) {  
+            elm.on('keydown', function (event) {  
+                if ([37, 38, 39, 40, 110].indexOf(event.which) > -1) {  
+                    // backspace, enter, escape, arrows  
+                    return true;  
                 }  
             });  
         }  
