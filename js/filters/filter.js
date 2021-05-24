@@ -409,7 +409,7 @@ app.filter('currencyCommaformat', function($filter) {
 app.filter('NumbersCommaformat', function($filter) {
     return function(input) {
         if (input == undefined || input == 0 || input == '') {
-            return 0;
+            return '';
         } else {
             var str1 = input.toFixed(2);
             var str=str1.toString();

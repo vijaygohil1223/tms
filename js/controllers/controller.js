@@ -473,7 +473,7 @@ function pasteHtmlAtCaret(html, selectPastedContent) {
             range.select();
         }
     }
-}
+} 
 function numberFormatComma(input) {
     if (input == undefined || input == 0 || input == '') {
         return '';
@@ -510,7 +510,7 @@ function numberFormatCommaToPoint(input) {
             a[1]='';
         }else{ var n2 = '.'+a[1].slice(0, 2); }
         //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "");
-        var n1 = a1.toString().replace('.', "");
+        var n1 = a1.toString().replace(/\./g, "");
         return n1 + n2;
     }
 }
@@ -11842,20 +11842,19 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
         if(!itemTtl){
             itemTtl = 0;
         }
+        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
         var price = quantity * parseFloat(itemPrice);
         var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
         if(!oldPrice1){
             var oldPrice = 0;
         }else{
-            //var oldPrice = numberFormatCommaToPoint(oldPrice1);
+            var oldPrice = numberFormatCommaToPoint(oldPrice1);
             
-            if(oldPrice1.toString().includes(',')==true){
+            /*if(oldPrice1.toString().includes(',')==true){
                 var oldPrice = numberFormatCommaToPoint(oldPrice1);
-            console.log('AA');
             }else{
                 var oldPrice = oldPrice1;
-                console.log('BB');
-            }
+            }*/
         }
         if(itemChng>0){
             price = numberFormatCommaToPoint(itemTtl);
@@ -11870,15 +11869,16 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                 var oldPrice = quantity * parseFloat(itemPrice);
             }
         }
-        console.log('oldPrice',oldPrice);
-        var price2 = price;
+
         var total = $scope.itemList[parentIndex].total_price;
-        var totalPrice = parseFloat(total) + parseFloat(price) - parseFloat(oldPrice);
+        
+        var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
         //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
         if(itemChng>0){
             $scope.itemPriceUni[id][index].itemTotal = itemTtl;
         }else{
-            $scope.itemPriceUni[id][index].itemTotal = price;
+            //$scope.itemPriceUni[id][index].itemTotal = price;
+            $scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price);
         }
         $scope.itemPriceUni[id][index].amtSum = price;
         $scope.itemList[parentIndex].total_price = totalPrice;
@@ -12385,7 +12385,6 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                     $scope.item.item_number = id;
                     $scope.item.item_number = $scope.item.item_number.replace(/^0+/, '');
                     var itemPriceUnit = [];
-                    console.log('here we go');
                     for (var i = 1; i <= angular.element("[id^=totalItem_]").length; i++) {
                         var quantity = angular.element('#itemQuantity' + i).val();
                         var pricelist = angular.element('#priceList' + i).text();
