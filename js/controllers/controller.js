@@ -2762,6 +2762,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             previewContainer.attr('src', DefaultImgPath);
                         }
 
+
                     });
                 });
 
@@ -3583,12 +3584,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         uploadObj = $("#multipleupload").uploadFile({
             multiple: true,
             dragDrop: true,
-            dragDropStr: "<span><b>Drag & Drop Files</b></span>",
+            dragDropStr: "<span class='spandragdrop'><b>Drag & Drop Files</b></span>",
             fileName: "myfile",
             acceptFiles: "png",
             showPreview: true,
-            previewHeight: "50px",
-            previewWidth: "50px",
+            previewHeight: "35px",
+            previewWidth: "35px",
             maxFileCount: 5,
             maxFileSize: 15*1024*1024,
             showDelete: true,
@@ -3657,8 +3658,37 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             previewContainer.css('display', 'block', 'margin-left', '40px');
                             previewContainer.css('margin-left', '55px');
                             var DefaultImgPath = "assets/img/file_icon/fileicon.png";
+                            if(fileExtension == 'docx' || fileExtension == 'docx'){ 
+                               DefaultImgPath = "assets/img/file_icon/doc.png"; 
+                            }
+                            if(fileExtension == 'docx' || fileExtension == 'docx'){ 
+                               DefaultImgPath = "assets/img/file_icon/doc.png"; 
+                            }
+                            if(fileExtension == 'xlsx' || fileExtension == 'xlsm' || fileExtension == 'csv'){ 
+                               DefaultImgPath = "assets/img/file_icon/xls.png"; 
+                            }
+                            if(fileExtension == 'pdf'){ 
+                               DefaultImgPath = "assets/img/file_icon/pdf.png"; 
+                            }
+                            if(fileExtension == 'ppt'){ 
+                               DefaultImgPath = "assets/img/file_icon/ppt.png"; 
+                            }
+                            if(fileExtension == 'zip' || fileExtension == 'gz'  || fileExtension == 'rar'){ 
+                               DefaultImgPath = "assets/img/file_icon/zip.png"; 
+                            }
+                            if(fileExtension == 'mp3' || fileExtension == 'wav'  || fileExtension == 'wma'){ 
+                               DefaultImgPath = "assets/img/file_icon/mp3.png"; 
+                            }
+                            if(fileExtension == 'mp4' || fileExtension == 'wmv'  || fileExtension == 'avi'  || fileExtension == '3gp'  || fileExtension == 'mov'  || fileExtension == 'vob'){ 
+                               DefaultImgPath = "assets/img/file_icon/video.png"; 
+                            }
+                            if(fileExtension == 'txt' || fileExtension == 'html'  || fileExtension == 'htm'  || fileExtension == 'js'  || fileExtension == 'css'  || fileExtension == 'vob'  || fileExtension == 'sql'  || fileExtension == 'tiff'  || fileExtension == 'ttf'){ 
+                               DefaultImgPath = "assets/img/file_icon/video.txt"; 
+                            }
                             previewContainer.attr('src', DefaultImgPath);
                         }
+                        console.log('fileExtension',fileExtension);
+                         jQuery('.ajax-file-upload-cancel').html('<i class="fa fa-close"></i>');
 
                     });
                 });
@@ -3667,8 +3697,15 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             },
         }); 
         $('.ajax-upload-dragdrop:eq(1)').hide();
-    }, 1000);
+        //angular.element('.ajax-file-upload-cancel').html('test')
+        jQuery('.ajax-file-upload-cancel').html('test');
+        console.log('test');
 
+    }, 1000);
+    $timeout(function() {
+        $('.ajax-upload-dragdrop:eq(1)').hide();
+        jQuery('.ajax-file-upload-cancel').html('test');
+    }, 100);    
     $scope.addToCopy = function(fid) {
         var chkForClass = angular.element('#' + fid).hasClass('activeselect');
         var alreadyInCopy = false;
@@ -14413,11 +14450,11 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                     }
                 });
                 
-                $(".comment-wrapper").each(function(i,v) {
+                /*$(".comment-wrapper").each(function(i,v) {
                     var dateTime = $(this).find('time')[0].innerText;
                     dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
                     $(this).find('time')[0].innerText = dateTime;
-                });
+                });*/
             }, 600);
 
             commentsArray = data;

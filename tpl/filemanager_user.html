@@ -9,7 +9,7 @@
    .app-header-fixed {
    padding-top:0px;
    }
-   folder{
+   folder2{
    height: 74px;
    overflow:hidden;
    background-repeat: no-repeat;
@@ -29,7 +29,7 @@
    position: relative;
    box-sizing: border-box;
    }
-   file{
+  folder, file{
     height: 40px;
     /* overflow: hidden; */
     background-repeat: no-repeat;
@@ -41,13 +41,14 @@
     display: inline-block;
     cursor: default;
     width: 100%;
-    /* padding-top: 35px; */
+    padding: 7px 10px; 
     margin: 5px 15px;
     /* vertical-align: top; */
     border: 1px solid transparent;
     /* word-wrap: break-word; */
     position: relative;
     box-sizing: border-box;
+    background-origin: content-box;
   }
    .video{background-image: url(assets/img/file_icon/video.png);}
    .png{background-image: url(assets/img/file_icon/png.png);}
@@ -145,7 +146,7 @@
   min-height: 100px;
 }
 .ajax-file-upload-container{
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 .ajax-file-upload-statusbar{
   padding: 10px;
@@ -171,7 +172,7 @@
     position: relative;
 }
 .ajax-file-upload-cancel {
-    padding: 4px 15px;
+    padding: 0px 5px;
     margin: auto 10px;
     position: relative;
     bottom: initial;
@@ -182,7 +183,38 @@
 .fileshow p{
   margin:5px 40px;
 }
-
+#uploadContainer .panel.panel-default {
+  float: initial; 
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+}
+.ajax-upload-dragdrop{
+  margin: 0 auto;
+  text-align: center;
+}
+.ajax-file-upload{
+  margin-top: 42px;
+}
+.spandragdrop{
+    float: left;
+    position: absolute;
+    text-align: center;
+    margin: -10px 2px 0px -82px;
+}
+#multipleupload{
+  float: initial !important;
+}
+.brdrfile{
+  border: 2px dashed #c2cdda !important;
+  border-radius: 14px;
+}
+.uploadbtn1{
+  margin: -80px 0 0px 0;
+}
+.ajax-file-upload-container:nth-child(3){
+  border:none;
+}
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }
@@ -246,10 +278,10 @@ vendor-prefixes.less:76
          <div id="filesContainer" context-menu="menuOptionsPaste">
             <div id="uploadContainer" class="">
                <div id="w4-tab1" class="tab-pane active" style="display: block;">
-                  <div class="panel panel-default">
-                     <div class="panel-heading filehead" style="height: 125px;">
+                  <div class="panel panel-default" style="width:70%;border:none;margin:10px auto;">
+                     <div class="panel-heading filehead brdrfile">
                         <div id="multipleupload" style="float:left;height: 125px;"><!-- Upload --></div>
-                        <a href="javascript:void(0)" style="margin-top:38px;margin-left:0px;padding:4px 10px;" ng-click="uploadClick();"
+                        <a href="javascript:void(0)" style="margin-top:-30px;margin-left:0px;padding:4px 10px;" ng-click="uploadClick();"
                            class="btn btn-info">Upload</a>
                      </div>
                   </div>
