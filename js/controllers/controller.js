@@ -3640,7 +3640,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.filedata.filetype = fileType;
                 $scope.filedata.size = getFileSize[1];
                 rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) {}).error(errorCallback);
+                rest.post($scope.filedata).success(function(data) { }).error(errorCallback);
+                jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
+
             },
             onSelect: function(files) {
                 var isFilesAvailable = angular.element('.ajax-file-upload-container').css('border', '1px dotted #ddd');
@@ -3687,8 +3689,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             }
                             previewContainer.attr('src', DefaultImgPath);
                         }
-                        console.log('fileExtension',fileExtension);
-                         jQuery('.ajax-file-upload-cancel').html('<i class="fa fa-close"></i>');
+                            jQuery('.ajax-file-upload-cancel').html('<i class="fa fa-close"></i>');
 
                     });
                 });
@@ -3697,15 +3698,15 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             },
         }); 
         $('.ajax-upload-dragdrop:eq(1)').hide();
+        jQuery('.ajax-file-upload-cancel').html('<i class="fa fa-close"></i>');
+        jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
+
         //angular.element('.ajax-file-upload-cancel').html('test')
-        jQuery('.ajax-file-upload-cancel').html('test');
-        console.log('test');
 
     }, 1000);
     $timeout(function() {
         $('.ajax-upload-dragdrop:eq(1)').hide();
-        jQuery('.ajax-file-upload-cancel').html('test');
-    }, 100);    
+    }, 200);    
     $scope.addToCopy = function(fid) {
         var chkForClass = angular.element('#' + fid).hasClass('activeselect');
         var alreadyInCopy = false;
@@ -12621,7 +12622,7 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                     if(data){
                         $scope.Filestotal = data[0].totalfile;
                     }
-                    angular.element('#filescount' + i).text(' ('+$scope.Filestotal+') ');
+                    angular.element('#filescount' + i).text($scope.Filestotal);
                 }).error(errorCallback);
                             
                 
