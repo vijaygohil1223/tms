@@ -2619,7 +2619,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         
         rest.path = 'filefolderGet/' + id + '/' + type + '/' + externalResourceUserId;
         rest.get().success(function(data) {
-            console.log("data", data.length);
             $window.localStorage.setItem("sourceFolderCount",data.length);
         }).error(errorCallback);
     }
@@ -2637,7 +2636,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
             rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
             rest.get().success(function(data) {
-                console.log("data", data);
                 $window.localStorage.setItem("parentId", data[0].fmanager_id);
 
                 //setting variable for jobfilecounter
@@ -2988,7 +2986,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     if ($window.localStorage.getItem("parentId") != " ") {
         var id = $window.localStorage.getItem("parentId");
         var externalResourceUserId = null;
-        console.log("$routeParams.id", $routeParams.id);
         rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
         //rest.path = 'filefolderGet/' + id + '/' + $routeParams.id;
         rest.get().success(function(data) {
@@ -3237,7 +3234,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'fileManagerGet';
         rest.get().success(function(data) {
             $scope.displayfolder = data;
-            console.log('$scope.displayfolder-1=',$scope.displayfolder);
             //Change ItemFolder Name to item001 -> Files-001
             angular.forEach($scope.displayfolder, function(val, i) {
                 if (val.item_id != 0) {
@@ -11844,15 +11840,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     $scope.itemQuentityDelete = function(id,index,parentIndex) {
         
         var totalPrice1 = $scope.itemList[parentIndex].total_price;
-        console.log('totalPrice',totalPrice1);
         var totalPrice = totalPrice1.toFixed(2);
-        console.log('totalPrice=',totalPrice);
         
         var price1 = $scope.itemPriceUni[id][index].itemTotal;
-        console.log('price1',price1);
         
         var price = numberFormatCommaToPoint(price1);
-        console.log('price',price);
         
         if (totalPrice == price) {
            $scope.itemList[parentIndex].total_price = 0;
@@ -12139,7 +12131,6 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                             itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
                         }
                     }
-                    console.log('itemPriceUnit',itemPriceUnit);
                     
                     $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
                     delete $scope.itemList[formIndex]['itemPrice'];
@@ -12428,9 +12419,7 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                         var pricelist = angular.element('#priceList' + i).text();
                         var itemPrice = angular.element('#itemPrice' + i).val();
                         var itemTotal1 = angular.element('#itemTotal' + i).text();
-                        console.log('itemTotal1=',itemTotal1);
                         var itemTotal = numberFormatCommaToPoint(itemTotal1);
-                        console.log('itemTotal=',itemTotal);
                         
                         itemPriceUnit.push({
                             'quantity': quantity,
@@ -12501,8 +12490,8 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                             $scope.itemPriceUni[val.itemId][j].itemTotal = numberFormatComma($scope.itemPriceUni[val.itemId][j].itemTotal);
                         }
                     }
-                    console.log('dttt=',$scope.itemPriceUni[val.itemId][0].itemTotal);
-                    console.log('length=',$scope.itemPriceUni[val.itemId].length);
+                    //console.log('dttt=',$scope.itemPriceUni[val.itemId][0].itemTotal);
+                    //console.log('length=',$scope.itemPriceUni[val.itemId].length);
                     
                     $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal+' '+'HH:mm');
                     
@@ -12776,7 +12765,6 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                     if(data.status == 422){
                         notification(data.msg,'error');
                     }else{
-                        console.log("itemId", itemId);
                         var hideId = itemId.split('-')[0];
                         $('#item-form'+hideId).hide('slow', function(){ $('#item-form'+hideId).remove(); });
                         $('#trRowId'+hideId).hide('slow', function(){ $('#trRowId'+hideId).remove(); });

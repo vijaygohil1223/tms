@@ -4330,7 +4330,7 @@ app.directive('allowDecimalCommaNumber', function () {
     }  
 }); 
 
-app.directive('allowtest', function () {  
+app.directive('allowttimefrmt', function () {  
     return {  
         restrict: 'A',  
         link: function (scope, elm, attrs, ctrl) {  
