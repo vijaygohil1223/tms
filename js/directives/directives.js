@@ -204,7 +204,8 @@ app.directive("ngDatepicker2", function($window) {
                     vertical: 'bottom'
                 },
                 // minDate: moment().subtract(1,'d'),
-                minDate:new Date(),
+                //minDate:new Date(),
+                //useCurrent:false,
                 format:globalDateFormat
             }).on('dp.change', function(ev) {
                 ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
@@ -4330,7 +4331,7 @@ app.directive('allowDecimalCommaNumber', function () {
     }  
 }); 
 
-app.directive('allowttimefrmt', function () {  
+app.directive('allowtimefrmt', function () {  
     return {  
         restrict: 'A',  
         link: function (scope, elm, attrs, ctrl) {  
@@ -4342,4 +4343,60 @@ app.directive('allowttimefrmt', function () {
             });  
         }  
     }  
-}); 
+});
+
+app.directive('allowtimefrmtTest', function () {  
+    return {  
+        restrict: 'A',  
+        link: function (scope, elm, attrs, ctrl) {  
+            elm.on('keyup', function (event) {  
+                var $input = $(this);  
+                var value = $input.val();
+                
+                value = value.replace(/[^0-9\:]/g, '')  
+                var findsColon = new RegExp(/\:/g)  
+                var containsColon = value.match(findsColon)  
+                if (containsColon != null && ([59,186].indexOf(event.which) > -1)) {  
+                    event.preventDefault();  
+                    return false;  
+                }  
+                $input.val(value);  
+                var timeStr = $input.val();
+                console.log('value',timeStr.toString())  
+                var valid = (timeStr.search(/^\d{2}:\d{2}$/) != -1) &&
+            (timeStr.substr(0,2) >= 0 && timeStr.substr(0,2) <= 24) &&
+            (timeStr.substr(3,2) >= 0 && timeStr.substr(3,2) <= 59) &&
+            (timeStr.substr(6,2) >= 0 && timeStr.substr(6,2) <= 59);
+                var t1= timeStr.substr(0,2);
+                /*if(t1 <=0 || t1>=24){
+                    console.log('t1',t1);
+                    console.log('yes',timeStr.substr(0,2));
+                    console.log('yes',timeStr.substr(3,2));
+                    event.preventDefault();  
+                    return false;
+                }*/
+                if(valid){ 
+                    return true; 
+                }else if (event.which == 64 || event.which == 16) {  
+                    // numbers  
+                    return false;  
+                }else if ([8, 13, 27, 37, 38, 39, 40, 110].indexOf(event.which) > -1) {  
+                    // backspace, enter, escape, arrows  
+                    return true;  
+                } else if (event.which >= 48 && event.which <= 57) {  
+                    // numbers  
+                    return true;  
+                } else if (event.which >= 96 && event.which <= 105) {  
+                    // numpad number  
+                    return true;  
+                } else if ([59,186].indexOf(event.which) > -1) {  
+                    // dot and numpad dot  
+                    return true;  
+                } else {  
+                    event.preventDefault();
+                    return false;  
+                }  
+            });  
+        }  
+    }  
+});  

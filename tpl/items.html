@@ -222,7 +222,7 @@
                                                       <div class="form-group">
                                                          <label class="control-label">Due Date</label> 
                                                          <input ng-Datepicker2 id="showEditedByName_date{{it.itemId}}" type="text"
-                                                            class="form-control end_date" name="end_date" ng-model="it.due_date" required onkeydown="return false"/>
+                                                            class="form-control end_date" name="end_date" ng-model="it.due_date" required autocomplete="off" onkeydown="return false"/>
                                                           
                                                       </div>
                                                    </div>
@@ -230,7 +230,7 @@
                                                     <div class="form-group">
                                                         <label>Due Time</label>
                                                         <input timepicker1 id="due_time{{$index}}" type="text" class="form-control" name="due_time" 
-                                                        ng-model="due_time" required onkeydown="return true" allowttimefrmt/>
+                                                        ng-model="due_time" required onkeydown="return true" allowtimefrmt />
                                                     </div>
                                                 </div>
                                                    <!-- <div class="col-sm-12">
