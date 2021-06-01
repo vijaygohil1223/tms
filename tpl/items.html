@@ -210,7 +210,7 @@
                                                     </div>
                                                     <div class="col-sm-2" style="margin-top: 20px;">
                                                       <a href="javascript:void(0);" ng-click="itemfolderOpen(it.itemId)" style="float: left;"><i class="itemFolder" title="Item file folder"></i></a>
-                                                      <p id="filescount{{$index}}" style="float: right;    position:absolute;margin: -5px 0 0 -11px" class="badge bg-info"></p>
+                                                      <p id="filescount{{it.itemId}}" style="float: right;    position:absolute;margin: -5px 0 0 -11px" class="badge bg-info"></p>
                                                     </div>
                                                    <div class="col-sm-12">
                                                       <div class="form-group">
@@ -222,7 +222,7 @@
                                                       <div class="form-group">
                                                          <label class="control-label">Due Date</label> 
                                                          <input ng-Datepicker2 id="showEditedByName_date{{it.itemId}}" type="text"
-                                                            class="form-control end_date" name="end_date" ng-model="it.due_date" required autocomplete="off" onkeydown="return false"/>
+                                                            class="form-control end_date" name="end_date" ng-model="it.due_date" required autocomplete="" onkeydown="return false"/>
                                                           
                                                       </div>
                                                    </div>

@@ -3656,10 +3656,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             previewContainer.css('display', 'block', 'margin-left', '40px');
                             previewContainer.css('margin-left', '55px');
                             var DefaultImgPath = "assets/img/file_icon/fileicon.png";
-                            if(fileExtension == 'docx' || fileExtension == 'docx'){ 
-                               DefaultImgPath = "assets/img/file_icon/doc.png"; 
-                            }
-                            if(fileExtension == 'docx' || fileExtension == 'docx'){ 
+                            if(fileExtension == 'docx' || fileExtension == 'doc'){ 
                                DefaultImgPath = "assets/img/file_icon/doc.png"; 
                             }
                             if(fileExtension == 'xlsx' || fileExtension == 'xlsm' || fileExtension == 'csv'){ 
@@ -11764,15 +11761,38 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
         itemPopup.addEventListener("beforeunload", function() {
             localStorage['parentId'] = ' ';
+            // files count 
+            rest.path = 'getFilestotal/' + id;
+                rest.get().success(function(data) {
+                    if(data){
+                        $scope.Filestotal = data[0].totalfile;
+                    }
+                    angular.element('#filescount' + id).text($scope.Filestotal);
+                }).error(errorCallback);
+            // files couunt end     
             return false;
         }, false);
 
         openWindows.push(itemPopup);
+
+        var pollTimer = window.setInterval(function() {
+        if (itemPopup.closed !== false) { // !== is required for compatibility with Opera
+            window.clearInterval(pollTimer);
+            // files count //
+            rest.path = 'getFilestotal/' + id;
+                rest.get().success(function(data) {
+                    if(data){
+                        $scope.Filestotal = data[0].totalfile;
+                    }
+                    angular.element('#filescount' + id).text($scope.Filestotal);
+                }).error(errorCallback);
+            // files couunt end //
+            }
+        }, 200);
     }
 
     $scope.closeItem = function(frmId) {
         $route.reload();
-
     }
 
     $scope.itemAmountChilprice = function(id) {
@@ -12611,7 +12631,7 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                     if(data){
                         $scope.Filestotal = data[0].totalfile;
                     }
-                    angular.element('#filescount' + i).text($scope.Filestotal);
+                    angular.element('#filescount' + val.itemId).text($scope.Filestotal);
                 }).error(errorCallback);
                             
                 
@@ -14429,7 +14449,7 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
         rest.get().success(function(data) {
             setTimeout(function() {
                 angular.forEach(data, function(val, i) {
-                    if (val.content == "") {
+                    if (val.content == "" || val.content == null) {
                         var dataId = val.id;
                         var hrefClass = 'attachment';
                         var hrefTarget = '_blank';
@@ -20298,10 +20318,23 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
                                 'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'];
                             
                             var iconClass = 'fa fa-file-o';
+                            // File Extension name
+                            var extName = '';
+                            var extParts = val.fileURL.split('/');
+                            var extFileName = extParts[extParts.length - 1];
+                            var extFileName = extFileName.split('?')[0];
+                            extName = extFileName.split('.')[1];
+                            
                             if(availableIcons.indexOf(file_format) > 0) {
                                 iconClass = 'fa fa-file-' + file_format + '-o';
                             } else if(availableIcons.indexOf(file_type) > 0) {
                                 iconClass = 'fa fa-file-' + file_type + '-o';
+                            }else if(extName == 'docx'){
+                                iconClass = 'fa fa-file-word-o';
+                            }else if(extName == 'xlsx' || extName == 'xlsm'){
+                                iconClass = 'fa fa-file-excel-o';
+                            }else if(extName == 'zip'){
+                                iconClass = 'fa fa-file-archive-o';
                             }
 
                             //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);

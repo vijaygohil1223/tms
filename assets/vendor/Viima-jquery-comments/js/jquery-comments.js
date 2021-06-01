@@ -1895,10 +1895,23 @@
                         'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'];
                     
                     var iconClass = 'fa fa-file-o';
+                    
+                    // File Extension name
+                    var extParts = commentModel.fileURL.split('/');
+                    var extFileName = extParts[extParts.length - 1];
+                    var extFileName = extFileName.split('?')[0];
+                    var extName = extFileName.split('.')[1];
+                    
                     if(availableIcons.indexOf(format) > 0) {
                         iconClass = 'fa fa-file-' + format + '-o';
                     } else if(availableIcons.indexOf(type) > 0) {
                         iconClass = 'fa fa-file-' + type + '-o';
+                    }else if(extName == 'docx'){
+                        iconClass = 'fa fa-file-word-o';
+                    }else if(extName == 'xlsx' || extName == 'xlsm'){
+                        iconClass = 'fa fa-file-excel-o';
+                    }else if(extName == 'zip'){
+                        iconClass = 'fa fa-file-archive-o';
                     }
 
                     var fileIcon = $('<i/>', {
@@ -1914,7 +1927,7 @@
                     var fileName = parts[parts.length - 1];
                     fileName = fileName.split('?')[0];
                     fileName = decodeURIComponent(fileName);
-
+                    
                     link.text(fileName);
                     link.prepend(fileIcon);
                 }
