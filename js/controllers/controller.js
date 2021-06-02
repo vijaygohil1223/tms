@@ -1480,11 +1480,22 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.forEach(data,function(val,i){
                 val.progrss_precentage = -1;
                 $scope.projectsAll = data;
-                
-                angular.forEach(val.items,function(val2,i2){
-                    data[i].items[i2].source_lang  = JSON.parse(val2.source_lang);
-                    data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
-                });
+                if(val.items){
+                    angular.forEach(val.items,function(val2,i2){
+                        if(val2.source_lang){
+                            data[i].items[i2].source_lang  = JSON.parse(val2.source_lang);
+                            data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
+                        }else{
+                            var newData = { sourceLang:'',dataNgSrc:'',alt:'' };
+                            data[i].items[0].source_lang = newData;
+                            data[i].items[0].target_lang = newData;
+                        }
+                    });
+                }else{
+                    var newData = { sourceLang:'',dataNgSrc:'',alt:'' };
+                    data[i].items[0].source_lang = newData;
+                    data[i].items[0].target_lang = newData;
+                }
                 /*angular.forEach(val.items,function(val2,i2){
                     val2.source_lang = JSON.parse(val2.source_lang);
                     val2.target_lang = JSON.parse(val2.target_lang);
