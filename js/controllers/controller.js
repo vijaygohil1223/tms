@@ -582,7 +582,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         }
                     }).error(errorCallback);
 
-
                     $location.path('/dashboard1');
                 }).error(errorCallback, $('#loginSpin').hide());
             }, 1500);
@@ -11038,12 +11037,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.item_number = data;
                     $scope.general.order_date = $scope.general.order_date;
                     $scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat')+' - HH:mm');
-                    
                     var due_timeval = $scope.general.due_date.split(" ")[1];
                     $scope.general.due_date = moment($scope.general.due_date).format($window.localStorage.getItem('global_dateFormat'));
                     angular.element('#due_time').val(due_timeval);
                     if($scope.general.expected_start_date){
-                        $scope.general.expected_start_date = moment($scope.general.expected_start_date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm A');
+                        //$scope.general.expected_start_date = moment($scope.general.expected_start_date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm A');
+                        $scope.general.expected_start_date = moment($scope.general.expected_start_date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm');
                     }
 
                     $cookieStore.put('generalEdit', $scope.general);
@@ -11138,7 +11137,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             angular.element('#itemCode').text($scope.code + pad($scope.number, 4));
             $window.localStorage.setItem('projectOrderName', $scope.code + pad($scope.number, 4));
             //angular.element('#order_date').val(dateToformat($scope.date));
-            angular.element('#order_date').val(moment($scope.date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm A'));
+            angular.element('#order_date').val(moment($scope.date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm'));
             angular.element('#companyCode').val(id);
             $scope.CompanyCodeVal = id;
             // $scope.orderNomberData($scope.code, $scope.number);
@@ -11891,7 +11890,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.itemPriceUni = [];
     //change item price module
-$scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
+    $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
         var quantity = $scope.itemPriceUni[id][index].quantity;
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
         var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
@@ -11904,6 +11903,7 @@ $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
             itemTtl = 0;
         }
         //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
+        itemPrice = numberFormatCommaToPoint(itemPrice);
         var price = quantity * parseFloat(itemPrice);
         var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
         if(!oldPrice1){

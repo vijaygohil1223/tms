@@ -3270,7 +3270,7 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                         scope.counter++;
                         var itemTotal1 = quantity*amount;
                         var itemTotal = itemTotal1.toString().replace('.', ',');  
-                
+                        var amount = amount.toString().replace('.', ',');  
                         scope.itemPriceUni[scope.it.itemId].push({
                             'quantity': quantity,
                             'pricelist':Price_unit,
