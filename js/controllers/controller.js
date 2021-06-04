@@ -11904,6 +11904,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
         //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
         itemPrice = numberFormatCommaToPoint(itemPrice);
+        if(itemPrice == ''){
+           itemPrice =0; 
+        }
+        console.log('itemPrice',itemPrice);
         var price = quantity * parseFloat(itemPrice);
         var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
         if(!oldPrice1){
@@ -11917,6 +11921,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 var oldPrice = oldPrice1;
             }*/
         }
+        console.log('price',price);
+        console.log('oldPrice',oldPrice);
+        console.log('itemTtl',itemTtl);
+        
         if(itemChng>0){
             price = numberFormatCommaToPoint(itemTtl);
             if(!price){
@@ -11930,7 +11938,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 var oldPrice = quantity * parseFloat(itemPrice);
             }
         }
-
+        if(!oldPrice){
+           oldPrice =0; 
+        }
+        console.log('oldpriceeee',oldPrice);    
         var total = $scope.itemList[parentIndex].total_price;
         
         var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
