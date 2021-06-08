@@ -2912,7 +2912,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         // }
     });
 
-
     $scope.showLoder = false;
     // Delete all selected files
     $scope.deleteSelected = function() {
@@ -3709,7 +3708,18 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     }, 1000);
     $timeout(function() {
         $('.ajax-upload-dragdrop:eq(1)').hide();
-    }, 200);    
+    }, 200);
+
+    $timeout(function() {
+        $scope.addToDownload = function(fimg) {
+            const a = document.createElement('a');
+            a.download = fimg;
+            a.href = 'uploads/fileupload/'+fimg;
+            a.click();
+        }
+    },500);    
+
+
     $scope.addToCopy = function(fid) {
         var chkForClass = angular.element('#' + fid).hasClass('activeselect');
         var alreadyInCopy = false;
@@ -11137,7 +11147,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             angular.element('#itemCode').text($scope.code + pad($scope.number, 4));
             $window.localStorage.setItem('projectOrderName', $scope.code + pad($scope.number, 4));
             //angular.element('#order_date').val(dateToformat($scope.date));
-            angular.element('#order_date').val(moment($scope.date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm'));
+            angular.element('#order_date').val(moment($scope.date).format($window.localStorage.getItem('global_dateFormat')+' - HH:mm'));
             angular.element('#companyCode').val(id);
             $scope.CompanyCodeVal = id;
             // $scope.orderNomberData($scope.code, $scope.number);
@@ -11237,12 +11247,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.general.order_date = originalDateFormatDash($scope.general.order_date);
                     $scope.general.order_date = moment($scope.general.order_date).format('YYYY-MM-DD HH:mm:ss');
                     
-                    
                     $window.localStorage.orderNumber = $scope.general.order_no;
                     $scope.general.properties = JSON.stringify($scope.properties);
                     $routeParams.id = $scope.general.general_id;
                     var due_timeval1 = angular.element('#due_time').val();
-                    $scope.general.due_date = angular.element('#due_date').val() ;
+                    $scope.general.due_date = angular.element('#due_date').val();
                     if($scope.general.due_date){
                         $scope.general.due_date = originalDateFormatDash($scope.general.due_date+' - '+due_timeval1);
                         $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
@@ -11331,7 +11340,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.general.order_no = angular.element("[id^=order_number_id]").val();
                     
                     $scope.general.order_date = angular.element("[id^=order_date]").val();
-                    $scope.general.order_date = originalDateFormatNew($scope.general.order_date);
+                    //$scope.general.order_date = originalDateFormatNew($scope.general.order_date);
+                    $scope.general.order_date = originalDateFormatDash($scope.general.order_date);
                     $scope.general.order_date = moment($scope.general.order_date).format('YYYY-MM-DD HH:mm:ss');
                     
                     $scope.general.expected_start_date = angular.element('#expected_start_date').val();
@@ -11339,11 +11349,16 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
                         $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
                     }
-
-                    $scope.general.due_date = angular.element('#due_date').val();
+                    /*$scope.general.due_date = angular.element('#due_date').val();
                     if($scope.general.due_date){
                         $scope.general.due_date = originalDateFormatNew($scope.general.due_date);
                         $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm:ss');
+                    }*/
+                    var due_timeval1 = angular.element('#due_time').val();
+                    $scope.general.due_date = angular.element('#due_date').val();
+                    if($scope.general.due_date){
+                        $scope.general.due_date = originalDateFormatDash($scope.general.due_date+' - '+due_timeval1);
+                        $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
                     }
 
                     $window.localStorage.orderNumber = $scope.general.order_no;
@@ -11907,7 +11922,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         if(itemPrice == ''){
            itemPrice =0; 
         }
-        console.log('itemPrice',itemPrice);
         var price = quantity * parseFloat(itemPrice);
         var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
         if(!oldPrice1){
@@ -11921,9 +11935,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 var oldPrice = oldPrice1;
             }*/
         }
-        console.log('price',price);
-        console.log('oldPrice',oldPrice);
-        console.log('itemTtl',itemTtl);
         
         if(itemChng>0){
             price = numberFormatCommaToPoint(itemTtl);
@@ -11941,7 +11952,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         if(!oldPrice){
            oldPrice =0; 
         }
-        console.log('oldpriceeee',oldPrice);    
         var total = $scope.itemList[parentIndex].total_price;
         
         var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
@@ -20129,7 +20139,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             });
         }
     };
-}).controller('languagesController', function($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams) {
+}).controller('languagesController', function($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.CurrentDate = new Date();
     $scope.editOn = 0;
@@ -20142,7 +20152,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 rest.path = 'langsupdate';
                 rest.put($scope.langs).success(function(data) {
                     notification('Record updated successfully.','success');
-                    $route.reload();
+                    //$route.reload();
+                    $timeout(function() {
+                        $window.location.reload();
+                    },100);
                 }).error(errorCallback);
             } else {
                 if ($scope.langs.is_active == undefined) {
