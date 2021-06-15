@@ -546,6 +546,10 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             templateUrl: modulesPath + 'activation.html',
             controller: 'userActivationController',
             activetab: 'activation-separator'
+        }).when('/work-instruction', {
+            templateUrl: modulesPath + 'work-instruction.html',
+            controller: 'workInstructionsController',
+            role: '1'
         }).otherwise({
             redirectTo: '/'
         });

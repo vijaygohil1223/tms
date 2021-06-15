@@ -2372,7 +2372,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     angular.element('.targteC').text(data.target);
                 }).error(errorCallback);
             }
-
             if ($scope.jobdetail.master_job_id) {
                 rest.path = "selectWorkInstruction/" + $scope.jobdetail.master_job_id;
                 rest.get().success(function(data) {
@@ -2386,6 +2385,36 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         cont.push(obj);
                     });
                     angular.element('#work_instruction').select2({
+                        allowClear: true,
+                        data: cont
+                    });
+                })
+            }
+            if ($scope.jobdetail.master_job_id) {
+                rest.path = "selectWorkInstructs" ;
+                rest.get().success(function(data) {
+                    /*var cont = [ {
+                            'id': 1 +',Translate file(s)',
+                            'text': 'Translate file(s)'
+                        },
+                        {
+                            'id': 2 +',Run spell check',
+                            'text': 'Run spell check'
+                        },
+                        {
+                            'id': 3 +',Run Qa in MemoQ',
+                            'text': 'Run Qa in MemoQ'
+                        } ];*/
+                    var cont = [];
+                    var obj = [];
+                    angular.forEach(data, function(val, i) {
+                        var obj = {
+                            'id': val.id + ',' + val.instruct_name,
+                            'text': val.instruct_name
+                        };
+                        cont.push(obj);
+                    });
+                    angular.element('#work_instructs').select2({
                         allowClear: true,
                         data: cont
                     });
@@ -20818,5 +20847,52 @@ $timeout(function() {
 
     };
 
+}).controller('workInstructionsController', function($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    rest.path = 'workinstructs';
+    rest.get().success(function(data) {
+        $scope.workInstructs = data;
+        $scope.workInstructsEmpty = jQuery.isEmptyObject(data);
+    }).error(errorCallback);
+
+    $scope.getType = function(id, eID) {
+        $routeParams.id = id;
+        rest.path = 'workinstructs';
+        rest.model().success(function(data) {
+            $scope.w_instruct = data;
+        }).error(errorCallback);
+        scrollToId(eID);
+    }
+
+    $scope.save = function(formId) {
+        if (angular.element("#" + formId).valid()) {
+            if ($scope.w_instruct.id) {
+                $routeParams.id = $scope.w_instruct.id;
+                rest.path = 'workinstructs';
+                rest.put($scope.w_instruct).success(function() {
+                    notification('Record updated successfully.','success');
+                    $route.reload();
+                }).error(errorCallback);
+            } else {
+                rest.path = 'workinstructs';
+                rest.post($scope.w_instruct).success(function(data) {
+                    notification('Record inserted successfully.','success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        }
+    };
+
+    $scope.deleteModel = function(id) {
+        bootbox.confirm("Are you sure you want to delete this row?", function(result) {
+            if (result == true) {
+                rest.path = 'workinstructs/' + id;
+                rest.delete().success(function() {
+                    notification('Record deleted successfully.','success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        });
+    };
 
 });

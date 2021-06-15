@@ -145,4 +145,10 @@ class jobs {
         return $data;
     }
 
+    public function selectWorkInstructs() {
+        $this->_db->where('is_active',1);
+        $data = $this->_db->get('tms_work_instructs');
+        return $data;
+    }
+
 }

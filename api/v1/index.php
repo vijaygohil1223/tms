@@ -1513,6 +1513,11 @@ $app->get('/selectWorkInstruction/:id','authenticate', function ($id) {
     $result = $job->selectWorkInstruction($id);
     echoResponse(200, $result);
 });
+$app->get('/selectWorkInstructs','authenticate', function () {
+    $job = new jobs ();
+    $result = $job->selectWorkInstructs();
+    echoResponse(200, $result);
+});
 // ---------------- Item-status Section ------------------//
 $app->post('/itemStatus','authenticate', function () use($app) {
     $item = new item_status ();
@@ -3403,5 +3408,39 @@ $app->get('/getInvoiceNumber','authenticate', function () use($app) {
     $result = $stmt->getInvoiceNumber();
     echoResponse(200, $result);
 });
+// ------------------ Work Instruct -----------------------//
+$app->get('/workinstructactive','authenticate', function () use($app) {
+    $workinstruct = new workinstruct ();
+    $result = $workinstruct->getActive();
+    echoResponse(200, $result);
+});
+$app->get('/workinstructs','authenticate', function () use($app) {
+    $workinstruct = new workinstruct ();
+    $result = $workinstruct->getAll();
+    echoResponse(200, $result);
+});
+$app->get('/workinstructs/:id','authenticate', function ($id) use($app) {
+    $workinstruct = new workinstruct ();
+    $result = $workinstruct->getTypeById($id);
+    echoResponse(200, $result);
+});
+$app->post('/workinstructs','authenticate', function () use($app) {
+    $workinstruct = new workinstruct ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $workinstruct->save($data);
+    echoResponse($result ['status'], $result);
+});
+$app->put('/workinstructs/:id','authenticate', function ($id) use($app) {
+    $workinstruct = new workinstruct ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $workinstruct->update($id, $data);
+    echoResponse($result ['status'], $result);
+});
+$app->delete('/workinstructs/:id','authenticate', function ($id) {
+    $workinstruct = new workinstruct ();
+    $result = $workinstruct->delete($id);
+    echoResponse($result ['status'], $result);
+});
+// End Work instructs //
 $app->run();
 ?>
