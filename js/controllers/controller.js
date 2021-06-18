@@ -3301,6 +3301,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     }
 
+    $scope.foldertree = function(id) {
+        console.log('iddd==',id);
+        $('.ftr'+id).hide();                
+    }
     //nested file
     $scope.findfile = function(id, name) {
         var externalResourceUserId = null;
@@ -3733,6 +3737,18 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
         //angular.element('.ajax-file-upload-cancel').html('test')
+        $scope.IsVisible = false;
+        $scope.foldertree = function(id) {
+            //angular.element('.ftr'+id).toggleClass('hideShowClass');
+            var isopenFolder = 0;
+            if($('.ftr'+id).is(":hidden")){
+                $('.ftr'+id).show();
+                isopenFolder =1;
+            }
+            if(isopenFolder==0){
+                $('.ftr'+id).hide();
+            }
+        }
 
     }, 1000);
     $timeout(function() {
@@ -3978,7 +3994,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             notification('Please Select filedata', 'information');
         }
     }
-
+    $scope.rootfolder = $window.localStorage.getItem("parentId");
     //file root parent and high levelset
     if ($window.localStorage.getItem("parentId") != 0 && $window.localStorage.getItem("parentId") != undefined) {
         var id = $window.localStorage.getItem("parentId");
@@ -4000,9 +4016,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 var externalResourceUserId = $window.sessionStorage.getItem("ExternalUserId");
             }
             rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
+            console.log('id',id);
             rest.get().success(function(data) {
                 $timeout(function() {
                     $scope.displayfolder = data;
+                    console.log('$scope.displayfolder',$scope.displayfolder);
+    
                     
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function(val, i) {
@@ -4287,7 +4306,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
             }).error(errorCallback);
         }
+
     },1000);
+    
     //nested file
     $scope.findfile = function(id, name) {
         var externalResourceUserId = null;
@@ -4352,6 +4373,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 rest.get().success(function(data) {
                     $scope.showLoder = true;
                     $scope.displayfolder = data.data;
+                    console.log('$scope.folderup',$scope.displayfolder);
                     var fid = [];
                     var fname = [];
                     if (data.info.parent_id == 0) {

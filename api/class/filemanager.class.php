@@ -45,6 +45,22 @@ class filemanager {
         $this->_db->where('parent_id',0);
         $data = $this->_db->get('tms_filemanager');
         return $data;
+    }
+
+    // folder tree view
+    public function buildTree(array $elements, $parentId = 0) {
+        $branch = array();
+        foreach ($elements as $element) {
+            //if($element['parent_id'] == $parentId)
+            if ($element['parent_id'] == $parentId) {
+                $children = Self::buildTree($elements, $element['fmanager_id']);
+                if ($children) {
+                    $element['categories'] = $children;
+                }
+                $branch[] = $element;
+            }
+        }
+        return $branch;
     }   
 
    public function filefolderGet($id,$root,$externalResourceUserId){
@@ -106,6 +122,18 @@ class filemanager {
         }else{
             $this->_db->where('parent_id',$id);
             $data = $this->_db->get('tms_filemanager');    
+            $dataArr = $this->_db->get('tms_filemanager');    
+            //$data[0]['test'] = self::buildTree($dataArr,181);
+            //$data[0]['test'] = 'test data';
+            $i = 0;
+            foreach($data as $data1){
+                $data[$i]['categories'] = [];
+                if($data1['ext'] == ''){
+                    $data[$i]['categories'] = self::buildTree($dataArr,$data[$i]['fmanager_id']);
+            
+                } 
+                $i++;
+            }
         }
         return $data;
     }
@@ -117,12 +145,21 @@ class filemanager {
         $this->_db->where('fmanager_id',$info['parent_id']);
         $fname = $this->_db->getOne('tms_filemanager');
         
+        $dataArr = $this->_db->get('tms_filemanager');
         if($exteruserId == 'null'){
             $this->_db->where('parent_id',$info['parent_id']);
             $dat = $this->_db->get('tms_filemanager');
             $data['info'] = $info;
             $data['data'] = $dat;
             $data['fname'] = $fname['name'];
+            $i = 0;
+            foreach($data['data'] as $data1){
+                $data['data'][$i]['categories'] = [];
+                if($data1['ext'] == ''){
+                    $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
+                } 
+                $i++;
+            }
             return $data;
         }else{
             $chkIfRoot = $this->_db->rawQuery("SELECT * FROM tms_filemanager where fmanager_id = $id AND is_ex_project_folder =1 AND is_default_folder =1");
@@ -152,6 +189,15 @@ class filemanager {
                 }
                 $data['info'] = $info;
                 $data['fname'] = $fname['name'];
+                $i = 0;
+                foreach($data['data'] as $data1){
+                    $data['data'][$i]['categories'] = [];
+                    if($data1['ext'] == ''){
+                        $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
+                    } 
+                    $i++;
+                }
+        
                 return $data;
             }else{  
                 $chkIfRoot = $this->_db->rawQuery("SELECT * FROM tms_filemanager where fmanager_id = $id  AND is_ex_project_folder =1");
@@ -178,6 +224,15 @@ class filemanager {
                     $data['info'] = $info;
                     $data['data'] = $dat;
                     $data['fname'] = $fname['name'];
+                    $i = 0;
+                    foreach($data['data'] as $data1){
+                        $data['data'][$i]['categories'] = [];
+                        if($data1['ext'] == ''){
+                            $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
+                        } 
+                        $i++;
+                    }
+        
                     return $data;
                 }else{
                     
@@ -191,6 +246,15 @@ class filemanager {
                                     $data['info'] = $info;
                                     $data['data'] = $dat;
                                     $data['fname'] = $fname['name'];
+
+                                    $i = 0;
+                                    foreach($data['data'] as $data1){
+                                        $data['data'][$i]['categories'] = [];
+                                        if($data1['ext'] == ''){
+                                            $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
+                                        } 
+                                        $i++;
+                                    }
                                     return $data;
                                 }else{
                                     $this->_db->where('parent_id',$info['parent_id']);
@@ -198,6 +262,14 @@ class filemanager {
                                     $data['info'] = $info;
                                     $data['data'] = $dat;
                                     $data['fname'] = $fname['name'];
+                                    $i = 0;
+                                    foreach($data['data'] as $data1){
+                                        $data['data'][$i]['categories'] = [];
+                                        if($data1['ext'] == ''){
+                                            $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
+                                        } 
+                                        $i++;
+                                    }
                                     return $data;
                                 }
                         }else{
@@ -225,6 +297,16 @@ class filemanager {
                                 $data['info'] = $info;
                                 $data['data'] = $dat;
                                 $data['fname'] = $fname['name'];
+
+                                $i = 0;
+                                foreach($data['data'] as $data1){
+                                    $data['data'][$i]['categories'] = [];
+                                    if($data1['ext'] == ''){
+                                        $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
+                                    } 
+                                    $i++;
+                                }
+        
                                 return $data;
                             }else{
                                 $this->_db->where('parent_id',$info['parent_id']);
@@ -232,6 +314,16 @@ class filemanager {
                                 $data['info'] = $info;
                                 $data['data'] = $dat;
                                 $data['fname'] = $fname['name'];
+
+                                $i = 0;
+                                foreach($data['data'] as $data1){
+                                    $data['data'][$i]['categories'] = [];
+                                    if($data1['ext'] == ''){
+                                        $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
+                                    } 
+                                    $i++;
+                                }
+        
                                 return $data;
                             }
 
