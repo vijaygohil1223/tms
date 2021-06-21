@@ -549,6 +549,7 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
         }).when('/work-instruction', {
             templateUrl: modulesPath + 'work-instruction.html',
             controller: 'workInstructionsController',
+            activetab: 'work-instruction',
             role: '1'
         }).otherwise({
             redirectTo: '/'

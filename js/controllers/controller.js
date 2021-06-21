@@ -20888,7 +20888,7 @@ $timeout(function() {
     };
 
 }).controller('workInstructionsController', function($scope, $log, $location, $route, rest, $routeParams, $window) {
-    debugger;
+    //debugger;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'workinstructs';
     rest.get().success(function(data) {
