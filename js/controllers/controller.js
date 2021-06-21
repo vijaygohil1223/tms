@@ -3301,10 +3301,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     }
 
-    $scope.foldertree = function(id) {
+    /*$scope.foldertree = function(id) {
         console.log('iddd==',id);
         $('.ftr'+id).hide();                
-    }
+    }*/
     //nested file
     $scope.findfile = function(id, name) {
         var externalResourceUserId = null;
@@ -3738,15 +3738,34 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
         //angular.element('.ajax-file-upload-cancel').html('test')
         $scope.IsVisible = false;
-        $scope.foldertree = function(id) {
+        $scope.foldertree = function(id,parent_id) {
             //angular.element('.ftr'+id).toggleClass('hideShowClass');
+            console.log('parent_id',parent_id);
+            console.log('id=',parent_id);
             var isopenFolder = 0;
-            if($('.ftr'+id).is(":hidden")){
-                $('.ftr'+id).show();
+            //if($('.ftr'+id).is(":hidden")){
+            if($('.ft'+parent_id+id).is(":hidden")){
+                //$('.ftr'+id).show();
+                $('.ft'+parent_id+id).show();
                 isopenFolder =1;
             }
             if(isopenFolder==0){
-                $('.ftr'+id).hide();
+                //$('.ftr'+id).hide();
+                $('.ft'+parent_id+id).hide();
+            }
+        }
+        $scope.foldertreeChild = function(id,parent_id) {
+            
+            console.log('id',id);
+console.log('parent_id==',parent_id);
+
+            var isopenFolderChld = 0;
+            if($('.ftchld'+parent_id+id).is(":hidden")){
+                $('.ftchld'+parent_id+id).show();
+                isopenFolderChld =1;
+            }
+            if(isopenFolderChld==0+id){
+                $('.ftchld'+parent_id).hide();
             }
         }
 
@@ -20869,6 +20888,7 @@ $timeout(function() {
     };
 
 }).controller('workInstructionsController', function($scope, $log, $location, $route, rest, $routeParams, $window) {
+    debugger;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'workinstructs';
     rest.get().success(function(data) {

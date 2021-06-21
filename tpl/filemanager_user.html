@@ -323,15 +323,15 @@ vendor-prefixes.less:76
             <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" style="" class="fileshow">
                <!-- Folder display -->
                <!-- icon condion ng-if="rootfolder==display.parent_id" -->
-              <folder ng-if="display.f_id=='0' && display.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)" ng-click="foldertree(display.fmanager_id)"><p>{{display.name.substr(0,22)}} <span class="fangle"><i class="fa fa-caret-right"></i></span></p></folder>
+              <folder ng-if="display.f_id=='0' && display.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)" ng-click="foldertree(display.fmanager_id,display.parent_id)"><p>{{display.name.substr(0,22)}} <span class="fangle"><i class="fa fa-caret-right"></i></span></p></folder>
               
               <!-- Folder display if it is item folder-->
-              <folder ng-if="display.f_id=='0' && display.item_id !='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)" ng-click="foldertree(display.fmanager_id)">
+              <folder ng-if="display.f_id=='0' && display.item_id !='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)" ng-click="foldertree(display.fmanager_id,display.parent_id)">
                 <p>{{display.name.substr(0,22)}} <span class="fangle"><i class="fa fa-caret-right"></i></span></p></folder>
                 <!-- ng-if="rootfolder==display.parent_id" -->
                 <div class="ftree">
                     <script type="text/ng-template" id="categoryTree">
-                        <folder ng-if="category.f_id=='0' && category.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(category.fmanager_id,category.name)"><p>{{category.name.substr(0,22)}}</p></folder>
+                        <folder ng-if="category.f_id=='0' && category.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(category.fmanager_id,category.name)" ng-click="foldertreeChild(category.fmanager_id,category.parent_id)"><p>{{category.name.substr(0,22)}}</p></folder>
 
                         <!-- Folder display if it is item folder-->
                         <folder ng-if="category.f_id=='0' && category.item_id !='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(category.fmanager_id,category.name)">
@@ -414,8 +414,8 @@ vendor-prefixes.less:76
                             </li>
                         </ul>
                     </script>
-                    <ul class="folderul f2 ftr{{display.fmanager_id}}" style="display:none;">
-                        <li ng-repeat="category in display.categories" ng-include="'categoryTree'"></li>
+                    <ul class="folderul f2 ftr{{display.fmanager_id}}">
+                        <li ng-repeat="category in display.categories" ng-include="'categoryTree'" class="ft{{display.parent_id}}{{display.fmanager_id}} ftchld{{category.parent_id}}{{category.fmanager_id}}" style="display:none;"></li>
                     </ul>
                 </div>
                <!-- Pdf  -->

@@ -56,6 +56,7 @@ class filemanager {
                 $children = Self::buildTree($elements, $element['fmanager_id']);
                 if ($children) {
                     $element['categories'] = $children;
+                    //$element['counts'] = count($children);
                 }
                 $branch[] = $element;
             }
