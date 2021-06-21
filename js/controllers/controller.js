@@ -4356,7 +4356,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }).error(errorCallback);
     }
     $scope.GetRootFolderName();
-
     // redirect to higher level directiory or file
     $scope.higherlevelFolder = function(id) {
         var externalResourceId = null;
