@@ -3740,8 +3740,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         $scope.IsVisible = false;
         $scope.foldertree = function(id,parent_id) {
             //angular.element('.ftr'+id).toggleClass('hideShowClass');
-            console.log('parent_id',parent_id);
-            console.log('id=',parent_id);
             var isopenFolder = 0;
             //if($('.ftr'+id).is(":hidden")){
             if($('.ft'+parent_id+id).is(":hidden")){
@@ -3756,16 +3754,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
         $scope.foldertreeChild = function(id,parent_id) {
             
-            console.log('id',id);
-console.log('parent_id==',parent_id);
-
             var isopenFolderChld = 0;
-            if($('.ftchld'+parent_id+id).is(":hidden")){
-                $('.ftchld'+parent_id+id).show();
+            if($('.nch'+parent_id+id).is(":hidden")){
+                $('.nch'+parent_id+id).show();
                 isopenFolderChld =1;
             }
-            if(isopenFolderChld==0+id){
-                $('.ftchld'+parent_id).hide();
+            if(isopenFolderChld==0){
+                $('.nch'+parent_id+id).hide();
             }
         }
 
@@ -4044,12 +4039,13 @@ console.log('parent_id==',parent_id);
                     
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function(val, i) {
+                        $scope.displayfolder[i].countchild = val.categories.length;
+                        
                         if (val.item_id != 0) {
                             var ItemNo;
                             ItemNo = val.name.match(/\d+$/);
                             if (ItemNo) {
                                 $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
-
                             }
                         }
                     })
@@ -4312,6 +4308,8 @@ console.log('parent_id==',parent_id);
                 $scope.displayfolder = data;
                 //Change ItemFolder Name to item001 -> Files-001
                 angular.forEach($scope.displayfolder, function(val, i) {
+                    $scope.displayfolder[i].countchild = val.categories.length;
+                    console.log('$scope.displayfolder[i].countchild',$scope.displayfolder[i].countchild);
                     if (val.item_id != 0) {
                         var ItemNo;
                         ItemNo = val.name.match(/\d+$/);
@@ -4340,6 +4338,8 @@ console.log('parent_id==',parent_id);
 
             //Change ItemFolder Name to item001 -> Files-001
             angular.forEach($scope.displayfolder, function(val, i) {
+                $scope.displayfolder[i].countchild = val.categories.length;
+                        console.log('$scope.displayfolder[i].countchild',$scope.displayfolder[i].countchild);
                 if (val.item_id != 0) {
                     var ItemNo;
                     ItemNo = val.name.match(/\d+$/);
@@ -4398,12 +4398,15 @@ console.log('parent_id==',parent_id);
                         $scope.rootshow = false;
                     }
                     angular.forEach(data.data, function(val, i) {
+                        
                         fid = val.parent_id;
                         fname = val.name;
                     })
 
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function(val, i) {
+                        $scope.displayfolder[i].countchild = val.categories.length;
+                        console.log('$scope.displayfolder[i].countchild',$scope.displayfolder[i].countchild);
                         if (val.item_id != 0) {
                             var ItemNo;
                             ItemNo = val.name.match(/\d+$/);

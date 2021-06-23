@@ -230,6 +230,9 @@
 .fangle{
     margin-left: 5px;
 }
+.folderbadge{
+    margin-left: 8px;
+}
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }
@@ -323,15 +326,15 @@ vendor-prefixes.less:76
             <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" style="" class="fileshow">
                <!-- Folder display -->
                <!-- icon condion ng-if="rootfolder==display.parent_id" -->
-              <folder ng-if="display.f_id=='0' && display.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)" ng-click="foldertree(display.fmanager_id,display.parent_id)"><p>{{display.name.substr(0,22)}} <span class="fangle"><i class="fa fa-caret-right"></i></span></p></folder>
+              <folder ng-if="display.f_id=='0' && display.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)" ng-click="foldertree(display.fmanager_id,display.parent_id)"><p>{{display.name.substr(0,22)}} <span class="badge bg-info folderbadge">{{display.countchild}}</span><span class="fangle"> <i class="fa fa-caret-right"></i></span></p></folder>
               
               <!-- Folder display if it is item folder-->
-              <folder ng-if="display.f_id=='0' && display.item_id !='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)" ng-click="foldertree(display.fmanager_id,display.parent_id)">
-                <p>{{display.name.substr(0,22)}} <span class="fangle"><i class="fa fa-caret-right"></i></span></p></folder>
+              <folder ng-if="display.f_id=='0' && display.item_id !='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)">
+                <p>{{display.name.substr(0,22)}} </p></folder>
                 <!-- ng-if="rootfolder==display.parent_id" -->
                 <div class="ftree">
                     <script type="text/ng-template" id="categoryTree">
-                        <folder ng-if="category.f_id=='0' && category.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(category.fmanager_id,category.name)" ng-click="foldertreeChild(category.fmanager_id,category.parent_id)"><p>{{category.name.substr(0,22)}}</p></folder>
+                        <folder ng-if="category.f_id=='0' && category.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(category.fmanager_id,category.name)" ng-click="foldertreeChild(category.fmanager_id,category.parent_id)"><p>{{category.name.substr(0,22)}} <span class="fangle"><span class="badge bg-info folderbadge">{{category.countchild}}</span> <i class="fa fa-caret-right"></i></span></p></folder>
 
                         <!-- Folder display if it is item folder-->
                         <folder ng-if="category.f_id=='0' && category.item_id !='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(category.fmanager_id,category.name)">
@@ -409,12 +412,12 @@ vendor-prefixes.less:76
                                    " class="exe" context-menu="menuOptionsFiles"><p>
                        {{category.name.substr(0,22)}}</p></file>
 
-                        <ul class="folderul f1 ftr{{display.fmanager_id}}" style="display:none;">
+                        <ul class="folderul f1 ftr{{display.fmanager_id}} nch{{category.parent_id}}{{category.fmanager_id}}" style="display:none;">
                             <li ng-repeat="category in category.categories" ng-include="'categoryTree'">           
                             </li>
                         </ul>
                     </script>
-                    <ul class="folderul f2 ftr{{display.fmanager_id}}">
+                    <ul class="folderul f2 ftr{{display.fmanager_id}} nch{{display.fmanager_id}}{{display.parent_id}}">
                         <li ng-repeat="category in display.categories" ng-include="'categoryTree'" class="ft{{display.parent_id}}{{display.fmanager_id}} ftchld{{category.parent_id}}{{category.fmanager_id}}" style="display:none;"></li>
                     </ul>
                 </div>

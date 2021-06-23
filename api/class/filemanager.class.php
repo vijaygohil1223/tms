@@ -47,22 +47,26 @@ class filemanager {
         return $data;
     }
 
-    // folder tree view
+    // folder structure tree view
     public function buildTree(array $elements, $parentId = 0) {
         $branch = array();
         foreach ($elements as $element) {
             //if($element['parent_id'] == $parentId)
             if ($element['parent_id'] == $parentId) {
                 $children = Self::buildTree($elements, $element['fmanager_id']);
+                $element['countchild'] = count($children);
                 if ($children) {
+                    $element['countChild'] = count($children);
                     $element['categories'] = $children;
+                    //$element['categoriesCount']++;
                     //$element['counts'] = count($children);
                 }
                 $branch[] = $element;
             }
         }
         return $branch;
-    }   
+    }
+
 
    public function filefolderGet($id,$root,$externalResourceUserId){
         if($externalResourceUserId !='null'){
@@ -124,14 +128,12 @@ class filemanager {
             $this->_db->where('parent_id',$id);
             $data = $this->_db->get('tms_filemanager');    
             $dataArr = $this->_db->get('tms_filemanager');    
-            //$data[0]['test'] = self::buildTree($dataArr,181);
-            //$data[0]['test'] = 'test data';
             $i = 0;
             foreach($data as $data1){
+                $data[$i]['countchild'] = 0;
                 $data[$i]['categories'] = [];
                 if($data1['ext'] == ''){
                     $data[$i]['categories'] = self::buildTree($dataArr,$data[$i]['fmanager_id']);
-            
                 } 
                 $i++;
             }
@@ -156,6 +158,7 @@ class filemanager {
             $i = 0;
             foreach($data['data'] as $data1){
                 $data['data'][$i]['categories'] = [];
+                $data['data'][$i]['countchild'] = 0;
                 if($data1['ext'] == ''){
                     $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
                 } 
@@ -193,6 +196,7 @@ class filemanager {
                 $i = 0;
                 foreach($data['data'] as $data1){
                     $data['data'][$i]['categories'] = [];
+                    $data['data'][$i]['countchild'] = 0;
                     if($data1['ext'] == ''){
                         $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
                     } 
@@ -228,6 +232,7 @@ class filemanager {
                     $i = 0;
                     foreach($data['data'] as $data1){
                         $data['data'][$i]['categories'] = [];
+                        $data['data'][$i]['countchild'] = 0;
                         if($data1['ext'] == ''){
                             $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
                         } 
@@ -251,6 +256,8 @@ class filemanager {
                                     $i = 0;
                                     foreach($data['data'] as $data1){
                                         $data['data'][$i]['categories'] = [];
+                                        $data['data'][$i]['countchild'] = 0;
+                
                                         if($data1['ext'] == ''){
                                             $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
                                         } 
@@ -266,6 +273,7 @@ class filemanager {
                                     $i = 0;
                                     foreach($data['data'] as $data1){
                                         $data['data'][$i]['categories'] = [];
+                                        $data['data'][$i]['countchild'] = 0;
                                         if($data1['ext'] == ''){
                                             $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
                                         } 
@@ -302,6 +310,7 @@ class filemanager {
                                 $i = 0;
                                 foreach($data['data'] as $data1){
                                     $data['data'][$i]['categories'] = [];
+                                    $data['data'][$i]['countchild'] = 0;
                                     if($data1['ext'] == ''){
                                         $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
                                     } 
@@ -319,6 +328,7 @@ class filemanager {
                                 $i = 0;
                                 foreach($data['data'] as $data1){
                                     $data['data'][$i]['categories'] = [];
+                                    $data['data'][$i]['countchild'] = 0;
                                     if($data1['ext'] == ''){
                                         $data['data'][$i]['categories'] = self::buildTree($dataArr,$data['data'][$i]['fmanager_id']);
                                     } 

@@ -4419,11 +4419,15 @@ app.directive('jobWorkInstruction2', ['$compile', function($compile) { // inject
                 if (!test) {
                     notification('Please select option', 'warning');
                 } else {
+                    var CommaIndex = test.indexOf(",");
+                    var strD1 = test.substring(0, CommaIndex); 
+                    var strD2 = test.substring(CommaIndex + 1); 
+                    
                     var strD = test.split(',');
                     var i;
                     var allow = true;
                     for(i=0;i<=scope.counter-1;i++){
-                        if(strD[1] == angular.element('#work_name'+ i).text()){
+                        if(strD2 == angular.element('#work_name'+ i).text()){
                             notification('Work instructions already exists.', 'error');
                             allow = false;
                         }
@@ -4431,8 +4435,8 @@ app.directive('jobWorkInstruction2', ['$compile', function($compile) { // inject
                     if(allow){
                         var input = angular
                         .element('<tr id="work1_' + scope.counter + '" class="put_row">' +
-                            '<td class="none"><span id="work_id' + scope.counter + '">' + strD[0] + '<span></td>' +
-                            '<td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name' + scope.counter + '">' + strD[1] + '<span></td>' +
+                            '<td class="none"><span id="work_id' + scope.counter + '">' + strD1 + '<span></td>' +
+                            '<td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name' + scope.counter + '">' + strD2 + '<span></td>' +
                             '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete"><i class="fa fa-times"></i></a></td>'
                         );
                         var compile = $compile(input)(scope);
