@@ -3793,9 +3793,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 angular.element('#' + fid).addClass('activeselect');
             } else {
                 angular.element('#' + fid).addClass('activeselect');
-                /*$scope.copyfile.push({
+                $scope.copyfile.push({
                     id: fid
-                });*/
+                });
             }
         } else if (chkForClass == true) {
             angular.element('#' + fid).removeClass('activeselect');
@@ -3805,6 +3805,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     angular.element('#' + fid).removeClass('activeselect');
                 }
             });
+        
             angular.element('#files_count').text($scope.copyfile.length);
         }
     }
