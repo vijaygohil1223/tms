@@ -4034,13 +4034,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             rest.get().success(function(data) {
                 $timeout(function() {
                     $scope.displayfolder = data;
-                    console.log('$scope.displayfolder',$scope.displayfolder);
-    
                     
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function(val, i) {
                         $scope.displayfolder[i].countchild = val.categories.length;
-                        
+                        $scope.displayfolder[i].name= val.name.toString(); 
                         if (val.item_id != 0) {
                             var ItemNo;
                             ItemNo = val.name.match(/\d+$/);
@@ -4309,7 +4307,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 //Change ItemFolder Name to item001 -> Files-001
                 angular.forEach($scope.displayfolder, function(val, i) {
                     $scope.displayfolder[i].countchild = val.categories.length;
-                    console.log('$scope.displayfolder[i].countchild',$scope.displayfolder[i].countchild);
+                    $scope.displayfolder[i].name = val.name.toString(); 
+                        
                     if (val.item_id != 0) {
                         var ItemNo;
                         ItemNo = val.name.match(/\d+$/);
@@ -4339,7 +4338,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             //Change ItemFolder Name to item001 -> Files-001
             angular.forEach($scope.displayfolder, function(val, i) {
                 $scope.displayfolder[i].countchild = val.categories.length;
-                        console.log('$scope.displayfolder[i].countchild',$scope.displayfolder[i].countchild);
+                $scope.displayfolder[i].name= val.name.toString(); 
+                        
                 if (val.item_id != 0) {
                     var ItemNo;
                     ItemNo = val.name.match(/\d+$/);
@@ -4407,6 +4407,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     angular.forEach($scope.displayfolder, function(val, i) {
                         $scope.displayfolder[i].countchild = val.categories.length;
                         console.log('$scope.displayfolder[i].countchild',$scope.displayfolder[i].countchild);
+                        $scope.displayfolder[i].name= val.name.toString(); 
+                        
                         if (val.item_id != 0) {
                             var ItemNo;
                             ItemNo = val.name.match(/\d+$/);
