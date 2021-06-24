@@ -3779,13 +3779,14 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     },500);    
 
 
-    $scope.addToCopy = function(fid) {
+    $scope.addToCopy = function(fid){
         var chkForClass = angular.element('#' + fid).hasClass('activeselect');
         var alreadyInCopy = false;
         if (chkForClass == false) {
             angular.forEach($scope.copyfile, function(value, key) {
                 if (value.id == fid) {
                     alreadyInCopy = true;
+            
                 }
             });
             if (alreadyInCopy) {
@@ -3796,6 +3797,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.copyfile.push({
                     id: fid
                 });
+                //angular.element('#files_count').text($scope.copyfile.length);
+            
             }
         } else if (chkForClass == true) {
             angular.element('#' + fid).removeClass('activeselect');
@@ -3805,9 +3808,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     angular.element('#' + fid).removeClass('activeselect');
                 }
             });
-        
-            angular.element('#files_count').text($scope.copyfile.length);
+            //angular.element('#files_count').text($scope.copyfile.length);
         }
+        angular.element('#files_count').text($scope.copyfile.length);
+        
     }
     $scope.clearCopy = function() {
         if ($scope.copyfile.length == 0) {
