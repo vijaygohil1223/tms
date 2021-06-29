@@ -3640,7 +3640,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $timeout(function() {
                     console.log('A');
                     $route.reload();
-                }, 2000);
+                }, 10000);
 
             },
             onCancel: function(files, pd) {
