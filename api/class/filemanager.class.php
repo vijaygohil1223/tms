@@ -615,7 +615,8 @@ class filemanager {
     }
 
     public function uploadimage($data) {
-
+        //ini_set('upload_max_filesize', '100M');
+        //ini_set('post_max_size', '100M');
         $result = explode(',', $data['name']);
         $finalstring = base64_decode($result[1]);
         $ex = str_replace(' ','_',$data['filename']);

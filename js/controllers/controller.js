@@ -3617,6 +3617,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }).error(errorCallback);
         }
     }
+    $scope.chkfilesize = 0;
     var uploadObj;
     $timeout(function() {
         uploadObj = $("#multipleupload").uploadFile({
@@ -3637,8 +3638,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             afterUploadAll: function(obj) {
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
+                    console.log('A');
                     $route.reload();
-                }, 5000);
+                }, 100);
 
             },
             onCancel: function(files, pd) {
@@ -3653,6 +3655,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
             },
             onSuccess: function(files, data, xhr, pd) {
+                console.log('a');
                 var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
                 var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
                 var fileDivText = $(".ajax-file-upload-filename:contains('" + files[0] + "')").text();
@@ -3677,8 +3680,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.filedata.filename = files[0];
                 $scope.filedata.filetype = fileType;
                 $scope.filedata.size = getFileSize[1];
+                $scope.chkfilesize = getFileSize[1];
+                console.log('B');
+                    
                 rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) { }).error(errorCallback);
+                rest.post($scope.filedata).success(function(data) { console.log('data',data); console.log('C - uploaded'); }).error(errorCallback);
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
             },
@@ -4376,7 +4382,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
         rest.path = 'getRootFolder';
         rest.put(rootId).success(function(data) {
-            $scope.rootFolderName = data.name;
+            $scope.rootFolderName ='';
+            if(data != null){
+                $scope.rootFolderName = data.name;
+            }
+            console.log('rootfoldername',$scope.rootFolderName);
         }).error(errorCallback);
     }
     $scope.GetRootFolderName();
