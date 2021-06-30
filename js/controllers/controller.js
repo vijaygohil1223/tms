@@ -3636,11 +3636,14 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
             afterUploadAll: function(obj) {
+                console.log('b');
+                
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
-                    console.log('A');
                     $route.reload();
-                }, 15000);
+                console.log('CDD');
+                
+                }, 100);
 
             },
             onCancel: function(files, pd) {
@@ -3681,10 +3684,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.filedata.filetype = fileType;
                 $scope.filedata.size = getFileSize[1];
                 $scope.chkfilesize = getFileSize[1];
-                console.log('B');
-                    
+
                 rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) { console.log('data',data); console.log('C - uploaded'); }).error(errorCallback);
+                rest.post($scope.filedata).success(function(data) { console.log('data',data); }).error(errorCallback);
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
             },
@@ -4383,10 +4385,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'getRootFolder';
         rest.put(rootId).success(function(data) {
             $scope.rootFolderName ='';
+            console.log('abcdefghijklmnopqrstu');
             if(data != null){
                 $scope.rootFolderName = data.name;
             }
             console.log('rootfoldername',$scope.rootFolderName);
+            
         }).error(errorCallback);
     }
     $scope.GetRootFolderName();
