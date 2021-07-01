@@ -146,7 +146,7 @@ class jobs_detail {
 
     public function jobSummarySave($info) {
 
-        //echo '<pre>'; print_r($info); echo '</pre>';exit;
+        //echo '<pre>'; print_r($info); echo '</pre>';
 
         $this->_db->where('item_id',$info['item_id']);
 
@@ -231,7 +231,6 @@ class jobs_detail {
                 $test = $this->_db->insert('tms_filemanager',$in);
 
             }
-
             if ($id) {
 
                 $return['status'] = 200;
@@ -1305,8 +1304,8 @@ class jobs_detail {
 
 
     public function jobSummeryJobDetailsUpdate($id,$data) {
-
         unset($data['auto_job'],$data['fmanager_id'],$data['userName'],$data['contactPerson'],$data['projectName'],$data['projectManager']);
+        //unset($data['quantity'],$data['itemPrice']);
 
         if(isset($data ['due_date'])) {
 
@@ -1319,7 +1318,6 @@ class jobs_detail {
         $this->_db->where('job_summmeryId', $id);
 
         $data = $this->_db->update('tms_summmery_view', $data);
-
         if ($id) {
 
             $return ['status'] = 200;

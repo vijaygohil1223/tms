@@ -4521,3 +4521,92 @@ app.directive('angularTreeview', ['$compile', function($compile) { // inject $co
             }
     }
 }]);
+app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compile service as dependency
+    return {
+        restrict: 'E',
+        link: function(scope, element, attrs, rootScope) {
+            scope.counter = 0;
+            element.bind('change', function() {
+                if(angular.element('[id^=totalItem_'+scope.jobdetail.job_summmeryId+']').length == 0){
+                    scope.counter = 0;
+
+                }else if (angular.element('[id^=totalItem_'+scope.jobdetail.job_summmeryId+']').length > 0) {
+                    var len = angular.element('[id^=totalItem_'+scope.jobdetail.job_summmeryId+']').length;
+                    scope.counter = len + 1;
+                }
+                
+                var totaPrice = scope.jobdetail.total_price;
+                
+                var quantity = angular.element('#Quantity'+scope.jobdetail.job_summmeryId).val();
+
+                if (!quantity) {
+                    quantity = 1;
+                }
+
+                var price = angular.element('#priceUnit'+scope.jobdetail.job_summmeryId).val();
+                if(price == 0){
+                    notification('please select price','warning');
+                    return false;
+                }
+                var temp = price.split(',');
+                var Price_unit = temp[0];
+
+                //check if priceUitt already exists
+                var exists = true;
+                 if(scope.itemPriceUni[scope.jobdetail.job_summmeryId]){
+                    if(scope.itemPriceUni[scope.jobdetail.job_summmeryId].length > 0){
+                        angular.forEach(scope.itemPriceUni[scope.jobdetail.job_summmeryId], function(val,i){
+                            if(exists){
+                                if(val.pricelist == Price_unit){
+                                  exists = false;  
+                                }
+                            }
+                        })
+                    }
+                }else{
+                    scope.itemPriceUni[scope.jobdetail.job_summmeryId] = [];
+                }
+
+                if(exists){
+                    var amount = temp[1];
+                    var total = amount * quantity;
+
+                    if(scope.it == undefined) {
+                        scope.it = {};
+                    }
+
+                    if(scope.jobdetail.quantity==undefined || scope.jobdetail.itemPrice==undefined) {
+                        scope.jobdetail.quantity = [];
+                        scope.jobdetail.itemPrice = [];
+                    }
+                    
+                    scope.jobdetail.quantity[scope.counter] = quantity;
+                    scope.jobdetail.itemPrice[scope.counter] = amount;
+
+
+                    if (quantity && price != 0) {
+                        var totalItemPrice = parseFloat(total) + parseFloat(totaPrice);
+                        scope.jobdetail.total_price = totalItemPrice;
+                        $('#priceUnit'+scope.jobdetail.job_summmeryId).val(0);
+                        $('#Quantity').val('');
+                        scope.counter++;
+                        var itemTotal1 = quantity*amount;
+                        var itemTotal = itemTotal1.toString().replace('.', ',');  
+                        var amount = amount.toString().replace('.', ',');  
+                        scope.itemPriceUni[scope.jobdetail.job_summmeryId].push({
+                            'quantity': quantity,
+                            'pricelist':Price_unit,
+                            'itemPrice':amount,
+                            'itemTotal':itemTotal
+                        });
+                        angular.element('#Quantity'+scope.jobdetail.job_summmeryId).val('');
+                    } else {
+                        notification('Please select item', 'warning');
+                    }
+                }else{
+                    notification('Price list already exists.', 'warning');
+                }
+            });
+        }
+    }
+}]);

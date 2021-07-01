@@ -2252,7 +2252,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
-            console.log("data", data);
+            console.log("data-2", data);
 
             $scope.jobdetail = data[0];
             var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
@@ -2261,6 +2261,23 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
             $scope.dueDate = $scope.jobdetail.due_date;
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
+            
+            if ($scope.jobdetail.price) {
+                //$scope.itemPriceUni = JSON.parse($scope.jobdetail.price);
+
+                    $scope.itemPriceUni[$scope.jobdetail.job_summmeryId]= JSON.parse($scope.jobdetail.price);
+                    for(var j=0;j<$scope.itemPriceUni[$scope.jobdetail.job_summmeryId].length;j++){
+                        $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal = numberFormatComma($scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal);
+                    }
+        
+            }
+            if ($scope.jobdetail.total_price.length == 0) {
+                angular.element('#totalItemPrice').text('0.0');
+            } else {
+
+                //angular.element('#totalItemPrice').text(data.total_price);
+            }
+            console.log('$scope.itemPriceUni-',$scope.itemPriceUni);
             /*if (isNaN(Date.parse($scope.jobdetail.due_date))) {
                 $timeout(function() {
                     var date = new Date();
@@ -2272,6 +2289,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.jobdetail.due_date = currentdateT;
                 }, 300);
             }*/
+
             $cookieStore.put('editJobact', data[0]);
             if (data[0].order_id) {
                 rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + $scope.jobdetail.item_id;
@@ -2437,6 +2455,103 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }).error(errorCallback);
     }
 
+    rest.path = 'masterPriceitemgetFromPriceList';
+    rest.get().success(function(data) {
+        $scope.masterPrice = data;
+        console.log("$scope.masterPrice", $scope.masterPrice);
+    }).error(errorCallback);
+
+    rest.path = 'childPriceitemget';
+    rest.get().success(function(data) {
+        $scope.childPrice = data;
+        //console.log("$scope.childPrice", $scope.childPrice);
+    }).error(errorCallback);
+    // Change job price
+    $scope.itemPriceUni = [];
+    //change jobitem price module
+    $scope.changeItemField = function(id,index,parentIndex,itemChng=0) {
+        var quantity = $scope.itemPriceUni[id][index].quantity;
+        var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
+        var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
+        var itemAmt = $scope.itemPriceUni[id][index].amtSum;
+        if(!quantity || !itemPrice){
+            quantity = 0;
+            itemPrice = 0;
+        }
+        if(!itemTtl){
+            itemTtl = 0;
+        }
+        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
+        itemPrice = numberFormatCommaToPoint(itemPrice);
+        if(itemPrice == ''){
+           itemPrice =0; 
+        }
+        var price = quantity * parseFloat(itemPrice);
+        var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
+        if(!oldPrice1){
+            var oldPrice = 0;
+        }else{
+            var oldPrice = numberFormatCommaToPoint(oldPrice1);
+            
+            /*if(oldPrice1.toString().includes(',')==true){
+                var oldPrice = numberFormatCommaToPoint(oldPrice1);
+            }else{
+                var oldPrice = oldPrice1;
+            }*/
+        }
+        
+        if(itemChng>0){
+            price = numberFormatCommaToPoint(itemTtl);
+            if(!price){
+                price=0;
+            }
+            //oldPrice = amtTotal;    
+            if (typeof itemAmt !== 'undefined'){
+                var oldPrice = $scope.itemPriceUni[id][index].amtSum;
+            }
+            if (typeof itemAmt === 'undefined'){
+                var oldPrice = quantity * parseFloat(itemPrice);
+            }
+        }
+        if(!oldPrice){
+           oldPrice =0; 
+        }
+        //var total = $scope.jobdetail[parentIndex].total_price;
+        var total = $scope.jobdetail.total_price;
+        var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
+        
+        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
+        if(itemChng>0){
+            $scope.itemPriceUni[id][index].itemTotal = itemTtl;
+        }else{
+            //$scope.itemPriceUni[id][index].itemTotal = price;
+            $scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price);
+        }
+        $scope.itemPriceUni[id][index].amtSum = price;
+        //$scope.jobdetail[parentIndex].total_price = totalPrice;
+        $scope.jobdetail.total_price = totalPrice;
+    }
+
+    $scope.itemQuentityDelete = function(id,index,parentIndex) {
+        
+        var totalPrice1 = $scope.jobdetail.total_price;
+        var totalPrice = totalPrice1.toFixed(2);
+        
+        var price1 = $scope.itemPriceUni[id][index].itemTotal;
+        
+        var price = numberFormatCommaToPoint(price1);
+        
+        if (totalPrice == price) {
+           $scope.jobdetail.total_price = 0;
+        } else {
+           var total = totalPrice - price;
+           $scope.jobdetail.total_price = total;
+        }
+        
+        $scope.itemPriceUni[id].splice(index, 1);
+    }
+    // end job price
+    
     $scope.savejobDetail = function(formId) {
         if ($routeParams.id) {
             $scope.jobdetail.due_date = angular.element('#duedate').val();
@@ -2462,6 +2577,19 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
             $scope.work_instruction = JSON.stringify(obj);
             $scope.jobdetail.work_instruction = $scope.work_instruction;
+            
+            var itemPriceUnit = [];
+                    itemPriceUnit = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId];
+                    if(itemPriceUnit){
+                        for(var j=0;j<itemPriceUnit.length;j++){
+                            itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                        }
+                    }
+                    $scope.jobdetail.price = JSON.stringify(itemPriceUnit);
+                    delete $scope.jobdetail['itemPrice'];
+                    delete $scope.jobdetail['quantity'];
+            
+// end - jobprices 
 
             if ($scope.jobdetail.contact_person == '') {
                 notification('Please select project manager', 'warning');
@@ -12276,7 +12404,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
                         }
                     }
-                    
                     $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
                     delete $scope.itemList[formIndex]['itemPrice'];
                     delete $scope.itemList[formIndex]['quantity'];
@@ -12394,7 +12521,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 // Remove if Display Assign PO Link
                                                 //$scope.jobitem.po_number = '';
                                                 $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
-
+                                                
+                                                $scope.jobitem.price = '';
+                                                $scope.jobitem.total_price = parseFloat(0.00); 
                                                 rest.path = 'jobSummarySave';
                                                 rest.post($scope.jobitem).success(function(data) {
                                                     if (data) {
@@ -12565,7 +12694,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         var itemPrice = angular.element('#itemPrice' + i).val();
                         var itemTotal1 = angular.element('#itemTotal' + i).text();
                         var itemTotal = numberFormatCommaToPoint(itemTotal1);
-                        
+                        console.log('pricelist',pricelist);
                         itemPriceUnit.push({
                             'quantity': quantity,
                             'pricelist': pricelist,
@@ -12574,7 +12703,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                         });
                     }
-                    
                     $scope.price = JSON.stringify(itemPriceUnit);
                     $scope.total_price = angular.element('#totalItemPrice').text();
                     $scope.item_name = angular.element('#item_name').text();
