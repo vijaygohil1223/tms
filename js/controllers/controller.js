@@ -2301,7 +2301,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             $scope.clientCurrencySymbole = data.client_currency.split(',')[1];
                         })
                         $scope.totalPrice = data.total_amount;
-                        $scope.itemList = JSON.parse(data.price);
+                        if(data.price){
+                            $scope.itemList = JSON.parse(data.price);
+                        }else{
+                            $scope.itemList = "";
+                        }
                         $scope.pricelistJobEmpty = jQuery.isEmptyObject($scope.itemList);
                     }
                 })
@@ -2350,13 +2354,21 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
             $scope.jobdetail = data[0];
-            $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
+            //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
+            var due_timeval = $scope.jobdetail.due_date.split(" ")[1];
+            var due_timeval = due_timeval.substring(0, 5);
+            $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($window.localStorage.getItem('global_dateFormat'));
+            angular.element('#due_time').val(due_timeval);
+            if($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == 'Invalid date'){
+                angular.element('#duedate').val('0000.00.00');
+                angular.element('#due_time').val('00:00');
+            }
+            
             /*var time = $scope.jobdetail.due_date.split(' ')[1].split(':');
             time = time[0] + ':' + time[1];
             $timeout(function() {
                 $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('-').reverse().join('.') + ' ' + time;
             }, 100);*/
-
 
             var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
@@ -2411,18 +2423,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             if ($scope.jobdetail.master_job_id) {
                 rest.path = "selectWorkInstructs" ;
                 rest.get().success(function(data) {
-                    /*var cont = [ {
-                            'id': 1 +',Translate file(s)',
-                            'text': 'Translate file(s)'
-                        },
-                        {
-                            'id': 2 +',Run spell check',
-                            'text': 'Run spell check'
-                        },
-                        {
-                            'id': 3 +',Run Qa in MemoQ',
-                            'text': 'Run Qa in MemoQ'
-                        } ];*/
                     var cont = [];
                     var obj = [];
                     angular.forEach(data, function(val, i) {
@@ -2555,6 +2555,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     $scope.savejobDetail = function(formId) {
         if ($routeParams.id) {
             $scope.jobdetail.due_date = angular.element('#duedate').val();
+            
             $scope.jobdetail.description = $scope.jobdetail.jobDesc;
             delete $scope.jobdetail['jobDesc'];
 
@@ -2576,7 +2577,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }
 
             $scope.work_instruction = JSON.stringify(obj);
+            console.log('$scope.work_instruction',$scope.work_instruction);
             $scope.jobdetail.work_instruction = $scope.work_instruction;
+            console.log('jobdata',$scope.jobdetail);
             
             var itemPriceUnit = [];
                     itemPriceUnit = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId];
@@ -2597,15 +2600,21 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }
 
 
-            if ($scope.jobdetail.due_date == '0000-00-00 00:00:00') {
+            if ($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == '0000-00-00') {
                 notification('Please select due date', 'warning');
                 return false;
             }
             
             
-            $scope.jobdetail.due_date = originalDateFormatNew($scope.jobdetail.due_date);
-            $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format('YYYY-MM-DD HH:mm:ss');
-            
+            //$scope.jobdetail.due_date = originalDateFormatNew($scope.jobdetail.due_date);
+            //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format('YYYY-MM-DD HH:mm:ss');
+            $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('.').reverse().join('-');
+            console.log('$scope.jobdetail.due_date',$scope.jobdetail.due_date);
+            $scope.jobdetail.due_date = $scope.jobdetail.due_date;
+            var due_timevl1 = angular.element('#due_time').val();
+            console.log('due_timevl1',due_timevl1);
+            $scope.jobdetail.due_date = moment($scope.jobdetail.due_date + ' ' +due_timevl1).format("YYYY-MM-DD HH:mm");
+            console.log('date-time',$scope.jobdetail.due_date);
 
             //job start recent activity store in cookie
             var arr1 = $.map($scope.jobdetail, function(el) {

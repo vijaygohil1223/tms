@@ -4448,6 +4448,59 @@ app.directive('jobWorkInstruction2', ['$compile', function($compile) { // inject
         }
     }
 }]);
+// work instruction - job
+app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject $compile service as
+    // dependency
+    return {
+        restrict: 'EA',
+        link: function(scope, element, attrs) {
+            scope.counter = 1;
+            var num = scope.counter;
+            element.bind('click', function() {
+                var len = $('.put_row').length;
+                if (len != undefined) {
+                    scope.counter = len;
+                } else {
+                    scope.counter = 1;
+                }
+                var test = $('#work_instructs').val();
+                if (!test) {
+                    notification('Please select option', 'warning');
+                } else {
+                    var CommaIndex = test.indexOf(",");
+                    //var strD1 = test.substring(0, CommaIndex); 
+                    var strD1 = 1; 
+                    var strD2 = test.substring(CommaIndex + 1); 
+                    console.log('test',test);
+                    
+                    var strD = test.split(',');
+                    var i;
+                    console.log('strD1',strD1);
+                    console.log('strD12',strD2);
+                    
+                    var allow = true;
+                    for(i=0;i<=scope.counter-1;i++){
+                        if(strD2 == angular.element('#work_name'+ i).text()){
+                            notification('Work instructions already exists.', 'error');
+                            allow = false;
+                        }
+                    }
+                    if(allow){
+                        var input = angular
+                        .element('<tr id="work1_' + scope.counter + '" class="put_row">' +
+                            '<td class="none"><span id="work_id' + scope.counter + '">' + scope.counter + '<span></td>' +
+                            '<td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name' + scope.counter + '">' + strD2 + '<span></td>' +
+                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete"><i class="fa fa-times"></i></a></td>'
+                        );
+                        var compile = $compile(input)(scope);
+                        var test = $('.workIn').before(input);
+                        scope.counter++;
+                    }
+                }
+            });
+        }
+    }
+}]);
 // nested files
 app.directive('angularTreeview', ['$compile', function($compile) { // inject $compile service as
     // dependency
