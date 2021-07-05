@@ -4493,7 +4493,9 @@ app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject
                             '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>'
                         );
                         var compile = $compile(input)(scope);
-                        var test = $('.workIn').before(input);
+                        var test = $(".putinstruct:first").before(input);
+                        //var test = $('.workIn').before(input);
+                        
                         scope.counter++;
                     }
                 }

@@ -397,7 +397,7 @@
                                                     <th>Action</th>
                                                     </thead>
                                                     <tbody>
-                                                        <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
+                                                        <tr id="work1_{{$index}}" class="put_row putinstruct" ng-repeat="war in wrInstruct">
                                                             <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
                                                             <td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
                                                             <td><a href="javascript:void(0)" ng-click="removeWorkIns($index)" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>
