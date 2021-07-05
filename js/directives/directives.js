@@ -4490,7 +4490,7 @@ app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject
                         .element('<tr id="work1_' + scope.counter + '" class="put_row">' +
                             '<td class="none"><span id="work_id' + scope.counter + '">' + scope.counter + '<span></td>' +
                             '<td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name' + scope.counter + '">' + strD2 + '<span></td>' +
-                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete"><i class="fa fa-times"></i></a></td>'
+                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>'
                         );
                         var compile = $compile(input)(scope);
                         var test = $('.workIn').before(input);

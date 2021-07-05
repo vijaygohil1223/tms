@@ -2564,20 +2564,27 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 notification('Due date should be less then project due date.', 'warning');
                 return false;
             }*/
-
-
             var obj = [];
+            $('[id^=work_name]').each(function(i,v) {
+                //var dateTime = $(this).find('time')[0].innerText;
+                console.log('iii',i);
+                console.log('vvvv',v.innerText);
+                obj.push({
+                        work_id: i,
+                        work_name: v.innerText
+                    });
+            });
+            /*var obj1 = [];
             for (var i = 0; i < angular.element('[id^=work1_]').length; i++) {
                 var workId = angular.element('#work_id' + i).text();
                 var workName = angular.element('#work_name' + i).text();
-                obj.push({
-                    work_id: workId,
-                    work_name: workName
-                });
-            }
-
+                    obj1.push({
+                        work_id: workId,
+                        work_name: workName
+                    });
+                console.log('insertid',i);
+            }*/
             $scope.work_instruction = JSON.stringify(obj);
-            console.log('$scope.work_instruction',$scope.work_instruction);
             $scope.jobdetail.work_instruction = $scope.work_instruction;
             console.log('jobdata',$scope.jobdetail);
             
@@ -2734,11 +2741,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.removeWorkIns = function(id) {
         var len = angular.element('[id^=work1_]').length;
-        if (id == len - 1) {
+        $('#work1_' + id).remove();
+        /*if (id == len - 1) {
             $('#work1_' + id).remove();
         } else {
             notification('Delete from last record', 'warning');
-        }
+        }*/
     }
 
 
@@ -19087,6 +19095,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
             $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+            $scope.jobdetail.priceLinguist = '';
+            if($scope.jobdetail.price){
+                $scope.jobdetail.price = JSON.parse(data[0].price);
+            }
+            //console.log('$scope.jobdetail-linguis',$scope.jobdetail);
+            
             //page redirect job discussion
             $scope.jobDiscussionRedirect = data[0].order_id
             $window.localStorage.jobOrderId = data[0].order_id;

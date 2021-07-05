@@ -122,9 +122,10 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                        </div>
+                                            </div>
                                     </div> -->
-                                    <div class="col-sm-12">
+                                    
+                                    <!-- <div class="col-sm-12">
                                         <div class="panel panel-default">
                                             <div class="panel-heading font-bold"><h4>Prices</h4></div>
                                             <div class="panel-body">
@@ -150,6 +151,62 @@
                                                         <tr>
                                                             <th colspan="3">Total Net price</th>
                                                             <th ng-bind="totalPrice |customNumber"></th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-sm-6">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading font-bold"><h4>Project Instructions</h4></div>
+                                            <div class="panel-body">
+                                                <table  class="table m-b-none default footable-loaded footable" >
+                                                    <thead>
+                                                    <th>Project Instructions</th>
+                                                    <!-- <th>Check list</th> -->
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
+                                                            <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
+                                                            <td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> &nbsp;&nbsp;<span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
+                                                            <td><span class="checkList"></span></td>
+                                                        </tr>
+                                                        <tr ng-show="wrInstructEmpty">
+                                                            <td colspan="4" ng-bind="dataNotFound"></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading font-bold"><h4>Payment</h4></div>
+                                            <div class="panel-body">
+                                                <table  class="table m-b-none default footable-loaded footable">
+                                                    <thead>
+                                                    <th>Quantity</th>
+                                                    <th>Price unit</th>
+                                                    <th>Unit price</th>
+                                                    <th>Amount in {{currencyCodeDisplay}}</th>
+                                                    <!-- <th>Tax</th> -->
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="linguist in jobdetail.price">
+                                                            <td  ng-bind="linguist.quantity"></td>
+                                                            <td  ng-bind="linguist.pricelist"></td>
+                                                            <td  ng-bind="linguist.itemPrice |customNumber"></td>
+                                                            <td ng-bind="linguist.itemTotal |customNumber"></td>
+                                                            <!-- <td>Without tax</td> -->
+                                                        </tr>
+                                                        <tr ng-show="itemPriceEmpty">
+                                                            <td colspan="4" ng-bind="dataNotFound"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th colspan="3">Total Net price</th>
+                                                            <th ng-bind="jobdetail.total_price |customNumber"></th>
                                                             <th></th>
                                                         </tr>
                                                     </tbody>
