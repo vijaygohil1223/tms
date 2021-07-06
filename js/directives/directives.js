@@ -4471,12 +4471,9 @@ app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject
                     //var strD1 = test.substring(0, CommaIndex); 
                     var strD1 = 1; 
                     var strD2 = test.substring(CommaIndex + 1); 
-                    console.log('test',test);
                     
                     var strD = test.split(',');
                     var i;
-                    console.log('strD1',strD1);
-                    console.log('strD12',strD2);
                     
                     var allow = true;
                     for(i=0;i<=scope.counter-1;i++){
@@ -4487,16 +4484,20 @@ app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject
                     }
                     if(allow){
                         var input = angular
-                        .element('<tr id="work1_' + scope.counter + '" class="put_row">' +
+                        .element('<tr id="work1_' + scope.counter + '" class="put_row putinstruct">' +
                             '<td class="none"><span id="work_id' + scope.counter + '">' + scope.counter + '<span></td>' +
                             '<td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name' + scope.counter + '">' + strD2 + '<span></td>' +
                             '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>'
                         );
                         var compile = $compile(input)(scope);
-                        var test = $(".putinstruct:first").before(input);
+                        if(len==1){
+                            var test = $('.workIn').before(input);
+                        }else{
+                            var test = $(".putinstruct:first").before(input);
+                        }
                         //var test = $('.workIn').before(input);
-                        
                         scope.counter++;
+                        //var test = $('#work_instructs').val('');
                     }
                 }
             });

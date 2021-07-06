@@ -251,6 +251,84 @@
 
                                             </div>
                                         </div>
+                                        <div class="panel panel-default custm-table">
+                                            <div class="panel-heading font-bold"><h4>Work instructions</h4></div>
+                                            <div class="panel-body">
+                                                <table  class="table m-b-none default footable-loaded footable" >
+                                                    <thead>    
+                                                    <th style="width:80%;">Work instructions</th>
+                                                    <th style="width:20%;">Action</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr id="work1_{{$index}}" class="put_row putinstruct" ng-repeat="war in wrInstruct">
+                                                            <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
+                                                            <td style="width:80%;"><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
+                                                            <td style="width:20%;"><a href="javascript:void(0)" ng-click="removeWorkIns($index)" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>
+                                                        </tr>
+                                                        <tr class="workIn" style="display:none;">
+                                                            <td >
+                                                                <div class="col-sm-10">
+                                                                    <input type="text" class="form-control" id="work_instructs" name="work_instructs" ng-model="work_instructs"/>
+                                                                </div>
+                                                                <div class="col-sm-2" style="margin-top:8px;">
+                                                                    <a href="javascript:void(0)" job-work-instruction3 style="color: white; background: #337ab7; padding: 5px; border-radius: 5px;"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                                                </div>
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <!-- <tr>
+                                                            <td>
+                                                                <input type="text" class="form-control" id="work_instructs" name="work_instructs" ng-model="work_instructs" placeholder="Enter work instructions" />
+                                                            </td>
+                                                            <td style="padding: 15px 0 0 15px;">
+                                                                <a href="javascript:void(0)" job-work-instruction3 style="color: white; background: #337ab7; padding: 6px; border-radius: 5px;"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                                            </td>
+                                                        </tr> -->
+                                                    </tbody>
+                                                </table><br>
+                                                <div class="col-sm-12" style="">
+                                                    <div class="col-sm-10" style="left:-22px;">
+                                                        <input type="text" class="form-control" id="work_instructs" name="work_instructs" ng-model="work_instructs" placeholder="Enter work instructions" />
+                                                    </div>
+                                                    <div class="col-sm-2" style="top:8px;left:-22px;">
+                                                        <a href="javascript:void(0)" job-work-instruction3 style="color: white; background: #337ab7; padding: 6px; border-radius: 5px;"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                                    </div>
+                                                </div>
+                                                <!-- <table  class="table m-b-none default footable-loaded footable" >
+                                                    <thead>    
+                                                    <th>Work instructions</th>
+                                                    <th>Action</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
+                                                            <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
+                                                            <td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
+                                                            <td><a href="javascript:void(0)" ng-click="removeWorkIns($index)" title="delete" class="deletebtn"><i class="glyph-icon fa-times"></i></a></td>
+                                                        </tr>
+                                                        <tr class="workIn">
+                                                            <td>
+                                                                <div class="col-sm-10">
+                                                                    <input type="text" class="form-control" id="work_instructs" name="work_instructs" ng-model="work_instructs"/>
+                                                                </div>
+                                                                <div class="col-sm-2" style="margin-top:8px;">
+                                                                    <a href="javascript:void(0)" job-work-instruction2 style="color: white; background: #337ab7; padding: 5px; border-radius: 5px;"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                                                </div>
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table><br> -->
+                                                <!-- <div class="col-sm-12" style="left: -23px;">
+                                                    <div class="col-sm-4">
+                                                        <input type="text" class="form-control" id="work_instructs" name="work_instruction" ng-model="work_instruction" placeholder="Select work instructions" />
+                                                    </div>
+                                                    <div class="col-sm-2" style="top: 8px;left: -20px;">
+                                                        <a href="javascript:void(0)" job-work-instruction2 ><i class="fa fa-plus" aria-hidden="true"></i></a>
+                                                    </div>
+                                                </div> -->
+                                               
+                                            </div>
+                                        </div>
                                         <div class="panel panel-default">
                                           <div class="panel-heading font-bold"><h4>Payment to linguist</h4></div>
                                             <div class="panel-body">
@@ -388,76 +466,7 @@
                                                
                                             </div>
                                         </div> -->
-                                        <div class="panel panel-default custm-table">
-                                            <div class="panel-heading font-bold"><h4>Work instructions</h4></div>
-                                            <div class="panel-body">
-                                                <table  class="table m-b-none default footable-loaded footable" >
-                                                    <thead>    
-                                                    <th>Work instructions</th>
-                                                    <th>Action</th>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr id="work1_{{$index}}" class="put_row putinstruct" ng-repeat="war in wrInstruct">
-                                                            <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
-                                                            <td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
-                                                            <td><a href="javascript:void(0)" ng-click="removeWorkIns($index)" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>
-                                                        </tr>
-                                                        <tr class="workIn" style="display:none;">
-                                                            <td >
-                                                                <div class="col-sm-10">
-                                                                    <input type="text" class="form-control" id="work_instructs" name="work_instructs" ng-model="work_instructs"/>
-                                                                </div>
-                                                                <div class="col-sm-2" style="margin-top:8px;">
-                                                                    <a href="javascript:void(0)" job-work-instruction3 style="color: white; background: #337ab7; padding: 5px; border-radius: 5px;"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                                                                </div>
-                                                            </td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table><br>
-                                                <div class="col-sm-12" style="left: -23px;">
-                                                    <div class="col-sm-4">
-                                                        <input type="text" class="form-control" id="work_instructs" name="work_instructs" ng-model="work_instructs" placeholder="Enter work instructions" />
-                                                    </div>
-                                                    <div class="col-sm-2" style="top: 8px;left: -20px;">
-                                                        <a href="javascript:void(0)" job-work-instruction3 style="color: white; background: #337ab7; padding: 5px; border-radius: 5px;"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                                                    </div>
-                                                </div>
-                                                <!-- <table  class="table m-b-none default footable-loaded footable" >
-                                                    <thead>    
-                                                    <th>Work instructions</th>
-                                                    <th>Action</th>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
-                                                            <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
-                                                            <td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
-                                                            <td><a href="javascript:void(0)" ng-click="removeWorkIns($index)" title="delete" class="deletebtn"><i class="glyph-icon fa-times"></i></a></td>
-                                                        </tr>
-                                                        <tr class="workIn">
-                                                            <td>
-                                                                <div class="col-sm-10">
-                                                                    <input type="text" class="form-control" id="work_instructs" name="work_instructs" ng-model="work_instructs"/>
-                                                                </div>
-                                                                <div class="col-sm-2" style="margin-top:8px;">
-                                                                    <a href="javascript:void(0)" job-work-instruction2 style="color: white; background: #337ab7; padding: 5px; border-radius: 5px;"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                                                                </div>
-                                                            </td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table><br> -->
-                                                <!-- <div class="col-sm-12" style="left: -23px;">
-                                                    <div class="col-sm-4">
-                                                        <input type="text" class="form-control" id="work_instructs" name="work_instruction" ng-model="work_instruction" placeholder="Select work instructions" />
-                                                    </div>
-                                                    <div class="col-sm-2" style="top: 8px;left: -20px;">
-                                                        <a href="javascript:void(0)" job-work-instruction2 ><i class="fa fa-plus" aria-hidden="true"></i></a>
-                                                    </div>
-                                                </div> -->
-                                               
-                                            </div>
-                                        </div>
+                                        
                                         
                                         <!-- <div class="panel panel-default">
                                             <div class="panel-heading font-bold"><h4>Prices</h4></div>
