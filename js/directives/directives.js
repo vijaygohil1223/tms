@@ -4470,8 +4470,9 @@ app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject
                     var CommaIndex = test.indexOf(",");
                     //var strD1 = test.substring(0, CommaIndex); 
                     var strD1 = 1; 
-                    var strD2 = test.substring(CommaIndex + 1); 
-                    
+                    //var strD2 = test.substring(CommaIndex + 1); 
+                    var strD2 = test;
+                    console.log('test',test);
                     var strD = test.split(',');
                     var i;
                     
@@ -4484,7 +4485,7 @@ app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject
                     }
                     if(allow){
                         var input = angular
-                        .element('<tr id="work1_' + scope.counter + '" class="put_row putinstruct">' +
+                        .element('<tr id="work1_' + scope.counter + '" class="put_row putinstruct" style="background-color:#FFF;">' +
                             '<td class="none"><span id="work_id' + scope.counter + '">' + scope.counter + '<span></td>' +
                             '<td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name' + scope.counter + '">' + strD2 + '<span></td>' +
                             '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>'
