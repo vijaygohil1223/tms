@@ -74,9 +74,9 @@ class filemanager {
             //if($element['parent_id'] == $parentId)
             if ($element['parent_id'] == $parentId) {
                 $branch[] = $element;
-                    if(count($element['fmanager_id']) > 0) {
+                    //if(count($element['fmanager_id']) > 0) {
                         $branch = array_merge($branch,Self::buildTreearraydata($elements, $element['fmanager_id']));
-                    }
+                    //}
             }
         }
         return $branch;
