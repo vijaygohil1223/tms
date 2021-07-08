@@ -4291,10 +4291,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             }
                             if (folderId != undefined) {
                                 $scope.showLoder = true;
-                                console.log('flderis',folderId);
-                                //if (result == true) {
                                     rest.path = 'filemanagerfolderDownload/' + folderId ;
+                                    console.log('nosuc');
                                     rest.get().success(function(data) {
+                                        console.log('a');
                                         $scope.downloadAllfile = data;
                                         console.log('allfile',$scope.downloadAllfile);
                                         var zipdwnld = new JSZip();
@@ -4326,7 +4326,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                         var foldername2 = val2.name;
                                                         zipdwnld.folder(foldername2);
                                                     }
-                                                
                                                 });
                                                 //$scope.childData = val2;
                                             }
@@ -4342,14 +4341,17 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                     // see FileSaver.js
                                                     saveAs(content, "TMS_"+tmsfolder+".zip");
                                                 });
-                                            },200);
-                                        $timeout(function() {
-                                            $route.reload();
-                                        },300);    
+                                                
+                                                $timeout(function() {
+                                                    $route.reload();
+                                                },200);                                             
+                                            },100);
+                                            
                                     })
-                                /*} else {
-                                    $scope.showLoder = false;
-                                }*/
+                                    $timeout(function() {
+                                        $scope.showLoder = false;
+                                    },2000);
+                                
                             }
                             
                         }],
