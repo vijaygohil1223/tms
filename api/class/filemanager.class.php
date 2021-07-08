@@ -67,6 +67,21 @@ class filemanager {
         return $branch;
     }
 
+    // folder tree data to flat array
+    public function buildTreearraydata(array $elements, $parentId = 0) {
+        $branch = array();
+        foreach ($elements as $key => $element) {
+            //if($element['parent_id'] == $parentId)
+            if ($element['parent_id'] == $parentId) {
+                $branch[] = $element;
+                    if(count($element['fmanager_id']) > 0) {
+                        $branch = array_merge($branch,Self::buildTreearraydata($elements, $element['fmanager_id']));
+                    }
+            }
+        }
+        return $branch;
+    }
+
 
    public function filefolderGet($id,$root,$externalResourceUserId){
         if($externalResourceUserId !='null'){
@@ -723,4 +738,30 @@ array(
             return $return['status'] = 404;
         }
     }
+
+    public function filemanagerfolderDownload($id){
+        /*if($id) {
+            //$data = self::filegetByparentId($id);
+            $this->_db->where('parent_id',$id);
+            $mid = $this->_db->get('tms_filemanager');    
+            //$mid = $mid[0]['fmanager_id'];
+            $dataArr = $this->_db->get('tms_filemanager');    
+            $data = self::buildTree($dataArr,$id);
+            
+        }*/
+        $this->_db->where('parent_id',$id);
+        $data = $this->_db->get('tms_filemanager');    
+        $dataArr = $this->_db->get('tms_filemanager');    
+        $i = 0;
+        foreach($data as $data1){
+            $data[$i]['countchild'] = 0;
+            $data[$i]['childfile'] = [];
+            if($data1['ext'] == ''){
+                $data[$i]['childfile'] = self::buildTreearraydata($dataArr,$data[$i]['fmanager_id']);
+            } 
+            $i++;
+        }
+        return $data;
+    }
+
 }

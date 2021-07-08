@@ -4256,6 +4256,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     // context-menu for folder
                     $scope.menuOptionsFolder = [
                         ['Open', function($itemScope) {
+                            console.log('folders');
                             $scope.findfile($itemScope.display.fmanager_id, $itemScope.display.name);
                         }],
 
@@ -4280,6 +4281,77 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                     }
                                 });
                             }
+                        }],
+
+                        ['Download', function($itemScope) {
+                            var folderId = $itemScope.display.fmanager_id;
+                            var tmsfolder = $itemScope.display.name;
+                            if(!tmsfolder){
+                                tmsfolder = 'tms';
+                            }
+                            if (folderId != undefined) {
+                                $scope.showLoder = true;
+                                console.log('flderis',folderId);
+                                //if (result == true) {
+                                    rest.path = 'filemanagerfolderDownload/' + folderId ;
+                                    rest.get().success(function(data) {
+                                        $scope.downloadAllfile = data;
+                                        console.log('allfile',$scope.downloadAllfile);
+                                        var zipdwnld = new JSZip();
+                                        angular.forEach($scope.downloadAllfile,function(val,i){
+                                            if(val.ext!=''){
+                                                var fimg = val.name;
+                                                zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
+                                            }
+                                            var fmid = 0;
+                                            if(val.ext==''){
+                                                var foldername = val.name;
+                                                var fmid = val.fmanager_id;
+                                                zipdwnld.folder(foldername);
+                                            }
+
+                                            console.log(val.childfile);
+                                            if(val.childfile){
+                                                angular.forEach(val.childfile,function(val2,i2){
+                                                    //console.log(val2.name);
+                                                    //console.log('childdata',val2);
+                                                    var prntId = 1;
+                                                    if(val2.ext!=''){
+                                                        var fimg2 = val2.name;
+                                                    }
+                                                    if(fimg2){
+                                                        zipdwnld.file(fimg2, "uploads/fileupload/"+fimg2);
+                                                    }
+                                                    if(val2.ext==''){
+                                                        var foldername2 = val2.name;
+                                                        zipdwnld.folder(foldername2);
+                                                    }
+                                                
+                                                });
+                                                //$scope.childData = val2;
+                                            }
+                                            /*var fimg = val.name;
+                                            const a = document.createElement('a');
+                                            a.download = fimg;
+                                            a.href = 'uploads/fileupload/'+fimg;
+                                            a.click();*/
+                                        })
+                                            $timeout(function() {
+                                                zipdwnld.generateAsync({type:"blob"})
+                                                .then(function(content) {
+                                                    // see FileSaver.js
+                                                    saveAs(content, "TMS_"+tmsfolder+".zip");
+                                                });
+                                            },200);
+                                        $timeout(function() {
+                                            $route.reload();
+                                        },300);    
+                                    })
+                                /*} else {
+                                    $scope.showLoder = false;
+                                }*/
+                            }
+                            
                         }],
 
                         ['Rename', function($itemScope) {
