@@ -933,6 +933,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 }).controller('dashboardController', function($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.jobfolderId = " ";
+    $window.localStorage.scoopfolderId = " ";
     $window.localStorage.pId = " ";
     $window.localStorage.filemanagerUser = " ";
     $scope.welUser = $window.localStorage.getItem("session_vUserName");
@@ -2936,11 +2937,42 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             var fullTxt = $(".ajax-file-upload-filename:contains('" + files[i].name + "')").text();
                             $('<div class="upimg' + fullTxt.charAt(0).toString() + '" style="display:none">' + data + '</div>').insertAfter(".ajax-file-upload-filename:contains('" + files[i].name + "')");
                         }
+                        /*if (fileExtension != 'jpg' && fileExtension != 'png' && fileExtension != 'gif') {
+                            var previewContainer = $('.upimg' + fullTxt.charAt(0).toString()).parent().children(':first-child');
+                            previewContainer.css('display', 'block', 'margin-left', '40px');
+                            previewContainer.css('margin-left', '55px');
+                            var DefaultImgPath = "assets/img/file_icon/fileicon.png";
+                            previewContainer.attr('src', DefaultImgPath);
+                        }*/
                         if (fileExtension != 'jpg' && fileExtension != 'png' && fileExtension != 'gif') {
                             var previewContainer = $('.upimg' + fullTxt.charAt(0).toString()).parent().children(':first-child');
                             previewContainer.css('display', 'block', 'margin-left', '40px');
                             previewContainer.css('margin-left', '55px');
                             var DefaultImgPath = "assets/img/file_icon/fileicon.png";
+                            if(fileExtension == 'docx' || fileExtension == 'doc'){ 
+                               DefaultImgPath = "assets/img/file_icon/doc.png"; 
+                            }
+                            if(fileExtension == 'xlsx' || fileExtension == 'xlsm' || fileExtension == 'csv'){ 
+                               DefaultImgPath = "assets/img/file_icon/xls.png"; 
+                            }
+                            if(fileExtension == 'pdf'){ 
+                               DefaultImgPath = "assets/img/file_icon/pdf.png"; 
+                            }
+                            if(fileExtension == 'ppt'){ 
+                               DefaultImgPath = "assets/img/file_icon/ppt.png"; 
+                            }
+                            if(fileExtension == 'zip' || fileExtension == 'gz'  || fileExtension == 'rar'){ 
+                               DefaultImgPath = "assets/img/file_icon/zip.png"; 
+                            }
+                            if(fileExtension == 'mp3' || fileExtension == 'wav'  || fileExtension == 'wma'){ 
+                               DefaultImgPath = "assets/img/file_icon/mp3.png"; 
+                            }
+                            if(fileExtension == 'mp4' || fileExtension == 'wmv'  || fileExtension == 'avi'  || fileExtension == '3gp'  || fileExtension == 'mov'  || fileExtension == 'vob'){ 
+                               DefaultImgPath = "assets/img/file_icon/video.png"; 
+                            }
+                            if(fileExtension == 'txt' || fileExtension == 'html'  || fileExtension == 'htm'  || fileExtension == 'js'  || fileExtension == 'css'  || fileExtension == 'vob'  || fileExtension == 'sql'  || fileExtension == 'tiff'  || fileExtension == 'ttf'){ 
+                               DefaultImgPath = "assets/img/file_icon/video.txt"; 
+                            }
                             previewContainer.attr('src', DefaultImgPath);
                         }
 
@@ -3669,7 +3701,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
     }
 
-}).controller('filemanagerCtrl', function($scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams) {
+}).controller('filemanagerCtrl', function($scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams,$interval) {
     $scope.clientId = $window.localStorage.getItem("contactclientId");
     $scope.userId = $window.localStorage.getItem("contactUserId");
     $scope.userIdInternal = $window.localStorage.getItem("internal");
@@ -3713,6 +3745,18 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             $scope.clientId = $window.localStorage.getItem("contactclientIdNew");
         }
     }
+    $scope.getScoopItemFileCount = function(){
+        var id = $window.localStorage.getItem("scoopFolderRoot");
+        
+        rest.path = 'getFilestotal/' + id;
+        rest.get().success(function(data) {
+        if(data){
+            $scope.Filestotal = data[0].totalfile;
+            $window.localStorage.setItem("scoopFolderCount",data[0].totalfile);
+        }
+            //angular.element('#filescount' + val.itemId).text($scope.Filestotal);
+        }).error(errorCallback);        
+    }
     //project root get display front
     if ($routeParams.id == 'client' && $scope.clientId != "") {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
@@ -3726,7 +3770,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     } else if ($routeParams.id == 'user' && $scope.userId != "") {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
             rest.path = 'Userfilefront/' + $scope.userId; //External
-
             $window.sessionStorage.setItem("ExternalUserId", $scope.userId);
 
             rest.get().success(function(data) {
@@ -3762,6 +3805,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }).error(errorCallback);
         }
     }
+
+    if($window.localStorage.ItemFolderid){
+        console.log('itemfolderid',$window.localStorage.ItemFolderid);
+        $window.localStorage.setItem("scoopFolderRoot", $window.localStorage.ItemFolderid);                
+        $interval($scope.getScoopItemFileCount,1000);            
+    }
+
     $scope.chkfilesize = 0;
     var uploadObj;
     $timeout(function() {
@@ -4350,7 +4400,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                     })
                                     $timeout(function() {
                                         $scope.showLoder = false;
-                                    },3000);
+                                    },4000);
                                 
                             }
                             
@@ -4604,11 +4654,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'getRootFolder';
         rest.put(rootId).success(function(data) {
             $scope.rootFolderName ='';
-            console.log('abcdefghijklmnopqrstu');
             if(data != null){
                 $scope.rootFolderName = data.name;
             }
-            console.log('rootfoldername',$scope.rootFolderName);
             
         }).error(errorCallback);
     }
@@ -11986,7 +12034,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         $uibModalInstance.dismiss('cancel');
     };
 
-}).controller('itemsController', function(allLanguages,$filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore) {
+}).controller('itemsController', function(allLanguages,$filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore,$interval) {
+    //$window.localStorage.scoopfolderId = $routeParams.id;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
     if($scope.isNewProject === 'true'){
@@ -12094,19 +12143,26 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.itemfolderOpen = function(id) {
         closeWindows();
+        console.log('scp===',id);
+        localStorage['scoopfolderId'] = id;
         $window.localStorage.ItemFolderid = id;
         var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
         itemPopup.addEventListener("beforeunload", function() {
             localStorage['parentId'] = ' ';
+            var id1 = $window.localStorage.getItem("scoopFolderRoot");
+            
             // files count 
             rest.path = 'getFilestotal/' + id;
                 rest.get().success(function(data) {
                     if(data){
                         $scope.Filestotal = data[0].totalfile;
                     }
-                    angular.element('#filescount' + id).text($scope.Filestotal);
+                    //angular.element('#filescount' + id).text($scope.Filestotal);
+                    $('#filescount' + id).text($scope.Filestotal);
                 }).error(errorCallback);
-            // files couunt end     
+            // files couunt end
+            console.log('filecount',$scope.Filestotal);
+                 
             return false;
         }, false);
 
@@ -12127,7 +12183,20 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }
         }, 200);
     }
+    var getCountScoopFolder = function(){
+        var count = $window.localStorage.getItem("scoopFolderCount");
+        if(!count){
+            count = 0;
+        }
+        var id = $window.localStorage.getItem("scoopfolderId");
+        console.log('scoopid',id);
+        console.log('scoop-foldercount',count);
+        //$('#sourceCount-'+id).text(count);
+        //$('#filescount'+id).text(count);
+    }
 
+    $interval(getCountScoopFolder,1000);
+    
     $scope.closeItem = function(frmId) {
         $route.reload();
     }
@@ -13528,7 +13597,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
         var type = $window.localStorage.getItem("jobFoldertype");
         var id = $window.localStorage.getItem("jobfolderId");
-
+        //console.log('testid',id);
         if(type){
             if(type == 'source'){
                 $('#sourceCount-'+id).text(count);
