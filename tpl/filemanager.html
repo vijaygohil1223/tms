@@ -91,11 +91,11 @@
                                             <a href="uploads/fileupload/{{display.name}}" download><div class="fileimgimagepdf"></div>
                                             &nbsp;<span ng-bind="display.name"></span></a>
                                           </span>
-                                          <span ng-show="display.ext == 'jpg' || display.ext == 'png' || display.ext == 'gif' || display.ext == 'jpeg'">
+                                          <span ng-show="display.ext == 'jpg' || display.ext == 'png' || display.ext == 'gif'  || display.ext == 'jfif' || display.ext == 'jpeg'">
                                             <a href="uploads/fileupload/{{display.name}}" download><img id="new_profile_pic"  ng-src="uploads/fileupload/{{display.name}}" width="30px" class="img-thumbnail" alt="Add a Picture">
                                             &nbsp;<span ng-bind="display.name"></span></a>
                                           </span>
-                                          <span ng-show="display.f_id!='0' && display.ext != 'jpg' && display.ext != 'png' && display.ext != 'gif' && display.ext != 'xlsx' && display.ext != 'zip' && display.ext != 'pdf' && display.ext != 'doc' && display.ext != 'jpeg'">
+                                          <span ng-show="display.f_id!='0' && display.ext != 'jpg' && display.ext != 'png' && display.ext != 'gif' &&  display.ext != 'jfif' && display.ext != 'xlsx' && display.ext != 'zip' && display.ext != 'pdf' && display.ext != 'doc' && display.ext != 'jpeg'">
                                             <a href="uploads/fileupload/{{display.name}}" download><div class="fileimgimagetxt"></div>
                                             &nbsp;<span ng-bind="display.name"></span></a>
                                           </span>

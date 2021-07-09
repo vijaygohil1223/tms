@@ -4350,7 +4350,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                     })
                                     $timeout(function() {
                                         $scope.showLoder = false;
-                                    },2000);
+                                    },3000);
                                 
                             }
                             
