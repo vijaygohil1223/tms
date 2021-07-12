@@ -12276,7 +12276,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             });
         }    
                         
-    },1000);
+    },2000);
 
 
     $scope.itemQuentityDelete = function(id,index,parentIndex) {
