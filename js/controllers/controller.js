@@ -12189,8 +12189,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             count = 0;
         }
         var id = $window.localStorage.getItem("scoopfolderId");
-        console.log('scoopid',id);
-        console.log('scoop-foldercount',count);
+        //console.log('scoopid',id);
+        //console.log('scoop-foldercount',count);
         //$('#sourceCount-'+id).text(count);
         //$('#filescount'+id).text(count);
     }
@@ -12262,6 +12262,22 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     $scope.plsModel = {
         languages40: allLanguages,
     };
+    console.log('$scope.plsModel',$scope.plsModel.languages40);
+    $timeout(function() {    
+        //var myEl = angular.element('#plsSourceLang1').children( document.querySelector( '[title="Catalan"]' ) );
+        //console.log('myEl',myEl);
+        if($scope.plsModel){
+            angular.forEach($scope.plsModel.languages40, function(val, i) {
+                //console.log('title',val.title);
+                if(val.is_favourite == 1){
+                    $('.allsourcelang').find('a[title="' + val.title +'"]').addClass('favlang');
+                    $('.alltargetlang').find('a[title="' + val.title +'"]').addClass('favlang');
+                }
+            });
+        }    
+                        
+    },1000);
+
 
     $scope.itemQuentityDelete = function(id,index,parentIndex) {
         

@@ -17,6 +17,11 @@
       padding-left: 8px;
       padding-right: 8px;
     }
+    .pls-language-container a.favlang{
+      font-weight: bold !important;
+      color: #333 !important;
+      /*background-color: yellow !important;*/
+    }
 </style>
 <script type="text/javascript">
   function myFunction(){
@@ -194,7 +199,7 @@
                                                          <label>Source language</label>
                                                          <!-- <input select2-languages-data id="source_lang" type="text" name="sourcelang" ng-model="item.source_lang" class="form-control sourcelanguages" ng-change="itemsNamechange()" required /> -->
                                                          <div id="source_lang{{it.itemId}}" style="display:none"></div>
-                                                         <pls id="plsSourceLang{{it.itemId}}" open-mode="hover" grid-columns="4" show-flag="true" selected-lang="en_US" items="plsModel.languages40" language-changed-callback="onLanguageChanged(lang,$index)"></pls>
+                                                         <pls id="plsSourceLang{{it.itemId}}" open-mode="hover" grid-columns="4" show-flag="true" selected-lang="en_US" items="plsModel.languages40" language-changed-callback="onLanguageChanged(lang,$index)" class="allsourcelang"></pls>
                                                          
                                                          <div id="indexItemSource{{it.itemId}}" style="display: none;">{{$index}}</div>
                                                       </div>    
@@ -204,7 +209,7 @@
                                                          <label>Target language</label>
                                                          <!-- <input type="text" select2-languages-data class="form-control targetlanguages" id="target_lang" name="targetlang" ng-model="item.target_lang" ng-change="itemsNamechange()" required/> -->
                                                          <div id="target_lang{{it.itemId}}" style="display:none"></div>
-                                                         <pls style="z-index:1 !important" id="plsTargetLang{{it.itemId}}" open-mode="hover" grid-columns="2" show-flag="true" selected-lang="en_US" items="plsModel.languages40" language-changed-callback="onLanguageChanged(lang)"></pls>
+                                                         <pls style="z-index:1 !important" id="plsTargetLang{{it.itemId}}" open-mode="hover" grid-columns="2" show-flag="true" selected-lang="en_US" items="plsModel.languages40" language-changed-callback="onLanguageChanged(lang)" class="alltargetlang"></pls>
                                                           <div id="indexItemTarget{{it.itemId}}" style="display: none;">{{$index}}</div>
                                                       </div>  
                                                     </div>

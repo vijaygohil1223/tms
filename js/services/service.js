@@ -162,15 +162,17 @@ app.factory('allLanguages', function($http, $location, $routeParams,rest) {
     rest.get().success(function(data) {
         
         angular.forEach(data, function(val, i) {
+            var langName = JSON.stringify('<span style="color:green;">'+val.name+'</span>');
             allLanguages.push({
                 'id': val.id,
                 'title': val.title,
                 'name': val.name,
                 'flagImg': 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/'+val.flagImg,
                 'flagTitle': val.flagTitle,
+                'is_favourite': val.is_favourite,
             });
         });
-        console.log("data lang", allLanguages);
+        console.log("allLanguages", allLanguages);
     
     }).error(function(data, error, status) {});
 
@@ -216,6 +218,6 @@ app.factory('allLanguages', function($http, $location, $routeParams,rest) {
         { id: 'jp_JP', title: 'Japanese', name: ' 日本語', flagImg: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/jp.png', flagTitle: 'Japan' },
         { id: 'ka_JP', title: 'Japanese (Kansai)', name: ' 日本語(関西)', flagImg: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/jp.png', flagTitle: 'Japan' }
     ];*/
-    console.log('all lang', allLanguages);
+    //console.log('all lang', allLanguages);
     return allLanguages;
 });
