@@ -3807,9 +3807,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     }
 
     if($window.localStorage.ItemFolderid){
-        console.log('itemfolderid',$window.localStorage.ItemFolderid);
+        //console.log('itemfolderid',$window.localStorage.ItemFolderid);
         $window.localStorage.setItem("scoopFolderRoot", $window.localStorage.ItemFolderid);                
-        $interval($scope.getScoopItemFileCount,1000);            
+        //$interval($scope.getScoopItemFileCount,1000);            
     }
 
     $scope.chkfilesize = 0;
@@ -3831,15 +3831,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
             afterUploadAll: function(obj) {
-                console.log('b');
-                
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
                     $route.reload();
-                console.log('CDD');
-                
                 }, 100);
-
             },
             onCancel: function(files, pd) {
                 $timeout(function() {
@@ -3853,7 +3848,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
             },
             onSuccess: function(files, data, xhr, pd) {
-                console.log('a');
+                //debugger;
+                //console.log('a');
                 var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
                 var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
                 var fileDivText = $(".ajax-file-upload-filename:contains('" + files[0] + "')").text();
@@ -3881,10 +3877,35 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.chkfilesize = getFileSize[1];
 
                 rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) { console.log('data',data); }).error(errorCallback);
+                rest.post($scope.filedata).success(function(data) { console.log('sucdata',data); }).error(errorCallback);
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
             },
+            customProgressBar: function(obj,s)
+            {
+                this.statusbar = $("<div class='ajax-file-upload-statusbar'></div>");
+                this.preview = $("<img class='ajax-file-upload-preview' />").width(s.previewWidth).height(s.previewHeight).appendTo(this.statusbar).hide();
+                this.filename = $("<div class='ajax-file-upload-filename'></div>").appendTo(this.statusbar);
+                this.progressDiv = $("<div class='ajax-file-upload-progress'>").appendTo(this.statusbar).hide();
+                this.progressbar = $("<div class='ajax-file-upload-bar'></div>").appendTo(this.progressDiv);
+                this.abort = $("<div>" + s.abortStr + "</div>").appendTo(this.statusbar).hide();
+                this.cancel = $("<div>" + s.cancelStr + "</div>").appendTo(this.statusbar).hide();
+                this.done = $("<div>" + s.doneStr + "</div>").appendTo(this.statusbar).hide();
+                this.download = $("<div>" + s.downloadStr + "</div>").appendTo(this.statusbar).hide();
+                this.del = $("<div>" + s.deleteStr + "</div>").appendTo(this.statusbar).hide();
+
+                this.abort.addClass("ajax-file-upload-red");
+                this.done.addClass("ajax-file-upload-green");
+                this.download.addClass("ajax-file-upload-green");            
+                this.cancel.addClass("ajax-file-upload-red");
+                this.del.addClass("ajax-file-upload-red");
+                /*if(count++ %2 ==0)
+                    this.statusbar.addClass("even");
+                else
+                    this.statusbar.addClass("odd");*/ 
+                return this;
+            },
+            
             onSelect: function(files) {
                 var isFilesAvailable = angular.element('.ajax-file-upload-container').css('border', '1px dotted #ddd');
                 angular.forEach(files, function(val, i) {
@@ -4231,18 +4252,21 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }).error(errorCallback);
     }
     $timeout(function() {
+        setInterval(function() {
         if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
             var id = $window.localStorage.getItem("parentId");
             var externalResourceUserId = null;
             if ($window.sessionStorage.getItem("ExternalUserId") != null) {
                 var externalResourceUserId = $window.sessionStorage.getItem("ExternalUserId");
             }
+            
             rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
+            
             console.log('id',id);
             rest.get().success(function(data) {
                 $timeout(function() {
                     $scope.displayfolder = data;
-                    
+                    console.log('displayfolder-data',$scope.displayfolder);
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function(val, i) {
                         $scope.displayfolder[i].countchild = val.categories.length;
@@ -4605,6 +4629,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             }).error(errorCallback);
         }
 
+    },5000);
     },1000);
     
     //nested file
