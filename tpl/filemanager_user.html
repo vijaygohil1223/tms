@@ -348,8 +348,12 @@ vendor-prefixes.less:76
                                 ng-if="category.ext == 'jpg' ||
                                        category.ext == 'png' || 
                                        category.ext == 'jpeg'||  
-                                       category.ext == 'gif'||  
-                                       category.ext == 'bmp'  
+                                       category.ext == 'gif' ||  
+                                       category.ext == 'bmp' ||  
+                                       category.ext == 'jfif' ||  
+                                       category.ext == 'webp'  
+                                       ||  
+                                       category.ext == 'svg'  
                                       "  
                        style="background-image:url('uploads/fileupload/{{category.name}}') !important;" context-menu="menuOptionsFiles"><p>{{category.name.substr(0,22)}}</p></file>
                        <!-- Zip -->
@@ -367,6 +371,7 @@ vendor-prefixes.less:76
                        <file extension="xls" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)" 
                           ng-if="category.ext == 'xlsx' ||
                                  category.ext == 'xlsm' ||
+                                 category.ext == 'xls' ||
                                  category.ext == 'csv'
                                 " class="xls" context-menu="menuOptionsFiles"><p>
                           {{category.name.substr(0,22)}}</p>

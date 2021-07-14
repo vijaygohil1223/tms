@@ -238,6 +238,8 @@ vendor-prefixes.less:76
                                display.ext == 'jpeg'||  
                                display.ext == 'gif'||  
                                display.ext == 'jfif'||  
+                               display.ext == 'svg'||  
+                               display.ext == 'webp'||  
                                display.ext == 'bmp'  
                               "  
                style="background-image:url('uploads/fileupload/{{display.name}}') !important;" context-menu="menuOptionsFiles"><p>{{display.name.substr(0,22)}}</p></file>
@@ -257,6 +259,7 @@ vendor-prefixes.less:76
                <file extension="xls" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" 
                   ng-if="display.ext == 'xlsx' ||
                          display.ext == 'xlsm' ||
+                         display.ext == 'xls' ||
                          display.ext == 'csv'
                         " class="xls" context-menu="menuOptionsFiles"><p>
                   {{display.name.substr(0,22)}}</p>
