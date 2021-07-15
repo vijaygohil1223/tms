@@ -198,8 +198,8 @@
                                                         <tr ng-repeat="linguist in jobdetail.price">
                                                             <td  ng-bind="linguist.quantity"></td>
                                                             <td  ng-bind="linguist.pricelist"></td>
-                                                            <td  ng-bind="linguist.itemPrice |customNumber"></td>
-                                                            <td ng-bind="linguist.itemTotal |customNumber"></td>
+                                                            <td  ng-bind="linguist.itemPrice |NumbersCommaformat"></td>
+                                                            <td ng-bind="linguist.itemTotal |NumbersCommaformat"></td>
                                                             <!-- <td>Without tax</td> -->
                                                         </tr>
                                                         <tr ng-show="itemPriceEmpty">
@@ -207,7 +207,7 @@
                                                         </tr>
                                                         <tr>
                                                             <th colspan="3">Total Net price</th>
-                                                            <th ng-bind="jobdetail.total_price |customNumber"></th>
+                                                            <th ng-bind="jobdetail.total_price |NumbersCommaformat"><!-- customNumber --></th>
                                                             <th></th>
                                                         </tr>
                                                     </tbody>

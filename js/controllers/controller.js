@@ -3255,25 +3255,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $scope.findfile($itemScope.display.fmanager_id, $itemScope.display.name);
                     }],
 
-                    ['Delete', function($itemScope) {
-                        bootbox.confirm("Are you sure you want to delete this folder?", function(result) {
-                            var folderId = $itemScope.display.fmanager_id;
-                            var image = $itemScope.display.name;
-                            if (folderId != undefined) {
-                                $scope.showLoder = true;
-                                if (result == true) {
-                                    rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
-                                    rest.delete().success(function(data) {
-                                        $scope.copyfile = [];
-                                        $route.reload();
-                                    })
-                                } else {
-                                    $scope.showLoder = false;
-                                }
-                            }
-                        });
-                    }],
-
                     ['Download', function($itemScope) {
                             var folderId = $itemScope.display.fmanager_id;
                             var tmsfolder = $itemScope.display.name;
@@ -3345,6 +3326,25 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 
                             }
                             
+                        }],
+
+                        ['Delete', function($itemScope) {
+                            bootbox.confirm("Are you sure you want to delete this folder?", function(result) {
+                                var folderId = $itemScope.display.fmanager_id;
+                                var image = $itemScope.display.name;
+                                if (folderId != undefined) {
+                                    $scope.showLoder = true;
+                                    if (result == true) {
+                                        rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
+                                        rest.delete().success(function(data) {
+                                            $scope.copyfile = [];
+                                            $route.reload();
+                                        })
+                                    } else {
+                                        $scope.showLoder = false;
+                                    }
+                                }
+                            });
                         }],
 
                     ['Rename', function($itemScope) {
@@ -4376,41 +4376,24 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }],
                     ];
 
+                    /*$('ul').on('contextmenu', 'li', function(e) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      
+                      alert('this.id');
+                    });*/
                     // context-menu for folder
                     $scope.menuOptionsFolder = [
                         ['Open', function($itemScope) {
-                            console.log('folders');
                             $scope.findfile($itemScope.display.fmanager_id, $itemScope.display.name);
                         }],
 
-                        ['Delete', function($itemScope) {
-                            if ($itemScope.display.is_default_folder == 1) {
-                                notification('You can not delete default folders', 'warning');
-                            } else {
-                                bootbox.confirm("Are you sure you want to delete this folder?", function(result) {
-                                    var folderId = $itemScope.display.fmanager_id;
-                                    var image = $itemScope.display.name;
-                                    if (folderId != undefined) {
-                                        $scope.showLoder = true;
-                                        if (result == true) {
-                                            rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
-                                            rest.delete().success(function(data) {
-                                                $scope.copyfile = [];
-                                                $route.reload();
-                                            })
-                                        } else {
-                                            $scope.showLoder = false;
-                                        }
-                                    }
-                                });
-                            }
-                        }],
-
                         ['Download', function($itemScope) {
+                            /*event.preventDefault();
+                            event.stopPropagation();*/
                             var folderId = $itemScope.display.fmanager_id;
                             var tmsfolder = $itemScope.display.name;
                             console.log('$itemScope.display.name',$itemScope.display.name);
-                        
                             if(!tmsfolder){
                                 tmsfolder = 'tms';
                             }
@@ -4479,6 +4462,29 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 
                             }
                             
+                        }],
+
+                        ['Delete', function($itemScope) {
+                            if ($itemScope.display.is_default_folder == 1) {
+                                notification('You can not delete default folders', 'warning');
+                            } else {
+                                bootbox.confirm("Are you sure you want to delete this folder?", function(result) {
+                                    var folderId = $itemScope.display.fmanager_id;
+                                    var image = $itemScope.display.name;
+                                    if (folderId != undefined) {
+                                        $scope.showLoder = true;
+                                        if (result == true) {
+                                            rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
+                                            rest.delete().success(function(data) {
+                                                $scope.copyfile = [];
+                                                $route.reload();
+                                            })
+                                        } else {
+                                            $scope.showLoder = false;
+                                        }
+                                    }
+                                });
+                            }
                         }],
 
                         ['Rename', function($itemScope) {
