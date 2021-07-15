@@ -4302,6 +4302,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     }
     var is_setint = 0;
     $timeout(function() {
+        $('.ft16181').on('contextmenu', 'folder', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('testing id');
+              alert('this.id');
+            });
         //var setintrvl = setInterval(function() {
          if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
             var id = $window.localStorage.getItem("parentId");
@@ -4350,6 +4356,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                     $scope.headerfilename(id);
 
+
+
                     // context-menu for file paste
                     $scope.menuOptionsPaste = [
                         ['Paste', function($itemScope) {
@@ -4376,12 +4384,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }],
                     ];
 
-                    /*$('ul').on('contextmenu', 'li', function(e) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      
-                      alert('this.id');
-                    });*/
+                    
                     // context-menu for folder
                     $scope.menuOptionsFolder = [
                         ['Open', function($itemScope) {
