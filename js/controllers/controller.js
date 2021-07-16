@@ -4038,9 +4038,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
 
     }, 1000);
+    
     $timeout(function() {
         $('.ajax-upload-dragdrop:eq(1)').hide();
-    }, 200);
+    }, 500);
 
     $timeout(function() {
         $scope.addToDownload = function(fimg) {
@@ -4191,6 +4192,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
 
     $scope.showLoder = false;
+
     // Delete all selected files
     $scope.deleteSelected = function() {
         FilesLength = angular.element('file').hasClass('activeselect');
@@ -4302,12 +4304,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     }
     var is_setint = 0;
     $timeout(function() {
-        $('.ft16181').on('contextmenu', 'folder', function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              console.log('testing id');
-              alert('this.id');
-            });
+        
         //var setintrvl = setInterval(function() {
          if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
             var id = $window.localStorage.getItem("parentId");
@@ -4356,8 +4353,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                     $scope.headerfilename(id);
 
-
-
                     // context-menu for file paste
                     $scope.menuOptionsPaste = [
                         ['Paste', function($itemScope) {
@@ -4384,7 +4379,42 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }],
                     ];
 
-                    
+                    //$timeout(function() {
+                        var smenu=0;
+                        var setintrvlMenu = setInterval(function() {
+                            $( "folder, file" ).contextmenu(function(e) {
+                              //alert($(this).attr('menuoptionIdName'));
+                              $scope.menuRclkID ='';
+                              var ele = $(this).attr('menuoptionIdName');
+                              if(ele){
+                                var eleProperty = ele.substring(
+                                    ele.lastIndexOf(",[") + 2 , 
+                                    ele.lastIndexOf("],")
+                                );
+                                var filename = ele.substring( 
+                                    ele.lastIndexOf("],")+2
+                                );
+                                $scope.menuRclkID = ele.split(',')[0];  
+                                $scope.menuRclkfileExt = eleProperty.split(',')[0];  
+                                $scope.menuRclkfileDate = eleProperty.split(',')[1];  
+                                $scope.menuRclkfileSize = eleProperty.split(',')[2];  
+                                $scope.menuRclkName = filename;  
+                              }
+                              if(ele==0){
+                                $scope.menuRclkID ='';
+                              }
+                              //alert($scope.menuRclkID);
+                              if(smenu == 100){
+                                clearInterval(setintrvlMenu);
+                              }
+                              console.log(smenu);
+                              ++smenu;
+                                //event.preventDefault();
+                                //event.stopImmediatePropagation();  
+                            });
+                        },200);
+                    //},1000);
+
                     // context-menu for folder
                     $scope.menuOptionsFolder = [
                         ['Open', function($itemScope) {
@@ -4394,9 +4424,15 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         ['Download', function($itemScope) {
                             /*event.preventDefault();
                             event.stopPropagation();*/
-                            var folderId = $itemScope.display.fmanager_id;
-                            var tmsfolder = $itemScope.display.name;
+                            if($scope.menuRclkID){
+                                var folderId = $scope.menuRclkID;
+                                var tmsfolder = $scope.menuRclkName;
+                            }else{
+                                var folderId = $itemScope.display.fmanager_id;
+                                var tmsfolder = $itemScope.display.name;
+                            }
                             console.log('$itemScope.display.name',$itemScope.display.name);
+                            console.log('$scope.menuRclk',$scope.menuRclk);
                             if(!tmsfolder){
                                 tmsfolder = 'tms';
                             }
@@ -4472,8 +4508,15 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 notification('You can not delete default folders', 'warning');
                             } else {
                                 bootbox.confirm("Are you sure you want to delete this folder?", function(result) {
-                                    var folderId = $itemScope.display.fmanager_id;
-                                    var image = $itemScope.display.name;
+                                    //var folderId = $itemScope.display.fmanager_id;
+                                    //var image = $itemScope.display.name;
+                                    if($scope.menuRclkID){
+                                        var folderId = $scope.menuRclkID;
+                                        var image = $scope.menuRclkName;
+                                    }else{
+                                        var folderId = $itemScope.display.fmanager_id;
+                                        var image = $itemScope.display.name;
+                                    }
                                     if (folderId != undefined) {
                                         $scope.showLoder = true;
                                         if (result == true) {
@@ -4496,8 +4539,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             } else {
                                 var newName = prompt("Please enter name");
                                 if (newName) {
-                                    var folderId = $itemScope.display.fmanager_id;
-                                    var image = $itemScope.display.name;
+                                    if($scope.menuRclkID){
+                                        var folderId = $scope.menuRclkID;
+                                        var image = $scope.menuRclkName;
+                                    }else{
+                                        var folderId = $itemScope.display.fmanager_id;
+                                        var image = $itemScope.display.name;
+                                    }
                                     if (folderId != undefined) {
                                         if ($scope.folderData == undefined || $scope.folderData == null || $scope.folderData == "") {
                                             $scope.folderData = {};
@@ -4522,13 +4570,31 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     // context-menu for files
                     $scope.menuOptionsFiles = [
                         ['Download', function($itemScope) {
-                            var a = document.createElement('a');
+                            if($scope.menuRclkID){
+                                console.log('subdownload',$scope.menuRclkID);
+                                var fileID = $scope.menuRclkID;
+                                var fileName = $scope.menuRclkName;
+                            }else{
+                                var fileID = $itemScope.display.fmanager_id;
+                                var fileName = $itemScope.display.name;
+                            }
+                            /*var a = document.createElement('a');
                             document.body.appendChild(a);
-                            console.log('download=name',$itemScope.display.name);
+                            console.log('download=filename',$scope.menuRclkName);
+                            console.log('atag',a);
                         
-                            a.download = $itemScope.display.name;
-                            a.href = $("#download" + $itemScope.display.fmanager_id).attr('href');
+                            a.download = fileName;
+                            a.href = $("#download" + fileID).attr('href');
+                            a.click();*/
+                            const a = document.createElement('a');
+                            a.download = fileName;
+                            a.href = 'uploads/fileupload/'+fileName;
                             a.click();
+                            $timeout( function(){
+                                $scope.menuRclkID ='';
+                                $scope.menuRclkName ='';
+                            },500);
+                            
                         }],
 
                         ['Delete', function($itemScope) {
@@ -4536,6 +4602,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 if (result == true) {
                                     $scope.copyfile = [];
                                     FilesLength = angular.element('file').hasClass('activeselect');
+                                    console.log('delete',FilesLength);
+                                        
                                     if (FilesLength) {
                                         $.each($('file'), function() {
                                             if (angular.element('#' + this.id).hasClass('activeselect')) {
@@ -4553,8 +4621,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                             $route.reload();
                                         })
                                     } else {
-                                        var folderId = $itemScope.display.fmanager_id;
-                                        var image = $itemScope.display.name;
+                                        if($scope.menuRclkID){
+                                            var folderId = $scope.menuRclkID;
+                                            var image = $scope.menuRclkName;
+                                        }else{    
+                                            var folderId = $itemScope.display.fmanager_id;
+                                            var image = $itemScope.display.name;
+                                        }
                                         if (folderId != undefined) {
                                             $scope.showLoder = false;
                                             if (result == true) {
@@ -4586,8 +4659,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             $timeout(function() {
                                 var newName = prompt("Please enter name");
                                 if (newName) {
-                                    var folderId = $itemScope.display.fmanager_id;
-                                    var image = $itemScope.display.name;
+                                    if($scope.menuRclkID){
+                                        var folderId = $scope.menuRclkID;
+                                        var image = $scope.menuRclkName;
+                                    }else{    
+                                        var folderId = $itemScope.display.fmanager_id;
+                                        var image = $itemScope.display.name;
+                                    }
                                     if (folderId != undefined) {
                                         if ($scope.folderData == undefined || $scope.folderData == null || $scope.folderData == "") {
                                             $scope.folderData = {};
@@ -4614,7 +4692,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 angular.element('#' + value.id).removeClass('activeselect');
                             });
                             FilesLength = angular.element('file').hasClass('activeselect');
+                            console.log('a');
                             if (FilesLength) {
+                                console.log('b');
+                            
                                 $.each($('file'), function() {
                                     if (angular.element('#' + this.id).hasClass('activeselect')) {
                                         $scope.copyfile.push({
@@ -4628,34 +4709,62 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                     angular.element('#' + value.id).addClass('activeselect');
                                 });
                             } else {
+                                console.log('c');
+                                if($scope.menuRclkID){
+                                    var folderId2 = $scope.menuRclkID;
+                                }else{    
+                                    var folderId2 = $itemScope.display.fmanager_id;
+                                }
                                 var alreadyInCopy = false;
                                 angular.forEach($scope.copyfile, function(value, key) {
-                                    if (value.id == $itemScope.display.fmanager_id) {
+                                    if (value.id == folderId2) {
                                         alreadyInCopy = true;
                                     }
                                 });
                                 if (alreadyInCopy) {
+                                    console.log('d');
+                            
                                     angular.forEach($scope.copyfile, function(value, key) {
                                         angular.element('#' + value.id).addClass('activeselect');
                                     });
                                     alert('File already copied');
                                     angular.element('#' + $itemScope.display.fmanager_id).addClass('activeselect');
                                 } else {
+                                    console.log('e');
+                            
+                                    if($scope.menuRclkID){
+                                        var folderId = $scope.menuRclkID;
+                                        var image = $scope.menuRclkName;
+                                    }else{    
+                                        var folderId = $itemScope.display.fmanager_id;
+                                        var image = $itemScope.display.name;
+                                    }
                                     $scope.copyfile = [];
-                                    angular.element('#' + $itemScope.display.fmanager_id).addClass('activeselect');
+                                    angular.element('#' + folderId).addClass('activeselect');
                                     $scope.copyfile.push({
-                                        id: $itemScope.display.fmanager_id
+                                        id: folderId
                                     });
                                     angular.element('#files_count').text($scope.copyfile.length);
+                                    $timeout(function(){
+                                        $scope.menuRclkID = '';
+                                    },500);
                                 }
                             }
                         }],
 
                         ['Properties', function($itemScope) {
-                            var fileName = $itemScope.display.name;
-                            var fileSize = $itemScope.display.size;
-                            var fileExt = $itemScope.display.ext;
-                            var FileCreatedDate = $itemScope.display.created_date;
+                            if($scope.menuRclkID){
+                                var fileName = $scope.menuRclkName;
+                                var fileSize = $scope.menuRclkfileSize;
+                                var fileExt = $scope.menuRclkfileExt;
+                                var FileCreatedDate = $scope.menuRclkfileDate;
+                            
+                            }else{    
+                                var fileName = $itemScope.display.name;
+                                var fileSize = $itemScope.display.size;
+                                var fileExt = $itemScope.display.ext;
+                                var FileCreatedDate = $itemScope.display.created_date;
+                            }
                             var propertyHtml = '<div class="alert" style="word-wrap: break-word;">' +
                                 '<strong>Name&nbsp;:&nbsp;</strong>&nbsp;' + fileName + '<br><br>' +
                                 '<strong>Size&nbsp;:&nbsp;</strong>' + fileSize + '<br><br>' +
@@ -4664,6 +4773,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 '</div>';
                             $('#propertyModal').find('.modal-body').html(propertyHtml);
                             $('#propertyModal').modal('show');
+
+                            $timeout(function(){
+                                $scope.menuRclkID ='';
+                            });
                         }],
                     ];
                 }, 200);
