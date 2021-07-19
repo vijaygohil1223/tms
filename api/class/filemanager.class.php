@@ -480,6 +480,99 @@ class filemanager {
         } 
         return $return;
     }
+    public function fileAdd_new($data) {
+        /*echo "<pre>";
+        print_r($data);
+        echo "</pre>";*/
+        //exit;
+        /*foreach ($data as $key => $value) {
+               //$docDetails[] = $this->docUpload($data,$audit_id,$key,$type);
+            $info = self::uploadimage_new($data);
+            }*/
+            /*echo "<br>";
+            echo "traj";
+            echo "<pre>";
+            print_r($info);
+            echo "</pre>";
+            exit;*/
+            /*if ($info) {
+                $return['status'] = 200;
+                $return['status_'] = $info;
+                $return['msg'] = 'Successfully created.';
+            } else {
+                $return['status'] = 422;
+                $return['status_'] = $info;
+                $return['msg'] = 'Not created folder.';
+            }
+            return $return;*/
+
+        $data['name'] = self::uploadimage($data);
+        //$data['name'] = self::uploadimage_new($data);
+        $checkext = explode('.', $data['name']);
+        $data['ext'] = end($checkext);
+        
+        $data['updated_date'] = date('Y-m-d H:i:s');
+        $data['created_date'] = date('Y-m-d H:i:s');        
+        unset($data['filename']);
+        unset($data['filetype']);
+        $info =  $this->_db->insert('tms_filemanager',$data);
+        if ($info) {
+            $return['status'] = 200;
+            $return['msg'] = 'Successfully created.';
+        } else {
+            $return['status'] = 422;
+            $return['msg'] = 'Not created folder.';
+        } 
+        return $return;
+    }
+
+    public function uploadimage_new($data) {
+        /*echo "<br>";
+            echo "=========================";
+            echo "<br>";*/
+
+        //ini_set('upload_max_filesize', '100M');
+        //ini_set('post_max_size', '100M');
+        $result = explode(',', $data['name']);
+        $finalstring = base64_decode($result[1]);
+        $ex = str_replace(' ','_',$data['filename']);
+        
+        $img = $data['name'];
+        $img = str_replace('data:'.$data['filetype'].';base64,', '', $img);
+        $img = str_replace(' ', '+', $img);
+        $data_ = base64_decode($img);
+
+
+        $filename = rand(0,1000).'_'.$ex;
+        $output_file = UPLOADS_ROOT . "fileupload/" . $filename;
+/*        echo "akki there--";
+        echo "<pre>";
+        print_r($data);
+        echo "</pre>";*/
+        //exit;
+        $ifp = fopen($output_file, "wb");
+        fwrite($ifp, $finalstring);
+        fclose($ifp);
+
+        $checkext = explode('.', $data['filename']);
+        $data['ext'] = end($checkext);
+        
+        $data['updated_date'] = date('Y-m-d H:i:s');
+        $data['created_date'] = date('Y-m-d H:i:s');        
+        $data['name'] = $data['filename'];     
+        /*        echo "akki there--";
+        echo "<pre>";
+        print_r($data);
+        echo "</pre>";*/
+        //exit;   
+        unset($data['filename']);
+        unset($data['filetype']);
+        $info =  $this->_db->insert('tms_filemanager',$data);
+        
+        return true;
+    }
+
+
 
     public function filefrontget($id) {
         $this->_db->where('order_id',$id);

@@ -3904,6 +3904,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
             afterUploadAll: function(obj) {
+                //debugger
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
                     $route.reload();
@@ -3922,8 +3923,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
             },
             onSuccess: function(files, data, xhr, pd) {
-                //debugger;
+                // debugger;
                 //console.log('a');
+                // if(xhr.status == 200){
+                //     alert('hello');
+                // }
                 var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
                 var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
                 var fileDivText = $(".ajax-file-upload-filename:contains('" + files[0] + "')").text();
@@ -3951,7 +3955,16 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.chkfilesize = getFileSize[1];
 
                 rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) { console.log('sucdata',data); }).error(errorCallback);
+                rest.post($scope.filedata).success(function(data) { 
+                    /*debugger;
+                    if(data.status == 200){
+                        notification('Files uploaded successfully', 'success');
+                        $timeout(function() {
+                            $route.reload();
+                            $scope.is_settimeout = 1;
+                        }, 100);
+                    }*/
+                    console.log('sucdata',data); }).error(errorCallback);
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
             },
@@ -4234,6 +4247,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     // Upload button click will start uploading uploadObj 
     $scope.uploadClick = function() { //uploadObj
+        debugger;
         var isFilesAvailable = angular.element('.ajax-file-upload-container').html().toString().length;
         if (isFilesAvailable > 0) {
             uploadObj.startUpload();
@@ -4379,8 +4393,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }],
                     ];
 
-                    //$timeout(function() {
+                    $timeout(function() {
                         var smenu=0;
+                        $scope.menuRclkID ='';
+                              
                         var setintrvlMenu = setInterval(function() {
                             $( "folder, file" ).contextmenu(function(e) {
                               //alert($(this).attr('menuoptionIdName'));
@@ -4413,7 +4429,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 //event.stopImmediatePropagation();  
                             });
                         },200);
-                    //},1000);
+                    },1000);
 
                     // context-menu for folder
                     $scope.menuOptionsFolder = [
@@ -4422,8 +4438,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }],
 
                         ['Download', function($itemScope) {
-                            /*event.preventDefault();
-                            event.stopPropagation();*/
                             if($scope.menuRclkID){
                                 var folderId = $scope.menuRclkID;
                                 var tmsfolder = $scope.menuRclkName;
@@ -4431,6 +4445,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 var folderId = $itemScope.display.fmanager_id;
                                 var tmsfolder = $itemScope.display.name;
                             }
+                            console.log('folderidclick-',folderId);
+                            
                             console.log('$itemScope.display.name',$itemScope.display.name);
                             console.log('$scope.menuRclk',$scope.menuRclk);
                             if(!tmsfolder){
@@ -4445,10 +4461,14 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                         $scope.downloadAllfile = data;
                                         console.log('allfile',$scope.downloadAllfile);
                                         var zipdwnld = new JSZip();
+                                        var fileList = [];
+                                        var fileList = [];
+                                        var fileIndex = 0;
                                         angular.forEach($scope.downloadAllfile,function(val,i){
                                             if(val.ext!=''){
                                                 var fimg = val.name;
-                                                zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
+                                                //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
+                                                fileList.push("uploads/fileupload/"+fimg);
                                             }
                                             var fmid = 0;
                                             if(val.ext==''){
@@ -4465,9 +4485,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                     var prntId = 1;
                                                     if(val2.ext!=''){
                                                         var fimg2 = val2.name;
+                                                        fileList.push("uploads/fileupload/"+fimg2);
                                                     }
                                                     if(fimg2){
-                                                        zipdwnld.file(fimg2, "uploads/fileupload/"+fimg2);
+                                                        //zipdwnld.file(fimg2, "uploads/fileupload/"+fimg2);
                                                     }
                                                     if(val2.ext==''){
                                                         var foldername2 = val2.name;
@@ -4476,18 +4497,59 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 });
                                                 //$scope.childData = val2;
                                             }
-                                            /*var fimg = val.name;
-                                            const a = document.createElement('a');
-                                            a.download = fimg;
-                                            a.href = 'uploads/fileupload/'+fimg;
-                                            a.click();*/
+                                            
                                         })
+
+                                        function loadAsArrayBuffer(url, callback) {
+                                          var xhr = new XMLHttpRequest();
+                                          xhr.open("GET", url);
+                                          xhr.responseType = "arraybuffer";
+                                          xhr.onerror = function() {/* handle errors*/};
+                                          xhr.onload = function() {
+                                            if (xhr.status === 200) {callback(xhr.response, url)}
+                                            else {/* handle errors*/}
+                                          };
+                                          xhr.send();
+                                        }
+
+                                            console.log('fileList',fileList);
                                             $timeout(function() {
-                                                zipdwnld.generateAsync({type:"blob"})
+                                                /*zipdwnld.generateAsync({type:"blob"})
                                                 .then(function(content) {
                                                     // see FileSaver.js
                                                     saveAs(content, "TMS_"+tmsfolder+".zip");
-                                                });
+                                                });*/
+
+                                                (function load() {
+                                                      if (fileIndex < fileList.length) {
+                                                        loadAsArrayBuffer(fileList[fileIndex++], function(buffer, url) {
+                                                          var filename = getFilename(url);
+                                                          zipdwnld.file(filename, buffer); // image has loaded, add it to archive
+                                                          //var img = zipdwnld.folder("images");
+
+                                                          load();  // load next image
+                                                        })
+                                                      }
+                                                      else { // done! present archive somehow
+                                                        zipdwnld.generateAsync({type:"blob"}).then(function(content) {
+                                                          // save out
+                                                          const lnk = document.createElement('a');
+                                                          lnk.id = 'lnk';
+                                                          console.log('lnk',lnk);
+
+                                                          lnk.href = (URL || webkitURL).createObjectURL(content);
+                                                          //lnk.innerHTML = "Right-click + Save as to download zip file";
+                                                          lnk.download = "TMS_"+tmsfolder+".zip";
+                                                          lnk.click();
+
+                                                        });
+                                                      }
+
+                                                    })();
+
+                                                    function getFilename(url) {
+                                                      return url.substr(url.lastIndexOf("/") + 1)
+                                                    }
                                                 
                                                 $timeout(function() {
                                                     $route.reload();
@@ -4787,7 +4849,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.displayfolder = data;
                 //Change ItemFolder Name to item001 -> Files-001
                 angular.forEach($scope.displayfolder, function(val, i) {
-                    $scope.displayfolder[i].countchild = val.categories.length;
+                    if(val.categories){
+                        $scope.displayfolder[i].countchild = val.categories.length;
+                    }
                     $scope.displayfolder[i].name = val.name.toString(); 
                         
                     if (val.item_id != 0) {
