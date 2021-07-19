@@ -3270,10 +3270,15 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                         $scope.downloadAllfile = data;
                                         console.log('allfile',$scope.downloadAllfile);
                                         var zipdwnld = new JSZip();
+                                        var fileList = [];
+                                        var fileList = [];
+                                        var fileIndex = 0;
+                                        
                                         angular.forEach($scope.downloadAllfile,function(val,i){
                                             if(val.ext!=''){
                                                 var fimg = val.name;
-                                                zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
+                                                //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
+                                                fileList.push("uploads/fileupload/"+fimg);
                                             }
                                             var fmid = 0;
                                             if(val.ext==''){
@@ -3282,7 +3287,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 zipdwnld.folder(foldername);
                                             }
 
-                                            console.log(val.childfile);
                                             if(val.childfile){
                                                 angular.forEach(val.childfile,function(val2,i2){
                                                     //console.log(val2.name);
@@ -3290,9 +3294,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                     var prntId = 1;
                                                     if(val2.ext!=''){
                                                         var fimg2 = val2.name;
+                                                        fileList.push("uploads/fileupload/"+fimg2);
                                                     }
                                                     if(fimg2){
-                                                        zipdwnld.file(fimg2, "uploads/fileupload/"+fimg2);
+                                                        //zipdwnld.file(fimg2, "uploads/fileupload/"+fimg2);
                                                     }
                                                     if(val2.ext==''){
                                                         var foldername2 = val2.name;
@@ -3301,18 +3306,56 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 });
                                                 //$scope.childData = val2;
                                             }
-                                            /*var fimg = val.name;
-                                            const a = document.createElement('a');
-                                            a.download = fimg;
-                                            a.href = 'uploads/fileupload/'+fimg;
-                                            a.click();*/
                                         })
+                                        function loadAsArrayBuffer(url, callback) {
+                                          var xhr = new XMLHttpRequest();
+                                          xhr.open("GET", url);
+                                          xhr.responseType = "arraybuffer";
+                                          xhr.onerror = function() {/* handle errors*/};
+                                          xhr.onload = function() {
+                                            if (xhr.status === 200) {callback(xhr.response, url)}
+                                            else {/* handle errors*/}
+                                          };
+                                          xhr.send();
+                                        }
+
                                             $timeout(function() {
-                                                zipdwnld.generateAsync({type:"blob"})
+                                                /*zipdwnld.generateAsync({type:"blob"})
                                                 .then(function(content) {
                                                     // see FileSaver.js
                                                     saveAs(content, "TMS_"+tmsfolder+".zip");
-                                                });
+                                                });*/
+
+                                                (function load() {
+                                                      if (fileIndex < fileList.length) {
+                                                        loadAsArrayBuffer(fileList[fileIndex++], function(buffer, url) {
+                                                          var filename = getFilename(url);
+                                                          zipdwnld.file(filename, buffer); // image has loaded, add it to archive
+                                                          //var img = zipdwnld.folder("images");
+
+                                                          load();  // load next image
+                                                        })
+                                                      }
+                                                      else { // done! present archive somehow
+                                                        zipdwnld.generateAsync({type:"blob"}).then(function(content) {
+                                                          // save out
+                                                          const lnk = document.createElement('a');
+                                                          lnk.id = 'lnk';
+                                                          console.log('lnk',lnk);
+
+                                                          lnk.href = (URL || webkitURL).createObjectURL(content);
+                                                          //lnk.innerHTML = "Right-click + Save as to download zip file";
+                                                          lnk.download = "TMS_"+tmsfolder+".zip";
+                                                          lnk.click();
+
+                                                        });
+                                                      }
+
+                                                    })();
+
+                                                    function getFilename(url) {
+                                                      return url.substr(url.lastIndexOf("/") + 1)
+                                                    }
                                                 
                                                 $timeout(function() {
                                                     $route.reload();
@@ -4553,7 +4596,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 
                                                 $timeout(function() {
                                                     $route.reload();
-                                                },200);                                             
+                                                },1000);                                             
                                             },100);
                                             
                                     })
