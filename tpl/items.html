@@ -47,6 +47,7 @@
           <a href="javascript:history.back()" class="btn btn-info pull-right">back<span class="fa fa-times1"></span></a>
 
           <a href="javascript:void(0);" ng-click="createItems()" style="margin-right: 5px;" class="btn btn-info pull-right">Create Scoop<span  class="fa fa-times1"></span></a>
+          <a href="javascript:void(0);" ng-click="goTojobDetail()" style="margin-right: 5px;" class="btn btn-info pull-right">Go to jobs<span  class="fa fa-times1"></span></a>
           <h1 class="m-n font-thin h3">
             Scoops -
             <span id="itemCode" ng-bind="projectOrderName"></span>
@@ -94,7 +95,7 @@
                                       <span id="itemCode" ng-bind="projectOrderName"></span>
                                       <span>{{indirectCustomerName}}</span>
                                       <span>{{it.item_number | numberFixedLen:3}}</span>
-                                      <a href="javascript:void(0)" ng-click="deleteItemsId(it.itemId,it.item_number)" title="delete" style="margin-left:60%;">
+                                      <a href="javascript:void(0)" ng-click="deleteItemsId(it.itemId,it.item_number)" title="delete" style="margin-right:40px;float:right;">
                                         <i class="glyph-icon fa-times"></i>
                                       </a>
                                    </h4>

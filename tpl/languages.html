@@ -55,8 +55,8 @@
                                     <tbody>
                                         <tr ng-repeat="l in langsList" ng-class="(l.lang_id == langs.lang_id) ? 'rowactivate' : ''">
                                             <td ng-bind="$index + 1"></td>
-                                            <td >{{l.title}}</td>
-                                            <td >{{l.name}} <span ng-if="l.is_favourite==1" style="margin-right: 15px;color: #FFD700;" class="pull-right"><i class="fa fa-star"></i></span>
+                                            <td >{{l.title}} <span ng-if="l.is_favourite==1" style="margin-right: 15px;color: #FFD700;" class="pull-right"><i class="fa fa-star"></i></span></td>
+                                            <td >{{l.name}} 
                                             </td>
                                             <td><img src="assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/{{l.flagImg}}"></td>
                                             <td ng-if="l.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
