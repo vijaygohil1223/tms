@@ -165,8 +165,9 @@ app.factory('allLanguages', function($http, $location, $routeParams,rest) {
             var langName = JSON.stringify('<span style="color:green;">'+val.name+'</span>');
             allLanguages.push({
                 'id': val.id,
+                //'title': val.name,
                 'title': val.title,
-                'name': val.name,
+                'name': val.title,
                 'flagImg': 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/'+val.flagImg,
                 'flagTitle': val.flagTitle,
                 'is_favourite': val.is_favourite,

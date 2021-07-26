@@ -2701,6 +2701,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             // rest.path = 'jobSummeryJobDetailsUpdate';
             // rest.put($scope.jobdetail).success(function(data) {
             closeWindows();
+            var ItemcodeNumber = angular.element('#itemCode').text();
+            var ItemClient = angular.element('.itemClient').text();
+            $window.localStorage.ItemcodeNumber = ItemcodeNumber;
+            $window.localStorage.ItemClient = ItemClient;
+            
             var filemanagerPopup = $window.open('#/filemanager/' + name, "popup", "width=1000,height=650");
             filemanagerPopup.addEventListener("beforeunload", function() {
                 localStorage['parentId'] = ' ';
@@ -3265,7 +3270,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                     ['Download', function($itemScope) {
                             var folderId = $itemScope.display.fmanager_id;
-                            var tmsfolder = 'TMS_'+$itemScope.display.name;
+                            var ItemcodeNumber = $window.localStorage.ItemcodeNumber;
+                            var ItemClient = $window.localStorage.ItemClient;
+                            var preFolderName = ItemcodeNumber+'_'+ItemClient+'_'; 
+                            
+                            var tmsfolder = preFolderName+$itemScope.display.name;
                             if(!tmsfolder){
                                 tmsfolder = 'tms';
                             }
@@ -3956,6 +3965,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         //$interval($scope.getScoopItemFileCount,1000);            
     }
 
+        
     $scope.chkfilesize = 0;
     var uploadObj;
     $timeout(function() {
@@ -4318,7 +4328,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     // Upload button click will start uploading uploadObj 
     $scope.uploadClick = function() { //uploadObj
-        debugger;
         var isFilesAvailable = angular.element('.ajax-file-upload-container').html().toString().length;
         if (isFilesAvailable > 0) {
             uploadObj.startUpload();
@@ -4494,7 +4503,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                               if(smenu == 100){
                                 clearInterval(setintrvlMenu);
                               }
-                              console.log(smenu);
+                              //console.log(smenu);
                               ++smenu;
                                 //event.preventDefault();
                                 //event.stopImmediatePropagation();  
@@ -4509,19 +4518,19 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }],
 
                         ['Download', function($itemScope) {
+                            var ItemcodeNumber = $window.localStorage.ItemcodeNumber;
+                            var ItemClient = $window.localStorage.ItemClient;
+                            var preFolderName = ItemcodeNumber+'_'+ItemClient+'_'; 
                             if($scope.menuRclkID){
                                 var folderId = $scope.menuRclkID;
-                                var tmsfolder = 'TMS_'+$scope.menuRclkName;
+                                var tmsfolder = preFolderName+$scope.menuRclkName;
                             }else{
                                 var folderId = $itemScope.display.fmanager_id;
-                                var tmsfolder = 'TMS_'+$itemScope.display.name;
+                                var tmsfolder = preFolderName+$itemScope.display.name;
                             }
-                            console.log('folderidclick-',folderId);
                             
-                            console.log('$itemScope.display.name',$itemScope.display.name);
-                            console.log('$scope.menuRclk',$scope.menuRclk);
                             if(!tmsfolder){
-                                tmsfolder = 'tms';
+                                tmsfolder = 'TMS_';
                             }
                             if (folderId != undefined) {
                                 $scope.showLoder = true;
@@ -4625,7 +4634,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                          });
                                                          $timeout(function() {
                                                             $scope.showLoder = false;
-                                                            $route.reload();
+                                                            //$route.reload();
                                                          },2000);   
                                                     }
                                                 }
@@ -12501,9 +12510,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.itemfolderOpen = function(id) {
         closeWindows();
-        console.log('scp===',id);
+        //console.log('scp===',id);
         localStorage['scoopfolderId'] = id;
         $window.localStorage.ItemFolderid = id;
+        var ItemcodeNumber = angular.element('.itemCode'+id).text();
+        var ItemClient = angular.element('.itemClient'+id).text();
+        $window.localStorage.ItemcodeNumber = ItemcodeNumber;
+        $window.localStorage.ItemClient = ItemClient;
         var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
         itemPopup.addEventListener("beforeunload", function() {
             localStorage['parentId'] = ' ';
@@ -12610,9 +12623,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         if (source && !target) {
            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - English (US)';
         } else if (!source && target) {
-            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | English (US) - ' + target;
+           $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | English (US) - ' + target;
         } else {
-            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + '-' + target;
+           $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + '-' + target;
         }
 
     });
@@ -12620,10 +12633,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     $scope.plsModel = {
         languages40: allLanguages,
     };
-    console.log('$scope.plsModel',$scope.plsModel.languages40);
+    //console.log('$scope.plsModel',$scope.plsModel.languages40);
     $timeout(function() {    
-        //var myEl = angular.element('#plsSourceLang1').children( document.querySelector( '[title="Catalan"]' ) );
-        //console.log('myEl',myEl);
         if($scope.plsModel){
             angular.forEach($scope.plsModel.languages40, function(val, i) {
                 //console.log('title',val.title);
@@ -13935,6 +13946,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         closeWindows();
         localStorage['jobfolderId'] = id;
         localStorage['typeOfJobFolder'] = name;
+        
+        var ItemcodeNumber = angular.element('#itemCode').text();
+        var ItemClient = angular.element('.itemClient').text();
+        $window.localStorage.ItemcodeNumber = ItemcodeNumber;
+        $window.localStorage.ItemClient = ItemClient;
         
         var JobFolders = window.open('#/filemanager/' + name, "popup", "width=1000,height=750");
         JobFolders.addEventListener("beforeunload", function() {

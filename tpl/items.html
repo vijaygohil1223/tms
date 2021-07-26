@@ -92,8 +92,8 @@
                                 <div class="panel-heading font-bold">
                                    <h4>
                                       Scoop -
-                                      <span id="itemCode" ng-bind="projectOrderName"></span>
-                                      <span>{{indirectCustomerName}}</span>
+                                      <span id="itemCode" class="itemCode{{it.itemId}}" ng-bind="projectOrderName"></span>
+                                      <span class="itemClient{{it.itemId}}">{{indirectCustomerName}}</span>
                                       <span>{{it.item_number | numberFixedLen:3}}</span>
                                       <a href="javascript:void(0)" ng-click="deleteItemsId(it.itemId,it.item_number)" title="delete" style="margin-right:40px;float:right;">
                                         <i class="glyph-icon fa-times"></i>
