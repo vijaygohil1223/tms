@@ -1581,7 +1581,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         });
     };
-
+    $scope.namePrezip = function(name) {
+        //console.log('namee',name);
+        $window.localStorage.setItem('itemClientName',name);
+    }    
     $scope.orderCheck = function(id, eID, inPrepare) {
         eID = "projectScroll";
         $scope.orderItem = {};
@@ -3272,7 +3275,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             var folderId = $itemScope.display.fmanager_id;
                             var ItemcodeNumber = $window.localStorage.ItemcodeNumber;
                             var ItemClient = $window.localStorage.ItemClient;
-                            var preFolderName = ItemcodeNumber+'_'+ItemClient+'_'; 
+                            ItemcodeNumber = (ItemcodeNumber == undefined) ? "" : ItemcodeNumber+'_';
+                            ItemClient = (ItemClient == undefined) ? "" : ItemClient+'_';
+
+                            var preFolderName = ItemcodeNumber+ItemClient; 
                             
                             var tmsfolder = preFolderName+$itemScope.display.name;
                             if(!tmsfolder){
@@ -3351,8 +3357,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                             }
                                         })
                                         // files download
-                                        console.log('fileUrls',fileUrls);
-                                        console.log('folder-data',folderArr);
+                                        //console.log('fileUrls',fileUrls);
+                                        //console.log('folder-data',folderArr);
                                         var file_count = 0;
                                         fileUrls.forEach(function(url){
                                             JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
@@ -3368,7 +3374,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 }
 
                                               });
-                                              console.log('folder',folderName);
+                                              //console.log('folder',folderName);
                                                 
                                                file_count++;
                                                 if (data != null) {
@@ -3380,6 +3386,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                          });
                                                          $timeout(function() {
                                                             $scope.showLoder = false;
+                                                            $window.localStorage.ItemcodeNumber = '';
+                                                            $window.localStorage.ItemClient = '';
                                                             $route.reload();
                                                          },2000);   
                                                     }
@@ -4520,7 +4528,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         ['Download', function($itemScope) {
                             var ItemcodeNumber = $window.localStorage.ItemcodeNumber;
                             var ItemClient = $window.localStorage.ItemClient;
-                            var preFolderName = ItemcodeNumber+'_'+ItemClient+'_'; 
+                            ItemcodeNumber = (ItemcodeNumber == undefined) ? "" : ItemcodeNumber+'_';
+                            ItemClient = (ItemClient == undefined) ? "" : ItemClient+'_';
+
+                            var preFolderName = ItemcodeNumber+ItemClient; 
                             if($scope.menuRclkID){
                                 var folderId = $scope.menuRclkID;
                                 var tmsfolder = preFolderName+$scope.menuRclkName;
@@ -4604,8 +4615,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                             
                                         })
 
-                                        console.log('fileUrls',fileUrls);
-                                        console.log('folderArr',folderArr);
+                                        //console.log('fileUrls',fileUrls);
+                                        //console.log('folderArr',folderArr);
                                         // files download
                                         var file_count = 0;
                                         fileUrls.forEach(function(url){
@@ -4656,6 +4667,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                     })
                                     $timeout(function() {
                                         $scope.showLoder = false;
+                                        $window.localStorage.ItemcodeNumber ='';
+                                        $window.localStorage.ItemClient ='';
                                     },4000);
                                 
                             }
@@ -13924,6 +13937,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.get().success(function(data) {
             $scope.jobitList = [];
             angular.forEach(data, function(val, i) {
+                console.log('job-val',val);
                 if(val.due_date != null){
                     var sales = val.total_amount
                     sales = $filter('customNumber')(sales);
@@ -14261,6 +14275,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function(data) {
             $scope.itemjobList = data;
+            console.log('$scope.itemjobList',$scope.itemjobList);
         }).error(errorCallback);
         rest.path = 'jobDetailLanguageGet/' + $routeParams.id;
         rest.get().success(function(data) {
@@ -14308,6 +14323,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $scope.itemListFinal.push($scope.itemList.filter(function(e1,i1){
                             return e1.item_id == e.item_number;
                         }));
+                        console.log('$scope.itemListFinal',$scope.itemListFinal);
                     });
                     
                     angular.forEach($scope.itemList, function(val, i) {
@@ -19592,8 +19608,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     }
 
     $scope.popupOpenFilemanager = function(id) {
-        console.log("id", id);
         closeWindows();
+        var ItemcodeNumber = angular.element('#companyCode').text();
+        var ItemClient = $window.localStorage.getItem('itemClientName',name);
+        $window.localStorage.ItemcodeNumber = ItemcodeNumber;
+        $window.localStorage.ItemClient = ItemClient;
+
         var soPopup = $window.open(id + "/" + $routeParams.id, "popup", "width=1000,height=650");
         soPopup.addEventListener("beforeunload", function() {
             localStorage['parentId'] = ' ';

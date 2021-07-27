@@ -1504,7 +1504,7 @@ article.media.acmt5 a {
                                               <span ng-if="!jList.po_number"> - </span>
                                               <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
                                            </td> -->
-                                           <td>{{jList.Client}}</td>
+                                           <td >{{jList.Client}}</td>
                                            <td>{{jList.indirectClient}}</td>
                                            <!-- <td>{{jList.type}}</td> -->
                                            <td>
@@ -1677,7 +1677,7 @@ article.media.acmt5 a {
                                               <span ng-if="!jList.po_number"> - </span>
                                               <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
                                            </td> -->
-                                           <td>{{jList.Client}}</td>
+                                           <td >{{jList.Client}}</td>
                                            <td>{{jList.indirectClient}}</td>
                                            <!-- <td>{{jList.type}}</td> -->
                                            <td>
@@ -1972,11 +1972,11 @@ article.media.acmt5 a {
                                        <!-- <input type="checkbox" id="orderCheck{{$index}}" name="orderCheck{{$index}}" ng-model="checkor" ng-checked="checkdata=='ordercheck'">
                                           <input type="text" class="none" id="orderCheckData{{$index}}" name="orderCheckData{{$index}}" ng-model="result.jobId"> -->
                                     </td>
-                                    <td ng-if="job.poNumber"><a href="#/project-job-detail/{{job.job_summmeryId}}" class="summeryColor">{{job.poNumber}}</a></td>
+                                    <td ng-if="job.poNumber"><a href="#/project-job-detail/{{job.job_summmeryId}}" class="summeryColor" ng-click="namePrezip(job.clientName)">{{job.poNumber}}</a></td>
 
                                     <td ng-if="!job.poNumber">-</td>
                                     <!-- <td><a href="#/project-job-detail/{{job.job_summmeryId}}" class="summeryColor">{{job.order_no}}_{{job.job_code}}{{job.job_no| numberFixedLen:3}}</a></td> -->
-                                    <td>{{job.clientName}}</td>
+                                    <td class="clientDnld">{{job.clientName}}</td>
                                     <td>{{job.IndirectClientName}}</td>
                                     <td>
                                       <span ng-if="job.description">{{job.description}}</span>
