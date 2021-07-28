@@ -2705,9 +2705,22 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             // rest.put($scope.jobdetail).success(function(data) {
             closeWindows();
             var ItemcodeNumber = angular.element('#itemCode').text();
-            var ItemClient = angular.element('.itemClient').text();
+            //var ItemClient = angular.element('.itemClient').text();
             $window.localStorage.ItemcodeNumber = ItemcodeNumber;
-            $window.localStorage.ItemClient = ItemClient;
+            // start to get downloaded folder name with client name
+            rest.path = 'customer/' + $window.localStorage.orderID;
+            rest.get().success(function(res) {
+                $scope.customer = res;
+                if (res) {
+                    rest.path = 'client/' + $scope.customer.client;
+                    rest.get().success(function(cData) {
+                        $scope.directClientData = cData
+                        $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                    }).error(function(data, error, status) {});
+                }
+            })
+            // end
+            //$window.localStorage.ItemClient = ItemClient;
             
             var filemanagerPopup = $window.open('#/filemanager/' + name, "popup", "width=1000,height=650");
             filemanagerPopup.addEventListener("beforeunload", function() {
@@ -3276,7 +3289,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             var ItemcodeNumber = $window.localStorage.ItemcodeNumber;
                             var ItemClient = $window.localStorage.ItemClient;
                             ItemcodeNumber = (ItemcodeNumber == undefined) ? "" : ItemcodeNumber+'_';
-                            ItemClient = (ItemClient == undefined) ? "" : ItemClient+'_';
+                            var ItemClient = (ItemClient == undefined) ? "" : ItemClient+'_';
 
                             var preFolderName = ItemcodeNumber+ItemClient; 
                             
@@ -4526,6 +4539,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }],
 
                         ['Download', function($itemScope) {
+                            
+                            
                             var ItemcodeNumber = $window.localStorage.ItemcodeNumber;
                             var ItemClient = $window.localStorage.ItemClient;
                             ItemcodeNumber = (ItemcodeNumber == undefined) ? "" : ItemcodeNumber+'_';
@@ -4743,7 +4758,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.menuOptionsFiles = [
                         ['Download', function($itemScope) {
                             if($scope.menuRclkID){
-                                console.log('subdownload',$scope.menuRclkID);
+                                //console.log('subdownload',$scope.menuRclkID);
                                 var fileID = $scope.menuRclkID;
                                 var fileName = $scope.menuRclkName;
                             }else{
@@ -11719,7 +11734,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         });
     }, 100);
 
-    //customer 
+    //customer
     if ($window.localStorage.orderID) {
         $routeParams.id = $window.localStorage.orderID;
         rest.path = 'customer/' + $window.localStorage.orderID;
@@ -12523,13 +12538,24 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.itemfolderOpen = function(id) {
         closeWindows();
-        //console.log('scp===',id);
         localStorage['scoopfolderId'] = id;
         $window.localStorage.ItemFolderid = id;
+        // start to get downloaded folder name with client name
+        rest.path = 'customer/' + $window.localStorage.orderID;
+        rest.get().success(function(res) {
+            $scope.customer = res;
+            if (res) {
+                rest.path = 'client/' + $scope.customer.client;
+                rest.get().success(function(cData) {
+                    $scope.directClientData = cData
+                    $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                }).error(function(data, error, status) {});
+            }
+        })
+        // end
         var ItemcodeNumber = angular.element('.itemCode'+id).text();
-        var ItemClient = angular.element('.itemClient'+id).text();
+        //var ItemClient = angular.element('.itemClient'+id).text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
-        $window.localStorage.ItemClient = ItemClient;
         var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
         itemPopup.addEventListener("beforeunload", function() {
             localStorage['parentId'] = ' ';
@@ -13962,9 +13988,20 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         localStorage['typeOfJobFolder'] = name;
         
         var ItemcodeNumber = angular.element('#itemCode').text();
-        var ItemClient = angular.element('.itemClient').text();
+        // start to get downloaded folder name with client name
+        rest.path = 'customer/' + $window.localStorage.orderID;
+        rest.get().success(function(res) {
+            $scope.customer = res;
+            if (res) {
+                rest.path = 'client/' + $scope.customer.client;
+                rest.get().success(function(cData) {
+                    $scope.directClientData = cData
+                    $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                }).error(function(data, error, status) {});
+            }
+        })
+        // end
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
-        $window.localStorage.ItemClient = ItemClient;
         
         var JobFolders = window.open('#/filemanager/' + name, "popup", "width=1000,height=750");
         JobFolders.addEventListener("beforeunload", function() {
@@ -14275,7 +14312,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function(data) {
             $scope.itemjobList = data;
-            console.log('$scope.itemjobList',$scope.itemjobList);
+        console.log('$scope.itemjobList',$scope.itemjobList);
         }).error(errorCallback);
         rest.path = 'jobDetailLanguageGet/' + $routeParams.id;
         rest.get().success(function(data) {
@@ -14304,7 +14341,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function(data1) {
             $scope.itemLength = data1;
-            
+            console.log('$scope.itemLength',$scope.itemLength);
             rest.path = 'jobsummeryGet/' + $routeParams.id;
             rest.get().success(function(data) {
                 
@@ -14323,7 +14360,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $scope.itemListFinal.push($scope.itemList.filter(function(e1,i1){
                             return e1.item_id == e.item_number;
                         }));
-                        console.log('$scope.itemListFinal',$scope.itemListFinal);
+                        //console.log('$scope.itemListFinal',$scope.itemList);
                     });
                     
                     angular.forEach($scope.itemList, function(val, i) {
@@ -14349,6 +14386,37 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $timeout(function() {
                         $('#tblDataLoading').css('display', 'none');
                     }, 300);
+
+                    // calcualtion
+                    angular.forEach($scope.itemjobList, function(val, i) {
+                        angular.forEach($scope.itemList, function(value, j) {
+                            $timeout(function() {
+                                    
+                                
+                                    //console.log('testval-',value);
+                                
+                                if(value.item_id == val.itemId){
+                                    console.log('newvaljob-',val);
+                                }
+                                /*for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
+                                    var QuentityDate = angular.element('#masterQDate' + k).text();
+                                    var obj = [];
+                                    obj.push(QuentityDate);
+                                    if (value.QuentityDate == QuentityDate) {
+                                        if (val.id == value.QuentityDate) {
+                                            $scope.totalItemAmout += value.TotalAmount;
+                                            var prn = $scope.totalItemAmout * 12 / 100;
+                                            $scope.totalItemAvg = prn;
+                                            angular.element('#itemAmount' + i).text(value.TotalAmount);
+                                        } else {
+
+                                        }
+                                    }
+                                }*/
+
+                            }, 100);
+                        })
+                    })
 
                     if (!$scope.itemList.length || $scope.itemList == "" || $scope.itemList == "") {
                         $scope.displayNodata = true;
@@ -19610,10 +19678,23 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     $scope.popupOpenFilemanager = function(id) {
         closeWindows();
         var ItemcodeNumber = angular.element('#companyCode').text();
-        var ItemClient = $window.localStorage.getItem('itemClientName',name);
+        //var ItemClient = $window.localStorage.getItem('itemClientName',name);
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
-        $window.localStorage.ItemClient = ItemClient;
-
+        //$window.localStorage.ItemClient = ItemClient;
+        // start to get downloaded folder name with client name
+        console.log('$window.localStorage.orderID',$window.localStorage.orderID);
+        rest.path = 'customer/' + $window.localStorage.orderID;
+        rest.get().success(function(res) {
+            $scope.customer = res;
+            if (res) {
+                rest.path = 'client/' + $scope.customer.client;
+                rest.get().success(function(cData) {
+                    $scope.directClientData = cData
+                    $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                }).error(function(data, error, status) {});
+            }
+        })
+        // end
         var soPopup = $window.open(id + "/" + $routeParams.id, "popup", "width=1000,height=650");
         soPopup.addEventListener("beforeunload", function() {
             localStorage['parentId'] = ' ';
