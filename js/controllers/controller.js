@@ -2704,6 +2704,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             // rest.path = 'jobSummeryJobDetailsUpdate';
             // rest.put($scope.jobdetail).success(function(data) {
             closeWindows();
+            $window.localStorage.ItemClient = '';
             var ItemcodeNumber = angular.element('#itemCode').text();
             //var ItemClient = angular.element('.itemClient').text();
             $window.localStorage.ItemcodeNumber = ItemcodeNumber;
@@ -3399,8 +3400,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                          });
                                                          $timeout(function() {
                                                             $scope.showLoder = false;
-                                                            $window.localStorage.ItemcodeNumber = '';
-                                                            $window.localStorage.ItemClient = '';
                                                             $route.reload();
                                                          },2000);   
                                                     }
@@ -4539,8 +4538,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }],
 
                         ['Download', function($itemScope) {
-                            
-                            
                             var ItemcodeNumber = $window.localStorage.ItemcodeNumber;
                             var ItemClient = $window.localStorage.ItemClient;
                             ItemcodeNumber = (ItemcodeNumber == undefined) ? "" : ItemcodeNumber+'_';
@@ -4682,8 +4679,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                     })
                                     $timeout(function() {
                                         $scope.showLoder = false;
-                                        $window.localStorage.ItemcodeNumber ='';
-                                        $window.localStorage.ItemClient ='';
                                     },4000);
                                 
                             }
@@ -12539,6 +12534,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     $scope.itemfolderOpen = function(id) {
         closeWindows();
         localStorage['scoopfolderId'] = id;
+        $window.localStorage.ItemClient = '';
         $window.localStorage.ItemFolderid = id;
         // start to get downloaded folder name with client name
         rest.path = 'customer/' + $window.localStorage.orderID;
@@ -13962,10 +13958,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function(data) {
             $scope.jobitList = [];
+            
             angular.forEach(data, function(val, i) {
-                console.log('job-val',val);
+                //console.log('job-val',val);
+                        
                 if(val.due_date != null){
-                    var sales = val.total_amount
+                    /*var sales = val.total_amount
                     sales = $filter('customNumber')(sales);
                     var html = "<table><tr><td>Sales : </td><td>" + sales + "</td></tr><tr><td>Expense I (Prices) : </td><td>0.0<td></tr><tr><td>Gross profit : </td><td>0.0</td></tr><tr><td>Profit margin : </td><td>100%</td></tr></table>";
                     $timeout(function() {
@@ -13974,7 +13972,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             content: html,
                             html: true,
                         });
-                    }, 3000);
+                    }, 3000);*/
 
                     $scope.jobitList.push(val);
                 }
@@ -13986,7 +13984,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         closeWindows();
         localStorage['jobfolderId'] = id;
         localStorage['typeOfJobFolder'] = name;
-        
+        $window.localStorage.ItemClient = '';
         var ItemcodeNumber = angular.element('#itemCode').text();
         // start to get downloaded folder name with client name
         rest.path = 'customer/' + $window.localStorage.orderID;
@@ -14389,33 +14387,51 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                     // calcualtion
                     angular.forEach($scope.itemjobList, function(val, i) {
+                        var scoopItem = val.item_number;
+                        $scope.newtotalPrice=[];
                         angular.forEach($scope.itemList, function(value, j) {
-                            $timeout(function() {
-                                    
-                                
-                                    //console.log('testval-',value);
-                                
-                                if(value.item_id == val.itemId){
-                                    console.log('newvaljob-',val);
-                                }
-                                /*for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
-                                    var QuentityDate = angular.element('#masterQDate' + k).text();
-                                    var obj = [];
-                                    obj.push(QuentityDate);
-                                    if (value.QuentityDate == QuentityDate) {
-                                        if (val.id == value.QuentityDate) {
-                                            $scope.totalItemAmout += value.TotalAmount;
-                                            var prn = $scope.totalItemAmout * 12 / 100;
-                                            $scope.totalItemAvg = prn;
-                                            angular.element('#itemAmount' + i).text(value.TotalAmount);
-                                        } else {
-
-                                        }
+                            //$timeout(function() {
+                                if(val.item_number == value.item_id && val.order_id == value.order_id){
+                                    var tPrice = (value.total_price) ? value.total_price : parseInt(0);
+                                    if(tPrice){
+                                        $scope.newtotalPrice[i] = parseFloat(tPrice++); 
                                     }
-                                }*/
-
-                            }, 100);
+                                }
+                            //}, 100);
                         })
+                        if($scope.newtotalPrice[i] == undefined){
+                            $scope.newtotalPrice[i] = 0.0;
+                        }
+                        var scoopAmount = parseFloat($scope.itemjobList[i].total_amount);
+                        var jobAmount = parseFloat($scope.newtotalPrice[i]);
+                        var profit =  scoopAmount - jobAmount;
+                        
+                        var profitMargin = ((scoopAmount - jobAmount) * 100) / parseFloat(scoopAmount); 
+                        var grossProfit = scoopAmount - jobAmount; 
+                        var grossProfit = grossProfit ? grossProfit : 0.00;
+                        if(profitMargin){
+                            profitMargin = profitMargin.toFixed(2)+"%";
+                        }else{
+                           profitMargin = 0.0+"%"; 
+                        }
+                        
+                        angular.element('#profitMargin' + $scope.itemjobList[i].item_number).text(profitMargin);
+                        
+                        if(val.due_date != null){
+                            var sales = val.total_amount
+                            sales = $filter('NumbersCommaformat')(sales);
+                            var expense = $filter('NumbersCommaformat')(jobAmount);
+                            var grossProfit = $filter('NumbersCommaformat')(grossProfit);
+                            
+                            var html = "<table><tr><td>Sales : </td><td>" + sales + "</td></tr><tr><td>Expense I (Prices) : </td><td> " +expense+ " <td></tr><tr><td>Gross profit : </td><td> "+ grossProfit +"</td></tr><tr><td>Profit margin : </td><td> " + profitMargin+"</td></tr></table>";
+                            $timeout(function() {
+                                angular.element("#myPopover" + i).popover({
+                                    title: '',
+                                    content: html,
+                                    html: true,
+                                });
+                            }, 3000);
+                        }        
                     })
 
                     if (!$scope.itemList.length || $scope.itemList == "" || $scope.itemList == "") {
@@ -19677,10 +19693,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
     $scope.popupOpenFilemanager = function(id) {
         closeWindows();
+        $window.localStorage.ItemClient = '';
         var ItemcodeNumber = angular.element('#companyCode').text();
-        //var ItemClient = $window.localStorage.getItem('itemClientName',name);
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
-        //$window.localStorage.ItemClient = ItemClient;
         // start to get downloaded folder name with client name
         console.log('$window.localStorage.orderID',$window.localStorage.orderID);
         rest.path = 'customer/' + $window.localStorage.orderID;
