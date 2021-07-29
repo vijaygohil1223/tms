@@ -28,10 +28,7 @@ class customer {
             $query = "SELECT * FROM `tms_filemanager` AS tf inner JOIN (SELECT `fmanager_id` As Fid FROM `tms_filemanager` WHERE `client_id` = $clienID && `parent_id` = 0) AS demo ON demo.Fid = tf.parent_id AND tf.name = 'Projects'";
             
             $projectDefaultFolder = $this->_db->rawQuery($query);
-            echo "<pre>";
-            echo $clienID;
-            echo $this->_db->getLastQuery();
-            print_r($projectDefaultFolder);
+            
             $ProjectFolderName = $GeneralData['order_no'];
             $ProjectFolderParentId = $projectDefaultFolder[0]['fmanager_id'];
             $projectOrderId = $info['order_id'];
