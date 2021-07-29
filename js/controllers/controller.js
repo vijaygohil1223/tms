@@ -2628,12 +2628,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             //$scope.jobdetail.due_date = originalDateFormatNew($scope.jobdetail.due_date);
             //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format('YYYY-MM-DD HH:mm:ss');
             $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('.').reverse().join('-');
-            console.log('$scope.jobdetail.due_date',$scope.jobdetail.due_date);
+            //console.log('$scope.jobdetail.due_date',$scope.jobdetail.due_date);
             $scope.jobdetail.due_date = $scope.jobdetail.due_date;
             var due_timevl1 = angular.element('#due_time').val();
-            console.log('due_timevl1',due_timevl1);
+            //console.log('due_timevl1',due_timevl1);
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date + ' ' +due_timevl1).format("YYYY-MM-DD HH:mm");
-            console.log('date-time',$scope.jobdetail.due_date);
+            //console.log('date-time',$scope.jobdetail.due_date);
 
             //job start recent activity store in cookie
             var arr1 = $.map($scope.jobdetail, function(el) {
@@ -14385,44 +14385,58 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         $('#tblDataLoading').css('display', 'none');
                     }, 300);
 
-                    // calcualtion
+                    // calcualtion for profit margin
                     angular.forEach($scope.itemjobList, function(val, i) {
                         var scoopItem = val.item_number;
-                        $scope.newtotalPrice=[];
+                        var totalJobAmount = 0;
                         angular.forEach($scope.itemList, function(value, j) {
+                            console.log('jobdata',value);
                             //$timeout(function() {
                                 if(val.item_number == value.item_id && val.order_id == value.order_id){
                                     var tPrice = (value.total_price) ? value.total_price : parseInt(0);
                                     if(tPrice){
-                                        $scope.newtotalPrice[i] = parseFloat(tPrice++); 
+                                        totalJobAmount += parseFloat(tPrice);
                                     }
                                 }
                             //}, 100);
                         })
-                        if($scope.newtotalPrice[i] == undefined){
-                            $scope.newtotalPrice[i] = 0.0;
+                        if(totalJobAmount == undefined){
+                            totalJobAmount = 0.00;
                         }
-                        var scoopAmount = parseFloat($scope.itemjobList[i].total_amount);
-                        var jobAmount = parseFloat($scope.newtotalPrice[i]);
+                        console.log('$scope.newtotalPrice'+i,totalJobAmount);
+                        var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
+                        console.log('scoopAmount',scoopAmount);
+                        var jobAmount = parseFloat(totalJobAmount);
                         var profit =  scoopAmount - jobAmount;
-                        
-                        var profitMargin = ((scoopAmount - jobAmount) * 100) / parseFloat(scoopAmount); 
+                        if(scoopAmount){
+                            var spancolor = 0;
+                            var profitMargin = ((scoopAmount - jobAmount) * 100) / parseFloat(scoopAmount); 
+                        }else{
+                            var spancolor = 1;
+                            profitMargin = -100;
+                        }
                         var grossProfit = scoopAmount - jobAmount; 
                         var grossProfit = grossProfit ? grossProfit : 0.00;
                         if(profitMargin){
-                            profitMargin = profitMargin.toFixed(2)+"%";
+                            profitMargin = profitMargin.toFixed(2);
+                            profitMargin = $filter('NumbersCommaformat')(profitMargin)+"%";
                         }else{
-                           profitMargin = 0.0+"%"; 
+                           profitMargin = '0,00'+"%"; 
                         }
+                        //console.log('jobAmount',jobAmount);
                         
                         angular.element('#profitMargin' + $scope.itemjobList[i].item_number).text(profitMargin);
-                        
+                        if(spancolor){
+                            $('#profitMargin' + $scope.itemjobList[i].item_number).css("color","red");
+                        }
                         if(val.due_date != null){
                             var sales = val.total_amount
                             sales = $filter('NumbersCommaformat')(sales);
+                            var sales = sales ? sales : '0,00' ;
                             var expense = $filter('NumbersCommaformat')(jobAmount);
+                            var expense = expense ? expense : '0,00' ;
                             var grossProfit = $filter('NumbersCommaformat')(grossProfit);
-                            
+                            var grossProfit = grossProfit ? grossProfit : '0,00';
                             var html = "<table><tr><td>Sales : </td><td>" + sales + "</td></tr><tr><td>Expense I (Prices) : </td><td> " +expense+ " <td></tr><tr><td>Gross profit : </td><td> "+ grossProfit +"</td></tr><tr><td>Profit margin : </td><td> " + profitMargin+"</td></tr></table>";
                             $timeout(function() {
                                 angular.element("#myPopover" + i).popover({
@@ -14430,6 +14444,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                     content: html,
                                     html: true,
                                 });
+                                
                             }, 3000);
                         }        
                     })
