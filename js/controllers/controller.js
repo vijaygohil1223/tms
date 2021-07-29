@@ -14390,7 +14390,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         var scoopItem = val.item_number;
                         var totalJobAmount = 0;
                         angular.forEach($scope.itemList, function(value, j) {
-                            console.log('jobdata',value);
                             //$timeout(function() {
                                 if(val.item_number == value.item_id && val.order_id == value.order_id){
                                     var tPrice = (value.total_price) ? value.total_price : parseInt(0);
@@ -14403,30 +14402,37 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         if(totalJobAmount == undefined){
                             totalJobAmount = 0.00;
                         }
-                        console.log('$scope.newtotalPrice'+i,totalJobAmount);
                         var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
-                        console.log('scoopAmount',scoopAmount);
                         var jobAmount = parseFloat(totalJobAmount);
                         var profit =  scoopAmount - jobAmount;
                         if(scoopAmount){
-                            var spancolor = 0;
+                            var marginloss = 0;
                             var profitMargin = ((scoopAmount - jobAmount) * 100) / parseFloat(scoopAmount); 
                         }else{
-                            var spancolor = 1;
-                            profitMargin = -100;
+                            var marginloss = 1;
+                            if(jobAmount>0){
+                                profitMargin = -100;
+                            }else{
+                                profitMargin = 0;
+                            }
                         }
                         var grossProfit = scoopAmount - jobAmount; 
                         var grossProfit = grossProfit ? grossProfit : 0.00;
                         if(profitMargin){
                             profitMargin = profitMargin.toFixed(2);
+                            var isNegetive = Math.sign(profitMargin);
+                            if(isNegetive == -1 || isNegetive==-0){
+                              var marginloss = 1;
+                            }
                             profitMargin = $filter('NumbersCommaformat')(profitMargin)+"%";
                         }else{
-                           profitMargin = '0,00'+"%"; 
+                           profitMargin = '0,00'+"%";
+                           var marginloss = 1; 
                         }
                         //console.log('jobAmount',jobAmount);
                         
                         angular.element('#profitMargin' + $scope.itemjobList[i].item_number).text(profitMargin);
-                        if(spancolor){
+                        if(marginloss){
                             $('#profitMargin' + $scope.itemjobList[i].item_number).css("color","red");
                         }
                         if(val.due_date != null){
@@ -14444,7 +14450,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                     content: html,
                                     html: true,
                                 });
-                                
+
                             }, 3000);
                         }        
                     })
