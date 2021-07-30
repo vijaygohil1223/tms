@@ -11,15 +11,11 @@ class customer {
     }
     
     public function save($info) {
-        echo "<pre>";
         $info['created_date'] = date('Y-m-d H:i:s');
         $info['modified_date'] = date('Y-m-d H:i:s');
         $id = $this->_db->insert('tms_customer', $info);
-        echo "id=".$id."<br/>";
-            
         if ($id) {
-            echo "</br>infor===";
-            print_r($info);    
+
             // getting projectId and name from tms_general
             $this->_db->where("order_id",$info['order_id']);
             $GeneralData = $this->_db->getOne('tms_general');
@@ -32,9 +28,6 @@ class customer {
             $query = "SELECT * FROM `tms_filemanager` AS tf inner JOIN (SELECT `fmanager_id` As Fid FROM `tms_filemanager` WHERE `client_id` = $clienID && `parent_id` = 0) AS demo ON demo.Fid = tf.parent_id AND tf.name = 'Projects'";
             
             $projectDefaultFolder = $this->_db->rawQuery($query);
-            echo "<br/>";
-            print_r($projectDefaultFolder);
-            echo "</br>";
             
             $ProjectFolderName = $GeneralData['order_no'];
             $ProjectFolderParentId = $projectDefaultFolder[0]['fmanager_id'];
