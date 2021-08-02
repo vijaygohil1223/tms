@@ -4564,6 +4564,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                         var zipdwnld = new JSZip();
                                         var fileUrls = [];
                                         var folderArr = [];
+                                        var parentFolderArr = [];
                                         var fileIndex = 0;
                                         angular.forEach($scope.downloadAllfile,function(val,i){
                                             if(val.ext!=''){
@@ -4576,7 +4577,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                         {
                                                         'parent_id':val.parent_id,
                                                         'full_url':fimgUrl,
-                                                        'file_name':fimg
+                                                        'file_name':fimg,
+                                                        'folderurl_dir':val.folderurl,
                                                         });
                                                 }
                                             }
@@ -4587,16 +4589,19 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 folderArr.push({
                                                     'fmanager_id':val.fmanager_id,
                                                     'folder_name':val.name,
+                                                    'folderurl_dir':val.folderurl,
                                                 });
+
                                                 //zipdwnld.folder(foldername);
                                             }
 
-                                            console.log(val.childfile);
-                                            if(val.childfile){
+                                            //console.log(val.childfile);
+                                            /*if(val.childfile){
                                                 angular.forEach(val.childfile,function(val2,i2){
-                                                    //console.log(val2.name);
-                                                    //console.log('childdata',val2);
                                                     var prntId = 1;
+                                                    if(fmid == val2.fmanager_id){
+                                                        //console.log('foldername-'+fmid,foldername);
+                                                    }
                                                     if(val2.ext!=''){
                                                         var fimg2 = val2.name;
                                                         //fileList.push("uploads/fileupload/"+fimg2);
@@ -4604,9 +4609,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                         if(fileUrlExists(fimgUrl2)){
                                                             fileUrls.push(
                                                                 {
-                                                                'parent_id':val2.parent_id,
-                                                                'full_url':fimgUrl2,
-                                                                'file_name':val2.name
+                                                                    'parent_id':val2.parent_id,
+                                                                    'full_url':fimgUrl2,
+                                                                    'file_name':val2.name,
+                                                                    'folderurl_dir':val2.folderurl
                                                                 });
                                                         }
                                                     }
@@ -4619,11 +4625,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                         folderArr.push({
                                                             'fmanager_id':val2.fmanager_id,
                                                             'folder_name':val2.name,
+                                                            'folderurl_dir':val2.folderurl
                                                         });
                                                     }
                                                 });
                                                 //$scope.childData = val2;
-                                            }
+                                            }*/
                                             
                                         })
 
@@ -4636,21 +4643,25 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                               if(err) {
                                                  throw err; 
                                               }
+                                              console.log('data-binary',data);
                                               var folderName = '';
                                               folderArr.forEach(function(folders){
-                                                if(folders.fmanager_id == url.parent_id){
+                                                /*if(folders.fmanager_id == url.parent_id){
                                                     folderName = folders.folder_name+'/';
                                                 }else{
                                                     zipdwnld.folder(folders.folder_name);
-                                                }
+                                                }*/
+                                                zipdwnld.folder(folders.folderurl_dir);
+                                                
 
                                               });
-                                              console.log('folder',folderName);
+                                              //console.log('folder',folderName);
                                                 
                                                file_count++;
                                                 if (data != null) {
-                                                   console.log('count',file_count);
-                                                   zipdwnld.file(folderName+url.file_name, data,  {binary:true});
+                                                   //console.log('count',file_count);
+                                                   zipdwnld.file(url.folderurl_dir+url.file_name, data,  {binary:true});
+                                                   
                                                    if (file_count == fileUrls.length) {
                                                          zipdwnld.generateAsync({type:'blob'}).then(function(content) {
                                                             saveAs(content, tmsfolder+".zip");
@@ -4668,11 +4679,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                         $timeout(function() {
                                             if(fileUrls.length == 0 && folderArr.length>0){
                                                 folderArr.forEach(function(folders){
-                                                    zipdwnld.folder(folders.folder_name);
+                                                    zipdwnld.folder(folders.folderurl_dir);
                                                 });
                                                 zipdwnld.generateAsync({type:'blob'}).then(function(content) {
                                                     saveAs(content, tmsfolder+".zip");
                                                 });
+                                                $scope.showLoder = false;
                                             }
                                         },1000);
                                             

@@ -11,6 +11,7 @@ class filemanager {
     protected $_username;
     protected $_userid;
     private $parentId;
+    public $parents_data=array();
 
     public function __construct() {
         $this->_db = db::getInstance();
@@ -67,12 +68,100 @@ class filemanager {
         return $branch;
     }
 
-    // folder tree data to flat array
+    // to get folder url from tree view flat array
+    public function buildTreePath(array $elements, $parentId = 0) {
+        $branch = array();
+
+        foreach ($elements as $key => $element) {
+            
+            if ($element['parent_id'] == $parentId) {
+                        $previous_id = $element['fmanager_id'];
+                        $branch[] = $element;
+                        if(count($element['fmanager_id']) > 0) {
+                            $branch = array_merge($branch,Self::buildTreePath($elements, $element['fmanager_id']));
+                        }
+            }
+        }
+
+        return $branch;
+    }
+
+    public function find_parents($input, $id, $empty_id, array $fparentArray) {
+        
+    //global $parents_data = [];
+
+        if(is_array($input)) {
+
+            foreach($input as $k => $val) {
+                if($val['fmanager_id'] == $id  && $val['parent_id'] != 0) {
+                    if($val['ext']==''){
+                        array_push($this->parents_data, array('id'=>$val['fmanager_id'],'name'=>$val['name']) );
+                    }
+                        Self::find_parents($fparentArray, $val['parent_id'],$empty_id,$fparentArray );
+                    
+                }
+            }
+        }
+        if($empty_id>0){
+                return $this->parents_data;
+        }else{
+            $this->parents_data = [];
+            return 0;
+        }
+    }
+//
+    public function folder_pathurl($mydata){
+        $mydata_new = array();
+        $folderurl = '';
+
+        //$mydata = array_map("unserialize", array_unique(array_map("serialize", $mydata)));
+             
+        foreach ($mydata as $p_key => $row){
+                $mydata_new[$p_key] = $row['id'];
+            }
+            array_multisort($mydata_new, SORT_ASC, $mydata);
+
+            foreach ($mydata as $key => $row)
+            {
+                $folderurl .= $row['name'].'/';
+            }
+        return $folderurl;  
+    }
+
+    public function buildTreearraydata_new(array $elements, $parentId = 0, array $staticFullarray, $staticParentId) {
+        $branch = array();
+        $arrAll2 = array();
+        $folderurl ='';
+        global $parents_data;
+
+        $arrAll2 = Self::buildTreePath($staticFullarray,$staticParentId);
+        foreach ($elements as $key => $element) {
+            //if($element['parent_id'] == $parentId)
+            if ($element['parent_id'] == $parentId) {
+                
+                $mydata = Self::find_parents($arrAll2, $element['fmanager_id'], 1, $arrAll2);
+                $folderurl = '';
+                if($mydata){
+                    $folderurl = Self::folder_pathurl($mydata);
+                }
+                $element['folderurl'] = $folderurl;
+                Self::find_parents($arrAll2, $element['fmanager_id'] ,0 ,$arrAll2);
+                $branch[] = $element;
+                    //if(count($element['fmanager_id']) > 0) {
+                        $branch = array_merge($branch,Self::buildTreearraydata_new($elements, $element['fmanager_id'],$staticFullarray, $staticParentId));
+                    //}
+            }
+        }
+        return $branch;
+    }
+
+
     public function buildTreearraydata(array $elements, $parentId = 0) {
         $branch = array();
         foreach ($elements as $key => $element) {
             //if($element['parent_id'] == $parentId)
             if ($element['parent_id'] == $parentId) {
+                $mydata = find_parents($arrAll2, $element['fmanager_id'], 1);
                 $branch[] = $element;
                     //if(count($element['fmanager_id']) > 0) {
                         $branch = array_merge($branch,Self::buildTreearraydata($elements, $element['fmanager_id']));
@@ -833,25 +922,23 @@ array(
     }
 
     public function filemanagerfolderDownload($id){
-        /*if($id) {
-            //$data = self::filegetByparentId($id);
-            $this->_db->where('parent_id',$id);
-            $mid = $this->_db->get('tms_filemanager');    
-            //$mid = $mid[0]['fmanager_id'];
-            $dataArr = $this->_db->get('tms_filemanager');    
-            $data = self::buildTree($dataArr,$id);
-            
-        }*/
         $this->_db->where('parent_id',$id);
         $data = $this->_db->get('tms_filemanager');    
         $dataArr = $this->_db->get('tms_filemanager');    
         $i = 0;
+
+        $data = self::buildTreearraydata_new($dataArr,$id,$dataArr,$id);
+                
         foreach($data as $data1){
             $data[$i]['countchild'] = 0;
             $data[$i]['childfile'] = [];
             if($data1['ext'] == ''){
-                $data[$i]['childfile'] = self::buildTreearraydata($dataArr,$data[$i]['fmanager_id']);
-            } 
+                //$data[$i]['childfile'] = self::buildTreearraydata($dataArr,$data[$i]['fmanager_id']);
+                //$data[$i]['childfile'] = self::buildTreearraydata_new($dataArr,$data[$i]['fmanager_id'],$dataArr,$data[$i]['fmanager_id']);
+                //echo "<pre>";
+                //print_r($data);
+            }
+
             $i++;
         }
         return $data;

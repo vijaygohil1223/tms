@@ -99,7 +99,7 @@ class general {
         $this->_mailer->SMTPAuth = "true";
         $this->_mailer->Port = "465";
         $this->_mailer->Username = "ChrisGilesItWorks@gmail.com";
-        $this->_mailer->Password = "JayeshTankariya@3210";
+        $this->_mailer->Password = "Admin@Kanhasoft@123";
 
         $this->_mailer->From = "Kanhasoft.com";
         $this->_mailer->FromName = "Kanhasoft";
