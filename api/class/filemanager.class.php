@@ -12,6 +12,7 @@ class filemanager {
     protected $_userid;
     private $parentId;
     public $parents_data=array();
+    public $treeArr_data=array();
 
     public function __construct() {
         $this->_db = db::getInstance();
@@ -130,11 +131,12 @@ class filemanager {
 
     public function buildTreearraydata_new(array $elements, $parentId = 0, array $staticFullarray, $staticParentId) {
         $branch = array();
-        $arrAll2 = array();
+        //$arrAll2 = array();
         $folderurl ='';
+        $arrAll2 = $this->treeArr_data;
         global $parents_data;
 
-        $arrAll2 = Self::buildTreePath($staticFullarray,$staticParentId);
+        //$arrAll2 = Self::buildTreePath($staticFullarray,$staticParentId);
         foreach ($elements as $key => $element) {
             //if($element['parent_id'] == $parentId)
             if ($element['parent_id'] == $parentId) {
@@ -922,12 +924,14 @@ array(
     }
 
     public function filemanagerfolderDownload($id){
+        $this->treeArr_data = array();
         $this->_db->where('parent_id',$id);
         $data = $this->_db->get('tms_filemanager');    
         $dataArr = $this->_db->get('tms_filemanager');    
         $i = 0;
         $data['countchild']=0;
         $data['childfile'] = [];   
+        $this->treeArr_data = self::buildTreePath($dataArr,$id);
         $data = self::buildTreearraydata_new($dataArr,$id,$dataArr,$id);
                 
         foreach($data as $data1){
@@ -935,7 +939,7 @@ array(
             $data[$i]['childfile'] = [];
             if($data1['ext'] == ''){
                 //$data[$i]['childfile'] = self::buildTreearraydata($dataArr,$data[$i]['fmanager_id']);
-                $data[$i]['childfile'] = self::buildTreearraydata_new($dataArr,$data[$i]['fmanager_id'],$dataArr,$data[$i]['fmanager_id']);
+                //$data[$i]['childfile'] = self::buildTreearraydata_new($dataArr,$data[$i]['fmanager_id'],$dataArr,$data[$i]['fmanager_id']);
                 //echo "<pre>";
                 //print_r($data);
             }
