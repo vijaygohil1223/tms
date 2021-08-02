@@ -75,9 +75,8 @@ class filemanager {
         foreach ($elements as $key => $element) {
             
             if ($element['parent_id'] == $parentId) {
-                        $previous_id = $element['fmanager_id'];
                         $branch[] = $element;
-                        if(count($element['fmanager_id']) > 0) {
+                        if($element['fmanager_id'] && count($element['fmanager_id']) > 0) {
                             $branch = array_merge($branch,Self::buildTreePath($elements, $element['fmanager_id']));
                         }
             }
