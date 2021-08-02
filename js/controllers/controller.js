@@ -4643,7 +4643,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                               if(err) {
                                                  throw err; 
                                               }
-                                              console.log('data-binary',data);
+
                                               var folderName = '';
                                               folderArr.forEach(function(folders){
                                                 /*if(folders.fmanager_id == url.parent_id){

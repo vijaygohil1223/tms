@@ -109,7 +109,7 @@ class filemanager {
             return 0;
         }
     }
-//
+
     public function folder_pathurl($mydata){
         $mydata_new = array();
         $folderurl = '';
@@ -926,7 +926,8 @@ array(
         $data = $this->_db->get('tms_filemanager');    
         $dataArr = $this->_db->get('tms_filemanager');    
         $i = 0;
-
+        $data['countchild']=0;
+        $data['childfile'] = [];   
         $data = self::buildTreearraydata_new($dataArr,$id,$dataArr,$id);
                 
         foreach($data as $data1){
@@ -934,7 +935,7 @@ array(
             $data[$i]['childfile'] = [];
             if($data1['ext'] == ''){
                 //$data[$i]['childfile'] = self::buildTreearraydata($dataArr,$data[$i]['fmanager_id']);
-                //$data[$i]['childfile'] = self::buildTreearraydata_new($dataArr,$data[$i]['fmanager_id'],$dataArr,$data[$i]['fmanager_id']);
+                $data[$i]['childfile'] = self::buildTreearraydata_new($dataArr,$data[$i]['fmanager_id'],$dataArr,$data[$i]['fmanager_id']);
                 //echo "<pre>";
                 //print_r($data);
             }
