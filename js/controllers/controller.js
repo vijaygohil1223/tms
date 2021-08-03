@@ -3318,12 +3318,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 //fileList.push("uploads/fileupload/"+fimg);
                                                 var fimgUrl = "uploads/fileupload/"+fimg;
                                                 if(fileUrlExists(fimgUrl)){
-                                                    fileUrls.push(
-                                                        {
+                                                    fileUrls.push({
                                                         'parent_id':val.parent_id,
                                                         'full_url':fimgUrl,
-                                                        'file_name':fimg
-                                                        });
+                                                        'file_name':fimg,
+                                                        'folderurl_dir':val.folderurl,
+                                                    });
                                                 }
                                             }
                                             var fmid = 0;
@@ -3334,10 +3334,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 folderArr.push({
                                                     'fmanager_id':val.fmanager_id,
                                                     'folder_name':val.name,
+                                                    'folderurl_dir':val.folderurl,
                                                 });
                                             }
 
-                                            if(val.childfile){
+                                            /*if(val.childfile){
                                                 angular.forEach(val.childfile,function(val2,i2){
                                                     //console.log(val2.name);
                                                     //console.log('childdata',val2);
@@ -3368,7 +3369,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                     }
                                                 });
                                                 //$scope.childData = val2;
-                                            }
+                                            }*/
                                         })
                                         // files download
                                         //console.log('fileUrls',fileUrls);
@@ -3381,19 +3382,20 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                               }
                                               var folderName = '';
                                               folderArr.forEach(function(folders){
-                                                if(folders.fmanager_id == url.parent_id){
+                                                /*if(folders.fmanager_id == url.parent_id){
                                                     folderName = folders.folder_name+'/';
                                                 }else{
                                                     zipdwnld.folder(folders.folder_name);
-                                                }
-
+                                                }*/
+                                                zipdwnld.folder(folders.folderurl_dir);
                                               });
                                               //console.log('folder',folderName);
                                                 
                                                file_count++;
                                                 if (data != null) {
-                                                   console.log('count',file_count);
-                                                   zipdwnld.file(folderName+url.file_name, data,  {binary:true});
+                                                   //zipdwnld.file(folderName+url.file_name, data,  {binary:true});
+                                                   zipdwnld.file(url.folderurl_dir+url.file_name, data,  {binary:true});
+                                                   
                                                    if (file_count == fileUrls.length) {
                                                          zipdwnld.generateAsync({type:'blob'}).then(function(content) {
                                                             saveAs(content, tmsfolder+".zip");
@@ -3412,6 +3414,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                             if(fileUrls.length == 0 && folderArr.length>0){
                                                 folderArr.forEach(function(folders){
                                                     zipdwnld.folder(folders.folder_name);
+                                                    zipdwnld.folder(folders.folderurl_dir);
                                                 });
                                                 zipdwnld.generateAsync({type:'blob'}).then(function(content) {
                                                     saveAs(content, tmsfolder+".zip");
@@ -4008,9 +4011,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 //debugger
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
+                    angular.element('.ajax-file-upload-progress').css('display', 'none');
+                    //$route.reload();
+                }, 100);
+                $timeout(function() {
                     $route.reload();
                     $scope.is_settimeout = 1;
-                }, 100);
+                }, 5000);
             },
             onCancel: function(files, pd) {
                 $timeout(function() {
@@ -4025,7 +4032,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             },
             onSuccess: function(files, data, xhr, pd) {
                 // debugger;
-                //console.log('a');
+                //console.log('files',files);
                 // if(xhr.status == 200){
                 //     alert('hello');
                 // }
@@ -4056,16 +4063,19 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.chkfilesize = getFileSize[1];
 
                 rest.path = 'fileAdd';
+                //debugger;
+                //console.log("$scope.filedata",$scope.filedata);
                 rest.post($scope.filedata).success(function(data) { 
-                    /*debugger;
-                    if(data.status == 200){
+                    //debugger;
+                    /*if(data.status == 200){
                         notification('Files uploaded successfully', 'success');
                         $timeout(function() {
                             $route.reload();
                             $scope.is_settimeout = 1;
                         }, 100);
                     }*/
-                    console.log('sucdata',data); }).error(errorCallback);
+                    //console.log('sucdata',data); 
+                }).error(errorCallback);
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
             },
@@ -4652,8 +4662,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                     zipdwnld.folder(folders.folder_name);
                                                 }*/
                                                 zipdwnld.folder(folders.folderurl_dir);
-                                                
-
                                               });
                                               //console.log('folder',folderName);
                                                 

@@ -572,6 +572,7 @@ class filemanager {
         return $return;
     }
     public function fileAdd_new($data) {
+        // new file add
         /*echo "<pre>";
         print_r($data);
         echo "</pre>";*/
