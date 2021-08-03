@@ -4013,7 +4013,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             autoSubmit: false,
             uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
-            /*afterUploadAll: function(obj) {
+            afterUploadAll: function(obj) {
                 //debugger
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
@@ -4023,8 +4023,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $timeout(function() {
                     $route.reload();
                     $scope.is_settimeout = 1;
-                }, 150);
-            },*/
+                }, 5000);
+            },
             onCancel: function(files, pd) {
                 $timeout(function() {
                     var filenameContains = angular.element('.ajax-file-upload-filename').text();
@@ -4071,20 +4071,25 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 rest.path = 'fileAdd';
                 //debugger;
                 //console.log("$scope.filedata",$scope.filedata);
+                var length = angular.element("[class^='upimg']").length;
+                console.log('length',length);
+                
                 rest.post($scope.filedata).success(function(data) { 
                     //debugger;
-                    if(data.status == 200){
+                    /*if(data.status == 200){
                         notification('Files uploaded successfully', 'success');
                         $timeout(function() {
                             $route.reload();
                         }, 100);
-                    }
+                    }*/
+                    
                     //console.log('sucdata',data); 
                 }).error(errorCallback);
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
             },
             onSelect: function(files) {
+                console.log('files',files);
                 var isFilesAvailable = angular.element('.ajax-file-upload-container').css('border', '1px dotted #ddd');
                 angular.forEach(files, function(val, i) {
                     fileReader.readAsDataUrl(files[i], $scope).then(function(result) {
