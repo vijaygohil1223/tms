@@ -3401,11 +3401,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                             saveAs(content, tmsfolder+".zip");
                                                          }).then(function() {
                                                             $scope.showLoder = false;
+                                                            $route.reload();
                                                         });
                                                          $timeout(function() {
-                                                            //$scope.showLoder = false;
+                                                            $scope.showLoder = false;
                                                             //$route.reload();
-                                                         },2000);   
+                                                         },10000);   
                                                     }
                                                 }
                                          
@@ -3422,13 +3423,14 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                     saveAs(content, tmsfolder+".zip");
                                                 }).then(function() {
                                                     $scope.showLoder = false;
+                                                    $route.reload();
                                                 });
                                             }
                                         },1000);
                                             
                                     })
                                     $timeout(function() {
-                                        //$scope.showLoder = false;
+                                        $scope.showLoder = false;
                                     },10000);
                                 
                             }
@@ -4011,7 +4013,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             autoSubmit: false,
             uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
-            afterUploadAll: function(obj) {
+            /*afterUploadAll: function(obj) {
                 //debugger
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
@@ -4021,8 +4023,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $timeout(function() {
                     $route.reload();
                     $scope.is_settimeout = 1;
-                }, 5000);
-            },
+                }, 150);
+            },*/
             onCancel: function(files, pd) {
                 $timeout(function() {
                     var filenameContains = angular.element('.ajax-file-upload-filename').text();
@@ -4035,7 +4037,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
             },
             onSuccess: function(files, data, xhr, pd) {
-                // debugger;
+                //debugger;
                 //console.log('files',files);
                 // if(xhr.status == 200){
                 //     alert('hello');
@@ -4071,13 +4073,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 //console.log("$scope.filedata",$scope.filedata);
                 rest.post($scope.filedata).success(function(data) { 
                     //debugger;
-                    /*if(data.status == 200){
+                    if(data.status == 200){
                         notification('Files uploaded successfully', 'success');
                         $timeout(function() {
                             $route.reload();
-                            $scope.is_settimeout = 1;
                         }, 100);
-                    }*/
+                    }
                     //console.log('sucdata',data); 
                 }).error(errorCallback);
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
@@ -4680,9 +4681,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                             saveAs(content, tmsfolder+".zip");
                                                          }).then(function() {
                                                             $scope.showLoder = false;
+                                                            $route.reload();
                                                          });
                                                          $timeout(function() {
-                                                            //$scope.showLoder = false;
+                                                            $scope.showLoder = false;
                                                             //$route.reload();
                                                          },10000);   
                                                     }
@@ -4700,16 +4702,15 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                     saveAs(content, tmsfolder+".zip");
                                                 }).then(function() {
                                                     $scope.showLoder = false;
+                                                    $route.reload();
                                                 });
                                                 //$scope.showLoder = false;
                                             }
                                         },1000);
-                                            
                                     })
                                     $timeout(function() {
-                                        //$scope.showLoder = false;
+                                        $scope.showLoder = false;
                                     },10000);
-                                
                             }
                             
                         }],
