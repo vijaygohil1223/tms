@@ -3399,10 +3399,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                    if (file_count == fileUrls.length) {
                                                          zipdwnld.generateAsync({type:'blob'}).then(function(content) {
                                                             saveAs(content, tmsfolder+".zip");
-                                                         });
-                                                         $timeout(function() {
+                                                         }).then(function() {
                                                             $scope.showLoder = false;
-                                                            $route.reload();
+                                                        });
+                                                         $timeout(function() {
+                                                            //$scope.showLoder = false;
+                                                            //$route.reload();
                                                          },2000);   
                                                     }
                                                 }
@@ -3418,14 +3420,16 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 });
                                                 zipdwnld.generateAsync({type:'blob'}).then(function(content) {
                                                     saveAs(content, tmsfolder+".zip");
+                                                }).then(function() {
+                                                    $scope.showLoder = false;
                                                 });
                                             }
                                         },1000);
                                             
                                     })
                                     $timeout(function() {
-                                        $scope.showLoder = false;
-                                    },4000);
+                                        //$scope.showLoder = false;
+                                    },10000);
                                 
                             }
                             
@@ -4651,7 +4655,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                         fileUrls.forEach(function(url){
                                             JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
                                               if(err) {
-                                                 throw err; 
+                                                 throw err;
+                                                 $scope.showLoder = false;
                                               }
 
                                               var folderName = '';
@@ -4673,11 +4678,13 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                    if (file_count == fileUrls.length) {
                                                          zipdwnld.generateAsync({type:'blob'}).then(function(content) {
                                                             saveAs(content, tmsfolder+".zip");
+                                                         }).then(function() {
+                                                            $scope.showLoder = false;
                                                          });
                                                          $timeout(function() {
-                                                            $scope.showLoder = false;
+                                                            //$scope.showLoder = false;
                                                             //$route.reload();
-                                                         },2000);   
+                                                         },10000);   
                                                     }
                                                 }
                                          
@@ -4691,15 +4698,17 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                                 });
                                                 zipdwnld.generateAsync({type:'blob'}).then(function(content) {
                                                     saveAs(content, tmsfolder+".zip");
+                                                }).then(function() {
+                                                    $scope.showLoder = false;
                                                 });
-                                                $scope.showLoder = false;
+                                                //$scope.showLoder = false;
                                             }
                                         },1000);
                                             
                                     })
                                     $timeout(function() {
-                                        $scope.showLoder = false;
-                                    },4000);
+                                        //$scope.showLoder = false;
+                                    },10000);
                                 
                             }
                             
