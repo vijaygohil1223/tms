@@ -4019,7 +4019,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             //serialize:false,
             uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
-            /*afterUploadAll: function(obj) {
+            afterUploadAll: function(obj) {
                 //debugger
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
@@ -4030,7 +4030,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $route.reload();
                     $scope.is_settimeout = 1;
                 }, 5000);
-            },*/
+            },
             onCancel: function(files, pd) {
                 $timeout(function() {
                     var filenameContains = angular.element('.ajax-file-upload-filename').text();
@@ -4090,7 +4090,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 console.log('allFilesArr-length',$scope.allFilesArr.length);        
                 rest.path = 'fileAdd';
                     
-                if(filelength == $scope.allFilesArr.length){
+                /*if(filelength == $scope.allFilesArr.length){
                     rest.post($scope.allFilesArr).success(function(data) { 
                         //debugger;
                         $timeout(function() {
@@ -4123,12 +4123,12 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                             }
                         }*/
 
-                    }).error(errorCallback);
-                }    
+                   // }).error(errorCallback);
+                //}*/    
                 // previous code
-                /*rest.post($scope.filedata).success(function(data) {
+                rest.post($scope.filedata).success(function(data) {
 
-                }).error(errorCallback);*/
+                }).error(errorCallback);
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
             },
