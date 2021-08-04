@@ -552,7 +552,7 @@ class filemanager {
         $info =  $this->_db->insert('tms_filemanager',$data);
     }
 
-    public function fileAdd($data) {
+    public function fileAdd_org($data) {
         $data['name'] = self::uploadimage($data);
         $checkext = explode('.', $data['name']);
         $data['ext'] = end($checkext);
@@ -571,7 +571,98 @@ class filemanager {
         } 
         return $return;
     }
-    public function fileAdd_new($data) {
+    public function fileAdd($data) {
+        
+        $num=0;
+        foreach($data as $key => $val){
+            
+            //$data['name'] = self::uploadimage($data);
+            //$filename = self::uploadimage_new2($data[$num]);
+            $newData = self::uploadimage_new2($data[$num]);
+            
+            /*$data_ins['name'] = $newData['name'];
+            $checkext = explode('.', $newData['name']);
+            $data_ins['ext'] = end($checkext);
+            
+            $data_ins['role_id'] = $data[$num]['role_id'];
+            $data_ins['parent_id'] = $data[$num]['parent_id'];
+            $data_ins['size'] = $data[$num]['size'];
+            $data_ins['f_id'] = $data[$num]['f_id'];
+            $data_ins['updated_date'] = date('Y-m-d H:i:s');
+            $data_ins['created_date'] = date('Y-m-d H:i:s');        
+            unset($data[$num]['filename']);
+            unset($data[$num]['filetype']);
+            */
+            /*print_r($data);
+            print_r($data_ins);*/
+            
+            //$info =  $this->_db->insert('tms_filemanager',$newData);
+            
+            //echo $this->_db->getLastQuery();
+            /*if(count($data)>1){
+               $info = true; 
+            }*/    
+            $num++;
+            
+        }
+        
+        if ($newData) {
+            $return['status'] = 200;
+            $return['msg'] = 'Successfully created.';
+        } else {
+            $return['status'] = 422;
+            $return['msg'] = 'Not created folder.';
+        } 
+        return $return;
+    }
+    
+    public function uploadimage_new2($data) {
+        /*ini_set('upload_max_filesize', '1000M');
+        ini_set('post_max_size', '1000M');
+        ini_set('max_execution_time', '0');*/
+        $my_newdata =$data; 
+        $result = explode(',', $data['name']);
+        $finalstring = base64_decode($result[1]);
+        $ex = str_replace(' ','_',$data['filename']);
+        
+        $img = $data['name'];
+        $img = str_replace('data:'.$data['filetype'].';base64,', '', $img);
+        $img = str_replace(' ', '+', $img);
+        $data = base64_decode($img);
+        $filename = rand(0,1000).'_'.$ex;
+        
+        $output_file = UPLOADS_ROOT . "fileupload/" . $filename;
+        $ifp = fopen($output_file, "wb");
+        $ifw = fwrite($ifp, $finalstring);
+        fclose($ifp);
+
+        /*echo "<pre>";
+        print_r($ifw);*/
+        // data to insert
+        $info = false;
+        if($ifw){
+            $data_ins['name'] = $filename;
+            $checkext = explode('.', $filename);
+            $data_ins['ext'] = end($checkext);
+            
+            $data_ins['role_id'] = $my_newdata['role_id'];
+            $data_ins['parent_id'] = $my_newdata['parent_id'];
+            $data_ins['size'] = $my_newdata['size'];
+            $data_ins['f_id'] = $my_newdata['f_id'];
+            $data_ins['updated_date'] = date('Y-m-d H:i:s');
+            $data_ins['created_date'] = date('Y-m-d H:i:s');        
+            unset($data_ins['filename']);
+            unset($data_ins['filetype']);
+            
+            $info =  $this->_db->insert('tms_filemanager',$data_ins);
+            
+        }    
+        // end data
+        return $info;
+        //return $filename;
+    }
+
+    public function fileAdd_new1($data) {
         // new file add
         /*echo "<pre>";
         print_r($data);
@@ -618,7 +709,7 @@ class filemanager {
         return $return;
     }
 
-    public function uploadimage_new($data) {
+    public function uploadimage_new1($data) {
         /*echo "<br>";
             echo "=========================";
             echo "<br>";*/
