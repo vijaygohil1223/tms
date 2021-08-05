@@ -4018,8 +4018,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             autoSubmit: false,
             //serialize:false,
             uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
-            onLoad: function(obj) {},
-            afterUploadAll: function(obj) {
+            onLoad: function(obj) { console.log('onload event ',obj) },
+            /*afterUploadAll: function(obj) {
                 //debugger
                 notification('Files uploaded successfully', 'success');
                 $timeout(function() {
@@ -4030,7 +4030,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $route.reload();
                     $scope.is_settimeout = 1;
                 }, 5000);
-            },
+            },*/
             onCancel: function(files, pd) {
                 $timeout(function() {
                     var filenameContains = angular.element('.ajax-file-upload-filename').text();
@@ -4072,7 +4072,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                 //rest.path = 'fileAdd';
                 //debugger;
-                console.log("$scope.filedata",$scope.filedata);
+                //console.log("$scope.filedata",$scope.filedata);
                 var filelength = angular.element("[class^='upimg']").length;
                 
                 console.log('length',filelength);
@@ -4086,14 +4086,14 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     size: $scope.filedata.size
                 };
                 $scope.allFilesArr.push(allFiles);
-                console.log('alldata',$scope.allFilesArr);        
-                console.log('allFilesArr-length',$scope.allFilesArr.length);        
+                //console.log('alldata',$scope.allFilesArr);        
+                //console.log('allFilesArr-length',$scope.allFilesArr.length);        
                 rest.path = 'fileAdd';
                     
-                /*if(filelength == $scope.allFilesArr.length){
+                if(filelength == $scope.allFilesArr.length){
                     rest.post($scope.allFilesArr).success(function(data) { 
                         //debugger;
-                        $timeout(function() {
+                        //$timeout(function() {
                             if(data.status == 200){
                                 notification('Files uploaded successfully', 'success');
                                 $timeout(function() {
@@ -4108,7 +4108,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
                         console.log('uploader data',data);
                             
-                        },500);    
+                        //},500);    
                         /*if(data.status == 200){
                             $scope.chkfiletotal.push({id:data.status});
                             var totalitem = $scope.chkfiletotal.length;
@@ -4121,14 +4121,14 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 //notification('not uplaoded', 'success');
                                 $route.reload();
                             }
-                        }*/
+                        }*/ 
 
-                   // }).error(errorCallback);
-                //}*/    
+                    }).error(errorCallback);
+                }    
                 // previous code
-                rest.post($scope.filedata).success(function(data) {
+                /*rest.post($scope.filedata).success(function(data) {
 
-                }).error(errorCallback);
+                }).error(errorCallback);*/
                 jQuery('.ajax-file-upload-red').html('<i class="fa fa-close"></i>');
 
             },
