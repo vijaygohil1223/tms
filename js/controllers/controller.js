@@ -4088,10 +4088,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.allFilesArr.push(allFiles);
                 //console.log('alldata',$scope.allFilesArr);        
                 //console.log('allFilesArr-length',$scope.allFilesArr.length);        
+                rest.path = 'fileAdd';
                     
                 if(filelength == $scope.allFilesArr.length){
-                    rest.path = 'fileAdd';
-                
                     rest.post($scope.allFilesArr).success(function(data) { 
                         //debugger;
                         $timeout(function() {
