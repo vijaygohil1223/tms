@@ -4018,7 +4018,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             autoSubmit: false,
             //serialize:false,
             uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
-            onLoad: function(obj) { console.log('onload event ',obj) },
+            onLoad: function(obj) {},
             /*afterUploadAll: function(obj) {
                 //debugger
                 notification('Files uploaded successfully', 'success');
@@ -4088,27 +4088,28 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.allFilesArr.push(allFiles);
                 //console.log('alldata',$scope.allFilesArr);        
                 //console.log('allFilesArr-length',$scope.allFilesArr.length);        
-                rest.path = 'fileAdd';
                     
                 if(filelength == $scope.allFilesArr.length){
+                    rest.path = 'fileAdd';
+                
                     rest.post($scope.allFilesArr).success(function(data) { 
                         //debugger;
-                        //$timeout(function() {
+                        $timeout(function() {
                             if(data.status == 200){
                                 notification('Files uploaded successfully', 'success');
                                 $timeout(function() {
                                     $route.reload();
                                 }, 100);
-                            }else{
+                            }/*else{
                                 notification('Some files not uploaded!', 'success');
                                 $timeout(function() {
                                     $route.reload();
                                 }, 100);
-                            }
+                            }*/
 
                         console.log('uploader data',data);
                             
-                        //},500);    
+                        },500);    
                         /*if(data.status == 200){
                             $scope.chkfiletotal.push({id:data.status});
                             var totalitem = $scope.chkfiletotal.length;
