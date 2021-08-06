@@ -1,4 +1,36 @@
 <?php
+
+//to get size of file
+function formatSizeUnits($bytes)
+    {
+        if ($bytes >= 1073741824)
+        {
+            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+        }
+        elseif ($bytes >= 1048576)
+        {
+            $bytes = number_format($bytes / 1048576, 2) . ' MB';
+        }
+        elseif ($bytes >= 1024)
+        {
+            $bytes = number_format($bytes / 1024, 2) . ' KB';
+        }
+        elseif ($bytes > 1)
+        {
+            $bytes = $bytes . ' bytes';
+        }
+        elseif ($bytes == 1)
+        {
+            $bytes = $bytes . ' byte';
+        }
+        else
+        {
+            $bytes = '0 bytes';
+        }
+
+        return $bytes;
+}
+
 //If directory doesnot exists create it.
 $output_dir = "uploads/fileupload/";
 
@@ -19,8 +51,8 @@ if(isset($_FILES["myfile"]))
 	       	 	//$ret[$fileName]= $output_dir.$fileName;
             $checkext = explode('.', $filename);
             $ret['ext'] = end($checkext);
-            $ret['size'] = $_FILES['myfile']['size'];;
-           
+            $size = $_FILES['myfile']['size'];;
+            $ret['size'] = formatSizeUnits($size);
              $ret['name']= $filename;
     	}
     	else

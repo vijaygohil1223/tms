@@ -4078,7 +4078,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 //rest.path = 'fileAdd';
                 //debugger;
                 //console.log("$scope.filedata",$scope.filedata);
-                var filelength = angular.element("[class^='upimg']").length;
+                var filelength = angular.element('.ajax-file-upload-statusbar').length;
                 
                 console.log('length',filelength);
 
@@ -4106,11 +4106,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         f_id: 1,
                         parent_id: $scope.filedata.parent_id,
                         ext: alldata["ext"],
-                        size: '1 MB'
+                        size: alldata["size"]
                     };
                     $scope.allFilesArr.push(allFiles);
                 
-                    rest.path = 'fileAdd';
+                    rest.path = 'fileAddScoop';
                     if(filelength == $scope.allFilesArr.length){
                         rest.post($scope.allFilesArr).success(function(data) {
                             notification('Files uploaded successfully', 'success');

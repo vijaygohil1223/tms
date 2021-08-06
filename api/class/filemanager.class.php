@@ -552,7 +552,7 @@ class filemanager {
         $info =  $this->_db->insert('tms_filemanager',$data);
     }
 
-    public function fileAdd_org($data) {
+    public function fileAdd($data) {
         $data['name'] = self::uploadimage($data);
         $checkext = explode('.', $data['name']);
         $data['ext'] = end($checkext);
@@ -573,42 +573,45 @@ class filemanager {
         } 
         return $return;
     }
-    public function fileAdd($data) {
+    public function fileAddScoop($data) {
         
         $num=0;
-        foreach($data as $key => $val){
-            
-            //$data['name'] = self::uploadimage($data);
-            //$filename = self::uploadimage_new2($data[$num]);
-            //$newData = self::uploadimage_new2($data[$num]);
-            
-            /*$data_ins['name'] = $newData['name'];
-            $checkext = explode('.', $newData['name']);
-            $data_ins['ext'] = end($checkext);
-            
-            $data_ins['role_id'] = $data[$num]['role_id'];
-            $data_ins['parent_id'] = $data[$num]['parent_id'];
-            $data_ins['size'] = $data[$num]['size'];
-            $data_ins['f_id'] = $data[$num]['f_id'];
-            $data_ins['updated_date'] = date('Y-m-d H:i:s');
-            $data_ins['created_date'] = date('Y-m-d H:i:s');        
-            unset($data[$num]['filename']);
-            unset($data[$num]['filetype']);
-            */
-            /*print_r($data);
-            print_r($data_ins);*/
-            
-            //$info =  $this->_db->insert('tms_filemanager',$newData);
-            
-            //echo $this->_db->getLastQuery();
-            /*if(count($data)>1){
-               $info = true; 
-            }*/  
-            //  
-            $newData =  $this->_db->insert('tms_filemanager',$data[$num]);
-            $num++;
-            
-        }
+        if(count($data)>0){
+            foreach($data as $key => $val){
+                
+                //$data['name'] = self::uploadimage($data);
+                //$filename = self::uploadimage_new2($data[$num]);
+                //$newData = self::uploadimage_new2($data[$num]);
+                
+                /*$data_ins['name'] = $newData['name'];
+                $checkext = explode('.', $newData['name']);
+                $data_ins['ext'] = end($checkext);
+                
+                $data_ins['role_id'] = $data[$num]['role_id'];
+                $data_ins['parent_id'] = $data[$num]['parent_id'];
+                $data_ins['size'] = $data[$num]['size'];
+                $data_ins['f_id'] = $data[$num]['f_id'];
+                $data_ins['updated_date'] = date('Y-m-d H:i:s');
+                $data_ins['created_date'] = date('Y-m-d H:i:s');        
+                unset($data[$num]['filename']);
+                unset($data[$num]['filetype']);
+                */
+                /*print_r($data);
+                print_r($data_ins);*/
+                
+                //$info =  $this->_db->insert('tms_filemanager',$newData);
+                
+                //echo $this->_db->getLastQuery();
+                /*if(count($data)>1){
+                   $info = true; 
+                }*/  
+                //
+                $data[$num]['updated_date'] = date('Y-m-d H:i:s');
+                $data[$num]['created_date'] = date('Y-m-d H:i:s');  
+                $newData =  $this->_db->insert('tms_filemanager',$data[$num]);
+                $num++;
+            }
+        }    
         
         if ($newData) {
             $return['status'] = 200;

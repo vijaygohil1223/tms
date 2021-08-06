@@ -2594,6 +2594,12 @@ $app->post('/fileAdd', 'authenticate',function () use($app) {
     $result = $filemanager->fileAdd($data);
     echoResponse(200, $result);
 });
+$app->post('/fileAddScoop', 'authenticate',function () use($app) {
+    $filemanager = new filemanager ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $filemanager->fileAddScoop($data);
+    echoResponse(200, $result);
+});
 $app->put('/fileSave/:id','authenticate', function ($id) use($app) {
     $filemanager = new filemanager ();
     $data = json_decode($app->request->getBody(), TRUE);
