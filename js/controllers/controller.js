@@ -4029,7 +4029,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $timeout(function() {
                     $route.reload();
                     $scope.is_settimeout = 1;
-                }, 5000);
+                }, 200);
             },
             onCancel: function(files, pd) {
                 $timeout(function() {
@@ -4042,10 +4042,43 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 }, 100);
 
             },
-            
+            onSubmit: function(files) {
+                var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
+                var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
+                var fileDivText = $(".ajax-file-upload-filename:contains('" + files[0] + "')").text();
+                if (fileDivText) {
+                    var dataU = $('.upimg' + fileDivText.charAt(0)).text();
+                }
+                
+                var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
+                var regExp = /\(([^)]+)\)/;
+                var getFileSize = regExp.exec(size);
+                $scope.name = dataU;
+                $scope.f_id = 1;
+                $scope.parent_id = $window.localStorage.getItem("parentId");
+                if ($scope.filedata == undefined || $scope.filedata == " " || $scope.filedata == null) {
+                    $scope.filedata = {};
+                }
+                $scope.role_id = $scope.userRight;
+                $scope.filedata.role_id = $scope.role_id;
+                $scope.filedata.name = $scope.name;
+                $scope.filedata.f_id = $scope.f_id;
+                $scope.filedata.parent_id = $scope.parent_id;
+                $scope.filedata.filename = files[0];
+                $scope.filedata.filetype = fileType;
+                $scope.filedata.size = getFileSize[1];
+                $scope.chkfilesize = getFileSize[1];
+
+
+                console.log('onsubmit data',$scope.filedata);
+                rest.path = 'fileAdd';
+
+                rest.post($scope.filedata).success(function(data) {
+                    console.log('return data', data);
+                }).error(errorCallback);
+            },
             onSuccess: function(files, data, xhr, pd) {
                 //debugger;
-                    
 
                 var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
                 var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
@@ -4094,7 +4127,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 console.log('alldata',$scope.allFilesArr);        
                 console.log('$scope.filedata',$scope.filedata);        
                 //console.log('allFilesArr-length',$scope.allFilesArr.length);        
-                rest.path = 'fileAdd';
+                //rest.path = 'fileAdd';
                     
                 /*if(filelength == $scope.allFilesArr.length){
                     rest.post($scope.allFilesArr).success(function(data) { 
@@ -4120,9 +4153,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     }).error(errorCallback);
                 }   */ 
                 // previous code
-                rest.post($scope.filedata).success(function(data) {
+                /*rest.post($scope.filedata).success(function(data) {
 
-                }).error(errorCallback);
+                }).error(errorCallback);*/
                 // update when all files upload
                 /*if(data.status == 200){
                     $scope.chkfiletotal.push({id:data.status});

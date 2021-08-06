@@ -573,7 +573,7 @@ class filemanager {
         } 
         return $return;
     }
-    public function fileAdd_AAAA($data) {
+    public function fileAdd_AA($data) {
         
         $num=0;
         foreach($data as $key => $val){
