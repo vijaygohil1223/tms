@@ -552,7 +552,7 @@ class filemanager {
         $info =  $this->_db->insert('tms_filemanager',$data);
     }
 
-    public function fileAdd($data) {
+    public function fileAdd_org($data) {
         $data['name'] = self::uploadimage($data);
         $checkext = explode('.', $data['name']);
         $data['ext'] = end($checkext);
@@ -573,14 +573,14 @@ class filemanager {
         } 
         return $return;
     }
-    public function fileAdd_AA($data) {
+    public function fileAdd($data) {
         
         $num=0;
         foreach($data as $key => $val){
             
             //$data['name'] = self::uploadimage($data);
             //$filename = self::uploadimage_new2($data[$num]);
-            $newData = self::uploadimage_new2($data[$num]);
+            //$newData = self::uploadimage_new2($data[$num]);
             
             /*$data_ins['name'] = $newData['name'];
             $checkext = explode('.', $newData['name']);
@@ -604,6 +604,7 @@ class filemanager {
             /*if(count($data)>1){
                $info = true; 
             }*/    
+            $newData =  $this->_db->insert('tms_filemanager',$data[$num]);
             $num++;
             
         }
