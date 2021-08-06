@@ -603,7 +603,8 @@ class filemanager {
             //echo $this->_db->getLastQuery();
             /*if(count($data)>1){
                $info = true; 
-            }*/    
+            }*/  
+            //  
             $newData =  $this->_db->insert('tms_filemanager',$data[$num]);
             $num++;
             

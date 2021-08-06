@@ -16,7 +16,7 @@ if(isset($_FILES["myfile"]))
        	 	move_uploaded_file($_FILES["myfile"]["tmp_name"],$output_dir. $filename);
        	 	 //echo "<br> Error: ".$_FILES["myfile"]["error"];
 
-	       	 	 //$ret[$fileName]= $output_dir.$fileName;
+	       	 	//$ret[$fileName]= $output_dir.$fileName;
             $checkext = explode('.', $filename);
             $ret['ext'] = end($checkext);
             $ret['size'] = $_FILES['myfile']['size'];;

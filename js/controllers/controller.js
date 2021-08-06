@@ -4111,7 +4111,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     $scope.allFilesArr.push(allFiles);
                 }
                 console.log('newapi-data',$scope.allFilesArr);
-                
                 //console.log('allFilesArr-length',$scope.allFilesArr.length);        
                 rest.path = 'fileAdd';
                 if(filelength == $scope.allFilesArr.length){
