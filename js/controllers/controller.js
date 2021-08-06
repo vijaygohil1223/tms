@@ -4046,7 +4046,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             onSubmit: function(files) {
                 
             },
-            onSuccess: function(files, data, xhr, pd) {
+            onSuccess: function(files, datalist, xhr, pd) {
                 //debugger;
                 var filenameContains = $(".ajax-file-upload-filename:contains('" + files[0] + "')");
                 var fileType = files[0].substring(files[0].lastIndexOf(".") + 1, files[0].length);
@@ -4095,12 +4095,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 //console.log('alldata',$scope.allFilesArr);        
                 //console.log('$scope.filedata',$scope.filedata); 
                 
-                console.log('return data',data);
-                if(data){
-                    var alldata = JSON.parse(data);
-                    console.log('result',alldata["name"]);
-            
-                var allFiles = {
+                console.log('return data',datalist);
+                if(datalist){
+                    var alldata = JSON.parse(datalist);
+                    
+                    var allFiles = {
                         role_id: $scope.role_id,
                         name: alldata["name"],
                         f_id: 1,
@@ -4113,10 +4112,17 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     rest.path = 'fileAddScoop';
                     if(filelength == $scope.allFilesArr.length){
                         rest.post($scope.allFilesArr).success(function(data) {
-                            notification('Files uploaded successfully', 'success');
-                            $timeout(function() {
-                                $route.reload();
-                            }, 100);
+                            if(data.status == 200){
+                                notification('Files uploaded successfully', 'success');
+                                $timeout(function() {
+                                    $route.reload();
+                                }, 100);
+                            }else{
+                                notification('Some files not uploaded!', 'success');
+                                $timeout(function() {
+                                    $route.reload();
+                                }, 100);
+                            }
                             console.log('return from main api', data);
                         }).error(errorCallback);
                     }

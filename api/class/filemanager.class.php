@@ -578,34 +578,8 @@ class filemanager {
         $num=0;
         if(count($data)>0){
             foreach($data as $key => $val){
-                
                 //$data['name'] = self::uploadimage($data);
-                //$filename = self::uploadimage_new2($data[$num]);
                 //$newData = self::uploadimage_new2($data[$num]);
-                
-                /*$data_ins['name'] = $newData['name'];
-                $checkext = explode('.', $newData['name']);
-                $data_ins['ext'] = end($checkext);
-                
-                $data_ins['role_id'] = $data[$num]['role_id'];
-                $data_ins['parent_id'] = $data[$num]['parent_id'];
-                $data_ins['size'] = $data[$num]['size'];
-                $data_ins['f_id'] = $data[$num]['f_id'];
-                $data_ins['updated_date'] = date('Y-m-d H:i:s');
-                $data_ins['created_date'] = date('Y-m-d H:i:s');        
-                unset($data[$num]['filename']);
-                unset($data[$num]['filetype']);
-                */
-                /*print_r($data);
-                print_r($data_ins);*/
-                
-                //$info =  $this->_db->insert('tms_filemanager',$newData);
-                
-                //echo $this->_db->getLastQuery();
-                /*if(count($data)>1){
-                   $info = true; 
-                }*/  
-                //
                 $data[$num]['updated_date'] = date('Y-m-d H:i:s');
                 $data[$num]['created_date'] = date('Y-m-d H:i:s');  
                 $newData =  $this->_db->insert('tms_filemanager',$data[$num]);
@@ -624,9 +598,6 @@ class filemanager {
     }
     
     public function uploadimage_new2($data) {
-        /*ini_set('upload_max_filesize', '1000M');
-        ini_set('post_max_size', '1000M');
-        ini_set('max_execution_time', '0');*/
         $my_newdata =$data; 
         $result = explode(',', $data['name']);
         $finalstring = base64_decode($result[1]);
@@ -643,8 +614,6 @@ class filemanager {
         $ifw = fwrite($ifp, $finalstring);
         fclose($ifp);
 
-        /*echo "<pre>";
-        print_r($ifw);*/
         // data to insert
         $info = false;
         if($ifw){
