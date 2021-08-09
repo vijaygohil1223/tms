@@ -553,7 +553,8 @@ class filemanager {
     }
 
     public function fileAdd($data) {
-        $data['name'] = self::uploadimage($data);
+        // start - previous code
+        /*$data['name'] = self::uploadimage($data);
         $checkext = explode('.', $data['name']);
         $data['ext'] = end($checkext);
         
@@ -561,9 +562,18 @@ class filemanager {
         $data['created_date'] = date('Y-m-d H:i:s');        
         unset($data['filename']);
         unset($data['filetype']);
-        $info =  $this->_db->insert('tms_filemanager',$data);
+        $info =  $this->_db->insert('tms_filemanager',$data);*/
+        //end previos code
 
-
+        $num=0;
+        if(count($data)>0){
+            foreach($data as $key => $val){
+                $data[$num]['updated_date'] = date('Y-m-d H:i:s');
+                $data[$num]['created_date'] = date('Y-m-d H:i:s');  
+                $info =  $this->_db->insert('tms_filemanager',$data[$num]);
+                $num++;
+            }
+        }
         if ($info) {
             $return['status'] = 200;
             $return['msg'] = 'Successfully created.';
@@ -574,7 +584,6 @@ class filemanager {
         return $return;
     }
     public function fileAddScoop($data) {
-        
         $num=0;
         if(count($data)>0){
             foreach($data as $key => $val){
@@ -582,12 +591,11 @@ class filemanager {
                 //$newData = self::uploadimage_new2($data[$num]);
                 $data[$num]['updated_date'] = date('Y-m-d H:i:s');
                 $data[$num]['created_date'] = date('Y-m-d H:i:s');  
-                $newData =  $this->_db->insert('tms_filemanager',$data[$num]);
+                $fileUpld =  $this->_db->insert('tms_filemanager',$data[$num]);
                 $num++;
             }
         }    
-        
-        if ($newData) {
+        if ($fileUpld) {
             $return['status'] = 200;
             $return['msg'] = 'Successfully created.';
         } else {
@@ -788,8 +796,6 @@ class filemanager {
     }
 
     public function uploadimage($data) {
-        //ini_set('upload_max_filesize', '100M');
-        //ini_set('post_max_size', '100M');
         $result = explode(',', $data['name']);
         $finalstring = base64_decode($result[1]);
         $ex = str_replace(' ','_',$data['filename']);
