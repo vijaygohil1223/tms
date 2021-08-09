@@ -21627,11 +21627,13 @@ $scope.emojitext2 = [
 //emoji text change
 //$timeout(function() {
 //$scope.emojimap=[];
+// we are using this for emoji
 var emojimap = {
     "<3": "\u2764\uFE0F",
     "</3": "\uD83D\uDC94",
     ":D": "\uD83D\uDE00",
-    ":)": "\uD83D\uDE03",
+    //":)": "\uD83D\uDE03",
+    ":)": "🙂",
     ";)": "\uD83D\uDE09",
     ":(": "\uD83D\uDE12",
     ":p": "\uD83D\uDE1B",

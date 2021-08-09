@@ -346,6 +346,7 @@ vendor-prefixes.less:76
                        <!-- Png -->
                        <file extension="png" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)" 
                                 ng-if="category.ext == 'jpg' ||
+                                       display.ext == 'JPEG' || 
                                        category.ext == 'png' || 
                                        category.ext == 'jpeg'||  
                                        category.ext == 'gif' ||  
@@ -432,6 +433,7 @@ vendor-prefixes.less:76
                <!-- Png -->
                <file extension="png" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"  ng-dblclick="addToDownload(display.name)" 
                         ng-if="display.ext == 'jpg' ||
+                               display.ext == 'JPEG' ||
                                display.ext == 'png' || 
                                display.ext == 'jpeg'||  
                                display.ext == 'gif'||  
