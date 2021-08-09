@@ -632,22 +632,34 @@
                                 type: 'POST',
                                 success: function(file_response){
                                     file_response_time = file_response;// display response from the PHP script, if any
+                                    console.log('file_response',file_response);
                                 }
+                     }).then( function() {
+                        console.log('file_response_time',file_response_time);
+                        
+                        commentJSON = self.applyExternalMappings(commentJSON);
+                        commentArray.push(commentJSON);
+                        self.options.uploadAttachments(commentArray, success, error);
+                        
+                        setTimeout(function() {
+                           $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                        },2000);
                      });
                     //return file_response_time;
                     // Reverse mapping
-                    commentJSON = self.applyExternalMappings(commentJSON);
-                    commentArray.push(commentJSON);
+                    
+                    console.log('commentJSON',commentJSON);
+                    console.log('commentArray',commentArray);
                 });
-                console.log(file_response_time);
-                console.log(filesz_tout);
+                //console.log('file_response_time',file_response_time);
+                console.log('filesz_tout',filesz_tout);
                 setTimeout(function() {
-                    self.options.uploadAttachments(commentArray, success, error);
+                //    self.options.uploadAttachments(commentArray, success, error);
                 },filesz_tout);
                 //self.options.uploadAttachments(commentArray, success, error);
                 // self.render();
                 setTimeout(function() {
-                   $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                  // $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
                 },filesz_tout2);
             }
 
