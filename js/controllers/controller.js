@@ -2914,10 +2914,10 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             uploadStr: "Select",
             onLoad: function(obj) {},
             afterUploadAll: function(obj) {
-                notification('Files uploaded successfully!', 'success');
+                notification('Files uploaded successfully', 'success');
                 $timeout(function() {
                     $route.reload();
-                }, 500);
+                }, 200);
 
             },
             onCancel: function(files, pd) {
@@ -2957,7 +2957,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $scope.filedata.size = getFileSize[1];
 
                 /*rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) {}).error(errorCallback);*/
+                rest.post($scope.filedata).success(function(data) {
+    
+                }).error(errorCallback);*/
                 //if(datalist){
                 
                 var filelength = angular.element('.ajax-file-upload-statusbar').length;
@@ -2976,7 +2978,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     rest.path = 'fileAdd';
                     if(filelength == $scope.allFilesArr.length){
                         rest.post($scope.allFilesArr).success(function(data) {
-                            if(data.status == 200){
+                            /*if(data.status == 200){
                                 notification('Files uploaded successfully', 'success');
                                 $timeout(function() {
                                     $route.reload();
@@ -2986,7 +2988,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 $timeout(function() {
                                     $route.reload();
                                 }, 100);
-                            }
+                            }*/
                             //console.log('return from main api', data);
                         }).error(errorCallback);
                     }
