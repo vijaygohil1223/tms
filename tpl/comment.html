@@ -1,4 +1,4 @@
-    <style type="text/css">
+<style type="text/css">
     .nav-pills.nav-wizard > >ul>li {
         border-right:78px solid #eef5fa !important;
     }
@@ -11,6 +11,77 @@
       max-width: 80px;
       max-height: 80px;
     }
+
+  .jquery-comments .commenting-field.main {
+      position: absolute;
+      bottom: -130px;
+      width: 95%;
+      opacity: 1;
+      z-index: 1;
+  }
+  ul#comment-list, #attachment-list {
+      max-height: 320px;
+      overflow-y: scroll;
+      position: relative;
+      margin-bottom: 10px !important;
+  }
+  /* width Style for scroll*/
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+  .jquery-comments ul.navigation li[data-sort-key="attachments"]{
+    float: none;
+  }
+  li[data-sort-key='oldest']{
+    margin-left: -27px;
+  }
+  .jquery-comments .textarea-wrapper .close{
+    display: none !important;
+  }
+  .textcomplete-item .profile-picture{
+    position: relative;
+  }
+  .commenting-field.main .profile-picture{
+    float: left;
+  }
+  .commenting-field .profile-picture{
+    position: relative;
+    float: left;
+  }
+  .userpic{
+    width: 40px;
+    float: left;
+    margin-left: 10px;
+  }
+  /*.livemsg .profile-picture{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }*/
+/*.jquery-comments ul.main li.comment {
+      width: auto;
+      float: right;
+      position: relative;
+      margin-bottom: 50px;
+      color: #fff;
+      min-width: 220px;
+  }*/
+
 </style>
   <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' " >
   </div>
@@ -35,10 +106,9 @@
           <div class="panel panel-default" style="margin-top:1%">
             <div class="panel-heading font-bold"><h4>Discussion Board</h4></div>
             <div class="panel-body">
-                 <div class="col-sm-12">
-                                                    <div id="comments-container"></div>
-                                                </div>
-
+                <div class="col-sm-12 livemsg">
+                    <div id="comments-container"></div>
+                </div>
             </div>
           </div>
         </div>

@@ -2960,10 +2960,9 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 rest.post($scope.filedata).success(function(data) {
     
                 }).error(errorCallback);*/
-                //if(datalist){
-                
                 var filelength = angular.element('.ajax-file-upload-statusbar').length;
 
+                //if(datalist){
                 if(datalist){
                     var alldata = JSON.parse(datalist);
                     var allFiles = {
@@ -15460,6 +15459,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
 }).controller('commentController', function($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
+
     if($scope.isNewProject === 'true' && $scope.userRight == 1){
         $location.path('/dashboard1');
         notification('Please create project.','warning');
@@ -15482,11 +15483,67 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 angular.forEach(data, function(val, i) {
                     if (val.content == "" || val.content == null) {
                         var dataId = val.id;
-                        var hrefClass = 'attachment';
+                        /*var hrefClass = 'attachment';
                         var hrefTarget = '_blank';
                         var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
                         $('li[data-id=' + dataId + ']').find('.content').html(data);
-                        $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                        $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');*/
+                    if(userprofilepic){                    
+                        $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/'+userprofilepic+'" class="img-circle round userpic" alt="...">');
+                    }
+                    var filedata = '';
+                    if (val.fileURL != "") {
+                            var filetype = val.fileMimeType;
+                            var filetype1 = filetype.includes("image/");
+                            var file_format = '';
+                            var file_type = '';
+                            var mimeTypeParts = val.fileMimeType.split('/');
+                            if(mimeTypeParts.length == 2) {
+                                file_format = mimeTypeParts[1];
+                                file_type = mimeTypeParts[0];
+                            }
+                            // Icon
+                            var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                                'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'];
+                            
+                            var iconClass = 'fa fa-file-o';
+                            // File Extension name
+                            var extName = '';
+                            var extParts = val.fileURL.split('/');
+                            var extFileName = extParts[extParts.length - 1];
+                            var extFileName = extFileName.split('?')[0];
+                            extName = extFileName.split('.')[1];
+                            
+                            if(availableIcons.indexOf(file_format) > 0) {
+                                iconClass = 'fa fa-file-' + file_format + '-o';
+                            } else if(availableIcons.indexOf(file_type) > 0) {
+                                iconClass = 'fa fa-file-' + file_type + '-o';
+                            }else if(extName == 'docx'){
+                                iconClass = 'fa fa-file-word-o';
+                            }else if(extName == 'xlsx' || extName == 'xlsm'){
+                                iconClass = 'fa fa-file-excel-o';
+                            }else if(extName == 'zip'){
+                                iconClass = 'fa fa-file-archive-o';
+                            }
+
+                            //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                            //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                            var cmtimgName = val.fileURL +'?v='+jQuery.now();
+                            
+                            if(file_type == 'image'){
+                               var filehtml = '<img src=' + cmtimgName + '></img>';                     
+                            }else{
+                               var filename = val.fileURL; 
+                               var filehtml = '<i class="'+iconClass+'"></i> ' + filename.replace('uploads/discussionfile/','') ;                     
+                            }
+                            var hrefClass = 'attachment';
+                            var hrefTarget = '_blank';
+                            filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+                            
+                            $('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');        
+                        }
+
                     }
                 });
                 
@@ -15501,6 +15558,11 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }).error(errorCallback);
     }
 
+    $timeout( function(){
+        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+    },2800);
+
     var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
         roundProfilePictures: true,
         textareaRows: 1,
@@ -15508,6 +15570,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         getComments: function(success, error) {
             $timeout(function() {
                 success(commentsArray);
+                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
             }, 500);
         },
         postComment: function(data, success, error) {
@@ -21664,6 +21727,7 @@ $timeout(function() {
         //accepts values: 'unicode' | 'shortname' | 'image'
         //pickerPosition: "bottom"
       });
+
 },2800);
 
 

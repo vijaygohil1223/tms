@@ -623,19 +623,19 @@
                     form_data.append('file', file_data);
                     form_data.append('file2', newFileName);
                     $.ajax({
-                                url: 'upload.php', 
-                                dataType: 'text', 
-                                cache: false,
-                                contentType: false,
-                                processData: false,
-                                data: form_data,                         
-                                type: 'POST',
-                                success: function(file_response){
-                                    file_response_time = file_response;// display response from the PHP script, if any
-                                    console.log('file_response',file_response);
-                                }
+                            url: 'upload.php', 
+                            dataType: 'text', 
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            data: form_data,                         
+                            type: 'POST',
+                            success: function(file_response){
+                                file_response_time = file_response;// display response from the PHP script, if any
+                                //console.log('file_response',file_response);
+                            }
                      }).then( function() {
-                        console.log('file_response_time',file_response_time);
+                        //console.log('file_response_time',file_response_time);
                         
                         commentJSON = self.applyExternalMappings(commentJSON);
                         commentArray.push(commentJSON);
@@ -648,8 +648,8 @@
                     //return file_response_time;
                     // Reverse mapping
                     
-                    console.log('commentJSON',commentJSON);
-                    console.log('commentArray',commentArray);
+                    //console.log('commentJSON',commentJSON);
+                    //console.log('commentArray',commentArray);
                 });
                 //console.log('file_response_time',file_response_time);
                 console.log('filesz_tout',filesz_tout);
