@@ -4141,6 +4141,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                                 notification('Files uploaded successfully', 'success');
                                 $timeout(function() {
                                     $route.reload();
+
                                 }, 100);
                             }else{
                                 notification('Some files not uploaded!', 'success');
@@ -4310,7 +4311,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         }
 
     }
-
 
     // Keyboard keypress Event fo File Manager
     $(window).keydown(function(event) {
@@ -15459,6 +15459,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
 
 }).controller('commentController', function($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    var loginid = $window.localStorage.getItem("session_iUserId");
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
 
     if($scope.isNewProject === 'true' && $scope.userRight == 1){
@@ -15477,6 +15478,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     }
     if ($routeParams.id) {
         var commentsArray = [];
+        $scope.commentReadArray = [];
         rest.path = "discussionOrder/" + $routeParams.id;
         rest.get().success(function(data) {
             setTimeout(function() {
@@ -15545,6 +15547,19 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                         }
 
                     }
+
+                    var msgRead_id = val.read_id;
+                    if( msgRead_id.match(new RegExp("(?:^|,)"+loginid+"(?:,|$)"))) {
+                        //console.log(msgRead_id);
+                    }else{
+                        var cmtObj = {
+                            id   : val.id,
+                            read_id : loginid
+                        }
+                        $scope.commentReadArray.push(cmtObj);    
+                    }   
+                    // Read/ Unread - check comment id exist in db 
+                
                 });
                 
                 /*$(".comment-wrapper").each(function(i,v) {
@@ -15559,6 +15574,16 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
     }
 
     $timeout( function(){
+        if($routeParams.id){
+            rest.path = "discussionCommentread";    
+            rest.put($scope.commentReadArray).success(function(res) {
+                //console.log('new-res',res);
+                if(res.status==1){
+                    jQuery('.cmtclr'+$routeParams.id).css({"color":"green"});
+                }
+            });
+        }
+
         jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
         jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
     },2800);
