@@ -1027,6 +1027,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.jobDueTodayCount = jobDueTodayCount;
                 $scope.jobDueTomorrowCount = jobDueTomorrowCount;
                 $scope.jobOverDueCount = jobOverDueCount;
+                
             }, 100);
         }).error(errorCallback);
     };
@@ -1444,6 +1445,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
 
     $scope.goTocommentChat = function(viewType) {
+
         if(viewType){
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
@@ -1457,10 +1459,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
             });
     
-        }        
+        } 
 
     }
-
 
     // Tab view Project List
     $scope.projectsAll= [];
@@ -12720,8 +12721,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         })
     }
 
-
-
     $scope.$on('pls.onLanguageChanged', function(evt, lang) {
         lang.id = lang.id.replace(/[0-9]/g, '');
         var eleId =  evt.targetScope.id.replace(/\D/g,'');
@@ -15663,26 +15662,32 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
         },
         uploadAttachments: function(dataArray, success, error, data) {
             /*"fileURL":dataArray[0].file_url,*/
-            var obj = {
-                "order_id": $routeParams.id,
-                "user_id": $window.localStorage.getItem("session_iUserId"),
-                "fullname": $window.localStorage.getItem("session_vUserName"),
-                "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
-                "fileURL": " uploads/discussionfile/" + dataArray[0].file.name2,
-                "fileMimeType": dataArray[0].file.type,
-                "created": dataArray[0].created,
-                "modified": dataArray[0].modified,
-                "created_by_current_user": '1',
-                "upvote_count": '0',
-                "user_has_upvoted": '0'
+            // foreach multiple files
+            $(dataArray).each(function(index, dataArrays) {
+                var obj = {
+                    "order_id": $routeParams.id,
+                    "user_id": $window.localStorage.getItem("session_iUserId"),
+                    "fullname": $window.localStorage.getItem("session_vUserName"),
+                    "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
+                    "fileURL": " uploads/discussionfile/" + dataArray[index].file.name2,
+                    "fileMimeType": dataArray[index].file.type,
+                    "created": dataArray[index].created,
+                    "modified": dataArray[index].modified,
+                    "created_by_current_user": '1',
+                    "upvote_count": '0',
+                    "user_has_upvoted": '0'
 
-            }
-            rest.path = "discussionOrder";
-            rest.post(obj).success(function(info) {
+                }
+                rest.path = "discussionOrder";
+                rest.post(obj).success(function(info) {
 
-            }).error(errorCallback);
-            dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
-            dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                }).error(errorCallback);
+                
+                dataArray[index].fullname = $window.localStorage.getItem("session_vUserName");
+                dataArray[index].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+
+            });    
+
             $timeout(function() {
                 success(dataArray);
             }, 500);
@@ -21897,27 +21902,29 @@ $timeout(function() {
             },*/
             uploadAttachments: function(dataArray, success, error, data) {
                 /*"fileURL":dataArray[0].file_url,*/
-                var obj = {
-                    "order_id": $routeParams.id,
-                    "user_id": $window.localStorage.getItem("session_iUserId"),
-                    "fullname": $window.localStorage.getItem("session_vUserName"),
-                    "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
-                    "fileURL": "uploads/discussionfile/" + dataArray[0].file.name2,
-                    "fileMimeType": dataArray[0].file.type,
-                    "created": dataArray[0].created,
-                    "modified": dataArray[0].modified,
-                    "created_by_current_user": '1',
-                    "upvote_count": '0',
-                    "user_has_upvoted": '0',
-                    "read_id": $window.localStorage.getItem("session_iUserId")+',',
-                    
-                }
-                rest.path = "discussionOrder";
-                rest.post(obj).success(function(info) {
+                $(dataArray).each(function(index, dataArrays) {
+                    var obj = {
+                        "order_id": $routeParams.id,
+                        "user_id": $window.localStorage.getItem("session_iUserId"),
+                        "fullname": $window.localStorage.getItem("session_vUserName"),
+                        "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
+                        "fileURL": "uploads/discussionfile/" + dataArray[index].file.name2,
+                        "fileMimeType": dataArray[index].file.type,
+                        "created": dataArray[index].created,
+                        "modified": dataArray[index].modified,
+                        "created_by_current_user": '1',
+                        "upvote_count": '0',
+                        "user_has_upvoted": '0',
+                        "read_id": $window.localStorage.getItem("session_iUserId")+',',
+                        
+                    }
+                    rest.path = "discussionOrder";
+                    rest.post(obj).success(function(info) {
 
-                }).error(errorCallback);
-                dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
-                dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                    }).error(errorCallback);
+                    dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
+                    dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                });
                 $timeout(function() {
                     success(dataArray);
                 }, 500);

@@ -539,6 +539,11 @@
                     commentingField.before(commentListSpinner);
                 } else {
                     this.$el.find('ul#comment-list').prepend(commentListSpinner);
+                
+                this.$el.find('.commenting-field').prepend(attachmentListSpinner);
+                this.$el.find('ul#attachment-list').append(attachmentListSpinner);
+                this.$el.find('ul#attachment-list').after(attachmentListSpinner);
+                
                 }
 
                 var success = function(commentArray) {
@@ -572,26 +577,21 @@
                 };
 
                 var commentArray = [];
-                var filesz_tout = 2000;
-                var filesz_tout2 = 3000;
-                var file_response_time = 0;
+                var fileno = 0;
+                var file_no = 0;
                 $(files).each(function(index, file) {
-                    var filesz  = file.size/100;
-                    filesz_tout = (Math.ceil(filesz)/2)+500;
-                    if(filesz_tout > 1500){
-                        filesz_tout2 = filesz_tout + 1000;
-                        if(filesz_tout>5000){
-                            filesz_tout = 2000;
-                            filesz_tout2 = 2500;
-                        }
-                    }else{ filesz_tout = 2000; }
                     
                     var commentJSON = self.createCommentJSON(textarea);
-                    var versimgno = Math.random().toString(36).substring(7);
                     var randomno = jQuery.now(); 
 
                     //newFileName1 = file.name.split('.')[0]+'_'+jQuery.now()+'.'+file.type.split('/')[1];
                     //newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.type.split('/')[1];
+                    /*var ftype_1 = file.type.split('/')[0];
+                    if(ftype_1 != 'image'){
+                        newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.name.split('.').pop();
+                    }else{
+                        newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.type.split('/')[1];
+                    }*/
                     var ftype_1 = file.type.split('/')[0];
                     if(ftype_1 != 'image'){
                         newFileName1 = file.name.split('.')[0]+'_'+randomno+'.'+file.name.split('.').pop();
@@ -603,12 +603,15 @@
                     commentJSON.content = '';
                     commentJSON.file = file;
 
-                    window.localStorage.setItem("uploadfilepath", 'uploads/discussionfile/'+file.name2);
-                    commentJSON.fileURL = window.localStorage.getItem("uploadfilepath");
-                    //commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
+                    //window.localStorage.setItem("uploadfilepath", 'uploads/discussionfile/'+file.name2);
+                    //commentJSON.fileURL = window.localStorage.getItem("uploadfilepath");
+                    commentJSON.fileURL =  'uploads/discussionfile/'+file.name2;
                     commentJSON.fileMimeType = file.type;
                     
-                    var file_data = $('#discussionFileUpload').prop('files')[0];
+                    var file_data = $('#discussionFileUpload').prop('files')[fileno];
+                    console.log('file_data',file_data);
+                    console.log('file_data'+fileno,file.name.split('.')[0]);
+
                     //newFileName = file_data.name.split('.')[0]+'_'+jQuery.now()+'.'+file_data.type.split('/')[1];
                     //newFileName = file_data.name.split('.')[0]+'_'+randomno+'.'+file_data.type.split('/')[1];
                     var ftype_0 = file.type.split('/')[0];
@@ -622,6 +625,7 @@
                     var form_data = new FormData();                  
                     form_data.append('file', file_data);
                     form_data.append('file2', newFileName);
+                    
                     $.ajax({
                             url: 'upload.php', 
                             dataType: 'text', 
@@ -634,33 +638,36 @@
                                 file_response_time = file_response;// display response from the PHP script, if any
                                 //console.log('file_response',file_response);
                             }
-                     }).then( function() {
+                     })
+                     .then( function() {
                         //console.log('file_response_time',file_response_time);
-                        
                         commentJSON = self.applyExternalMappings(commentJSON);
-                        commentArray.push(commentJSON);
-                        self.options.uploadAttachments(commentArray, success, error);
-                        
+                        commentArray.push(commentJSON); 
+                        file_no++;   
+                        if(file_no==fileCount){
+                            self.options.uploadAttachments(commentArray, success, error);
+                        }
                         setTimeout(function() {
                            $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
                         },2000);
+
                      });
-                    //return file_response_time;
                     // Reverse mapping
                     
-                    //console.log('commentJSON',commentJSON);
-                    //console.log('commentArray',commentArray);
+                    /*commentJSON = self.applyExternalMappings(commentJSON);
+                    commentArray.push(commentJSON);*/
+                    fileno++;
                 });
-                //console.log('file_response_time',file_response_time);
-                console.log('filesz_tout',filesz_tout);
                 setTimeout(function() {
-                //    self.options.uploadAttachments(commentArray, success, error);
-                },filesz_tout);
+                    if(fileno==fileCount){
+                       //self.options.uploadAttachments(commentArray, success, error);
+                    }
+                },4000);
                 //self.options.uploadAttachments(commentArray, success, error);
                 // self.render();
                 setTimeout(function() {
-                  // $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                },filesz_tout2);
+                   //$('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                },4500);
             }
 
             // Clear the input field
