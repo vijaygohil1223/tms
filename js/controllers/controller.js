@@ -15603,6 +15603,7 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
             data.fullname = $window.localStorage.getItem("session_vUserName");
             data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
             data.pings = '';
+            data.read_id = $window.localStorage.getItem("session_iUserId")+',';
             rest.path = "discussionOrder";
             rest.post(data).success(function(info) {
 
@@ -15675,8 +15676,8 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                     "modified": dataArray[index].modified,
                     "created_by_current_user": '1',
                     "upvote_count": '0',
-                    "user_has_upvoted": '0'
-
+                    "user_has_upvoted": '0',
+                    "read_id" : $window.localStorage.getItem("session_iUserId")+',',
                 }
                 rest.path = "discussionOrder";
                 rest.post(obj).success(function(info) {

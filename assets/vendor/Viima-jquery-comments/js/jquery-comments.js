@@ -539,11 +539,6 @@
                     commentingField.before(commentListSpinner);
                 } else {
                     this.$el.find('ul#comment-list').prepend(commentListSpinner);
-                
-                this.$el.find('.commenting-field').prepend(attachmentListSpinner);
-                this.$el.find('ul#attachment-list').append(attachmentListSpinner);
-                this.$el.find('ul#attachment-list').after(attachmentListSpinner);
-                
                 }
 
                 var success = function(commentArray) {
