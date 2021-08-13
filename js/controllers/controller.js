@@ -1495,15 +1495,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             data[i].items[i2].source_lang  = JSON.parse(val2.source_lang);
                             data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
                         }else{
-                            var newData = { sourceLang:'',dataNgSrc:'',alt:'' };
+                            var newData = { sourceLang:'English (US)',dataNgSrc:'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png',alt:'' };
                             data[i].items[0].source_lang = newData;
                             data[i].items[0].target_lang = newData;
                         }
                     });
                 }else{
-                    var newData = { sourceLang:'',dataNgSrc:'',alt:'' };
-                    data[i].items[0].source_lang = newData;
-                    data[i].items[0].target_lang = newData;
+                    //var newData = { sourceLang:'',dataNgSrc:'',alt:'' };
+                    var newData = { sourceLang:'English (US)',dataNgSrc:'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png',alt:'' };
+                    data[i].items.source_lang = newData;
+                    data[i].items.target_lang = newData;
                 }
                 /*angular.forEach(val.items,function(val2,i2){
                     val2.source_lang = JSON.parse(val2.source_lang);
@@ -12591,7 +12592,6 @@ $scope.dtOptions = DTOptionsBuilder.newOptions().
                 $window.localStorage.setItem("indirectCustomerName",$scope.projectOrderData.indirect_customer);
             }
         }).error(errorCallback);
-
 
 
         //get single order Detail
