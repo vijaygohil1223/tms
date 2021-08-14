@@ -1489,7 +1489,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.forEach(data,function(val,i){
                 val.progrss_precentage = -1;
                 $scope.projectsAll = data;
-                console.log('$scope.projectsAll',$scope.projectsAll);
+                //console.log('$scope.projectsAll',$scope.projectsAll);
                 if(val.items){
                     angular.forEach(val.items,function(val2,i2){
                         if(val2.source_lang){
@@ -1503,10 +1503,19 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     });
                     if(val.items.length == 0){
                         console.log('val.items',val.items.length);
-                        var newData = { sourceLang:'English (US)',dataNgSrc:'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png',alt:'' };
-                        //data[i].items.push(newData);
-                        data[i].items.source_lang = newData;
-                        data[i].items.target_lang = newData;
+                        var newData = {
+                            "source_lang": {
+                                "sourceLang": "English (US)",
+                                "dataNgSrc": "assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png",
+                                "alt": "United States"
+                            },
+                            "target_lang": {
+                                "sourceLang": "English (US)",
+                                "dataNgSrc": "assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png",
+                                "alt": "United States"
+                            }
+                        };
+                        data[i].items.push(newData);
                     }
                 }else{
                     //var newData = { sourceLang:'',dataNgSrc:'',alt:'' };
@@ -1518,7 +1527,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     val2.source_lang = JSON.parse(val2.source_lang);
                     val2.target_lang = JSON.parse(val2.target_lang);
                 });*/
-                
+
                 var cmtcolor = '#337ab7';
                 var cmtval = data[i].comment[0].comment_status;
                 if(cmtval > 0 && val.comment_id > 0){
