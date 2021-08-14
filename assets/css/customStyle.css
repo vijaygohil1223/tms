@@ -44,10 +44,10 @@ body {color: #454f59; background-color: #f4f4fb;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .dataTables_length label{margin-bottom: 0;}
 
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus{display: inline-flex; align-items: center; background: unset; padding: 5px 10px; border: 0; border-radius: 20px; text-transform: uppercase; font-size: 11px; font-weight: 600;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projecttatus_completed{background: rgb(0 137 137 / 20%); color: #008989;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projecttatus_inprogress{color: #FF9719; background: rgb(255 151 25 / 20%);}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projecttatus_assigned{color: #d8ce15; background: rgb(255 244 31 / 20%);}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projecttatus_assigned .text-xs{color: #ece114;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projecttatus_ready{color: #4848CC; background: rgb(72 72 204 / 20%);}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projecttatus_delivered{color: #8B008B; background: rgb(139 0 139 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_completed{background: rgb(0 137 137 / 20%); color: #008989;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_progress{color: #FF9719; background: rgb(255 151 25 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_assigned{color: #d8ce15; background: rgb(255 244 31 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_assigned .text-xs{color: #d8ce15;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_ready{color: #4848CC; background: rgb(72 72 204 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_delivered{color: #8B008B; background: rgb(139 0 139 / 20%);}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus .text-xs{font-size: 10px; margin: 0px 5px 0 0;}
