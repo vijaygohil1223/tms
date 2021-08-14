@@ -1518,6 +1518,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     val2.source_lang = JSON.parse(val2.source_lang);
                     val2.target_lang = JSON.parse(val2.target_lang);
                 });*/
+                
                 var cmtcolor = '#337ab7';
                 var cmtval = data[i].comment[0].comment_status;
                 if(cmtval > 0 && val.comment_id > 0){
