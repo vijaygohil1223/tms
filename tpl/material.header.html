@@ -302,7 +302,7 @@
 <!-- Recent Activity Sidebar end -->
 
     <!-- nabar right -->
-    <ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-right userProfile_box">
         <li class="dropdown" dropdown>
             <a href class="dropdown-toggle clear" dropdown-toggle>
               <span class="thumb-sm avatar pull-right m-t-n-sm m-b-n-sm m-l-sm">
@@ -331,7 +331,7 @@
     </ul>
     <!-- / navbar right -->
     <!-- search form -->
-    <form class="navbar-form navbar-form-sm navbar-left shift pull-right" ui-shift="prependTo" target=".navbar-collapse" role="search" ng-if="userRight==1" ng-submit="searchProject()" name="searcForm">
+    <form class="search_box navbar-form navbar-form-sm navbar-left shift pull-right" ui-shift="prependTo" target=".navbar-collapse" role="search" ng-if="userRight==1" ng-submit="searchProject()" name="searcForm">
         <div class="form-group">
             <div class="input-group">
                 <input type="text" ng-model="selectedOrder" typeahead="orderName for orderName in orderNames | filter:$viewValue | limitTo:8" class="form-control input-sm bg-light no-border rounded padder" placeholder="Search for project or job.." id="selectedOrder" typeahead-on-select="searchProject($item)" ng-disabled="disableSearch">
