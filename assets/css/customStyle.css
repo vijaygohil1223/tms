@@ -1,4 +1,5 @@
 body {color: #454f59; background-color: #f4f4fb;}
+.form-control{border-color: #ddd;}
 
 .header_custom {box-shadow: 0 0 5px rgb(0 0 0 / 10%);}
 .header_custom .header-bg-color {background: #fff; box-shadow: none;}
@@ -17,7 +18,10 @@ body {color: #454f59; background-color: #f4f4fb;}
 .page_content_wrapper .content_head {background: #f4f4fb; border-bottom: 0;}
 
 .page_content_wrapper .white_box_wrapper .white_box{position: relative; border: 0; border-radius: 8px; box-shadow: 1px 1px 2px #0000000d;}
-.page_content_wrapper .white_box_wrapper .white_box .btn_create-project{position: absolute; top: 55px; right: 15px; background: #211dc3; border-color:  #211dc3; z-index: 998;}
+.page_content_wrapper .white_box_wrapper .white_box .btn_create-project{position: absolute; top: 55px; right: 15px; display: inline-flex; align-items: center; justify-content: center; height: 35px; font-size: 13px; background: #211dc3; border-color:  #211dc3; transition: .2s ease-in-out; z-index: 1;}
+.page_content_wrapper .white_box_wrapper .white_box .btn_create-project:hover{background: #16129e;}
+.page_content_wrapper .white_box_wrapper .white_box .btn_create-project i{margin: 0 3px 0 0;}
+
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs{background: #f4f4fb; padding-top: 0 !important;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{background: #fafaff; padding: 0;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{height: 100%; padding: 10px 11px 8px 0 !important;}
@@ -28,7 +32,7 @@ body {color: #454f59; background-color: #f4f4fb;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a .badge{color: #fff; background: #211dc3; margin: 0 0 0 5px;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a .glyphicon{color: #211dc3; margin: 0 5px 0 0;}
 
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .tab-content{padding-top: 55px;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .tab-content{padding-top: 55px; border-radius: 8px;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .tab-content thead{background: #fafafc;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .tab-content .dataTables_wrapper{padding-top: 0;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .dataTables_filter{top: 15px; left: 23px; right: unset;}
@@ -45,9 +49,21 @@ body {color: #454f59; background-color: #f4f4fb;}
 
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus{display: inline-flex; align-items: center; background: unset; padding: 5px 10px; border: 0; border-radius: 20px; text-transform: uppercase; font-size: 11px; font-weight: 600;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_completed{background: rgb(0 137 137 / 20%); color: #008989;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_progress{color: #FF9719; background: rgb(255 151 25 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_inprogress{color: #FF9719; background: rgb(255 151 25 / 20%);}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_assigned{color: #d8ce15; background: rgb(255 244 31 / 20%);}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_assigned .text-xs{color: #d8ce15;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_assigned .text-xs{color: #ece114;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_ready{color: #4848CC; background: rgb(72 72 204 / 20%);}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_delivered{color: #8B008B; background: rgb(139 0 139 / 20%);}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus .text-xs{font-size: 10px; margin: 0px 5px 0 0;}
+
+.page_content_wrapper .white_box_wrapper .white_box .overview-panel{margin-bottom: 0;} 
+.page_content_wrapper .white_box_wrapper .white_box .overview-panel .panel-heading{background-color: #fff;}
+.page_content_wrapper .white_box_wrapper .white_box .list-group-item .bg-info{color: #fff; background-color: #211dc3;}
+.page_content_wrapper .white_box_wrapper .white_box .list-group-item > a{color: #211dc3; text-decoration: none;}
+
+/* sidebar_new */
+.sidebar_new > li.menuBg{background-color: #211dc314 !important;}
+.sidebar_new > li > a{padding: 12px 20px !important;}
+.sidebar_new > li > a.active, .sidebar_new > li > a:hover, .sidebar_new > li > a:focus{background-color: #211dc314 !important;}
+.sidebar_new > li > a > .font-bold{font-weight: 400;}
+.sidebar_new > li > a.active .font-bold, .sidebar_new > li > a:hover .font-bold, .sidebar_new > li > a:focus .font-bold{font-weight: 600;}
