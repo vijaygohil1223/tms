@@ -1538,7 +1538,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 if(val.projectStatus == 4){
                     val.progrss_precentage =25;
-                    val.projectstatus_class = 'projectstatus_progress';
+                    val.projectstatus_class = 'projectstatus_inprogress';
                     $scope.projectsInProgress.push(val);
                     $scope.projectsInprogressCount++;
                 }
