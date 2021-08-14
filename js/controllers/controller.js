@@ -1489,6 +1489,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.forEach(data,function(val,i){
                 val.progrss_precentage = -1;
                 $scope.projectsAll = data;
+                console.log('$scope.projectsAll',$scope.projectsAll);
                 if(val.items){
                     angular.forEach(val.items,function(val2,i2){
                         if(val2.source_lang){
@@ -1500,17 +1501,23 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             data[i].items[0].target_lang = newData;
                         }
                     });
+                    if(val.items.length == 0){
+                        console.log('val.items',val.items.length);
+                        var newData = { sourceLang:'English (US)',dataNgSrc:'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png',alt:'' };
+                        //data[i].items.push(newData);
+                        data[i].items.source_lang = newData;
+                        data[i].items.target_lang = newData;
+                    }
                 }else{
                     //var newData = { sourceLang:'',dataNgSrc:'',alt:'' };
-                    var newData = { sourceLang:'English (US)',dataNgSrc:'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png',alt:'' };
+                    /*var newData = { sourceLang:'English (US)',dataNgSrc:'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png',alt:'' };
                     data[i].items.source_lang = newData;
-                    data[i].items.target_lang = newData;
+                    data[i].items.target_lang = newData;*/
                 }
                 /*angular.forEach(val.items,function(val2,i2){
                     val2.source_lang = JSON.parse(val2.source_lang);
                     val2.target_lang = JSON.parse(val2.target_lang);
                 });*/
-                
                 var cmtcolor = '#337ab7';
                 var cmtval = data[i].comment[0].comment_status;
                 if(cmtval > 0 && val.comment_id > 0){
@@ -1524,26 +1531,31 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.projectsAllCount++;
                 if(val.projectStatus == 12){
                     val.progrss_precentage = 0;
+                    val.projectstatus_class = 'projectstatus_assigned';
                     $scope.projectsAssigned.push(val);
                     $scope.projectsAssignedCount++;
                 }
                 if(val.projectStatus == 4){
-                    val.progrss_precentage = 25;
+                    val.progrss_precentage =25;
+                    val.projectstatus_class = 'projectstatus_progress';
                     $scope.projectsInProgress.push(val);
                     $scope.projectsInprogressCount++;
                 }
                 if(val.projectStatus == 13){
                     val.progrss_precentage = 50;
+                    val.projectstatus_class = 'projectstatus_completed';
                     $scope.projectsCompletedByLng.push(val);
                     //$scope.projectsInprogressCount++;
                 }
                 if(val.projectStatus == 14){
                     val.progrss_precentage = 75;
+                    val.projectstatus_class = 'projectstatus_ready';
                     $scope.projectsQaready.push(val);
                     $scope.projectsQaReadyCount++;
                 }
                 if(val.projectStatus == 15){
                     val.progrss_precentage = 100;
+                    val.projectstatus_class = 'projectstatus_delivered';
                     $scope.projectsToBeDelivered.push(val);
                     $scope.projectsDeliveredCount++;
                 }
@@ -1560,7 +1572,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 
             });
-            //console.log("allproj",$scope.projectsAll);
+            console.log("allproj",$scope.projectsAll);
             
         });
     };
