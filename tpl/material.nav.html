@@ -114,9 +114,9 @@
 
     </li>
 
-    <li ng-class="{active: activetab == '/dashboard'}" ng-mouseover="menuHoverIn('dashboardMenu');" ng-mouseleave="menuHoverOut('dashboardMenu')">
+    <li ng-mouseover="menuHoverIn('dashboardMenu');" ng-mouseleave="menuHoverOut('dashboardMenu')">
 
-        <a href="#/dashboard1" md-ink-ripple ng-class="{'active menuBg': activetab == '/dashboard1'}">
+        <a href="#/dashboard1" md-ink-ripple >
 
                                 <i class="glyphicon glyphicon-home icon" style="color:#ff4444;"></i>
 
@@ -128,7 +128,7 @@
 
     </li>
 
-    <li ng-class="{active: activetab == '/user/1'  || activetab == '/user/2' || activetab == '/internal'}" ng-if="adminRole==1" class="sidebarArrow">
+    <li ng-if="adminRole==1" class="sidebarArrow">
 
         <a href="#/resources" md-ink-ripple>      
 
@@ -138,9 +138,9 @@
 
                             </a>
 
-        <ul class="nav nav-sub dk">
+        <ul class="nav nav-sub dk newmySub">
 
-            <li ng-class="{'active menuBg': activetab == '/user/1' || activetab == '/internal'}" ng-mouseover="menuHoverIn('internalMenu');" ng-mouseleave="menuHoverOut('internalMenu')">
+            <li ng-mouseover="menuHoverIn('internalMenu');" ng-mouseleave="menuHoverOut('internalMenu')" class="sidebarSub">
 
                 <a href="#/user/1" md-ink-ripple>
 
@@ -152,7 +152,7 @@
 
             </li>
 
-            <li ng-class="{'active menuBg': activetab == '/user/2'}" ng-mouseover="menuHoverIn('externalMenu');" ng-mouseleave="menuHoverOut('externalMenu')">
+            <li ng-mouseover="menuHoverIn('externalMenu');" ng-mouseleave="menuHoverOut('externalMenu')">
 
                 <a href="#/user/2" md-ink-ripple>
 
@@ -180,7 +180,7 @@
 
                         </li> -->
 
-    <li ng-class="{active: activetab == '/client' || activetab == '/client/1' || activetab == '/client/2' || activetab == '/client-profile' ||  activetab == '/client-profile1' ||  activetab == '/contact-person' ||  activetab == '/price-list'}" ng-if="adminRole==1" class="sidebarArrow">
+    <li ng-if="adminRole==1" class="sidebarArrow">
 
         <a href class="auto" md-ink-ripple>
 
@@ -192,7 +192,7 @@
 
         <ul class="nav nav-sub dk">
 
-            <li ng-class="{'active menuBg': activetab == '/client/1'}" ng-mouseover="menuHoverIn('clientMenu');" ng-mouseleave="menuHoverOut('clientMenu')">
+            <li ng-mouseleave="menuHoverOut('clientMenu')">
 
                 <a href="#/client/1" md-ink-ripple>
 
@@ -204,7 +204,7 @@
 
             </li>
 
-            <li ng-class="{'active menuBg': activetab == '/client/2'}" ng-mouseover="menuHoverIn('accountsMenu');" ng-mouseleave="menuHoverOut('accountsMenu')">
+            <li ng-mouseleave="menuHoverOut('accountsMenu')">
 
                 <a href="#/client/2" md-ink-ripple>
 
@@ -220,7 +220,7 @@
 
     </li>
 
-    <li ng-class="{active:activetab == '/Order-status-report' || activetab == '/Jobs-status-report'}" class="sidebarArrow" ng-if="userRight==1">
+    <li class="sidebarArrow" ng-if="userRight==1">
 
         <!-- <a href="#/project" ng-if="userRight==1"> activetab == '/project' || -->
 
@@ -244,9 +244,9 @@
 
                                 </li> -->
 
-            <li ng-class="{active: activetab == '/Order-status-report'}" ng-mouseover="menuHoverIn('sroMenu');" ng-mouseleave="menuHoverOut('sroMenu')">
+            <li ng-mouseleave="menuHoverOut('sroMenu')">
 
-                <a href="#/Order-status-report" md-ink-ripple ng-class="{'active menuBg': activetab == '/Order-status-report'}">
+                <a href="#/Order-status-report" md-ink-ripple >
 
                                         <span class="font-bol">Status Report - Orders</span>
 
@@ -256,7 +256,7 @@
 
             </li>
 
-            <li ng-class="{'active menuBg': activetab == '/Jobs-status-report'}" ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
+            <li  ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
 
                 <a href="#/Jobs-status-report" md-ink-ripple>
 
@@ -284,7 +284,7 @@
 
                         </li> -->
 
-    <li ng-if="userRight==1" ng-class="{'active menuBg': activetab == '/invoice-data'}" ng-mouseover="menuHoverIn('invoiceMenu');" ng-mouseleave="menuHoverOut('invoiceMenu')">
+    <li ng-if="userRight==1" ng-mouseover="menuHoverIn('invoiceMenu');" ng-mouseleave="menuHoverOut('invoiceMenu')">
 
         <a href="#/invoice-data" md-ink-ripple>
 
@@ -312,7 +312,7 @@
 
     <li ng-mouseover="menuHoverIn('statementMenu');" ng-mouseleave="menuHoverOut('statementMenu')">
 
-        <a href="#/statement" md-ink-ripple ng-class="{'active menuBg': activetab == '/statement'}">
+        <a href="#/statement" md-ink-ripple >
 
                                 <i class="glyphicon glyphicon-send icon" style="color:#e91e63;"></i>
 
@@ -876,3 +876,44 @@
     </li>
 
 </ul>
+
+<script type="text/javascript">
+    // to active sidebar menu items and subitem
+    $(document).ready(function(){
+
+        var url2 = window.location.href;
+        var href = '';
+        var url = '';
+        if(url2 ==undefined){
+            var url = '';
+        }else{
+            var url = '#'+url2.split("#")[1];
+        }
+
+        $('.sidebar_new li').each(function(){
+            // select href
+            var href = $(this).find('a').attr('href');
+            
+            // Check filename
+            if(url == href){
+                $('a[href$="'+href+'"]').parents(".sidebarArrow").addClass('active');
+                
+                $('a[href$="'+href+'"]').parent("li").addClass('active');
+            }
+        });
+
+        $('.sidebar_new > li').on('click', function(){
+            $(this).children('a').removeClass('active');
+            $(this).toggleClass('active').siblings().removeClass('active');
+
+        });
+        // ----- header script START ----- //
+        // Add Class in header
+        $('body > div > div').addClass('header_custom');
+       // ----- header script END ----- //
+
+
+    });
+
+
+</script>
