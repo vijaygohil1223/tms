@@ -876,7 +876,6 @@
     </li>
 
 </ul>
-
 <script type="text/javascript">
     // to active sidebar menu items and subitem
     $(document).ready(function(){
@@ -912,6 +911,34 @@
         $('body > div > div').addClass('header_custom');
        // ----- header script END ----- //
 
+
+        // 
+        $("#jobNewTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>New Jobs</h4></div>');
+        $('#jobNewTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
+        $('#jobNewTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
+        $("#jobNewTbl_filter").find('label').find('input').attr('id', 'Search_All');
+        $('#jobNewTbl_info').parent().remove();
+        $('#jobNewTbl_paginate').parent().addClass('pull-right');
+        
+        $("#inProgerssTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Job in Progerss</h4></div>');
+        $("#inProgerssTbl_filter").parent().remove();
+        $('#inProgerssTbl_info').parent().remove();
+        $('#inProgerssTbl_paginate').parent().addClass('pull-right');
+
+        $("#readyToBeDeliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Ready to be Delivered</h4></div>');
+        $("#readyToBeDeliveredTbl_filter").parent().remove();
+        $('#readyToBeDeliveredTbl_info').parent().remove();
+        $('#readyToBeDeliveredTbl_paginate').parent().addClass('pull-right');
+
+        $("#deliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Delivered</h4></div>');
+        $("#deliveredTbl_filter").parent().remove();
+        $('#deliveredTbl_info').parent().remove();
+        $('#deliveredTbl_paginate').parent().addClass('pull-right');
+
+        $("#completedTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Jobs Completed</h4></div>');
+        $("#completedTbl_filter").parent().remove();
+        $('#completedTbl_info').parent().remove();
+        $('#completedTbl_paginate').parent().addClass('pull-right');
 
     });
 
