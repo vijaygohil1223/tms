@@ -1040,7 +1040,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
     
     /*Common Searching For All Datatables*/
-    $( document ).ready(function() {
+    angular.element( document ).ready(function() {
         $timeout(function() {
             $.fn.dataTableExt.oApi.fnFilterAll = function(oSettings, sInput, iColumn, bRegex, bSmart) {
                 var settings = $.fn.dataTableSettings;
