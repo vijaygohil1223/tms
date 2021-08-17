@@ -68,7 +68,7 @@
 
 <ul class="nav sidebar_new" ng-controller="headerController" style="height:600px !important;">
 
-    <li ng-class="{}" ng-if="userRight==1" style="border-bottom: 1px solid #e6e6e6;border-top: 1px solid #b5b5b5;">
+    <li ng-class="{}" ng-if="userRight==1" style="margin-bottom: 10px; border-bottom: 1px solid #e6e6e6;border-top: 1px solid #b5b5b5;">
 
         <a href class="auto" md-ink-ripple>
 
@@ -870,9 +870,15 @@
                             </a>
 
     </li>
-
-    <li class="line dk">
-
+    <li class="line dk hidden-folded"></li>
+    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">          
+        <span class="font-bold" style="color: #8d99a7;">Insights</span>
+    </li>
+    <li>
+        <a href="#/viewinternal/1">
+            <i class="icon-user icon text-success-lter"></i>
+            <span>Profile</span>
+        </a>
     </li>
 
 </ul>
@@ -887,6 +893,9 @@
             var url = '';
         }else{
             var url = '#'+url2.split("#")[1];
+            if(url == "#/resources"){
+                url ='';
+            }
         }
 
         $('.sidebar_new li').each(function(){
@@ -906,39 +915,18 @@
             $(this).toggleClass('active').siblings().removeClass('active');
 
         });
-        // ----- header script START ----- //
+        // ----- Header script START ----- //
         // Add Class in header
-        $('body > div > div').addClass('header_custom');
+        // $('body div.md-navbar:nth-child(1)').addClass('header_custom');
+        $('.sub_header_custom').parent().addClass('header_custom');
        // ----- header script END ----- //
 
 
-        // 
-        $("#jobNewTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>New Jobs</h4></div>');
-        $('#jobNewTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
-        $('#jobNewTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
-        $("#jobNewTbl_filter").find('label').find('input').attr('id', 'Search_All');
-        $('#jobNewTbl_info').parent().remove();
-        $('#jobNewTbl_paginate').parent().addClass('pull-right');
-        
-        $("#inProgerssTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Job in Progerss</h4></div>');
-        $("#inProgerssTbl_filter").parent().remove();
-        $('#inProgerssTbl_info').parent().remove();
-        $('#inProgerssTbl_paginate').parent().addClass('pull-right');
+       // ----- Sidebar script START ----- //
+       $('body .bg-white.md-whiteframe-z0.md-aside.md-content.hidden-xs').addClass('sidebar_wrapper');
+       // ----- sidebar script END ----- //
 
-        $("#readyToBeDeliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Ready to be Delivered</h4></div>');
-        $("#readyToBeDeliveredTbl_filter").parent().remove();
-        $('#readyToBeDeliveredTbl_info').parent().remove();
-        $('#readyToBeDeliveredTbl_paginate').parent().addClass('pull-right');
 
-        $("#deliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Delivered</h4></div>');
-        $("#deliveredTbl_filter").parent().remove();
-        $('#deliveredTbl_info').parent().remove();
-        $('#deliveredTbl_paginate').parent().addClass('pull-right');
-
-        $("#completedTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Jobs Completed</h4></div>');
-        $("#completedTbl_filter").parent().remove();
-        $('#completedTbl_info').parent().remove();
-        $('#completedTbl_paginate').parent().addClass('pull-right');
 
     });
 

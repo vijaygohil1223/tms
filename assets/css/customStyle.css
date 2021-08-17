@@ -1,23 +1,42 @@
 body {color: #454f59; background-color: #f4f4fb;}
 .form-control{border-color: #ddd;}
 .page_dashboard{overflow-y: hidden;}
+.panel-default{border: 0; box-shadow: none;}
 
+/* table */
 table{background: #f4f4fb; border-collapse: separate; border-spacing: 0 5px;}
 table thead{background: #fff !important;}
-table thead tr{}
 table thead tr th{text-align: left !important;}
-table thead tr th:first-child{}
-table thead tr th:last-child{}
 
-table tbody{}
 table tbody tr{background: #fff; overflow: hidden;}
+table tbody tr:nth-child(odd) td{background: #fff;}
 table tbody tr td{background: unset; text-align: left !important; border: 0 !important;}
 
 table thead tr th:first-child, table tbody tr td:first-child{border-top-left-radius: 5px; border-bottom-left-radius: 5px;}
 table thead tr th:last-child, table tbody tr td:last-child{text-align: center !important; border-top-right-radius: 5px; border-bottom-right-radius: 5px;}
 
+/* sidebar */
+.sidebar_wrapper.md-aside{max-width: 220px !important;}
+
+.sidebar_wrapper .sidebar_new{margin: 0 10px;}
+.sidebar_wrapper .sidebar_new li{transition: all 0.2s ease-in-out;}
+.sidebar_wrapper .sidebar_new li a{border-radius: 10px;}
+.sidebar_wrapper .sidebar_new li a:hover{background: #f6f7fb;}
+.sidebar_wrapper .sidebar_new li a:focus{background: unset;}
+.sidebar_wrapper .sidebar_new > li > a{font-size: 14px; padding: 12px 15px !important; transition: all 0.2s ease-in-out;}
+.sidebar_wrapper .sidebar_new > li > a > .font-bold{font-weight: 400;}
+.sidebar_wrapper .sidebar_new > li.active > a{color: #fff !important; background-color: #4e2fc4 !important;}
+.sidebar_wrapper .sidebar_new > li.active > a > i{color: #fff !important;}
+.sidebar_wrapper .sidebar_new > li.active > a .font-bold, .sidebar_wrapper .sidebar_new > li > a:hover .font-bold{font-weight: 600;}
+.sidebar_wrapper .sidebar_new > li.active > .nav-sub > li.menuBg{background: none; font-weight: 600;}
+.sidebar_wrapper .sidebar_new > li.active > .nav-sub > li.active > a{background: none; font-weight: 600;}
+.sidebar_wrapper .sidebar_new > li.active > .nav-sub > li > a:hover{background: none; font-weight: 600;}
+.sidebar_wrapper .sidebar_new > li.line{background: #e5eaf0; height: 1px; width: 100%;}
+/* .sidebar_wrapper .sidebar_new > li:before{content: "\e081"; opacity: 0; visibility: hidden; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; color: #fff; font-size: 13px; margin: 0; transition: 0.2s all ease-in-out;} */
+/* .sidebar_wrapper .sidebar_new > li:hover :before{content: "\e081"; opacity: 0; visibility: hidden; position: absolute; top: 50%; transform: translateY(-50%); right: 10px; color: #fff; font-size: 13px; margin: 0; transition: 0.2s all ease-in-out;} */
 
 
+/* header */
 .header_custom {box-shadow: 0 0 5px rgb(0 0 0 / 10%);}
 .header_custom .header-bg-color {background: #fff; box-shadow: none;}
 .header_custom .navbar-header .navbar-brand span{color: #454f59;}
@@ -35,19 +54,19 @@ table thead tr th:last-child, table tbody tr td:last-child{text-align: center !i
 .page_content_wrapper .content_head {background: #f4f4fb; border-bottom: 0;}
 
 .page_content_wrapper .white_box_wrapper .white_box{position: relative; border: 0; border-radius: 8px; box-shadow: 1px 1px 2px #0000000d;}
-.page_content_wrapper .white_box_wrapper .white_box .btn_create-project{position: absolute; top: 55px; right: 15px; display: inline-flex; align-items: center; justify-content: center; height: 35px; font-size: 13px; background: #211dc3; border-color:  #211dc3; transition: .2s ease-in-out; z-index: 1;}
+.page_content_wrapper .white_box_wrapper .white_box .btn_create-project{position: absolute; top: 55px; right: 15px; display: inline-flex; align-items: center; justify-content: center; height: 35px; font-size: 13px; background: #4e2fc4; border-color:  #4e2fc4; transition: .2s ease-in-out; z-index: 1;}
 .page_content_wrapper .white_box_wrapper .white_box .btn_create-project:hover{background: #16129e;}
 .page_content_wrapper .white_box_wrapper .white_box .btn_create-project i{margin: 0 3px 0 0;}
 
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs{background: #f4f4fb; padding-top: 0 !important;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{background: #fafaff; padding: 0;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{height: 100%; padding: 10px 11px 8px 0 !important;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a .badge{color: #80839b; background: #d8d6e8; font-weight: 400; margin: 0 0 0 5px;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a .badge{color: #737f8b; background: #e5eaf0; font-size: 11px; margin: 0 0 0 5px;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a .glyphicon{color: #b4b2c9; margin: 0 5px 0 0;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active{background: #fff;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a{color: #211dc3 !important;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a .badge{color: #fff; background: #211dc3; margin: 0 0 0 5px;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a .glyphicon{color: #211dc3; margin: 0 5px 0 0;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a{color: #4e2fc4 !important;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a .badge{color: #fff; background: #4e2fc4; margin: 0 0 0 5px;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active > a .glyphicon{color: #4e2fc4; margin: 0 5px 0 0;}
 
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .tab-content{padding-top: 60px; padding-bottom: 0; border-radius: 8px;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .tab-content .dataTables_wrapper{max-height: 478px; overflow: auto; padding-top: 0;}
@@ -79,18 +98,13 @@ table thead tr th:last-child, table tbody tr td:last-child{text-align: center !i
 
 .page_content_wrapper .white_box_wrapper .white_box.overview-panel{margin-bottom: 0;} 
 .page_content_wrapper .white_box_wrapper .white_box.overview-panel .panel-heading{background-color: #fff !important;}
-.page_content_wrapper .white_box_wrapper .white_box.overview-panel .panel-footer .bg-info{color: #fff; background-color: #211dc3;}
-.page_content_wrapper .white_box_wrapper .white_box .list-group-item .bg-info{color: #fff; background-color: #211dc3;}
-.page_content_wrapper .white_box_wrapper .white_box .list-group-item > a{color: #211dc3; text-decoration: none;}
+.page_content_wrapper .white_box_wrapper .white_box.overview-panel .panel-footer .bg-info{color: #fff; background-color: #4e2fc4;}
+.page_content_wrapper .white_box_wrapper .white_box .list-group-item .bg-info{color: #fff; background-color: #4e2fc4;}
+.page_content_wrapper .white_box_wrapper .white_box .list-group-item > a{color: #4e2fc4; text-decoration: none;}
 .page_content_wrapper .white_box_wrapper .white_box .list-group-item > a:hover{text-decoration: underline;}
 
-.page_content_wrapper .white_box_wrapper .white_box .dataTables_wrapper .pagination .paginate_button.active > a{background-color: #211dc3; border-color: #211dc3;}
+.page_content_wrapper .white_box_wrapper .white_box .dataTables_wrapper .pagination .paginate_button.active > a{background-color: #4e2fc4; border-color: #4e2fc4;}
 .page_content_wrapper .white_box_wrapper .white_box .dataTables_wrapper .dataTables_paginate{position: relative;}
 
 /* sidebar_new */
-.sidebar_new{margin: 0 10px;}
-.sidebar_new > li > a{font-size: 14px; padding: 12px 15px !important;}
-.sidebar_new > li.active > a{color: #fff; background-color: #6b5dd3 !important; border-radius: 10px;}
-.sidebar_new > li.active > a .glyphicon{color: #fff !important;}
-.sidebar_new > li > a > .font-bold{font-weight: 400;}
-.sidebar_new > li.active > a .font-bold, .sidebar_new > li > a:hover .font-bold{font-weight: 600;}
+
