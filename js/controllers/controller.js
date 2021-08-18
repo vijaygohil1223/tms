@@ -1558,13 +1558,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     val2.target_lang = JSON.parse(val2.target_lang);
                 });*/
 
-                var cmtcolor = '#337ab7';
+                var cmtcolor = '#0190d8';
                 var cmtval = data[i].comment[0].comment_status;
                 if(cmtval > 0 && val.comment_id > 0){
-                    cmtcolor = 'red';
+                    cmtcolor = '#d30c39';
                 }
                 if(cmtval == 0 && val.comment_id > 0){
-                    cmtcolor = 'green';
+                    cmtcolor = '#67bb0a';
                 }
                 val.comment = cmtcolor;
                 
