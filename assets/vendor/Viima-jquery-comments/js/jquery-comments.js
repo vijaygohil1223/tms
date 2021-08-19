@@ -1795,14 +1795,14 @@
             var commentWrapper = $('<div/>', {
                 'class': 'comment-wrapper'
             });
-
+            //console.log('commentModel',commentModel);
             // Profile picture
             var profilePicture = this.createProfilePictureElement(commentModel.profilePictureURL);
 
             // Time
             var ndt = new Date(commentModel.created);
             var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-;
+
             var dd = ("0" + ndt.getDate() ).slice(-2);
             var yy = ndt.getFullYear();
             var timeText = dd + '-' + mm + '-' + yy;

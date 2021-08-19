@@ -912,7 +912,7 @@
 
         $('.sidebar_new > li').on('click', function(){
             $(this).children('a').removeClass('active');
-            $(this).toggleClass('active').siblings().removeClass('active');
+            $(this).addClass('active').siblings().removeClass('active');
 
         });
         // ----- Header script START ----- //

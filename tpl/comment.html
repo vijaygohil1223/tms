@@ -1,17 +1,20 @@
 <style type="text/css">
   .jquery-comments .commenting-field.main {
-      position: absolute;
-      bottom: -130px;
-      width: 95%;
-      opacity: 1;
-      z-index: 1;
+    position: absolute;
+    bottom: -130px;
+    width: 95%;
+    opacity: 1;
+    z-index: 1;
   }
-  ul#comment-list, #attachment-list {
-      max-height: 320px;
-      overflow-y: scroll;
-      position: relative;
-      margin-bottom: 10px !important;
+
+  ul#comment-list,
+  #attachment-list {
+    max-height: 320px;
+    overflow-y: scroll;
+    position: relative;
+    margin-bottom: 10px !important;
   }
+
   /* width Style for scroll*/
   ::-webkit-scrollbar {
     width: 10px;
@@ -19,77 +22,94 @@
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    background: #f1f1f1;
   }
-   
+
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #888; 
+    background: #888;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
+    background: #555;
   }
 
   .arrow.left:after {
-/*    border-right-color: #edf1f2;*/
+    /*    border-right-color: #edf1f2;*/
   }
-  .commenting-field.main .profile-picture{
+
+  .commenting-field.main .profile-picture {
     float: left;
   }
+
   .jquery-comments ul.main li.comment {
-      width: auto;
-      float: right;
-      position: relative;
-      margin-bottom: 50px;
-      color: #fff;
-      min-width: 220px;
+    width: auto;
+    float: right;
+    position: relative;
+    margin-bottom: 50px;
+    color: #fff;
+    min-width: 220px;
   }
-  .jquery-comments ul.main li.comment .wrapper .content a.attachment > * {
+
+  .jquery-comments ul.main li.comment .wrapper .content a.attachment>* {
     max-width: 80px;
     max-height: 80px;
     margin-top: auto;
     margin-bottom: auto;
   }
+
   .jquery-comments ul.main li.comment .comment-wrapper {
-    border-top: none; 
+    border-top: none;
     padding: 0;
   }
-  .userpic{
+
+  .userpic {
     width: 40px;
     float: left;
     margin-left: 10px;
   }
-  .cmtright .name{
+
+  .cmtright .name {
     margin-right: 5px;
   }
-  .cmtright .attachment{
-    color:#FFF;
+
+  .cmtright .attachment {
+    color: #FFF;
   }
-  .cmtright .profile-picture,.cmtright .name{
+
+  .cmtright .profile-picture,
+  .cmtright .name {
     float: right;
   }
-  .cmtleft .profile-picture,.cmtleft .name{
+
+  .cmtleft .profile-picture,
+  .cmtleft .name {
     float: left !important;
   }
-  .livemsg .profile-picture,.livemsg .name{
+
+  .livemsg .profile-picture,
+  .livemsg .name {
     float: right;
-  } 
-  .textcomplete-item .details .name{
+  }
+
+  .textcomplete-item .details .name {
     float: none;
     margin-right: auto;
-  } 
-  .jquery-comments ul.navigation li[data-sort-key="attachments"]{
+  }
+
+  .jquery-comments ul.navigation li[data-sort-key="attachments"] {
     float: none;
   }
-  .jquery-comments ul.main li.comment .wrapper{
+
+  .jquery-comments ul.main li.comment .wrapper {
     background-color: #4285F4;
     border-radius: 25px 25px 0px 025px;
     margin-right: 55px;
     width: auto;
     float: right;
   }
+
   .jquery-comments ul.main li.comment.pull-left .wrapper {
     margin-right: 0;
     margin-left: 55px;
@@ -98,28 +118,34 @@
     color: #333;
     background-color: #e3eaf2;
   }
-  .jquery-comments ul.main li.comment .wrapper a{
+
+  .jquery-comments ul.main li.comment .wrapper a {
     color: #fff;
   }
-  .jquery-comments ul.main li.comment.pull-left .wrapper a{
+
+  .jquery-comments ul.main li.comment.pull-left .wrapper a {
     color: #333;
   }
-  .livemsg .profile-picture{
+
+  .livemsg .profile-picture {
     position: absolute;
     right: 0;
     bottom: 0;
   }
+
   .livemsg .pull-left .profile-picture {
     left: 0;
     margin-left: 1rem;
     margin-right: 0;
   }
-  .jquery-comments ul.main li.comment time{
+
+  .jquery-comments ul.main li.comment time {
     position: absolute;
     top: 100%;
     margin-top: 5px;
   }
-  .livemsg .name{
+
+  .livemsg .name {
     position: absolute;
     top: 100%;
     right: 55px;
@@ -129,22 +155,25 @@
     min-width: 100px;
     text-align: right;
   }
+
   .livemsg .pull-left .name {
     right: auto;
     left: 55px;
     text-align: left;
   }
+
   .jquery-comments ul.main li.comment.pull-left time {
     position: absolute;
     top: 100%;
     right: 0;
     margin-top: 5px;
   }
-  .jquery-comments .textarea-wrapper .close{
+
+  .jquery-comments .textarea-wrapper .close {
     display: none !important;
   }
 
-  .textcomplete-item .details .name{
+  .textcomplete-item .details .name {
     float: none;
     margin-right: auto;
     position: relative;
@@ -152,34 +181,41 @@
     top: initial;
     text-align: initial;
     margin-top: auto;
-  } 
-  .textcomplete-item .profile-picture{
+  }
+
+  .textcomplete-item .profile-picture {
     position: relative;
   }
-  .commenting-field .profile-picture{
+
+  .commenting-field .profile-picture {
     position: relative;
     float: left;
   }
-  .control-row .send{
+
+  .control-row .send {
     border-radius: 0px 2px 2px 15px;
     padding: 5px 20px !important;
   }
-  .control-row .upload{
+
+  .control-row .upload {
     padding: 5px 20px !important;
     margin-right: 15px;
   }
-  li[data-sort-key='oldest']{
+
+  li[data-sort-key='oldest'] {
     margin-left: -27px;
   }
 
-  .emojionearea-editor{
+  .emojionearea-editor {
     /*display: none !important;*/
     width: 0px;
   }
-  .emojionearea, .emojionearea.form-control {
+
+  .emojionearea,
+  .emojionearea.form-control {
     -moz-box-shadow: initial;
     -webkit-box-shadow: initial;
-     box-shadow: initial; 
+    box-shadow: initial;
     -moz-transition: none;
     -o-transition: none;
     -webkit-transition: none;
@@ -188,88 +224,98 @@
     float: right;
     width: auto;
   }
+
   .emojionearea.emojionearea-inline {
-      height: auto;
-  } 
+    height: auto;
+  }
 </style>
-  <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' " >
+<div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
+  data-ng-include=" 'tpl/material.header.html' ">
+</div>
+<div layout="row">
+  <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs"
+    data-ng-include=" 'tpl/material.aside.html' ">
   </div>
-  <div layout="row">
-    <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs" data-ng-include=" 'tpl/material.aside.html' ">
-    </div>
-    <div flex layout="column">
-      <div ui-butterbar></div>
-      <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside" ></a>
-      <div class="md-content page_content_wrapper">
-        
-        <div class="content_head bg-light lter b-b wrapper-md ng-scope">
-            <a href="javascript:history.back()"  class="btn btn-info pull-right" style="    margin-top: -16px;">  Back</a>
-          <!-- <h1 class="m-n font-thin h3">
+  <div flex layout="column">
+    <div ui-butterbar></div>
+    <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
+    <div class="md-content page_content_wrapper">
+
+      <div class="content_head bg-light lter b-b wrapper-md ng-scope">
+        <a href="javascript:history.back()" class="btn btn-info pull-right" style="    margin-top: -16px;"> Back</a>
+        <!-- <h1 class="m-n font-thin h3">
             Jobs -
           <span id="itemCode" ng-bind="projectOrderName"></span>
           <span>{{indirectCustomerName}}</span>
         </h1> -->
-        </div>
-        <div class="wrapper-md ng-scope">
- 
-          <div class="panel panel-default" style="margin-top:1%">
-            <div class="panel-heading font-bold"><h4>Discussion Board</h4></div>
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-sm-9 livemsg">
-                    <div id="comments-container"></div>
-                </div>
-                <div class="col-md-3">
-                  <div style="margin-bottom: 5px;margin-top:5px;"> <span style="padding:0px 30px 10px 5px;border-bottom: 2px solid #2793e6;">Stutus</span> </div>
-                  <div class="navside white r box-shadow-z0 m-b nav-center" layout="column" >
-                    <div flex-no-shrink="" style="padding-top:15px;margin-top:0px;background-color: #fff;min-height:320px; ">
-                       <nav ui-nav="" >
-                          <ul class="nav">
-    
-                            <li class="no-bg"><a>
-                              <span class="nav-icon"><i class="material-icons"></i></span> 
-                              <span class="nav-text">
-                                <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs" style="color: {{general.status_color}}"></i> {{general.project_status}}</span>
+      </div>
+      <div class="wrapper-md ng-scope">
+
+        <div class="panel panel-default" style="margin-top:1%">
+          <div class="panel-heading font-bold">
+            <h4>Discussion Board</h4>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-9 livemsg">
+                <div id="comments-container"></div>
+              </div>
+              <div class="col-md-3">
+                <div style="margin-bottom: 5px;margin-top:5px;"> <span
+                    style="padding:0px 30px 10px 5px;border-bottom: 2px solid #2793e6;">Stutus</span> </div>
+                <div class="navside white r box-shadow-z0 m-b nav-center" layout="column">
+                  <div flex-no-shrink=""
+                    style="padding-top:15px;margin-top:0px;background-color: #fff;min-height:320px; ">
+                    <nav ui-nav="">
+                      <ul class="nav">
+
+                        <li class="no-bg"><a>
+                            <span class="nav-icon"><i class="material-icons"></i></span>
+                            <span class="nav-text">
+                              <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs"
+                                  style="color: {{general.status_color}}"></i> {{general.project_status}}</span>
                               <small class="block text-muted"> </small></span></a>
-                            </li>        
-                            <li>
-                                <div class="b-b b m-v-sm"></div>
-                            </li>
-                            <li class="no-bg">
-                              <a>
-                              <span class="nav-icon"><i class="fa fa-clock-o"></i></span> 
-                              <span class="nav-text">
-                                  {{general.due_date}}
+                        </li>
+                        <li>
+                          <div class="b-b b m-v-sm"></div>
+                        </li>
+                        <li class="no-bg">
+                          <a>
+                            <span class="nav-icon"><i class="fa fa-clock-o"></i></span>
+                            <span class="nav-text">
+                              {{general.due_date}}
                               <small class="block text-muted">Deadline</small></span></a>
-                            </li>        
-                            <li>
-                                <div class="b-b b m-v-sm"></div>
-                            </li>
-                            <li class="no-bg"><a>
-                              <span class="nav-icon"><i class="fa fa-user"></i></span> 
-                              <span class="nav-text"><span id="manager"></span><small class="block text-muted">Project Manager</small></span></a>
-                            </li>        
-                            <li>
-                                <div class="b-b b m-v-sm"></div>
-                            </li>
-                            <li class="no-bg"><a>
-                              <span class="nav-icon"><i class="fa fa-indent"></i></span> 
-                              <span class="nav-text">{{general.project_price | currencyCommaformat}} USD<small class="block text-muted">Project Price</small></span></a>
-                            </li>
-                             <li>
-                                <div class="b-b b m-t-sm"></div>
-                             </li>
-                             
-                          </ul>
-                       </nav>
-                    </div>
+                        </li>
+                        <li>
+                          <div class="b-b b m-v-sm"></div>
+                        </li>
+                        <li class="no-bg"><a>
+                            <span class="nav-icon"><i class="fa fa-user"></i></span>
+                            <span class="nav-text"><span id="manager"></span><small class="block text-muted">Project
+                                Manager</small></span></a>
+                        </li>
+                        <li>
+                          <div class="b-b b m-v-sm"></div>
+                        </li>
+                        <li class="no-bg"><a>
+                            <span class="nav-icon"><i class="fa fa-indent"></i></span>
+                            <span class="nav-text">{{general.project_price | currencyCommaformat}} USD<small
+                                class="block text-muted">Project Price</small></span></a>
+                        </li>
+                        <li>
+                          <div class="b-b b m-t-sm"></div>
+                        </li>
+
+                      </ul>
+                    </nav>
                   </div>
                 </div>
-              </div>  
+              </div>
             </div>
           </div>
         </div>
-
       </div>
+
     </div>
   </div>
+</div>
