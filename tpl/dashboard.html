@@ -1984,144 +1984,136 @@ td { font-size: 11px; } */
                   </div>
                 </div>
               </div>
-              <div class="col-sm-3">
-                <div class="white_box overview-panel panel panel-default">
-                  <div class="panel-heading">
-                    <div class="clearfix">
-                      <div class="clear">
-                        <div class="h3" style="text-align: center">
-                          Overview
+              <div class="col-sm-3 rightBox-group">
+                <div class="box-group-head white_box h3" style="text-align: center">
+                  Overview
+                </div>
+                <div class="box">
+                  <div class="white_box panel panel-default">
+                    <div class="panel-heading">
+                      <div class="clearfix">
+                        <div class="clear">
+                          <div class="h4">Projects</div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="white_box panel panel-default">
-                  <div class="panel-heading">
-                    <div class="clearfix">
-                      <div class="clear">
-                        <div class="h4">Projects</div>
-                      </div>
+                    <div class="list-group no-radius alt">
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList('All')">
+                          All</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{headsUp}}</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList('headsUp')">Heads-up</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{projectInProgerss}}</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList('4')">In progress</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{DueDateTodayCount}}</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList()">Due today</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{DueDateTomorrowCount}}</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList()">Due tomorrow</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{overDueDateCount}}</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList()">Overdue</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">0</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList()">Deliverable</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{projectDilevered}}</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList()">Delivered</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">0</span><a href="javascript:void(0)"
+                          ng-click="goToProjectList()">Ready for invoice</a>
+                      </li>
                     </div>
                   </div>
-                  <div class="list-group no-radius alt">
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList('All')">
-                        All</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{headsUp}}</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList('headsUp')">Heads-up</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{projectInProgerss}}</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList('4')">In progress</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{DueDateTodayCount}}</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList()">Due today</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{DueDateTomorrowCount}}</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList()">Due tomorrow</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{overDueDateCount}}</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList()">Overdue</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">0</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList()">Deliverable</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{projectDilevered}}</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList()">Delivered</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">0</span><a href="javascript:void(0)"
-                        ng-click="goToProjectList()">Ready for invoice</a>
-                    </li>
-                  </div>
                 </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="white_box panel panel-default">
-                  <div class="panel-heading">
-                    <div class="clearfix">
-                      <div class="clear">
-                        <div class="h4">Jobs</div>
+                <div class="box">
+                  <div class="white_box panel panel-default">
+                    <div class="panel-heading">
+                      <div class="clearfix">
+                        <div class="clear">
+                          <div class="h4">Jobs</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="list-group no-radius alt">
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{jobRequestesCount}}</span><a href="javascript:void(0)"
-                        ng-click="goTojobsList('Requested',jobRequestesCount)">Requested</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{jobInProgressCount}}</span><a href="javascript:void(0)"
-                        ng-click="goTojobsList('inProgress',jobInProgressCount)">In progress</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{jobDueTodayCount}}</span><a href="javascript:void(0)"
-                        ng-click="goTojobsList('DueToday',jobDueTodayCount)">Due today</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{jobDueTomorrowCount}}</span><a href="javascript:void(0)"
-                        ng-click="goTojobsList('DueTomorrow',jobDueTomorrowCount)">Due tomorrow</a>
-                    </li>
-                    <li class="list-group-item">
-                      <span class="badge bg-info">{{jobOverDueCount}}</span><a href="javascript:void(0)"
-                        ng-click="goTojobsList('Overdue',jobOverDueCount)">Overdue</a>
-                    </li>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-3">
-                <div class="white_box panel panel-default">
-                  <div class="panel-heading">
-                    <div class="clearfix">
-                      <div class="clear">
-                        <div class="h4">National Holidays</div>
-                      </div>
+                    <div class="list-group no-radius alt">
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobRequestesCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('Requested',jobRequestesCount)">Requested</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobInProgressCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('inProgress',jobInProgressCount)">In progress</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobDueTodayCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('DueToday',jobDueTodayCount)">Due today</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobDueTomorrowCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('DueTomorrow',jobDueTomorrowCount)">Due tomorrow</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobOverDueCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('Overdue',jobOverDueCount)">Overdue</a>
+                      </li>
                     </div>
                   </div>
-                  <div class="panel-heading wrapper b-b b-light">
-                    <a><span class="holidayTab1" ng-click="holidayStatus('Upcoming')"
-                        style="padding: 11px">Upcoming</span></a>
-                    <a><span class="holidayTab2" ng-click="holidayStatus('Ongoing')"
-                        style="padding: 11px">Ongoing</span></a>
-                  </div>
-                  <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
-                    <li class="list-group-item" ng-hide="holidayShow" ng-repeat="upcome in upcommingList">
-                      <span ng-bind="upcome.date">28 Nov 2016</span> |
-                      <span class="pull-right label bg-primary inline m-t-sm" ng-bind="upcome.holidayStatus">National
-                        holiday</span>
-                      <span ng-bind="upcome.holidayName">Damon Parker</span>
-                    </li>
-                    <li class="list-group-item" ng-show="holidayShow" ng-repeat="ongoing in ongoingList">
-                      <span ng-bind="ongoing.date">28 Nov 2016</span> |
-                      <span class="pull-right label bg-primary inline m-t-sm" ng-bind="ongoing.holidayStatus">National
-                        holiday</span>
-                      <span href ng-bind="ongoing.holidayName">Damon Parker</span>
-                    </li>
-                    <md-progress-linear id="holidaysLoading" style="width: 50%; margin-left: 24%; margin-top: 48%"
-                      md-mode="indeterminate" class="m-b"></md-progress-linear>
-                    <span style="padding: 45px" ng-if="!upcommingList.length">No upcomming holiday</span>
-                    <!-- <li class="list-group-item" ng-hide="holidayShow" ng-if="!upcommingList.length">
-                      <span ng-bind="dataNotFound"></span>
-                    </li>
-                    <li class="list-group-item" ng-show="holidayShow" ng-if="!ongoingList.length">
-                      <span ng-bind="dataNotFound"></span>
-                    </li> -->
-                  </ul>
-                  <div class="panel-footer" style="background: #f7f8f8">
-                    <span class="pull-right badge bg-info" ng-hide="holidayShow" ng-bind="upLength">32</span>
-                    <span class="pull-right badge bg-info" ng-show="holidayShow" ng-bind="onLength">32</span>
-                    <span>&nbsp;</span>
+                </div>
+                <div class="box">
+                  <div class="white_box panel panel-default">
+                    <div class="panel-heading">
+                      <div class="clearfix">
+                        <div class="clear">
+                          <div class="h4">National Holidays</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel-heading wrapper b-b b-light">
+                      <a><span class="holidayTab1" ng-click="holidayStatus('Upcoming')"
+                          style="padding: 11px">Upcoming</span></a>
+                      <a><span class="holidayTab2" ng-click="holidayStatus('Ongoing')"
+                          style="padding: 11px">Ongoing</span></a>
+                    </div>
+                    <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
+                      <li class="list-group-item" ng-hide="holidayShow" ng-repeat="upcome in upcommingList">
+                        <span ng-bind="upcome.date">28 Nov 2016</span> |
+                        <span class="pull-right label bg-primary inline m-t-sm" ng-bind="upcome.holidayStatus">National
+                          holiday</span>
+                        <span ng-bind="upcome.holidayName">Damon Parker</span>
+                      </li>
+                      <li class="list-group-item" ng-show="holidayShow" ng-repeat="ongoing in ongoingList">
+                        <span ng-bind="ongoing.date">28 Nov 2016</span> |
+                        <span class="pull-right label bg-primary inline m-t-sm" ng-bind="ongoing.holidayStatus">National
+                          holiday</span>
+                        <span href ng-bind="ongoing.holidayName">Damon Parker</span>
+                      </li>
+                      <md-progress-linear id="holidaysLoading" style="width: 50%; margin-left: 24%; margin-top: 48%"
+                        md-mode="indeterminate" class="m-b"></md-progress-linear>
+                      <span style="padding: 45px" ng-if="!upcommingList.length">No upcomming holiday</span>
+                      <!-- <li class="list-group-item" ng-hide="holidayShow" ng-if="!upcommingList.length">
+                        <span ng-bind="dataNotFound"></span>
+                      </li>
+                      <li class="list-group-item" ng-show="holidayShow" ng-if="!ongoingList.length">
+                        <span ng-bind="dataNotFound"></span>
+                      </li> -->
+                    </ul>
+                    <div class="panel-footer" style="background: #e6e9ef">
+                      <span class="pull-right badge bg-info" ng-hide="holidayShow" ng-bind="upLength">32</span>
+                      <span class="pull-right badge bg-info" ng-show="holidayShow" ng-bind="onLength">32</span>
+                      <span>&nbsp;</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2367,11 +2359,12 @@ td { font-size: 11px; } */
           </div>
         </div>
 
+        <!-- footer copy right -->
+        <div data-ng-include="'tpl/copyRight.html'"></div>
       </div>
 
-       <!-- footer copy right -->
-    <div data-ng-include="'tpl/copyRight.html'"></div>
-    </div>
+       
+      </div>
    
 
   </div>
