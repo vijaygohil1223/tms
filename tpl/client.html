@@ -6,9 +6,9 @@
     <div flex layout="column">
       <div ui-butterbar></div>
       <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside" ></a>
-      <div class="md-content">
+      <div class="md-content page_content_wrapper">
       
-      <div class="bg-light lter b-b wrapper-md ng-scope">
+      <div class="content_head bg-light lter b-b wrapper-md ng-scope">
             <a href="javascript:void(0);" ng-click="adddClient('1')" style="font-size:14px;" class="btn btn-info pull-right btn-sm" ng-show="btn_client"> Add Client</a>
             
            <a href="javascript:void(0)" ng-click="adddClient('2')" style="font-size:14px;" class="btn btn-info pull-right btn-sm" ng-hide="btn_client"> Add Account</a>
@@ -82,9 +82,9 @@
           </div>
         </div>
 
-
       </div>
       <!-- footer copy right -->
-<div data-ng-include="'tpl/copyRight.html'"></div>
+      <div class="wrapper-md m-t-n-xl" data-ng-include="'tpl/copyRight.html'"></div>
+
     </div>
   </div>

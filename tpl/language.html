@@ -1,13 +1,15 @@
-<div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' ">
+<div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
+    data-ng-include=" 'tpl/material.header.html' ">
 </div>
 <div layout="row">
-    <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs" data-ng-include=" 'tpl/material.aside.html' ">
+    <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs"
+        data-ng-include=" 'tpl/material.aside.html' ">
     </div>
     <div flex layout="column">
         <div ui-butterbar></div>
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
-        <div class="md-content" id="top">
-            <div class="bg-light lter b-b wrapper-md ng-scope">
+        <div class="md-content page_content_wrapper" id="top">
+            <div class="content_head bg-light lter b-b wrapper-md ng-scope">
                 <h1 class="m-n font-thin h3">Languages</h1>
             </div>
             <div class="wrapper-md ng-scope">
@@ -58,7 +60,8 @@
                         </tbody>
                     </table>
                 </div>
-                <md-progress-linear id="tblDataLoading" style="display:block;width:36%;margin-left: 25%;" md-mode="indeterminate" class="m-b"></md-progress-linear>
+                <md-progress-linear id="tblDataLoading" style="display:block;width:36%;margin-left: 25%;"
+                    md-mode="indeterminate" class="m-b"></md-progress-linear>
                 <!-- <div class="panel panel-default">
             <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
               <thead>
@@ -82,8 +85,9 @@
                                         </tbody>
             </table>
           </div> -->
+                <!-- footer copy right -->
+                <div data-ng-include="'tpl/copyRight.html'"></div>
+
             </div>
-            <!-- footer copy right -->
-            <div data-ng-include="'tpl/copyRight.html'"></div>
         </div>
     </div>

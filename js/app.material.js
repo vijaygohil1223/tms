@@ -90,7 +90,6 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
         })
 
     // ------------------- client profile ------------------------//
-
     .when('/client/:id', {
         templateUrl: modulesPath + 'client.html',
         controller: 'clientController',

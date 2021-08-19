@@ -26,8 +26,8 @@ $('#priceUnit').css('display', 'block');
     <div flex layout="column">
         <div ui-butterbar></div>
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside" ></a>
-        <div class="md-content">
-            <div class="bg-light lter b-b wrapper-md ng-scope">
+        <div class="md-content page_content_wrapper">
+            <div class="content_head bg-light lter b-b wrapper-md ng-scope">
                 <h1 class="m-n font-thin h3 hleft">{{currentUserName}}</h1>
                 <a href="javascript:history.back()" style="margin-top: -4px !important;" class="btn btn-info pull-right btn-sm"><span class="fa fa-arrow-left"></span> Back</a>
                 <div class="hrght1">
@@ -631,13 +631,13 @@ $('#priceUnit').css('display', 'block');
 
         </div>
 
+      <!-- footer copy right -->
+
+      <div data-ng-include="'tpl/copyRight.html'"></div>
 
 
       </div>
 
-      <!-- footer copy right -->
-
-<div data-ng-include="'tpl/copyRight.html'"></div>
 
     </div>
 
