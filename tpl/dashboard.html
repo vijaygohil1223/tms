@@ -473,7 +473,7 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsDueToday">
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                   {{order.orderNumber}}
                                 </a>
@@ -482,7 +482,7 @@ td { font-size: 11px; } */
                                     class="label bg-light">{{order.ponumber}}</span>
                                 </small>
                               </td>
-                              <td style="">
+                              <td>
                                 <article class="media">
                                   <span class="customerthumb pull-left thumb-sm"
                                     ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
@@ -510,7 +510,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </article>
                               </td>
-                              <td style="">
+                              <td>
                                 <div class="langtd" ng-if="order.items[0]">
                                   <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
                                       alt="..." /></span>
@@ -536,8 +536,8 @@ td { font-size: 11px; } */
                                   <span class="badge bg-warning">Linguist</span>
                                 </div>
                               </td>
-                              <td style="">{{order.pm_name}}</td>
-                              <!-- <td style="">
+                              <td>{{order.pm_name}}</td>
+                              <!-- <td>
                             Linguist</td> -->
                               <td>
                                 <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
@@ -574,7 +574,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </span>
                               </td>
-                              <td style="">
+                              <td>
                                 <span ng-if="order.progrss_precentage < 0 ">-</span>
                                 <div class="inline" ng-if="order.progrss_precentage >= 0">
                                   <div ui-jq="easyPieChart" ui-options="{
@@ -600,21 +600,21 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td style="">
+                              <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.projectstatus_name}}</span>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
                                   currencyCommaformat}}
                                   USD</span>
                               </td>
-                              <!-- <td style="">
+                              <!-- <td>
                               {{order.ponumber}}
                             </td> -->
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
@@ -650,7 +650,7 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsAssigned">
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                   {{order.orderNumber}}
                                 </a>
@@ -659,7 +659,7 @@ td { font-size: 11px; } */
                                     class="label bg-light">{{order.ponumber}}</span>
                                 </small>
                               </td>
-                              <td style="">
+                              <td>
                                 <article class="media">
                                   <span class="customerthumb pull-left thumb-sm"
                                     ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
@@ -687,7 +687,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </article>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <div ng-repeat="item in order.items">
                                 <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
                                 </span>
@@ -717,8 +717,8 @@ td { font-size: 11px; } */
                                   <span class="badge bg-warning">Linguist</span>
                                 </div>
                               </td>
-                              <td style="">{{order.pm_name}}</td>
-                              <!-- <td style="">
+                              <td>{{order.pm_name}}</td>
+                              <!-- <td>
                               Linguist</td> -->
                               <td>
                                 <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
@@ -755,7 +755,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </span>
                               </td>
-                              <td style="">
+                              <td>
                                 <span ng-if="order.progrss_precentage < 0 ">-</span>
                                 <div class="inline" ng-if="order.progrss_precentage >= 0">
                                   <div ui-jq="easyPieChart" ui-options="{
@@ -781,27 +781,27 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td style="">
+                              <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.projectstatus_name}}</span>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
                                   currencyCommaformat}}
                                   USD</span>
                               </td>
-                              <!-- <td style="">
+                              <!-- <td>
                                 {{order.ponumber}}
                               </td> -->
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x  cmtclr{{order.orderId}}"></i>
                                 </a>
                               </td>
-                              <!-- <td style="">
+                              <!-- <td>
                                 <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
                               </td> -->
                             </tr>
@@ -834,7 +834,7 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsInProgress">
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                   {{order.orderNumber}}
                                 </a>
@@ -843,7 +843,7 @@ td { font-size: 11px; } */
                                     class="label bg-light">{{order.ponumber}}</span>
                                 </small>
                               </td>
-                              <td style="">
+                              <td>
                                 <article class="media">
                                   <span class="customerthumb pull-left thumb-sm"
                                     ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
@@ -871,7 +871,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </article>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <div ng-repeat="item in order.items">
                                   <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
                                   </span>
@@ -901,8 +901,8 @@ td { font-size: 11px; } */
                                   <span class="badge bg-warning">Linguist</span>
                                 </div>
                               </td>
-                              <td style="">{{order.pm_name}}</td>
-                              <!-- <td style="">
+                              <td>{{order.pm_name}}</td>
+                              <!-- <td>
                                 Linguist</td> -->
                               <td>
                                 <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
@@ -939,7 +939,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </span>
                               </td>
-                              <td style="">
+                              <td>
                                 <span ng-if="order.progrss_precentage < 0 ">-</span>
                                 <div class="inline" ng-if="order.progrss_precentage >= 0">
                                   <div ui-jq="easyPieChart" ui-options="{
@@ -965,21 +965,21 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td style="">
+                              <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.projectstatus_name}}</span>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
                                   currencyCommaformat}}
                                   USD</span>
                               </td>
-                              <!-- <td style="">
+                              <!-- <td>
                                   {{order.ponumber}}
                                 </td> -->
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
@@ -1014,7 +1014,7 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsQaready">
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                   {{order.orderNumber}}
                                 </a>
@@ -1023,7 +1023,7 @@ td { font-size: 11px; } */
                                     class="label bg-light">{{order.ponumber}}</span>
                                 </small>
                               </td>
-                              <td style="">
+                              <td>
                                 <article class="media">
                                   <span class="customerthumb pull-left thumb-sm"
                                     ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
@@ -1051,7 +1051,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </article>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <div ng-repeat="item in order.items">
                                     <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
                                     </span>
@@ -1081,8 +1081,8 @@ td { font-size: 11px; } */
                                   <span class="badge bg-warning">Linguist</span>
                                 </div>
                               </td>
-                              <td style="">{{order.pm_name}}</td>
-                              <!-- <td style="">
+                              <td>{{order.pm_name}}</td>
+                              <!-- <td>
                                   Linguist</td> -->
                               <td>
                                 <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
@@ -1119,7 +1119,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </span>
                               </td>
-                              <td style="">
+                              <td>
                                 <span ng-if="order.progrss_precentage < 0 ">-</span>
                                 <div class="inline" ng-if="order.progrss_precentage >= 0">
                                   <div ui-jq="easyPieChart" ui-options="{
@@ -1145,21 +1145,21 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td style="">
+                              <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.projectstatus_name}}</span>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
                                   currencyCommaformat}}
                                   USD</span>
                               </td>
-                              <!-- <td style="">
+                              <!-- <td>
                                     {{order.ponumber}}
                                   </td> -->
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
@@ -1194,7 +1194,7 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsToBeDelivered">
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                   {{order.orderNumber}}
                                 </a>
@@ -1203,7 +1203,7 @@ td { font-size: 11px; } */
                                     class="label bg-light">{{order.ponumber}}</span>
                                 </small>
                               </td>
-                              <td style="">
+                              <td>
                                 <article class="media">
                                   <span class="customerthumb pull-left thumb-sm"
                                     ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
@@ -1231,7 +1231,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </article>
                               </td>
-                              <td style="">
+                              <td>
                                 <div class="langtd" ng-if="order.items[0]">
                                   <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
                                       alt="..." /></span>
@@ -1257,8 +1257,8 @@ td { font-size: 11px; } */
                                   <span class="badge bg-warning">Linguist</span>
                                 </div>
                               </td>
-                              <td style="">{{order.pm_name}}</td>
-                              <!-- <td style="">
+                              <td>{{order.pm_name}}</td>
+                              <!-- <td>
                                     Linguist</td> -->
                               <td>
                                 <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
@@ -1295,7 +1295,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </span>
                               </td>
-                              <td style="">
+                              <td>
                                 <span ng-if="order.progrss_precentage < 0 ">-</span>
                                 <div class="inline" ng-if="order.progrss_precentage >= 0">
                                   <div ui-jq="easyPieChart" ui-options="{
@@ -1321,21 +1321,21 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td style="">
+                              <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.projectstatus_name}}</span>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
                                   currencyCommaformat}}
                                   USD</span>
                               </td>
-                              <!-- <td style="">
+                              <!-- <td>
                                       {{order.ponumber}}
                                     </td> -->
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
@@ -1371,7 +1371,7 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsDueTomorrow">
-                              <td style="">
+                              <td>
                                 <a ng-click="goToProjectViewdetail(order.orderId)">
                                   {{order.orderNumber}}
                                 </a>
@@ -1380,7 +1380,7 @@ td { font-size: 11px; } */
                                     class="label bg-light">{{order.ponumber}}</span>
                                 </small>
                               </td>
-                              <td style="">
+                              <td>
                                 <article class="media">
                                   <span class="customerthumb pull-left thumb-sm"
                                     ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
@@ -1408,7 +1408,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </article>
                               </td>
-                              <td style="">
+                              <td>
                                 <div class="langtd" ng-if="order.items[0]">
                                   <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
                                       alt="..." /></span>
@@ -1434,8 +1434,8 @@ td { font-size: 11px; } */
                                   <span class="badge bg-warning">Linguist</span>
                                 </div>
                               </td>
-                              <td style="">{{order.pm_name}}</td>
-                              <!-- <td style="">
+                              <td>{{order.pm_name}}</td>
+                              <!-- <td>
                                       Linguist</td> -->
                               <td>
                                 <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
@@ -1472,7 +1472,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </span>
                               </td>
-                              <td style="">
+                              <td>
                                 <span ng-if="order.progrss_precentage < 0 ">-</span>
                                 <div class="inline" ng-if="order.progrss_precentage >= 0">
                                   <div ui-jq="easyPieChart" ui-options="{
@@ -1498,21 +1498,21 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td style="">
+                              <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.projectstatus_name}}</span>
                               </td>
-                              <td style="">
+                              <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
                                   currencyCommaformat}}
                                   USD</span>
                               </td>
-                              <!-- <td style="">
+                              <!-- <td>
                                         {{order.ponumber}}
                                       </td> -->
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
@@ -1547,7 +1547,7 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsAll">
-                              <td style="">
+                              <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
                                   {{order.orderNumber}}
                                 </a>
@@ -1556,7 +1556,7 @@ td { font-size: 11px; } */
                                     class="label bg-light">{{order.ponumber}}</span>
                                 </small>
                               </td>
-                              <td style="">
+                              <td>
                                 <article class="media">
                                   <span class="customerthumb pull-left thumb-sm"
                                     ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
@@ -2359,10 +2359,11 @@ td { font-size: 11px; } */
           </div>
         </div>
 
-        <!-- footer copy right -->
-        <div data-ng-include="'tpl/copyRight.html'"></div>
+        
       </div>
-
+      
+      <!-- footer copy right -->
+      <div class="wrapper-md m-t-n-xl" data-ng-include="'tpl/copyRight.html'"></div>
        
       </div>
    
