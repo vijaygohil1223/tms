@@ -228,6 +228,31 @@
   .emojionearea.emojionearea-inline {
     height: auto;
   }
+/* date seperator */
+.seperatordate {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.seperatordate::before,
+.seperatordate::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #b4b6b9;
+}
+.seperatordate:not(:empty)::before {
+  margin-right: .25em;
+}
+
+.seperatordate:not(:empty)::after {
+  margin-left: .25em;
+}
+li.seperatordate.comment {
+    width: 100% !important;
+    margin: 0 0 20px 0 !important;
+    max-width: initial !important;
+    color: #b4b6b9 !important;
+}
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
   data-ng-include=" 'tpl/material.header.html' ">
@@ -249,10 +274,10 @@
           <span>{{indirectCustomerName}}</span>
         </h1> -->
       </div>
-      <div class="wrapper-md ng-scope">
+      <div class="wrapper-md ng-scope content_head">
 
         <div class="panel panel-default" style="margin-top:1%">
-          <div class="panel-heading font-bold">
+          <div class="panel-heading font-bold content_head">
             <h4>Discussion Board</h4>
           </div>
           <div class="panel-body">

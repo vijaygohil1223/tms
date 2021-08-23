@@ -1031,6 +1031,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     };
 
+    $scope.jobDiscussion = (orderId) => {
+        $location.path('discussion/' + orderId);
+    }
+
     $scope.getJobList();
     //$scope.getAllProjects();
 
@@ -15705,20 +15709,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     var ndt = new Date(data[i].created);
                     var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-        ;
                     var dd = ("0" + ndt.getDate() ).slice(-2);
                     var yy = ndt.getFullYear();
                     var timeText = dd + '-' + mm + '-' + yy;
+                    var dateSeprt = dd + '-' + mm + '-' + yy;
 
-                    if(i>0){
+                    const todayDate = new Date();
+                    if(ndt.getDate() == todayDate.getDate() &&
+                    ndt.getMonth() == todayDate.getMonth() &&
+                    ndt.getFullYear() == todayDate.getFullYear()){
+                        $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                        var timeText = 'Today';
+                    }    
+
+                    if(i>0){    
                         var ndt = new Date(data[i-1].created);
                         var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-            ;
                         var dd = ("0" + ndt.getDate() ).slice(-2);
                         var yy = ndt.getFullYear();
-                        var timeText2 = dd + '-' + mm + '-' + yy;
-                        //if(timeText != timeText2)
-                        //$('li[data-id=' + dataId + ']').find('.comment-wrapper').before('<div style="color:green;"><p>-----'+ timeText +'-----</p></div>');
+                        var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                        if(dateSeprt != dateSeprt2){
+                            //$('<li style="color:green;" class="seperatordate" new-id=' + dataId + '>'+ timeText +'</li>').insertBefore('li[data-id=' + dataId + ']');
+                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> '+ timeText +' </li>');
+                            //$('li[data-id=' + dataId + ']').prepend('<li style="color:green;" class="seperatordate" >'+ timeText +'</li>');
+                        }
+                    }else{
+                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> '+ timeText +' </li>');
                     }
                     var msgRead_id = val.read_id;
                     if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
@@ -15744,7 +15760,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$(this).find('time')[0].append("testing");
                 });
 
-            }, 1500);
+            }, 1000);
             commentsArray = data;
             console.log('commentsArray',commentsArray);
         }).error(errorCallback);
@@ -15873,7 +15889,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                 jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-            }, 500);
+                $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
+
+            }, 1000);
         },
         searchUsers: function (term, success, error) {
             setTimeout(function () {

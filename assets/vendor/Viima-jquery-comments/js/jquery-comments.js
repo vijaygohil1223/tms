@@ -553,6 +553,7 @@
                     // and there's no content besides the attachment
                     if(commentArray.length == fileCount && self.getTextareaContent(textarea).length == 0) {
                         commentingField.find('.close').trigger('click');
+
                     }
 
                     // Enable upload button and remove spinners
@@ -638,12 +639,19 @@
                         //console.log('file_response_time',file_response_time);
                         commentJSON = self.applyExternalMappings(commentJSON);
                         commentArray.push(commentJSON); 
-                        file_no++;   
+                        file_no++;
+                            
                         if(file_no==fileCount){
                             self.options.uploadAttachments(commentArray, success, error);
                         }
                         setTimeout(function() {
-                           $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                            $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                            // add date seperator line for particular day 
+                            if($("#dtseperator").length == 0) {
+                                $('#comment-list').find(' > li[data-id=' + commentJSON.id + ']').before('<li class="seperatordate comment" new-id=' + commentJSON.id + '> Today </li>');
+                                $('li[data-id=' + commentJSON.id + ']').prepend('<div id="dtseperator"></div>');
+                            } 
+
                         },2000);
 
                      });
@@ -759,10 +767,16 @@
             // Get main level comments
             var mainLevelComments = this.getComments().filter(function(commentModel){return !commentModel.parent});
             this.sortComments(mainLevelComments, sortKey);
-
             // Rearrange the main level comments
             $(mainLevelComments).each(function(index, commentModel) {
                 var commentEl = commentList.find('> li.comment[data-id='+commentModel.id+']');
+                var commentEl2 = commentList.find('> li.comment[new-id='+commentModel.id+']');
+                // setTimeout( function(){
+                //     var text = commentList.find('> li.comment[new-id='+commentModel.id+']').text();
+                
+                //     console.log('newdate',text);
+                // },100);
+                commentList.append(commentEl2);
                 commentList.append(commentEl);
             });
         },
@@ -963,6 +977,12 @@
             var success = function(commentJSON) {
                 self.createComment(commentJSON);
                 commentingField.find('.close').trigger('click');
+                // to add date seperator
+                if($("#dtseperator").length == 0) {
+                    $('#comment-list').find(' > li[data-id=' + commentJSON.id + ']').before('<li class="seperatordate comment" new-id=' + commentJSON.id + '> Today </li>');
+                    $('li[data-id=' + commentJSON.id + ']').prepend('<div id="dtseperator"></div>');
+                }
+
             };
 
             var error = function() {
@@ -1374,7 +1394,7 @@
                     'class': 'fa fa-user'
                 });
             }
-            profilePicture.addClass('profile-picture');
+            profilePicture.addClass('profile-picture userprof');
             if(this.options.roundProfilePictures) profilePicture.addClass('round');
             return profilePicture;
         },
@@ -1785,6 +1805,30 @@
 
             // Comment wrapper
             var commentWrapper = this.createCommentWrapperElement(commentModel);
+            
+            //commentEl.prepend('<li style="color:blue">'+commentModel.created+'</li>');
+            //$('<li style="color:blue;" class="comment by-current-user pull-right cmtright">'+ commentModel.created +'</li>').insertBefore('li[data-id=' + commentModel.id + ']');
+            const todayDate = new Date();
+            var newDate = new Date(commentModel.created);
+                
+            if(newDate.getDate() == todayDate.getDate() &&
+            newDate.getMonth() == todayDate.getMonth() &&
+            newDate.getFullYear() == todayDate.getFullYear()){
+                //console.log('commentModel',commentModel.created);
+                //$('li[new-id=' + commentModel.id + ']').prepend('<li style="color:blue">'+commentModel.created+'</li>');
+                setTimeout( function(){
+                    var seperateDate = jQuery('li[new-id=' + commentModel.id + ']').text();
+                    var mm = ("0" + (todayDate.getMonth() + 1)).slice(-2);
+                    var dd = ("0" + todayDate.getDate() ).slice(-2);
+                    var checktoday = dd + '-' + mm + '-' + todayDate.getFullYear();
+                    if(checktoday == seperateDate){
+                        //$('li[data-id=' + commentModel.id + ']').prepend('<div style="color:blue" id="dtseperator"></div>');
+                    }
+        
+                },100);
+            }
+                
+            
 
             commentEl.append(commentWrapper);
             if(commentModel.parent == null) commentEl.append(childComments);
@@ -1805,7 +1849,8 @@
 
             var dd = ("0" + ndt.getDate() ).slice(-2);
             var yy = ndt.getFullYear();
-            var timeText = dd + '-' + mm + '-' + yy;
+            //var timeText = dd + '-' + mm + '-' + yy;
+            var timeText = ndt.getHours()+ ':' + ndt.getMinutes();
             var time = $('<time/>', {
                 text: timeText,
                 //text: this.options.timeFormatter(commentModel.created),
@@ -2056,6 +2101,7 @@
             var commentElements = this.$el.find('li.comment[data-id="'+commentModel.id+'"]');
 
             var self = this;
+            
             commentElements.each(function(index, commentEl) {
                 var commentWrapper = self.createCommentWrapperElement(commentModel);
                 $(commentEl).find('.comment-wrapper').first().replaceWith(commentWrapper);
