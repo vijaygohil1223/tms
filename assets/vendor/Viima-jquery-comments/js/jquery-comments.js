@@ -1796,7 +1796,7 @@
                 'class': 'comment'
             }).data('model', commentModel);
 
-            if(commentModel.createdByCurrentUser) commentEl.addClass('by-current-user');
+            if(commentModel.createdByCurrentUser) commentEl.addClass('by-current-user pull-right cmtright');
             if(commentModel.createdByAdmin) commentEl.addClass('by-admin');
 
             // Child comments
