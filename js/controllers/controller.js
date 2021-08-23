@@ -15890,7 +15890,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                 jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
-
             }, 1000);
         },
         searchUsers: function (term, success, error) {

@@ -650,8 +650,8 @@
                             if($("#dtseperator").length == 0) {
                                 $('#comment-list').find(' > li[data-id=' + commentJSON.id + ']').before('<li class="seperatordate comment" new-id=' + commentJSON.id + '> Today </li>');
                                 $('li[data-id=' + commentJSON.id + ']').prepend('<div id="dtseperator"></div>');
-                            } 
-
+                            }
+                            $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
                         },2000);
 
                      });
@@ -982,6 +982,7 @@
                     $('#comment-list').find(' > li[data-id=' + commentJSON.id + ']').before('<li class="seperatordate comment" new-id=' + commentJSON.id + '> Today </li>');
                     $('li[data-id=' + commentJSON.id + ']').prepend('<div id="dtseperator"></div>');
                 }
+                $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
 
             };
 
