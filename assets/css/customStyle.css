@@ -155,7 +155,8 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .jquery-comments ul.main li.comment .profile-picture{width: 22px; height: 22px; max-width: unset; max-height: unset;}
 .jquery-comments ul.main li.comment.pull-right time{top: -17px !important; right: 40px; color: #b4b6b9; font-size: 11px; margin: 0 !important;}
 .jquery-comments ul.main li.comment.pull-left time{top: -17px !important; color: #b4b6b9; margin-top: 0 !important;}
-.livemsg .name{min-width: auto !important; font-size: 13px; right: 45px; display: none;}
+.livemsg .name{min-width: auto !important; font-size: 13px; right: 45px;}
+.livemsg .usrname{display: none;}
 .livemsg .pull-left .name{display: block; color: #b4b6b9 !important; top: -17px !important; font-size: 12px; margin: 0;}
 
 .jquery-comments .textarea-wrapper .control-row > span.upload{background-color: #8e99a8;}

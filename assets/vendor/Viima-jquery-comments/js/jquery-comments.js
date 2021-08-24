@@ -1860,7 +1860,10 @@
             // Name
             var nameText = commentModel.createdByCurrentUser ? commentModel.fullname : this.options.textFormatter(this.options.youText);
             var name = $('<div/>', {
-                'class': 'name'
+                'class': 'name usrname'
+            });
+            var nameSpan = $('<span/>', {
+                'class': 'usrnamespan'
             });
             if(commentModel.profileURL) {
                 var link = $('<a/>', {
@@ -1869,9 +1872,9 @@
                 });
                 name.html(link);
             } else {
-                name.text(nameText);
+                nameSpan.text(nameText);
             }
-
+            //name.prepend(nameSpan);
             // Highlight name for own comments and admin
             if(commentModel.createdByCurrentUser || commentModel.createdByAdmin) name.addClass('highlight-font-bold');
 
@@ -2073,7 +2076,10 @@
 
             wrapper.append(content);
             wrapper.append(actions);
-            commentWrapper.append(profilePicture).append(time).append(name).append(wrapper);
+            //commentWrapper.append(profilePicture).append(time).append(name).append(wrapper);
+            timeName = name.prepend(nameSpan);
+            var newname = timeName.append(time);
+            commentWrapper.append(profilePicture).append(newname).append(wrapper);
             return commentWrapper;
         },
 
