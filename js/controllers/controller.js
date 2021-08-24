@@ -15691,6 +15691,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     if (val.user_id == loginid) {
                         $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                        $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+
                         if (val.content == '' || val.content == null) {
                             $('li[data-id=' + dataId + ']').find('.content').html(filedata);
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
@@ -15705,36 +15707,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('li[data-id=' + dataId + ']').find('.content').html(filedata);
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }
-                    }   
+                    }
 
                     var ndt = new Date(data[i].created);
                     var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                    var dd = ("0" + ndt.getDate() ).slice(-2);
+                    var dd = ("0" + ndt.getDate()).slice(-2);
                     var yy = ndt.getFullYear();
                     var timeText = dd + '-' + mm + '-' + yy;
                     var dateSeprt = dd + '-' + mm + '-' + yy;
 
                     const todayDate = new Date();
-                    if(ndt.getDate() == todayDate.getDate() &&
-                    ndt.getMonth() == todayDate.getMonth() &&
-                    ndt.getFullYear() == todayDate.getFullYear()){
+                    if (ndt.getDate() == todayDate.getDate() &&
+                        ndt.getMonth() == todayDate.getMonth() &&
+                        ndt.getFullYear() == todayDate.getFullYear()) {
                         $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
                         var timeText = 'Today';
-                    }    
+                    }
 
-                    if(i>0){    
-                        var ndt = new Date(data[i-1].created);
+                    if (i > 0) {
+                        var ndt = new Date(data[i - 1].created);
                         var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                        var dd = ("0" + ndt.getDate() ).slice(-2);
+                        var dd = ("0" + ndt.getDate()).slice(-2);
                         var yy = ndt.getFullYear();
                         var dateSeprt2 = dd + '-' + mm + '-' + yy;
-                        if(dateSeprt != dateSeprt2){
+                        if (dateSeprt != dateSeprt2) {
                             //$('<li style="color:green;" class="seperatordate" new-id=' + dataId + '>'+ timeText +'</li>').insertBefore('li[data-id=' + dataId + ']');
-                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> '+ timeText +' </li>');
+                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> ' + timeText + ' </li>');
                             //$('li[data-id=' + dataId + ']').prepend('<li style="color:green;" class="seperatordate" >'+ timeText +'</li>');
                         }
-                    }else{
-                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> '+ timeText +' </li>');
+                    } else {
+                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> ' + timeText + ' </li>');
                     }
                     var msgRead_id = val.read_id;
                     if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
@@ -15760,9 +15762,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$(this).find('time')[0].append("testing");
                 });
 
-            }, 1000);
+            }, 1500);
             commentsArray = data;
-            console.log('commentsArray',commentsArray);
+            console.log('commentsArray', commentsArray);
         }).error(errorCallback);
     }
 
@@ -15771,20 +15773,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.usersArray = [];
         rest.path = "users";
         //$timeout(function () {
-            rest.get().success(function (data) {
-                // console.log("datadata",data);
-                angular.forEach(data.data, function (val, i) {
-                    var uObj = {
-                        id: val.iUserId,
-                        fullname: val.vUserName,
-                        email: val.vEmailAddress,
-                        profile_picture_url: "uploads/profilePic/user-icon.png"
-                    }
-                    $scope.usersArray.push(uObj);
-                });
+        rest.get().success(function (data) {
+            // console.log("datadata",data);
+            angular.forEach(data.data, function (val, i) {
+                var uObj = {
+                    id: val.iUserId,
+                    fullname: val.vUserName,
+                    email: val.vEmailAddress,
+                    profile_picture_url: "uploads/profilePic/user-icon.png"
+                }
+                $scope.usersArray.push(uObj);
+            });
 
-            }).error(errorCallback);
-            // console.log('discussion-usersArray',$scope.usersArray);
+        }).error(errorCallback);
+        // console.log('discussion-usersArray',$scope.usersArray);
         //}, 100);
         // emoji text
         $scope.emojitext = [];
@@ -15873,6 +15875,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $('.textarea').append(emoji);
         });
 
+        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+
+    }, 3000);
+
+    $timeout(function () {
+        var el = $("#addemoji").emojioneArea();
+
+        el[0].emojioneArea.on("emojibtn.click", function () {
+            const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+            const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+            $('.textarea').append(emoji);
+        });
+
+        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+
     }, 3000);
 
     var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
@@ -15887,10 +15906,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $timeout(function () {
                 success(commentsArray);
                 $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-                $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
-            }, 1000);
+                //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
+                $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
+
+            }, 1500);
         },
         searchUsers: function (term, success, error) {
             setTimeout(function () {
@@ -21911,7 +21932,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
 
             }).error(errorCallback);
-            console.log('$scope.usersArray',$scope.usersArray);
+            console.log('$scope.usersArray', $scope.usersArray);
         }, 200);
         // emoji text
         $scope.emojitext = [];

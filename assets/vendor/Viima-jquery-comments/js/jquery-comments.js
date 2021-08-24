@@ -983,7 +983,8 @@
                     $('li[data-id=' + commentJSON.id + ']').prepend('<div id="dtseperator"></div>');
                 }
                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
-
+                $('li[data-id=' + commentJSON.id + ']').find('.usrnamespan').addClass('hideusername');
+                
             };
 
             var error = function() {
@@ -1859,11 +1860,16 @@
             });
             // Name
             var nameText = commentModel.createdByCurrentUser ? commentModel.fullname : this.options.textFormatter(this.options.youText);
+            var nameTextNew = nameText;
+            if(nameText){
+               var nameTextNew =  (nameText.length >=15) ? nameText.substring(0, 14) + '...' : nameText;
+            }
             var name = $('<div/>', {
                 'class': 'name usrname'
             });
             var nameSpan = $('<span/>', {
-                'class': 'usrnamespan'
+                'class': 'usrnamespan',
+                'title': nameText
             });
             if(commentModel.profileURL) {
                 var link = $('<a/>', {
@@ -1872,7 +1878,8 @@
                 });
                 name.html(link);
             } else {
-                nameSpan.text(nameText);
+                //nameSpan.text(nameText);
+                nameSpan.text(nameTextNew);
             }
             //name.prepend(nameSpan);
             // Highlight name for own comments and admin
@@ -2077,9 +2084,9 @@
             wrapper.append(content);
             wrapper.append(actions);
             //commentWrapper.append(profilePicture).append(time).append(name).append(wrapper);
-            timeName = name.prepend(nameSpan);
-            var newname = timeName.append(time);
-            commentWrapper.append(profilePicture).append(newname).append(wrapper);
+            var newName = name.prepend(nameSpan);
+            var timeName = newName.append(time);
+            commentWrapper.append(profilePicture).append(timeName).append(wrapper);
             return commentWrapper;
         },
 
