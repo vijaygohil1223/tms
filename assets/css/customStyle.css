@@ -160,10 +160,12 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page ul.main li.comment.pull-left .wrapper{background: #e6e9ef !important; margin-right: 0 !important; margin-left: 40px !important;}
 .discussion_page ul.main li.comment.pull-left time{top: -17px !important; color: #b4b6b9; margin-top: 0 !important;}
 .discussion_page .livemsg .name{min-width: auto !important; font-size: 13px; right: 45px;}
-.discussion_page .livemsg .usrname{display: none;}
-.discussion_page .livemsg .pull-left .name{display: block; color: #b4b6b9 !important; top: -17px !important; font-size: 12px; margin: 0;}
+
+.discussion_page .livemsg .usrname .usrnamespan{display: none;}
+.discussion_page .livemsg .pull-left .usrname{left: 40px; right: unset;}
+.discussion_page .livemsg .pull-left .usrname .usrnamespan{display: block; color: #b4b6b9 !important; top: -17px !important; font-size: 12px; margin: 0;}
 .discussion_page ul.main li.comment .usrname{display: flex; align-items: center; top: -20px; right: 40px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-.discussion_page ul.main li.comment .usrname time{position: unset !important; margin-left: 10px !important;}
+.discussion_page ul.main li.comment .usrname time{position: unset !important; margin-left: 7px !important;}
 
 /* Seprator */
 .discussion_page .seperatordate{font-size: 12px;}
@@ -182,6 +184,6 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 
 /* statusBox */
 .discussion_page .statusBox .navside a{color: #58666E; padding: 15px; cursor: auto;}
-.discussion_page .statusBox .navside .nav-text .projstatus{display: inline-flex; align-items: center; color: #008989; padding: 5px 10px; margin: 0; border: 1px solid #008989; border-radius: 0px 15px 15px 15px; white-space: nowrap;}
+.discussion_page .statusBox .navside .nav-text .projstatus{display: inline-flex; align-items: center; color: #008989; padding: 5px 13px; margin: 0; border: 1px solid #008989; border-radius: 0px 15px 15px 15px; white-space: nowrap;}
 .discussion_page .statusBox .navside .nav-text .projstatus .fa-circle{font-size: 9px; margin-right: 5px;}
 .discussion_page .statusBox .navside .b-b{border-bottom: 1px solid #e6e6e6;}
