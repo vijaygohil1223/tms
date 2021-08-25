@@ -521,6 +521,39 @@ function fileUrlExists(url) {
     http.send();
     return http.status != 404;
 }
+// date format for comment
+function commentDateToformat(nwdate, dtseperator = '-') {
+    var d = new Date(nwdate);
+    var mm = (d.getMonth() + 1);
+    var dd = d.getDate();
+    var yr = d.getFullYear();
+    return dd + dtseperator + mm + dtseperator + yr
+}
+// date format for comment datetime text
+function commentDatetimeToText(ndate, dtseperator = '-') {
+
+    var todayDate = new Date();
+    var mm = ("0" + (todayDate.getMonth() + 1)).slice(-2);
+    var dd = ("0" + todayDate.getDate()).slice(-2);
+    var yr = todayDate.getFullYear();
+    var newTodayDate = dd + dtseperator + mm + dtseperator + yr;
+    var newYesterday = (dd - 1) + dtseperator + mm + dtseperator + yr;
+    // comment date
+    var d = new Date(ndate);
+    var mm1 = ("0" + (d.getMonth() + 1)).slice(-2);
+    var dd1 = ("0" + d.getDate()).slice(-2);
+    var yr1 = d.getFullYear();
+    var cmtDate = dd1 + dtseperator + mm1 + dtseperator + yr1;
+    var cmtDateText = cmtDate;
+    if (newTodayDate == cmtDate) {
+        var cmtDateText = "Today";
+    }
+    if (newYesterday == cmtDate) {
+        var cmtDateText = "Yesterday";
+    }
+    return cmtDateText;
+}
+
 app.controller('loginController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope) {
     /*-------Check for login--------*/
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -15713,23 +15746,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
                     var dd = ("0" + ndt.getDate()).slice(-2);
                     var yy = ndt.getFullYear();
-                    var timeText = dd + '-' + mm + '-' + yy;
-                    var dateSeprt = dd + '-' + mm + '-' + yy;
+                    //var timeText = dd + '-' + mm + '-' + yy;
+                    //var dateSeprt = dd + '-' + mm + '-' + yy;
+                    var dateSeprt = commentDateToformat(data[i].created);
 
-                    const todayDate = new Date();
-                    if (ndt.getDate() == todayDate.getDate() &&
-                        ndt.getMonth() == todayDate.getMonth() &&
-                        ndt.getFullYear() == todayDate.getFullYear()) {
+                    console.log('alldate', commentDateToformat(data[i].created));
+
+                    // const todayDate = new Date();
+                    // if (ndt.getDate() == todayDate.getDate() &&
+                    //     ndt.getMonth() == todayDate.getMonth() &&
+                    //     ndt.getFullYear() == todayDate.getFullYear()) {
+                    //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                    //     var timeText = 'Today';
+                    // }
+                    var timeText = commentDatetimeToText(data[i].created);
+                    if (timeText == "Today") {
                         $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                        var timeText = 'Today';
                     }
 
                     if (i > 0) {
-                        var ndt = new Date(data[i - 1].created);
-                        var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                        var dd = ("0" + ndt.getDate()).slice(-2);
-                        var yy = ndt.getFullYear();
-                        var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                        var ndt1 = new Date(data[i - 1].created);
+                        // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                        // var dd = ("0" + ndt.getDate()).slice(-2);
+                        // var yy = ndt.getFullYear();
+                        //var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                        var dateSeprt2 = commentDateToformat(data[i - 1].created);
+
                         if (dateSeprt != dateSeprt2) {
                             //$('<li style="color:green;" class="seperatordate" new-id=' + dataId + '>'+ timeText +'</li>').insertBefore('li[data-id=' + dataId + ']');
                             $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> ' + timeText + ' </li>');
