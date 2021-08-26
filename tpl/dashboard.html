@@ -447,7 +447,9 @@ td { font-size: 11px; } */
             <div class="row">
               <div class="col-md-12">
                 <div class="white_box panel panel-default" style="margin-bottom: 0;">
-                  <a href="javascript:void(0);" ng-click="createProject()" ng-if="userRight == 1" class="btn_create-project btn btn-info pull-right btn-sm btn-rounded"><i class="fa fa-plus"></i>&nbsp; Create Project</a>
+                  <a href="javascript:void(0);" ng-click="createProject()" ng-if="userRight == 1"
+                    class="btn_create-project btn btn-info pull-right btn-sm btn-rounded"><i
+                      class="fa fa-plus"></i>&nbsp; Create Project</a>
                   <tabset id="dynamicAddAnchore" class="tab-container projecttable">
                     <tab>
                       <tab-heading>
@@ -480,7 +482,7 @@ td { font-size: 11px; } */
                                 </a>
                                 <small class="block m-t-sm">
                                   <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.ponumber}}</span>
+                                    class="label bg-light">{{order.itemPonumber}}</span>
                                 </small>
                               </td>
                               <td>
@@ -512,23 +514,23 @@ td { font-size: 11px; } */
                                 </article>
                               </td>
                               <td>
-                                <div class="langtd" ng-if="order.items[0]">
-                                  <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
+                                <div class="langtd" ng-if="order.itemsSourceLang">
+                                  <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].source_lang.sourceLang
+                                      {{ order.itemsSourceLang.sourceLang
                                       }}
                                     </span>
                                   </div>
                                   &nbsp;&nbsp;
                                   <span class="label bg-light">
                                     <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
-                                  <span class="langflag"><img ng-src="{{ order.items[0].target_lang.dataNgSrc }}"
+                                  <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].target_lang.sourceLang
+                                      {{ order.itemsTargetLang.sourceLang
                                       }}
                                     </span>
                                   </div>
@@ -541,19 +543,15 @@ td { font-size: 11px; } */
                               <!-- <td>
                             Linguist</td> -->
                               <td>
-                                <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
-                                <span ng-if="order.DueDate != ''" class="labeltitle mytooltip">
-                                  {{ order.DueDate | dateFormatDisplayFront }}
+                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
-                                      <!-- <li class="tl-header">
-                                      <div class="btn btn-info">Now</div>
-                                    </li> -->
                                       <li class="tl-item">
                                         <div class="tl-wrap b-info">
                                           <span class="tl-date">Start Date</span>
-                                          <div class="tl-content" ng-if="order.expected_start_date">
-                                            {{ order.expected_start_date |
+                                          <div class="tl-content" ng-if="order.itemStartdate">
+                                            {{ order.itemStartdate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
@@ -561,16 +559,12 @@ td { font-size: 11px; } */
                                       <li class="tl-item tl-left">
                                         <div class="tl-wrap b-success">
                                           <span class="tl-date">End Date</span>
-                                          <div class="tl-content" ng-if="order.DueDate">
-                                            {{ order.DueDate |
+                                          <div class="tl-content" ng-if="order.itemDuedate">
+                                            {{ order.itemDuedate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
                                       </li>
-
-                                      <!-- <li class="tl-header">
-                                      <div class="btn btn-sm btn-default btn-rounded">more</div>
-                                    </li> -->
                                     </ul>
                                   </div>
                                 </span>
@@ -608,13 +602,9 @@ td { font-size: 11px; } */
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
-                                <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
-                                  currencyCommaformat}}
-                                  USD</span>
+                                <span class="labeltitle">{{order.totalAmount |
+                                  CurrencyNumbersCommaformat}}</span>
                               </td>
-                              <!-- <td>
-                              {{order.ponumber}}
-                            </td> -->
                               <td>
                                 <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
                                   <i style="color:{{order.comment}}"
@@ -657,7 +647,7 @@ td { font-size: 11px; } */
                                 </a>
                                 <small class="block m-t-sm">
                                   <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.ponumber}}</span>
+                                    class="label bg-light">{{order.itemPonumber}}</span>
                                 </small>
                               </td>
                               <td>
@@ -689,27 +679,23 @@ td { font-size: 11px; } */
                                 </article>
                               </td>
                               <td>
-                                <!-- <div ng-repeat="item in order.items">
-                                <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
-                                </span>
-                              </div> -->
-                                <div class="langtd" ng-if="order.items[0]">
-                                  <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
+                                <div class="langtd" ng-if="order.itemsSourceLang">
+                                  <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].source_lang.sourceLang
+                                      {{ order.itemsSourceLang.sourceLang
                                       }}
                                     </span>
                                   </div>
                                   &nbsp;&nbsp;
                                   <span class="label bg-light">
                                     <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
-                                  <span class="langflag"><img ng-src="{{ order.items[0].target_lang.dataNgSrc }}"
+                                  <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].target_lang.sourceLang
+                                      {{ order.itemsTargetLang.sourceLang
                                       }}
                                     </span>
                                   </div>
@@ -722,19 +708,15 @@ td { font-size: 11px; } */
                               <!-- <td>
                               Linguist</td> -->
                               <td>
-                                <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
-                                <span ng-if="order.DueDate != ''" class="labeltitle mytooltip">
-                                  {{ order.DueDate | dateFormatDisplayFront }}
+                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
-                                      <!-- <li class="tl-header">
-                                        <div class="btn btn-info">Now</div>
-                                      </li> -->
                                       <li class="tl-item">
                                         <div class="tl-wrap b-info">
                                           <span class="tl-date">Start Date</span>
-                                          <div class="tl-content" ng-if="order.expected_start_date">
-                                            {{ order.expected_start_date |
+                                          <div class="tl-content" ng-if="order.itemStartdate">
+                                            {{ order.itemStartdate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
@@ -742,16 +724,12 @@ td { font-size: 11px; } */
                                       <li class="tl-item tl-left">
                                         <div class="tl-wrap b-success">
                                           <span class="tl-date">End Date</span>
-                                          <div class="tl-content" ng-if="order.DueDate">
-                                            {{ order.DueDate |
+                                          <div class="tl-content" ng-if="order.itemDuedate">
+                                            {{ order.itemDuedate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
                                       </li>
-
-                                      <!-- <li class="tl-header">
-                                        <div class="btn btn-sm btn-default btn-rounded">more</div>
-                                      </li> -->
                                     </ul>
                                   </div>
                                 </span>
@@ -789,13 +767,9 @@ td { font-size: 11px; } */
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
-                                <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
-                                  currencyCommaformat}}
-                                  USD</span>
+                                <span class="labeltitle">{{order.totalAmount |
+                                  CurrencyNumbersCommaformat}}</span>
                               </td>
-                              <!-- <td>
-                                {{order.ponumber}}
-                              </td> -->
                               <td>
                                 <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
                                   <i style="color:{{order.comment}}"
@@ -841,7 +815,7 @@ td { font-size: 11px; } */
                                 </a>
                                 <small class="block m-t-sm">
                                   <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.ponumber}}</span>
+                                    class="label bg-light">{{order.itemPonumber}}</span>
                                 </small>
                               </td>
                               <td>
@@ -873,27 +847,23 @@ td { font-size: 11px; } */
                                 </article>
                               </td>
                               <td>
-                                <!-- <div ng-repeat="item in order.items">
-                                  <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
-                                  </span>
-                                </div> -->
-                                <div class="langtd" ng-if="order.items[0]">
-                                  <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
+                                <div class="langtd" ng-if="order.itemsSourceLang">
+                                  <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].source_lang.sourceLang
+                                      {{ order.itemsSourceLang.sourceLang
                                       }}
                                     </span>
                                   </div>
                                   &nbsp;&nbsp;
                                   <span class="label bg-light">
                                     <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
-                                  <span class="langflag"><img ng-src="{{ order.items[0].target_lang.dataNgSrc }}"
+                                  <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].target_lang.sourceLang
+                                      {{ order.itemsTargetLang.sourceLang
                                       }}
                                     </span>
                                   </div>
@@ -906,19 +876,15 @@ td { font-size: 11px; } */
                               <!-- <td>
                                 Linguist</td> -->
                               <td>
-                                <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
-                                <span ng-if="order.DueDate != ''" class="labeltitle mytooltip">
-                                  {{ order.DueDate | dateFormatDisplayFront }}
+                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
-                                      <!-- <li class="tl-header">
-                                          <div class="btn btn-info">Now</div>
-                                        </li> -->
                                       <li class="tl-item">
                                         <div class="tl-wrap b-info">
                                           <span class="tl-date">Start Date</span>
-                                          <div class="tl-content" ng-if="order.expected_start_date">
-                                            {{ order.expected_start_date |
+                                          <div class="tl-content" ng-if="order.itemStartdate">
+                                            {{ order.itemStartdate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
@@ -926,16 +892,12 @@ td { font-size: 11px; } */
                                       <li class="tl-item tl-left">
                                         <div class="tl-wrap b-success">
                                           <span class="tl-date">End Date</span>
-                                          <div class="tl-content" ng-if="order.DueDate">
-                                            {{ order.DueDate |
+                                          <div class="tl-content" ng-if="order.itemDuedate">
+                                            {{ order.itemDuedate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
                                       </li>
-
-                                      <!-- <li class="tl-header">
-                                          <div class="btn btn-sm btn-default btn-rounded">more</div>
-                                        </li> -->
                                     </ul>
                                   </div>
                                 </span>
@@ -973,13 +935,9 @@ td { font-size: 11px; } */
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
-                                <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
-                                  currencyCommaformat}}
-                                  USD</span>
+                                <span class="labeltitle">{{order.totalAmount |
+                                  CurrencyNumbersCommaformat}}</span>
                               </td>
-                              <!-- <td>
-                                  {{order.ponumber}}
-                                </td> -->
                               <td>
                                 <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
                                   <i style="color:{{order.comment}}"
@@ -1021,7 +979,7 @@ td { font-size: 11px; } */
                                 </a>
                                 <small class="block m-t-sm">
                                   <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.ponumber}}</span>
+                                    class="label bg-light">{{order.itemPonumber}}</span>
                                 </small>
                               </td>
                               <td>
@@ -1053,27 +1011,23 @@ td { font-size: 11px; } */
                                 </article>
                               </td>
                               <td>
-                                <!-- <div ng-repeat="item in order.items">
-                                    <span class="labeltitle bg-light">{{ item.source_lang.sourceLang }} &nbsp; To &nbsp; {{ item.target_lang.sourceLang }}
-                                    </span>
-                                  </div> -->
-                                <div class="langtd" ng-if="order.items[0]">
-                                  <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
+                                <div class="langtd" ng-if="order.itemsSourceLang">
+                                  <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].source_lang.sourceLang
+                                      {{ order.itemsSourceLang.sourceLang
                                       }}
                                     </span>
                                   </div>
                                   &nbsp;&nbsp;
                                   <span class="label bg-light">
                                     <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
-                                  <span class="langflag"><img ng-src="{{ order.items[0].target_lang.dataNgSrc }}"
+                                  <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].target_lang.sourceLang
+                                      {{ order.itemsTargetLang.sourceLang
                                       }}
                                     </span>
                                   </div>
@@ -1086,19 +1040,15 @@ td { font-size: 11px; } */
                               <!-- <td>
                                   Linguist</td> -->
                               <td>
-                                <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
-                                <span ng-if="order.DueDate != ''" class="labeltitle mytooltip">
-                                  {{ order.DueDate | dateFormatDisplayFront }}
+                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
-                                      <!-- <li class="tl-header">
-                                            <div class="btn btn-info">Now</div>
-                                          </li> -->
                                       <li class="tl-item">
                                         <div class="tl-wrap b-info">
                                           <span class="tl-date">Start Date</span>
-                                          <div class="tl-content" ng-if="order.expected_start_date">
-                                            {{ order.expected_start_date |
+                                          <div class="tl-content" ng-if="order.itemStartdate">
+                                            {{ order.itemStartdate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
@@ -1106,16 +1056,12 @@ td { font-size: 11px; } */
                                       <li class="tl-item tl-left">
                                         <div class="tl-wrap b-success">
                                           <span class="tl-date">End Date</span>
-                                          <div class="tl-content" ng-if="order.DueDate">
-                                            {{ order.DueDate |
+                                          <div class="tl-content" ng-if="order.itemDuedate">
+                                            {{ order.itemDuedate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
                                       </li>
-
-                                      <!-- <li class="tl-header">
-                                            <div class="btn btn-sm btn-default btn-rounded">more</div>
-                                          </li> -->
                                     </ul>
                                   </div>
                                 </span>
@@ -1153,13 +1099,9 @@ td { font-size: 11px; } */
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
-                                <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
-                                  currencyCommaformat}}
-                                  USD</span>
+                                <span class="labeltitle">{{order.totalAmount |
+                                  CurrencyNumbersCommaformat}}</span>
                               </td>
-                              <!-- <td>
-                                    {{order.ponumber}}
-                                  </td> -->
                               <td>
                                 <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
                                   <i style="color:{{order.comment}}"
@@ -1201,7 +1143,7 @@ td { font-size: 11px; } */
                                 </a>
                                 <small class="block m-t-sm">
                                   <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.ponumber}}</span>
+                                    class="label bg-light">{{order.itemPonumber}}</span>
                                 </small>
                               </td>
                               <td>
@@ -1233,23 +1175,23 @@ td { font-size: 11px; } */
                                 </article>
                               </td>
                               <td>
-                                <div class="langtd" ng-if="order.items[0]">
-                                  <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
+                                <div class="langtd" ng-if="order.itemsSourceLang">
+                                  <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].source_lang.sourceLang
+                                      {{ order.itemsSourceLang.sourceLang
                                       }}
                                     </span>
                                   </div>
                                   &nbsp;&nbsp;
                                   <span class="label bg-light">
                                     <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
-                                  <span class="langflag"><img ng-src="{{ order.items[0].target_lang.dataNgSrc }}"
+                                  <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].target_lang.sourceLang
+                                      {{ order.itemsTargetLang.sourceLang
                                       }}
                                     </span>
                                   </div>
@@ -1262,19 +1204,15 @@ td { font-size: 11px; } */
                               <!-- <td>
                                     Linguist</td> -->
                               <td>
-                                <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
-                                <span ng-if="order.DueDate != ''" class="labeltitle mytooltip">
-                                  {{ order.DueDate | dateFormatDisplayFront }}
+                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
-                                      <!-- <li class="tl-header">
-                                              <div class="btn btn-info">Now</div>
-                                            </li> -->
                                       <li class="tl-item">
                                         <div class="tl-wrap b-info">
                                           <span class="tl-date">Start Date</span>
-                                          <div class="tl-content" ng-if="order.expected_start_date">
-                                            {{ order.expected_start_date |
+                                          <div class="tl-content" ng-if="order.itemStartdate">
+                                            {{ order.itemStartdate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
@@ -1282,16 +1220,12 @@ td { font-size: 11px; } */
                                       <li class="tl-item tl-left">
                                         <div class="tl-wrap b-success">
                                           <span class="tl-date">End Date</span>
-                                          <div class="tl-content" ng-if="order.DueDate">
-                                            {{ order.DueDate |
+                                          <div class="tl-content" ng-if="order.itemDuedate">
+                                            {{ order.itemDuedate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
                                       </li>
-
-                                      <!-- <li class="tl-header">
-                                              <div class="btn btn-sm btn-default btn-rounded">more</div>
-                                            </li> -->
                                     </ul>
                                   </div>
                                 </span>
@@ -1329,13 +1263,9 @@ td { font-size: 11px; } */
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
-                                <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
-                                  currencyCommaformat}}
-                                  USD</span>
+                                <span class="labeltitle">{{order.totalAmount |
+                                  CurrencyNumbersCommaformat}}</span>
                               </td>
-                              <!-- <td>
-                                      {{order.ponumber}}
-                                    </td> -->
                               <td>
                                 <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
                                   <i style="color:{{order.comment}}"
@@ -1378,7 +1308,7 @@ td { font-size: 11px; } */
                                 </a>
                                 <small class="block m-t-sm">
                                   <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.ponumber}}</span>
+                                    class="label bg-light">{{order.itemPonumber}}</span>
                                 </small>
                               </td>
                               <td>
@@ -1410,23 +1340,23 @@ td { font-size: 11px; } */
                                 </article>
                               </td>
                               <td>
-                                <div class="langtd" ng-if="order.items[0]">
-                                  <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
+                                <div class="langtd" ng-if="order.itemsSourceLang">
+                                  <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].source_lang.sourceLang
+                                      {{ order.itemsSourceLang.sourceLang
                                       }}
                                     </span>
                                   </div>
                                   &nbsp;&nbsp;
                                   <span class="label bg-light">
                                     <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
-                                  <span class="langflag"><img ng-src="{{ order.items[0].target_lang.dataNgSrc }}"
+                                  <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].target_lang.sourceLang
+                                      {{ order.itemsTargetLang.sourceLang
                                       }}
                                     </span>
                                   </div>
@@ -1439,19 +1369,15 @@ td { font-size: 11px; } */
                               <!-- <td>
                                       Linguist</td> -->
                               <td>
-                                <!-- <span ng-if="order.DueDate != ''" class="labeltitle">{{ order.DueDate | dateFormat1 }}</span> -->
-                                <span ng-if="order.DueDate != ''" class="labeltitle mytooltip">
-                                  {{ order.DueDate | dateFormatDisplayFront }}
+                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
-                                      <!-- <li class="tl-header">
-                                                <div class="btn btn-info">Now</div>
-                                              </li> -->
                                       <li class="tl-item">
                                         <div class="tl-wrap b-info">
                                           <span class="tl-date">Start Date</span>
-                                          <div class="tl-content" ng-if="order.expected_start_date">
-                                            {{ order.expected_start_date |
+                                          <div class="tl-content" ng-if="order.itemStartdate">
+                                            {{ order.itemStartdate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
@@ -1459,16 +1385,12 @@ td { font-size: 11px; } */
                                       <li class="tl-item tl-left">
                                         <div class="tl-wrap b-success">
                                           <span class="tl-date">End Date</span>
-                                          <div class="tl-content" ng-if="order.DueDate">
-                                            {{ order.DueDate |
+                                          <div class="tl-content" ng-if="order.itemDuedate">
+                                            {{ order.itemDuedate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
                                       </li>
-
-                                      <!-- <li class="tl-header">
-                                                <div class="btn btn-sm btn-default btn-rounded">more</div>
-                                              </li> -->
                                     </ul>
                                   </div>
                                 </span>
@@ -1506,13 +1428,9 @@ td { font-size: 11px; } */
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
-                                <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
-                                  currencyCommaformat}}
-                                  USD</span>
+                                <span class="labeltitle">{{order.totalAmount |
+                                  CurrencyNumbersCommaformat}}</span>
                               </td>
-                              <!-- <td>
-                                        {{order.ponumber}}
-                                      </td> -->
                               <td>
                                 <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
                                   <i style="color:{{order.comment}}"
@@ -1553,8 +1471,8 @@ td { font-size: 11px; } */
                                   {{order.orderNumber}}
                                 </a>
                                 <small class="block m-t-sm">
-                                  <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.ponumber}}</span>
+                                  <span class="labeltitle">PO Number : </span><br /><span class="label bg-light"
+                                    title="{{order.itemPonumber}}">{{order.itemPonumber | Textcharacter}}</span>
                                 </small>
                               </td>
                               <td>
@@ -1586,23 +1504,23 @@ td { font-size: 11px; } */
                                 </article>
                               </td>
                               <td>
-                                <div class="langtd" ng-if="order.items[0]">
-                                  <span class="langflag"><img ng-src="{{ order.items[0].source_lang.dataNgSrc }}"
+                                <div class="langtd" ng-if="order.itemsSourceLang">
+                                  <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].source_lang.sourceLang
+                                      {{ order.itemsSourceLang.sourceLang
                                       }}
                                     </span>
                                   </div>
                                   &nbsp;&nbsp;
                                   <span class="label bg-light">
                                     <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
-                                  <span class="langflag"><img ng-src="{{ order.items[0].target_lang.dataNgSrc }}"
+                                  <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
                                       alt="..." /></span>
                                   <div class="media-body">
                                     <span class="labeltitle">
-                                      {{ order.items[0].target_lang.sourceLang
+                                      {{ order.itemsTargetLang.sourceLang
                                       }}
                                     </span>
                                   </div>
@@ -1613,15 +1531,15 @@ td { font-size: 11px; } */
                               </td>
                               <td>{{order.pm_name}}</td>
                               <td>
-                                <span ng-if="order.DueDate != ''" class="labeltitle mytooltip">
-                                  {{ order.DueDate | dateFormatDisplayFront }}
+                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
                                       <li class="tl-item">
                                         <div class="tl-wrap b-info">
                                           <span class="tl-date">Start Date</span>
-                                          <div class="tl-content" ng-if="order.expected_start_date">
-                                            {{ order.expected_start_date |
+                                          <div class="tl-content" ng-if="order.itemStartdate">
+                                            {{ order.itemStartdate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
@@ -1629,8 +1547,8 @@ td { font-size: 11px; } */
                                       <li class="tl-item tl-left">
                                         <div class="tl-wrap b-success">
                                           <span class="tl-date">End Date</span>
-                                          <div class="tl-content" ng-if="order.DueDate">
-                                            {{ order.DueDate |
+                                          <div class="tl-content" ng-if="order.itemDuedate">
+                                            {{ order.itemDuedate |
                                             dateFormatDisplayFront }}
                                           </div>
                                         </div>
@@ -1671,9 +1589,8 @@ td { font-size: 11px; } */
                                   {{order.projectstatus_name}}</span>
                               </td>
                               <td>
-                                <span class="labeltitle" ng-if="order.project_price">{{order.project_price |
-                                  currencyCommaformat}}
-                                  USD</span>
+                                <span class="labeltitle">{{order.totalAmount |
+                                  CurrencyNumbersCommaformat}}</span>
                               </td>
                               <td>
                                 <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
@@ -2360,14 +2277,14 @@ td { font-size: 11px; } */
           </div>
         </div>
 
-        
+
       </div>
-      
+
       <!-- footer copy right -->
       <div class="wrapper-md m-t-n-xl" data-ng-include="'tpl/copyRight.html'"></div>
-       
-      </div>
-   
+
+    </div>
+
 
   </div>
 </div>

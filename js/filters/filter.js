@@ -402,8 +402,32 @@ app.filter('currencyCommaformat', function($filter) {
             //return '$ None';
             return '-';
         } else {
+            //var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
             var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
             return currencydata.replace(".", ',');
+        }
+    }
+});
+app.filter('CurrencyNumbersCommaformat', function($filter) {
+    return function(input) {
+        if (input == undefined || input == 0 || input == '') {
+            return '-';
+        } else {
+            //console.log(input);
+            //var str1 = input.toFixed(2);
+            var str1 = input;
+            var str=str1.toString();
+            var numarray=str.split('.');
+            var a=new Array();
+            a=numarray;
+            var a1=a[0];
+            //var a2=',00';
+            var a2='';
+            if(a[1]==undefined && a[1]!=='00'){
+                a[1]='';
+            }else{ var a2 = ','+a[1].slice(0, 2); }
+            var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            return n1 + a2 + ' USD';
         }
     }
 });
@@ -449,6 +473,19 @@ app.filter('NumbersCommaformatzero', function($filter) {
             }else{ var a2 = ','+a[1].slice(0, 2); }
             var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
             return n1 + a2;
+        }
+    }
+});
+app.filter('Textcharacter', function($filter) {
+    return function(input) {
+        if (input == undefined || input == 0 || input == '') {
+            return '';
+        } else {
+            var texts = input; 
+            if(input.length > 13){
+                texts = input.substr(0,10) + '...';
+            }
+            return texts;
         }
     }
 });

@@ -1552,10 +1552,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$routeParams.id = 5;
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
+            console.log('orderdata',data);
             angular.forEach(data, function (val, i) {
                 val.progrss_precentage = -1;
                 $scope.projectsAll = data;
                 //console.log('$scope.projectsAll',$scope.projectsAll);
+                var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
+                if (val.itemsSourceLang) {
+                    data[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
+                } else {
+                    data[i].itemsSourceLang = newLangData;
+                }
+                if (val.itemsTargetLang) {
+                    data[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
+                } else {
+                    data[i].itemsTargetLang = newLangData;
+                }    
                 if (val.items) {
                     angular.forEach(val.items, function (val2, i2) {
                         if (val2.source_lang) {
@@ -1595,41 +1607,55 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });*/
 
                 var cmtcolor = '#0190d8';
-                var cmtval = data[i].comment[0].comment_status;
-                if (cmtval > 0 && val.comment_id > 0) {
+                var is_comment = 0;
+                var comment_id = 0;
+                if (val.comment.length > 0) {
+                    var is_comment = data[i].comment[0].comment_status;
+                }
+                if (val.comment_id.length > 0) {
+                    var comment_id = data[i].comment_id[0].comment_id;
+                }
+                //var comment_id = data[i].comment_id[0].comment_id;
+                if (comment_id > 0 && comment_id > 0) {
                     cmtcolor = '#d30c39';
                 }
-                if (cmtval == 0 && val.comment_id > 0) {
+                if (is_comment == 0 && comment_id > 0) {
                     cmtcolor = '#67bb0a';
                 }
                 val.comment = cmtcolor;
 
                 $scope.projectsAllCount++;
                 if (val.projectStatus == 12) {
+                //if (val.itemStatus == "In preparation") {
                     val.progrss_precentage = 0;
                     val.projectstatus_class = 'projectstatus_assigned';
                     $scope.projectsAssigned.push(val);
                     $scope.projectsAssignedCount++;
                 }
                 if (val.projectStatus == 4) {
+                //if (val.itemStatus == "In progress") {
                     val.progrss_precentage = 25;
                     val.projectstatus_class = 'projectstatus_inprogress';
                     $scope.projectsInProgress.push(val);
                     $scope.projectsInprogressCount++;
                 }
                 if (val.projectStatus == 13) {
+                //if (val.itemStatus == "Completed by linguist") {
+                
                     val.progrss_precentage = 50;
                     val.projectstatus_class = 'projectstatus_completed';
                     $scope.projectsCompletedByLng.push(val);
                     //$scope.projectsInprogressCount++;
                 }
                 if (val.projectStatus == 14) {
+                //if (val.itemStatus == "QA Ready") {
                     val.progrss_precentage = 75;
                     val.projectstatus_class = 'projectstatus_ready';
                     $scope.projectsQaready.push(val);
                     $scope.projectsQaReadyCount++;
                 }
                 if (val.projectStatus == 15) {
+                //if (val.itemStatus == "To be Delivered") {
                     val.progrss_precentage = 100;
                     val.projectstatus_class = 'projectstatus_delivered';
                     $scope.projectsToBeDelivered.push(val);
@@ -15741,7 +15767,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }
                     }
-
+                    // ------------ Script for date seperating in chat box --------------//
                     var ndt = new Date(data[i].created);
                     var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
                     var dd = ("0" + ndt.getDate()).slice(-2);
@@ -15749,8 +15775,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //var timeText = dd + '-' + mm + '-' + yy;
                     //var dateSeprt = dd + '-' + mm + '-' + yy;
                     var dateSeprt = commentDateToformat(data[i].created);
-
-                    console.log('alldate', commentDateToformat(data[i].created));
 
                     // const todayDate = new Date();
                     // if (ndt.getDate() == todayDate.getDate() &&
@@ -15773,9 +15797,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
                         if (dateSeprt != dateSeprt2) {
-                            //$('<li style="color:green;" class="seperatordate" new-id=' + dataId + '>'+ timeText +'</li>').insertBefore('li[data-id=' + dataId + ']');
                             $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> ' + timeText + ' </li>');
-                            //$('li[data-id=' + dataId + ']').prepend('<li style="color:green;" class="seperatordate" >'+ timeText +'</li>');
                         }
                     } else {
                         $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> ' + timeText + ' </li>');
@@ -20722,6 +20744,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if (items) {
         $routeParams.id = items
     }
+console.log('testing');
     if ($routeParams.id) {
         $routeParams.id;
         rest.path = 'viewProjectCustomerDetail';
