@@ -2502,6 +2502,34 @@ app.directive('select2JobDetailitmStatus', function($http, rest, $timeout) {
         }
     }
 });
+// Scoop item statuses
+app.directive('select2ScoopDetailitmStatus', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            rest.path = 'scoopdetailItemStatusGet';
+            rest.get().success(function(data) {
+                var indirect = [];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        //'id': value.item_status_id,
+                        'id': value.item_status_name,
+                        'text': value.item_status_name
+                    };
+                    indirect.push(obj);
+                });
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: indirect
+                    });
+                }, 200);
+            }).error(function(data, error, status) {});
+        }
+    }
+});
+
 //------------------jobdetail-itemGet--------------------//
 app.directive('select2JobdetailItem', function($http, rest, $timeout) {
     return {

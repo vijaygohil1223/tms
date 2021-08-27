@@ -543,7 +543,7 @@ td { font-size: 11px; } */
                               <!-- <td>
                             Linguist</td> -->
                               <td>
-                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
@@ -598,7 +598,7 @@ td { font-size: 11px; } */
                               <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
-                                  {{order.projectstatus_name}}</span>
+                                  {{order.itemStatus}}</span>
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
@@ -708,7 +708,7 @@ td { font-size: 11px; } */
                               <!-- <td>
                               Linguist</td> -->
                               <td>
-                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
@@ -763,7 +763,7 @@ td { font-size: 11px; } */
                               <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
-                                  {{order.projectstatus_name}}</span>
+                                  {{order.itemStatus}}</span>
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
@@ -876,7 +876,7 @@ td { font-size: 11px; } */
                               <!-- <td>
                                 Linguist</td> -->
                               <td>
-                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
@@ -931,7 +931,7 @@ td { font-size: 11px; } */
                               <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
-                                  {{order.projectstatus_name}}</span>
+                                  {{order.itemStatus}}</span>
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
@@ -1040,7 +1040,7 @@ td { font-size: 11px; } */
                               <!-- <td>
                                   Linguist</td> -->
                               <td>
-                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
@@ -1095,7 +1095,7 @@ td { font-size: 11px; } */
                               <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
-                                  {{order.projectstatus_name}}</span>
+                                  {{order.itemStatus}}</span>
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
@@ -1204,7 +1204,7 @@ td { font-size: 11px; } */
                               <!-- <td>
                                     Linguist</td> -->
                               <td>
-                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
@@ -1259,7 +1259,7 @@ td { font-size: 11px; } */
                               <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
-                                  {{order.projectstatus_name}}</span>
+                                  {{order.itemStatus}}</span>
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
@@ -1369,7 +1369,7 @@ td { font-size: 11px; } */
                               <!-- <td>
                                       Linguist</td> -->
                               <td>
-                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
@@ -1424,7 +1424,7 @@ td { font-size: 11px; } */
                               <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
-                                  {{order.projectstatus_name}}</span>
+                                  {{order.itemStatus}}</span>
                               </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
@@ -1531,7 +1531,7 @@ td { font-size: 11px; } */
                               </td>
                               <td>{{order.pm_name}}</td>
                               <td>
-                                <span ng-if="order.itemDuedate != ''" class="labeltitle mytooltip">
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
@@ -1586,7 +1586,7 @@ td { font-size: 11px; } */
                               <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
-                                  {{order.projectstatus_name}}</span>
+                                  {{order.itemStatus}}</span>
                               </td>
                               <td>
                                 <span class="labeltitle">{{order.totalAmount |

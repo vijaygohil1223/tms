@@ -1140,12 +1140,21 @@ class jobs_detail {
     public function jobdetailItemStatusGet() {
 
         $data = array('1'=>'In preparation','2'=>'Requested','3'=>'Assigned-waiting','4'=>'In-progress','5'=>'Overdue','6'=>'Delivered','7'=>'Approved','8'=>'Invoice Accepted','9'=>'Paid','10'=>'Canceled','11'=>'Without invoice','12'=>'Pending','13'=>'New','14'=>'Ready to be Delivered','15'=>'Completed');
-
+    
         return $data;
 
     }
 
-    
+
+    public function scoopdetailItemStatusGet() {
+
+        $this->_db->where('is_active', 1);
+
+        $data = $this->_db->get('tms_item_status');
+
+        return $data;
+
+    }    
 
     public function jobdetailresourceGet() {
 

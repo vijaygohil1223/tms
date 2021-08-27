@@ -1478,7 +1478,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.goToProjectList = function (viewType) {
         if (viewType) {
             var modalInstance = $uibModal.open({
-                animation: $scope.animationsEnabled,
+                //animation: $scope.animationsEnabled,
                 templateUrl: 'tpl/statusWiseProject.html',
                 controller: 'statusWiseProjectController',
                 size: '',
@@ -1497,7 +1497,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var modalInstance = $uibModal.open({
                 //animation: $scope.animationsEnabled,
                 templateUrl: 'tpl/projectViewdetailPopup.html',
-                controller: 'viewProjectController',
+                //controller: 'viewProjectController',
+                controller: 'viewProjectPopupController',
                 size: '',
                 resolve: {
                     items: function () {
@@ -1625,42 +1626,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.comment = cmtcolor;
 
                 $scope.projectsAllCount++;
-                if (val.projectStatus == 12) {
-                //if (val.itemStatus == "In preparation") {
+                val.projectstatus_class = 'projectstatus_common';
+                //if (val.projectStatus == 12) {
+                //if (val.itemStatus == "To be Assigned") {
+                if (val.itemStatus == "In preparation") {
+                        //To be Assigned
                     val.progrss_precentage = 0;
                     val.projectstatus_class = 'projectstatus_assigned';
+                    val.projectstatus_color = '#F9ED1A';
                     $scope.projectsAssigned.push(val);
                     $scope.projectsAssignedCount++;
                 }
-                if (val.projectStatus == 4) {
-                //if (val.itemStatus == "In progress") {
+                //if (val.projectStatus == 4) {
+                if (val.itemStatus == "In progress") {
                     val.progrss_precentage = 25;
                     val.projectstatus_class = 'projectstatus_inprogress';
+                    val.projectstatus_color = '#FF9719';
                     $scope.projectsInProgress.push(val);
                     $scope.projectsInprogressCount++;
                 }
-                if (val.projectStatus == 13) {
-                //if (val.itemStatus == "Completed by linguist") {
-                
+                //if (val.projectStatus == 13) {
+                if (val.itemStatus == "Completed by linguist") {
                     val.progrss_precentage = 50;
                     val.projectstatus_class = 'projectstatus_completed';
+                    val.projectstatus_color = '#008989';
                     $scope.projectsCompletedByLng.push(val);
                     //$scope.projectsInprogressCount++;
                 }
-                if (val.projectStatus == 14) {
-                //if (val.itemStatus == "QA Ready") {
+                //if (val.projectStatus == 14) {
+                if (val.itemStatus == "QA Ready") {
                     val.progrss_precentage = 75;
                     val.projectstatus_class = 'projectstatus_ready';
+                    val.projectstatus_color = '#4848CC';
                     $scope.projectsQaready.push(val);
                     $scope.projectsQaReadyCount++;
                 }
-                if (val.projectStatus == 15) {
-                //if (val.itemStatus == "To be Delivered") {
+                //if (val.projectStatus == 15) {
+                if (val.itemStatus == "To be Delivered") {
                     val.progrss_precentage = 100;
                     val.projectstatus_class = 'projectstatus_delivered';
+                    val.projectstatus_color = '#8B008B';
                     $scope.projectsToBeDelivered.push(val);
                     $scope.projectsDeliveredCount++;
                 }
+
                 if (val.DueDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
                     $scope.projectsDueToday.push(val);
                     $scope.projectsDueTodayCount++;
@@ -20739,12 +20748,168 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/invoice-detail');
     }
 
-}).controller('viewProjectController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance) {
+}).controller('viewProjectController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    
+    if ($routeParams.id) {
+        $routeParams.id;
+        rest.path = 'viewProjectCustomerDetail';
+        rest.model().success(function (data) {
+            $scope.customer = data;
+            $window.localStorage.clientproCustomerName = $scope.customer.client;
+            $window.localStorage.ContactPerson = $scope.customer.contact;
+            $routeParams.ClientIdd = data['client'];
+            $window.localStorage.ClientName = $routeParams.ClientIdd;
+            if ($scope.customer.memo) {
+                $scope.warn = true;
+                $timeout(function () {
+                    $scope.warn = false;
+                }, 10000);
+            }
+        }).error(errorCallback);
+
+        $routeParams.id;
+        rest.path = 'contactPerson';
+        rest.model().success(function (data) {
+            angular.forEach(data, function (val, i) {
+                if (val.vResourcePosition == 3) {
+                    angular.element('#coordinator').html(val.vUserName);
+                } else if (val.vResourcePosition == 2) {
+                    angular.element('#manager').html(val.vUserName);
+                } else if (val.vResourcePosition == 4) {
+                    angular.element('#QASpecialist').html(val.vUserName);
+                }
+            })
+        }).error(errorCallback);
+
+        $routeParams.id = $routeParams.id;
+        rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
+        rest.get().success(function (data) {
+            $scope.general = data;
+            console.log("$scope.general", $scope.general);
+            // $scope.properties = JSON.parse($scope.general.properties);
+            var properties = [];
+            if ($scope.general.properties) {
+                angular.forEach(JSON.parse($scope.general.properties), function (val, i) {
+                    rest.path = 'generalPropertiesView/' + val;
+                    rest.get().success(function (data) {
+                        angular.element('#' + i).html(data);
+                    })
+                    properties.push({
+                        id: i
+                    });
+                })
+            }
+            $scope.properties = properties;
+            $scope.item_number = data;
+
+            //$scope.general.order_date = $scope.general.order_date;
+            $scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat') + ' HH:mm A');
+
+            $scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-') + ' ' + $scope.general.due_date.split(' ')[1];
+            $scope.general.due_date = moment($scope.general.due_date).format($window.localStorage.getItem('global_dateFormat') + ' HH:mm A');
+
+            if ($scope.general.order_date == undefined) {
+                var currentdate = new Date();
+                $scope.general.order_date = getDatetime(currentdate);
+            }
+            $scope.generaldata = {};
+            $scope.generaldata.order_no = $window.localStorage.orderNo;
+            $scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+
+            if ($scope.general == null) {
+                $scope.general = {};
+                $scope.generaldata = {};
+                $scope.generaldata.order_no = $window.localStorage.orderNo;
+                $scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+                if ($scope.general.order_no == "") {
+
+                }
+            }
+        }).error(errorCallback);
+
+        $routeParams.id = $routeParams.id;
+        rest.path = 'prolanguage';
+        rest.model().success(function (data) {
+            $scope.langList = data;
+        }).error(errorCallback);
+
+        rest.path = 'itemsGet/' + $routeParams.id;
+        rest.get().success(function (data) {
+            $scope.itemList = data;
+        })
+    }
+
+    if ($routeParams.id != undefined && $routeParams.id != "") {
+        rest.path = 'usertask/' + $routeParams.id + '/' + $window.localStorage.userType;
+        rest.get().success(function (data) {
+            $scope.tasklist = data.data;
+        }).error(errorCallback);
+    }
+
+    $scope.generalEmail = function (id) {
+        if (id != undefined && id != " " && id != null) {
+            $window.localStorage.generalMsg = id;
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'html/generalmsg.html',
+                controller: 'generalmsgController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return $scope.data;
+                    }
+                }
+            });
+        } else {
+            notification('Please Add Email', 'warning');
+        }
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.close();
+    }
+
+    $scope.editProjectDetail = function (id) {
+        if (id) {
+            rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function (data) {
+                if (data.userName != null) {
+                    $scope.orderdata = data;
+
+                    $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
+                    $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
+                    $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
+
+                    $window.localStorage.orderNo = $scope.orderdata.order_number;
+                    $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+                    $window.localStorage.orderID = id;
+                    $window.localStorage.iUserId = id;
+                    $window.localStorage.userType = 3;
+                    $window.localStorage.currentUserName = data.vClientName;
+                    $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject", "false");
+
+                    $location.path('/general');
+                    $window.localStorage.orderBlock = 1;
+                    $timeout(function () {
+                        $scope.cancel();
+                    }, 500);
+                } else {
+                    notification('Information not available', 'warning');
+                }
+            }).error(errorCallback);
+        }
+
+    };
+
+}).controller('viewProjectPopupController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     if (items) {
         $routeParams.id = items
     }
-console.log('testing');
     if ($routeParams.id) {
         $routeParams.id;
         rest.path = 'viewProjectCustomerDetail';
