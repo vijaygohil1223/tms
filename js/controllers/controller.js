@@ -15754,7 +15754,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                         var hrefClass = 'attachment';
                         var hrefTarget = '_blank';
-                        filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+                        filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src="http://tms.kanhasoftdev.com/uploads/discussionfile/cloud-based-banner-img_1630038987766.jpeg?v=1630046928230"></a>';
 
                     }
                     if (val.user_id == loginid) {
@@ -15806,10 +15806,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
                         if (dateSeprt != dateSeprt2) {
-                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> ' + timeText + ' </li>');
+                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
                         }
                     } else {
-                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> ' + timeText + ' </li>');
+                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
                     }
                     var msgRead_id = val.read_id;
                     if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
