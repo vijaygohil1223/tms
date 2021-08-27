@@ -127,9 +127,11 @@
                 // Strings to be formatted (for example localization)     
                 textareaPlaceholderText: 'Discussion start',
                 newestText: '',
-                oldestText: 'Comments',
+                //oldestText: 'Comments',
+                oldestText: '',
                 //popularText: 'Popular',       
-                attachmentsText: 'Attachments',
+                //attachmentsText: 'Attachments',
+                attachmentsText: '',
                 sendText: 'Send',
                 replyText: 'Reply',
                 editText: 'Edit',
@@ -1711,8 +1713,15 @@
             var oldest = $('<li/>', {
                 text: this.options.textFormatter(this.options.oldestText),
                 'data-sort-key': 'oldest',
-                'data-container-name': 'comments'
+                'data-container-name': 'comments',
             });
+
+            // Oldest
+            var commenticn = $('<i/>', {
+                'class': 'fa fa-commenting-o fa-2x cmtclr2'
+            });
+
+            oldest.prepend(commenticn);
 
             // Popular
             var popular = $('<li/>', {
@@ -1732,13 +1741,19 @@
             var attachmentsIcon = $('<i/>', {
                 'class': 'fa fa-paperclip'
             });
+            var attachmentsCount = $('<sapn/>', {
+                'class': 'att_count'
+            });
             if (this.options.attachmentIconURL.length) {
                 attachmentsIcon.css('background-image', 'url("' + this.options.attachmentIconURL + '")');
                 attachmentsIcon.addClass('image');
             }
             attachments.prepend(attachmentsIcon);
+            attachments.prepend(attachmentsCount);
 
-
+            setTimeout(() => {
+                $(".att_count").text('5');
+            }, 2000);
             // Responsive navigation
             var dropdownNavigationWrapper = $('<div/>', {
                 'class': 'navigation-wrapper responsive'
