@@ -607,8 +607,8 @@
                     commentJSON.fileMimeType = file.type;
 
                     var file_data = $('#discussionFileUpload').prop('files')[fileno];
-                    console.log('file_data', file_data);
-                    console.log('file_data' + fileno, file.name.split('.')[0]);
+                    //console.log('file_data', file_data);
+                    //console.log('file_data' + fileno, file.name.split('.')[0]);
 
                     //newFileName = file_data.name.split('.')[0]+'_'+jQuery.now()+'.'+file_data.type.split('/')[1];
                     //newFileName = file_data.name.split('.')[0]+'_'+randomno+'.'+file_data.type.split('/')[1];
@@ -652,6 +652,9 @@
                                 if ($("#dtseperator").length == 0) {
                                     $('#comment-list').find(' > li[data-id=' + commentJSON.id + ']').before('<li class="seperatordate comment" new-id=' + commentJSON.id + '> Today </li>');
                                     $('li[data-id=' + commentJSON.id + ']').prepend('<div id="dtseperator"></div>');
+                                }
+                                if(ftype_1 == 'image'){
+                                    $('li[data-id=' + commentJSON.id + ']').find('.wrapper').addClass('imgblock');
                                 }
                                 $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
                             }, 2000);
@@ -1867,7 +1870,12 @@
             var dd = ("0" + ndt.getDate()).slice(-2);
             var yy = ndt.getFullYear();
             //var timeText = dd + '-' + mm + '-' + yy;
-            var timeText = ndt.getHours() + ':' + ndt.getMinutes();
+            currentHours = ndt.getHours();
+            currentHours = ("0" + currentHours).slice(-2);
+            currentMinutes =  ndt.getMinutes();
+            currentMinutes = ("0" + currentMinutes).slice(-2);
+
+            var timeText = currentHours + ':' + currentMinutes;
             var time = $('<time/>', {
                 text: timeText,
                 //text: this.options.timeFormatter(commentModel.created),
@@ -1959,6 +1967,7 @@
 
                 if (type == 'image') {
                     var image = $('<img/>', {
+                        'class': 'imgattach',
                         src: commentModel.fileURL + '?v=' + jQuery.now()
                     });
                     link.html(image);

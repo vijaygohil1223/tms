@@ -2368,6 +2368,11 @@ $app->get('/jobdetailItemStatusGet','authenticate', function () {
     $result = $itemsJob->jobdetailItemStatusGet();
     echoResponse(200, $result);
 });
+$app->get('/scoopdetailItemStatusGet','authenticate', function () {
+    $itemsJob = new jobs_detail ();
+    $result = $itemsJob->scoopdetailItemStatusGet();
+    echoResponse(200, $result);
+});
 $app->get('/jobdetailresourceGet','authenticate', function () {
     $itemsJob = new jobs_detail ();
     $result = $itemsJob->jobdetailresourceGet();

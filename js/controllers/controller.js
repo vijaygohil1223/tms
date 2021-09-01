@@ -1363,7 +1363,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.dueDayAfterTomorrowCount = 0;
                 $scope.overDueDateCount = 0;
                 $scope.headsUp = 0;
-
+                
                 angular.forEach($scope.filteredTodos, function (val, i) {
                     if (val.projectStatus == 4) {
                         $scope.projectInProgerss++;
@@ -1492,6 +1492,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     };
 
+    $scope.goToProjectScoopList = function (viewType) {
+        if (viewType) {
+            var modalInstance = $uibModal.open({
+                //animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/statusWiseProjectScoop.html',
+                controller: 'statusWiseProjectController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return viewType;
+                    }
+                }
+            });
+        }
+
+    };    
+
     $scope.goToProjectViewdetail = function (viewType) {
         if (viewType) {
             var modalInstance = $uibModal.open({
@@ -1540,14 +1557,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectsToBeDelivered = [];
     $scope.projectsCompletedByLng = [];
     $scope.projectsToDisplay = [];
-
+   
     $scope.projectsAllCount = 0;
     $scope.projectsInprogressCount = 0;
     $scope.projectsDueTodayCount = 0;
     $scope.projectsDueTomorrowCount = 0;
-    $scope.projectsDeliveredCount = 0;
+    $scope.projectsToBeDeliveredCount = 0;
     $scope.projectsQaReadyCount = 0;
     $scope.projectsAssignedCount = 0;
+    // -- new status for scoop item count based on status -- //
+    $scope.projectLinguistCount = 0;
+    $scope.projectDileveredCount = 0;
+    $scope.projectApprovedCount = 0;
+    $scope.projectInvoicedCount = 0;
+    $scope.projectPaidCount = 0;
+    $scope.projectWithoutInvoicedCount = 0;
+    $scope.projectCancelledCount = 0;
+
 
     $scope.allProjectListing = function () {
         //$routeParams.id = 5;
@@ -1628,9 +1654,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsAllCount++;
                 val.projectstatus_class = 'projectstatus_common';
                 //if (val.projectStatus == 12) {
-                //if (val.itemStatus == "To be Assigned") {
-                if (val.itemStatus == "In preparation") {
-                        //To be Assigned
+                if (val.itemStatus == "To be Assigned") {
+                //if (val.itemStatus == "In preparation") {
+                    //To be Assigned
                     val.progrss_precentage = 0;
                     val.projectstatus_class = 'projectstatus_assigned';
                     val.projectstatus_color = '#F9ED1A';
@@ -1638,7 +1664,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsAssignedCount++;
                 }
                 //if (val.projectStatus == 4) {
-                if (val.itemStatus == "In progress") {
+                if (val.itemStatus == "In Progress") {
                     val.progrss_precentage = 25;
                     val.projectstatus_class = 'projectstatus_inprogress';
                     val.projectstatus_color = '#FF9719';
@@ -1651,7 +1677,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_class = 'projectstatus_completed';
                     val.projectstatus_color = '#008989';
                     $scope.projectsCompletedByLng.push(val);
-                    //$scope.projectsInprogressCount++;
+                    $scope.projectLinguistCount++;
                 }
                 //if (val.projectStatus == 14) {
                 if (val.itemStatus == "QA Ready") {
@@ -1667,7 +1693,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_class = 'projectstatus_delivered';
                     val.projectstatus_color = '#8B008B';
                     $scope.projectsToBeDelivered.push(val);
-                    $scope.projectsDeliveredCount++;
+                    $scope.projectsToBeDeliveredCount++;
+                }
+                if (val.itemStatus == "Delivered") {
+                    $scope.projectDileveredCount++;
+                }
+                if (val.itemStatus == "Approved") {
+                    $scope.projectApprovedCount++;
+                }
+                if (val.itemStatus == "Invoiced") {
+                    $scope.projectInvoicedCount++;
+                }
+                if (val.itemStatus == "Paid") {
+                    $scope.projectPaidCount++;
+                }
+                if (val.itemStatus == "Without invoice") {
+                    $scope.projectWithoutInvoicedCount++;
+                }
+                if (val.itemStatus == "Cancelled") {
+                    $scope.projectCancelledCount++;
                 }
 
                 if (val.DueDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
@@ -15940,13 +15984,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }, 2800);
 
     $timeout(function () {
-        var el = $("#addemoji").emojioneArea();
+        // var el = $("#addemoji").emojioneArea();
 
-        el[0].emojioneArea.on("emojibtn.click", function () {
-            const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-            const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
-            $('.textarea').append(emoji);
-        });
+        // el[0].emojioneArea.on("emojibtn.click", function () {
+        //     const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+        //     const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+        //     $('.textarea').append(emoji);
+        // });
 
         //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
         //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
@@ -21491,21 +21535,77 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('statusWiseProjectController', function (items, $uibModalInstance, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams) {
     $scope.displayType = items;
     $scope.proejctsToDisplay = [];
-
     rest.path = "dashboardOrderGet";
     rest.get().success(function (data) {
         angular.forEach(data, function (val, i) {
+                var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
+                if (val.itemsSourceLang) {
+                    data[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
+                } else {
+                    data[i].itemsSourceLang = newLangData;
+                }
+                if (val.itemsTargetLang) {
+                    data[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
+                } else {
+                    data[i].itemsTargetLang = newLangData;
+                }
+
             if ($scope.displayType == 'All') {
                 $scope.dispalyTxt = 'All';
                 $scope.proejctsToDisplay = data;
-            } else if ($scope.displayType == 4) {
-                if (val.projectStatus == 4) {
-                    $scope.dispalyTxt = 'In progress';
+            } else if ($scope.displayType == 'To be Assigned') {
+                if (val.itemStatus == 'To be Assigned') {
+                    $scope.dispalyTxt = 'To be Assigned';
                     $scope.proejctsToDisplay.push(val);
                 }
-            } else if ($scope.displayType == 4) {
-                if (val.projectStatus == 4) {
-                    $scope.dispalyTxt = 'In progress';
+            } else if ($scope.displayType == 'In Progress') {
+                if (val.itemStatus == 'In Progress') {
+                    $scope.dispalyTxt = 'In Progress';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'Completed by linguist') {
+                if (val.itemStatus == 'Completed by linguist') {
+                    $scope.dispalyTxt = 'Completed by linguist';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'QA Ready') {
+                if (val.itemStatus == 'QA Ready') {
+                    $scope.dispalyTxt = 'QA Ready';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'To be Delivered') {
+                if (val.itemStatus == 'To be Delivered') {
+                    $scope.dispalyTxt = 'To be Delivered';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'Delivered') {
+                if (val.itemStatus == 'Delivered') {
+                    $scope.dispalyTxt = 'Delivered';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'Approved') {
+                if (val.itemStatus == 'Approved') {
+                    $scope.dispalyTxt = 'Approved';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'Invoiced') {
+                if (val.itemStatus == 'Invoiced') {
+                    $scope.dispalyTxt = 'Invoiced';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'Paid') {
+                if (val.itemStatus == 'Paid') {
+                    $scope.dispalyTxt = 'Paid';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'Without invoice') {
+                if (val.itemStatus == 'Without invoice') {
+                    $scope.dispalyTxt = 'Without invoice';
+                    $scope.proejctsToDisplay.push(val);
+                }
+            } else if ($scope.displayType == 'Cancelled') {
+                if (val.itemStatus == 'Cancelled') {
+                    $scope.dispalyTxt = 'Cancelled';
                     $scope.proejctsToDisplay.push(val);
                 }
             } else if ($scope.displayType == 'headsUp') {
@@ -21515,6 +21615,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }
         });
+
+        // angular.forEach(data, function (val, i) {
+        //     if ($scope.displayType == 'All') {
+        //         $scope.dispalyTxt = 'All';
+        //         $scope.proejctsToDisplay = data;
+        //     } else if ($scope.displayType == '4') {
+        //         if (val.projectStatus == 4) {
+        //             $scope.dispalyTxt = 'In progress';
+        //             $scope.proejctsToDisplay.push(val);
+        //         }
+        //     } else if ($scope.displayType == 4) {
+        //         if (val.projectStatus == 4) {
+        //             $scope.dispalyTxt = 'In progress';
+        //             $scope.proejctsToDisplay.push(val);
+        //         }
+        //     } else if ($scope.displayType == 'headsUp') {
+        //         if (val.heads_up == 1) {
+        //             $scope.dispalyTxt = 'headsUp';
+        //             $scope.proejctsToDisplay.push(val);
+        //         }
+        //     }
+        // });
     });
 
     $scope.viewProejct = (orderId) => {
