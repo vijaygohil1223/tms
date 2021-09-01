@@ -15798,7 +15798,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                         var hrefClass = 'attachment';
                         var hrefTarget = '_blank';
-                        filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src="http://tms.kanhasoftdev.com/uploads/discussionfile/cloud-based-banner-img_1630038987766.jpeg?v=1630046928230"></a>';
+                        filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>'+ filehtml +'</a>';
 
                     }
                     if (val.user_id == loginid) {
@@ -15820,6 +15820,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }
                     }
+                    if (file_type == 'image') {
+                        $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
+                    }
+
                     // ------------ Script for date seperating in chat box --------------//
                     var ndt = new Date(data[i].created);
                     var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
