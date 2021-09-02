@@ -21885,10 +21885,45 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobsToDisplay.push(val);
                     $scope.jobDispalyTxt = 'Requested';
                 }
+            } else if ($scope.jobDisplayType == 'tobeAssigned') {
+                if (val.item_status == 'In preparation') {
+                    $scope.jobsToDisplay.push(val);
+                    $scope.jobDispalyTxt = 'In preparation';
+                }
             } else if ($scope.jobDisplayType == 'inProgress') {
                 if (val.item_status == 'In-progress') {
                     $scope.jobsToDisplay.push(val);
                     $scope.jobDispalyTxt = 'In Progress';
+                }
+            } else if ($scope.jobDisplayType == 'jobTobeDilevered') {
+                if (val.item_status == 'Ready to be Delivered') {
+                    $scope.jobsToDisplay.push(val);
+                    $scope.jobDispalyTxt = 'Ready to be Delivered';
+                }
+            } else if ($scope.jobDisplayType == 'jobDilevered') {
+                if (val.item_status == 'Delivered') {
+                    $scope.jobsToDisplay.push(val);
+                    $scope.jobDispalyTxt = 'Delivered';
+                }
+            } else if ($scope.jobDisplayType == 'jobApproved') {
+                if (val.item_status == 'Approved') {
+                    $scope.jobsToDisplay.push(val);
+                    $scope.jobDispalyTxt = 'Approved';
+                }
+            } else if ($scope.jobDisplayType == 'jobInvoiced') {
+                if (val.item_status == 'Invoice Accepted') {
+                    $scope.jobsToDisplay.push(val);
+                    $scope.jobDispalyTxt = 'Invoice Accepted';
+                }
+            } else if ($scope.jobDisplayType == 'jobPaid') {
+                if (val.item_status == 'Paid') {
+                    $scope.jobsToDisplay.push(val);
+                    $scope.jobDispalyTxt = 'Paid';
+                }
+            } else if ($scope.jobDisplayType == 'jobWithoutInvoiced') {
+                if (val.item_status == 'Without invoice') {
+                    $scope.jobsToDisplay.push(val);
+                    $scope.jobDispalyTxt = 'Without Invoice';
                 }
             } else if ($scope.jobDisplayType == 'DueToday') {
                 if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
