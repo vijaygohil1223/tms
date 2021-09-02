@@ -1091,41 +1091,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $('#jobNewTbl_info').parent().remove();
             $('#jobNewTbl_paginate').parent().addClass('pull-right');
 
-            //$('#inProgerssTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Job in Progerss</h4>');
-            $("#inProgerssTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Job in Progerss</h4></div>');
+            $('#inProgerssTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Job in Progerss</h4>');
+            //$("#inProgerssTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Job in Progerss</h4></div>');
             //$('#inProgerssTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
             //$('#inProgerssTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
             //$("#inProgerssTbl_filter").find('label').find('input').attr('id', 'Search_All');
-            $("#inProgerssTbl_filter").parent().remove();
-            $('#inProgerssTbl_info').parent().remove();
-            $('#inProgerssTbl_paginate').parent().addClass('pull-right');
+            
+            // $("#inProgerssTbl_filter").parent().remove();
+            // $('#inProgerssTbl_info').parent().remove();
+            // $('#inProgerssTbl_paginate').parent().addClass('pull-right');
 
-            //$('#readyToBeDeliveredTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Ready to be Delivered</h4>');
-            $("#readyToBeDeliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Ready to be Delivered</h4></div>');
+            $('#readyToBeDeliveredTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Ready to be Delivered</h4>');
+            //$("#readyToBeDeliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Ready to be Delivered</h4></div>');
             //$('#readyToBeDeliveredTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
             //$('#readyToBeDeliveredTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
             //$("#readyToBeDeliveredTbl_filter").find('label').find('input').attr('id', 'Search_All');
-            $("#readyToBeDeliveredTbl_filter").parent().remove();
-            $('#readyToBeDeliveredTbl_info').parent().remove();
-            $('#readyToBeDeliveredTbl_paginate').parent().addClass('pull-right');
+            
+            // $("#readyToBeDeliveredTbl_filter").parent().remove();
+            // $('#readyToBeDeliveredTbl_info').parent().remove();
+            // $('#readyToBeDeliveredTbl_paginate').parent().addClass('pull-right');
 
-            //$('#deliveredTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Delivered</h4>');
-            $("#deliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Delivered</h4></div>');
+            $('#deliveredTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Delivered</h4>');
+            //$("#deliveredTbl_wrapper .row:first").prepend('<div class="col-sm-6"><h4>Jobs Delivered</h4></div>');
             //$('#deliveredTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
             //$('#deliveredTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
             //$("#deliveredTbl_filter").find('label').find('input').attr('id', 'Search_All');
-            $("#deliveredTbl_filter").parent().remove();
-            $('#deliveredTbl_info').parent().remove();
-            $('#deliveredTbl_paginate').parent().addClass('pull-right');
+            // $("#deliveredTbl_filter").parent().remove();
+            // $('#deliveredTbl_info').parent().remove();
+            // $('#deliveredTbl_paginate').parent().addClass('pull-right');
 
-            //$('#completedTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Completed</h4>');
-            $("#completedTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Jobs Completed</h4></div>');
+            $('#completedTbl_wrapper').children().first().parent().prepend('<h4 style="float: left;">Jobs Completed</h4>');
+            //$("#completedTbl_wrapper .row:first").prepend('<div class="col-sm-5"><h4>Jobs Completed</h4></div>');
             //$('#completedTbl_wrapper .dataTables_length').parent().removeClass('col-sm-6').addClass('col-sm-3');
             //$('#completedTbl_filter').parent().removeClass('col-sm-6').addClass('col-sm-3');
             //$("#completedTbl_filter").find('label').find('input').attr('id', 'Search_All');
-            $("#completedTbl_filter").parent().remove();
-            $('#completedTbl_info').parent().remove();
-            $('#completedTbl_paginate').parent().addClass('pull-right');
+            // $("#completedTbl_filter").parent().remove();
+            // $('#completedTbl_info').parent().remove();
+            // $('#completedTbl_paginate').parent().addClass('pull-right');
 
             var oTablejobNewTbl = $("#jobNewTbl").dataTable();
             $("#jobNewTbl").keyup(function () {
@@ -15820,7 +15822,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }
                     }
-                    if (file_type == 'image') {
+                    if (file_type == 'image' || file_type == 'video' ) {
                         $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                     }
 

@@ -424,7 +424,7 @@ td { font-size: 11px; } */
   <!-- / menu -->
   <!-- view -->
   <div flex layout="column">
-    <div ui-butterbar></div>
+    <!-- <div ui-butterbar></div> -->
     <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
     <div class="md-content page_content_wrapper">
       <!-- <div class="content_head bg-light lt b-b wrapper-md">
@@ -1680,7 +1680,7 @@ td { font-size: 11px; } */
                 <div class="white_box panel panel-default">
                   <div class="table-responsive">
                     <!-- <h4 class="" style="position: relative;top: 25px;margin-left: 5px;">Job in Progerss</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="inProgerssTbl">
+                    <table class="table table-striped b-t b-b" datatable="ng" id="inProgerssTbl" dt-options="DtTblOption">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -1737,7 +1737,7 @@ td { font-size: 11px; } */
                 <div class="white_box panel panel-default">
                   <div class="table-responsive">
                     <!-- <h4 class="" style="position: relative;top: 25px;margin-left: 5px;">Jobs Ready to be Delivered</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="readyToBeDeliveredTbl" dt-options="">
+                    <table class="table table-striped b-t b-b" datatable="ng" id="readyToBeDeliveredTbl"  dt-options="DtTblOption">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -1793,7 +1793,7 @@ td { font-size: 11px; } */
                   <div class="table-responsive">
                     <!-- <h4 class="" style="position: relative;top: 25px;margin-left: 5px;">Jobs Delivered</h4> -->
                     <table class="table table-striped b-t b-b" datatable="ng" id="deliveredTbl" datatable="ng"
-                      dt-options="">
+                    dt-options="DtTblOption">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -1849,7 +1849,7 @@ td { font-size: 11px; } */
                 <div class="white_box panel panel-default">
                   <div class="table-responsive">
                     <!-- <h4 class="" style="position: relative;top: 25px;margin-left: 5px;">Jobs Completed</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="completedTbl" dt-options="">
+                    <table class="table table-striped b-t b-b" datatable="ng" id="completedTbl"  dt-options="DtTblOption">
                       <thead>
                         <tr>
                           <th>#</th>
