@@ -2016,13 +2016,41 @@ td { font-size: 11px; } */
                       </div>
                     </div>
                     <div class="list-group no-radius alt">
-                      <li class="list-group-item">
+                      <!-- <li class="list-group-item">
                         <span class="badge bg-info">{{jobRequestesCount}}</span><a href="javascript:void(0)"
                           ng-click="goTojobsList('Requested',jobRequestesCount)">Requested</a>
+                      </li> -->
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobTobeAssignedCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('tobeAssigned',jobTobeAssignedCount)">To be Assigned</a>
                       </li>
                       <li class="list-group-item">
                         <span class="badge bg-info">{{jobInProgressCount}}</span><a href="javascript:void(0)"
                           ng-click="goTojobsList('inProgress',jobInProgressCount)">In progress</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobTobeDileveredCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('jobTobeDilevered',jobTobeDileveredCount)">To be Dilevered </a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobDileveredCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('jobDilevered',jobDileveredCount)">Dilevered</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobApprovedCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('jobApproved',jobApprovedCount)">Approved</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobInvoicedCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('jobInvoiced',jobInvoicedCount)">Invoiced</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobPaidCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('jobPaid',jobPaidCount)">Paid</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{jobWithoutInvoicedCount}}</span><a href="javascript:void(0)"
+                          ng-click="goTojobsList('jobWithout',jobWithoutInvoicedCount)">Without Invoiced</a>
                       </li>
                       <li class="list-group-item">
                         <span class="badge bg-info">{{jobDueTodayCount}}</span><a href="javascript:void(0)"
@@ -2032,10 +2060,10 @@ td { font-size: 11px; } */
                         <span class="badge bg-info">{{jobDueTomorrowCount}}</span><a href="javascript:void(0)"
                           ng-click="goTojobsList('DueTomorrow',jobDueTomorrowCount)">Due tomorrow</a>
                       </li>
-                      <li class="list-group-item">
+                      <!-- <li class="list-group-item">
                         <span class="badge bg-info">{{jobOverDueCount}}</span><a href="javascript:void(0)"
                           ng-click="goTojobsList('Overdue',jobOverDueCount)">Overdue</a>
-                      </li>
+                      </li> -->
                     </div>
                   </div>
                 </div>

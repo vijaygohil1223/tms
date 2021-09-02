@@ -1100,6 +1100,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.jobDueTomorrowCount = jobDueTomorrowCount;
                 $scope.jobOverDueCount = jobOverDueCount;
 
+                $scope.jobTobeAssignedCount = jobTobeAssignedCount;
+                $scope.jobTobeDileveredCount = jobTobeDileveredCount;
+                $scope.jobDileveredCount = jobDileveredCount;
+                $scope.jobApprovedCount = jobApprovedCount;
+                $scope.jobInvoicedCount = jobInvoicedCount;
+                $scope.jobPaidCount = jobPaidCount;
+                $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
+
             }, 100);
         }).error(errorCallback);
     };
