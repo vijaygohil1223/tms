@@ -1009,7 +1009,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var jobApproved = [];
             var jobInvoiced = [];
             var jobPaid = [];
-            var jobWithoutInvoice = [];
+            var jobWithoutInvoiced = [];
             var jobCancelled = [];
 
             // -- Job count -- //
@@ -1108,7 +1108,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.jobPaidCount = jobPaidCount;
                 $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
 
-            }, 1000);
+            }, 200);
         }).error(errorCallback);
     };
 
