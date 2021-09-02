@@ -1108,7 +1108,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.jobPaidCount = jobPaidCount;
                 $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
 
-            }, 100);
+            }, 500);
         }).error(errorCallback);
     };
 

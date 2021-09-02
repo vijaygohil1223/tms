@@ -208,6 +208,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page li.seperatordate.comment{margin-bottom: 50px !important;}
 
 /* incomming msg section */
+.discussion_page .livemsg{background: #fff; padding: 15px 15px 15px; border-radius: 10px;}
 .discussion_page .livemsg .pull-left .usrname{left: 40px; right: unset;}
 .discussion_page .livemsg .pull-left .usrname .usrnamespan{display: block; color: #b4b6b9 !important; top: -17px !important; font-size: 12px; margin: 0;}
 .discussion_page .jquery-comments ul.main li.comment .imgblock{background: none !important; padding: 0;}
