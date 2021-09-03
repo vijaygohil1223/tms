@@ -35,9 +35,10 @@ table tbody tr{background: #fff; overflow: hidden;}
 table tbody tr:nth-child(odd) td{background: #fff;}
 table tbody tr td{background: unset; text-align: left !important; border-top: 3px solid #f4f4fb; border-bottom: 0 !important; border-color: #f4f4fb !important;}
 table tbody tr:first-child td{border-top: 0 !important;}
-col-md-4 statusBoxtable tbody tr:nth-of-type(odd) td{background: #fff !important;}
+table tbody tr:nth-of-type(odd) td{background: #fff !important;}
 
 /* modal */
+.modal-dialog .modal-body .content_head{background-color: #f4f4fb; padding: 0;}
 .modal-dialog .modal-content .modal-header{display: flex; justify-content: space-between;}
 .modal-dialog .modal-content .modal-header .modal-title{display: flex; align-items: center; justify-content: space-between; width: 100%;}
 
@@ -156,7 +157,12 @@ div.dataTables_length select{margin: 0 5px;}
 .page_content_wrapper .white_box_wrapper .white_box .list-group-item > a{color: #4e2fc4; text-decoration: none;}
 .page_content_wrapper .white_box_wrapper .white_box .list-group-item > a:hover{text-decoration: underline;}
 
+
 .page_content_wrapper .white_box_wrapper .white_box .dataTables_wrapper .dataTables_paginate{position: relative;}
+
+.page_content_wrapper .white_box_wrapper .chid-tables .white_box .dataTables_wrapper > h4{margin-left: 15px;}
+.page_content_wrapper .white_box_wrapper .chid-tables .white_box .dataTables_wrapper .dataTables_paginate{margin-right: 15px;}
+.page_content_wrapper .white_box_wrapper .chid-tables .white_box .dataTables_wrapper .pull-right .dataTables_length{margin-right: 15px;}
 
 
 /* ----- resoures page ------ */
