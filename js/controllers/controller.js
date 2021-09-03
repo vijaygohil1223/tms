@@ -1003,14 +1003,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var completed = [];
             var pendingPo = [];
             // ---- new added status ----- //
-            var jobTobeAssigned = [];
-            var jobCompletedbyLinguist = [];
-            var jobQaReady = [];
-            var jobApproved = [];
-            var jobInvoiced = [];
-            var jobPaid = [];
-            var jobWithoutInvoiced = [];
-            var jobCancelled = [];
+            // var jobTobeAssigned = [];
+            // var jobCompletedbyLinguist = [];
+            // var jobQaReady = [];
+            // var jobApproved = [];
+            // var jobInvoiced = [];
+            // var jobPaid = [];
+            // var jobWithoutInvoiced = [];
+            // var jobCancelled = [];
 
             // -- Job count -- //
             var jobRequestesCount = 0;
@@ -1019,15 +1019,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var jobDueTomorrowCount = 0;
             var jobOverDueCount = 0;
             // ----  New status job count  ---- //
-            var jobTobeAssignedCount = 0;
-            var jobLinguistCount = 0;
-            var jobTobeDileveredCount = 0;
-            var jobDileveredCount = 0;
-            var jobApprovedCount = 0;
-            var jobInvoicedCount = 0;
-            var jobPaidCount = 0;
-            var jobWithoutInvoicedCount = 0;
-            var jobCancelledCount = 0;
+            // var jobTobeAssignedCount = 0;
+            // var jobLinguistCount = 0;
+            // var jobTobeDileveredCount = 0;
+            // var jobDileveredCount = 0;
+            // var jobApprovedCount = 0;
+            // var jobInvoicedCount = 0;
+            // var jobPaidCount = 0;
+            // var jobWithoutInvoicedCount = 0;
+            // var jobCancelledCount = 0;
 
 
             angular.forEach($scope.dashboardJobList, function(val, i) {
@@ -1045,31 +1045,35 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 } else if (val.item_status == 'Requested') {
                     Requested.push(val);
                     jobRequestesCount++;
-                } else if (val.item_status == 'In preparation') {
-                    jobTobeAssigned.push(val);
-                    jobTobeAssignedCount++;
                 } else if (val.item_status == 'In-progress') {
                     inProgerss.push(val);
                     jobInProgressCount++;
                 } else if (val.item_status == 'Ready to be Delivered') {
                     readyToBeDelivered.push(val);
                     jobTobeDileveredCount++;
-                } else if (val.item_status == 'Delivered') {
-                    delivered.push(val);
-                    jobDileveredCount++;
-                } else if (val.item_status == 'Approved') {
-                    jobApproved.push(val);
-                    jobApprovedCount++;
-                } else if (val.item_status == 'Invoice Accepted') {
-                    jobInvoiced.push(val);
-                    jobInvoicedCount++;
-                } else if (val.item_status == 'Paid') {
-                    jobPaid.push(val);
-                    jobPaidCount++;
-                } else if (val.item_status == 'Without invoice') {
-                    jobWithoutInvoiced.push(val);
-                    jobWithoutInvoicedCount++;
-                } else if (val.item_status == 'Completed') {
+                }
+                // else if (val.item_status == 'In preparation') {
+                //     jobTobeAssigned.push(val);
+                //     jobTobeAssignedCount++;
+                // }
+                // else if (val.item_status == 'Delivered') {
+                //     delivered.push(val);
+                //     jobDileveredCount++;
+                // }
+                // else if (val.item_status == 'Approved') {
+                //     jobApproved.push(val);
+                //     jobApprovedCount++;
+                // } else if (val.item_status == 'Invoice Accepted') {
+                //     jobInvoiced.push(val);
+                //     jobInvoicedCount++;
+                // } else if (val.item_status == 'Paid') {
+                //     jobPaid.push(val);
+                //     jobPaidCount++;
+                // } else if (val.item_status == 'Without invoice') {
+                //     jobWithoutInvoiced.push(val);
+                //     jobWithoutInvoicedCount++;
+                // }
+                 else if (val.item_status == 'Completed') {
                     completed.push(val);
                 }
 
@@ -1100,13 +1104,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.jobDueTomorrowCount = jobDueTomorrowCount;
                 $scope.jobOverDueCount = jobOverDueCount;
 
-                $scope.jobTobeAssignedCount = jobTobeAssignedCount;
-                $scope.jobTobeDileveredCount = jobTobeDileveredCount;
-                $scope.jobDileveredCount = jobDileveredCount;
-                $scope.jobApprovedCount = jobApprovedCount;
-                $scope.jobInvoicedCount = jobInvoicedCount;
-                $scope.jobPaidCount = jobPaidCount;
-                $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
+                // $scope.jobTobeAssignedCount = jobTobeAssignedCount;
+                // $scope.jobTobeDileveredCount = jobTobeDileveredCount;
+                // $scope.jobDileveredCount = jobDileveredCount;
+                // $scope.jobApprovedCount = jobApprovedCount;
+                // $scope.jobInvoicedCount = jobInvoicedCount;
+                // $scope.jobPaidCount = jobPaidCount;
+                // $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
 
             }, 200);
         }).error(errorCallback);
@@ -15727,42 +15731,47 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $scope.general = data;
         //console.log("$scope.general", $scope.general);
         // $scope.properties = JSON.parse($scope.general.properties);
-        var properties = [];
-        if ($scope.general.properties) {
-            angular.forEach(JSON.parse($scope.general.properties), function(val, i) {
-                rest.path = 'generalPropertiesView/' + val;
-                rest.get().success(function(data) {
-                    angular.element('#' + i).html(data);
-                })
-                properties.push({
-                    id: i
-                });
-            })
-        }
-        $scope.properties = properties;
-        $scope.item_number = data;
+        // var properties = [];
+        // if ($scope.general.properties) {
+        //     angular.forEach(JSON.parse($scope.general.properties), function(val, i) {
+        //         rest.path = 'generalPropertiesView/' + val;
+        //         rest.get().success(function(data) {
+        //             angular.element('#' + i).html(data);
+        //         })
+        //         properties.push({
+        //             id: i
+        //         });
+        //     })
+        // }
+        //$scope.properties = properties;
+        //$scope.item_number = data;
 
         //$scope.general.order_date = $scope.general.order_date;
-        $scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
-
+        //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
         $scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
         $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY");
-        if ($scope.general.order_date == undefined) {
-            var currentdate = new Date();
-            $scope.general.order_date = getDatetime(currentdate);
-        }
+        
+        if($scope.general.expected_start_date){
+            $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
+            $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
+        }        
+        
+        // if ($scope.general.order_date == undefined) {
+        //     var currentdate = new Date();
+        //     $scope.general.order_date = getDatetime(currentdate);
+        // }
         $scope.generaldata = {};
-        $scope.generaldata.order_no = $window.localStorage.orderNo;
-        $scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+        //$scope.generaldata.order_no = $window.localStorage.orderNo;
+        //$scope.generaldata.abbrivation = $window.localStorage.abbrivation;
 
         if ($scope.general == null) {
             $scope.general = {};
             $scope.generaldata = {};
-            $scope.generaldata.order_no = $window.localStorage.orderNo;
-            $scope.generaldata.abbrivation = $window.localStorage.abbrivation;
-            if ($scope.general.order_no == "") {
+            //$scope.generaldata.order_no = $window.localStorage.orderNo;
+            //$scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+            // if ($scope.general.order_no == "") {
 
-            }
+            // }
         }
     }).error(errorCallback);
 
@@ -15776,7 +15785,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.projectPriceChat += val.total_price;
                 }
             });
-            console.log('alltotal',$scope.projectPriceChat);
+            //console.log('alltotal',$scope.projectPriceChat);
                     
         });        
     }    
@@ -16077,8 +16086,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
         el[0].emojioneArea.on("emojibtn.click", function() {
             const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-            const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
-            //const emoji = '<img class="emojiImg" src="'+emoji1+'">';
+            //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+            const emoji = '<img class="emojiImg" src="'+emoji1+'">';
             $('.textarea').append(emoji);
         });
 

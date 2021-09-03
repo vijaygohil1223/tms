@@ -316,23 +316,23 @@ li.seperatordate.comment {
                         <li class="deadline">
                           <i class="fa fa-flag-checkered" aria-hidden="true"></i>
                           <div class="caption">
-                            <div class="Delivery-date">17 December, 2019<label>Estimated delivery</label></div>
-                            <div class="startDate"><strong>Started:</strong> 15 December, 2019</div>
+                            <div class="Delivery-date">{{general.due_date}}<label>Estimated delivery</label></div>
+                            <div class="startDate"><strong>Started:</strong> {{general.expected_start_date}}</div>
                           </div>
                         </li>
                         <li class="task-price">
                           <div class="caption">
                             <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                            <label>Task Price</label>
+                            <label>Project Price</label>
                           </div>
-                          <span class="price">$99.00 (1 Credit)</span>
+                          <span class="price">{{projectPriceChat | CurrencyNumbersCommaformat}}</span>
                         </li>
                         <li class="userSection">
                           <div class="user-info">
                             <label>Assigned to:</label>
-                            <div class="user-name"><span id="managerDesignation">Bjorn jonsson</span><span class="designation">Senior Front-end developer</span></div>
+                            <div class="user-name"><span id="managerDesignation"> </span><span class="designation">Project Manager</span></div>
                           </div>
-                          <figure class="managerIcon"><img class="img-full" src="uploads/profilePic/1546238296.jpg" alt="use-img"></figure>
+                          <figure class="managerIcon"> </figure>
                         </li>
                       </ul>
                     </nav>
@@ -347,3 +347,14 @@ li.seperatordate.comment {
     </div>
   </div>
 </div>
+
+<script>
+  
+  $( document ).ready(function() {  
+    setTimeout(() => {
+      // jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+      // jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+    }, 100);
+  });
+
+</script>

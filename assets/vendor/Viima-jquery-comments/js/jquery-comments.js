@@ -2357,7 +2357,7 @@
             textareaClone.find('#addemoji').html;
             var ce = $('<pre/>').html(textareaClone.html());
             ce.find('div, p, br').replaceWith(function() { return '\n' + this.innerHTML; });
-
+            console.log('ce',ce);
             // Trim leading spaces
             var text = ce.text().replace(/^\s+/g, '');
 
@@ -2379,9 +2379,11 @@
 
 
         getTextareaContentAsEscapedHTML: function(html) {
+            //console.log('html',html);
             // Escaping HTML except the new lines
-            var escaped = this.escape(html);
-            return escaped.replace(/(?:\n)/g, '<br>');
+            //var escaped = this.escape(html);
+            //return escaped.replace(/(?:\n)/g, '<br>');
+            return html;
         },
 
         moveCursorToEnd: function(el) {
