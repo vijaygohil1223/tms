@@ -658,6 +658,10 @@
                                     $('li[data-id=' + commentJSON.id + ']').find('.wrapper').addClass('imgblock');
                                 }
                                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
+                                
+                                //let totalAttachment = 0;
+                                let totalAttachment = $('#attachment-list').find('li .attachment').length;
+                                $('.att_count').text(totalAttachment);
                             }, 2000);
 
                         });
@@ -970,7 +974,7 @@
             var sendButton = $(ev.currentTarget);
             var commentingField = sendButton.parents('.commenting-field').first();
             var textarea = commentingField.find('.textarea');
-
+            console.log('textarea',textarea);
             // Disable send button while request is pending
             sendButton.removeClass('enabled');
 
@@ -979,6 +983,8 @@
 
             // Reverse mapping
             commentJSON = this.applyExternalMappings(commentJSON);
+
+            console.log('commentJSON=emoji',commentJSON);
 
             var success = function(commentJSON) {
                 self.createComment(commentJSON);
@@ -1756,7 +1762,7 @@
             attachments.prepend(attachmentsCount);
 
             setTimeout(() => {
-                $(".att_count").text('5');
+                //$(".att_count").text('5');
             }, 2000);
             // Responsive navigation
             var dropdownNavigationWrapper = $('<div/>', {

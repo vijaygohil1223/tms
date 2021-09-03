@@ -15706,11 +15706,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     //$routeParams.id;
     rest.path = 'contactPerson';
     rest.model().success(function(data) {
+        console.log('contactperson-data',data);
         angular.forEach(data, function(val, i) {
             if (val.vResourcePosition == 3) {
                 angular.element('#coordinator').html(val.vUserName);
             } else if (val.vResourcePosition == 2) {
-                angular.element('#manager').html(val.vUserName);
+                angular.element('#managerDesignation').html(val.vUserName);
+                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.managerIcon').html(managerpic);
+                
             } else if (val.vResourcePosition == 4) {
                 angular.element('#QASpecialist').html(val.vUserName);
             }
@@ -15761,6 +15765,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         }
     }).error(errorCallback);
+
+    $scope.projectPriceChat = 0;
+    if ($routeParams.id) {   
+        rest.path = 'itemsGet/' + $routeParams.id;
+        rest.get().success(function(data) {
+            angular.forEach(data, function(val, i) {
+                //console.log('total_price',val.total_price);
+                if(val.total_price){
+                    $scope.projectPriceChat += val.total_price;
+                }
+            });
+            console.log('alltotal',$scope.projectPriceChat);
+                    
+        });        
+    }    
 
     if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
         $location.path('/dashboard1');
@@ -15904,6 +15923,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     if (timeText == "Today") {
                         $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
                     }
+                    // ------count total attachment------//
+                    let totalAttachment = 0;
+                    totalAttachment = $('#attachment-list').find('li .attachment').length;
+                    $('.att_count').text(totalAttachment);
+
 
                     if (i > 0) {
                         var ndt1 = new Date(data[i - 1].created);
@@ -16040,6 +16064,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         jQuery("#addemoji").emojioneArea({
             autoHideFilters: true,
             useSprite: true,
+            //accepts values: 'image',
             //default: 'unicode',
             //accepts values: 'unicode' | 'shortname' | 'image'
             //pickerPosition: "bottom"
@@ -16048,25 +16073,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }, 2800);
 
     $timeout(function() {
-        // var el = $("#addemoji").emojioneArea();
-
-        // el[0].emojioneArea.on("emojibtn.click", function () {
-        //     const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-        //     const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
-        //     $('.textarea').append(emoji);
-        // });
-
-        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-        //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-
-    }, 3000);
-
-    $timeout(function() {
         var el = $("#addemoji").emojioneArea();
 
         el[0].emojioneArea.on("emojibtn.click", function() {
             const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
             const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+            //const emoji = '<img class="emojiImg" src="'+emoji1+'">';
             $('.textarea').append(emoji);
         });
 
