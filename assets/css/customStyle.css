@@ -38,9 +38,13 @@ table tbody tr:first-child td{border-top: 0 !important;}
 table tbody tr:nth-of-type(odd) td{background: #fff !important;}
 
 /* modal */
-.modal-dialog .modal-body .content_head{background-color: #f4f4fb; padding: 0;}
-.modal-dialog .modal-content .modal-header{display: flex; justify-content: space-between;}
-.modal-dialog .modal-content .modal-header .modal-title{display: flex; align-items: center; justify-content: space-between; width: 100%;}
+.modal .modal-dialog .modal-body .content_head{background-color: #f4f4fb; padding: 0;}
+.modal .modal-dialog .modal-content .modal-header{display: flex; justify-content: space-between;}
+.modal .modal-dialog .modal-content .modal-header .modal-title{display: flex; align-items: center; justify-content: space-between; width: 100%;}
+
+/* modal bootbox */
+.modal.bootbox .modal-dialog .modal-content .modal-header{display: block;}
+.modal.bootbox .modal-dialog .modal-content .modal-header .modal-title{display: block; width: auto;}
 
 /* tooltip */
 .mytooltip .mytooltip_div{background-color: #e6e9ef !important; color: #454f59 !important; z-index: 2 !important;}
