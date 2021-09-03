@@ -290,51 +290,50 @@ li.seperatordate.comment {
                 <div id="comments-container"></div>
               </div>
               <div class="col-md-4 statusBox">
-                <div style="margin-bottom: 8px;"> <span
-                    style="padding:0px 15px 10px 15px"><b>Status</b></span> </div>
+                <span style="display: inline-block; padding:0px 20px 10px 20px"><b>Status</b></span> 
                 <div class="navside white r box-shadow-z0 nav-center" layout="column">
                   <div flex-no-shrink=""
                     style="background:#fff; border-radius: 5px;">
                     <nav ui-nav="">
                       <ul class="nav">
-
-                        <li class="no-bg"><a>
-                            <!-- <span class="nav-icon"><i class="material-icons"></i></span> -->
+                        <li>
                             <span class="nav-text">
-                              <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs"
-                                  style="color: {{general.status_color}}"></i> {{general.project_status}}</span>
-                              <small class="block text-muted"> </small></span></a>
-                        </li>
-                        <li>
-                          <div class="b-b b m-v-sm"></div>
-                        </li>
-                        <li class="no-bg">
-                          <a>
-                            <span class="nav-icon"><i class="fa fa-clock-o"></i></span>
-                            <span class="nav-text">
-                              {{general.due_date}}
-                              <small class="block text-muted">Deadline</small></span></a>
-                        </li>
-                        <li>
-                          <div class="b-b b m-v-sm"></div>
-                        </li>
-                        <li class="no-bg"><a>
-                            <span class="nav-icon"><i class="fa fa-user"></i></span>
-                            <span class="nav-text"><span id="manager"></span><small class="block text-muted">Project
-                                Manager</small></span></a>
-                        </li>
-                        <li>
-                          <div class="b-b b m-v-sm"></div>
-                        </li>
-                        <li class="no-bg"><a>
-                            <span class="nav-icon"><i class="fa fa-indent"></i></span>
-                            <span class="nav-text">{{general.project_price | currencyCommaformat}} USD<small
-                                class="block text-muted">Project Price</small></span></a>
+                              <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs" style="color: {{general.status_color}}"></i> {{general.project_status}}</span>
+                              <small class="block text-muted"> </small></span>
                         </li>
                         <!-- <li>
-                          <div class="b-b b m-t-sm"></div>
+                            <span class="nav-icon"><i class="fa fa-clock-o"></i></span>
+                            <span class="nav-text">{{general.due_date}}<small class="block text-muted">Deadline</small></span>
+                        </li>
+                        <li>
+                            <span class="nav-icon"><i class="fa fa-user"></i></span>
+                            <span class="nav-text"><span id="manager"></span><small class="block text-muted">Project Manager</small></span>
+                        </li>
+                        <li>
+                            <span class="nav-icon"><i class="fa fa-indent"></i></span>
+                            <span class="nav-text">{{general.project_price | currencyCommaformat}} USD<small class="block text-muted">Project Price</small></span>
                         </li> -->
-
+                        <li class="deadline">
+                          <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+                          <div class="caption">
+                            <div class="Delivery-date">17 December, 2019<label>Estimated delivery</label></div>
+                            <div class="startDate"><strong>Started:</strong> 15 December, 2019</div>
+                          </div>
+                        </li>
+                        <li class="task-price">
+                          <div class="caption">
+                            <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                            <label>Task Price</label>
+                          </div>
+                          <span class="price">$99.00 (1 Credit)</span>
+                        </li>
+                        <li class="userSection">
+                          <div class="user-info">
+                            <label>Assigned to:</label>
+                            <div class="user-name"><span id="managerDesignation">Bjorn jonsson</span><span class="designation">Senior Front-end developer</span></div>
+                          </div>
+                          <figure class="managerIcon"><img class="img-full" src="uploads/profilePic/1546238296.jpg" alt="use-img"></figure>
+                        </li>
                       </ul>
                     </nav>
                   </div>

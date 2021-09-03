@@ -28,13 +28,14 @@ a:hover{color: #3615a0; text-decoration: underline;}
 .glyph-icon.fa-times:hover:before{color: #8a0121;}
 
 /* table */
-table{background: #f4f4fb; border-collapse: separate; border-spacing: 0;}
-table thead{background: #edf1f2 !important;}
+table{background: #fff; padding: 5px; border-collapse: separate; border-spacing: 0;}
+table thead{background: #f4f4fb !important}
 table thead tr th{text-align: left !important;}
 table tbody tr{background: #fff; overflow: hidden;}
 table tbody tr:nth-child(odd) td{background: #fff;}
 table tbody tr td{background: unset; text-align: left !important; border-top: 3px solid #f4f4fb; border-bottom: 0 !important; border-color: #f4f4fb !important;}
-table tbody tr:nth-of-type(odd) td{background: #fff !important;}
+table tbody tr:first-child td{border-top: 0 !important;}
+col-md-4 statusBoxtable tbody tr:nth-of-type(odd) td{background: #fff !important;}
 
 /* modal */
 .modal-dialog .modal-content .modal-header{display: flex; justify-content: space-between;}
@@ -129,7 +130,6 @@ div.dataTables_length select{margin: 0 5px;}
 
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > thead{position: sticky; top: 0; z-index: 2;}
 
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td.dataTables_empty{text-align: left;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus{display: inline-flex; align-items: center; background: unset; padding: 5px 10px; border: 0; border-radius: 20px; text-transform: uppercase; font-size: 11px; font-weight: 600;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .badge.bg-warning{background: #ffca01;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_completed{background: rgb(0 137 137 / 20%); color: #008989; margin: 0;}
@@ -164,7 +164,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 
 
 /* ----- discussion-chat page ------ */
-.discussion_page .wrapper-md > .panel-default{background: none;}
+.discussion_page .wrapper-md > .panel-default{background: none; margin-bottom: 0;}
 
 
 /* panel-head */
@@ -215,7 +215,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .jquery-comments ul.main li.comment .imgblock .attachment{display: block; max-width: 250px; width: 100%;}
 .discussion_page .jquery-comments ul.main li.comment .imgblock .attachment img{display: block; max-width: 100% !important; width: 100%; height: auto; max-height: none !important; border-radius: 15px 15px 0 15px;}
 .discussion_page .jquery-comments ul.main li.comment .imgblock .attachment video{max-width: 100% !important; max-height: initial !important;}
-.discussion_page .jquery-comments ul.main li.comment.pull-left .wrapper{background: #e4eaf1 !important; margin-right: 0 !important; margin-left: 40px !important; border-radius: 15px 15px 15px 0px;}
+.discussion_page .jquery-comments ul.main li.comment.pull-left .wrapper{background: #f4f4fb !important; margin-right: 0 !important; margin-left: 40px !important; border-radius: 15px 15px 15px 0px;}
 .discussion_page .jquery-comments ul.main li.comment.pull-left .wrapper.imgblock{background: none !important;}
 .discussion_page .jquery-comments ul.main li.comment.pull-left time{top: -17px !important; color: #b4b6b9; margin-top: 0 !important;}
 .discussion_page .jquery-comments ul.main li.comment.pull-left .imgblock .attachment img{border-radius: 15px 15px 15px 0;}
@@ -223,6 +223,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 /* commenting-field */
 .discussion_page .jquery-comments{display: flex; flex-direction: column;}
 .discussion_page .jquery-comments .commenting-field.main{position: relative; order: 3; margin: 0;}
+.discussion_page .jquery-comments .commenting-field.main .profile-picture{display: none;}
 .discussion_page .jquery-comments .textarea-wrapper{padding-left: 25px;}
 .discussion_page .jquery-comments .textarea-wrapper:before,
 .discussion_page .jquery-comments .textarea-wrapper:after,
@@ -231,7 +232,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .jquery-comments .textarea-wrapper .textarea::-webkit-scrollbar{display: none;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row{position: unset;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span{position: absolute; margin: 0;}
-.discussion_page .jquery-comments .textarea-wrapper .control-row > span.send{right: 10px; top: 10px;}
+.discussion_page .jquery-comments .textarea-wrapper .control-row > span.send{right: 10px; top: 10px; background: #4e2fc4 !important;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload{position: absolute; left: 0; top: 35px; background: none; padding: 0 !important;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload i{color: #ababae; font-size: 18px; transition: 0.2s ease-in-out;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload:hover i{color: #7c7c7c;}
@@ -241,13 +242,30 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 
 /* statusBox */
 .discussion_page .statusBox{max-width: 350px; width: 100%;}
-.discussion_page .statusBox > div > span{position: relative;}
-.discussion_page .statusBox > div > span:after{content: ''; position: absolute; bottom: 0; left: 0; display: block; width: 100%; height: 4px; background: #2793e6; border-radius: 5px 5px 0 0;}
-.discussion_page .statusBox .navside a{display: flex; align-items: flex-start; color: #58666E; padding: 15px; cursor: auto;}
-.discussion_page .statusBox .navside a:hover{background: inherit;}
-.discussion_page .statusBox .navside .nav-text .projstatus{display: inline-flex; align-items: center; color: #008989; padding: 5px 13px; margin: 0; border: 1px solid #008989; border-radius: 0px 15px 15px 15px; white-space: nowrap;}
-.discussion_page .statusBox .navside .nav-text .projstatus .fa-circle{font-size: 9px; margin-right: 5px;}
-.discussion_page .statusBox .navside .b-b{border-bottom: 1px solid #e6e6e6;}
-.discussion_page .statusBox .navside a .nav-icon{display: inline-block;}
-.discussion_page .statusBox .navside a .nav-icon i{font-size: 20px; margin-right: 10px;}
-.discussion_page .statusBox .navside a .nav-text{margin-top: -2px;}
+.discussion_page .statusBox > span{position: relative;}
+.discussion_page .statusBox > span:after{content: ''; position: absolute; bottom: 0; left: 0; display: block; width: 100%; height: 4px; background: #4e2fc4; border-radius: 5px 5px 0 0;}
+.discussion_page .statusBox .navside ul li{display: flex; align-items: flex-start; color: #58666E; letter-spacing: 0.5px; padding: 20px; border-bottom: 1px solid #e6e6e6;}
+.discussion_page .statusBox .navside ul li:last-child{border-bottom: 0;}
+.discussion_page .statusBox .navside ul li .nav-icon{display: inline-block;}
+.discussion_page .statusBox .navside ul li .nav-icon i{font-size: 20px; margin-right: 10px;}
+.discussion_page .statusBox .navside ul li .nav-text{margin-top: -2px;}
+.discussion_page .statusBox .navside ul li .nav-text .projstatus{display: inline-flex; align-items: center; color: #008989; padding: 5px 13px; margin: 0; border: 1px solid #008989; border-radius: 0px 15px 15px 15px; white-space: nowrap;}
+.discussion_page .statusBox .navside ul li .nav-text .projstatus .fa-circle{font-size: 9px; margin-right: 5px;}
+
+.discussion_page .statusBox .navside ul li.deadline i{color: #8e99a8; font-size: 22px; margin: 3px 10px 0 0;}
+.discussion_page .statusBox .navside ul li.deadline .caption .Delivery-date{color: #454f59; font-size: 15px; font-weight: 600; margin-bottom: 15px;}
+.discussion_page .statusBox .navside ul li.deadline .caption .Delivery-date label{display: block; color: #8e99a8; font-size: 12px; line-height: 1; margin: 3px 0 0;}
+.discussion_page .statusBox .navside ul li.deadline .caption .startDate{color: #8e99a8; font-size: 12px; line-height: 1;}
+.discussion_page .statusBox .navside ul li.deadline .caption .startDate strong{color: #454f59;}
+
+.discussion_page .statusBox .navside ul li.task-price{align-items: center; justify-content: space-between;}
+.discussion_page .statusBox .navside ul li.task-price .caption{display: flex; align-items: center; color: #8e99a8;}
+.discussion_page .statusBox .navside ul li.task-price .caption i{color: #8e99a8; font-size: 20px; margin-right: 15px;}
+.discussion_page .statusBox .navside ul li.task-price .caption label{color: #8e99a8; font-size: 16px; line-height: 1; margin: 0;}
+.discussion_page .statusBox .navside ul li.task-price .price{color: #454f59; font-size: 15px; font-weight: 600; }
+
+.discussion_page .statusBox .navside ul li.userSection{align-items: center; justify-content: space-between;}
+.discussion_page .statusBox .navside ul li.userSection .user-info label{display: block; color: #8e99a8;  font-size: 12px; line-height: 1; margin-bottom: 12px;}
+.discussion_page .statusBox .navside ul li.userSection .user-info .user-name{color: #454f59; font-size: 17px; font-weight: 600; }
+.discussion_page .statusBox .navside ul li.userSection .user-info .user-name .designation{display: block; color: #8e99a8; font-size: 12px; font-weight: 400; line-height: 1; margin-top: 3px;}
+.discussion_page .statusBox .navside ul li.userSection figure{display: flex; align-items: center; justify-content: center; background: #f5f5f5; height: 65px; width: 65px; margin: 0 0 0 10px; border: 1px solid #f4f4fb; border-radius: 50%; overflow: hidden;}
