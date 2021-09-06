@@ -1735,7 +1735,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.projectLinguistCount++;
                 }
                 //if (val.projectStatus == 14) {
-                i   f (val.itemStatus == "QA Ready") {
+                if (val.itemStatus == "QA Ready") {
                     val.progrss_precentage = 75;
                     val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#019788';
