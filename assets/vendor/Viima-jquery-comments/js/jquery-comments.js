@@ -2359,15 +2359,15 @@
             textareaClone.find('#addemoji').html;
             var ce = $('<pre/>').html(textareaClone.html());
             ce.find('div, p, br').replaceWith(function() { return '\n' + this.innerHTML; });
-            console.log('ce',ce[0].innerHTML);
             // Trim leading spaces
-            //var text = ce.text().replace(/^\s+/g, '');
+            ce.text().replace(/^\s+/g, '');
             var newce = ce[0].innerHTML;
             var text = newce.replace(/^\s+/g, '');
-
+            //newce.replace(/^\s+/g, '');
             // Normalize spaces
             var text = this.normalizeSpaces(text);
-
+            //ce.find('div, p, br').replaceWith(function() { return '\n' + this.innerHTML; });
+            
             return text;
         },
 
