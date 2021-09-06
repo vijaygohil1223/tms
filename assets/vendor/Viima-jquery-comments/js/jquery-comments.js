@@ -996,7 +996,9 @@
                 }
                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
                 $('li[data-id=' + commentJSON.id + ']').find('.usrnamespan').addClass('hideusername');
-
+                
+                $('li[data-id=' + commentJSON.id + ']').html(commentJSON.content);
+                
             };
 
             var error = function() {
@@ -2357,9 +2359,11 @@
             textareaClone.find('#addemoji').html;
             var ce = $('<pre/>').html(textareaClone.html());
             ce.find('div, p, br').replaceWith(function() { return '\n' + this.innerHTML; });
-            console.log('ce',ce);
+            console.log('ce',ce[0].innerHTML);
             // Trim leading spaces
-            var text = ce.text().replace(/^\s+/g, '');
+            //var text = ce.text().replace(/^\s+/g, '');
+            var newce = ce[0].innerHTML;
+            var text = newce.replace(/^\s+/g, '');
 
             // Normalize spaces
             var text = this.normalizeSpaces(text);

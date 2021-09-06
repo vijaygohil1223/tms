@@ -15685,7 +15685,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $scope.jobchainoption = data;
     }).error(errorCallback)
 
-}).controller('commentController', function($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout) {
+}).controller('commentController', function($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout,$compile) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     var loginid = $window.localStorage.getItem("session_iUserId");
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
@@ -15911,7 +15911,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     if (file_type == 'image' || file_type == 'video') {
                         $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                     }
-
+                    //console.log(val.content)
+                    $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                    //$compile(val.content)($scope);
                     // ------------ Script for date seperating in chat box --------------//
                     var ndt = new Date(data[i].created);
                     var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
@@ -16088,7 +16090,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
             //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
             const emoji = '<img class="emojiImg" src="'+emoji1+'">';
-            $('.textarea').append(emoji);
+             $('.textarea').append(emoji).trigger("change");
+            //$('.textarea').val($('.textarea').val()+emoji);
         });
 
         jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
