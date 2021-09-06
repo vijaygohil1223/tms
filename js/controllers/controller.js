@@ -15930,7 +15930,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                     }
                     //console.log(val.content)
-                    $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                    if(val.content){
+                        $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                    }
                     //$compile(val.content)($scope);
                     // ------------ Script for date seperating in chat box --------------//
                     var ndt = new Date(data[i].created);
