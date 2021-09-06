@@ -997,7 +997,7 @@
                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
                 $('li[data-id=' + commentJSON.id + ']').find('.usrnamespan').addClass('hideusername');
                 
-                $('li[data-id=' + commentJSON.id + ']').html(commentJSON.content);
+                $('li[data-id=' + commentJSON.id + ']').find('.content').html(commentJSON.content);
                 
             };
 
