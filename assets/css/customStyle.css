@@ -2,9 +2,21 @@
 html, body {color: #454f59; background-color: #f4f4fb;}
 body{padding-top: 62px;}
 
-/* padding */
+/* bootstrap default css */
 .p-0{
     padding: 0 !important;
+}
+.pl-0 {
+    padding-left: 0px !important;
+}
+.pr-0 {
+    padding-right: 0px !important;
+}
+.m-0{
+    margin: 0px !important;
+}
+.mb-0 {
+    margin-bottom: 0px !important;
 }
 
 /* anchore */
@@ -48,6 +60,11 @@ table tbody tr td{background: unset; text-align: left !important; border-top: 3p
 table tbody tr:first-child td{border-top: 0 !important;}
 table tbody tr:nth-of-type(odd) td{background: #fff !important;}
 
+/* custom table */
+.custm-table table{border: 0;}
+.custm-table thead tr{background: #f4f4fb !important;}
+.custm-table thead tr th{color: #454f59; border: none !important;}
+
 /* modal */
 .modal .modal-dialog .modal-body .content_head{background-color: #f4f4fb; padding: 0;}
 .modal .modal-dialog .modal-content .modal-header{display: flex; justify-content: space-between;}
@@ -66,6 +83,9 @@ table tbody tr:nth-of-type(odd) td{background: #fff !important;}
 
 /* dataTables_length select */
 div.dataTables_length select{margin: 0 5px;}
+
+/* file upload */
+#filesContainer #multipleupload .ajax-file-upload{background-color: #502dc4 !important; font-size: 14px; font-weight: 600; border-color: #502dc4 !important;}
 
 /* nav-pills */
 .nav-pills.nav-wizard > li .nav-wedge{border-color: #cad0d9 #cad0d9 #cad0d9 transparent;}
@@ -285,6 +305,10 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .statusBox .navside ul li .nav-text{margin-top: -2px;}
 .discussion_page .statusBox .navside ul li .nav-text .projstatus{display: inline-flex; align-items: center; color: #008989; padding: 5px 13px; margin: 0; border: 1px solid #008989; border-radius: 0px 15px 15px 15px; white-space: nowrap;}
 .discussion_page .statusBox .navside ul li .nav-text .projstatus .fa-circle{font-size: 9px; margin-right: 5px;}
+
+.discussion_page .statusBox .navside ul li.projectName i{color: #8e99a8; font-size: 22px; margin: 3px 10px 0 0;}
+.discussion_page .statusBox .navside ul li.projectName .caption .name{color: #454f59; font-size: 15px; font-weight: 600;}
+.discussion_page .statusBox .navside ul li.projectName .caption .name label{display: block; color: #8e99a8; font-size: 12px; line-height: 1; margin: 3px 0 0;}
 
 .discussion_page .statusBox .navside ul li.deadline i{color: #8e99a8; font-size: 22px; margin: 3px 10px 0 0;}
 .discussion_page .statusBox .navside ul li.deadline .caption .Delivery-date{color: #454f59; font-size: 15px; font-weight: 600; margin-bottom: 15px;}
