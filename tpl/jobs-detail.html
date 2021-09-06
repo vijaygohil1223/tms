@@ -56,14 +56,14 @@
                     </ul>
           <div class="panel panel-default" style="margin-top:1%">
             <div class="panel-body">
-            <div class="col-sm-12">
-                                            <div class="col-sm-6" style="background-color:#dcdcdc;border-right: 2px solid #c3c3c3;">
-                                                <div class="col-sm-12">
+            <div class="col-sm-12 p-0">
+                                            <div class="col-sm-6" style="border-right: 1px solid #f4f4fb;">
+                                                <div class="col-sm-12 p-0">
                                                     <div class="form-group workfolw">
                                                         <h4 style="color:#000;">Add new job/workflow</h4>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-5">
+                                                <div class="col-sm-5 p-0">
                                                     <div class="form-group workfolw">
                                                         <select class="form-control m-b job_chain_id" name="item_id" ng-init="jobitem.item_id = 'select'" ng-model="jobitem.item_id" id="jobDropDown" required>
                                                             <option value="select">--Please select Scoop--</option>
@@ -86,13 +86,13 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-1">
+                                                <div class="col-sm-1 p-0">
                                                     <div class="form-group workfolw">
                                                         <a href="javascript:void(0)" ng-click="jobList('1')" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-ok"></i></a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6" style="background-color:#e2e2e2;">
+                                            <div class="col-sm-6">
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
                                                         <h4 style="color:#000;">Action for all items</h4>
@@ -148,7 +148,7 @@
                                                         <input select2-job-detail-resource id="assigndataResource" type="text" class="form-control" name="assignResource" ng-model="assignResource" />
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-1">
+                                                <div class="col-sm-1 p-0">
                                                     <div class="form-group workfolw">
                                                         <a href="javascript:void(0)" ng-click="selectionActionOption(action)" class="btn btn-info btn-sm"><i class="glyphicon glyphicon-ok"></i></a>
                                                     </div>

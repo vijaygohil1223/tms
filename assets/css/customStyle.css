@@ -2,9 +2,20 @@
 html, body {color: #454f59; background-color: #f4f4fb;}
 body{padding-top: 62px;}
 
+/* padding */
+.p-0{
+    padding: 0 !important;
+}
+
 /* anchore */
 a{color: #502dc4;}
 a:hover{color: #3615a0; text-decoration: underline;}
+
+/* select */
+select{color: #3615a0;}
+
+/* default colors */
+.summeryColor{color: #3615a0;}
 
 .form-control{border-color: #ddd;}
 .page_dashboard{overflow-y: hidden;}
@@ -41,6 +52,9 @@ table tbody tr:nth-of-type(odd) td{background: #fff !important;}
 .modal .modal-dialog .modal-body .content_head{background-color: #f4f4fb; padding: 0;}
 .modal .modal-dialog .modal-content .modal-header{display: flex; justify-content: space-between;}
 .modal .modal-dialog .modal-content .modal-header .modal-title{display: flex; align-items: center; justify-content: space-between; width: 100%;}
+
+/* modal envelop icon color */
+.modal .select2-container .summeryColor .fa.fa-envelope.fa-lg{color: #3615a0;}
 
 /* modal bootbox */
 .modal.bootbox .modal-dialog .modal-content .modal-header{display: block;}
@@ -135,14 +149,21 @@ div.dataTables_length select{margin: 0 5px;}
 
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > thead{position: sticky; top: 0; z-index: 2;}
 
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus{display: inline-flex; align-items: center; background: unset; padding: 5px 10px; border: 0; border-radius: 20px; text-transform: uppercase; font-size: 11px; font-weight: 600;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus{display: inline-flex; align-items: center; background: unset; padding: 5px 10px; margin: 0; border: 0; border-radius: 20px; text-transform: uppercase; font-size: 11px; font-weight: 600;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .badge.bg-warning{background: #ffca01;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_completed{background: rgb(0 137 137 / 20%); color: #008989; margin: 0;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_completed{color: #ff9700; background: rgb(255 151 0 / 20%);}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_inprogress{color: #FF9719; background: rgb(255 151 25 / 20%);}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_assigned{color: #e4b500; background: rgb(255 208 25 / 20%)}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_assigned .text-xs{color: #ffca01 !important;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_ready{color: #4848CC; background: rgb(72 72 204 / 20%);}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_delivered{color: #8B008B; background: rgb(139 0 139 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_ready{color: #019788; background: rgb(1 151 136 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_delivered{color: #80bb41; background: rgb(128 187 65 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_tobedelivered{color: #c6d732; background: rgb(198 215 50 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_approved{color: #4caf52; background: rgb(76 175 82 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_invoiced{color: #ea1e63; background: rgb(234 30 99 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_paid{color: #00bcd5; background: rgb(0 188 213 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_withoutInvoice{color: #9e9e9e; background: rgb(158 158 158 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_cancelled{color: #f44237; background: rgb(244 66 55 / 20%);}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_overdue{color: #f44237; background: rgb(244 66 55 / 20%);}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus .text-xs{font-size: 10px; margin: 0px 5px 0 0;}
 
 .panel-default .panel-heading .panel-heading{background-color: #fff !important; border-radius: 10px 10px 0 0;}
@@ -209,6 +230,8 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .jquery-comments ul.main li.comment .usrname{display: flex; align-items: center; top: -20px; right: 40px; white-space: nowrap; text-overflow: ellipsis; margin: 0;}
 .discussion_page .jquery-comments ul.main li.comment .usrname time{position: unset !important; margin-left: 7px !important;}
 
+.discussion_page .jquery-comments ul.main li.comment .emojiImg{width: 20px; height: 20px;}
+
 
 /* Seprator */
 .discussion_page .seperatordate{font-size: 12px; letter-spacing: 0.5px;}
@@ -246,6 +269,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload{position: absolute; left: 0; top: 35px; background: none; padding: 0 !important;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload i{color: #ababae; font-size: 18px; transition: 0.2s ease-in-out;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload:hover i{color: #7c7c7c;}
+.discussion_page .jquery-comments .textarea-wrapper .emojiImg{width: 20px; height: 20px;}
 .discussion_page .commenting-field.main .emojionearea.emojionearea-inline{position: absolute !important; left: 25px; top: 0;}
 .discussion_page .emojionearea .emojionearea-picker.emojionearea-picker-position-top{right: unset !important; left: -44px;}
 .discussion_page .emojionearea .emojionearea-picker.emojionearea-picker-position-top .emojionearea-wrapper:after{right: unset !important; left: 20px;}
@@ -279,3 +303,4 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .statusBox .navside ul li.userSection .user-info .user-name{color: #454f59; font-size: 17px; font-weight: 600; }
 .discussion_page .statusBox .navside ul li.userSection .user-info .user-name .designation{display: block; color: #8e99a8; font-size: 12px; font-weight: 400; line-height: 1; margin-top: 3px;}
 .discussion_page .statusBox .navside ul li.userSection figure{display: flex; align-items: center; justify-content: center; background: #f5f5f5; height: 65px; width: 65px; margin: 0 0 0 10px; border: 1px solid #f4f4fb; border-radius: 50%; overflow: hidden;}
+
