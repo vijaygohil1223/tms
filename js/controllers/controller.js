@@ -2157,11 +2157,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         } else {
                             var dayMon = val[0].split(' ');
                             var fullDate = dayMon[1] + ' ' + dayMon[0] + ' ' + currentYear;
-                            ongoing.push({
-                                'date': fullDate,
-                                'holidayName': val[2],
-                                'holidayStatus': val[3]
-                            });
+                            if(val[0]){
+                                ongoing.push({
+                                    'date': fullDate,
+                                    'holidayName': val[2],
+                                    'holidayStatus': val[3]
+                                });
+                            }
                         }
                     });
 
