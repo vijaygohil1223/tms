@@ -16106,13 +16106,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }, 2800);
 
     $timeout(function() {
-        var el = $("#addemoji").emojioneArea();
 
+        var el = $("#addemoji").emojioneArea();
         el[0].emojioneArea.on("emojibtn.click", function() {
             const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
             //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
             const emoji = '<img class="emojiImg" src="'+emoji1+'">';
              $('.textarea').append(emoji).trigger("change");
+
             //$('.textarea').val($('.textarea').val()+emoji);
         });
 
