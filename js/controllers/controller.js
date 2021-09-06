@@ -1627,7 +1627,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectPaidCount = 0;
     $scope.projectWithoutInvoicedCount = 0;
     $scope.projectCancelledCount = 0;
-
+    $scope.projectOverdueCount = 0;
 
     $scope.allProjectListing = function() {
         //$routeParams.id = 5;
@@ -1707,13 +1707,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                 $scope.projectsAllCount++;
                 val.projectstatus_class = 'projectstatus_common';
+                val.projectstatus_color = '#FFFF';
                 //if (val.projectStatus == 12) {
                 if (val.itemStatus == "To be Assigned") {
                     //if (val.itemStatus == "In preparation") {
                     //To be Assigned
                     val.progrss_precentage = 0;
                     val.projectstatus_class = 'projectstatus_assigned';
-                    val.projectstatus_color = '#F9ED1A';
+                    val.projectstatus_color = '#FAEA3C';
                     $scope.projectsAssigned.push(val);
                     $scope.projectsAssignedCount++;
                 }
@@ -1721,7 +1722,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.itemStatus == "In Progress") {
                     val.progrss_precentage = 25;
                     val.projectstatus_class = 'projectstatus_inprogress';
-                    val.projectstatus_color = '#FF9719';
+                    val.projectstatus_color = '#F9C107';
                     $scope.projectsInProgress.push(val);
                     $scope.projectsInprogressCount++;
                 }
@@ -1729,7 +1730,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.itemStatus == "Completed by linguist") {
                     val.progrss_precentage = 50;
                     val.projectstatus_class = 'projectstatus_completed';
-                    val.projectstatus_color = '#008989';
+                    val.projectstatus_color = '#F89702';
                     $scope.projectsCompletedByLng.push(val);
                     $scope.projectLinguistCount++;
                 }
@@ -1737,35 +1738,52 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.itemStatus == "QA Ready") {
                     val.progrss_precentage = 75;
                     val.projectstatus_class = 'projectstatus_ready';
-                    val.projectstatus_color = '#4848CC';
+                    val.projectstatus_color = '#F75723';
                     $scope.projectsQaready.push(val);
                     $scope.projectsQaReadyCount++;
                 }
                 //if (val.projectStatus == 15) {
                 if (val.itemStatus == "To be Delivered") {
                     val.progrss_precentage = 100;
-                    val.projectstatus_class = 'projectstatus_delivered';
-                    val.projectstatus_color = '#8B008B';
+                    val.projectstatus_class = 'projectstatus_tobedelivered';
+                    val.projectstatus_color = '#CDDC39';
                     $scope.projectsToBeDelivered.push(val);
                     $scope.projectsToBeDeliveredCount++;
                 }
                 if (val.itemStatus == "Delivered") {
                     $scope.projectDileveredCount++;
+                    val.projectstatus_class = 'projectstatus_delivered';
+                    val.projectstatus_color = '#9E9E9E';
                 }
                 if (val.itemStatus == "Approved") {
                     $scope.projectApprovedCount++;
+                    val.projectstatus_class = 'projectstatus_approved';
+                    val.projectstatus_color = '#4CAF51';
                 }
                 if (val.itemStatus == "Invoiced") {
                     $scope.projectInvoicedCount++;
+                    val.projectstatus_class = 'projectstatus_invoiced';
+                    val.projectstatus_color = '#EA1E63';
                 }
                 if (val.itemStatus == "Paid") {
                     $scope.projectPaidCount++;
+                    val.projectstatus_class = 'projectstatus_paid';
+                    val.projectstatus_color = '#F89702';
                 }
                 if (val.itemStatus == "Without invoice") {
                     $scope.projectWithoutInvoicedCount++;
+                    val.projectstatus_class = 'projectstatus_withoutInvoice';
+                    val.projectstatus_color = '#9E9E9E';
                 }
                 if (val.itemStatus == "Cancelled") {
                     $scope.projectCancelledCount++;
+                    val.projectstatus_class = 'projectstatus_cancelled';
+                    val.projectstatus_color = '#3BBCD5';
+                }
+                if (val.itemStatus == "Overdue") {
+                    $scope.projectOverdueCount++;
+                    val.projectstatus_class = 'projectstatus_overdue';
+                    val.projectstatus_color = '#3BBCD5';
                 }
 
                 if (val.DueDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
