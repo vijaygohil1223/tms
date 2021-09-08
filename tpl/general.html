@@ -54,63 +54,33 @@
                     </ul>
           <div class="panel panel-default" style="margin-top:1%">
 
-            <div class="panel-body">
+            <div class="panel-body" style="max-width: 1600px; width: 100%;">
               <form id="item-form">
-                        <div class="col-sm-12" style="margin-top:15px;">
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label>Project Number:</label>
-                                    <!-- <br> -->
-                                    <!-- <strong name="order_number_id" id="order_number_id">{{general.order_no}}</strong> -->
-                                </div>
+                        <div class="d-flex w-100 col-sm-12" style="margin-top:15px;">
+                            <div class="d-flex align-center">
+                                <label class="no-wrap">Project Number:</label>
+                                <input style="border: none;background-color: #fff;font-weight: bold;cursor: text; padding: 0;" type="text" class="form-control" name="order_number_id" id="order_number_id" ng-model="general.order_no" readonly />
                             </div>
-                            <div class="col-sm-2">
-                                
-                                    <input style="border: none;background-color: #fff;font-weight: bold;cursor: text;margin-left:-74px;margin-top:-8px;" type="text" class="form-control" name="order_number_id" id="order_number_id" ng-model="general.order_no" readonly />
+                            <div class="d-flex align-center">
+                                <label class="no-wrap">Project Date:</label>
+                                <input style="border: none;background-color: #fff;font-weight: bold;cursor: text; padding: 0;" type="text" class="form-control" name="order_date" id="order_date" ng-model="general.order_date" readonly/>
                             </div>
-                            <!-- <div class="col-sm-4">
-                           <div class="form-group">
-                                <label>Project Name</label>
-                                <input type="text" class="form-control" name="project_name" ng-model="general.project_name" ngCapitalize required ng-disabled="ProjectNameDisbale" readonly>
-                            </div> 
-                        </div> -->
-                            <div class="col-sm-2" style="margin-left:-100px">
-                                <div class="form-group">
-                                    <label>Project Date:</label>
-                                    <!-- <br> -->
-                                    <!-- <strong name="order_date" id="order_date">{{general.order_date}}</strong> -->
-                                </div>
+                            <div class="d-flex align-center">
+                                <label class="no-wrap">Heads-up</label>
+                                <label class="i-checks i-checks-sm" style="padding-top:0px;">
+                                    <input type="checkbox" name="heads_up" ng-true-value="1" ng-false-value="0" ng-model="general.heads_up" ng-click="headsUpClick()" ng-checked="general.heads_up == 1" class="ng-pristine ng-untouched ng-valid" ng-disabled="general.expected_start_date">
+                                    <i></i>
+                                </label>
                             </div>
-                            <div class="col-sm-3">
-                                
-                                    <input style="border: none;background-color: #fff;font-weight: bold;cursor: text;margin-left: -94px;margin-top: -8px;" type="text" class="form-control" name="order_date" id="order_date" ng-model="general.order_date" readonly/>
-                            </div>
-                            <div class="col-sm-2" style="margin-left: -147px;">
-                                    
-                                <div class="">
-                                    <label>Heads-up</label>
-                                    <label class="i-checks i-checks-sm" style="padding-top:0px;">
-                                        <input type="checkbox" name="heads_up" ng-true-value="1" ng-false-value="0" ng-model="general.heads_up" ng-click="headsUpClick()" ng-checked="general.heads_up == 1" class="ng-pristine ng-untouched ng-valid" ng-disabled="general.expected_start_date">
-                                        <i></i>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-3" ng-if="general.heads_up == 1">
+                            <div ng-if="general.heads_up == 1">
                                 <label>Expected Project Start Date</label>
-                                    <input ng-datetimepicker1 id="expected_start_date" type="text" class="form-control end-date" name="expected_start_date" ng-model="general.expected_start_date" required onkeydown="return false" ng-disabled="general.expected_start_date"/>
-                                    <!-- style="height:25px !important;" placeholder="Enter Expected Project Start Date" -->
+                                <input ng-datetimepicker1 id="expected_start_date" type="text" class="form-control end-date" name="expected_start_date" ng-model="general.expected_start_date" required onkeydown="return false" ng-disabled="general.expected_start_date"/>
                             </div>
-                            <!-- <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label>Due Date</label>
-                                    <input ng-datetimepicker1 id="end_date" type="text" class="form-control end-date" name="due_date" ng-model="general.due_date" required onkeydown="return false" />
-                                </div>
-                            </div> -->
                         </div>
                          
                         <div class="tab-content">
                             <div class="col-md-12">
-                                <div class="row" style="margin-top:5px;">
+                                <div class="row d-flex justify-space-between" style="margin-top:5px;">
                                     <div class="col-md-5">
                                         <div class="panel panel-default panel-labeled">
                                             <div class="panel-body">
@@ -163,7 +133,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-2"></div>
                                     <div class="col-md-5">
                                         <div class="panel panel-default panel-labeled" style="min-height:425px;margin-left:0px">
                                             <div class="panel-body">
