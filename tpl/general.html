@@ -121,7 +121,7 @@
                                                         <input type="text" select2-client class="form-control" name="client" ng-model="customer.client" ng-change="getContact(customer.client, 'conatct-person')" readonly ng-show="customerField" />
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-1">
+                                                <div class="col-sm-1 pl-0">
                                                     <div class="form-group" style="margin-top: 37px;" ng-if="customer.client">
                                                         <a href="javascript:void(0);" ng-click="openProfile(customer.client)"><i class="glyphicon glyphicon-th glyphicon-lock"></i></a>
                                                     </div>
@@ -135,7 +135,7 @@
                                                         <input type="text" id="conatct-person" class="form-control" name="contact" ng-model="customer.contact" ng-disabled="!customer.client" required/>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-1">
+                                                <div class="col-sm-1 pl-0">
                                                     <div class="form-group">
                                                         <div class="form-group" style="margin-top: 32px;">
                                                             <a href="javascript:void(0)" ng-click="customerCntactpersonEmail('contactperson',customer.contact)"><i class="fa fa-envelope fa-lg"></i></a>
