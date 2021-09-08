@@ -1601,6 +1601,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     }
 
+    rest.path = 'languagesGet';
+    rest.get().success(function(data) {
+        $scope.langsListAll = data;
+    }).error(errorCallback);
+
     // Tab view Project List
     $scope.projectsAll = [];
     $scope.projectsInProgress = [];
@@ -1641,6 +1646,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 if (val.itemsSourceLang) {
                     data[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
+                    var sourceLangName =data[i].itemsSourceLang.sourceLang;
+                    
+                    //console.log('data[i].itemsSourceLang.sourceLang',data[i].itemsSourceLang.sourceLang);
+                    if(sourceLangName){
+                        //data[i].itemsSourceLang.sourceLang = $scope.langsListAll.find(x => x.name ===  sourceLangName).title;
+                        //Object.keys($scope.langsListAll).find(key => $scope.langsListAll[key] === value);
+                        //console.log('$scope.langsListAll',$scope.langsListAll[0] );   
+                    }
                 } else {
                     data[i].itemsSourceLang = newLangData;
                 }
@@ -1654,6 +1667,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         if (val2.source_lang) {
                             data[i].items[i2].source_lang = JSON.parse(val2.source_lang);
                             data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
+                            
                         } else {
                             var newData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                             data[i].items[0].source_lang = newData;
@@ -1797,7 +1811,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.heads_up == 1) {
                     $scope.projectsToDisplay.push(val);
                 }
-
+                val.itemDuedate_new = val.itemDuedate ? val.itemDuedate : '';
+            
             });
             console.log("allproj", $scope.projectsAll);
 

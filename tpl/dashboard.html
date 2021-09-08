@@ -535,14 +535,15 @@ td { font-size: 11px; } */
                                     </span>
                                   </div>
                                 </div>
-                                <div class="block m-t-sm">
+                                <!-- <div class="block m-t-sm">
                                   <span class="badge bg-warning">Linguist</span>
-                                </div>
+                                </div> -->
                               </td>
                               <td>{{order.pm_name}}</td>
                               <!-- <td>
                             Linguist</td> -->
                               <td>
+                                <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
@@ -700,14 +701,12 @@ td { font-size: 11px; } */
                                     </span>
                                   </div>
                                 </div>
-                                <div class="block m-t-sm">
-                                  <span class="badge bg-warning">Linguist</span>
-                                </div>
                               </td>
                               <td>{{order.pm_name}}</td>
                               <!-- <td>
                               Linguist</td> -->
                               <td>
+                                <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
@@ -868,14 +867,12 @@ td { font-size: 11px; } */
                                     </span>
                                   </div>
                                 </div>
-                                <div class="block m-t-sm">
-                                  <span class="badge bg-warning">Linguist</span>
-                                </div>
                               </td>
                               <td>{{order.pm_name}}</td>
                               <!-- <td>
                                 Linguist</td> -->
                               <td>
+                                <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
@@ -1032,14 +1029,12 @@ td { font-size: 11px; } */
                                     </span>
                                   </div>
                                 </div>
-                                <div class="block m-t-sm">
-                                  <span class="badge bg-warning">Linguist</span>
-                                </div>
                               </td>
                               <td>{{order.pm_name}}</td>
                               <!-- <td>
                                   Linguist</td> -->
                               <td>
+                                <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
@@ -1196,14 +1191,12 @@ td { font-size: 11px; } */
                                     </span>
                                   </div>
                                 </div>
-                                <div class="block m-t-sm">
-                                  <span class="badge bg-warning">Linguist</span>
-                                </div>
                               </td>
                               <td>{{order.pm_name}}</td>
                               <!-- <td>
                                     Linguist</td> -->
                               <td>
+                                <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
@@ -1361,14 +1354,12 @@ td { font-size: 11px; } */
                                     </span>
                                   </div>
                                 </div>
-                                <div class="block m-t-sm">
-                                  <span class="badge bg-warning">Linguist</span>
-                                </div>
                               </td>
                               <td>{{order.pm_name}}</td>
                               <!-- <td>
                                       Linguist</td> -->
                               <td>
+                                <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
@@ -1525,13 +1516,11 @@ td { font-size: 11px; } */
                                     </span>
                                   </div>
                                 </div>
-                                <div class="block m-t-sm">
-                                  <span class="badge bg-warning">Linguist</span>
-                                </div>
                               </td>
                               <td>{{order.pm_name}}</td>
                               <td>
-                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
+                                <span style="display: none;">{{ order.itemDuedate_new }}</span>
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip" >
                                   {{ order.itemDuedate | dateFormatDisplayFront }}
                                   <div class="mytooltip_div">
                                     <ul class="timeline">
