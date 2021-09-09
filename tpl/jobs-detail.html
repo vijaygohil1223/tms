@@ -290,23 +290,23 @@
                                                         <input ng-show="it.job_summmeryId == it.ContactId" select2-contactsummery type="text" class="form-control" name="contact" ng-model="it.contact_person" />
                                                     </td>
                                                     <td style="width:15%;">
-                                                        <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">
-                                                            <button class="btn inpreprartionColor" ng-if="it.item_status == 'In preparation'"></button>
-                                                            <button class="btn requestedColor" ng-if="it.item_status == 'Requested'"></button>
-                                                            <button class="btn assignedwaitongColor" ng-if="it.item_status == 'Assigned-waiting'"></button>
-                                                            <button class="btn inprogressColor" ng-if="it.item_status == 'In-progress'"></button>
-                                                            <button class="btn overdueColor" ng-if="it.item_status == 'Overdue'"></button>
-                                                            <button class="btn deliveredColor" ng-if="it.item_status == 'Delivered'"></button>
-                                                            <button class="btn approvedColor" ng-if="it.item_status == 'Approved'"></button>
-                                                            <button class="btn invoicecreatedColor" ng-if="it.item_status == 'Invoice created'"></button>
-                                                            <button class="btn invoiceckedColor" ng-if="it.item_status == 'Invoice checked'"></button>
-                                                            <button class="btn invoiceacceptedColor" ng-if="it.item_status == 'Invoice Accepted'"></button>
-                                                            <button class="btn paidColor" ng-if="it.item_status == 'Paid'"></button>
-                                                            <button class="btn canceledColor" ng-if="it.item_status == 'Canceled'"></button>
-                                                            <button class="btn withoutInvoiceColor" ng-if="it.item_status == 'Without invoice'"></button>
-                                                            <button class="btn newJob" ng-if="it.item_status == 'New'"></button>
-                                                            <button class="btn completedColor" ng-if="it.item_status == 'Completed'"></button>
-                                                            <button class="btn rdyToDeliverColor" ng-if="it.item_status == 'Ready to be Delivered'"></button>
+                                                        <label class="d-flex align-center" ng-hide="it.job_summmeryId==id || job[{{$index}}]">
+                                                            <div class="job-table-status btn inpreprartionColor" ng-if="it.item_status == 'In preparation'"></div>
+                                                            <div class="job-table-status btn requestedColor" ng-if="it.item_status == 'Requested'"></div>
+                                                            <div class="job-table-status btn assignedwaitongColor" ng-if="it.item_status == 'Assigned-waiting'"></div>
+                                                            <div class="job-table-status btn inprogressColor" ng-if="it.item_status == 'In-progress'"></div>
+                                                            <div class="job-table-status btn overdueColor" ng-if="it.item_status == 'Overdue'"></div>
+                                                            <div class="job-table-status btn deliveredColor" ng-if="it.item_status == 'Delivered'"></div>
+                                                            <div class="job-table-status btn approvedColor" ng-if="it.item_status == 'Approved'"></div>
+                                                            <div class="job-table-status btn invoicecreatedColor" ng-if="it.item_status == 'Invoice created'"></div>
+                                                            <div class="job-table-status btn invoiceckedColor" ng-if="it.item_status == 'Invoice checked'"></div>
+                                                            <div class="job-table-status btn invoiceacceptedColor" ng-if="it.item_status == 'Invoice Accepted'"></div>
+                                                            <div class="job-table-status btn paidColor" ng-if="it.item_status == 'Paid'"></div>
+                                                            <div class="job-table-status btn canceledColor" ng-if="it.item_status == 'Canceled'"></div>
+                                                            <div class="job-table-status btn withoutInvoiceColor" ng-if="it.item_status == 'Without invoice'"></div>
+                                                            <div class="job-table-status btn newJob" ng-if="it.item_status == 'New'"></div>
+                                                            <div class="job-table-status btn completedColor" ng-if="it.item_status == 'Completed'"></div>
+                                                            <div class="job-table-status btn rdyToDeliverColor" ng-if="it.item_status == 'Ready to be Delivered'"></div>
                                                             <span class="jStatus">
                                                             <span class="joStatus">{{it.item_status}}</span>
                                                             <span class="jAuto none">{{it.auto_status}}</span>
