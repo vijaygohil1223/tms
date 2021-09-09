@@ -1120,7 +1120,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $location.path('discussion/' + orderId);
     }
 
-    $scope.getJobList();
+    //$scope.getJobList();
     //$scope.getAllProjects();
 
     $scope.DtTblOption = {
@@ -1647,59 +1647,31 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.itemsSourceLang) {
                     data[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
                     var sourceLangName =data[i].itemsSourceLang.sourceLang;
-                    
-                    //console.log('data[i].itemsSourceLang.sourceLang',data[i].itemsSourceLang.sourceLang);
                     if(sourceLangName){
-                        //data[i].itemsSourceLang.sourceLang = $scope.langsListAll.find(x => x.name ===  sourceLangName).title;
-                        //Object.keys($scope.langsListAll).find(key => $scope.langsListAll[key] === value);
-                        //console.log('$scope.langsListAll',$scope.langsListAll[0] );   
+                        var sourceLang = $scope.langsListAll.find(obj => {
+                            return obj.name === sourceLangName
+                        })
+                        if(sourceLang)
+                        data[i].itemsSourceLang.sourceLang = sourceLang.title;
                     }
                 } else {
                     data[i].itemsSourceLang = newLangData;
                 }
                 if (val.itemsTargetLang) {
                     data[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
+                    var targetLangName = data[i].itemsTargetLang.sourceLang;
+                    if(targetLangName){
+                        var targetLang = $scope.langsListAll.find(obj => {
+                            return obj.name == targetLangName
+                        })
+                        if(targetLang){
+                            data[i].itemsTargetLang.sourceLang = targetLang.title;
+                        }
+                    }
                 } else {
                     data[i].itemsTargetLang = newLangData;
                 }
-                if (val.items) {
-                    angular.forEach(val.items, function(val2, i2) {
-                        if (val2.source_lang) {
-                            data[i].items[i2].source_lang = JSON.parse(val2.source_lang);
-                            data[i].items[i2].target_lang = JSON.parse(val2.target_lang);
-                            
-                        } else {
-                            var newData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
-                            data[i].items[0].source_lang = newData;
-                            data[i].items[0].target_lang = newData;
-                        }
-                    });
-                    if (val.items.length == 0) {
-                        console.log('val.items', val.items.length);
-                        var newData = {
-                            "source_lang": {
-                                "sourceLang": "English (US)",
-                                "dataNgSrc": "assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png",
-                                "alt": "United States"
-                            },
-                            "target_lang": {
-                                "sourceLang": "English (US)",
-                                "dataNgSrc": "assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png",
-                                "alt": "United States"
-                            }
-                        };
-                        data[i].items.push(newData);
-                    }
-                } else {
-                    //var newData = { sourceLang:'',dataNgSrc:'',alt:'' };
-                    /*var newData = { sourceLang:'English (US)',dataNgSrc:'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png',alt:'' };
-                    data[i].items.source_lang = newData;
-                    data[i].items.target_lang = newData;*/
-                }
-                /*angular.forEach(val.items,function(val2,i2){
-                    val2.source_lang = JSON.parse(val2.source_lang);
-                    val2.target_lang = JSON.parse(val2.target_lang);
-                });*/
+                
 
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;
@@ -1819,6 +1791,163 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     };
     $scope.allProjectListing();
+
+    //Getting Jobs from getJobsFromTmsSummeryView
+    //$scope.jobstatusFilter = 'all';
+    //var jobStatus =  'all';
+    //$scope.jobstatusRecord('test');
+    //$scope.getJobListAll = function() {
+    $scope.jobstatusRecord = function(recordType,jobStatus) {
+        if(jobStatus){
+            $scope.jobstatusFilter = jobStatus;
+        }else{
+            $scope.jobstatusFilter = 'all';
+        }    
+        console.log('jobStatus',jobStatus);
+    
+    rest.path = 'getJobsFromTmsSummeryView';
+        rest.get().success(function(data) {
+            $scope.dashboardJobList = data;
+            //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
+
+            var Requested = [];
+            var NewJob = [];
+            var inProgerss = [];
+            var readyToBeDelivered = [];
+            var delivered = [];
+            var completed = [];
+            var pendingPo = [];
+            // ---- new added status ----- //
+            // var jobTobeAssigned = [];
+            // var jobCompletedbyLinguist = [];
+            // var jobQaReady = [];
+            // var jobApproved = [];
+            // var jobInvoiced = [];
+            // var jobPaid = [];
+            // var jobWithoutInvoiced = [];
+            // var jobCancelled = [];
+
+            // -- Job count -- //
+            var jobRequestesCount = 0;
+            var jobInProgressCount = 0;
+            var jobDueTodayCount = 0;
+            var jobDueTomorrowCount = 0;
+            var jobOverDueCount = 0;
+            // ----  New status job count  ---- //
+            // var jobTobeAssignedCount = 0;
+            // var jobLinguistCount = 0;
+            // var jobTobeDileveredCount = 0;
+            // var jobDileveredCount = 0;
+            // var jobApprovedCount = 0;
+            // var jobInvoicedCount = 0;
+            // var jobPaidCount = 0;
+            // var jobWithoutInvoicedCount = 0;
+            // var jobCancelledCount = 0;
+
+
+            angular.forEach($scope.dashboardJobList, function(val, i) {
+                val.item_id = pad(val.item_id, 3);
+
+                if (val.ItemLanguage) {
+                    val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
+                }
+                if (val.po_number.length < 1) {
+                    pendingPo.push(val);
+                }
+
+                if (val.item_status == 'New') {
+                    NewJob.push(val);
+                } else if (val.item_status == 'Requested') {
+                    Requested.push(val);
+                    jobRequestesCount++;
+                } else if (val.item_status == 'In-progress') {
+                    inProgerss.push(val);
+                    jobInProgressCount++;
+                } else if (val.item_status == 'Ready to be Delivered') {
+                    readyToBeDelivered.push(val);
+                    jobTobeDileveredCount++;
+                }
+                // else if (val.item_status == 'In preparation') {
+                //     jobTobeAssigned.push(val);
+                //     jobTobeAssignedCount++;
+                // }
+                // else if (val.item_status == 'Delivered') {
+                //     delivered.push(val);
+                //     jobDileveredCount++;
+                // }
+                // else if (val.item_status == 'Approved') {
+                //     jobApproved.push(val);
+                //     jobApprovedCount++;
+                // } else if (val.item_status == 'Invoice Accepted') {
+                //     jobInvoiced.push(val);
+                //     jobInvoicedCount++;
+                // } else if (val.item_status == 'Paid') {
+                //     jobPaid.push(val);
+                //     jobPaidCount++;
+                // } else if (val.item_status == 'Without invoice') {
+                //     jobWithoutInvoiced.push(val);
+                //     jobWithoutInvoicedCount++;
+                // }
+                    else if (val.item_status == 'Completed') {
+                    completed.push(val);
+                }
+
+
+                //Due date counts for jobs
+                if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
+                    jobDueTodayCount++;
+                }
+                if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                    jobDueTomorrowCount++;
+                }
+                if (val.due_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    jobOverDueCount++;
+                }
+
+            });
+            $timeout(function() {
+                $scope.inProgerss = inProgerss;
+                $scope.jobNew = NewJob;
+                $scope.readyToBeDelivered = readyToBeDelivered;
+                $scope.delivered = delivered;
+                $scope.completed = completed;
+                $scope.pendingPo = pendingPo;
+
+                $scope.jobRequestesCount = jobRequestesCount;
+                $scope.jobInProgressCount = jobInProgressCount;
+                $scope.jobDueTodayCount = jobDueTodayCount;
+                $scope.jobDueTomorrowCount = jobDueTomorrowCount;
+                $scope.jobOverDueCount = jobOverDueCount;
+
+                // $scope.jobTobeAssignedCount = jobTobeAssignedCount;
+                // $scope.jobTobeDileveredCount = jobTobeDileveredCount;
+                // $scope.jobDileveredCount = jobDileveredCount;
+                // $scope.jobApprovedCount = jobApprovedCount;
+                // $scope.jobInvoicedCount = jobInvoicedCount;
+                // $scope.jobPaidCount = jobPaidCount;
+                // $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
+                $scope.jobsList = NewJob;
+                if($scope.jobstatusFilter == 'Requested'){
+                    $scope.jobsList = Requested;
+                }else if($scope.jobstatusFilter == 'inProgress'){
+                    console.log('$scope.jobstatusFilter',$scope.jobstatusFilter);
+                    $scope.jobsList = inProgerss;
+                }
+
+            }, 200);
+        }).error(errorCallback);
+    };
+    $scope.jobstatusRecord('scoop','all');    
+
+    // $scope.jobstatusRecord = function(jobStatus) {
+    //     console.log('jobStatus',jobStatus);
+    //     if(jobStatus == 'inProgerss'){
+    //         $scope.jobstatusFilter = 'inProgerss';
+    //         $scope.jobNew = delivered;
+    //     }
+    // };
+    // $scope.jobstatusRecord('all');
+
 
     $scope.goTojobsList = function(jobStatus, count) {
         if (count == 0) {
