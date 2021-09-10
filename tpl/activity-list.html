@@ -24,7 +24,6 @@
                                     <div class="media-body">
                                     <div class="pull-right text-center text-muted">
                                         <strong class="h4">{{dateDate[$index]}}</strong><br>
-                                        <small class="label bg-light">pm</small>
                                     </div>
                                     
                                 <!-- For Direct Client -->
@@ -61,7 +60,8 @@
                                     <span  class="text-muted">in {{activity.log_status.split('_')[0] | capitalize}}
                                         <span  class="text-muted" ng-if="activity.log_status.split('_')[0] == 'indirect' || activity.log_status.split('_')[0] == 'direct'">Clients</span>
                                         <span  class="text-muted" ng-if="activity.log_status.split('_')[0] == 'internal' || activity.log_status.split('_')[0] == 'external'">Resources</span>
-                                    </span> </small>
+                                    </span> 
+                                </small>
                                 </div>
 
                                 </div>
