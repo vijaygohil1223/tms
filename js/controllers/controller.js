@@ -16011,8 +16011,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
         //$scope.general.order_date = $scope.general.order_date;
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
-        $scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
-        $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY");
+        //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
+        if($scope.general.due_date)
+        $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:MM");
         
         if($scope.general.expected_start_date){
             $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
@@ -16036,6 +16037,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             // }
         }
+        console.log('$scope.generaldata',$scope.general);
     }).error(errorCallback);
 
     $scope.projectPriceChat = 0;
