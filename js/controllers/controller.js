@@ -1809,7 +1809,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.get().success(function(data) {
             $scope.dashboardJobList = data;
             //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
-
+            var allJobsData = [];
             var Requested = [];
             var NewJob = [];
             var inProgerss = [];
@@ -1817,6 +1817,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var delivered = [];
             var completed = [];
             var pendingPo = [];
+            var jobOverDue = [];
+            
             // ---- new added status ----- //
             // var jobTobeAssigned = [];
             // var jobCompletedbyLinguist = [];
@@ -1854,7 +1856,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.po_number.length < 1) {
                     pendingPo.push(val);
                 }
-
+                allJobsData.push(val);
                 if (val.item_status == 'New') {
                     NewJob.push(val);
                 } else if (val.item_status == 'Requested') {
@@ -1901,6 +1903,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     jobDueTomorrowCount++;
                 }
                 if (val.due_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    jobOverDue.push(val);
                     jobOverDueCount++;
                 }
 
@@ -1926,12 +1929,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 // $scope.jobInvoicedCount = jobInvoicedCount;
                 // $scope.jobPaidCount = jobPaidCount;
                 // $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
-                $scope.jobsList = NewJob;
+                $scope.jobsListAll = allJobsData;
                 if($scope.jobstatusFilter == 'Requested'){
-                    $scope.jobsList = Requested;
-                }else if($scope.jobstatusFilter == 'inProgress'){
-                    console.log('$scope.jobstatusFilter',$scope.jobstatusFilter);
-                    $scope.jobsList = inProgerss;
+                    $scope.jobsListAll = Requested;
+                }
+                if($scope.jobstatusFilter == 'inProgress'){
+                    $scope.jobsListAll = inProgerss;
+                }
+                if($scope.jobstatusFilter == 'DueToday'){
+                    $scope.jobsListAll = inProgerss;
+                }
+                if($scope.jobstatusFilter == 'DueTomorrow'){
+                    $scope.jobsListAll = inProgerss;
+                }
+                if($scope.jobstatusFilter == 'Overdue'){
+                    $scope.jobsListAll = jobOverDue;
                 }
 
             }, 200);
