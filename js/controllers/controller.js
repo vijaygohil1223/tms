@@ -2021,6 +2021,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if($scope.jobstatusFilter == 'scoopDelivered'){
                     $scope.jobsListAll = scoopDelivered;
                 }
+                if($scope.jobstatusFilter == 'scoopApproved'){
+                    $scope.jobsListAll = scoopApproved;
+                }
+                if($scope.jobstatusFilter == 'scoopInvoiced'){
+                    $scope.jobsListAll = scoopInvoiced;
+                }
                 if($scope.jobstatusFilter == 'scoopPaid'){
                     $scope.jobsListAll = scoopPaid;
                 }
