@@ -1793,11 +1793,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.allProjectListing();
 
     //Getting Jobs from getJobsFromTmsSummeryView
-    //$scope.jobstatusFilter = 'all';
-    //var jobStatus =  'all';
-    //$scope.jobstatusRecord('test');
-    //$scope.getJobListAll = function() {
-    $scope.jobstatusRecord = function(recordType,jobStatus) {
+    $scope.jobstatusRecord = function(statusType,jobStatus) {
         if(jobStatus){
             $scope.jobstatusFilter = jobStatus;
         }else{
@@ -1846,6 +1842,31 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             // var jobWithoutInvoicedCount = 0;
             // var jobCancelledCount = 0;
 
+            // --------- Scoop status data --------//
+            var scoopAssigned = [];
+            var scoopProgress = [];
+            var scoopLinguist = [];
+            var scoopQaReady = [];
+            var scoopTobedelivered = [];
+            var scoopDelivered = [];
+            var scoopApproved = [];
+            var scoopInvoiced = [];
+            var scoopPaid = [];
+            var scoopWithoutInvoice = [];
+            var scoopCancelled = [];
+            // --------- Scoop status Count --------//
+            $scope.scoopAssignedCount = 0;
+            $scope.scoopProgressCount = 0;
+            $scope.scoopLinguistCount = 0;
+            $scope.scoopQaReadyCount = 0;
+            $scope.scoopTobedeliveredCount = 0;
+            $scope.scoopDeliveredCount = 0;
+            $scope.scoopApprovedCount = 0;
+            $scope.scoopInvoicedCount = 0;
+            $scope.scoopPaidCount = 0;
+            $scope.scoopWithoutInvoiceCount = 0;
+            $scope.scoopCancelledCount = 0;
+            
 
             angular.forEach($scope.dashboardJobList, function(val, i) {
                 val.item_id = pad(val.item_id, 3);
@@ -1894,7 +1915,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     completed.push(val);
                 }
 
-
                 //Due date counts for jobs
                 if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
                     jobDueTodayCount++;
@@ -1905,6 +1925,42 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.due_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
                     jobOverDue.push(val);
                     jobOverDueCount++;
+                }
+
+                // --- scoop array data -- //
+                if (val.scoopitem_status == "To be Assigned") {
+                    scoopAssigned.push(val);
+                    $scope.scoopAssignedCount++;
+                }else if (val.scoopitem_status == 'In Progress') {
+                    scoopProgress.push(val);
+                    $scope.scoopProgressCount++;
+                }else if (val.scoopitem_status == 'Completed by linguist') {
+                    scoopLinguist.push(val);
+                    $scope.scoopLinguistCount++;
+                }else if (val.scoopitem_status == 'QA Ready') {
+                    scoopQaReady.push(val);
+                    $scope.scoopQaReadyCount++;
+                }else if (val.scoopitem_status == 'To be Delivered') {
+                    scoopTobedelivered.push(val);
+                    $scope.scoopTobedeliveredCount++;
+                }else if (val.scoopitem_status == 'Delivered') {
+                    scoopDelivered.push(val);
+                    $scope.scoopDeliveredCount++;
+                }else if (val.scoopitem_status == 'Approved') {
+                    scoopApproved.push(val);
+                    $scope.scoopApprovedCount++;
+                }else if (val.scoopitem_status == 'Invoiced') {
+                    scoopInvoiced.push(val);
+                    $scope.scoopInvoicedCount++;
+                }else if (val.scoopitem_status == 'Paid') {
+                    scoopPaid.push(val);
+                    $scope.scoopPaidCount++;
+                }else if (val.scoopitem_status == 'Without invoice') {
+                    scoopWithoutInvoice.push(val);
+                    $scope.scoopWithoutInvoiceCount++;
+                }else if (val.scoopitem_status == 'Cancelled') {
+                    scoopCancelled.push(val);
+                    $scope.scoopCancelledCount++;
                 }
 
             });
@@ -1946,7 +2002,38 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobsListAll = jobOverDue;
                 }
 
+                // scoop Array //
+                if($scope.jobstatusFilter == 'scoopAssigned'){
+                    $scope.jobsListAll = scoopAssigned;
+                }
+                if($scope.jobstatusFilter == 'scoopProgress'){
+                    $scope.jobsListAll = scoopProgress;
+                }
+                if($scope.jobstatusFilter == 'scoopLinguist'){
+                    $scope.jobsListAll = scoopLinguist;
+                }
+                if($scope.jobstatusFilter == 'scoopQaReady'){
+                    $scope.jobsListAll = scoopQaReady;
+                }
+                if($scope.jobstatusFilter == 'scoopTobedelivered'){
+                    $scope.jobsListAll = scoopTobedelivered;
+                }
+                if($scope.jobstatusFilter == 'scoopDelivered'){
+                    $scope.jobsListAll = scoopDelivered;
+                }
+                if($scope.jobstatusFilter == 'scoopPaid'){
+                    $scope.jobsListAll = scoopPaid;
+                }
+                if($scope.jobstatusFilter == 'scoopWithoutInvoice'){
+                    $scope.jobsListAll = scoopWithoutInvoice;
+                }
+                if($scope.jobstatusFilter == 'scoopCancelled'){
+                    $scope.jobsListAll = scoopCancelled;
+                }
+                
+                console.log('$scope.jobsListAll',$scope.jobsListAll);
             }, 200);
+
         }).error(errorCallback);
     };
     $scope.jobstatusRecord('scoop','all');    
@@ -23010,5 +23097,64 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         });
     };
+
+}).controller('activitydetailController', function($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    
+        /*Recent Activity Code start*/
+        $scope.activityLimit = 17;
+
+        $scope.loadMoreActivity = function() {
+            var increamented = $scope.activityLimit + 10;
+            $scope.activityLimit = increamented > $scope.activityList.length ? $scope.activityList.length : increamented;
+    
+        }
+    
+        //recent activity
+        if ($cookieStore.get('session_iUserId')) {
+            $scope.dateDate = [];
+            rest.path = "recentActivityGet/" + $cookieStore.get('session_iUserId');
+            rest.get().success(function(data) {
+                $scope.activityList = data;
+                var color = ['success', 'warning', 'info', 'primary'];
+                var date = new Date();
+                var count = 0;
+    
+                angular.forEach(data, function(val, i) {
+                    //set activity side line color
+                    if (count == color.length) {
+                        count = 0;
+                    }
+    
+                    $scope.activityList[i].color = color[count];
+                    count++;
+    
+                    //set recent activity date
+                    var a = date;
+                    var b = new Date(val.modified_date);
+                    var days = daydiff(b, a); // 1 day
+    
+                    switch (days) {
+                        case 0:
+                            var recentDate = "Today " + timeFormat(val.modified_date);
+                            break;
+                        case 1:
+                            var recentDate = "Yesterday " + timeFormat(val.modified_date);
+                            break;
+                        default:
+                            var recentDate = days + " days ago.";
+                    }
+    
+                    $timeout(function() {
+                        $scope.dateDate[i] = recentDate;
+                    }, 100);
+
+                });
+                console.log('$scope.activityList',$scope.activityList);
+                console.log('$scope.dateDate',$scope.dateDate);
+                
+            });
+        }
+        /*Recent Activity Code End*/
 
 });

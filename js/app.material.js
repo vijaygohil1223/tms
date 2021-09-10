@@ -550,6 +550,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'workInstructionsController',
             activetab: 'work-instruction',
             role: '1'
+        }).when('/activity', {
+            templateUrl: modulesPath + 'activity-list.html',
+            controller: 'activitydetailController',
+            activetab: 'activity',
+            role: '1'
         }).otherwise({
             redirectTo: '/'
         });

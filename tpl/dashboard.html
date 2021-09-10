@@ -1606,291 +1606,6 @@ td { font-size: 11px; } */
           <div class="wrapper-md">
             <!-- tasks -->
             <div class="row">
-              <div class="col-md-9 chid-tables" style="display: none;">
-                <!-- Job List For Status New Start -->
-                <div class="white_box panel panel-default">
-                  <div class="table-responsive">
-                    <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="jobNewTbl" dt-options="">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Scoop Number</th>
-                          <!-- <th>Job Number</th> -->
-                          <th>Client</th>
-                          <th>Account</th>
-                          <!-- <th>Type</th> -->
-                          <th>Language Pair</th>
-                          <th>Project Manager</th>
-                          <th>Resource</th>
-                          <th>Progress (in %)</th>
-                          <th>Status</th>
-                          <!-- <th>Start Date</th> -->
-                          <!-- <th>Deadline</th> -->
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr ng-repeat="jList in jobNew">
-                          <td>{{$index + 1}}</td>
-                          <td>{{jList.item_id}}</td>
-                          <!-- <td>
-                            <span ng-if="!jList.po_number"> - </span>
-                            <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
-                          </td> -->
-                          <td>{{jList.Client}}</td>
-                          <td>{{jList.indirectClient}}</td>
-                          <!-- <td>{{jList.type}}</td> -->
-                          <td>
-                            <span ng-if="!jList.ItemLanguage"> - </span>
-                            <span ng-if="jList.ItemLanguage">{{jList.ItemLanguage}}</span>
-                          </td>
-                          <td>
-                            <span ng-if="jList.contact_person != ''">{{jList.contact_person}}</span>
-                            <span ng-if="jList.contact_person == ''">-</span>
-                          </td>
-                          <td>
-                            <span ng-if="jList.resource != ''">{{jList.resource}}</span>
-                            <span ng-if="jList.resource == ''">-</span>
-                          </td>
-                          <td>-</td>
-                          <td>{{jList.item_status}}</td>
-                          <!-- <td>{{jList.created_date | dateFormat}}</td> -->
-                          <!-- <td>
-                            <span ng-if="jList.due_date == '0000-00-00 00:00:00'"> - </span>
-                            <span ng-if="jList.due_date != '0000-00-00 00:00:00'">{{jList.due_date | dateFormat}}</span>
-                          </td> -->
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <!-- Job List For Status New END -->
-                <!-- Job List For Status In-Progrss Start -->
-                <div class="white_box panel panel-default">
-                  <div class="table-responsive">
-                    <!-- <h4 class="" style="position: relative;top: 25px;margin-left: 5px;">Job in Progerss</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="inProgerssTbl" dt-options="DtTblOption">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <!-- <th>id</th> -->
-                          <th>Scoop Number</th>
-                          <!-- <th>Job Number</th> -->
-                          <th>Client</th>
-                          <th>Account</th>
-                          <!-- <th>Type</th> -->
-                          <th>Language Pair</th>
-                          <th>Project Manager</th>
-                          <th>Resource</th>
-                          <th>Progress (in %)</th>
-                          <th>Status</th>
-                          <!-- <th>Start Date</th> -->
-                          <!-- <th>Deadline</th> -->
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr ng-repeat="jList in inProgerss">
-                          <td>{{$index + 1}}</td>
-                          <!-- <td>{{jList.job_summmeryId}}</td> -->
-                          <td>{{jList.item_id}}</td>
-                          <!-- <td>
-                            <span ng-if="!jList.po_number"> - </span>
-                            <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
-                          </td> -->
-                          <td>{{jList.Client}}</td>
-                          <td>{{jList.indirectClient}}</td>
-                          <!-- <td>{{jList.type}}</td> -->
-                          <td>{{jList.ItemLanguage}}</td>
-                          <td>
-                            <span ng-if="jList.contact_person != ''">{{jList.contact_person}}</span>
-                            <span ng-if="jList.contact_person == ''">-</span>
-                          </td>
-                          <td>
-                            <span ng-if="jList.resource != ''">{{jList.resource}}</span>
-                            <span ng-if="jList.resource == ''">-</span>
-                          </td>
-                          <td>-</td>
-                          <!-- <td>{{jList.created_date | dateFormat}}</td> -->
-                          <!-- <td>{{jList.due_date | dateFormat}}</td> -->
-                          <td>{{jList.item_status}}</td>
-                        </tr>
-                        <!--  <tr ng-if="inProgerss.length === 0">
-                          <td>No data found</td>
-                        </tr> -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <!-- Job List For Status In-Progrss End -->
-
-                <div class="white_box panel panel-default">
-                  <div class="table-responsive">
-                    <!-- <h4 class="" style="position: relative;top: 25px;margin-left: 5px;">Jobs Ready to be Delivered</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="readyToBeDeliveredTbl"  dt-options="DtTblOption">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <!-- <th>id</th> -->
-                          <th>Scoop Number</th>
-                          <!-- <th>Job Number</th> -->
-                          <th>Client</th>
-                          <th>Account</th>
-                          <!-- <th>Type</th> -->
-                          <th>Language Pair</th>
-                          <th>Project Manager</th>
-                          <th>Resource</th>
-                          <th>Progress (in %)</th>
-                          <!-- <th>Start Date</th> -->
-                          <!-- <th>Deadline</th> -->
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr ng-repeat="jList in readyToBeDelivered">
-                          <td>{{$index + 1}}</td>
-                          <!-- <td>{{jList.job_summmeryId}}</td> -->
-                          <td>{{jList.item_id}}</td>
-                          <!--  <td>
-                            <span ng-if="!jList.po_number"> - </span>
-                            <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
-                          </td> -->
-                          <td>{{jList.Client}}</td>
-                          <td>{{jList.indirectClient}}</td>
-                          <!-- <td>{{jList.type}}</td> -->
-                          <td>{{jList.ItemLanguage}}</td>
-                          <td>
-                            <span ng-if="jList.contact_person != ''">{{jList.contact_person}}</span>
-                            <span ng-if="jList.contact_person == ''">-</span>
-                          </td>
-                          <td>
-                            <span ng-if="jList.resource != ''">{{jList.resource}}</span>
-                            <span ng-if="jList.resource == ''">-</span>
-                          </td>
-                          <td>-</td>
-                          <!-- <td>{{jList.created_date | dateFormat}}</td> -->
-                          <!-- <td>{{jList.due_date | dateFormat}}</td> -->
-                          <td>{{jList.item_status}}</td>
-                        </tr>
-                        <!-- <tr ng-if="readyToBeDelivered.length === 0">
-                          <td>No data found</td>
-                        </tr> -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="white_box panel panel-default">
-                  <div class="table-responsive">
-                    <!-- <h4 class="" style="position: relative;top: 25px;margin-left: 5px;">Jobs Delivered</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="deliveredTbl" datatable="ng"
-                    dt-options="DtTblOption">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Scoop Number</th>
-                          <!-- <th>Job Number</th> -->
-                          <th>Client</th>
-                          <th>Account</th>
-                          <!-- <th>Type</th> -->
-                          <th>Language Pair</th>
-                          <th>Project Manager</th>
-                          <th>Resource</th>
-                          <th>Progress (in %)</th>
-                          <th>Status</th>
-                          <!-- <th>Start Date</th> -->
-                          <!-- <th>Deadline</th> -->
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr ng-repeat="jList in delivered">
-                          <td>{{$index + 1}}</td>
-                          <td>{{jList.item_id}}</td>
-                          <!-- <td>
-                            <span ng-if="!jList.po_number"> - </span>
-                            <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
-                          </td> -->
-                          <td>{{jList.Client}}</td>
-                          <td>{{jList.indirectClient}}</td>
-                          <!-- <td>{{jList.type}}</td> -->
-                          <td>
-                            <span ng-if="!jList.ItemLanguage"> - </span>
-                            <span ng-if="jList.ItemLanguage">{{jList.ItemLanguage}}</span>
-                          </td>
-                          <td>
-                            <span ng-if="jList.contact_person != ''">{{jList.contact_person}}</span>
-                            <span ng-if="jList.contact_person == ''">-</span>
-                          </td>
-                          <td>
-                            <span ng-if="jList.resource != ''">{{jList.resource}}</span>
-                            <span ng-if="jList.resource == ''">-</span>
-                          </td>
-                          <td>-</td>
-                          <td>{{jList.item_status}}</td>
-                          <!-- <td>{{jList.created_date | dateFormat}}</td> -->
-                          <!-- <td>
-                            <span ng-if="jList.due_date == '0000-00-00 00:00:00'"> - </span>
-                            <span ng-if="jList.due_date != '0000-00-00 00:00:00'">{{jList.due_date | dateFormat}}</span>
-                          </td> -->
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <div class="white_box panel panel-default">
-                  <div class="table-responsive">
-                    <!-- <h4 class="" style="position: relative;top: 25px;margin-left: 5px;">Jobs Completed</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="completedTbl"  dt-options="DtTblOption">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <!-- <th>id</th> -->
-                          <th>Scoop Number</th>
-                          <!-- <th>Job Number</th> -->
-                          <th>Client</th>
-                          <th>Account</th>
-                          <!-- <th>Type</th> -->
-                          <th>Language Pair</th>
-                          <th>Project Manager</th>
-                          <th>Resource</th>
-                          <th>Progress (in %)</th>
-                          <!-- <th>Start Date</th> -->
-                          <!-- <th>Deadline</th> -->
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr ng-repeat="jList in completed">
-                          <td>{{$index + 1}}</td>
-                          <!-- <td>{{jList.job_summmeryId}}</td> -->
-                          <td>{{jList.item_id}}</td>
-                          <!-- <td>
-                            <span ng-if="!jList.po_number"> - </span>
-                            <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
-                          </td> -->
-                          <td>{{jList.Client}}</td>
-                          <td>{{jList.indirectClient}}</td>
-                          <!-- <td>{{jList.type}}</td> -->
-                          <td>{{jList.ItemLanguage}}</td>
-                          <td>
-                            <span ng-if="jList.contact_person != ''">{{jList.contact_person}}</span>
-                            <span ng-if="jList.contact_person == ''">-</span>
-                          </td>
-                          <td>
-                            <span ng-if="jList.resource != ''">{{jList.resource}}</span>
-                            <span ng-if="jList.resource == ''">-</span>
-                          </td>
-                          <td>-</td>
-                          <!-- <td>{{jList.created_date | dateFormat}}</td> -->
-                          <!-- <td>{{jList.due_date | dateFormat}}</td> -->
-                          <td>{{jList.item_status}}</td>
-                        </tr>
-                        <!-- <tr ng-if="completed.length === 0">
-                          <td>No data found</td>
-                        </tr> -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
               <div class="col-md-9 chid-tables">
                 <!-- Jobs List based on status -->
                 <div class="white_box panel panel-default">
@@ -1970,92 +1685,72 @@ td { font-size: 11px; } */
                           ng-click="jobstatusRecord('scoop','all')">
                           All</a>
                       </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopAssignedCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopAssigned')">
+                          To be Assigned</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopProgressCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopProgress')">
+                          In progress</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopLinguistCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopLinguist')">
+                          Completed by linguist</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopQaReadyCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopQaReady')">
+                          QA Ready</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopTobedeliveredCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopTobedelivered')">
+                          To be Delivered</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopDeliveredCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopDelivered')">
+                          Delivered</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopApprovedCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopApproved')">
+                          Approved</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopInvoicedCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopInvoiced')">
+                          Invoiced</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopPaidCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopPaid')">
+                          Paid</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopWithoutInvoiceCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopWithoutInvoice')">
+                          Without invoice</a>
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge bg-info">{{scoopCancelledCount}}</span><a href="javascript:void(0)"
+                          ng-click="jobstatusRecord('scoop','scoopCancelled')">
+                          Cancelled</a>
+                      </li>
+                      
                       <!-- <li class="list-group-item">
                         <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
                           ng-click="goToProjectScoopList('All')">
                           All</a>
                       </li> -->
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectsAssignedCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('To be Assigned')">To be Assigned</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectsInprogressCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('In Progress')">In progress</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectLinguistCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('Completed by linguist')">Completed by linguist</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectsQaReadyCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('QA Ready')">QA Ready</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectsToBeDeliveredCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('To be Delivered')">To be Delivered</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectDileveredCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('Delivered')">Delivered</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectApprovedCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('Approved')">Approved</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectInvoicedCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('Invoiced')">Invoiced</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectPaidCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('Paid')">Paid</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectWithoutInvoicedCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('Without invoice')">Without invoice</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectCancelledCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('Cancelled')">Cancelled</a>
-                      </li>
                       
                       <!-- <li class="list-group-item">
                         <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
                           ng-click="goToProjectList('All')">
                           All</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{headsUp}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList('headsUp')">Heads-up</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectInProgerss}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList('4')">In progress</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{DueDateTodayCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList()">Due today</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{DueDateTomorrowCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList()">Due tomorrow</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{overDueDateCount}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList()">Overdue</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">0</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList()">Deliverable</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">{{projectDilevered}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList()">Delivered</a>
-                      </li>
-                      <li class="list-group-item">
-                        <span class="badge bg-info">0</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList()">Ready for invoice</a>
                       </li> -->
                     </div>
                   </div>
