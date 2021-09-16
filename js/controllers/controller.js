@@ -1813,6 +1813,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var delivered = [];
             var completed = [];
             var pendingPo = [];
+            var jobDueToday = [];
+            var jobDueTomorrow = [];
             var jobOverDue = [];
             
             // ---- new added status ----- //
@@ -1834,7 +1836,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             // ----  New status job count  ---- //
             // var jobTobeAssignedCount = 0;
             // var jobLinguistCount = 0;
-            // var jobTobeDileveredCount = 0;
+            var jobTobeDileveredCount = 0;
             // var jobDileveredCount = 0;
             // var jobApprovedCount = 0;
             // var jobInvoicedCount = 0;
@@ -1917,9 +1919,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                 //Due date counts for jobs
                 if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
+                    jobDueToday.push(val);
                     jobDueTodayCount++;
                 }
                 if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                    jobDueTomorrow.push(val);
                     jobDueTomorrowCount++;
                 }
                 if (val.due_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
@@ -1997,6 +2001,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 if($scope.jobstatusFilter == 'DueTomorrow'){
                     $scope.jobsListAll = inProgerss;
+                }
+                if($scope.jobstatusFilter == 'DueToday'){
+                    $scope.jobsListAll = jobDueToday;
+                }
+                if($scope.jobstatusFilter == 'DueTomorrow'){
+                    $scope.jobsListAll = jobDueTomorrow;
                 }
                 if($scope.jobstatusFilter == 'Overdue'){
                     $scope.jobsListAll = jobOverDue;
@@ -13368,54 +13378,77 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.itemList[parentIndex].total_price = totalPrice;
         }
         //create item
-    $scope.createItems = function() {
-        $scope.order_idddd = $window.localStorage.orderID;
+        $scope.createItems = function() {
+            $scope.order_idddd = $window.localStorage.orderID;
 
-        //Creating Number of items based on input start
-        var dialog = bootbox.dialog({
-            title: "Add scoop",
-            message: '<div class="row">' +
-                '<script>function myFunction() {$("#numOfItems").next().css("display","none");$("#numOfItems").parent().parent().removeClass("has-error")}</script>' +
-                '<div class="col-md-12"> ' +
-                '<div> ' +
-                '<div class="form-group"> ' +
-                '<label class="col-md-4 control-label" for="name">Enter No of scoop : </label> ' +
-                '<div class="col-md-4"> ' +
-                '<input id="numOfItems" name="numOfItems" onchange="myFunction()" type="number" min="1" max="10" class="form-control input-md" required> ' +
-                '<span for="Name" class="help-block" style="display: none;">This field is required.</span>' +
-                '</div> </div>  </div>',
-            buttons: {
-                success: {
-                    label: "Save",
-                    onEscape: true,
-                    className: "btn-info",
-                    callback: function() {
-                        var noItemVal = $('#numOfItems').val();
-                        if (!noItemVal) {
-                            $('#numOfItems').parent().parent().addClass('has-error');
-                            $('#numOfItems').next().css('display', 'block');
-                            return false;
-                        } else {
-                            if (noItemVal > 0 && noItemVal <= 10) {
-                                $scope.ItemData = {}
-                                $scope.ItemData.no_of_items = noItemVal;
-                                $scope.ItemData.order_id = $window.localStorage.getItem('orderID');
-                                rest.path = 'AddNumberOfItems';
-                                rest.post($scope.ItemData).success(function(data) {
-                                    notification('Items created successfully.', 'success');
-                                    $timeout(function() {
-                                        $route.reload();
-                                    }, 100);
-                                }).error(errorCallback);
-                            } else {
-                                notification('Enter positive number and max value upto 10.', 'warning');
-                                return false;
-                            }
-                        }
-                    }
+            //Creating Number of items based on input start
+            // var dialog = bootbox.dialog({
+            //     title: "Add scoop",
+            //     message: '<div class="row">' +
+            //         '<script>function myFunction() {$("#numOfItems").next().css("display","none");$("#numOfItems").parent().parent().removeClass("has-error")}</script>' +
+            //         '<div class="col-md-12"> ' +
+            //         '<div> ' +
+            //         '<div class="form-group"> ' +
+            //         '<label class="col-md-4 control-label" for="name">Enter No of scoop : </label> ' +
+            //         '<div class="col-md-4"> ' +
+            //         '<input id="numOfItems" name="numOfItems" onchange="myFunction()" type="number" min="1" max="10" class="form-control input-md" required> ' +
+            //         '<span for="Name" class="help-block" style="display: none;">This field is required.</span>' +
+            //         '</div> </div>  </div>',
+            //     buttons: {
+            //         success: {
+            //             label: "Save",
+            //             onEscape: true,
+            //             className: "btn-info",
+            //             callback: function() {
+            //                 var noItemVal = $('#numOfItems').val();
+            //                 if (!noItemVal) {
+            //                     $('#numOfItems').parent().parent().addClass('has-error');
+            //                     $('#numOfItems').next().css('display', 'block');
+            //                     return false;
+            //                 } else {
+            //                     if (noItemVal > 0 && noItemVal <= 10) {
+            //                         $scope.ItemData = {}
+            //                         $scope.ItemData.no_of_items = noItemVal;
+            //                         $scope.ItemData.order_id = $window.localStorage.getItem('orderID');
+            //                         rest.path = 'AddNumberOfItems';
+            //                         rest.post($scope.ItemData).success(function(data) {
+            //                             notification('Items created successfully.', 'success');
+            //                             $timeout(function() {
+            //                                 $route.reload();
+            //                             }, 100);
+            //                         }).error(errorCallback);
+            //                     } else {
+            //                         notification('Enter positive number and max value upto 10.', 'warning');
+            //                         return false;
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     }
+            // });
+
+            var noItemVal = $scope.numOfScoopItems;
+            if (!noItemVal) {
+                $('#numOfItems').parent().parent().addClass('has-error');
+                $('#numOfItems').next().css('display', 'block');
+                return false;
+            } else {
+                if (noItemVal > 0 && noItemVal <= 5) {
+                    $scope.ItemData = {}
+                    $scope.ItemData.no_of_items = noItemVal;
+                    $scope.ItemData.order_id = $window.localStorage.getItem('orderID');
+                    rest.path = 'AddNumberOfItems';
+                    rest.post($scope.ItemData).success(function(data) {
+                        notification('Items created successfully.', 'success');
+                        $timeout(function() {
+                            $route.reload();
+                        }, 100);
+                    }).error(errorCallback);
+                } else {
+                    notification('Please select scoop', 'warning');
+                    return false;
                 }
             }
-        });
 
 
 
@@ -15964,6 +15997,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     rest.path = 'viewProjectCustomerDetail';
     rest.model().success(function(data) {
         $scope.customer = data;
+        console.log('$scope.customer',$scope.customer);
         $window.localStorage.clientproCustomerName = $scope.customer.client;
         $window.localStorage.ContactPerson = $scope.customer.contact;
         $routeParams.ClientIdd = data['client'];
@@ -15977,12 +16011,36 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }).error(errorCallback);
 
     //$routeParams.id;
+    $scope.jobLinguist = [];
+    var linguistObj = [];
+    if ($routeParams.id) {
+        rest.path = 'jobsummeryGet/' + $routeParams.id;
+        rest.get().success(function(data) {
+            //$scope.jobLinguist = data;
+            angular.forEach(data, function(val, i) {
+                // var linguistObj = {
+                //     id: val.id,
+                //     read_id: loginid
+                // }
+                if(val.resource){
+                    $scope.jobLinguist.push(val);
+                }
+            });    
+            $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
+            console.log('$scope.jobLinguist',$scope.jobLinguist);
+
+        });
+    }
+
     rest.path = 'contactPerson';
     rest.model().success(function(data) {
         console.log('contactperson-data',data);
         angular.forEach(data, function(val, i) {
             if (val.vResourcePosition == 3) {
-                angular.element('#coordinator').html(val.vUserName);
+                angular.element('#coordinatorIcon').html(val.vUserName);
+                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.coordinatorIcon').html(coordpic);
+            
             } else if (val.vResourcePosition == 2) {
                 angular.element('#managerDesignation').html(val.vUserName);
                 var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
@@ -15990,6 +16048,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 
             } else if (val.vResourcePosition == 4) {
                 angular.element('#QASpecialist').html(val.vUserName);
+                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.QAIcon').html(QApic);
+            
             }
         })
     }).error(errorCallback);

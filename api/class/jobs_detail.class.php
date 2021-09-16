@@ -263,7 +263,7 @@ class jobs_detail {
 
         $this->_db->where('tsv.order_id', $id);
 
-        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,tu.vUserName,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId');
+        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,tu.vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId');
 
        //echo $this->_db->getLastQuery();exit;
 

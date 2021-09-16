@@ -344,35 +344,29 @@ li.seperatordate.comment {
                           <div class="projectTeam">
                             <div class="team-list">
                               <div class="list-item">
-                                <figure class="managerIcon"></figure>
+                                <figure class="coordinatorIcon"></figure>
                                 <div class="right">
-                                  <strong>Janak Patel</strong>
+                                  <strong id="coordinatorIcon"> </strong>
                                   <span class="designation">Project Coordinator</span>
                                 </div>
                               </div>
                               <div class="list-item">
-                                <figure class="managerIcon"></figure>
+                                <figure class="QAIcon"></figure>
                                 <div class="right">
-                                  <strong>Anil Nadiya</strong>
+                                  <strong id="QASpecialist"> - </strong>
                                   <span class="designation">QA Specialist</span>
                                 </div>
                               </div>
                             </div>
                             <div class="team-list">
-                              <div class="list-item">
-                                <figure class="managerIcon"></figure>
+                              <div class="list-item" ng-repeat="linguist in jobLinguist" >
+                                <figure style="background: url(uploads/profilePic/{{linguist.resourcePic}}) no-repeat center;background-size: cover;">  </figure>
                                 <div class="right">
-                                  <strong>Nehal Tester</strong>
+                                  <strong>{{linguist.vUserName}}</strong>
                                   <span class="designation">Linguist</span>
                                 </div>
                               </div>
-                              <div class="list-item">
-                                <figure class="managerIcon"></figure>
-                                <div class="right">
-                                  <strong>Jk Patel</strong>
-                                  <span class="designation">Linguist</span>
-                                </div>
-                              </div>
+                              
                             </div>
                           </div>
                         </li>

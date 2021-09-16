@@ -3316,6 +3316,7 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
         }
     }
 }]);
+
 app.directive('select2ItemTax', function($http, rest, $timeout, $log) {
     return {
         restrict: 'EA',
