@@ -8,19 +8,19 @@
     <div flex layout="column">
         <div ui-butterbar></div>
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
-        <div class="md-content page_content_wrapper" id="top">
+        <div class="md-content activityPage page_content_wrapper" id="top">
 
             <div class="content_head bg-light lter b-b wrapper-md ng-scope">
-                <h1 class="m-n font-thin h3">Activity <span class="badge">{{activityList.length}}</span></h1>
+                <h1 class="m-n font-thin h3">Activity <span>{{activityList.length}}</span></h1>
             </div>
             <div class="wrapper-md ng-scope">
-                <div class="col-md-12">
+                <div class="col-md-12 p-0">
                     <div class="panel panel-default">
                         <div class="panel-body" ui-jq="slimScroll" ui-options="{height:'400px', size:'8px'}">
-                        <div class="col-md-8">
+                        <div class="col-md-6 p-0">
                             <div ng-repeat="activity in activityList  | limitTo:activityLimit">
                                 <div class="media">
-                                    <span class="pull-left thumb-sm"> <span class=""><i class="glyphicon glyphicon-stats icon text-primary-dker"></i></span> </span>
+                                    <span class="pull-left m-r-xs"> <span class=""><i class="glyphicon glyphicon-stats icon text-primary-dker"></i></span> </span>
                                     <div class="media-body">
                                     <div class="pull-right text-center text-muted">
                                         <strong class="h4">{{dateDate[$index]}}</strong><br>
@@ -56,7 +56,7 @@
    
                                 <a href class="h4" ng-if="activity.log_status == 'internal_res' && activity.log_type != 'delete'" href="#/viewinternal/{{activity.log_type_id}}" class="text-info" ng-bind="activity.log_title"></a></span>
 
-                                <small class="block m-t-sm"> <span ng-if="activity.log_type != 'add'"><span ng-bind="activity.log_type | capitalize"></span>d</span><span ng-if="activity.log_type == 'add'"><span ng-bind="activity.log_type | capitalize"></span>ed</span>
+                                <small class="block"> <span ng-if="activity.log_type != 'add'"><span ng-bind="activity.log_type | capitalize"></span>d</span><span ng-if="activity.log_type == 'add'"><span ng-bind="activity.log_type | capitalize"></span>ed</span>
                                     <span  class="text-muted">in {{activity.log_status.split('_')[0] | capitalize}}
                                         <span  class="text-muted" ng-if="activity.log_status.split('_')[0] == 'indirect' || activity.log_status.split('_')[0] == 'direct'">Clients</span>
                                         <span  class="text-muted" ng-if="activity.log_status.split('_')[0] == 'internal' || activity.log_status.split('_')[0] == 'external'">Resources</span>
