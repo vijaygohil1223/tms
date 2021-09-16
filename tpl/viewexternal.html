@@ -25,7 +25,7 @@
     <div flex layout="column">
         <div ui-butterbar></div>
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
-        <div class="md-content page_content_wrapper">
+        <div class="md-content viewExternalPage page_content_wrapper">
             <div class="content_head bg-light lter b-b wrapper-md ng-scope">
                 <a href="javascript:history.back()" style="margin-top:-15px"
                     class="btn btn-info pull-right btn-sm"><span class="fa fa-arrow-left"></span> Back</a>
@@ -33,45 +33,34 @@
             <div class="wrapper-md ng-scope">
                 <div class="panel panel-default">
                     <div class="panel-body" style="background:#e4e7ea;">
-                        <div class="col-sm-12">
-                            <div class="col-sm-2">
+                        <div class="userSection">
+                            <div class="left">
                                 <img id="new_profile_pic"
                                     ng-src="uploads/profilePic/{{viewExternalCommunicational.vProfilePic}}"
                                     style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
                             </div>
-                            <div class="col-sm-3">
-                                <span
-                                    class="profileTitleh">{{viewExternalCommunicational.vFirstName}}&nbsp;{{viewExternalCommunicational.vLastName}}</span>
-                                <span class="profileTitle">I am a <span
-                                        ng-bind="viewExternalCommunicational.vResourceType">.</span></span>
-                                </span>
-                            </div>
-                            <br>
-                            <br>
-                            <div class="col-sm-7">
-                                <button class="btn btn-info"
-                                    ng-click="emailSent(viewExternalCommunicational.iUserId,'External','1')"
-                                    title="Email" style="margin-left:5px;margin-top: 50px;"><i
-                                        class="fa fa-envelope-o"></i> Email</button>
-                                <a class="btn btn-info" href="#/user-profile/{{viewExternalCommunicational.iUserId}}"
-                                    title="edit" style="margin-left:0px;margin-top: 50px;"><i class="glyph-icon
- fa-edit" style="margin-right:5px"></i>Edit</a>
-                                <a href="javascript:void(0)" class="btn btn-info"
-                                    ng-click="viewFileManager(viewExternalCommunicational.iUserId)" title="File Manager"
-                                    style="margin-left:0px;margin-top: 50px;"><i class="fa fa-folder-open"
-                                        style="margin-right:5px"></i>File Manager</a>
-                                <button class="btn btn-info"
-                                    ng-click="deleteUser(viewExternalCommunicational.iUserId,viewExternalCommunicational.vProfilePic,viewExternalCommunicational.vUserName, viewExternalCommunicational.iFkUserTypeId)"
-                                    title="Delete" style="margin-left:0px;margin-top: 50px;"><i
-                                        class="glyph-icon fa-times"></i> Delete</button>
-                                <button ng-show="loginUserId == 1 && viewExternalCommunicational.iUserId != 1"
-                                    class="btn btn-info"
-                                    ng-click="changeUserStatus(viewExternalCommunicational.eUserStatus)"
-                                    title="Active/inActive External Resource."
-                                    style="margin-left:0px;margin-top: 50px;">
-                                    <span ng-if="viewExternalCommunicational.eUserStatus == 3">Set As InActive</span>
-                                    <span ng-if="viewExternalCommunicational.eUserStatus != 3">Set As Active</span>
-                                </button>
+                            <div class="right">
+                                <div class="user-info">
+                                    <span
+                                        class="profileTitleh">{{viewExternalCommunicational.vFirstName}}&nbsp;{{viewExternalCommunicational.vLastName}}</span>
+                                    <span class="profileTitle">I am a <span
+                                            ng-bind="viewExternalCommunicational.vResourceType">.</span></span>
+                                    </span>
+                                </div>
+                                <div class="btn-group d-flex">
+                                    <button class="btn btn-info" ng-click="emailSent(viewExternalCommunicational.iUserId,'External','1')" title="Email"><i class="fa fa-envelope-o"></i> Email</button>
+                                    <a class="btn btn-info" href="#/user-profile/{{viewExternalCommunicational.iUserId}}" title="edit" style="margin-left:0px;margin-top: 50px;"><i class="glyph-icon fa-edit"></i>Edit</a>
+                                    <a href="javascript:void(0)" class="btn btn-info" ng-click="viewFileManager(viewExternalCommunicational.iUserId)" title="File Manager"><i class="fa fa-folder-open"></i>File Manager</a>
+                                    <button class="btn btn-info" ng-click="deleteUser(viewExternalCommunicational.iUserId,viewExternalCommunicational.vProfilePic,viewExternalCommunicational.vUserName, viewExternalCommunicational.iFkUserTypeId)" title="Delete"><i class="glyph-icon fa-times"></i> Delete</button>
+                                    <button ng-show="loginUserId == 1 && viewExternalCommunicational.iUserId != 1"
+                                        class="btn btn-info"
+                                        ng-click="changeUserStatus(viewExternalCommunicational.eUserStatus)"
+                                        title="Active/inActive External Resource."
+                                        style="margin-left:0px;margin-top: 50px;">
+                                        <span ng-if="viewExternalCommunicational.eUserStatus == 3">Set As InActive</span>
+                                        <span ng-if="viewExternalCommunicational.eUserStatus != 3">Set As Active</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
