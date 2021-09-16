@@ -25,7 +25,7 @@
         </div>
         <div class="wrapper-md ng-scope">
 
-          <ul class="nav nav-pills nav-wizard" style="width: 71%;margin: auto;">
+          <ul class="nav nav-pills nav-wizard d-flex" style="width: 71%;margin: auto; white-space: nowrap;">
                         <li class="active">
                             <a href="#/user-profile/{{user_Id}}">1.Communication</a>
                             <div class="nav-arrow"></div>
@@ -74,13 +74,13 @@
                                         <div class="panel panel-default">
                                           <div class="panel-heading font-bold"><h4>Basic Information</h4></div>
                                             <div class="panel-body">
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-12 pl-0">
 <!--                                                <div class="form-group">
                                                         <label>Resource Type</label>
                                                         <input type="text" select2-sourcetype class="form-control" name="vResourceType"  ng-model="userprofiledata.vResourceType" ng-change="sourceType(userprofiledata.vResourceType, '1')" required />
                                                     </div>-->
-                                                    <div class="col-md-12">
-                                                        <div class="col-md-6">
+                                                    <div class="col-md-12 pl-0">
+                                                        <div class="col-md-6 pl-0">
                                                             <label class="control-label"><strong>Resourse Number:</strong></label>
                                                             <span ng-bind="userprofiledata.iResourceNumber | numberFixedLen : 4"></span>
                                                         </div>
@@ -93,7 +93,7 @@
                                                             <span>{{CreatedBy}}</span>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-12 pl-0">
                                                         <div class="form-group none">
                                                             <label>Profile Number</label>
                                                             <input type="text" class="form-control" name="profileNummber" ng-model="userprofiledata.iResourceNumber" readonly>
@@ -127,20 +127,20 @@
                                                             <input type="text" select2-gender class="form-control" name="iGender" id="iGender" ng-model="userprofiledata.iGender" required/>
                                                         </div>
                                                     </div>
-                                                        <div class="col-sm-4">
+                                                        <div class="col-sm-4 pl-0">
                                                             <div class="form-group">
                                                                 <label class="control-label">City</label>
                                                                 <input class="form-control" id="timeZoneCity" ng-model="userprofiledata.vTimeZoneCity" ng-blur="cityTimezone(userprofiledata.vTimeZoneCity)" ng-model="userprofiledata.vTimeZoneCity" details="timeZone" google-city/>
                                                             </div>
                                                         </div>
-                                                        <div class="col-sm-8">
+                                                        <div class="col-sm-8 pl-0">
                                                             <div class="form-group">
                                                                 <label class="control-label">Time Zone</label>
                                                                 <input class="form-control" id="timeZone" ng-model="userprofiledata.vTimeZone" disabled/>
                                                             </div>
                                                         </div>
                                                         
-                                                        <div class="col-sm-12">
+                                                        <div class="col-sm-12 pl-0">
                                                             <div class="form-group">
                                                                 <label>Date of Birth</label>
                                                                 <input type="text" class="form-control" id="dtBirthDate" ng-outgoing name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" required onkeydown="return false">
@@ -158,7 +158,7 @@
                                                                 <input type="text" class="form-control" name="vGoogle_plus_id" ng-model="userprofiledata.vGoogle_plus_id" required/>
                                                             </div> -->
                                                             <div class="form-group">
-                                                                <div class="col-sm-8">
+                                                                <div class="col-sm-8 pl-0">
                                                                     <label>Profile Picture</label>
                                                                     <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)" ng-required="userprofiledata.vProfilePic == undefined"/>
                                                                 </div>
@@ -196,7 +196,7 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading font-bold"><h4>Contact Information</h4></div>
                                             <div class="panel-body">
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-12 pl-0">
                                                     <div class="form-group">
                                                         <label>Username</label>
                                                         <input type="text" class="form-control" name="vUserName" ng-model="userprofiledata.vUserName" required ng-blur="checkusername()">
@@ -267,7 +267,7 @@
                                                 <h4>Address</h4>
                                             </div>
                                             <div class="panel-body">
-                                                <div class="col-lg-12">
+                                                <div class="col-lg-12 pl-0">
                                                     <!-- <div class="form-group">
                                                         <label>Address Type</label>
                                                         <input type="text" ng-select2-addresstype data-typeid="1" id="address1_addressType" class="form-control" name="vResourceType"   ng-model="addresstype1" required />
@@ -297,8 +297,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-12">
-                                                    <div class="col-sm-4">
+                                                <div class="col-lg-12 pl-0 row">
+                                                    <div class="col-sm-4 row">
                                                         <div class="form-group">
                                                             <label class="control-label">Country</label>
 
@@ -341,9 +341,9 @@
                             </form>
             </div>
           </div>
+          <!-- footer copy right -->
+          <div data-ng-include="'tpl/copyRight.html'"></div>
         </div>
-        <!-- footer copy right -->
-        <div data-ng-include="'tpl/copyRight.html'"></div>
       </div>
     </div>
   </div>
