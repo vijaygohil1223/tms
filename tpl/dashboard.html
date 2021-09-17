@@ -446,10 +446,11 @@ td { font-size: 11px; } */
             <!-- tasks -->
             <div class="row">
               <div class="col-md-12">
-                <div class="white_box panel panel-default" style="margin-bottom: 0;">
+                <div class="white_box panel panel-default mynewtabs" style="margin-bottom: 0;">
                   <a href="javascript:void(0);" ng-click="createProject()" ng-if="userRight == 1"
                     class="btn_create-project btn btn-info pull-right btn-sm btn-rounded"><i
                       class="fa fa-plus"></i>&nbsp; Create Project</a>
+                   <!-- <span class="previous">&lt; <i class="badge"> click</i></span> -->
                   <tabset id="dynamicAddAnchore" class="tab-container projecttable" style="background-color: #f3f3fa;">
                     <tab>
                       <tab-heading>
@@ -607,7 +608,7 @@ td { font-size: 11px; } */
                                   CurrencyNumbersCommaformat}}</span>
                               </td>
                               <td>
-                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                 </a>
@@ -770,7 +771,7 @@ td { font-size: 11px; } */
                                   CurrencyNumbersCommaformat}}</span>
                               </td>
                               <td>
-                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x  cmtclr{{order.orderId}}"></i>
                                 </a>
@@ -936,7 +937,7 @@ td { font-size: 11px; } */
                                   CurrencyNumbersCommaformat}}</span>
                               </td>
                               <td>
-                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                 </a>
@@ -1098,7 +1099,7 @@ td { font-size: 11px; } */
                                   CurrencyNumbersCommaformat}}</span>
                               </td>
                               <td>
-                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                 </a>
@@ -1260,7 +1261,7 @@ td { font-size: 11px; } */
                                   CurrencyNumbersCommaformat}}</span>
                               </td>
                               <td>
-                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                 </a>
@@ -1423,7 +1424,7 @@ td { font-size: 11px; } */
                                   CurrencyNumbersCommaformat}}</span>
                               </td>
                               <td>
-                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                 </a>
@@ -1582,7 +1583,7 @@ td { font-size: 11px; } */
                                   CurrencyNumbersCommaformat}}</span>
                               </td>
                               <td>
-                                <a href="javascript:void(0)" ng-click="jobDiscussion(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                 </a>
@@ -1592,7 +1593,9 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
+                    
                   </tabset>
+                  <!-- <span class="next">&gt; <i class="badge"> click</i></span> -->
                 </div>
               </div>
             </div>
@@ -2093,3 +2096,124 @@ td { font-size: 11px; } */
 
   </div>
 </div>
+
+<script>
+$( document ).ready(function() {
+
+  $(window).resize(function() {  
+      // Dashboard pages Tabs
+    let w_sbar =  $('.sidebar_wrapper').width();
+    console.log('w_sbar',w_sbar);
+    //let w_dthr = $(window).width() - 240;
+    let w_dthr = $(window).width() - w_sbar;
+    let tab_width = $('.mynewtabs .nav-tabs').outerWidth();
+     console.log('tab_width', tab_width,w_dthr);
+    if (tab_width == w_dthr) {
+        $('.mynewtabs .previous').show();
+        $('.mynewtabs .next').show();
+        if ($('.mynewtabs .nav-tabs li.active').is(':last-child')) {
+              $('.mynewtabs .next').hide();
+          } else {
+              $('.mynewtabs .next').show();
+          }
+          if ($('.mynewtabs .nav-tabs li.active').is(':first-child')) {
+              $('.mynewtabs .previous').hide();
+          } else {
+              $('.mynewtabs .previous').show();
+          }
+        $('.mynewtabs .nav-tabs li').click(function () {
+            if ($(this).is(':last-child')) {
+                $('.mynewtabs .next').hide();
+            } else {
+                $('.mynewtabs .next').show();
+            }
+            if ($(this).is(':first-child')) {
+                $('.mynewtabs .previous').hide();
+            } else {
+                $('.mynewtabs .previous').show();
+            }
+      });
+    }
+    else {
+      $('.mynewtabs .previous').hide();
+      $('.mynewtabs .next').hide();
+    }
+
+  });
+
+
+
+});
+
+  /* Script on load
+------------------------------------------------------------------------------*/
+$(window).load(function() {
+  // Dashboard pages Tabs
+  let w_sbar =  $('.md-aside').width();
+	let w_dthr = $(window).width() - w_sbar;
+	let tab_width = $('.mynewtabs .nav-tabs').outerWidth(true);
+  console.log('tab_width',tab_width, w_dthr, w_sbar);
+	if (tab_width == w_dthr) {
+    console.log('hello');
+	    $('.mynewtabs .previous').hide();
+
+	    if ($('.mynewtabs .nav-tabs li.active').is(':last-child')) {
+            $('.mynewtabs .next').hide();
+        } else {
+            $('.mynewtabs .next').show();
+        }
+        if ($('.mynewtabs .nav-tabs li.active').is(':first-child')) {
+            $('.mynewtabs .previous').hide();
+        } else {
+            $('.mynewtabs .previous').show();
+        }
+        
+	    $('.mynewtabs .nav-tabs li').click(function () {
+
+	        if ($(this).is(':last-child')) {
+	            $('.mynewtabs .next').hide();
+	        } else {
+	            $('.mynewtabs .next').show();
+	        }
+	        if ($(this).is(':first-child')) {
+	            $('.mynewtabs .previous').hide();
+	        } else {
+	            $('.mynewtabs .previous').show();
+	        }
+		});
+	}
+	else {
+		$('.mynewtabs .previous').hide();
+		$('.mynewtabs .next').hide();
+	}
+
+	// hide all contents accept from the first div
+    $('.mynewtabs .nav-tabs li').click(function () {
+        var position = $(this).position();
+        var corresponding = $(this).data("id");
+
+        // scroll to clicked tab with a little gap left to show previous tabs
+        scroll = $('.mynewtabs .nav-tabs').scrollLeft();
+        $('.mynewtabs .nav-tabs').animate({
+            'scrollLeft': scroll + position.left - 130
+        }, 600);
+       
+
+        // remove active class from currently not active tabs
+        $('.mynewtabs .nav-tabs li').removeClass('active');
+
+        // add active class to clicked tab
+        $(this).addClass('active');
+    });
+
+	$('.mynewtabs .next').click(function(e){
+	    e.preventDefault();
+	    $('.nav-tabs li.active').next('li').trigger('click');
+	});
+	$('.mynewtabs .previous').click(function(e){
+	    console.log('hi');
+      e.preventDefault();
+	    $('.nav-tabs li.active').prev('li').trigger('click');
+	});
+});
+</script>

@@ -22504,92 +22504,145 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     if (items) {
         $routeParams.id = items;
-
-        $scope.login_userid = $window.localStorage.getItem("session_iUserId");
-
-        rest.path = 'viewProjectCustomerDetail';
-        rest.model().success(function(data) {
-            $scope.customer = data;
-            $window.localStorage.clientproCustomerName = $scope.customer.client;
-            $window.localStorage.ContactPerson = $scope.customer.contact;
-            $routeParams.ClientIdd = data['client'];
-            $window.localStorage.ClientName = $routeParams.ClientIdd;
-            if ($scope.customer.memo) {
-                $scope.warn = true;
-                $timeout(function() {
-                    $scope.warn = false;
-                }, 10000);
-            }
-        }).error(errorCallback);
-
-        $routeParams.id;
-        rest.path = 'contactPerson';
-        rest.model().success(function(data) {
-            angular.forEach(data, function(val, i) {
-                if (val.vResourcePosition == 3) {
-                    angular.element('#coordinator').html(val.vUserName);
-                } else if (val.vResourcePosition == 2) {
-                    angular.element('#manager').html(val.vUserName);
-                } else if (val.vResourcePosition == 4) {
-                    angular.element('#QASpecialist').html(val.vUserName);
-                }
-            })
-        }).error(errorCallback);
-
-        $routeParams.id = $routeParams.id;
-        rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
-        rest.get().success(function(data) {
-            $scope.general = data;
-            //console.log("$scope.general", $scope.general);
-            // $scope.properties = JSON.parse($scope.general.properties);
-            var properties = [];
-            if ($scope.general.properties) {
-                angular.forEach(JSON.parse($scope.general.properties), function(val, i) {
-                    rest.path = 'generalPropertiesView/' + val;
-                    rest.get().success(function(data) {
-                        angular.element('#' + i).html(data);
-                    })
-                    properties.push({
-                        id: i
-                    });
-                })
-            }
-            $scope.properties = properties;
-            $scope.item_number = data;
-
-            //$scope.general.order_date = $scope.general.order_date;
-            $scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
-
-            $scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
-            $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY");
-            if ($scope.general.order_date == undefined) {
-                var currentdate = new Date();
-                $scope.general.order_date = getDatetime(currentdate);
-            }
-            $scope.generaldata = {};
-            $scope.generaldata.order_no = $window.localStorage.orderNo;
-            $scope.generaldata.abbrivation = $window.localStorage.abbrivation;
-
-            if ($scope.general == null) {
-                $scope.general = {};
-                $scope.generaldata = {};
-                $scope.generaldata.order_no = $window.localStorage.orderNo;
-                $scope.generaldata.abbrivation = $window.localStorage.abbrivation;
-                if ($scope.general.order_no == "") {
-
-                }
-            }
-        }).error(errorCallback);
-
-
     }
 
-    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.login_userid = $window.localStorage.getItem("session_iUserId");
+
+    rest.path = 'viewProjectCustomerDetail';
+    rest.model().success(function(data) {
+        $scope.customer = data;
+        console.log('$scope.customer',$scope.customer);
+        $window.localStorage.clientproCustomerName = $scope.customer.client;
+        $window.localStorage.ContactPerson = $scope.customer.contact;
+        $routeParams.ClientIdd = data['client'];
+        $window.localStorage.ClientName = $routeParams.ClientIdd;
+        if ($scope.customer.memo) {
+            $scope.warn = true;
+            $timeout(function() {
+                $scope.warn = false;
+            }, 10000);
+        }
+    }).error(errorCallback);
+
+    //$routeParams.id;
+    $scope.jobLinguist = [];
+    var linguistObj = [];
+    if ($routeParams.id) {
+        rest.path = 'jobsummeryGet/' + $routeParams.id;
+        rest.get().success(function(data) {
+            //$scope.jobLinguist = data;
+            angular.forEach(data, function(val, i) {
+                // var linguistObj = {
+                //     id: val.id,
+                //     read_id: loginid
+                // }
+                if(val.resource){
+                    $scope.jobLinguist.push(val);
+                }
+            });    
+            $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
+            console.log('$scope.jobLinguist',$scope.jobLinguist);
+
+        });
+    }
+
+    rest.path = 'contactPerson';
+    rest.model().success(function(data) {
+        console.log('contactperson-data',data);
+        angular.forEach(data, function(val, i) {
+            if (val.vResourcePosition == 3) {
+                angular.element('#coordinatorIcon').html(val.vUserName);
+                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.coordinatorIcon').html(coordpic);
+            
+            } else if (val.vResourcePosition == 2) {
+                angular.element('#managerDesignation').html(val.vUserName);
+                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.managerIcon').html(managerpic);
+                
+            } else if (val.vResourcePosition == 4) {
+                angular.element('#QASpecialist').html(val.vUserName);
+                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.QAIcon').html(QApic);
+            
+            }
+        })
+    }).error(errorCallback);
+
+    $routeParams.id = $routeParams.id;
+    rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
+    rest.get().success(function(data) {
+        $scope.general = data;
+        //console.log("$scope.general", $scope.general);
+        // $scope.properties = JSON.parse($scope.general.properties);
+        // var properties = [];
+        // if ($scope.general.properties) {
+        //     angular.forEach(JSON.parse($scope.general.properties), function(val, i) {
+        //         rest.path = 'generalPropertiesView/' + val;
+        //         rest.get().success(function(data) {
+        //             angular.element('#' + i).html(data);
+        //         })
+        //         properties.push({
+        //             id: i
+        //         });
+        //     })
+        // }
+        //$scope.properties = properties;
+        //$scope.item_number = data;
+
+        //$scope.general.order_date = $scope.general.order_date;
+        //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
+        //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
+        if($scope.general.due_date)
+        $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:MM");
+        
+        if($scope.general.expected_start_date){
+            $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
+            $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
+        }        
+        
+        // if ($scope.general.order_date == undefined) {
+        //     var currentdate = new Date();
+        //     $scope.general.order_date = getDatetime(currentdate);
+        // }
+        $scope.generaldata = {};
+        //$scope.generaldata.order_no = $window.localStorage.orderNo;
+        //$scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+
+        if ($scope.general == null) {
+            $scope.general = {};
+            $scope.generaldata = {};
+            //$scope.generaldata.order_no = $window.localStorage.orderNo;
+            //$scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+            // if ($scope.general.order_no == "") {
+
+            // }
+        }
+        console.log('$scope.generaldata',$scope.general);
+    }).error(errorCallback);
+
+    $scope.projectPriceChat = 0;
+    if ($routeParams.id) {   
+        rest.path = 'itemsGet/' + $routeParams.id;
+        rest.get().success(function(data) {
+            angular.forEach(data, function(val, i) {
+                //console.log('total_price',val.total_price);
+                if(val.total_price){
+                    $scope.projectPriceChat += val.total_price;
+                }
+            });
+            //console.log('alltotal',$scope.projectPriceChat);
+                    
+        });        
+    }    
+
     if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
         $location.path('/dashboard1');
         notification('Please create project.', 'warning');
     }
-
+    $window.localStorage.getItem("session_iUserId");
+    $window.localStorage.getItem("session_vUserName");
+    $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.backtoPage = function() {
         if ($window.localStorage.getItem("session_iFkUserTypeId") == 1) {
             $location.path('jobs-detail/' + $window.localStorage.orderID);
@@ -22623,7 +22676,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }*/
 
                     $('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
-
                     //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
 
                     if (userprofilepic) {
@@ -22671,6 +22723,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                         if (file_type == 'image') {
                             var filehtml = '<img src=' + cmtimgName + '></img>';
+                        } else if (file_type == 'video') {
+                            var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
                         } else {
                             var filename = val.fileURL;
                             var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
@@ -22682,6 +22736,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
                     if (val.user_id == loginid) {
                         $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                        $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+
                         if (val.content == '' || val.content == null) {
                             $('li[data-id=' + dataId + ']').find('.content').html(filedata);
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
@@ -22697,7 +22753,54 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }
                     }
+                    if (file_type == 'image' || file_type == 'video') {
+                        $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
+                    }
+                    //console.log(val.content)
+                    if(val.content){
+                        $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                    }
+                    //$compile(val.content)($scope);
+                    // ------------ Script for date seperating in chat box --------------//
+                    var ndt = new Date(data[i].created);
+                    var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                    var dd = ("0" + ndt.getDate()).slice(-2);
+                    var yy = ndt.getFullYear();
+                    //var timeText = dd + '-' + mm + '-' + yy;
+                    //var dateSeprt = dd + '-' + mm + '-' + yy;
+                    var dateSeprt = commentDateToformat(data[i].created);
 
+                    // const todayDate = new Date();
+                    // if (ndt.getDate() == todayDate.getDate() &&
+                    //     ndt.getMonth() == todayDate.getMonth() &&
+                    //     ndt.getFullYear() == todayDate.getFullYear()) {
+                    //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                    //     var timeText = 'Today';
+                    // }
+                    var timeText = commentDatetimeToText(data[i].created);
+                    if (timeText == "Today") {
+                        $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                    }
+                    // ------count total attachment------//
+                    let totalAttachment = 0;
+                    totalAttachment = $('#attachment-list').find('li .attachment').length;
+                    $('.att_count').text(totalAttachment);
+
+
+                    if (i > 0) {
+                        var ndt1 = new Date(data[i - 1].created);
+                        // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                        // var dd = ("0" + ndt.getDate()).slice(-2);
+                        // var yy = ndt.getFullYear();
+                        //var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                        var dateSeprt2 = commentDateToformat(data[i - 1].created);
+
+                        if (dateSeprt != dateSeprt2) {
+                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                        }
+                    } else {
+                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                    }
                     var msgRead_id = val.read_id;
                     if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
                         //console.log(msgRead_id);
@@ -22718,11 +22821,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
                     dateTime = moment(dateTime).format('DD-MM-YYYY');
                     $(this).find('time')[0].innerText = dateTime;*/
+
+                    //$(this).find('time')[0].append("testing");
                 });
 
             }, 1500);
             commentsArray = data;
-            //console.log('commentsArray',commentsArray);
+            console.log('commentsArray', commentsArray);
         }).error(errorCallback);
     }
 
@@ -22730,22 +22835,22 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     if ($routeParams.id) {
         $scope.usersArray = [];
         rest.path = "users";
-        $timeout(function() {
-            rest.get().success(function(data) {
-                //console.log("datadata",data);
-                angular.forEach(data.data, function(val, i) {
-                    var uObj = {
-                        id: val.iUserId,
-                        fullname: val.vUserName,
-                        email: val.vEmailAddress,
-                        profile_picture_url: "uploads/profilePic/user-icon.png"
-                    }
-                    $scope.usersArray.push(uObj);
-                });
+        //$timeout(function () {
+        rest.get().success(function(data) {
+            // console.log("datadata",data);
+            angular.forEach(data.data, function(val, i) {
+                var uObj = {
+                    id: val.iUserId,
+                    fullname: val.vUserName,
+                    email: val.vEmailAddress,
+                    profile_picture_url: "uploads/profilePic/user-icon.png"
+                }
+                $scope.usersArray.push(uObj);
+            });
 
-            }).error(errorCallback);
-            console.log('$scope.usersArray', $scope.usersArray);
-        }, 200);
+        }).error(errorCallback);
+        // console.log('discussion-usersArray',$scope.usersArray);
+        //}, 100);
         // emoji text
         $scope.emojitext = [];
         /*rest.path = "emojitext";
@@ -22765,123 +22870,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }, 200);*/
     }
 
-
-    //$timeout(function() {
-    $scope.emojitext2 = [{
-            id: 1,
-            emojiname: ":)",
-            //emojipic: "\uD83D\uDE03",
-            emojipic: '<img class="emojiImg" src="https://cdn.jsdelivr.net/emojione/assets/3.1/png/32/1f606.png">',
-            
-        },
-        {
-            id: 2,
-            emojiname: ":p",
-            emojipic: "\uD83D\uDE1B"
-        },
-        {
-            id: 3,
-            emojiname: ":blush",
-            emojipic: "\uD83D\uDE0A"
-        },
-        {
-            id: 4,
-            emojiname: ":o",
-            emojipic: "\uD83D\uDE2E"
-        },
-        {
-            id: 5,
-            emojiname: ";)",
-            emojipic: "\uD83D\uDE09"
-        },
-        {
-            id: 6,
-            emojiname: ":(",
-            emojipic: "\uD83D\uDE12"
-        },
-        {
-            id: 7,
-            emojiname: ";p",
-            emojipic: "\uD83D\uDE1C"
-        },
-        {
-            id: 8,
-            emojiname: ":'(",
-            emojipic: "\uD83D\uDE22"
-        },
-        {
-            id: 9,
-            emojiname: ":o)",
-            emojipic: "\uD83D\uDE2E"
-        },
-        {
-            id: 10,
-            emojiname: ":*",
-            emojipic: "\uD83D\uDC8B"
-        },
-        {
-            id: 11,
-            emojiname: "</3",
-            emojipic: "\uD83D\uDC94"
-        },
-        {
-            id: 12,
-            emojiname: ":>",
-            emojipic: "\uD83D\uDE06"
-        },
-        {
-            id: 13,
-            emojiname: ">:(",
-            emojipic: "\uD83D\uDE20"
-        },
-        {
-            id: 14,
-            emojiname: ":-)",
-            emojipic: "\uD83D\uDE42"
-        },
-        {
-            id: 15,
-            emojiname: ":'(",
-            emojipic: "\uD83D\uDE22"
-        },
-        {
-            id: 16,
-            emojiname: "):",
-            emojipic: "\uD83D\uDE1E"
-        },
-        {
-            id: 17,
-            emojiname: ":-\\\\",
-            emojipic: "\uD83D\uDE15"
-        },
-        {
-            id: 18,
-            emojiname: "<\\/3",
-            emojipic: "\uD83D\uDC94"
-        },
-        {
-            id: 19,
-            emojiname: "8)",
-            emojipic: "\uD83D\uDE0E"
-        },
-        {
-            id: 20,
-            emojiname: ":|",
-            emojipic: "\uD83D\uDE10"
-        },
-        {
-            id: 21,
-            emojiname: "<3",
-            emojipic: "\u2764\uFE0F"
-        },
-        {
-            id: 22,
-            emojiname: ":D",
-            emojipic: "\uD83D\uDE00"
-        },
-
-    ];
-    //},500);
     //emoji text change
     //$timeout(function() {
     //$scope.emojimap=[];
@@ -22926,14 +22914,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
 
         //  Scroll to bottom  
-        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-        jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+        // jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        // jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
         $('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
 
         jQuery("#addemoji").emojioneArea({
             autoHideFilters: true,
             useSprite: true,
+            //accepts values: 'image',
             //default: 'unicode',
             //accepts values: 'unicode' | 'shortname' | 'image'
             //pickerPosition: "bottom"
@@ -22945,12 +22934,17 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $timeout(function() {
         var el = $("#addemoji").emojioneArea();
-
         el[0].emojioneArea.on("emojibtn.click", function() {
             const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-            const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
-            $('.textarea').append(emoji);
+            //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+            const emoji = '<img class="emojiImg" src="'+emoji1+'">';
+             $('.textarea').append(emoji).trigger("change");
+
+            //$('.textarea').val($('.textarea').val()+emoji);
         });
+
+        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
     }, 3000);
 
@@ -22968,20 +22962,24 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $timeout(function() {
                     success(commentsArray);
                     $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-
+                    //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                    //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                    $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
+                    $('#comment-list').on('dragstart', function(event) { event.preventDefault(); });
+    
                 }, 500);
             },
             searchUsers: function(term, success, error) {
                 setTimeout(function() {
                     success($scope.usersArray.filter(function(user) {
-
+    
                         var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
                         var isNotSelf = user.id != loginid;
                         return containsSearchTerm && isNotSelf;
                     }));
-                }, 500);
+                }, 1000);
             },
-
+    
             searchEmojitext: function(term, success, error) {
                 setTimeout(function() {
                     success($scope.emojitext.filter(function(emojitxt) {
@@ -22990,16 +22988,28 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }));
                 }, 500);
             },
-
             postComment: function(data, success, error) {
+                // data.order_id = $routeParams.id;
+                // data.user_id = $window.localStorage.getItem("session_iUserId");
+                // data.fullname = $window.localStorage.getItem("session_vUserName");
+                // data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                // data.pings = '';
+                // data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+                // rest.path = "discussionOrder";
+                // rest.post(data).success(function (info) {
+    
+                // }).error(errorCallback);
+                // $timeout(function () {
+                //     success(data);
+                // }, 500);
                 data.order_id = $routeParams.id;
                 data.user_id = $window.localStorage.getItem("session_iUserId");
                 data.fullname = $window.localStorage.getItem("session_vUserName");
                 data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
                 data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
-
-
-
+    
+    
+    
                 function escapeSpecialChars(regex) {
                     return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
                 }
@@ -23007,21 +23017,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     var regex = new RegExp(escapeSpecialChars(i), 'gim');
                     data.content = data.content.replace(regex, emojimap[i]);
                 }
-
+    
                 var pingsvalue = [];
                 if (data.content) {
                     $(Object.keys(data.pings)).each(function(index, userId) {
                         var fullname = data.pings[userId];
                         var pingText = '@' + fullname;
                         data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
-
+    
                         pingsvalue[index] = Object.keys(data.pings)[index];
                     });
                 }
                 data.pings = pingsvalue.toString();
                 rest.path = "discussionOrder";
                 rest.post(data).success(function(info) {
-
+    
                 }).error(errorCallback);
                 $timeout(function() {
                     success(data);
@@ -23035,7 +23045,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     if (res.Status == 401) {
                         notification("You can not edit other user message", "error");
                         $timeout(function() {
-                            /*location.reload();*/
+                            location.reload();
                         }, 1000);
                     } else if (res.Status == 200) {
                         notification("Successfully edited", "success");
@@ -23054,8 +23064,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     if (data.Status == 401) {
                         notification("You can not edit other user message", "error");
                         $timeout(function() {
-                            /*location.reload();*/
-                        }, 500);
+                            location.reload();
+                        }, 1000);
                     } else if (data.Status == 200) {
                         notification("Successfully edited", "success");
                     } else {
@@ -23064,23 +23074,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }).error(errorCallback);
                 $timeout(function() {
                     success();
-                }, 1000);
+                }, 500);
             },
             upvoteComment: function(data, success, error) {
                 $routeParams.id = data.id;
                 rest.path = 'discussionOrder';
                 rest.put(data).success(function(data) {
-
+    
                 }).error(errorCallback);
                 $timeout(function() {
                     success(data);
                 }, 500);
             },
-            /*validateAttachments: function(attachments, callback) {
-                setTimeout(function() {
-                    callback(attachments);
-                }, 500);
-            },*/
             uploadAttachments: function(dataArray, success, error, data) {
                 /*"fileURL":dataArray[0].file_url,*/
                 $(dataArray).each(function(index, dataArrays) {
@@ -23097,11 +23102,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         "upvote_count": '0',
                         "user_has_upvoted": '0',
                         "read_id": $window.localStorage.getItem("session_iUserId") + ',',
-
+    
                     }
                     rest.path = "discussionOrder";
                     rest.post(obj).success(function(info) {
-
+    
                     }).error(errorCallback);
                     dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
                     dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
