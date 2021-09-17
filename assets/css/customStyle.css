@@ -197,7 +197,7 @@ div.dataTables_length select{margin: 0 5px;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs{display: flex; background: #f4f4fb; padding-top: 0 !important;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{background: #fafaff; padding: 0; margin-right: 30px; z-index: 0;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li:before{z-index: 0;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{height: 100%; padding: 10px 11px 8px 0 !important; white-space: nowrap;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{height: 100%; padding: 10px 6px 8px 0 !important; white-space: nowrap;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a .badge{color: #737f8b; background: #e5eaf0; font-size: 11px; margin: 0 0 0 5px;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a .glyphicon{color: #b4b2c9; margin: 0 5px 0 0;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li.active{background: #fff; z-index: 1;}
