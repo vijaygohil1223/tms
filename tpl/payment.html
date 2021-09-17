@@ -84,7 +84,7 @@
                               <h4>Account Information</h4>
                            </div>
                            <div class="panel-body">
-                              <div class="col-sm-10">
+                              <div class="col-sm-10 p-0">
                                  <div class="form-group">
                                     <label>Vat Number</label>
                                     <input type="text" id="VatNumber" name="VatNumber" class="form-control"
@@ -95,10 +95,10 @@
                                  </md-progress-linear>
                               </div>
                               <button type="button" ng-disabled="!payment.tax_id" style="margin-top:25px;width:13%;"
-                                 class="btn btn-info" ng-click="vatCount(payment)">Check</button>
-                              <div class="col-sm-12 vatNumberValid">
+                                 class="btn btn-info m-l" ng-click="vatCount(payment)">Check</button>
+                              <div class="col-sm-12 vatNumberValid p-0">
                               </div>
-                              <div class="col-sm-12">
+                              <div class="col-sm-12 p-0">
                                  <div class="form-group" style="margin-top:16px;">
                                     <label>Taxation Type</label>
                                     <select class="form-control m-b" name="tax_type" ng-model="payment.tax_type"
@@ -117,7 +117,7 @@
                               <h4>Bank</h4>
                            </div>
                            <div class="panel-body">
-                              <div class="col-sm-12">
+                              <div class="col-sm-12 p-0">
                                  <div class="form-group">
                                     <label>Payment Method</label>
                                     <select class="form-control m-b" id="paymentMethod" ng-change="paymentChange();"

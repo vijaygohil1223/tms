@@ -59,14 +59,14 @@
                 <div class="panel panel-default" style="margin-top:1%">
 
                     <div class="panel-body">
-                        <form id="contact-form">
+                        <form id="contact-form" class="m-b-lg">
                             <!--   TAB1 -->
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="panel panel-default">
                                         <div class="panel-heading font-bold">Contact Information</div>
                                         <div class="panel-body">
-                                            <div class="col-sm-12">
+                                            <div class="row pl-0 pr-0">
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label>First Name</label>
@@ -121,7 +121,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="row pl-0 pr-0">
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label">Job Title</label>
@@ -143,35 +143,35 @@
                                 </div>
                             </div>
                         </form>
-
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Skype</th>
+                                <th>Action</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="c in contactList1"
+                                    ng-class="(c.iContactId == contact.iContactId) ? 'rowactivate' : ''">
+                                    <td ng-bind="c.iContactId"></td>
+                                    <td>{{c.vFirstName}} {{c.vLastName}}</td>
+                                    <td ng-bind="c.vEmail"></td>
+                                    <td>
+                                        <a href="skype:{{c.vSkype}}?chat">{{c.vSkype}}</a>
+                                    </td>
+                                    <td><a href="javascript:void(0);" ng-click="editUserContact(c.iContactId);"><i
+                                                class="glyph-icon fa-edit"></i></a> / <a href="javascript:void(0)"
+                                            ng-click="deleteExternalContact(c.iContactId)"><i
+                                                class="glyph-icon fa-times"></i></a></td>
+                                </tr>
+                                <tr ng-show="contactExternalEmpty">
+                                    <td colspan="4" ng-bind="dataNotFound"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Skype</th>
-                            <th>Action</th>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="c in contactList1"
-                                ng-class="(c.iContactId == contact.iContactId) ? 'rowactivate' : ''">
-                                <td ng-bind="c.iContactId"></td>
-                                <td>{{c.vFirstName}} {{c.vLastName}}</td>
-                                <td ng-bind="c.vEmail"></td>
-                                <td>
-                                    <a href="skype:{{c.vSkype}}?chat">{{c.vSkype}}</a>
-                                </td>
-                                <td><a href="javascript:void(0);" ng-click="editUserContact(c.iContactId);"><i
-                                            class="glyph-icon fa-edit"></i></a> / <a href="javascript:void(0)"
-                                        ng-click="deleteExternalContact(c.iContactId)"><i
-                                            class="glyph-icon fa-times"></i></a></td>
-                            </tr>
-                            <tr ng-show="contactExternalEmpty">
-                                <td colspan="4" ng-bind="dataNotFound"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    
                 </div>
                 <!-- footer copy right -->
                 <div data-ng-include="'tpl/copyRight.html'"></div>
