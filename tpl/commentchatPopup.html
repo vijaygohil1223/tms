@@ -1,10 +1,12 @@
 <style type="text/css">
+.discussion_page{
+  background: #f4f4fb;
+}
   .modal-dialog{
     width: 85%;
   }
-
   .chatbox{
-    padding: 15px 15px 150px 15px
+    padding: 15px;
   }
   <style type="text/css">
   .jquery-comments .commenting-field.main {
@@ -266,17 +268,16 @@ li.seperatordate.comment {
 }   
 </style>
 <div class="md-content discussion_page ">
-  <div class="wrapper-md ng-scope" style="padding:0 10px;">
+  <div class="wrapper-md ng-scope" style="background: #f4f4fb; padding:0 10px;">
     
 <div class="modal-header" style="min-height:60px;">
-    <div class="modal-title">
-        <div class="pull-left">Discussion Board</div>
-        <div class="pull-right" ng-click="cancel()" style="margin-rigth:10px;"><a><i class="fa fa-times-circle"></i></a></div>
-    </div>
+  <h3 class="modal-title">Discussion Board</h3>
+  <!-- <div ng-click="cancel()" style="margin-rigth:10px;"><a><i class="fa fa-times-circle"></i></a></div> -->
+  <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()" style="font-size: 30px;">×</button>
 </div>
 <div class="modal-body" style="padding:0 15px;">
       
-      <div class="panel panel-default">
+      <div class="panel panel-default" style="background: #f4f4fb;">
         <!-- <div class="panel-heading">Chat </div> -->
         <div class="panel-body chatbox">
           <div class="row d-flex">

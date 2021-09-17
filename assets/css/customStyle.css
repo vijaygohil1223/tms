@@ -184,7 +184,7 @@ div.dataTables_length select{margin: 0 5px;}
 
 /* projecttable */
 .page_content_wrapper .white_box_wrapper .white_box{position: relative; background: #fff; border: 0; border-radius: 8px; box-shadow: 1px 1px 2px #0000000d;}
-.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs{display: flex; background: #f4f4fb; padding-top: 0 !important; max-width: 1300px; width: 100%; overflow: hidden; overflow-x: auto;}
+.page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs{display: flex; background: #f4f4fb; padding-top: 0 !important;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{background: #fafaff; padding: 0; margin-right: 40px; z-index: 0;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li:before{z-index: 0;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{height: 100%; padding: 10px 11px 8px 0 !important; white-space: nowrap;}
@@ -274,7 +274,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page ul.navigation li.active .att_count{color: #454f59;}
 
 
-.discussion_page .jquery-comments ul#comment-list, .discussion_page .jquery-comments #attachment-list{min-height: 300px; max-height: calc(100vh - 370px); margin-bottom: 15px !important; border-radius: 5px;}
+.discussion_page .jquery-comments ul#comment-list, .discussion_page .jquery-comments #attachment-list{min-height: 300px; max-height: calc(100vh - 350px); margin-bottom: 15px !important; border-radius: 5px;}
 .discussion_page .jquery-comments ul.main li.comment{min-width: unset; max-width: 50%;}
 .discussion_page .jquery-comments ul.main li.comment .wrapper{background-color: #12a5ec !important; padding: 12px 15px 15px; margin-right: 40px !important; border-radius: 15px 15px 0px 15px;}
 .discussion_page .jquery-comments ul.main li.comment .profile-picture{width: 22px; height: 22px; max-width: unset; max-height: unset;}
@@ -296,7 +296,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page li.seperatordate.comment{margin-bottom: 50px !important;}
 
 /* incomming msg section */
-.discussion_page .livemsg{padding: 15px 15px 15px; border-radius: 10px;}
+.discussion_page .livemsg{padding: 15px 15px 0; border-radius: 10px;}
 .discussion_page .livemsg .pull-left .usrname{left: 40px; right: unset;}
 .discussion_page .livemsg .pull-left .usrname .usrnamespan{display: block; color: #b4b6b9 !important; top: -17px !important; font-size: 12px; margin: 0;}
 .discussion_page .jquery-comments ul.main li.comment .imgblock{background: none !important; padding: 0;}
@@ -312,7 +312,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .jquery-comments{display: flex; flex-direction: column;}
 .discussion_page .jquery-comments .commenting-field.main{position: relative; order: 3; margin: 0;}
 .discussion_page .jquery-comments .commenting-field.main .profile-picture{display: none;}
-.discussion_page .jquery-comments .textarea-wrapper{padding: 45px 90px 15px 30px; background: #f4f4fb; border-radius: 10px;}
+.discussion_page .jquery-comments .textarea-wrapper{padding: 45px 90px 0 0; background: #f4f4fb; border-radius: 10px;}
 .discussion_page .jquery-comments .textarea-wrapper:before,
 .discussion_page .jquery-comments .textarea-wrapper:after,
 .discussion_page .jquery-comments .commenting-field.main .userpic{display: none;}
@@ -321,11 +321,11 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row{position: unset;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span{position: absolute; margin: 0;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.send{top: 65px; right: 0;  background: #4e2fc4 !important; border-radius: 20px;}
-.discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload{position: absolute; top: 10px; left: 75px; display: flex; align-items: center; justify-content: center; background: #fff; width: 30px; height: 30px; padding: 0 !important; border: 1px solid #e4eaf1; border-radius: 50%;}
+.discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload{position: absolute; top: 10px; left: 50px; display: flex; align-items: center; justify-content: center; background: #fff; width: 30px; height: 30px; padding: 0 !important; border: 1px solid #e4eaf1; border-radius: 50%;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload i{color: #ababae; font-size: 18px; transition: 0.2s ease-in-out;}
 .discussion_page .jquery-comments .textarea-wrapper .control-row > span.upload:hover i{color: #7c7c7c;}
 .discussion_page .jquery-comments .textarea-wrapper .emojiImg{width: 20px; height: 20px;}
-.discussion_page .commenting-field.main .emojionearea.emojionearea-inline{position: absolute !important; left: 25px; top: 0;}
+.discussion_page .commenting-field.main .emojionearea.emojionearea-inline{position: absolute !important; left: 0; top: 0;}
 .discussion_page .commenting-field.main .emojionearea.emojionearea-inline > .emojionearea-button{top: 10px; left: 10px;  display: flex; align-items: center; justify-content: center; background: #fff; width: 30px; height: 30px; border-radius: 50%; border: 1px solid #e4eaf1;}
 .discussion_page .emojionearea .emojionearea-picker.emojionearea-picker-position-top{right: unset !important; left: -44px;}
 .discussion_page .emojionearea .emojionearea-picker.emojionearea-picker-position-top .emojionearea-wrapper:after{right: unset !important; left: 55px;}
