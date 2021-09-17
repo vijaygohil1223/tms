@@ -813,7 +813,7 @@
 
             setTimeout(function() {
                 jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-            }, 2000);
+            }, 2500);
         },
 
         forceResponsive: function() {
@@ -1436,6 +1436,7 @@
                 'class': 'textarea-wrapper'
             });
 
+
             // Control row
             var controlRow = $('<div/>', {
                 'class': 'control-row'
@@ -1448,6 +1449,7 @@
                 contenteditable: true
             });
 
+            //$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
             // Setting the initial height for the textarea
             this.adjustTextareaHeight(textarea, false);
 
@@ -2362,7 +2364,14 @@
             // Trim leading spaces
             
             ce.text().replace(/^\s+/g, '');
+            $('.textarea br').remove;
             var newce = ce[0].innerHTML;
+            let emojiExist = $('.textarea .emojiImg').length;
+            console.log('emojiExist',emojiExist);
+            if(emojiExist == 0){
+                var newce = ce.text();
+            }
+            
             var text = newce.replace(/^\s+/g, '');
             //var text = newce.replace (/['br']/+/g, ‘'\n'’)
             
