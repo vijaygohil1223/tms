@@ -421,3 +421,14 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .items_page .scoop_selectbox select{color: #fff; padding: 8px 0; background-color: #502dc4; border-color: #502dc4; cursor: pointer;}
 .items_page .scoop_selectbox select option{color: #000; background-color: #fff;}
 .items_page .scoop_selectbox:hover select{background-color: #3615a0; border-color: #3615a0;}
+
+
+/* Start Media responsive */
+@media only screen and (min-width: 1400px) {
+    .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 35px;}
+    .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 8px 8px 0 !important;}
+}
+@media only screen and (min-width: 1550px) {
+    .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 40px;}
+    .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 11px 8px 0 !important;}
+}
