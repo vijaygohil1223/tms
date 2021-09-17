@@ -397,9 +397,17 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .viewExternalPage .userSection .left{margin-right: 20px;}
 .viewExternalPage .userSection .right .user-info .profileTitleh{position: relative; display: block; margin: 0;}
 .viewExternalPage .userSection .right .user-info .profileTitle{position: relative; display: block; margin: 0;}
+.viewExternalPage .userSection .right .btn-group{margin-top: 20px;}
+.viewExternalPage .userSection .right .btn-group a i, .viewExternalPage .userSection .right .btn-group button i{margin-right: 5px;}
 
 /* ----- activityPage ----- */
 .activityPage .content_head h1 span{color: #000; background: #fff; font-size: 14px; padding: 1px 5px; border: 1px solid #ddd; border-radius: 5px;}
 .activityPage .media-body .pull-right .h4{font-size: 16px;}
 .activityPage .loadMore{padding: 10px 25px; border-radius: 20px; font-size: 15px; line-height: 1; background: #502dc4; color: #fff; border: 0; text-decoration: none;}
 .activityPage .loadMore:hover{color: #fff;}
+
+/* ----- items_page ----- */
+.items_page .scoop_selectbox{padding: 0 15px;}
+.items_page .scoop_selectbox select{color: #fff; padding: 8px 0; background-color: #502dc4; border-color: #502dc4; cursor: pointer;}
+.items_page .scoop_selectbox select option{color: #000; background-color: #fff;}
+.items_page .scoop_selectbox:hover select{background-color: #3615a0; border-color: #3615a0;}

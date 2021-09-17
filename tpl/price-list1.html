@@ -1,18 +1,11 @@
 <style type="text/css">
     .nav-pills.nav-wizard>>ul>li {
-
         border-right: 78px solid #eef5fa !important;
-
     }
-
     .hrght {
-
         float: right;
-
         color: red;
-
         margin-top: -1.5%;
-
     }
 </style>
 <script type="text/javascript">
@@ -36,7 +29,6 @@
                 <div class="hrght1">
                     <h5 ng-if="user_name!=' '">This record is currently edited by {{user_name}}<h5>
                 </div>
-
             </div>
 
             <div class="wrapper-md ng-scope">
@@ -145,83 +137,40 @@
 
                             <div class="panel-body">
 
-                                <form id="price-List-form">
-
+                                <form id="price-List-form" class="row">
                                     <div class="col-sm-12">
-
-                                        <div class="col-sm-6"
-                                            style="padding: 20px;border: 1px solid #ccc;background:#eee;border-radius:15px;">
-
-
-
+                                        <div class="col-sm-6" style="padding: 20px;border: 1px solid #ccc;background:#eee;border-radius:15px;">
                                             <div class="col-sm-5">
-
                                                 <div class="form-group">
-
                                                     <label>Select price list</label>
-
                                                 </div>
-
                                             </div>
-
                                             <div class="col-sm-6">
-
                                                 <div class="form-group">
-
-                                                    <input type="text" select2-price-list data-typeid="1"
-                                                        id="customerPriceId" class="form-control" name="currency"
-                                                        ng-model="customerPriceId"
-                                                        ng-change="customerChange(customerPriceId)" />
-
+                                                    <input type="text" select2-price-list data-typeid="1" id="customerPriceId" class="form-control" name="currency" ng-model="customerPriceId" ng-change="customerChange(customerPriceId)" />
                                                 </div>
-
                                             </div>
-
-                                            <div class="col-sm-1" id="showRemoveButton" ng-show="customerPriceId"
-                                                style="top: 7px;left: -22px;">
-
-                                                <a><i class="glyph-icon fa-times"
-                                                        ng-click="removecustomerPriceId()"></i></a>
-
+                                            <div class="col-sm-1" id="showRemoveButton" ng-show="customerPriceId" style="top: 7px;left: -22px;">
+                                                <a><i class="glyph-icon fa-times" ng-click="removecustomerPriceId()"></i></a>
                                             </div>
-
                                             <div class="col-sm-5">
-
                                                 <div class="form-group">
-
                                                     <label>Change name of price list</label>
-
                                                 </div>
-
                                             </div>
-
                                             <div class="col-sm-6">
-
                                                 <div class="form-group">
-
-                                                    <input type="text" class="form-control" placeholder="Change Name"
-                                                        name="customerPriceName" ng-model="customerPrice.price_name">
-
+                                                    <input type="text" class="form-control" placeholder="Change Name" name="customerPriceName" ng-model="customerPrice.price_name">
                                                 </div>
-
                                             </div>
-
-                                            <div class="col-sm-12" style="margin-top:5%">
-
+                                            <div class="col-sm-12" style="margin-top:2%">
                                                 <div class="form-group">
-
                                                     <label><strong>New price list</strong></label>
-
                                                 </div>
-
                                             </div>
-
                                             <div class="col-sm-6">
-
                                                 <div class="form-group">
-
                                                     <label>Create new price list</label>
-
                                                 </div>
 
                                             </div>
@@ -231,7 +180,7 @@
                                             <div class="col-sm-6">
 
                                                 <button type="button" ng-click="newCustomer()" class="btn btn-info"
-                                                    style="padding: 4px;margin-left: -40px;">
+                                                    style="padding: 5px 15px; margin-left: -40px;">
 
                                                     Create
 
@@ -264,7 +213,7 @@
                                             <div class="col-sm-1">
 
                                                 <button type="button" ng-click="copyCustomer(customerPricecopyId)"
-                                                    class="btn btn-info" style="padding:5px;margin-left: -20px;">
+                                                    class="btn btn-info" style="padding:5px 15px;margin-left: -20px;">
 
                                                     Copy
 
@@ -378,7 +327,6 @@
                                         </div>
 
                                     </div>
-
                                 </form>
 
                                 <!--  -->
