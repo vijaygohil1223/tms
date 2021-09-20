@@ -16080,8 +16080,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
         //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
         if($scope.general.due_date)
-        $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:MM");
-        
+        $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
         if($scope.general.expected_start_date){
             $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
             $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
@@ -22594,7 +22593,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
         //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
         if($scope.general.due_date)
-        $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:MM");
+        $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
         
         if($scope.general.expected_start_date){
             $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
