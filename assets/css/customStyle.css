@@ -313,7 +313,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .jquery-comments ul.main li.comment .imgblock .attachment{display: block; max-width: 250px; width: 100%;}
 .discussion_page .jquery-comments ul.main li.comment .imgblock .attachment img{display: block; max-width: 100% !important; width: 100%; height: auto; max-height: none !important; border-radius: 15px 15px 0 15px;}
 .discussion_page .jquery-comments ul.main li.comment .imgblock .attachment video{max-width: 100% !important; max-height: initial !important;}
-.discussion_page .jquery-comments ul.main li.comment.pull-left .wrapper{background: #f4f4fb !important; margin-right: 0 !important; margin-left: 40px !important; border-radius: 15px 15px 15px 0px;}
+.discussion_page .jquery-comments ul.main li.comment.pull-left .wrapper{background: #e6e9ef !important; margin-right: 0 !important; margin-left: 40px !important; border-radius: 15px 15px 15px 0px;}
 .discussion_page .jquery-comments ul.main li.comment.pull-left .wrapper.imgblock{background: none !important;}
 .discussion_page .jquery-comments ul.main li.comment.pull-left time{top: -17px !important; color: #b4b6b9; margin-top: 0 !important;}
 .discussion_page .jquery-comments ul.main li.comment.pull-left .imgblock .attachment img{border-radius: 15px 15px 15px 0;}
