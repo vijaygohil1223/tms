@@ -16059,16 +16059,23 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
     rest.get().success(function(data) {
         $scope.general = data;
-        
+        console.log('$scope.general',$scope.general);
         //$scope.general.order_date = $scope.general.order_date;
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
         //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
         if($scope.general.due_date)
         $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
-        if($scope.general.expected_start_date){
-            $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
-            $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
-        }        
+        if($scope.general.heads_up){
+            if($scope.general.expected_start_date){
+                $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
+                $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
+            }
+        }else{
+            if($scope.general.order_date){
+                $scope.general.expected_start_date = $scope.general.order_date.split(' ')[0].split('.').reverse().join('-');
+                $scope.general.expected_start_date = moment($scope.general.order_date).format("DD-MM-YYYY");
+            }
+        }            
         
         // if ($scope.general.order_date == undefined) {
         //     var currentdate = new Date();
@@ -16143,6 +16150,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
         rest.get().success(function(data) {
             setTimeout(function() {
+                //var setintrvlMenu = setInterval(function() {
                 angular.forEach(data, function(val, i) {
                     var dataId = val.id;
 
@@ -16313,6 +16321,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     // Read/ Unread - check comment id exist in db 
 
                 });
+                //},5000);
 
                 $(".comment-wrapper").each(function(i, v) {
                     /*var dateTime = $(this).find('time')[0].innerText;
@@ -22591,9 +22600,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if($scope.general.due_date)
         $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
         
-        if($scope.general.expected_start_date){
-            $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
-            $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
+        if($scope.general.heads_up){
+            if($scope.general.expected_start_date){
+                $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
+                $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
+            }
+        }else{
+            if($scope.general.order_date){
+                $scope.general.expected_start_date = $scope.general.order_date.split(' ')[0].split('.').reverse().join('-');
+                $scope.general.expected_start_date = moment($scope.general.order_date).format("DD-MM-YYYY");
+            }
         }        
         
         // if ($scope.general.order_date == undefined) {
