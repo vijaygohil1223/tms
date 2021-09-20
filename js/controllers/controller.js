@@ -16066,14 +16066,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if($scope.general.due_date)
         $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
         if($scope.general.heads_up){
-            if($scope.general.expected_start_date){
+            if($scope.general.expected_start_date && $scope.general.expected_start_date != '0000-00-00 00:00:00'){
                 $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
                 $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
+            }else{
+                $scope.general.expected_start_date = '-';
             }
         }else{
             if($scope.general.order_date){
                 $scope.general.expected_start_date = $scope.general.order_date.split(' ')[0].split('.').reverse().join('-');
                 $scope.general.expected_start_date = moment($scope.general.order_date).format("DD-MM-YYYY");
+            }else{
+                $scope.general.expected_start_date = '-';
             }
         }            
         
@@ -22601,14 +22605,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
         
         if($scope.general.heads_up){
-            if($scope.general.expected_start_date){
+            if($scope.general.expected_start_date && $scope.general.expected_start_date != '0000-00-00 00:00:00'){
                 $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
                 $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
+            }else{
+                $scope.general.expected_start_date = '-';
             }
         }else{
             if($scope.general.order_date){
                 $scope.general.expected_start_date = $scope.general.order_date.split(' ')[0].split('.').reverse().join('-');
                 $scope.general.expected_start_date = moment($scope.general.order_date).format("DD-MM-YYYY");
+            }else{
+                $scope.general.expected_start_date = '-';
             }
         }        
         
