@@ -12416,7 +12416,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     angular.element('#due_time').val(due_timeval);
                     if ($scope.general.expected_start_date) {
                         //$scope.general.expected_start_date = moment($scope.general.expected_start_date).format($window.localStorage.getItem('global_dateFormat')+' HH:mm A');
-                        $scope.general.expected_start_date = moment($scope.general.expected_start_date).format($window.localStorage.getItem('global_dateFormat') + ' HH:mm');
+                        $scope.general.expected_start_date = moment($scope.general.expected_start_date).format($window.localStorage.getItem('global_dateFormat') + ' - HH:mm');
                     }
 
                     $cookieStore.put('generalEdit', $scope.general);
@@ -12623,7 +12623,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                     $scope.general.expected_start_date = angular.element('#expected_start_date').val();
                     if ($scope.general.expected_start_date) {
-                        $scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
+                        //$scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
+                        $scope.general.expected_start_date = originalDateFormatDash($scope.general.expected_start_date);
                         $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
                     }
                     //$scope.general.due_date = angular.element('#due_date').val();
@@ -12710,7 +12711,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                     $scope.general.expected_start_date = angular.element('#expected_start_date').val();
                     if ($scope.general.expected_start_date) {
-                        $scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
+                        //$scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
+                        $scope.general.expected_start_date = originalDateFormatDash($scope.general.expected_start_date);
                         $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
                     }
                     /*$scope.general.due_date = angular.element('#due_date').val();
@@ -16066,7 +16068,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if($scope.general.due_date)
         $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
         if($scope.general.heads_up){
-            if($scope.general.expected_start_date && $scope.general.expected_start_date != '0000-00-00 00:00:00'){
+            if($scope.general.expected_start_date && $scope.general.expected_start_date != '0000-00-00 00:00:00' && $scope.general.expected_start_date != "Invalid Date"){
                 $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
                 $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
             }else{
@@ -16309,7 +16311,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
                     }
 
-                    console.log('val.read_id',val.read_id);
                     
                     var msgRead_id = val.read_id;
                     
@@ -16343,6 +16344,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
     }
 
+    
 
     if ($routeParams.id) {
         $scope.usersArray = [];
@@ -22605,7 +22607,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
         
         if($scope.general.heads_up){
-            if($scope.general.expected_start_date && $scope.general.expected_start_date != '0000-00-00 00:00:00'){
+            if($scope.general.expected_start_date && $scope.general.expected_start_date != '0000-00-00 00:00:00' && $scope.general.expected_start_date != "Invalid Date"){
                 $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
                 $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
             }else{
