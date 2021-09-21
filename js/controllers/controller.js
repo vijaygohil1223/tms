@@ -13064,7 +13064,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }, 200);
 
     $scope.jobDiscussion = function() {
-        $location.path('discussion/' + $window.localStorage.projectJobChainOrderId);
+        //$location.path('discussion/' + $window.localStorage.projectJobChainOrderId);
+        $location.path('discussion/' + $scope.orderID);
     }
 
     $timeout(function() {
