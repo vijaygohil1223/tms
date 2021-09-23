@@ -1610,8 +1610,67 @@ td { font-size: 11px; } */
             <!-- tasks -->
             <div class="row">
               <div class="col-md-9 chid-tables">
+                <!-- Scoop Jobs List based on status -->
+                <div class="white_box panel panel-default"  ng-show="isoverviewProject">
+                  <div class="table-responsive">
+                    <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
+                    <table class="table table-striped b-t b-b" datatable="ng" id="scoopjobAllTbl" dt-options="">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Scoop Number</th>
+                          <!-- <th>Job Number</th> -->
+                          <th>Client</th>
+                          <th>Account</th>
+                          <!-- <th>Type</th> -->
+                          <th>Language Pair</th>
+                          <th>Project Manager</th>
+                          <th>Resource</th>
+                          <th>Progress (in %)</th>
+                          <th>Status</th>
+                          <!-- <th>Start Date</th> -->
+                          <!-- <th>Deadline</th> -->
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="jList in scoopjobsListAll">
+                          <td>{{$index + 1}}</td>
+                          <td>{{jList.item_id}}</td>
+                          <!-- <td>
+                            <span ng-if="!jList.po_number"> - </span>
+                            <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
+                          </td> -->
+                          <td>{{jList.Client}}</td>
+                          <td>{{jList.indirectClient}}</td>
+                          <!-- <td>{{jList.type}}</td> -->
+                          <td>
+                            <span ng-if="!jList.ItemLanguage"> - </span>
+                            <span ng-if="jList.ItemLanguage">{{jList.ItemLanguage}}</span>
+                          </td>
+                          <td>
+                            <span ng-if="jList.contact_person != ''">{{jList.contact_person}}</span>
+                            <span ng-if="jList.contact_person == ''">-</span>
+                          </td>
+                          <td>
+                            <span ng-if="jList.resource != ''">{{jList.resource}}</span>
+                            <span ng-if="jList.resource == ''">-</span>
+                          </td>
+                          <td>-</td>
+                          <td>{{jList.item_status}}</td>
+                          <!-- <td>{{jList.created_date | dateFormat}}</td> -->
+                          <!-- <td>
+                            <span ng-if="jList.due_date == '0000-00-00 00:00:00'"> - </span>
+                            <span ng-if="jList.due_date != '0000-00-00 00:00:00'">{{jList.due_date | dateFormat}}</span>
+                          </td> -->
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- Job List For Status New END -->
+
                 <!-- Jobs List based on status -->
-                <div class="white_box panel panel-default">
+                <div class="white_box panel panel-default"  ng-show="isoverviewJobs">
                   <div class="table-responsive">
                     <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
                     <table class="table table-striped b-t b-b" datatable="ng" id="jobAllTbl" dt-options="">
@@ -1683,68 +1742,68 @@ td { font-size: 11px; } */
                       </div>
                     </div>
                     <div class="list-group no-radius alt">
-                      <li class="list-group-item">
+                      <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='all'}">
                         <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','all')">
+                          ng-click="scoopjobstatusRecord('scoop','all')">
                           All</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='scoopAssigned'}">
                         <span class="badge bg-info">{{scoopAssignedCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopAssigned')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopAssigned')">
                           To be Assigned</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopProgress'}">
                         <span class="badge bg-info">{{scoopProgressCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopProgress')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopProgress')">
                           In progress</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopLinguist'}">
                         <span class="badge bg-info">{{scoopLinguistCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopLinguist')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopLinguist')">
                           Completed by linguist</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopQaReady'}">
                         <span class="badge bg-info">{{scoopQaReadyCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopQaReady')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopQaReady')">
                           QA Ready</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopTobedelivered'}">
                         <span class="badge bg-info">{{scoopTobedeliveredCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopTobedelivered')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopTobedelivered')">
                           To be Delivered</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopDelivered'}">
                         <span class="badge bg-info">{{scoopDeliveredCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopDelivered')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopDelivered')">
                           Delivered</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopApproved'}">
                         <span class="badge bg-info">{{scoopApprovedCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopApproved')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopApproved')">
                           Approved</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopInvoiced'}">
                         <span class="badge bg-info">{{scoopInvoicedCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopInvoiced')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopInvoiced')">
                           Invoiced</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopPaid'}">
                         <span class="badge bg-info">{{scoopPaidCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopPaid')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopPaid')">
                           Paid</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopWithoutInvoice'}">
                         <span class="badge bg-info">{{scoopWithoutInvoiceCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopWithoutInvoice')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopWithoutInvoice')">
                           Without invoice</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopCancelled'}">
                         <span class="badge bg-info">{{scoopCancelledCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('scoop','scoopCancelled')">
+                          ng-click="scoopjobstatusRecord('scoop','scoopCancelled')">
                           Cancelled</a>
                       </li>
                       
-                      <!-- <li class="list-group-item">
+                      <!-- <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueToday'}">
                         <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
                           ng-click="goToProjectScoopList('All')">
                           All</a>
@@ -1768,27 +1827,27 @@ td { font-size: 11px; } */
                       </div>
                     </div>
                     <div class="list-group no-radius alt">
-                      <li class="list-group-item">
+                      <li class="list-group-item"  ng-class="{ 'active': jobsactive=='Requested'}">
                         <span class="badge bg-info">{{jobRequestesCount}}</span><a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','Requested')">
                           Requested</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='inProgress'}">
                         <span class="badge bg-info">{{jobInProgressCount}}</span><a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','inProgress')">
                           In progress</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueToday'}">
                         <span class="badge bg-info">{{jobDueTodayCount}}</span><a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','DueToday')">
                           Due Today</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueTomorrow'}">
                         <span class="badge bg-info">{{jobDueTomorrowCount}}</span><a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','DueTomorrow')">
                           Due Tomorrow</a>
                       </li>
-                      <li class="list-group-item">
+                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='Overdue'}">
                         <span class="badge bg-info">{{jobOverDueCount}}</span><a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','Overdue')">
                           Overdue</a>

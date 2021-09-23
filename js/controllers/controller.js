@@ -1792,16 +1792,157 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     };
     $scope.allProjectListing();
 
+    /* overview display */
+    $scope.isoverviewProject = false;
     //Getting Jobs from getJobsFromTmsSummeryView
+    $scope.scoopjobstatusRecord = function(statusType,scoopjobStatus) {
+        if(scoopjobStatus){
+            $scope.scoopjobStatusFilter = scoopjobStatus;
+            $scope.isoverviewProject = true;
+            console.log('scoppppp detail');
+        }else{
+            //$scope.scoopjobStatusFilter = 'all';
+            $scope.scoopjobStatusFilter = '';
+        }
+        $scope.scoopjobStatus = $scope.scoopjobStatus == scoopjobStatus?'':scoopjobStatus;    
+        
+        rest.path = 'getJobsFromTmsSummeryView';
+        rest.get().success(function(data) {
+            $scope.dashboardJobList = data;
+            //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
+            var allscoopJobsData = [];
+
+            // --------- Scoop status data --------//
+            var scoopAssigned = [];
+            var scoopProgress = [];
+            var scoopLinguist = [];
+            var scoopQaReady = [];
+            var scoopTobedelivered = [];
+            var scoopDelivered = [];
+            var scoopApproved = [];
+            var scoopInvoiced = [];
+            var scoopPaid = [];
+            var scoopWithoutInvoice = [];
+            var scoopCancelled = [];
+            // --------- Scoop status Count --------//
+            $scope.scoopAssignedCount = 0;
+            $scope.scoopProgressCount = 0;
+            $scope.scoopLinguistCount = 0;
+            $scope.scoopQaReadyCount = 0;
+            $scope.scoopTobedeliveredCount = 0;
+            $scope.scoopDeliveredCount = 0;
+            $scope.scoopApprovedCount = 0;
+            $scope.scoopInvoicedCount = 0;
+            $scope.scoopPaidCount = 0;
+            $scope.scoopWithoutInvoiceCount = 0;
+            $scope.scoopCancelledCount = 0;
+            
+
+            angular.forEach($scope.dashboardJobList, function(val, i) {
+                val.item_id = pad(val.item_id, 3);
+
+                if (val.ItemLanguage) {
+                    val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
+                }
+
+                allscoopJobsData.push(val);
+                // --- scoop array data -- //
+                if (val.scoopitem_status == "To be Assigned") {
+                    scoopAssigned.push(val);
+                    $scope.scoopAssignedCount++;
+                }else if (val.scoopitem_status == 'In Progress') {
+                    scoopProgress.push(val);
+                    $scope.scoopProgressCount++;
+                }else if (val.scoopitem_status == 'Completed by linguist') {
+                    scoopLinguist.push(val);
+                    $scope.scoopLinguistCount++;
+                }else if (val.scoopitem_status == 'QA Ready') {
+                    scoopQaReady.push(val);
+                    $scope.scoopQaReadyCount++;
+                }else if (val.scoopitem_status == 'To be Delivered') {
+                    scoopTobedelivered.push(val);
+                    $scope.scoopTobedeliveredCount++;
+                }else if (val.scoopitem_status == 'Delivered') {
+                    scoopDelivered.push(val);
+                    $scope.scoopDeliveredCount++;
+                }else if (val.scoopitem_status == 'Approved') {
+                    scoopApproved.push(val);
+                    $scope.scoopApprovedCount++;
+                }else if (val.scoopitem_status == 'Invoiced') {
+                    scoopInvoiced.push(val);
+                    $scope.scoopInvoicedCount++;
+                }else if (val.scoopitem_status == 'Paid') {
+                    scoopPaid.push(val);
+                    $scope.scoopPaidCount++;
+                }else if (val.scoopitem_status == 'Without invoice') {
+                    scoopWithoutInvoice.push(val);
+                    $scope.scoopWithoutInvoiceCount++;
+                }else if (val.scoopitem_status == 'Cancelled') {
+                    scoopCancelled.push(val);
+                    $scope.scoopCancelledCount++;
+                }
+
+            });
+            $timeout(function() {
+
+                // scoop Array //
+                if($scope.scoopjobStatusFilter == 'all'){
+                    $scope.scoopjobsListAll = allscoopJobsData;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopAssigned'){
+                    $scope.scoopjobsListAll = scoopAssigned;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopProgress'){
+                    $scope.scoopjobsListAll = scoopProgress;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopLinguist'){
+                    $scope.scoopjobsListAll = scoopLinguist;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopQaReady'){
+                    $scope.scoopjobsListAll = scoopQaReady;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopTobedelivered'){
+                    $scope.scoopjobsListAll = scoopTobedelivered;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopDelivered'){
+                    $scope.scoopjobsListAll = scoopDelivered;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopApproved'){
+                    $scope.scoopjobsListAll = scoopApproved;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopInvoiced'){
+                    $scope.scoopjobsListAll = scoopInvoiced;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopPaid'){
+                    $scope.scoopjobsListAll = scoopPaid;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopWithoutInvoice'){
+                    $scope.scoopjobsListAll = scoopWithoutInvoice;
+                }
+                if($scope.scoopjobStatusFilter == 'scoopCancelled'){
+                    $scope.scoopjobsListAll = scoopCancelled;
+                }
+                
+                console.log('scoop = jobsListAll',$scope.scoopjobsListAll);
+            }, 200);
+
+        }).error(errorCallback);
+    };
+    $scope.scoopjobstatusRecord('scoop','');    
+
+    $scope.isoverviewJobs = false;
     $scope.jobstatusRecord = function(statusType,jobStatus) {
         if(jobStatus){
             $scope.jobstatusFilter = jobStatus;
+            $scope.isoverviewJobs = true;
+            console.log('jobs detail');
         }else{
-            $scope.jobstatusFilter = 'all';
-        }    
-        console.log('jobStatus',jobStatus);
-    
-    rest.path = 'getJobsFromTmsSummeryView';
+            //$scope.jobstatusFilter = 'all';
+            $scope.jobstatusFilter = '';
+        }
+        $scope.jobsactive = $scope.jobsactive == jobStatus?'':jobStatus;    
+        
+        rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function(data) {
             $scope.dashboardJobList = data;
             //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
@@ -1843,32 +1984,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             // var jobPaidCount = 0;
             // var jobWithoutInvoicedCount = 0;
             // var jobCancelledCount = 0;
-
-            // --------- Scoop status data --------//
-            var scoopAssigned = [];
-            var scoopProgress = [];
-            var scoopLinguist = [];
-            var scoopQaReady = [];
-            var scoopTobedelivered = [];
-            var scoopDelivered = [];
-            var scoopApproved = [];
-            var scoopInvoiced = [];
-            var scoopPaid = [];
-            var scoopWithoutInvoice = [];
-            var scoopCancelled = [];
-            // --------- Scoop status Count --------//
-            $scope.scoopAssignedCount = 0;
-            $scope.scoopProgressCount = 0;
-            $scope.scoopLinguistCount = 0;
-            $scope.scoopQaReadyCount = 0;
-            $scope.scoopTobedeliveredCount = 0;
-            $scope.scoopDeliveredCount = 0;
-            $scope.scoopApprovedCount = 0;
-            $scope.scoopInvoicedCount = 0;
-            $scope.scoopPaidCount = 0;
-            $scope.scoopWithoutInvoiceCount = 0;
-            $scope.scoopCancelledCount = 0;
-            
 
             angular.forEach($scope.dashboardJobList, function(val, i) {
                 val.item_id = pad(val.item_id, 3);
@@ -1931,42 +2046,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     jobOverDueCount++;
                 }
 
-                // --- scoop array data -- //
-                if (val.scoopitem_status == "To be Assigned") {
-                    scoopAssigned.push(val);
-                    $scope.scoopAssignedCount++;
-                }else if (val.scoopitem_status == 'In Progress') {
-                    scoopProgress.push(val);
-                    $scope.scoopProgressCount++;
-                }else if (val.scoopitem_status == 'Completed by linguist') {
-                    scoopLinguist.push(val);
-                    $scope.scoopLinguistCount++;
-                }else if (val.scoopitem_status == 'QA Ready') {
-                    scoopQaReady.push(val);
-                    $scope.scoopQaReadyCount++;
-                }else if (val.scoopitem_status == 'To be Delivered') {
-                    scoopTobedelivered.push(val);
-                    $scope.scoopTobedeliveredCount++;
-                }else if (val.scoopitem_status == 'Delivered') {
-                    scoopDelivered.push(val);
-                    $scope.scoopDeliveredCount++;
-                }else if (val.scoopitem_status == 'Approved') {
-                    scoopApproved.push(val);
-                    $scope.scoopApprovedCount++;
-                }else if (val.scoopitem_status == 'Invoiced') {
-                    scoopInvoiced.push(val);
-                    $scope.scoopInvoicedCount++;
-                }else if (val.scoopitem_status == 'Paid') {
-                    scoopPaid.push(val);
-                    $scope.scoopPaidCount++;
-                }else if (val.scoopitem_status == 'Without invoice') {
-                    scoopWithoutInvoice.push(val);
-                    $scope.scoopWithoutInvoiceCount++;
-                }else if (val.scoopitem_status == 'Cancelled') {
-                    scoopCancelled.push(val);
-                    $scope.scoopCancelledCount++;
-                }
-
             });
             $timeout(function() {
                 $scope.inProgerss = inProgerss;
@@ -1989,7 +2068,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 // $scope.jobInvoicedCount = jobInvoicedCount;
                 // $scope.jobPaidCount = jobPaidCount;
                 // $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
-                $scope.jobsListAll = allJobsData;
+                //$scope.jobsListAll = allJobsData;
+                if($scope.jobstatusFilter == 'all'){
+                    $scope.jobsListAll = allJobsData;
+                }
                 if($scope.jobstatusFilter == 'Requested'){
                     $scope.jobsListAll = Requested;
                 }
@@ -2012,47 +2094,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobsListAll = jobOverDue;
                 }
 
-                // scoop Array //
-                if($scope.jobstatusFilter == 'scoopAssigned'){
-                    $scope.jobsListAll = scoopAssigned;
-                }
-                if($scope.jobstatusFilter == 'scoopProgress'){
-                    $scope.jobsListAll = scoopProgress;
-                }
-                if($scope.jobstatusFilter == 'scoopLinguist'){
-                    $scope.jobsListAll = scoopLinguist;
-                }
-                if($scope.jobstatusFilter == 'scoopQaReady'){
-                    $scope.jobsListAll = scoopQaReady;
-                }
-                if($scope.jobstatusFilter == 'scoopTobedelivered'){
-                    $scope.jobsListAll = scoopTobedelivered;
-                }
-                if($scope.jobstatusFilter == 'scoopDelivered'){
-                    $scope.jobsListAll = scoopDelivered;
-                }
-                if($scope.jobstatusFilter == 'scoopApproved'){
-                    $scope.jobsListAll = scoopApproved;
-                }
-                if($scope.jobstatusFilter == 'scoopInvoiced'){
-                    $scope.jobsListAll = scoopInvoiced;
-                }
-                if($scope.jobstatusFilter == 'scoopPaid'){
-                    $scope.jobsListAll = scoopPaid;
-                }
-                if($scope.jobstatusFilter == 'scoopWithoutInvoice'){
-                    $scope.jobsListAll = scoopWithoutInvoice;
-                }
-                if($scope.jobstatusFilter == 'scoopCancelled'){
-                    $scope.jobsListAll = scoopCancelled;
-                }
-                
                 console.log('$scope.jobsListAll',$scope.jobsListAll);
             }, 200);
 
         }).error(errorCallback);
     };
-    $scope.jobstatusRecord('scoop','all');    
+
+    $scope.jobstatusRecord('jobs','');    
 
     // $scope.jobstatusRecord = function(jobStatus) {
     //     console.log('jobStatus',jobStatus);
