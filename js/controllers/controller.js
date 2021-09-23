@@ -1984,7 +1984,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             // var jobPaidCount = 0;
             // var jobWithoutInvoicedCount = 0;
             // var jobCancelledCount = 0;
-
             angular.forEach($scope.dashboardJobList, function(val, i) {
                 val.item_id = pad(val.item_id, 3);
 
