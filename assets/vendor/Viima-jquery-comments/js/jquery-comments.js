@@ -410,7 +410,8 @@
             });
 
             // Append main level comments
-            this.sortComments(mainLevelComments, this.currentSortKey);
+            //this.sortComments(mainLevelComments, this.currentSortKey);
+            this.sortComments(mainLevelComments, 'oldest');
             mainLevelComments.reverse(); // Reverse the order as they are prepended to DOM
             $(mainLevelComments).each(function(index, commentModel) {
                 self.addComment(commentModel, commentList);
