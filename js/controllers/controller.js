@@ -16404,7 +16404,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                     }
                 
-                }, 500);
+                }, 1500);
                 commentsArray = data;
                 console.log('commentsArray=', commentsArray);
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
@@ -16612,7 +16612,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
                 $('#comment-list').on('dragstart', function(event) { event.preventDefault(); });
 
-            }, 500);
+            }, 1500);
         },
         searchUsers: function(term, success, error) {
             setTimeout(function() {
