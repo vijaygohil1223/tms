@@ -16047,7 +16047,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     rest.path = 'viewProjectCustomerDetail';
     rest.model().success(function(data) {
         $scope.customer = data;
-        console.log('$scope.customer',$scope.customer);
         $window.localStorage.clientproCustomerName = $scope.customer.client;
         $window.localStorage.ContactPerson = $scope.customer.contact;
         $routeParams.ClientIdd = data['client'];
@@ -16199,201 +16198,228 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     if ($routeParams.id) {
 
         var commentsArray = [];
+        var NewcommentsArray = [];
         $scope.commentReadArray = [];
-        rest.path = "discussionOrder/" + $routeParams.id;
-
-        rest.get().success(function(data) {
-            setTimeout(function() {
-                //var setintrvlMenu = setInterval(function() {
-                angular.forEach(data, function(val, i) {
-                    var dataId = val.id;
-
-                    /*if (val.content == "") {
+        var promises = [];
+        var usercommentsArr=[];
+        var newUserCommentsArr = [];
+        $scope.msgIDArr = [];
+        $scope.commentsArrayAll = async function() {
+            rest.path = "discussionOrder/" + $routeParams.id;
+            rest.get().success(function(data) {
+                setTimeout(function() {
+                    //var setintrvlMenu = setInterval(function() {
+                    angular.forEach(data, function(val, i) {
                         var dataId = val.id;
-                        var hrefClass = 'attachment';
-                        var hrefTarget = '_blank';
-                        var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
-                        if(val.user_id == 1){
-                            //$('li[data-id=' + dataId + ']').addClass('cmtright');
-                            //$(time).addClass('cmtright');
-                        }
-                        $('li[data-id=' + dataId + ']').find('.content').html(data);
-                        $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                    }*/
 
-                    var msgReadArr = val.read_id.split(",");
-                    var msgReadArrFilter = msgReadArr.filter(function (el) {
-                    if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
-                        return el;
-                    }
-                    return 0;
+                        /*if (val.content == "") {
+                            var dataId = val.id;
+                            var hrefClass = 'attachment';
+                            var hrefTarget = '_blank';
+                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
+                            if(val.user_id == 1){
+                                //$('li[data-id=' + dataId + ']').addClass('cmtright');
+                                //$(time).addClass('cmtright');
+                            }
+                            $('li[data-id=' + dataId + ']').find('.content').html(data);
+                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                        }*/
+
+                        var msgReadArr = val.read_id.split(",");
+                        var msgReadArrFilter = msgReadArr.filter(function (el) {
+                        if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
+                            return el;
+                        }
+                        return 0;
+                        });
+
+                        $('#comment-list').find(' > li[data-id^=c]').css('display','none');
+                        $('#comment-list').find(' > li[data-id^=c]').hide();
+                        //$('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
+                        //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
+
+                        if (userprofilepic) {
+                            $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
+                        }
+                        var filedata = '';
+                        if (val.fileURL != "") {
+                            var filetype = val.fileMimeType;
+                            var filetype1 = filetype.includes("image/");
+                            var file_format = '';
+                            var file_type = '';
+                            var mimeTypeParts = val.fileMimeType.split('/');
+                            if (mimeTypeParts.length == 2) {
+                                file_format = mimeTypeParts[1];
+                                file_type = mimeTypeParts[0];
+                            }
+                            // Icon
+                            var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                                'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
+                            ];
+
+                            var iconClass = 'fa fa-file-o';
+                            // File Extension name
+                            var extName = '';
+                            var extParts = val.fileURL.split('/');
+                            var extFileName = extParts[extParts.length - 1];
+                            var extFileName = extFileName.split('?')[0];
+                            extName = extFileName.split('.')[1];
+
+                            if (availableIcons.indexOf(file_format) > 0) {
+                                iconClass = 'fa fa-file-' + file_format + '-o';
+                            } else if (availableIcons.indexOf(file_type) > 0) {
+                                iconClass = 'fa fa-file-' + file_type + '-o';
+                            } else if (extName == 'docx') {
+                                iconClass = 'fa fa-file-word-o';
+                            } else if (extName == 'xlsx' || extName == 'xlsm') {
+                                iconClass = 'fa fa-file-excel-o';
+                            } else if (extName == 'zip') {
+                                iconClass = 'fa fa-file-archive-o';
+                            }
+
+                            //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                            //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                            var cmtimgName = val.fileURL + '?v=' + jQuery.now();
+
+                            if (file_type == 'image') {
+                                var filehtml = '<img src=' + cmtimgName + '></img>';
+                            } else if (file_type == 'video') {
+                                var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
+                            } else {
+                                var filename = val.fileURL;
+                                var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
+                            }
+                            var hrefClass = 'attachment';
+                            var hrefTarget = '_blank';
+                            filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+
+                        }
+                        if (val.user_id == loginid) {
+                            //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                            $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+
+                            if (val.content == '' || val.content == null) {
+                                //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                                //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                            } else {
+                                //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
+                                //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
+                            }
+                            if(msgReadArrFilter.length > 0){
+                                $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
+                            }
+                        } else {
+                            //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
+                            //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
+                            if (val.content == "" || val.content == null) {
+                                //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                                //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                            }
+                        }
+                        // if (file_type == 'image' || file_type == 'video') {
+                        //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
+                        // }
+                        //console.log(val.content)
+                        if(val.content){        
+                            $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                        }
+                        //$compile(val.content)($scope);
+                        // ------------ Script for date seperating in chat box --------------//
+                        var ndt = new Date(data[i].created);
+                        var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                        var dd = ("0" + ndt.getDate()).slice(-2);
+                        var yy = ndt.getFullYear();
+                        //var timeText = dd + '-' + mm + '-' + yy;
+                        //var dateSeprt = dd + '-' + mm + '-' + yy;
+                        var dateSeprt = commentDateToformat(data[i].created);
+
+                        // const todayDate = new Date();
+                        // if (ndt.getDate() == todayDate.getDate() &&
+                        //     ndt.getMonth() == todayDate.getMonth() &&
+                        //     ndt.getFullYear() == todayDate.getFullYear()) {
+                        //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                        //     var timeText = 'Today';
+                        // }
+                        var timeText = commentDatetimeToText(data[i].created);
+                        if (timeText == "Today") {
+                            $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                        }
+                        // ------count total attachment------//
+                        let totalAttachment = 0;
+                        totalAttachment = $('#attachment-list').find('li .attachment').length;
+                        //$('.att_count').text(totalAttachment);
+
+
+                        if (i > 0) {
+                            var ndt1 = new Date(data[i - 1].created);
+                            // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                            // var dd = ("0" + ndt.getDate()).slice(-2);
+                            // var yy = ndt.getFullYear();
+                            //var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                            var dateSeprt2 = commentDateToformat(data[i - 1].created);
+
+                            if (dateSeprt != dateSeprt2) {
+                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                            }
+                        } else {
+                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                        }
+
+                        
+                        var msgRead_id = val.read_id;
+                        
+                        if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
+                            //console.log('msgRead_id',msgRead_id);
+                        } else {
+                            var cmtObj = {
+                                id: val.id,
+                                read_id: loginid
+                            }
+                            $scope.commentReadArray.push(cmtObj);
+                        }
+                        // Read/ Unread - check comment id exist in db
+                        promises.push(val);
+
+                        if(val.user_id != loginid){
+                            usercommentsArr.push(val.user_Id)
+                        }
+                        if(val.id){
+                            $scope.msgIDArr.push(val.id)
+                        }
+                        
+                        
                     });
 
-                    $('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
-                    //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
+                    $(".comment-wrapper").each(function(i, v) {
+                        /*var dateTime = $(this).find('time')[0].innerText;
+                        console.log(dateTime);
+                        //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
+                        dateTime = moment(dateTime).format('DD-MM-YYYY');
+                        $(this).find('time')[0].innerText = dateTime;*/
 
-                    if (userprofilepic) {
-                        $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
+                        //$(this).find('time')[0].append("testing");
+                    });
+
+                    if(data.length == promises.length){
+                        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                     }
-                    var filedata = '';
-                    if (val.fileURL != "") {
-                        var filetype = val.fileMimeType;
-                        var filetype1 = filetype.includes("image/");
-                        var file_format = '';
-                        var file_type = '';
-                        var mimeTypeParts = val.fileMimeType.split('/');
-                        if (mimeTypeParts.length == 2) {
-                            file_format = mimeTypeParts[1];
-                            file_type = mimeTypeParts[0];
-                        }
-                        // Icon
-                        var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
-                            'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
-                        ];
+                
+                }, 500);
+                commentsArray = data;
+                console.log('commentsArray=', commentsArray);
+                //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
+                //console.log('usercommentsArr=before',usercommentsArr.length);
 
-                        var iconClass = 'fa fa-file-o';
-                        // File Extension name
-                        var extName = '';
-                        var extParts = val.fileURL.split('/');
-                        var extFileName = extParts[extParts.length - 1];
-                        var extFileName = extFileName.split('?')[0];
-                        extName = extFileName.split('.')[1];
-
-                        if (availableIcons.indexOf(file_format) > 0) {
-                            iconClass = 'fa fa-file-' + file_format + '-o';
-                        } else if (availableIcons.indexOf(file_type) > 0) {
-                            iconClass = 'fa fa-file-' + file_type + '-o';
-                        } else if (extName == 'docx') {
-                            iconClass = 'fa fa-file-word-o';
-                        } else if (extName == 'xlsx' || extName == 'xlsm') {
-                            iconClass = 'fa fa-file-excel-o';
-                        } else if (extName == 'zip') {
-                            iconClass = 'fa fa-file-archive-o';
-                        }
-
-                        //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
-                        //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
-                        var cmtimgName = val.fileURL + '?v=' + jQuery.now();
-
-                        if (file_type == 'image') {
-                            var filehtml = '<img src=' + cmtimgName + '></img>';
-                        } else if (file_type == 'video') {
-                            var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
-                        } else {
-                            var filename = val.fileURL;
-                            var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
-                        }
-                        var hrefClass = 'attachment';
-                        var hrefTarget = '_blank';
-                        filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
-
-                    }
-                    if (val.user_id == loginid) {
-                        $('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
-                        $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
-
-                        if (val.content == '' || val.content == null) {
-                            $('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                        } else {
-                            //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
-                            //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
-                        }
-                        if(msgReadArrFilter.length > 0){
-                            $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
-                        }
-                    } else {
-                        $('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
-                        //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
-                        if (val.content == "" || val.content == null) {
-                            $('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                        }
-                    }
-                    if (file_type == 'image' || file_type == 'video') {
-                        $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
-                    }
-                    //console.log(val.content)
-                    if(val.content){
-                        $('li[data-id=' + dataId + ']').find('.content').html(val.content);
-                    }
-                    //$compile(val.content)($scope);
-                    // ------------ Script for date seperating in chat box --------------//
-                    var ndt = new Date(data[i].created);
-                    var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                    var dd = ("0" + ndt.getDate()).slice(-2);
-                    var yy = ndt.getFullYear();
-                    //var timeText = dd + '-' + mm + '-' + yy;
-                    //var dateSeprt = dd + '-' + mm + '-' + yy;
-                    var dateSeprt = commentDateToformat(data[i].created);
-
-                    // const todayDate = new Date();
-                    // if (ndt.getDate() == todayDate.getDate() &&
-                    //     ndt.getMonth() == todayDate.getMonth() &&
-                    //     ndt.getFullYear() == todayDate.getFullYear()) {
-                    //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                    //     var timeText = 'Today';
-                    // }
-                    var timeText = commentDatetimeToText(data[i].created);
-                    if (timeText == "Today") {
-                        $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                    }
-                    // ------count total attachment------//
-                    let totalAttachment = 0;
-                    totalAttachment = $('#attachment-list').find('li .attachment').length;
-                    $('.att_count').text(totalAttachment);
+            }).error(errorCallback);
 
 
-                    if (i > 0) {
-                        var ndt1 = new Date(data[i - 1].created);
-                        // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                        // var dd = ("0" + ndt.getDate()).slice(-2);
-                        // var yy = ndt.getFullYear();
-                        //var dateSeprt2 = dd + '-' + mm + '-' + yy;
-                        var dateSeprt2 = commentDateToformat(data[i - 1].created);
+        }
 
-                        if (dateSeprt != dateSeprt2) {
-                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                        }
-                    } else {
-                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
-                    }
-
-                    
-                    var msgRead_id = val.read_id;
-                    
-                    if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
-                        //console.log('msgRead_id',msgRead_id);
-                    } else {
-                        var cmtObj = {
-                            id: val.id,
-                            read_id: loginid
-                        }
-                        $scope.commentReadArray.push(cmtObj);
-                    }
-                    // Read/ Unread - check comment id exist in db 
-
-                });
-                //},5000);
-
-                $(".comment-wrapper").each(function(i, v) {
-                    /*var dateTime = $(this).find('time')[0].innerText;
-                    console.log(dateTime);
-                    //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
-                    dateTime = moment(dateTime).format('DD-MM-YYYY');
-                    $(this).find('time')[0].innerText = dateTime;*/
-
-                    //$(this).find('time')[0].append("testing");
-                });
-
-            }, 1500);
-            commentsArray = data;
-            console.log('commentsArray', commentsArray);
-        }).error(errorCallback);
+        $scope.commentsArrayAll();
+        
     }
 
     
-
     if ($routeParams.id) {
         $scope.usersArray = [];
         rest.path = "users";
@@ -16476,10 +16502,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
 
         //  Scroll to bottom  
-        // jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-        // jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
-        $('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
+        //$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
 
         jQuery("#addemoji").emojioneArea({
             autoHideFilters: true,
@@ -16504,8 +16530,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             //$('.textarea').val($('.textarea').val()+emoji);
         });
 
-        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-        jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
     }, 3000);
 
@@ -16514,19 +16540,79 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         textareaRows: 1,
         enableAttachments: true,
         enablePinging: true,
-        currentUserId: 1,
+        currentUserId: loginid,
         enableHashtags: true,
         textareaPlaceholderText: 'Type message here...',
         getComments: function(success, error) {
+            
             $timeout(function() {
-                success(commentsArray);
-                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                if($routeParams.id){
+                    setInterval(() => {
+                        rest.path = "discussionOrder/" + $routeParams.id;
+                        rest.get().success(function(data) {
+                            var NewcommentsArray = data;
+                            var newUserCommentsArr = NewcommentsArray.filter(function(NewcommentsArray) { return NewcommentsArray.user_id != loginid });
+                            //console.log('newUsercommentsArr',newUserCommentsArr.length);
+                            //console.log('NewcommentsArray=L',NewcommentsArray.length);
+                            var cmtArr = [];
+                            var cmtArr = NewcommentsArray.filter(function(NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                            
+                            var newcmtArr = commentsArray.filter(function(commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                            
+                            console.log('cmtArr',cmtArr.length);
+                            // --- update read id //
+                            $scope.newCommentReadArray = [];
+                            if(cmtArr){
+                                angular.forEach(cmtArr, function(cmtval, cmti) {
+                                    var newCmtObj = {
+                                        id: cmtval.id,
+                                        read_id: loginid
+                                    }
+                                    $scope.newCommentReadArray.push(newCmtObj);
+                                    if($scope.newCommentReadArray.length == cmtArr.length){
+                                        console.log('cmtArr-'+cmti, $scope.newCommentReadArray);   
+                                        rest.path = "discussionCommentread";
+                                        rest.put($scope.newCommentReadArray).success(function(res) {
+                                            //console.log('res',res);
+                                            if (res.status == 1) {
+                                                //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                            }
+                                        });
+                                    }
+                                });    
+                            }
+                            //if( (NewcommentsArray.length > commentsArray.length && ) )
+                            //console.log('new cmtArr.length',newcmtArr.length);
+                            if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0){
+                                //console.log('we are in');
+                                $('#comment-list').find(' > li[data-id^=c]').hide();
+                                rest.path = "discussionCommentread";
+                                rest.put($scope.commentReadArray).success(function(res) {
+                                    //console.log('res',res);
+                                    if (res.status == 1) {
+                                        jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                    }
+                                });
+                                //console.log('we are working');
+                                $scope.commentsArrayAll();  
+                                success(NewcommentsArray);  
+                                //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                                usercommentsArr=[];
+                            }
+                        });
+                        //console.log('usercommentsArr=after',usercommentsArr.length);
+                    }, 5000);
+                }
+                success(commentsArray); 
+                
+                //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                 //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                 //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
                 $('#comment-list').on('dragstart', function(event) { event.preventDefault(); });
 
-            }, 1500);
+            }, 500);
         },
         searchUsers: function(term, success, error) {
             setTimeout(function() {
@@ -16567,8 +16653,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
             data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
 
-
-
             function escapeSpecialChars(regex) {
                 return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
             }
@@ -16587,6 +16671,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     pingsvalue[index] = Object.keys(data.pings)[index];
                 });
             }
+            console.log('alldata',data);
             data.pings = pingsvalue.toString();
             rest.path = "discussionOrder";
             rest.post(data).success(function(info) {

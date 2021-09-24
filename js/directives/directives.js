@@ -4265,7 +4265,17 @@ app.directive('loading',   ['$http' ,function ($http)
                 scope.$watch(scope.isLoading, function (v)
                 {
                     if(v){
-                        elm.show();
+                        if(elm){
+                            var url = elm[0].baseURI;
+                            if(url){
+                                if(url.includes("#/discussion/")){
+                                    elm.hide();
+                                }
+                            }else{
+                                elm.show();        
+                            }
+                        }
+                        //elm.show();
                     }else{
                         elm.hide();
                     }

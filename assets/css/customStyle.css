@@ -292,7 +292,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .discussion_page .jquery-comments ul.main li.comment .wrapper{background-color: #12a5ec !important; padding: 12px 15px 15px; margin-right: 40px !important; border-radius: 15px 15px 0px 15px;}
 .discussion_page .jquery-comments ul.main li.comment .profile-picture{width: 22px; height: 22px; max-width: unset; max-height: unset;}
 .discussion_page .jquery-comments ul.main li.comment.pull-right time{top: -17px !important; right: 40px; color: #b4b6b9; font-size: 11px; margin: 0 !important;}
-
+discussion_page .jquery-comments ul.main li.comment:last-child { margin-bottom: 0; }
 .discussion_page .livemsg .name{min-width: auto !important; font-size: 13px; right: 45px;}
 .discussion_page .livemsg .usrname .usrnamespan{display: none;}
 .discussion_page .jquery-comments ul.main li.comment .usrname{display: flex; align-items: center; top: -20px; right: 40px; white-space: nowrap; text-overflow: ellipsis; margin: 0;}

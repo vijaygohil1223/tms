@@ -179,9 +179,11 @@
                     content: 'content',
                     pings: 'pings',
                     file: 'file',
-                    fileURL: 'file_url',
-                    fileMimeType: 'file_mime_type',
+                    fileURL: 'fileURL',
+                    fileMimeType: 'fileMimeType',
+                    //fileMimeType: 'file_mime_type',
                     fullname: 'fullname',
+                    user_id: 'user_id',
                     profileURL: 'profile_url',
                     profilePictureURL: 'profile_picture_url',
                     createdByAdmin: 'created_by_admin',
@@ -296,7 +298,6 @@
                 $(commentModels).each(function(index, commentModel) {
                     self.addCommentToDataModel(commentModel);
                 });
-
                 self.render();
             };
 
@@ -304,6 +305,7 @@
                 success([]);
             };
 
+            
             this.options.getComments(success, error);
         },
 
@@ -365,7 +367,16 @@
             // Remove spinner
             this.$el.find('> .spinner').remove();
 
+            setTimeout(() => {
+                jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight); 
+                console.log('getAttachCount',this.getAttachments().length)
+                //$('.att_count').text(this.getAttachments().length);
+            }, 1000);
+            $('.att_count').text(this.getAttachments().length);
+            console.log('this is called');
+
             this.options.refresh();
+
 
         },
 
@@ -442,8 +453,8 @@
             });
 
             var attachments = this.getAttachments();
-            this.sortComments(attachments, 'oldest');
-            //this.sortComments(attachments, 'newest');
+            //this.sortComments(attachments, 'oldest');
+            this.sortComments(attachments, 'newest');
             attachments.reverse(); // Reverse the order as they are prepended to DOM
             $(attachments).each(function(index, commentModel) {
                 self.addAttachment(commentModel, attachmentList);
@@ -451,6 +462,7 @@
 
             // Appned list to DOM
             this.$el.find('[data-container="attachments"]').prepend(attachmentList);
+            
         },
 
         addComment: function(commentModel, commentList) {
@@ -484,7 +496,7 @@
             } else {
                 commentList.append(commentEl);
             }
-
+            
         },
 
         addAttachment: function(commentModel, commentList) {
@@ -764,6 +776,8 @@
                     var createdB = new Date(commentB.created).getTime();
                     if (sortKey == 'oldest') {
                         return createdA - createdB;
+                    } else if(sortKey == 'attachments') {
+                        return createdA - createdB;
                     } else {
                         return createdB - createdA;
                     }
@@ -773,19 +787,15 @@
 
         sortAndReArrangeComments: function(sortKey) {
             var commentList = this.$el.find('#comment-list');
-
             // Get main level comments
             var mainLevelComments = this.getComments().filter(function(commentModel) { return !commentModel.parent });
-            this.sortComments(mainLevelComments, sortKey);
+            //this.sortComments(mainLevelComments, sortKey);
+            this.sortComments(mainLevelComments, 'oldest');
             // Rearrange the main level comments
             $(mainLevelComments).each(function(index, commentModel) {
                 var commentEl = commentList.find('> li.comment[data-id=' + commentModel.id + ']');
                 var commentEl2 = commentList.find('> li.comment[new-id=' + commentModel.id + ']');
-                // setTimeout( function(){
-                //     var text = commentList.find('> li.comment[new-id='+commentModel.id+']').text();
-
-                //     console.log('newdate',text);
-                // },100);
+                
                 commentList.append(commentEl2);
                 commentList.append(commentEl);
             });
@@ -811,9 +821,6 @@
             // Show active container
             this.showActiveContainer();
 
-            setTimeout(function() {
-                jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-            }, 2500);
         },
 
         forceResponsive: function() {
@@ -858,10 +865,17 @@
             var sortKey = navigationEl.data().sortKey;
 
             // Sort the comments if necessary
-            if (sortKey != 'attachments') {
-                this.sortAndReArrangeComments(sortKey);
+            //if (sortKey != 'attachments') {
+                //this.sortAndReArrangeComments(sortKey);
+            //}
+            
+            if (sortKey == 'attachments') {
+                this.sortAndReArrangeComments('sortKey');
+                console.log('sort',sortKey);
+                setTimeout(() => {
+                    this.$el.find('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                }, 1000);
             }
-
             // Save the current sort key
             this.currentSortKey = sortKey;
             this.showActiveSort();
@@ -974,7 +988,7 @@
             var sendButton = $(ev.currentTarget);
             var commentingField = sendButton.parents('.commenting-field').first();
             var textarea = commentingField.find('.textarea');
-            console.log('textarea',textarea);
+            //console.log('textarea',textarea);
             // Disable send button while request is pending
             sendButton.removeClass('enabled');
 
@@ -984,7 +998,7 @@
             // Reverse mapping
             commentJSON = this.applyExternalMappings(commentJSON);
 
-            console.log('commentJSON=emoji',commentJSON);
+            //console.log('commentJSON=emoji',commentJSON);
 
             var success = function(commentJSON) {
                 self.createComment(commentJSON);
@@ -999,6 +1013,9 @@
                 
                 $('li[data-id=' + commentJSON.id + ']').find('.content').html(commentJSON.content);
                 
+                //setTimeout(function() {
+                    $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                //}, 2000);
             };
 
             var error = function() {
@@ -1007,16 +1024,13 @@
 
             this.options.postComment(commentJSON, success, error);
 
-            setTimeout(function() {
-                $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-            }, 2000);
+
         },
 
         createComment: function(commentJSON) {
             var commentModel = this.createCommentModel(commentJSON);
             this.addCommentToDataModel(commentModel);
             this.addComment(commentModel);
-
         },
 
         putComment: function(ev) {
@@ -1508,12 +1522,19 @@
                 text: saveButtonText
             });
 
+            var emojiField = $('<input/>', {
+                'id': 'addemoji',
+                'type': 'text',
+                'style': 'display:none;',
+                'data-emoji-placeholder': ':smiley:',
+            });
+            
             // Populate the element
             controlRow.prepend(saveButton);
+            commentingField.append(emojiField);
             textareaWrapper.append(closeButton).append(textarea).append(controlRow);
             commentingField.append(profilePicture).append(textareaWrapper);
-
-
+            
             if (parentId) {
 
                 // Set the parent id to the field if necessary
@@ -1826,8 +1847,15 @@
                 'class': 'comment'
             }).data('model', commentModel);
 
-            if (commentModel.createdByCurrentUser) commentEl.addClass('by-current-user pull-right cmtright');
+            if (commentModel.createdByCurrentUser) commentEl.addClass('by-current-user');
             if (commentModel.createdByAdmin) commentEl.addClass('by-admin');
+
+            var login_user_id = localStorage.getItem("session_iUserId");
+            if(commentModel.user_id == login_user_id){
+                commentEl.addClass('by-current-user pull-right cmtright');
+            }else{
+                commentEl.addClass('by-current-user pull-left cmtleft');
+            }
 
             // Child comments
             var childComments = $('<ul/>', {
@@ -1837,8 +1865,6 @@
             // Comment wrapper
             var commentWrapper = this.createCommentWrapperElement(commentModel);
 
-            //commentEl.prepend('<li style="color:blue">'+commentModel.created+'</li>');
-            //$('<li style="color:blue;" class="comment by-current-user pull-right cmtright">'+ commentModel.created +'</li>').insertBefore('li[data-id=' + commentModel.id + ']');
             const todayDate = new Date();
             var newDate = new Date(commentModel.created);
 
@@ -1859,9 +1885,25 @@
                 }, 100);
             }
 
-
+            setTimeout(() => {
+                if(commentModel.content){
+                    $('li[data-id=' + commentModel.id + ']').find('.content').html(commentModel.content);
+                }
+                if(commentModel.fileURL){
+                    var mimeTypeParts = commentModel.fileMimeType.split('/');
+                    var file_type = '';
+                    if (mimeTypeParts.length == 2) {
+                        //var file_format = mimeTypeParts[1];
+                        file_type = mimeTypeParts[0];
+                    }
+                    if (file_type == 'image' || file_type == 'video') {
+                        $('li[data-id=' + commentModel.id + ']').find('.wrapper').addClass('imgblock');
+                    }    
+                }
+            }, 100);
 
             commentEl.append(commentWrapper);
+            
             if (commentModel.parent == null) commentEl.append(childComments);
             return commentEl;
         },
@@ -1951,13 +1993,12 @@
             var content = $('<div/>', {
                 'class': 'content'
             });
-
+            //console.log('commentModel',commentModel);
             // Case: attachment
             var isAttachment = commentModel.fileURL != undefined;
             if (isAttachment) {
                 var format = null;
                 var type = null;
-
                 // Type and format
                 if (commentModel.fileMimeType) {
                     var mimeTypeParts = commentModel.fileMimeType.split('/');
@@ -2043,7 +2084,6 @@
             } else {
                 content.html(this.linkify(this.escape(commentModel.content)));
             }
-
             // Edited timestamp
             if (commentModel.modified && commentModel.modified != commentModel.created) {
                 var editedTime = this.options.timeFormatter(commentModel.modified);
@@ -2234,8 +2274,10 @@
         },
 
         getAttachments: function() {
-            return this.getComments().filter(function(comment) { return comment.fileURL != undefined });
+            //return this.getComments().filter(function(comment) { return comment.fileURL != 'undefined' });
+            return this.getComments().filter(function(comment) { return comment.fileURL });
         },
+        
 
         getOutermostParent: function(directParentId) {
             var parentId = directParentId;
@@ -2256,6 +2298,7 @@
                 content: this.getTextareaContent(textarea),
                 pings: this.getPings(textarea),
                 fullname: this.options.textFormatter(this.options.youText),
+                user_id: localStorage.getItem("session_iUserId"),
                 profilePictureURL: this.options.profilePictureURL,
                 createdByCurrentUser: true,
                 upvoteCount: 0,
@@ -2364,20 +2407,22 @@
             // Trim leading spaces
             
             ce.text().replace(/^\s+/g, '');
-            $('.textarea br').remove;
             var newce = ce[0].innerHTML;
+            //var test = newce.replace('<br>', '');
+            //console.log('test==',test);
             let emojiExist = $('.textarea .emojiImg').length;
-            console.log('emojiExist',emojiExist);
+            //console.log('emojiExist',emojiExist);
             if(emojiExist == 0){
                 var newce = ce.text();
             }
             
             var text = newce.replace(/^\s+/g, '');
-            //var text = newce.replace (/['br']/+/g, ‘'\n'’)
+            text = text.replace(/<br ?\/?>/g,'');
+            text = text.replace(/<div ?\/?>/g,'');
+            //console.log('work',text);
             
             // Normalize spaces
             var text = this.normalizeSpaces(text);
-            //ce.find('div, p, br').replaceWith(function() { return '\n' + this.innerHTML; });
             
             return text;
         },
