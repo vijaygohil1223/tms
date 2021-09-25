@@ -369,6 +369,7 @@
 
             setTimeout(() => {
                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight); 
+                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                 console.log('getAttachCount',this.getAttachments().length)
                 //$('.att_count').text(this.getAttachments().length);
             }, 1000);
