@@ -305,7 +305,6 @@
                 success([]);
             };
 
-            
             this.options.getComments(success, error);
         },
 
@@ -411,8 +410,8 @@
             });
 
             // Append main level comments
-            //this.sortComments(mainLevelComments, this.currentSortKey);
-            this.sortComments(mainLevelComments, 'oldest');
+            this.sortComments(mainLevelComments, this.currentSortKey);
+            //this.sortComments(mainLevelComments, 'oldest');
             mainLevelComments.reverse(); // Reverse the order as they are prepended to DOM
             $(mainLevelComments).each(function(index, commentModel) {
                 self.addComment(commentModel, commentList);
@@ -455,8 +454,8 @@
             });
 
             var attachments = this.getAttachments();
-            //this.sortComments(attachments, 'oldest');
-            this.sortComments(attachments, 'newest');
+            this.sortComments(attachments, 'oldest');
+            //this.sortComments(attachments, 'newest');
             attachments.reverse(); // Reverse the order as they are prepended to DOM
             $(attachments).each(function(index, commentModel) {
                 self.addAttachment(commentModel, attachmentList);
@@ -498,7 +497,7 @@
             } else {
                 commentList.append(commentEl);
             }
-            
+
         },
 
         addAttachment: function(commentModel, commentList) {
@@ -791,8 +790,8 @@
             var commentList = this.$el.find('#comment-list');
             // Get main level comments
             var mainLevelComments = this.getComments().filter(function(commentModel) { return !commentModel.parent });
-            //this.sortComments(mainLevelComments, sortKey);
-            this.sortComments(mainLevelComments, 'oldest');
+            this.sortComments(mainLevelComments, sortKey);
+            //this.sortComments(mainLevelComments, 'oldest');
             // Rearrange the main level comments
             $(mainLevelComments).each(function(index, commentModel) {
                 var commentEl = commentList.find('> li.comment[data-id=' + commentModel.id + ']');
@@ -867,9 +866,9 @@
             var sortKey = navigationEl.data().sortKey;
 
             // Sort the comments if necessary
-            //if (sortKey != 'attachments') {
-                //this.sortAndReArrangeComments(sortKey);
-            //}
+            if (sortKey != 'attachments') {
+                this.sortAndReArrangeComments(sortKey);
+            }
             
             if (sortKey == 'attachments') {
                 this.sortAndReArrangeComments('sortKey');
