@@ -466,7 +466,7 @@ td { font-size: 11px; } */
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
                             <th style="white-space: nowrap">Project Manager</th>
-                            <!-- <th>Linguist</th> -->
+                            <th>Linguist</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -541,8 +541,9 @@ td { font-size: 11px; } */
                                 </div> -->
                               </td>
                               <td>{{order.pm_name}}</td>
-                              <!-- <td>
-                            Linguist</td> -->
+                              <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
+                               <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
@@ -632,7 +633,7 @@ td { font-size: 11px; } */
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
                             <th style="white-space: nowrap">Project Manager</th>
-                            <!-- <th>Linguist</th> -->
+                            <th>Linguist</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -704,8 +705,9 @@ td { font-size: 11px; } */
                                 </div>
                               </td>
                               <td>{{order.pm_name}}</td>
-                              <!-- <td>
-                              Linguist</td> -->
+                              <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
+                               <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
@@ -798,7 +800,7 @@ td { font-size: 11px; } */
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
                             <th style="white-space: nowrap">Project Manager</th>
-                            <!-- <th>Linguist</th> -->
+                            <th>Linguist</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -870,8 +872,9 @@ td { font-size: 11px; } */
                                 </div>
                               </td>
                               <td>{{order.pm_name}}</td>
-                              <!-- <td>
-                                Linguist</td> -->
+                              <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
+                               <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
@@ -960,7 +963,7 @@ td { font-size: 11px; } */
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
                             <th style="white-space: nowrap">Project Manager</th>
-                            <!-- <th>Linguist</th> -->
+                            <th>Linguist</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -1032,8 +1035,9 @@ td { font-size: 11px; } */
                                 </div>
                               </td>
                               <td>{{order.pm_name}}</td>
-                              <!-- <td>
-                                  Linguist</td> -->
+                              <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
+                               <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
@@ -1122,7 +1126,7 @@ td { font-size: 11px; } */
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
                             <th style="white-space: nowrap">Project Manager</th>
-                            <!-- <th>Linguist</th> -->
+                            <th>Linguist</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -1194,8 +1198,9 @@ td { font-size: 11px; } */
                                 </div>
                               </td>
                               <td>{{order.pm_name}}</td>
-                              <!-- <td>
-                                    Linguist</td> -->
+                              <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
+                               <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
@@ -1285,7 +1290,7 @@ td { font-size: 11px; } */
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
                             <th style="white-space: nowrap">Project Manager</th>
-                            <!-- <th>Linguist</th> -->
+                            <th>Linguist</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -1357,8 +1362,9 @@ td { font-size: 11px; } */
                                 </div>
                               </td>
                               <td>{{order.pm_name}}</td>
-                              <!-- <td>
-                                      Linguist</td> -->
+                              <td><span ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </span>
+                               <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
@@ -1447,7 +1453,7 @@ td { font-size: 11px; } */
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
                             <th style="white-space: nowrap">Project Manager</th>
-                            <!-- <th>Linguist</th> -->
+                            <th>Linguist</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -1519,6 +1525,9 @@ td { font-size: 11px; } */
                                 </div>
                               </td>
                               <td>{{order.pm_name}}</td>
+                              <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
+                               <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip" >

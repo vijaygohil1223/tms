@@ -373,7 +373,7 @@
                 //$('.att_count').text(this.getAttachments().length);
             }, 1000);
             $('.att_count').text(this.getAttachments().length);
-            console.log('this is called');
+            //console.log('this is called');
 
             this.options.refresh();
 

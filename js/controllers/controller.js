@@ -1671,6 +1671,29 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 } else {
                     data[i].itemsTargetLang = newLangData;
                 }
+
+                //  ----linguist List----- / 
+                $scope.jobLinguist = [];
+                rest.path = 'jobsummeryGet/' + val.orderId;
+                rest.get().success(function(data) {
+                    //$scope.jobLinguist = data;
+                    angular.forEach(data, function(val2, i2) {
+                        // var linguistObj = {
+                        //     id: val.id,
+                        //     read_id: loginid
+                        // }
+                        if(val2 && val2.resource){
+                            if(val.orderId == val2.order_id && val.item_number == val2.item_id){
+                                $scope.jobLinguist.push(val2);
+                            }
+                        }
+                    });    
+                    $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
+                    val.jobLinguist = $scope.jobLinguist;
+                    console.log('$scope.jobLinguist',$scope.jobLinguist);
+                    console.log('val.orderId',val.orderId);
+                    $scope.jobLinguist = [];    
+                });
                 
 
                 var cmtcolor = '#0190d8';
@@ -16559,7 +16582,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             
                             var newcmtArr = commentsArray.filter(function(commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
                             
-                            console.log('cmtArr',cmtArr.length);
+                            //console.log('cmtArr',cmtArr.length);
                             // --- update read id //
                             $scope.newCommentReadArray = [];
                             if(cmtArr){
@@ -16570,7 +16593,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     }
                                     $scope.newCommentReadArray.push(newCmtObj);
                                     if($scope.newCommentReadArray.length == cmtArr.length){
-                                        console.log('cmtArr-'+cmti, $scope.newCommentReadArray);   
+                                        //console.log('cmtArr-'+cmti, $scope.newCommentReadArray);   
                                         rest.path = "discussionCommentread";
                                         rest.put($scope.newCommentReadArray).success(function(res) {
                                             //console.log('res',res);
@@ -16596,7 +16619,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 //console.log('we are working');
                                 $scope.commentsArrayAll();  
                                 success(NewcommentsArray);  
-                                //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                                 usercommentsArr=[];
                             }
@@ -16606,7 +16629,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 success(commentsArray); 
                 
-                //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                 //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                 //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
