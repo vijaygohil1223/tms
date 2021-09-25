@@ -305,6 +305,7 @@
                 success([]);
             };
 
+            
             this.options.getComments(success, error);
         },
 
@@ -368,7 +369,6 @@
 
             setTimeout(() => {
                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight); 
-                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                 console.log('getAttachCount',this.getAttachments().length)
                 //$('.att_count').text(this.getAttachments().length);
             }, 1000);
@@ -410,8 +410,8 @@
             });
 
             // Append main level comments
-            this.sortComments(mainLevelComments, this.currentSortKey);
-            //this.sortComments(mainLevelComments, 'oldest');
+            //this.sortComments(mainLevelComments, this.currentSortKey);
+            this.sortComments(mainLevelComments, 'oldest');
             mainLevelComments.reverse(); // Reverse the order as they are prepended to DOM
             $(mainLevelComments).each(function(index, commentModel) {
                 self.addComment(commentModel, commentList);
@@ -454,8 +454,8 @@
             });
 
             var attachments = this.getAttachments();
-            this.sortComments(attachments, 'oldest');
-            //this.sortComments(attachments, 'newest');
+            //this.sortComments(attachments, 'oldest');
+            this.sortComments(attachments, 'newest');
             attachments.reverse(); // Reverse the order as they are prepended to DOM
             $(attachments).each(function(index, commentModel) {
                 self.addAttachment(commentModel, attachmentList);
@@ -497,7 +497,7 @@
             } else {
                 commentList.append(commentEl);
             }
-
+            
         },
 
         addAttachment: function(commentModel, commentList) {
@@ -790,8 +790,8 @@
             var commentList = this.$el.find('#comment-list');
             // Get main level comments
             var mainLevelComments = this.getComments().filter(function(commentModel) { return !commentModel.parent });
-            this.sortComments(mainLevelComments, sortKey);
-            //this.sortComments(mainLevelComments, 'oldest');
+            //this.sortComments(mainLevelComments, sortKey);
+            this.sortComments(mainLevelComments, 'oldest');
             // Rearrange the main level comments
             $(mainLevelComments).each(function(index, commentModel) {
                 var commentEl = commentList.find('> li.comment[data-id=' + commentModel.id + ']');
@@ -800,6 +800,7 @@
                 commentList.append(commentEl2);
                 commentList.append(commentEl);
             });
+            console.log('working');
         },
 
         showActiveSort: function() {
