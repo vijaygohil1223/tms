@@ -1694,7 +1694,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     console.log('val.orderId',val.orderId);
                     $scope.jobLinguist = [];    
                 });
-                
 
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;
@@ -1814,6 +1813,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     };
     $scope.allProjectListing();
+
+
 
     /* overview display */
     $scope.isoverviewProject = false;
@@ -16619,7 +16620,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 //console.log('we are working');
                                 $scope.commentsArrayAll();  
                                 success(NewcommentsArray);  
-                                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                                 usercommentsArr=[];
                             }
@@ -16629,7 +16630,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 success(commentsArray); 
                 
-                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                 //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                 //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
                 $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
