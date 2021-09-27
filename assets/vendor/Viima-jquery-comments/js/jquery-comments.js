@@ -373,7 +373,7 @@
                 //$('.att_count').text(this.getAttachments().length);
             }, 1000);
             $('.att_count').text(this.getAttachments().length);
-            //console.log('this is called');
+            console.log('this is called');
 
             this.options.refresh();
 
@@ -410,8 +410,7 @@
             });
 
             // Append main level comments
-            //this.sortComments(mainLevelComments, this.currentSortKey);
-            this.sortComments(mainLevelComments, 'oldest');
+            this.sortComments(mainLevelComments, this.currentSortKey);
             mainLevelComments.reverse(); // Reverse the order as they are prepended to DOM
             $(mainLevelComments).each(function(index, commentModel) {
                 self.addComment(commentModel, commentList);
@@ -800,7 +799,6 @@
                 commentList.append(commentEl2);
                 commentList.append(commentEl);
             });
-            console.log('working');
         },
 
         showActiveSort: function() {
