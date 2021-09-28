@@ -1845,6 +1845,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var scoopWithoutInvoice = [];
             var scoopCancelled = [];
             // --------- Scoop status Count --------//
+            $scope.scoopAlljobsCount = 0;
+            
             $scope.scoopAssignedCount = 0;
             $scope.scoopProgressCount = 0;
             $scope.scoopLinguistCount = 0;
@@ -1906,6 +1908,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $timeout(function() {
 
                 // scoop Array //
+                
+                $scope.scoopAlljobsCount = allscoopJobsData.length;
                 if($scope.scoopjobStatusFilter == 'all'){
                     $scope.scoopjobsListAll = allscoopJobsData;
                 }
@@ -23110,7 +23114,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         // jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
         // jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
-        $('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
+        //$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
 
         jQuery("#addemoji").emojioneArea({
             autoHideFilters: true,
