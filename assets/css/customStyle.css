@@ -434,3 +434,50 @@ discussion_page .jquery-comments ul.main li.comment:last-child { margin-bottom: 
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 40px;}
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 11px 8px 0 !important;}
 }
+
+.projectjobdv2{
+    display: flex;
+  }
+  /* .projectjobul,  .projectjobli2{
+    display: flex;
+  } */
+  /* .more-nav{
+    display: inline-block;
+  } */
+  .list-group.projectjobdv li a{
+    white-space: nowrap;
+  }
+
+  #more-nav {
+				display: none;
+				vertical-align: top;
+				padding-left: 0;
+				width: 150px;
+			}
+			
+			.subfilter {
+				padding-left: 0;
+			}
+			
+			.subfilter > li > a {
+				display: block;
+				padding: 4px 8px;
+			}
+			
+			#nav-bar-filter > li {
+				display: inline-block;
+			}
+			
+			#nav-bar-filter {
+				padding-left: 0;
+			}
+			#nav-bar-filter, #more-nav {
+				display: inline-flex;
+			}
+			
+			.subfilter {
+				position: absolute;
+        z-index: 99;
+        width: 200px;
+        border: 1px solid #4e2fc4;
+			}
