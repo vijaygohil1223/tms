@@ -1633,7 +1633,7 @@ td { font-size: 11px; } */
                         </div>
                       </div>
                     </div>
-                    <div class="twelve columns filter-wrapper">
+                    <div class="twelve columns filter-wrapper d-flex justify-space-between">
                       <ul class="nav-bar-filter" id="nav-bar-filter">
                         <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='all'}">
                           <span class="badge bg-info">{{scoopAlljobsCount}}</span><a href="javascript:void(0)"
@@ -1702,88 +1702,6 @@ td { font-size: 11px; } */
                           </ul>
                         </li>    
                       </ul>
-                    </div>
-                    <div class="list-group no-radius alt projectjobdv" style="display: none;">
-                      <ul class="projectjobul">
-                      <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='all'}">
-                        <span class="badge bg-info">{{scoopAlljobsCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','all')">
-                          All</a>
-                      </li>
-                      <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='scoopAssigned'}">
-                        <span class="badge bg-info">{{scoopAssignedCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopAssigned')">
-                          To be Assigned</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopProgress'}">
-                        <span class="badge bg-info">{{scoopProgressCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopProgress')">
-                          In progress</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopLinguist'}">
-                        <span class="badge bg-info">{{scoopLinguistCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopLinguist')">
-                          Completed by linguist</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopQaReady'}">
-                        <span class="badge bg-info">{{scoopQaReadyCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopQaReady')">
-                          QA Ready</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopTobedelivered'}">
-                        <span class="badge bg-info">{{scoopTobedeliveredCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopTobedelivered')">
-                          To be Delivered</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopDelivered'}">
-                        <span class="badge bg-info">{{scoopDeliveredCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopDelivered')">
-                          Delivered</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopApproved'}">
-                        <span class="badge bg-info">{{scoopApprovedCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopApproved')">
-                          Approved</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopInvoiced'}">
-                        <span class="badge bg-info">{{scoopInvoicedCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopInvoiced')">
-                          Invoiced</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopPaid'}">
-                        <span class="badge bg-info">{{scoopPaidCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopPaid')">
-                          Paid</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopWithoutInvoice'}">
-                        <span class="badge bg-info">{{scoopWithoutInvoiceCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopWithoutInvoice')">
-                          Without invoice</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopCancelled'}">
-                        <span class="badge bg-info">{{scoopCancelledCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopCancelled')">
-                          Cancelled</a>
-                      </li>
-                      
-                      <!-- <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueToday'}">
-                        <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('All')">
-                          All</a>
-                      </li> -->
-                      
-                      <!-- <li class="list-group-item">
-                        <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList('All')">
-                          All</a>
-                      </li> -->
-                    </ul>
-                    <ul id="more-nav" class="more-nav list-group-item">
-                        <li id="moreli"><a href="#">More > </a>
-                            <ul class="subfilter"></ul>
-                        </li>
-                    </ul>
-
                     </div>
                   </div>
                 </div>
@@ -2440,6 +2358,7 @@ td { font-size: 11px; } */
     $(window).on("resize", function (e) {
         ($(window).width() > ww) ? expand() : contract();
         ww = $(window).width();
+        alert("load- resize");
     });
 
     // if ($(".subfilter > li").length > 0) { //if we have elements in extended menu - show it
@@ -2455,7 +2374,7 @@ td { font-size: 11px; } */
 
     $(".subfilter").hide();
     
-    }, 1000);
+    }, 1500);
 
 });
 
@@ -2468,5 +2387,7 @@ $(document).on("click", function(event){
 </script>
 
 <style>
-
+#more-nav{
+  width: 80px !important;
+}
 </style>
