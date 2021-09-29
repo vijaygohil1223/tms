@@ -128,7 +128,8 @@ table tbody tr:nth-of-type(odd) td{background: #fff !important;}
 div.dataTables_length select{margin: 0 5px;}
 
 /* file upload */
-#filesContainer #multipleupload .ajax-file-upload{background-color: #502dc4 !important; font-size: 14px; font-weight: 600; border-color: #502dc4 !important;}
+#filesContainer #multipleupload .ajax-file-upload{background-color: #f6f8f8 !important; font-size: 14px; font-weight: 600; border-color: #502dc4 !important;}
+.fa-upload.newUpload:before{content: ''; display: block; width: 50px; height: 50px; background: url("https://img.icons8.com/external-kiranshastry-gradient-kiranshastry/50/000000/external-cloud-computing-multimedia-kiranshastry-gradient-kiranshastry-1.png") center no-repeat; background-size: cover;}
 
 /* edit-icons */
 .glyph-icon.fa-edit,
@@ -441,50 +442,3 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 40px;}
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 11px 8px 0 !important;}
 }
-
-.projectjobdv2{
-    display: flex;
-  }
-  /* .projectjobul,  .projectjobli2{
-    display: flex;
-  } */
-  /* .more-nav{
-    display: inline-block;
-  } */
-  .list-group.projectjobdv li a{
-    white-space: nowrap;
-  }
-
-  #more-nav {
-				display: none;
-				vertical-align: top;
-				padding-left: 0;
-				width: 150px;
-			}
-			
-			.subfilter {
-				padding-left: 0;
-			}
-			
-			.subfilter > li > a {
-				display: block;
-				padding: 4px 8px;
-			}
-			
-			#nav-bar-filter > li {
-				display: inline-block;
-			}
-			
-			#nav-bar-filter {
-				padding-left: 0;
-			}
-			#nav-bar-filter, #more-nav {
-				display: inline-flex;
-			}
-			
-			.subfilter {
-				position: absolute;
-        z-index: 99;
-        width: 200px;
-        border: 1px solid #4e2fc4;
-			}

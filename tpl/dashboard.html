@@ -1634,7 +1634,7 @@ td { font-size: 11px; } */
                       </div>
                     </div>
                     <div class="twelve columns filter-wrapper d-flex justify-space-between">
-                      <ul class="nav-bar-filter" id="nav-bar-filter">
+                      <ul class="nav-bar-filter mb-0" id="nav-bar-filter">
                         <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='all'}">
                           <span class="badge bg-info">{{scoopAlljobsCount}}</span><a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','all')">
@@ -1696,7 +1696,7 @@ td { font-size: 11px; } */
                             Cancelled</a>
                         </li>				
                       </ul>
-                      <ul id="more-nav">			  
+                      <ul id="more-nav" class="mb-0" style="margin-right: -4px !important;">			  
                         <li id="moreli" class="list-group-item"><a href="#">More > </a>
                           <ul class="subfilter">									
                           </ul>
@@ -2358,7 +2358,6 @@ td { font-size: 11px; } */
     $(window).on("resize", function (e) {
         ($(window).width() > ww) ? expand() : contract();
         ww = $(window).width();
-        alert("load- resize");
     });
 
     // if ($(".subfilter > li").length > 0) { //if we have elements in extended menu - show it
@@ -2387,7 +2386,40 @@ $(document).on("click", function(event){
 </script>
 
 <style>
-#more-nav{
-  width: 80px !important;
-}
+  
+  .projectjobdv2{
+    display: flex;
+  }
+  #more-nav {
+    display: none;
+    vertical-align: top;
+    padding-left: 0;
+    width: 80px !important;
+  }
+  #nav-bar-filter {
+    padding-left: 0;
+  }
+  .list-group-item{
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .list-group.projectjobdv li a{
+    white-space: nowrap;
+  }
+  .list-group-item > span{order: 2; margin: 0 0 0 5px;}
+  #nav-bar-filter, #more-nav {
+    display: inline-flex;
+  }
+  .subfilter {
+    position: absolute;
+    z-index: 99;
+    width: 200px;
+    border: 1px solid #4e2fc4;
+    padding-left: 0;
+  }
+  .subfilter > li > a {
+    display: block;
+  }
+  .panel-heading + .list-group .list-group-item{border-right-width: 1px;}
 </style>
