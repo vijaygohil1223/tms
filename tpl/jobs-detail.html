@@ -22,7 +22,7 @@
       <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside" ></a>
       <div class="md-content page_content_wrapper">
         
-        <div class="content_head bg-light lter b-b wrapper-md ng-scope" style="max-width: 1500px; width: 100%;">
+        <div class="content_head bg-light lter b-b wrapper-md ng-scope" style="max-width: 1500px; width: 100%; margin: 0 auto;">
            <!--  <a href="#/dashboard1"  class="btn btn-info pull-right">Cancel<span style="padding:3px;" class="fa fa-times1"></span></a> -->
           <h1 class="m-n font-thin h3">
             Jobs -
@@ -31,7 +31,7 @@
         </h1>
         <div class="hrght1" ng-if="showEditedByName"><h5>This record is currently edited by {{UpdateClientName}}<h5></div>
         </div>
-        <div class="wrapper-md ng-scope" style="max-width: 1500px; width: 100%;">
+        <div class="wrapper-md ng-scope" style="max-width: 1500px; width: 100%; margin: 0 auto;">
 
           <ul class="nav nav-pills nav-wizard" style="width:45%;margin: auto;">
                         <li>
@@ -355,8 +355,8 @@
                                                         <a href="javascript:void(0)" ng-click="edit(it.job_summmeryId)" title="edit"><i class="glyph-icon fa-edit"></i></a>
                                                         <!-- &nbsp;/&nbsp;<a href="javascript:void(0);" ng-click="saveItem(it.job_summmeryId, it)" title="Save">
                                                     <i class="fa fa-floppy-o"></i></a> -->
-                                                        <a ng-if="it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.po_number)" title="delete"><i class="glyph-icon fa-times"></i></a>
-                                                        <a ng-if="!it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.tmp_po_number)" title="delete"><i class="glyph-icon fa-times"></i></a>
+                                                        <a ng-if="it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.po_number)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
+                                                        <a ng-if="!it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.tmp_po_number)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
                                                     </td>
                                                 </tr>
                                                 <tr ng-show="!itemListFinal[$index].length">

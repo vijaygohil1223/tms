@@ -4681,7 +4681,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             showDelete: true,
             autoSubmit: false,
             //serialize:false,
-            uploadStr: "<span class='fa fa-upload' style='color:#FFF;font-size:30px;'> </span>",
+            uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
             /*afterUploadAll: function(obj) {
                 //debugger
