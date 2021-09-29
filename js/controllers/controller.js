@@ -2834,6 +2834,57 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $window.localStorage.jobstatusName = " ";
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
 
+    $scope.csvData = [];
+    $scope.getFile = function(files) {
+        Papa.parse(files, {
+            complete: function(results, files,err) {
+                var csv =results.data;
+                var numindex=1;
+                $scope.csvData = [];
+                angular.forEach(csv, function(val, i) {
+                    if(val)
+                    var obj = {
+                        'id': numindex,
+                        'name': val[0],
+                        'words': val[1]
+                    };
+                    $scope.csvData.push(obj);
+                    numindex++;
+                });  
+            }
+        });
+    };
+    $scope.onFileSelect = function ($files) {
+        console.log('$files ',$files);
+        // alert('$files[0] '+$files)
+        Papa.parse($files[0], {
+            complete: function(results, $files,err) {
+                var csv =results.data;
+                //CLAIM_NO,WORK_DATE,SERVICE_ID,WORK_TIME,MILEAGE,EXPENSE_TYPE_ID,EXPENSE,WORK_DESCRIPTION,SERVICE_DESC,EXPENSE_DESC   , ADJUSTER_ID
+                //03-12376,10/21/2014,223,1,25,320,3.33,test223 - Acknowledgement to client,320 - Cell phone charge
+                //03-12376,10/21/2014,225,1.5,0,undefined,0,test2225 - Dictated initial report,undefined
+                console.log(csv);   
+                // lodash.forEach(csv, function (num, val) {
+                //     if (val>0) {
+                //         if (num[5]==='undefined') {
+                //             //console.log("Parsing")
+                //             num[5]=undefined
+                //         }
+                //         $scope.dailies.push({
+                //             CLAIM_NO:num[0] ,WORK_DATE:num[1] ,SERVICE_ID:num[2] ,WORK_TIME:num[3] ,MILEAGE:num[4] ,EXPENSE_TYPE_ID:num[5] ,
+                //             EXPENSE:num[6] ,WORK_DESCRIPTION:num[7],ADJUSTER_ID:num[8]
+                //         });
+                //     }
+                // });
+                // $scope.$apply();
+                // if (err) {
+                //     //console.log('err ', err);
+                // }
+            }
+        });
+    };
+
+
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {

@@ -365,8 +365,24 @@
                                         <div class="panel panel-default">
                                           <div class="panel-heading font-bold"><h4>Payment to linguist</h4></div>
                                                 <div class="panel-body">
+                                                    <div class="col-sm-12 m-b">
+                                                        <label>Import CSV</label>
+                                                        <input type="file" ng-file-select="onFileSelect($files)" isabled="isClean() || formUpload.$invalid" accept=".xlsx, .xls, .csv"/>
+                                                    </div>
+                                                    <div class="col-sm-12">    
+                                                        <table class="table m-b-none default footable-loaded footable" style="width: 50%;">
+                                                            <th>#</th>
+                                                            <th>Price Unit</th>
+                                                            <th>Source Words</th>
+                                                            <tr ng-repeat="cs in csvData">
+                                                                <td>{{cs.id}}</td>
+                                                                <td>{{cs.name}}</td>
+                                                                <td>{{cs.words}}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div> 
                                                     <div class="col-sm-12">
-                                                       <table class="table m-b-none default footable-loaded footable">
+                                                        <table class="table m-b-none default footable-loaded footable">
                                                           <thead>
                                                              <!-- <th width="" >Amount in <span id="currency"></span></th> -->
                                                           </thead>
