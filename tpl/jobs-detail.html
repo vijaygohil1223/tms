@@ -355,8 +355,8 @@
                                                         <a href="javascript:void(0)" ng-click="edit(it.job_summmeryId)" title="edit"><i class="glyph-icon fa-edit"></i></a>
                                                         <!-- &nbsp;/&nbsp;<a href="javascript:void(0);" ng-click="saveItem(it.job_summmeryId, it)" title="Save">
                                                     <i class="fa fa-floppy-o"></i></a> -->
-                                                        <a ng-if="it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.po_number)" title="delete"><i class="glyph-icon fa-times"></i></a>
-                                                        <a ng-if="!it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.tmp_po_number)" title="delete"><i class="glyph-icon fa-times"></i></a>
+                                                        <a ng-if="it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.po_number)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
+                                                        <a ng-if="!it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.tmp_po_number)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
                                                     </td>
                                                 </tr>
                                                 <tr ng-show="!itemListFinal[$index].length">

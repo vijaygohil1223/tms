@@ -135,7 +135,7 @@ div.dataTables_length select{margin: 0 5px;}
 .glyph-icon.fa-edit,
 .glyph-icon.fa-times{display: inline-block;}
 .glyph-icon.fa-edit:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-edit.png') center no-repeat; background-size: cover; margin: 0 5px 0 0;}
-.glyph-icon.fa-times:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-delete.png') center no-repeat; background-size: cover;}
+.glyph-icon.iconDelete.fa-times:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-delete.png') center no-repeat; background-size: cover;}
 
 
 /* nav-pills */
