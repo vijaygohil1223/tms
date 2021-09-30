@@ -1634,70 +1634,70 @@ td { font-size: 11px; } */
                       </div>
                     </div>
                     <div class="twelve columns filter-wrapper d-flex ">
-                      <ul class="nav-bar-filter mb-0" id="nav-bar-filter">
+                      <ul class="nav-bar-filter mb-0 overviewli" id="nav-bar-filter">
                         <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='all'}">
-                          <span class="badge bg-info">{{scoopAlljobsCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','all')">
-                            All</a>
+                            All <span class="badge bg-info">{{scoopAlljobsCount}}</span></a>
                         </li>
                         <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='scoopAssigned'}">
-                          <span class="badge bg-info">{{scoopAssignedCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopAssigned')">
-                            To be Assigned</a>
+                            To be Assigned <span class="badge bg-info">{{scoopAssignedCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopProgress'}">
-                          <span class="badge bg-info">{{scoopProgressCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopProgress')">
-                            In progress</a>
+                            In progress <span class="badge bg-info">{{scoopProgressCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopLinguist'}">
-                          <span class="badge bg-info">{{scoopLinguistCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopLinguist')">
-                            Completed by linguist</a>
+                            Completed by linguist <span class="badge bg-info">{{scoopLinguistCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopQaReady'}">
-                          <span class="badge bg-info">{{scoopQaReadyCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopQaReady')">
-                            QA Ready</a>
+                            QA Ready <span class="badge bg-info">{{scoopQaReadyCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopTobedelivered'}">
-                          <span class="badge bg-info">{{scoopTobedeliveredCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopTobedelivered')">
-                            To be Delivered</a>
+                            To be Delivered <span class="badge bg-info">{{scoopTobedeliveredCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopDelivered'}">
-                          <span class="badge bg-info">{{scoopDeliveredCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopDelivered')">
-                            Delivered</a>
+                            Delivered <span class="badge bg-info">{{scoopDeliveredCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopApproved'}">
-                          <span class="badge bg-info">{{scoopApprovedCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopApproved')">
-                            Approved</a>
+                            Approved <span class="badge bg-info">{{scoopApprovedCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopInvoiced'}">
-                          <span class="badge bg-info">{{scoopInvoicedCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopInvoiced')">
-                            Invoiced</a>
+                            Invoiced <span class="badge bg-info">{{scoopInvoicedCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopPaid'}">
-                          <span class="badge bg-info">{{scoopPaidCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopPaid')">
-                            Paid</a>
+                            Paid <span class="badge bg-info">{{scoopPaidCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopWithoutInvoice'}">
-                          <span class="badge bg-info">{{scoopWithoutInvoiceCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopWithoutInvoice')">
-                            Without invoice</a>
+                            Without invoice <span class="badge bg-info">{{scoopWithoutInvoiceCount}}</span></a>
                         </li>
                         <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopCancelled'}">
-                          <span class="badge bg-info">{{scoopCancelledCount}}</span><a href="javascript:void(0)"
+                          <a href="javascript:void(0)"
                             ng-click="scoopjobstatusRecord('scoop','scoopCancelled')">
-                            Cancelled</a>
+                            Cancelled <span class="badge bg-info">{{scoopCancelledCount}}</span></a>
                         </li>				
                       </ul>
                       <ul id="more-nav" class="mb-0">			  
-                        <li id="moreli" class="list-group-item"><a href="#">More > </a>
+                        <li id="moreli" class="list-group-item"><a href="#" style="white-space: nowrap;">More > </a>
                           <ul class="subfilter">									
                           </ul>
                         </li>    
@@ -1773,7 +1773,7 @@ td { font-size: 11px; } */
                         </div>
                       </div>
                     </div>
-                    <div class="list-group no-radius alt projectjobdv2">
+                    <div class="list-group no-radius alt projectjobdv2 overviewli">
                       <li class="list-group-item"  ng-class="{ 'active': jobsactive=='Requested'}">
                         <span class="badge bg-info">{{jobRequestesCount}}</span><a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','Requested')">
@@ -2303,62 +2303,68 @@ td { font-size: 11px; } */
         ww = $(window).width(),
         smw = more.outerWidth();
 
-    menu.children("li").each(function () {
-        var w = $(this).outerWidth();
-        if (w > smw) smw = w + 20;
-        return smw
-    });
-    more.css('width', smw);
+      menu.children("li").each(function () {
+          var w = $(this).outerWidth();
+          //console.log('li-w',w);
+          if (w > smw) smw = w + 60;
+          return smw
+      });
+      more.css('width', smw);
 
-    function contract() {
-        var w = 0,
-            outerWidth = parent.width() - smw - 50;
-        for (i = 0; i < menu.children("li").size(); i++) {
-            w += menu.children("li").eq(i).outerWidth();
-            if (w > outerWidth) {
-                menu.children("li").eq(i - 1).nextAll()
-                    .detach()
-                    .css('opacity', 0)
-                    .prependTo(".subfilter")
-                    .stop().animate({
-                    'opacity': 1
-                }, 300);
-                break;
-            }
-        }
-    }
+      function contract() {
+          var w = 0,
+              outerWidth = parent.width() - smw - 90;
+          for (i = 0; i < menu.children("li").size(); i++) {
+              w += menu.children("li").eq(i).outerWidth();
+              if (w > outerWidth) {
+                  menu.children("li").eq(i - 1).nextAll()
+                      .detach()
+                      .css('opacity', 0)
+                      .prependTo(".subfilter")
+                      .stop().animate({
+                      'opacity': 1
+                  }, 300);
+                  break;
+              }
+          }
+      }
 
-    function expand() {
-        var w = 0,
-            outerWidth = parent.width() - smw - 20;
-        menu.children("li").each(function () {
-            w += $(this).outerWidth();
-            return w;
-        });
-        for (i = 0; i < subMenu.children("li").size(); i++) {
-            w += subMenu.children("li").eq(i).outerWidth();
-            if (w > outerWidth) {
-                var a = 0;
-                while (a < i) {
-                    subMenu.children("li").eq(a)
-                        .css('opacity', 0)
-                        .detach()
-                        .appendTo("#nav-bar-filter")
-                        .stop().animate({
-                        'opacity': 1
-                    }, 300);
-                    a++;
-                }
-                break;
-            }
-        }
-    }
-    contract();
+      function expand() {
+          var w = 0,
+              outerWidth = parent.width() - smw - 20;
+          menu.children("li").each(function () {
+              w += $(this).outerWidth();
+              return w;
+          });
+          for (i = 0; i < subMenu.children("li").size(); i++) {
+              w += subMenu.children("li").eq(i).outerWidth();
+              if (w > outerWidth) {
+                  var a = 0;
+                  while (a < i) {
+                      subMenu.children("li").eq(a)
+                          .css('opacity', 0)
+                          .detach()
+                          .appendTo("#nav-bar-filter")
+                          .stop().animate({
+                          'opacity': 1
+                      }, 300);
+                      a++;
+                  }
+                  break;
+              }
+          }
+      }
+      contract();
 
-    $(window).on("resize", function (e) {
-        ($(window).width() > ww) ? expand() : contract();
-        ww = $(window).width();
-    });
+      $(window).on("resize", function (e) {
+          ($(window).width() > ww) ? expand() : contract();
+          ww = $(window).width();
+      });
+      $(window).on("load", function (e) {
+          ($(window).width() > ww) ? expand() : contract();
+          ww = $(window).width();
+      });
+
 
     // if ($(".subfilter > li").length > 0) { //if we have elements in extended menu - show it
     //     $("#more-nav").show();
@@ -2366,23 +2372,28 @@ td { font-size: 11px; } */
     //   else {
     //     $("#more-nav").hide();
     //   }
-
     $("#moreli").click(function(e){
       $(".subfilter").toggle('medium');
     });
 
     $(".subfilter").hide();
-    
-    }, 1500);
+
+  }, 4500);
 
 });
 
-$(document).on("click", function(event){
-        var $trigger = $("#moreli");
-        if($trigger !== event.target && !$trigger.has(event.target).length){
-            $(".subfilter").slideUp("fast");
-        }            
-    });
+  $(document).on("click", function(event){
+      var $trigger = $("#moreli");
+      if($trigger !== event.target && !$trigger.has(event.target).length){
+          $(".subfilter").slideUp("fast");
+      }
+                  
+  });
+
+  setTimeout(() => {
+  //    $(window).trigger("resize");    
+  }, 1500);
+   
 </script>
 
 <style>
@@ -2399,27 +2410,326 @@ $(document).on("click", function(event){
   #nav-bar-filter {
     padding-left: 0;
   }
-  .list-group-item{
+  .overviewli  .list-group-item{
     display: flex;
     align-items: center;
     white-space: nowrap;
   }
-  .list-group.projectjobdv li a{
+  .overviewli .list-group.projectjobdv li a{
     white-space: nowrap;
   }
-  .list-group-item > span{order: 2; margin: 0 0 0 5px;}
+  .overviewli .list-group-item > span{order: 2; margin: 0 0 0 5px;}
   #nav-bar-filter, #more-nav {
     display: inline-flex;
+    height: 40px;
   }
+  #nav-bar-filter > li {
+      padding: 10px 0;
+      margin-left: 19px;
+  }
+  /* #nav-bar-filter li span{
+    margin-left: 12px !important;
+  } */
+  #moreli:hover > .subfilter{
+    display: block !important;
+  } 
   .subfilter {
     position: absolute;
     z-index: 99;
     width: 200px;
-    border: 1px solid #4e2fc4;
+    border: 1px solid #e5eaf0;
     padding-left: 0;
   }
   .subfilter > li > a {
     display: block;
  }
   .panel-heading + .list-group .list-group-item{border-right-width: 1px;}
+
+  /* Overview Tabs  */
+  /* .projectjobdv2 > li:before {
+      z-index: 0;
+  }
+  .projectjobdv2 >li::before {
+    right: -17px;
+    border-radius: 0 8px 0 0;
+    width: 28px;
+    background-color: #f7f8fd;
+    transform: skew(
+    30deg
+    , 
+    0deg
+    );
+    box-shadow: rgb(0 0 0 / 0%) 3px 2px 5px, inset #eaeaf4 -1px 0;
+    z-index: 100;
+    border-top: 1px solid #eaeaf4;
+  }
+
+  .projectjobdv2>li::before, .projectjobdv2>li::after {
+        display: block;
+        content: " ";
+        position: absolute;
+        top: -1px;
+        height: calc(100% + 1px);
+        width: 20px;
+        background-color: #fff;
+        transition: all 250ms ease;
+  }
+  .projectjobdv2>li.active::before {
+      background-color: #fff;
+  }
+  .projectjobdv2 > li.active {
+      background: #fff;
+      z-index: 1;
+  }
+  .projectjobdv2 > li {
+      background: #fafaff;
+      padding: 0;
+      margin-right: 30px;
+      z-index: 0;
+  }
+  .projectjobdv2>li.active::before {
+      background-color: #fff;
+  }
+  .projectjobdv2>li.active::after {
+      background-color: #fff;
+  }
+  .projectjobdv2 >li::after {
+      left: -20px;
+      border-radius: 8px 0 0 0;
+      background-color: #f7f8fd;
+      border-left: 1px solid #eaeaf4;
+      border-top: 1px solid #eaeaf4;
+  }
+  .projectjobdv2 >li.active>a::after {
+      position: absolute;
+      content: "";
+      height: 2px;
+      background-color: #fff;
+      left: -19px;
+      right: -39px;
+      bottom: -9px;
+  }
+  .projectjobdv2 >li a{
+    height: 100%;
+    padding: 10px 6px 8px 0 !important;
+    color: #9290a8 !important;
+    border: none;
+  }
+  .projectjobdv2 > li.active > a {
+      color: #4e2fc4 !important;
+  }
+  .projectjobdv2 .list-group-item .bg-info {
+    color: #737f8b !important;
+    background: #e5eaf0 !important;
+  }
+  .projectjobdv2 > li.active .bg-info {
+      color: #fff !important;
+      background: #4e2fc4 !important;
+      margin: 0 0 0 5px;
+  }
+  .projectjobdv2 > li .bg-info {
+    z-index: 999 !important;
+  }
+  .projectjobdv2 > .list-group-item > a:hover {
+    text-decoration: none !important;
+  } */
+  .page_content_wrapper .white_box_wrapper .white_box .list-group-item.active {
+      background-color: #fff !important;
+      border: initial !important;
+  }
+  .list-group.overviewli li{
+    margin-left: 19px;
+  }
+
+  /* Tabs overview project */
+
+  .overviewli > li:before {
+      z-index: 0;
+  }
+  .overviewli >li::before {
+    right: -17px;
+    border-radius: 0 8px 0 0;
+    width: 28px;
+    background-color: #f7f8fd;
+    transform: skew(
+    30deg
+    , 
+    0deg
+    );
+    box-shadow: rgb(0 0 0 / 0%) 3px 2px 5px, inset #eaeaf4 -1px 0;
+    z-index: 100;
+    border-top: 1px solid #eaeaf4;
+  }
+
+  .overviewli>li::before, .overviewli>li::after {
+        display: block;
+        content: " ";
+        position: absolute;
+        top: -1px;
+        height: calc(100% + 1px);
+        width: 20px;
+        background-color: #fff;
+        transition: all 250ms ease;
+  }
+  .overviewli>li.active::before {
+      background-color: #fff;
+  }
+  .overviewli > li.active {
+      background: #fff;
+      z-index: 1;
+  }
+  .overviewli > li {
+      background: #fafaff;
+      padding: 0;
+      margin-right: 30px;
+      z-index: 0;
+  }
+  .overviewli>li.active::before {
+      background-color: #fff;
+  }
+  .overviewli>li.active::after {
+      background-color: #fff;
+  }
+  .overviewli >li::after {
+      left: -20px;
+      border-radius: 8px 0 0 0;
+      background-color: #f7f8fd;
+      border-left: 1px solid #eaeaf4;
+      border-top: 1px solid #eaeaf4;
+  }
+  .overviewli >li.active>a::after {
+      position: absolute;
+      content: "";
+      height: 2px;
+      background-color: #fff;
+      left: -19px;
+      right: -39px;
+      bottom: -9px;
+  }
+  .overviewli >li a{
+    height: 100%;
+    padding: 10px 6px 8px 0 !important;
+    color: #9290a8 !important;
+    border: none;
+  }
+  .overviewli > li.active > a {
+      color: #4e2fc4 !important;
+  }
+  .page_content_wrapper .white_box_wrapper .white_box .list-group-item.active {
+      background-color: #fff !important;
+      border: initial !important;
+  }
+  .overviewli .list-group-item .bg-info {
+    color: #737f8b !important;
+    background: #e5eaf0 !important;
+  }
+  .overviewli > li.active .bg-info {
+      color: #fff !important;
+      background: #4e2fc4 !important;
+      margin: 0 0 0 5px;
+  }
+  .list-group.no-radius.alt.overviewli.overviewli li{
+    margin-left: 19px;
+  }
+  .overviewli > li .bg-info {
+    z-index: 999 !important;
+  }
+  .overviewli > .list-group-item > a:hover {
+    text-decoration: none !important;
+  }
+
+/* more li tab */
+  #moreli.list-group-item:before {
+      z-index: 0;
+  }
+  li#moreli::before {
+    right: -17px;
+    border-radius: 0 8px 0 0;
+    width: 28px;
+    background-color: #f7f8fd;
+    transform: skew(
+    30deg
+    , 
+    0deg
+    );
+    box-shadow: rgb(0 0 0 / 0%) 3px 2px 5px, inset #eaeaf4 -1px 0;
+    z-index: 100;
+    border-top: 1px solid #eaeaf4;
+  }
+
+  #moreli.list-group-item::before, #moreli.list-group-item::after {
+        display: block;
+        content: " ";
+        position: absolute;
+        top: -1px;
+        height: calc(100% + 1px);
+        width: 20px;
+        background-color: #fff;
+        transition: all 250ms ease;
+  }
+  #moreli.list-group-item.active::before {
+      background-color: #fff;
+  }
+  #moreli.list-group-item.active {
+      background: #fff;
+      z-index: 1;
+  }
+  #moreli.list-group-item {
+      background: #fafaff;
+      padding: 0;
+      margin-right: 30px;
+      /* z-index: 0; */
+      padding: 12px 0 ;
+  }
+  .projectjobdv2>li.active::before {
+      background-color: #fff;
+  }
+  .projectjobdv2>li.active::after {
+      background-color: #fff;
+  }
+  .projectjobdv2 >li::after {
+      left: -20px;
+      border-radius: 8px 0 0 0;
+      background-color: #f7f8fd;
+      border-left: 1px solid #eaeaf4;
+      border-top: 1px solid #eaeaf4;
+  }
+  .projectjobdv2 >li.active>a::after {
+      position: absolute;
+      content: "";
+      height: 2px;
+      background-color: #fff;
+      left: -19px;
+      right: -39px;
+      bottom: -9px;
+  }
+  #moreli > a:first-child {
+    padding: 0 5px 0 20px;
+    
+  }  
+  #moreli.list-group-item a{
+    /* height: 100%;
+    padding: 10px 6px 8px 0 !important; */
+    color: #9290a8;
+    border: none;
+  }
+
+  #moreli li.active a {
+      color: #4e2fc4 !important;
+  }
+  .subfilter .list-group-item .bg-info {
+    color: #737f8b !important;
+    background: #e5eaf0 !important;
+  }
+  .subfilter > li.active .bg-info {
+      color: #fff !important;
+      background: #4e2fc4 !important;
+      margin: 0 0 0 5px;
+  }
+  .subfilter > li .bg-info {
+    z-index: 999 !important;
+  }
+  #more-nav > .list-group-item > a:hover {
+    text-decoration: none !important;
+  }
 </style>

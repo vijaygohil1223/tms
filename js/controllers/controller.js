@@ -1819,7 +1819,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if(scoopjobStatus){
             $scope.scoopjobStatusFilter = scoopjobStatus;
             $scope.isoverviewProject = true;
-            console.log('scoppppp detail');
+            //console.log('scoppppp detail');
         }else{
             //$scope.scoopjobStatusFilter = 'all';
             $scope.scoopjobStatusFilter = '';
@@ -1905,11 +1905,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
 
             });
+            $scope.scoopAlljobsCount = $scope.dashboardJobList.length;
+                
             $timeout(function() {
 
                 // scoop Array //
                 
-                $scope.scoopAlljobsCount = allscoopJobsData.length;
+                $scope.scoopAlljobsCount = $scope.dashboardJobList.length;
                 if($scope.scoopjobStatusFilter == 'all'){
                     $scope.scoopjobsListAll = allscoopJobsData;
                 }
