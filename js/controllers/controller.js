@@ -16671,6 +16671,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                                 $('#comment-list').find(' > li[data-id^=c]').hide();
+                                // to remove same li date div
+                                var seen = {};
+                                $('.seperatordate').each(function() {
+                                    var txt = $(this).text();
+                                    if (seen[txt])
+                                        $(this).remove();
+                                    else
+                                        seen[txt] = true;
+                                });
+                                // end script
                                 usercommentsArr=[];
                             }
                         });
@@ -23301,13 +23311,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     $('#comment-list').find(' > li[data-id^=c]').hide();
                                     usercommentsArr=[];
                                     // to remove same li date div
-                                    // $('.seperatordate').each(function() {
-                                    //     var txt = $(this).text();
-                                    //     if (seen[txt])
-                                    //         $(this).remove();
-                                    //     else
-                                    //         seen[txt] = true;
-                                    // });
+                                    var seen = {};
+                                    $('.seperatordate').each(function() {
+                                        var txt = $(this).text();
+                                        if (seen[txt])
+                                            $(this).remove();
+                                        else
+                                            seen[txt] = true;
+                                    });
                                     // end script
                                 }
                             });
