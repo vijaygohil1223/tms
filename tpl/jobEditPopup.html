@@ -366,8 +366,11 @@
                                           <div class="panel-heading font-bold"><h4>Payment to linguist</h4></div>
                                                 <div class="panel-body">
                                                     <div class="col-sm-12 m-b">
-                                                        <label>Import CSV</label>
-                                                        <input type="file" ng-file-select="onFileSelect($files)" isabled="isClean() || formUpload.$invalid" accept=".xlsx, .xls, .csv"/>
+                                                        <div class="filecsv-upload">
+                                                            <div>Import CSV</div>
+                                                            <label for="file-input" class="fa fa-upload newUpload" style="cursor: pointer;"></label>
+                                                            <input type="file" ng-file-select="onFileSelect($files)" isabled="isClean() || formUpload.$invalid" accept=".xlsx, .xls, .csv" id="file-input" style="visibility:hidden;">
+                                                        </div>
                                                     </div>
                                                     <div class="col-sm-12">    
                                                         <table class="table m-b-none default footable-loaded footable" style="width: 50%;">
