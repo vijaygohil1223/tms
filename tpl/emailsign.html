@@ -16,7 +16,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <form id="email-sign-form">
-                            <div class="col-sm-12">
+                            <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group emailSignEditor">
                                         <label>Sign Detail</label>
@@ -85,9 +85,8 @@
                                     <span>Then image selected above will be displayed bellow the email signature text</span>
                                 </div> -->
                             </div>
-                            <div class="panel-footer">
-                                <button class="btn btn-info" ng-click="save('email-sign-form');"
-                                    style="margin-left:15px"><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                            <div class="panel-footer pl-0 pr-o">
+                                <button class="btn btn-info" ng-click="save('email-sign-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i>
                                     Save</button>
                             </div>
                         </form>
@@ -113,7 +112,7 @@
                                 <td><a href="javascript:void(0)" ng-click="signEdit(e.sign_id, 'top');" title="edit"><i
                                             class="glyph-icon fa-edit"></i></a> <a href="javascript:void(0)"
                                         ng-click="deletesign(e.sign_id,e.sign_picture)" title="delete"><i
-                                            class="glyph-icon fa-times"></i></a></td>
+                                            class="iconDelete glyph-icon fa-times"></i></a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -124,7 +123,7 @@
                     </div>
                     <div class="panel-body">
                         <form id="email-template-form">
-                            <div class="col-sm-12">
+                            <div class="row">
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label>Template Name</label>
@@ -154,7 +153,7 @@
                                 </div>
                             </div> -->
                             </div>
-                            <div class="col-sm-12">
+                            <div class="row">
                                 <div class="col-sm-3">
                                     <div class="checkbox">
                                         <label class="i-checks i-checks-sm" style="padding-top: 20px;">
@@ -167,23 +166,19 @@
                                     </div>
                                 </div>
                             </div>
-                    </div>
-                    <div class="col-sm-12" style="padding-left:44px;padding-right:44px;">
-                        <div class="form-group emailSignEditor">
-                            <label>Template Detail</label>
-                            <!--<input type="text" class="form-control" name="cc"   ng-model="message.editor">-->
-                            <div text-angular="text-angular" id="emailTpl" name="emailTpl"
-                                ng-model="emailTplData.template_content" ta-disabled='disabled' required
-                                ng-trim="false"></div>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <button class="btn btn-info" ng-click="saveTemplate('email-template-form');"
-                            style="margin-left:29px"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save
-                            Template</button>
-                    </div>
+                            <div class="form-group emailSignEditor">
+                                <label>Template Detail</label>
+                                <!--<input type="text" class="form-control" name="cc"   ng-model="message.editor">-->
+                                <div text-angular="text-angular" id="emailTpl" name="emailTpl"
+                                    ng-model="emailTplData.template_content" ta-disabled='disabled' required
+                                    ng-trim="false"></div>
+                            </div>
+                            <div class="panel-footer pl-0 pr-0">
+                                <button class="btn btn-info" ng-click="saveTemplate('email-template-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+                                    Template</button>
+                            </div>
                     </form>
-
+                    </div>
                 </div>
                 <div class="panel panel-default">
                     <table class="table table-striped b-t b-b table-bordered" datatable="ng">
@@ -217,7 +212,7 @@
                                     <a href="javascript:void(0)" ng-click="tplEdit(tpl.template_id, 'tplForm');"
                                         title="edit"><i class="glyph-icon fa-edit"></i></a>
 
-                                    <!-- <a href="javascript:void(0)" ng-click="tplDel(tpl.template_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td> -->
+                                    <!-- <a href="javascript:void(0)" ng-click="tplDel(tpl.template_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td> -->
                             </tr>
                         </tbody>
                     </table>

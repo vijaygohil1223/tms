@@ -48,7 +48,7 @@
       <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
       <div class="md-content items_page page_content_wrapper">
 
-         <div class="content_head d-flex justify-space-between bg-light lter b-b wrapper-md ng-scope" style="max-width: 1500px; width: 100%; margin: 0 auto;">
+         <div class="content_head d-flex justify-space-between bg-light lter b-b wrapper-md ng-scope">
             <div class="left">
                <h1 class="font-thin h3">
                   Scoops -
@@ -79,9 +79,9 @@
                <h5>This record is currently edited by {{UpdateClientName}}<h5>
             </div>
          </div>
-         <div class="wrapper-md ng-scope" style="max-width: 1500px; width: 100%; margin: 0 auto;">
+         <div class="wrapper-md ng-scope">
 
-            <ul class="nav nav-pills nav-wizard" style="width:45%;margin: auto;">
+            <ul class="nav nav-pills nav-wizard" style="display: flex;justify-content: center;">
                <li>
                   <a href="#/general">General</a>
                   <div class="nav-arrow"></div>
@@ -123,7 +123,7 @@
                                              <a href="javascript:void(0)"
                                                 ng-click="deleteItemsId(it.itemId,it.item_number)" title="delete"
                                                 style="margin-right:40px;float:right;">
-                                                <i class="glyph-icon fa-times"></i>
+                                                <i class="iconDelete glyph-icon fa-times"></i>
                                              </a>
                                           </h4>
                                        </div>
@@ -211,7 +211,7 @@
                                                                <div class="col-sm-1" style="margin-top:1%;">
                                                                   <a href="javascript:void(0);"
                                                                      ng-click="itemQuentityDelete(it.itemId,$index,$parent.$index)"><i
-                                                                        class="glyph-icon fa-times"
+                                                                        class="iconDelete glyph-icon fa-times"
                                                                         aria-hidden="true"></i></a>
                                                                </div>
                                                             </div>

@@ -1,5 +1,5 @@
 <style>
-   table {
+table {
    table-layout:fixed;
    }
    td{
@@ -9,7 +9,7 @@
    .app-header-fixed {
    padding-top:0px;
    }
-   folder,file{
+   folder2{
    height: 74px;
    overflow:hidden;
    background-repeat: no-repeat;
@@ -29,6 +29,27 @@
    position: relative;
    box-sizing: border-box;
    }
+  folder, file{
+    height: 40px;
+    /* overflow: hidden; */
+    background-repeat: no-repeat;
+    /* background-position: center 5px; */
+    background-size: 24px 24px;
+    font-size: 11px;
+    /* text-align: center; */
+    font-weight: bold;
+    display: inline-block;
+    cursor: default;
+    width: 100%;
+    padding: 7px 10px; 
+    margin: 5px 15px;
+    /* vertical-align: top; */
+    border: 1px solid transparent;
+    /* word-wrap: break-word; */
+    position: relative;
+    box-sizing: border-box;
+    background-origin: content-box;
+  }
    .video{background-image: url(assets/img/file_icon/video.png);}
    .png{background-image: url(assets/img/file_icon/png.png);}
    folder { background-image: url(assets/img/file_icon/folder1.png);}
@@ -116,22 +137,107 @@
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
 }
-.ajax-file-upload-filename{
-   margin: 0 auto;
-   position: absolute;
-   bottom: 37;
+.fa-times:before {
+    content: "\f00d";
+    color:#0086be !important;
 }
-.ajax-file-upload-preview{
-   margin: 0 auto !important;
+.ajax-upload-dragdrop{
+  padding-top: 30px;
+  min-height: 100px;
+}
+.ajax-file-upload-container{
+  margin-bottom: 30px;
+  float:none; 
 }
 .ajax-file-upload-statusbar{
-   padding: 10px;
-   min-height: 200px;
+  padding: 10px;
+  text-align: initial;
+  min-height: auto;
+  max-height: initial;
+  box-shadow: none;
+  width: 100% !important;
+  float: none;
+  display: inline-flex;
 }
-.ajax-file-upload-progress {
-    margin: 0 auto;
-    width: 165px;
-}    
+.ajax-file-upload-preview{
+  margin-left: initial !important; 
+}
+.ajax-file-upload-filename {
+    width: auto;
+    text-align: left;
+    padding-top: initial;
+    margin: auto 15px;
+    bottom: initial;
+    height: initial;
+    float: right;
+    position: relative;
+}
+.ajax-file-upload-cancel, .ajax-file-upload-red {
+    padding: 0px 5px;
+    margin: auto 10px;
+    position: relative;
+    bottom: initial;
+    left: initial;
+    float: right;
+    width: auto;
+}
+.fileshow p{
+  margin:5px 40px;
+}
+#uploadContainer .panel.panel-default {
+  float: initial; 
+  width: 100%;
+  text-align: center;
+  margin: 0 auto;
+}
+.ajax-upload-dragdrop{
+  margin: 0 auto;
+  text-align: center;
+}
+.ajax-file-upload{
+  margin-top: 42px;
+}
+.spandragdrop{
+    float: left;
+    position: absolute;
+    text-align: center;
+    margin: -10px 2px 0px -82px;
+}
+#multipleupload{
+  float: initial !important;
+}
+#multipleupload input[type="file"] {
+    cursor: pointer;
+}
+.brdrfile{
+  border: 2px dashed #c2cdda !important;
+  border-radius: 14px;
+}
+.uploadbtn1{
+  margin: -80px 0 0px 0;
+}
+.ajax-file-upload-container:nth-child(3){
+  border:none;
+}
+#multipleupload .ajax-upload-dragdropnth-child(2),#multipleupload .ajax-upload-dragdropnth-child(3) {
+  display: none;
+}
+.folderul file,.folderul folder{
+    margin-left: -10px;
+}
+.folderul.f2{
+    margin-left: 25px;
+}
+.fangle{
+    margin-left: 5px;
+}
+.folderbadge{
+    margin-left: 8px;
+}
+.ajax-file-upload-error{
+  float: left;
+  padding: 7px ​15px; 
+}
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }
@@ -166,7 +272,7 @@ vendor-prefixes.less:76
 <div id="content" role="main">
    <div class="app-content-body ">
       <div class="bg-light lter b-b wrapper-md">
-         <a href="javascript:void(0)" class="summeryColor pull-right" ng-click="popupCloseFile()">Close <i class="glyph-icon fa-times" aria-hidden="true"></i></a>
+         <a href="javascript:void(0)" class="summeryColor pull-right" ng-click="popupCloseFile()">Close <i class="fa fa-times" aria-hidden="true"></i></a>
          <h1 class="m-n font-thin h3">File Manager {{statusName}}</h1>
       </div>
       
@@ -193,12 +299,12 @@ vendor-prefixes.less:76
          </nav>
 
          <div id="filesContainer" context-menu="menuOptionsPaste">
-            <div id="uploadContainer" class="hideShowClass">
-               <div id="w4-tab1" class="tab-pane active">
-                  <div class="panel panel-default">
-                     <div class="panel-heading filehead">
-                        <div id="multipleupload" style="float:left;">Upload</div>
-                        <a href="javascript:void(0)" style="margin-top:0px;margin-left:0px;" ng-click="uploadClick();"
+            <div id="uploadContainer" class="">
+               <div id="w4-tab1" class="tab-pane active" style="display: block;">
+                  <div class="panel panel-default" style="width:70%;border:none;margin:10px auto;">
+                     <div class="panel-heading filehead brdrfile">
+                        <div id="multipleupload" style="float:left;height: 125px;"><!-- Upload --></div>
+                        <a href="javascript:void(0)" style="margin-left:0px;padding:4px 10px;" ng-click="uploadClick();"
                            class="btn btn-info">Upload</a>
                      </div>
                   </div>
@@ -210,8 +316,9 @@ vendor-prefixes.less:76
               <!-- <h1 style="margin-left:40%;">No Data Found</h1> -->
               <div id="no-downloads">
               <div>
-                <img src="assets/img/file_icon/nothing.png"/><br>
-                <span>Nothing to see here…</span>
+               <!-- <img src="assets/img/file_icon/nothing.png"/> -->
+                <br>
+                  <span>Nothing to see here…</span>
               </div>
             </div>
             </div>
@@ -219,7 +326,7 @@ vendor-prefixes.less:76
             <!-- loader image -->
             <div ng-if="showLoder" id="loader"></div>
 
-            <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" style="float:left" >
+            <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" class="fileshow">
 
                 <!-- Folder display -->
                <folder ng-if="display.f_id=='0' && display.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)"><p>{{display.name.substr(0,22)}}</p></folder>

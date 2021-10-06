@@ -79,104 +79,7 @@ td { font-size: 11px; } */
     white-space: nowrap;
   }
 
-  .projecttable .nav-tabs>li {
-    display: block;
-    padding: 10px 11px 8px 0;
-    background-color: #f7f8fd;
-    margin-right: 30px;
-    position: relative;
-    cursor: pointer;
-    border: 1px solid #eaeaf4;
-  }
-
-  .projecttable .nav-tabs>li::before,
-  .projecttable .nav-tabs>li::after {
-    display: block;
-    content: " ";
-    position: absolute;
-    top: -1px;
-    height: calc(100% + 1px);
-    width: 20px;
-    background-color: #fff;
-    transition: all 250ms ease;
-  }
-
-  .projecttable .nav-tabs>li::before {
-    right: -17px;
-    border-radius: 0 8px 0 0;
-    width: 28px;
-    background-color: #f7f8fd;
-    transform: skew(30deg, 0deg);
-    box-shadow: rgba(0, 0, 0, 0) 3px 2px 5px, inset #eaeaf4 -1px 0;
-    z-index: 100;
-    border-top: 1px solid #eaeaf4;
-  }
-
-  .projecttable .nav-tabs>li::after {
-    left: -20px;
-    border-radius: 8px 0 0 0;
-    background-color: #f7f8fd;
-    border-left: 1px solid #eaeaf4;
-    border-top: 1px solid #eaeaf4;
-  }
-
-  .projecttable .nav-tabs>li.active {
-    background-color: #fff;
-    z-index: 100;
-  }
-
-  .projecttable .nav-tabs>li.active::before {
-    background-color: #fff;
-  }
-
-  .projecttable .nav-tabs>li.active::after {
-    background-color: #fff;
-  }
-
-  .projecttable .nav-tabs>li>a {
-    padding: 0 !important;
-    background-color: transparent !important;
-    color: #9290a8;
-    border: none;
-    margin-right: initial;
-    position: relative;
-  }
-
-  .projecttable .nav-tabs>li.active>a::after {
-    position: absolute;
-    content: "";
-    height: 2px;
-    background-color: #fff;
-    left: -19px;
-    right: -39px;
-    bottom: -9px;
-  }
-
-  .projecttable li .badge {
-    background-color: #d7d4e7;
-    color: #818296;
-  }
-
-  .projecttable .nav-tabs>li.active>a,
-  .nav-tabs>li.active>a:hover,
-  .nav-tabs>li.active>a:focus {
-    color: #4285f4;
-  }
-
-  .projecttable li.active .badge {
-    background-color: #4285f4;
-    color: #fff;
-  }
-
-  .tab-container .tab-content {
-    border: none;
-  }
-
-  .projecttable .nav-tabs>li.active>li,
-  .nav-tabs>li.active>a:focus,
-  .projecttable .nav-tabs>li.active>a:hover {
-    border: none;
-  }
+ 
 
   .projecttable .media-body {
     width: auto;
@@ -451,7 +354,7 @@ td { font-size: 11px; } */
                     class="btn_create-project btn btn-info pull-right btn-sm btn-rounded"><i
                       class="fa fa-plus"></i>&nbsp; Create Project</a>
                    
-                  <tabset id="dynamicAddAnchore" class="tab-container projecttable" style="background-color: #f3f3fa;">
+                  <tabset id="dynamicAddAnchore" class="tab-container projecttable tab_dashboard" style="background-color: #f3f3fa;">
                     <tab>
                       <tab-heading>
                         <i class="glyphicon glyphicon-triangle-bottom"></i> Due
@@ -1696,20 +1599,18 @@ td { font-size: 11px; } */
                             Cancelled <span class="badge bg-info">{{scoopCancelledCount}}</span></a>
                         </li>				
                       </ul>
-                      <ul id="more-nav" class="mb-0">			  
-                        <li id="moreli" class="list-group-item"><a href="#" style="white-space: nowrap;">More > </a>
+                      <ul id="more-nav" class="mb-0 more-tab">			  
+                        <li id="moreli" class="list-group-item more-tab-li"><a href="#" style="white-space: nowrap;">More > </a>
                           <ul class="subfilter">									
                           </ul>
                         </li>    
                       </ul>
                     </div>
-                  </div>
-                </div>
-                <!-- Scoop Jobs List based on status -->
-                <div class="white_box panel panel-default" ng-show="isoverviewProject">
+                     <!-- Scoop Jobs List based on status -->
+                <div class="b-t overview-list" ng-show="isoverviewProject">
                   <div class="table-responsive">
                     <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="scoopjobAllTbl" dt-options="">
+                    <table class="table table-striped b-b" datatable="ng" id="scoopjobAllTbl" dt-options="">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -1763,6 +1664,9 @@ td { font-size: 11px; } */
                   </div>
                 </div>
                 <!-- Job List For Status New END -->
+                  </div>
+                </div>
+               
 
                 <div class="box ">
                   <div class="white_box panel panel-default">
@@ -1773,42 +1677,38 @@ td { font-size: 11px; } */
                         </div>
                       </div>
                     </div>
-                    <div class="list-group no-radius alt projectjobdv2 overviewli">
+                    <ul class="alt projectjobdv2 overviewli">
                       <li class="list-group-item"  ng-class="{ 'active': jobsactive=='Requested'}">
-                        <span class="badge bg-info">{{jobRequestesCount}}</span><a href="javascript:void(0)"
+                        <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','Requested')">
-                          Requested</a>
+                          Requested <span class="badge bg-info">{{jobRequestesCount}}</span></a>
                       </li>
                       <li class="list-group-item" ng-class="{ 'active': jobsactive=='inProgress'}">
-                        <span class="badge bg-info">{{jobInProgressCount}}</span><a href="javascript:void(0)"
+                        <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','inProgress')">
-                          In progress</a>
+                          In progress <span class="badge bg-info">{{jobInProgressCount}}</span></a>
                       </li>
                       <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueToday'}">
-                        <span class="badge bg-info">{{jobDueTodayCount}}</span><a href="javascript:void(0)"
+                        <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','DueToday')">
-                          Due Today</a>
+                          Due Today <span class="badge bg-info">{{jobDueTodayCount}}</span></a>
                       </li>
                       <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueTomorrow'}">
-                        <span class="badge bg-info">{{jobDueTomorrowCount}}</span><a href="javascript:void(0)"
+                        <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','DueTomorrow')">
-                          Due Tomorrow</a>
+                          Due Tomorrow <span class="badge bg-info">{{jobDueTomorrowCount}}</span></a>
                       </li>
                       <li class="list-group-item" ng-class="{ 'active': jobsactive=='Overdue'}">
-                        <span class="badge bg-info">{{jobOverDueCount}}</span><a href="javascript:void(0)"
+                        <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','Overdue')">
-                          Overdue</a>
-                      </li>
-                    
-                      
-                    </div>
-                  </div>
-                </div>
-                <!-- Jobs List based on status -->
-                <div class="white_box panel panel-default"  ng-show="isoverviewJobs">
+                          Overdue <span class="badge bg-info">{{jobOverDueCount}}</span></a>
+                      </li>    
+                    </ul>
+                    <!-- Jobs List based on status -->
+                <div class="b-t overview-list"  ng-show="isoverviewJobs">
                   <div class="table-responsive">
                     <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
-                    <table class="table table-striped b-t b-b" datatable="ng" id="jobAllTbl" dt-options="">
+                    <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -1862,6 +1762,8 @@ td { font-size: 11px; } */
                   </div>
                 </div>
                 <!-- Job List For Status New END -->
+                  </div>
+                </div>                
               </div>
               <div class="col-sm-3 rightBox-group">
                 <!-- <div class="box-group-head white_box h3" style="text-align: center">
@@ -2306,7 +2208,7 @@ td { font-size: 11px; } */
       menu.children("li").each(function () {
           var w = $(this).outerWidth();
           //console.log('li-w',w);
-          if (w > smw) smw = w + 60;
+          if (w > smw) smw = w + 120;
           return smw
       });
       more.css('width', smw);
@@ -2398,17 +2300,11 @@ td { font-size: 11px; } */
 
 <style>
   
-  .projectjobdv2{
-    display: flex;
-  }
   #more-nav {
     display: none;
     vertical-align: top;
     padding-left: 0;
     width: 80px !important;
-  }
-  #nav-bar-filter {
-    padding-left: 0;
   }
   .overviewli  .list-group-item{
     display: flex;
@@ -2421,12 +2317,8 @@ td { font-size: 11px; } */
   .overviewli .list-group-item > span{order: 2; margin: 0 0 0 5px;}
   #nav-bar-filter, #more-nav {
     display: inline-flex;
-    height: 40px;
   }
-  #nav-bar-filter > li {
-      padding: 10px 0;
-      margin-left: 19px;
-  }
+
   /* #nav-bar-filter li span{
     margin-left: 12px !important;
   } */
@@ -2446,191 +2338,10 @@ td { font-size: 11px; } */
   .panel-heading + .list-group .list-group-item{border-right-width: 1px;}
 
   /* Overview Tabs  */
-  
-  .page_content_wrapper .white_box_wrapper .white_box .list-group-item.active {
-      background-color: #fff !important;
-      border: initial !important;
-  }
-  .list-group.overviewli li{
-    margin-left: 19px;
-  }
 
-  /* Tabs overview project */
-
-  .overviewli > li:before {
-      z-index: 0;
-  }
-  .overviewli >li::before {
-    right: -17px;
-    border-radius: 0 8px 0 0;
-    width: 28px;
-    background-color: #f7f8fd;
-    transform: skew(
-    30deg
-    , 
-    0deg
-    );
-    box-shadow: rgb(0 0 0 / 0%) 3px 2px 5px, inset #eaeaf4 -1px 0;
-    z-index: 100;
-    border-top: 1px solid #eaeaf4;
-  }
-
-  .overviewli>li::before, .overviewli>li::after {
-        display: block;
-        content: " ";
-        position: absolute;
-        top: -1px;
-        height: calc(100% + 1px);
-        width: 20px;
-        background-color: #fff;
-        transition: all 250ms ease;
-  }
-  .overviewli>li.active::before {
-      background-color: #fff;
-  }
-  .overviewli > li.active {
-      background: #fff;
-      z-index: 1;
-  }
-  .overviewli > li {
-      background: #fafaff;
-      padding: 0;
-      margin-right: 30px;
-      z-index: 0;
-  }
-  .overviewli>li.active::before {
-      background-color: #fff;
-  }
-  .overviewli>li.active::after {
-      background-color: #fff;
-  }
-  .overviewli >li::after {
-      left: -20px;
-      border-radius: 8px 0 0 0;
-      background-color: #f7f8fd;
-      border-left: 1px solid #eaeaf4;
-      border-top: 1px solid #eaeaf4;
-  }
-  .overviewli >li.active>a::after {
-      position: absolute;
-      content: "";
-      height: 2px;
-      background-color: #fff;
-      left: -19px;
-      right: -39px;
-      bottom: -9px;
-  }
-  .overviewli >li a{
-    height: 100%;
-    padding: 10px 6px 8px 0 !important;
-    color: #9290a8 !important;
-    border: none;
-  }
-  .overviewli > li.active > a {
-      color: #4e2fc4 !important;
-  }
-  .page_content_wrapper .white_box_wrapper .white_box .list-group-item.active {
-      background-color: #fff !important;
-      border: initial !important;
-  }
-  .overviewli .list-group-item .bg-info {
-    color: #737f8b !important;
-    background: #e5eaf0 !important;
-  }
-  .overviewli > li.active .bg-info {
-      color: #fff !important;
-      background: #4e2fc4 !important;
-      margin: 0 0 0 5px;
-  }
-  .list-group.no-radius.alt.overviewli.overviewli li{
-    margin-left: 19px;
-  }
-  .overviewli > li .bg-info {
-    z-index: 999 !important;
-  }
-  .overviewli > .list-group-item > a:hover {
-    text-decoration: none !important;
-  }
 
 /* more li tab */
-  #moreli.list-group-item:before {
-      z-index: 0;
-  }
-  li#moreli::before {
-    right: -17px;
-    border-radius: 0 8px 0 0;
-    width: 28px;
-    background-color: #f7f8fd;
-    transform: skew(
-    30deg
-    , 
-    0deg
-    );
-    box-shadow: rgb(0 0 0 / 0%) 3px 2px 5px, inset #eaeaf4 -1px 0;
-    z-index: 100;
-    border-top: 1px solid #eaeaf4;
-  }
-
-  #moreli.list-group-item::before, #moreli.list-group-item::after {
-        display: block;
-        content: " ";
-        position: absolute;
-        top: -1px;
-        height: calc(100% + 1px);
-        width: 20px;
-        background-color: #fff;
-        transition: all 250ms ease;
-  }
-  #moreli.list-group-item.active::before {
-      background-color: #fff;
-  }
-  #moreli.list-group-item.active {
-      background: #fff;
-      z-index: 1;
-  }
-  #moreli.list-group-item {
-      background: #fafaff;
-      padding: 0;
-      margin-right: 30px;
-      /* z-index: 0; */
-      padding: 12px 0 ;
-  }
-  .projectjobdv2>li.active::before {
-      background-color: #fff;
-  }
-  .projectjobdv2>li.active::after {
-      background-color: #fff;
-  }
-  .projectjobdv2 >li::after {
-      left: -20px;
-      border-radius: 8px 0 0 0;
-      background-color: #f7f8fd;
-      border-left: 1px solid #eaeaf4;
-      border-top: 1px solid #eaeaf4;
-  }
-  .projectjobdv2 >li.active>a::after {
-      position: absolute;
-      content: "";
-      height: 2px;
-      background-color: #fff;
-      left: -19px;
-      right: -39px;
-      bottom: -9px;
-  }
-  #moreli > a:first-child {
-    padding: 0 5px 0 20px;
-    
-  }  
-  #moreli.list-group-item a{
-    /* height: 100%;
-    padding: 10px 6px 8px 0 !important; */
-    color: #9290a8;
-    border: none;
-  }
-
-  #moreli li.active a {
-      color: #4e2fc4 !important;
-  }
+  
   .subfilter .list-group-item .bg-info {
     color: #737f8b !important;
     background: #e5eaf0 !important;

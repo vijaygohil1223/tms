@@ -97,7 +97,6 @@
 	<div class="app-content-body ">
         <div class="bg-light lter b-b wrapper-md" id="userprofile-ctrl" >
             <!-- <section class="panel form-wizard" id="w4" ng-stepform="dynamic"> -->
-                <div class="panel-body">
                     <div class="tab-content">
                         <div id="w4-tab1" class="tab-pane active">
                             <form id="jobDetails-form">
@@ -367,7 +366,7 @@
                                                 <div class="panel-body">
                                                     <div class="col-sm-12 m-b">
                                                         <div class="filecsv-upload">
-                                                            <div>Import CSV</div>
+                                                            <div class="m-b">Import CSV</div>
                                                             <label for="file-input" class="fa fa-upload newUpload" style="cursor: pointer;"></label>
                                                             <input type="file" ng-file-select="onFileSelect($files)" isabled="isClean() || formUpload.$invalid" accept=".xlsx, .xls, .csv" id="file-input" style="visibility:hidden;">
                                                         </div>
@@ -375,12 +374,12 @@
                                                     <div class="col-sm-12">    
                                                         <table class="table m-b-none default footable-loaded footable" style="width: 50%;">
                                                             <th>#</th>
+                                                            <th>Quantity</th>
                                                             <th>Price Unit</th>
-                                                            <th>Source Words</th>
                                                             <tr ng-repeat="cs in csvData">
                                                                 <td>{{cs.id}}</td>
-                                                                <td>{{cs.name}}</td>
-                                                                <td>{{cs.words}}</td>
+                                                                <td>{{cs.quantity}}</td>
+                                                                <td>{{cs.pricelist}}</td>
                                                             </tr>
                                                         </table>
                                                     </div> 
@@ -562,7 +561,6 @@
                                 </div> -->
                             </form>
                         </div>
-                    </div>
                 </div>
 
             <!-- </section> -->

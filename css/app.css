@@ -253,8 +253,8 @@ a.list-group-item.hover {
 
 .list-group-item.active {
   color: #fff;
-  background-color: #23b7e5 !important;
-  border-color: #23b7e5 !important;
+  background-color: #23b7e5;
+  border-color: #23b7e5;
 }
 
 .list-group-item.active .text-muted {
@@ -6313,8 +6313,6 @@ i, cite, em, var, address, dfn {
 
 .disabledAnchor{
   cursor: not-allowed;
-  pointer-events: none;
-  opacity:0.5;
 }
 .clearBtnHide{
     display:none;

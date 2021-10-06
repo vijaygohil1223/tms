@@ -21,7 +21,7 @@
                         <div class="row">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <div class="col-sm-12">
+                                    <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Job Name</label>
@@ -55,8 +55,8 @@
                                         </div>                                    
                                     </div> -->
                                 </div>
-                                <div class="panel-footer">
-                                    <button class="btn btn-info btnSave" style="margin-left:27px" ng-click="save('job-status-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
+                                <div class="panel-footer pl-0 pr-0">
+                                    <button class="btn btn-info btnSave" ng-click="save('job-status-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
                                 </div>
                             </div>
                             <div class="panel panel-default" ng-show="jobValue">
@@ -96,7 +96,7 @@
                                                         </label>
                                                     </div>
                                                 </td>
-                                                <td><a href="javascript:void(0)" ng-click="deleteValue(0)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                                <td><a href="javascript:void(0)" ng-click="deleteValue(0)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -145,7 +145,7 @@
                                                 </td>
                                                 <td>
                                                 <span class="workI_id{{$index}} none">{{wor.w_id}}</span>
-                                                <a href="javascript:void(0)" ng-click="deleteValue($index,wor.w_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                                <a href="javascript:void(0)" ng-click="deleteValue($index,wor.w_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -171,7 +171,7 @@
                                                 <td ng-bind="job.service_name"></td>
                                                 <td ng-bind="job.job_code"></td>
                                                 <!-- <td ng-bind="job.job_representation"></td> --> 
-                                                <td><a href="javascript:void(0)" ng-click="getJob(job.job_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  / <a href="javascript:void(0)" ng-click="deleteModel(job.job_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                                <td><a href="javascript:void(0)" ng-click="getJob(job.job_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  <a href="javascript:void(0)" ng-click="deleteModel(job.job_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                             </tr>
                                         </tbody>
                                     </table>

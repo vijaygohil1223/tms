@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="btn-group d-flex">
                                     <button class="btn btn-info" ng-click="emailSent(viewExternalCommunicational.iUserId,'External','1')" title="Email"><i class="fa fa-envelope-o"></i> Email</button>
-                                    <a class="btn btn-info" href="#/user-profile/{{viewExternalCommunicational.iUserId}}" title="edit"><i class="glyph-icon fa-edit"></i>Edit</a>
+                                    <a class="btn btn-info" href="#/user-profile/{{viewExternalCommunicational.iUserId}}" title="edit"><i class="glyph-icon fa-edit-white"></i>Edit</a>
                                     <a href="javascript:void(0)" class="btn btn-info" ng-click="viewFileManager(viewExternalCommunicational.iUserId)" title="File Manager"><i class="fa fa-folder-open"></i>File Manager</a>
                                     <button class="btn btn-info" ng-click="deleteUser(viewExternalCommunicational.iUserId,viewExternalCommunicational.vProfilePic,viewExternalCommunicational.vUserName, viewExternalCommunicational.iFkUserTypeId)" title="Delete"><i class="glyph-icon fa-times"></i> Delete</button>
                                     <button ng-show="loginUserId == 1 && viewExternalCommunicational.iUserId != 1" class="btn btn-info" ng-click="changeUserStatus(viewExternalCommunicational.eUserStatus)" title="Active/inActive External Resource.">

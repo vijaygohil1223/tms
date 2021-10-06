@@ -1648,11 +1648,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     data[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
                     var sourceLangName =data[i].itemsSourceLang.sourceLang;
                     if(sourceLangName){
-                        var sourceLang = $scope.langsListAll.find(obj => {
-                            return obj.name === sourceLangName
-                        })
-                        if(sourceLang)
-                        data[i].itemsSourceLang.sourceLang = sourceLang.title;
+                        if($scope.langsListAll){
+                            var sourceLang = $scope.langsListAll.find(obj => {
+                                return obj.name === sourceLangName;
+                            })
+                            if(sourceLang)
+                            data[i].itemsSourceLang.sourceLang = sourceLang.title;
+                        }
                     }
                 } else {
                     data[i].itemsSourceLang = newLangData;
@@ -2836,57 +2838,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $window.localStorage.jobstatusName = " ";
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
 
-    $scope.csvData = [];
-    $scope.getFile = function(files) {
-        Papa.parse(files, {
-            complete: function(results, files,err) {
-                var csv =results.data;
-                var numindex=1;
-                $scope.csvData = [];
-                angular.forEach(csv, function(val, i) {
-                    if(val)
-                    var obj = {
-                        'id': numindex,
-                        'name': val[0],
-                        'words': val[1]
-                    };
-                    $scope.csvData.push(obj);
-                    numindex++;
-                });  
-            }
-        });
-    };
-    $scope.onFileSelect = function ($files) {
-        console.log('$files ',$files);
-        // alert('$files[0] '+$files)
-        Papa.parse($files[0], {
-            complete: function(results, $files,err) {
-                var csv =results.data;
-                //CLAIM_NO,WORK_DATE,SERVICE_ID,WORK_TIME,MILEAGE,EXPENSE_TYPE_ID,EXPENSE,WORK_DESCRIPTION,SERVICE_DESC,EXPENSE_DESC   , ADJUSTER_ID
-                //03-12376,10/21/2014,223,1,25,320,3.33,test223 - Acknowledgement to client,320 - Cell phone charge
-                //03-12376,10/21/2014,225,1.5,0,undefined,0,test2225 - Dictated initial report,undefined
-                console.log(csv);   
-                // lodash.forEach(csv, function (num, val) {
-                //     if (val>0) {
-                //         if (num[5]==='undefined') {
-                //             //console.log("Parsing")
-                //             num[5]=undefined
-                //         }
-                //         $scope.dailies.push({
-                //             CLAIM_NO:num[0] ,WORK_DATE:num[1] ,SERVICE_ID:num[2] ,WORK_TIME:num[3] ,MILEAGE:num[4] ,EXPENSE_TYPE_ID:num[5] ,
-                //             EXPENSE:num[6] ,WORK_DESCRIPTION:num[7],ADJUSTER_ID:num[8]
-                //         });
-                //     }
-                // });
-                // $scope.$apply();
-                // if (err) {
-                //     //console.log('err ', err);
-                // }
-            }
-        });
-    };
-
-
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
@@ -2907,7 +2858,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 for (var j = 0; j < $scope.itemPriceUni[$scope.jobdetail.job_summmeryId].length; j++) {
                     $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal = numberFormatComma($scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal);
                 }
-
             }
             if ($scope.jobdetail.total_price.length == 0) {
                 angular.element('#totalItemPrice').text('0.0');
@@ -2915,7 +2865,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                 //angular.element('#totalItemPrice').text(data.total_price);
             }
+            
             console.log('$scope.itemPriceUni-', $scope.itemPriceUni);
+            console.log('$scope.job_summmeryId-', $scope.jobdetail.job_summmeryId);
             /*if (isNaN(Date.parse($scope.jobdetail.due_date))) {
                 $timeout(function() {
                     var date = new Date();
@@ -2927,6 +2879,55 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobdetail.due_date = currentdateT;
                 }, 300);
             }*/
+            $scope.csvData = [];
+            var csvID =$scope.jobdetail.job_summmeryId;
+            $scope.getFile = function(files) {
+                console.log('files', files);
+                Papa.parse(files, {
+                    header: false,
+                    preview: 0,
+                    download: true,
+                    complete: function(results, files,err) {
+                        var csv =results.data;
+                        var numindex=0;
+                        $scope.csvData = [];
+                        var gtotal =  0;
+                        angular.forEach(csv, function(val, i) {
+                            if(val)
+                            var total = 2 * val[0];
+                            var obj = {
+                                'id': numindex,
+                                'quantity': val[0],
+                                'pricelist': val[1],
+                                'itemPrice': 2,
+                                'itemTotal': total,
+                            }; 
+                            $scope.csvData.push(obj);
+                            gtotal += total;
+                            console.log('gtotal',gtotal);
+                            numindex++;
+                        }); 
+                        console.log('idstring',csvID);
+                        console.log('gtotal===',gtotal);
+                        var itmpr = angular.element('#totalItemPrice').text();
+                        if(itmpr)
+                            itmpr = numberFormatCommaToPoint(itmpr);
+                        //var mgTotal = (parseFloat(itmpr)+parseFloat(gtotal);
+                        //angular.element('#totalItemPrice').text(mgTotal);
+                        //$scope.newtotal_price = gtotal;
+                        console.log('before=',$scope.itemPriceUni[csvID]);
+                        //$scope.itemPriceUni[csvID] = $scope.csvData;
+                        $scope.itemPriceUni[csvID].push.apply($scope.itemPriceUni[csvID], $scope.csvData)
+                        console.log('after=',$scope.itemPriceUni[csvID]);
+                        
+                        $scope.jobdetail.total_price = parseFloat(itmpr)+parseFloat(gtotal);
+                        //$scope.csvData = [];     
+                    }
+                });
+
+                console.log('$scope.itemPriceUni=csv',$scope.itemPriceUni);
+                console.log('job_summmeryId',$scope.jobdetail.job_summmeryId);
+            };
 
             $cookieStore.put('editJobact', data[0]);
             if (data[0].order_id) {
@@ -2951,6 +2952,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $timeout(function() {
                 $("#scoopId > [value=" + $scope.jobdetail.item_id + "]").attr("selected", "true");
             }, 600);
+
+            
+
         }).error(errorCallback);
 
         rest.path = 'jobitemsGet/' + $scope.DetailId;
@@ -2963,6 +2967,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $uibModalInstance.dismiss('cancel');
     };
 
+    
     $scope.jumptoItem = function() {
             $window.localStorage.orderID = $scope.DetailId;
             //set isNewProject to false
@@ -3529,16 +3534,17 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             url: 'filemanager-upload.php',
             multiple: true,
             dragDrop: true,
+            dragDropStr: "<span class='spandragdrop'><b>Drag & Drop Files</b></span>",
             fileName: "myfile",
             acceptFiles: "png",
             showPreview: true,
-            previewHeight: "100px",
-            previewWidth: "100px",
+            previewHeight: "35px",
+            previewWidth: "35px",
             maxFileCount: 5,
             maxFileSize: 15 * 1024 * 1024,
             showDelete: true,
             autoSubmit: false,
-            uploadStr: "Select",
+            uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
             onLoad: function(obj) {},
             afterUploadAll: function(obj) {
                 notification('Files uploaded successfully', 'success');
@@ -4548,6 +4554,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.folderAct = false;
         }
     }
+
+    setTimeout(() => {
+        $('.ajax-upload-dragdrop:eq(1)').hide();
+    }, 1500);
 
 }).controller('filemanagerCtrl', function($scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval) {
     $scope.clientId = $window.localStorage.getItem("contactclientId");
@@ -9163,11 +9173,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.baseQuentity = [];
     $scope.basePrice = [];
     $scope.baseTotal = [];
-
     $timeout(function() {
         $scope.redirectToClientViewId = $window.localStorage.iUserId;
     }, 100);
-
     angular.element('.panel-heading').css('background-color', 'white');
     if ($scope.uType == 2) {
         $scope.pricePageId = 1;
@@ -9420,6 +9428,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.customerPrice.price_basis = $scope.price_basis;
                 $scope.customerPrice.price_id = $scope.price_id;
                 $routeParams.id = $scope.customerPrice.price_list_id;
+                $scope.customerPrice.resource_id = $scope.ExternalPricelistId;
                 rest.path = "customerpriceUpdate";
                 rest.put($scope.customerPrice).success(function(data) {
                     notification('Price list successfully updated', 'success');
@@ -9509,6 +9518,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.customerPrice.price_language = $scope.price_language;
                 $scope.customerPrice.price_basis = $scope.price_basis;
                 $scope.customerPrice.price_id = $scope.price_id;
+                $scope.customerPrice.resource_id = $scope.ExternalPricelistId;
                 rest.path = "customerpriceSave";
                 rest.post($scope.customerPrice).success(function(data) {
                     notification('Price list successfully saved', 'success');
