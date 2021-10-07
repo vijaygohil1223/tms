@@ -457,9 +457,10 @@ div.dataTables_length select{margin: 0 5px;}
 .page_content_wrapper .white_box_wrapper .white_box.overview-panel .panel-footer .bg-info{color: #fff; background-color: #4e2fc4;}
 .page_content_wrapper .white_box_wrapper .white_box .list-group-item > a{color: #4e2fc4; text-decoration: none;}
 .page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item > a{color: #9290a8 ;}
-.page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item:hover{background-color: #f7f8fd;}
+.page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item:hover,.page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item.active{background-color: #f7f8fd;border-color: #edf1f2;}
+.page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item.active> a{color: #4e2fc4;}
 .page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item:hover > a{color: #4e2fc4;}
-.page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item:hover > a .badge{color: #fff !important; background-color: #4e2fc4 !important;}
+.page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item:hover > a .badge,.page_content_wrapper .white_box_wrapper .white_box .more-tab-li .list-group-item.active> a  .badge{color: #fff !important; background-color: #4e2fc4 !important;}
 .page_content_wrapper .white_box_wrapper .white_box .dataTables_wrapper .dataTables_paginate{position: relative;}
 
 .page_content_wrapper .white_box_wrapper .chid-tables .white_box .dataTables_wrapper > h4{margin-left: 15px;}

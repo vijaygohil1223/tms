@@ -1601,10 +1601,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     }
 
-    rest.path = 'languagesGet';
-    rest.get().success(function(data) {
-        $scope.langsListAll = data;
-    }).error(errorCallback);
+    if($window.localStorage.getItem("session_iUserId")){
+        rest.path = 'languagesGet';
+        rest.get().success(function(data) {
+            $scope.langsListAll = data;
+        }).error(errorCallback);
+    }    
 
     // Tab view Project List
     $scope.projectsAll = [];
@@ -2868,6 +2870,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             
             console.log('$scope.itemPriceUni-', $scope.itemPriceUni);
             console.log('$scope.job_summmeryId-', $scope.jobdetail.job_summmeryId);
+            console.log('$scope.jobdetail',$scope.jobdetail);
             /*if (isNaN(Date.parse($scope.jobdetail.due_date))) {
                 $timeout(function() {
                     var date = new Date();
