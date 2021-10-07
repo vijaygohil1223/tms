@@ -17468,7 +17468,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     };
 
-
     //New MemoQ language list
     rest.path = 'getMemoQLanguage';
     rest.get().success(function(langData) {

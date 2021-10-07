@@ -388,7 +388,9 @@ app.directive('select2User', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: users
+                        data: users,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -415,7 +417,9 @@ app.directive('select2Manager', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: users
+                        data: users,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -442,7 +446,9 @@ app.directive('select2Coordinator', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: users
+                        data: users,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -471,7 +477,9 @@ app.directive('select2CustomerGroup', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: users
+                        data: users,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -498,7 +506,9 @@ app.directive('select2Qa', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: users
+                        data: users,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -523,7 +533,9 @@ app.directive('select2InvoiceNumber', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: invoiceNumber
+                        data: invoiceNumber,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -549,7 +561,9 @@ app.directive('select2InvoiceStatus', function($http, rest, $timeout) {
             $timeout(function() {
                 element.select2({
                     allowClear: true,
-                    data: invoiceStatuses
+                    data: invoiceStatuses,
+                    multiple:true,
+                    maximumSelectionSize:1
                 });
             }, 200);
             
@@ -575,7 +589,9 @@ app.directive('select2Qaspa', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: users
+                        data: users,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -603,7 +619,9 @@ app.directive('select2Taxation', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: taxList
+                        data: taxList,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -630,7 +648,9 @@ app.directive('select2Property', function($http, rest, $timeout, $window) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: property
+                        data: property,
+                        multiple:true,
+                        maximumSelectionSize:1
 
                     });
                 }, 200);
@@ -652,7 +672,9 @@ app.directive('select2Gender', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: data
+                        data: data,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
             });
@@ -678,7 +700,9 @@ app.directive('select2Client', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: users
+                        data: users,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -704,7 +728,9 @@ app.directive('select2Indirect', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: indirect
+                        data: indirect,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -729,7 +755,9 @@ app.directive('select2Itemstatus', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: indirect
+                        data: indirect,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -755,7 +783,9 @@ app.directive('select2ProjType', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: prType
+                        data: prType,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -782,7 +812,9 @@ app.directive('select2ProjJobs', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: prType
+                        data: prType,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -808,7 +840,9 @@ app.directive('select2JobCode', function($http, rest, $timeout, $log) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: prType
+                        data: prType,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
 
@@ -835,7 +869,9 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: prType
+                        data: prType,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
 
@@ -862,7 +898,9 @@ app.directive('select2Currency', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: currency
+                        data: currency,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -903,7 +941,9 @@ app.directive('select2Userstatus', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: status
+                        data: status,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -929,7 +969,9 @@ app.directive('select2ClientStatus', function($http, rest, $timeout) {
                     element.select2({
                         dropdownCssClass : 'select2ClientStatus',
                         allowClear: true,
-                        data: status
+                        data: status,
+                        multiple:true,
+                        maximumSelectionSize:1
 
                     });
                 }, 500);
@@ -957,7 +999,9 @@ app.directive('select2Tasktype', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: type
+                        data: type,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -978,7 +1022,9 @@ app.directive('select2Sourcetype', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: data
+                        data: data,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200)
 
@@ -1009,7 +1055,9 @@ app.directive('ngSelect2Usertype', function(rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: type
+                        data: type,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -1037,7 +1085,9 @@ app.directive('ngSelect2Userposition', function(rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: type
+                        data: type,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -1064,7 +1114,9 @@ app.directive('ngSelect2Currency', function(rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: type
+                        data: type,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
 
@@ -1093,7 +1145,9 @@ app.directive('select2masterPrice', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: prType
+                        data: prType,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 200);
 
@@ -1145,7 +1199,9 @@ app.directive('select2Tax', function($http, rest, $timeout) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: prType
+                        data: prType,
+                        multiple:true,
+                        maximumSelectionSize:1
                     });
                 }, 500);
 
@@ -1231,7 +1287,9 @@ app.directive('select2LanguagesData', function($http, rest, $timeout) {
                 });
                 element.select2({
                     allowClear: true,
-                    data: users
+                    data: users,
+                    multiple:true,
+                    maximumSelectionSize:1
                 });
             }).error(function(data, error, status) {});
         }
