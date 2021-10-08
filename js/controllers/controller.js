@@ -13518,9 +13518,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.itemList[parentIndex].total_price = totalPrice;
         }
         //create item
-        $scope.createItems = function() {
+        //$scope.createItems = function() {
+        $scope.createItems = function(newscoop) {
             $scope.order_idddd = $window.localStorage.orderID;
-
             //Creating Number of items based on input start
             // var dialog = bootbox.dialog({
             //     title: "Add scoop",
@@ -13567,6 +13567,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             //     }
             // });
 
+            if(newscoop){
+                $scope.numOfScoopItems = newscoop.split(',')[1];
+            }
+            console.log('newscoop',newscoop);
             var noItemVal = $scope.numOfScoopItems;
             if (!noItemVal) {
                 $('#numOfItems').parent().parent().addClass('has-error');
