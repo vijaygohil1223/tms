@@ -1600,7 +1600,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
 
     }
-
+    $scope.langsListAll = [];
     if($window.localStorage.getItem("session_iUserId")){
         rest.path = 'languagesGet';
         rest.get().success(function(data) {
@@ -9316,7 +9316,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = 'customerpriceGetOne/' + id;
         rest.get().success(function(data) {
             $scope.customerPrice = data;
-            angular.element('#price_currency').select2('val', data.price_currency);
+            angular.element('#price_currency').select2('val', 'USD');
             angular.element('#calculation_basis').select2('val', data.calculation_basis);
             angular.element('#rounding_proc').select2('val', data.rounding_proc);
             var check = false;
@@ -13569,6 +13569,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             if(newscoop){
                 $scope.numOfScoopItems = newscoop.split(',')[1];
+                $('.scoopText input').attr("placeholder", "");
             }
             console.log('newscoop',newscoop);
             var noItemVal = $scope.numOfScoopItems;

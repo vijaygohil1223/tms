@@ -64,7 +64,7 @@
                   <!-- <input select2-proj-type type="text" class="form-control"
                   name="project_type" ng-model="it.project_type"
                   id="project_type{{it.itemId}}" required> -->
-
+               <div class="d-flex align-center">
                <input select2-create-scoop type="text" class="form-control scooopid" ng-change="createItems(numOfScoopItems)" name="scoopItem" ng-model="numOfScoopItems" id="numOfScoopItems" ng-init="numOfScoopItems = '0'" placeholder="Create Scoop">      
                <!-- <div class="scoop_selectbox btn btn-info" style="display: none;">
                   <select id="numOfScoopItems" ng-change="createItems()"  name="scoopItem" ng-model="numOfScoopItems" ng-init="numOfScoopItems = '0'" > 
@@ -79,6 +79,7 @@
                <a href="javascript:void(0);" ng-click="goTojobDetail()" style="margin-right: 5px;"
                ng-if="itemList.length >0" class="btn btn-info">Go to jobs<span
                   class="fa fa-times1"></span></a>
+               </div>      
             </div>
             <div class="hrght1" ng-if="showEditedByName">
                <h5>This record is currently edited by {{UpdateClientName}}<h5>

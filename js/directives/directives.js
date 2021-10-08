@@ -1301,14 +1301,14 @@ app.directive('select2MultipleLanguagesData', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'activelanguageGet';
-            
+            //rest.path = 'activelanguageGet';
+            rest.path = 'languagesGet';
             rest.get().success(function(data) {
                 var users = [];
                 $.each(data, function(key, value) {
                     var obj = {
-                        'id': value.lang_name,
-                        'text': value.lang_name
+                        'id': value.title,
+                        'text': value.title
                     };
                     users.push(obj);
                 });
@@ -4905,7 +4905,8 @@ app.directive('select2CreateScoop', function($http, rest, $timeout) {
                         multiple:true,
                         maximumSelectionSize:1
                     });
-                    //$('.scoopText input').attr("placeholder", "Create Scoop");
+                    $('.scoopText input').attr("placeholder", "Create Scoop");
+                    $('.scoopText input').css("min-width", "150px");
                 }, 200);
 
             //}).error(function(data, error, status) {});
