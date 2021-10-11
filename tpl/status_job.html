@@ -26,7 +26,7 @@
                                         <div class="panel-heading font-bold">Select</div>
                                         <div class="panel-body">
 
-                                            <div class="col-sm-12 form-group">
+                                            <div class=" form-group">
                                                 <!-- <div class="col-sm-4"> 
                                                             <label>Select date option</label>
                                                             <select class="form-control" ng-model="dateSelect">
@@ -45,8 +45,9 @@
                                                             <input type="text" ng-datetimepicker id="endDate" class="form-control" name="endDate" ng-model="jobReport.endDate"/>
                                                         </div> -->
                                             </div>
-
+                                            <div class="row">
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>Company code (rights)</label>
                                                     <input type="text" select2-center-client id="companyCode1"
@@ -56,12 +57,14 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','companyCode')"
-                                                        ng-if="jobReport.companyCode"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.companyCode"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
+                                                </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>Contact persons(Jobs)</label>
                                                     <input type="text" select2-contactsummery id="contactPerson1"
@@ -71,12 +74,14 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','contactPerson')"
-                                                        ng-if="jobReport.contactPerson"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.contactPerson"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
+                                                </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>Resources</label>
                                                     <input type="text" select2-job-detail-resource id="resource1"
@@ -86,12 +91,14 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','resource')"
-                                                        ng-if="jobReport.resource"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.resource"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
                                                 </div>
                                             </div>
+                                            </div>
 
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>Client</label>
                                                     <input type="text" select2-client id="customer1"
@@ -101,12 +108,14 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','customer')"
-                                                        ng-if="jobReport.customer"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.customer"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
                                                 </div>
                                             </div>
+                                            </div>
 
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>Service group</label>
                                                     <input type="text" ng-select2-usertype data-typeid="2"
@@ -116,12 +125,14 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','serviceGroup')"
-                                                        ng-if="jobReport.serviceGroup"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.serviceGroup"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
                                                 </div>
                                             </div>
+                                            </div>
 
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>Project Types</label>
                                                     <input type="text" select2-proj-type id="projectType1"
@@ -131,11 +142,13 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','projectType')"
-                                                        ng-if="jobReport.projectType"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.projectType"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
+                                                </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>Job Status</label>
                                                     <input type="text" select2-job-detailitm-status id="jobStatus1"
@@ -145,11 +158,13 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','jobStatus')"
-                                                        ng-if="jobReport.jobStatus"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.jobStatus"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
+                                                </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>Scoop status</label>
                                                     <input type="text" select2-job-detailitm-status id="itemStatus1"
@@ -159,11 +174,13 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','itemStatus')"
-                                                        ng-if="jobReport.itemStatus"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.itemStatus"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
+                                                </div>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 form-group">
+                                                <div class="row">
                                                 <div class="col-sm-11">
                                                     <label>User Types</label>
                                                     <select id="userTypes1" class="form-control" name="usertypes"
@@ -175,8 +192,9 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','userTypes')"
-                                                        ng-if="jobReport.orderTypes"><i class="glyph-icon fa-times"
+                                                        ng-if="jobReport.orderTypes"><i class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
+                                                </div>
                                                 </div>
                                             </div>
                                             <!-- <div class="col-sm-6 form-group"> 
@@ -185,7 +203,7 @@
                                                             <input type="text" select2-order-languages-data id="sourceLanguage1" class="form-control" name="sourceLanguage" ng-model="jobReport.sourceLanguage"/>
                                                         </div>
                                                         <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                                            <a href="javascript:void(0)" ng-click="clearCode('job-status-report','sourceLanguage')" ng-if="jobReport.sourceLanguage"><i class="glyph-icon fa-times" aria-hidden="true"></i></a>
+                                                            <a href="javascript:void(0)" ng-click="clearCode('job-status-report','sourceLanguage')" ng-if="jobReport.sourceLanguage"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
                                                         </div>    
                                                     </div>
                                                     <div class="col-sm-6 form-group"> 
@@ -194,7 +212,7 @@
                                                             <input type="text" select2-order-languages-data id="targetLanguage1" class="form-control" name="targetLanguage" ng-model="jobReport.targetLanguage"/>
                                                         </div>
                                                         <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                                            <a href="javascript:void(0)" ng-click="clearCode('job-status-report','targetLanguage')" ng-if="jobReport.targetLanguage"><i class="glyph-icon fa-times" aria-hidden="true"></i></a>
+                                                            <a href="javascript:void(0)" ng-click="clearCode('job-status-report','targetLanguage')" ng-if="jobReport.targetLanguage"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
                                                         </div>
                                                     </div> -->
                                             <!-- <div class="col-sm-6 form-group">
@@ -214,10 +232,11 @@
                                                     </div> -->
                                         </div>
                                     </div>
+                                    </div>
                                 </div>
                             </div>
                             <!--   TAB1 -->
-                            <div class="panel-footer">
+                            <div class="panel-footer pl-0 pr-0">
                                 <a class="btn btn-info btn-leftside"
                                     ng-click="jobstatusReportsearch('job-status-report','middle')">Update search</a>
                                 <button class="btn btn-info btn-leftside"
@@ -228,11 +247,11 @@
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <div class="col-sm-12" id="middle">
+                        <div class="" id="middle">
                             <div class="panel panel-default">
                                 <div class="panel-heading font-bold">Result</div>
-                                <div class="panel-body">
-                                    <div class="col-sm-12">
+                                <div class="">
+                                    <div class="">
                                         <div class="row wrapper" ng-show="statusRes.length">
                                             <div class="col-sm-6 m-b-xs">
                                                 <div class="col-sm-4">

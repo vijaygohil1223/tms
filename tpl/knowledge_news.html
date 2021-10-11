@@ -15,38 +15,37 @@
           <div class="panel panel-default">
             <div class="panel-body">
               <form id="knowledge-news-form">
-              <div class="col-sm-12">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>News Title</label>
-                                                <input type="text" class="form-control" placeholder="Enter News Title" name="news_title" ng-model="news.k_news_title" required>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label>Short Description</label>
-                                                <textarea style="resize: none;" class="form-control" placeholder="Enter short description" name="news_sort_des" ng-model="news.news_sort_des" required></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label>Description</label>
-                                                <!-- <div id='edit' style="margin-top: 30px;">
+                <div class="row">
+                          <div class="col-sm-6">
+                              <div class="form-group">
+                                  <label>News Title</label>
+                                  <input type="text" class="form-control" placeholder="Enter News Title" name="news_title" ng-model="news.k_news_title" required>
+                              </div>
+                          </div>
+                          <div class="col-sm-6">
+                              <div class="form-group">
+                                  <label>Short Description</label>
+                                  <textarea style="resize: none;" class="form-control" placeholder="Enter short description" name="news_sort_des" ng-model="news.news_sort_des" required></textarea>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-sm-12">
+                              <div class="form-group">
+                                  <label>Description</label>
+                                  <!-- <div id='edit' style="margin-top: 30px;">
 
-                                                </div> -->
-                                                <textarea class="editDATA" name="content"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-              
-                  <div class="panel-footer">
-                      <button  class="btn m-b-xs w-xs btn-info" style="margin-left:15px;" ng-click="save('knowledge-news-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
-                       
-                  </div>
-            </form>
+                                  </div> -->
+                                  <textarea class="editDATA" name="content"></textarea>
+                              </div>
+                          </div>
+                      </div>
+                
+                    <div class="panel-footer pl-0 pr-0">
+                        <button  class="btn m-b-xs w-xs btn-info" ng-click="save('knowledge-news-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
+                        
+                    </div>
+              </form>
             </div>
           </div>
           <div class="panel panel-default">
@@ -63,8 +62,8 @@
                                                 <td ng-bind="knowledgeNews.k_news_title | capitalize"></td>
                                                 <td ng-bind="knowledgeNews.created_user"></td> 
                                                 <td>
-                                                    <a href="javascript:void(0)" ng-click="getNews(knowledgeNews.k_news_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a> / 
-                                                    <a href="javascript:void(0)" ng-click="deleteModel(knowledgeNews.k_news_id)" title="delete"><i class="glyph-icon fa-times"></i></a>
+                                                    <a href="javascript:void(0)" ng-click="getNews(knowledgeNews.k_news_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a> 
+                                                    <a href="javascript:void(0)" ng-click="deleteModel(knowledgeNews.k_news_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
                                                 </td>
                                             </tr>
                                         </tbody>

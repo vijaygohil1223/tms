@@ -2929,7 +2929,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 });
 
                 console.log('$scope.itemPriceUni=csv',$scope.itemPriceUni);
-                console.log('job_summmeryId',$scope.jobdetail.job_summmeryId);
+                console.log('job=detail',$scope.jobdetail);
             };
 
             $cookieStore.put('editJobact', data[0]);
@@ -9170,7 +9170,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
     $scope.uType = $window.localStorage.userType;
     $scope.currentUserName = $window.localStorage.currentUserName;
-    console.log("$scope.currentUserName", $scope.currentUserName);
+    // console.log("$scope.currentUserName", $scope.UserId);
     $scope.user_Id = $window.localStorage.getItem("contactUserId");
 
     $scope.baseQuentity = [];
@@ -9431,7 +9431,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.customerPrice.price_basis = $scope.price_basis;
                 $scope.customerPrice.price_id = $scope.price_id;
                 $routeParams.id = $scope.customerPrice.price_list_id;
-                $scope.customerPrice.resource_id = $scope.ExternalPricelistId;
+                if($scope.pricePageId == 1){
+                    $scope.customerPrice.resource_id = $scope.UserId;
+                }else{
+                    $scope.customerPrice.resource_id = $scope.ExternalPricelistId;
+                }
                 rest.path = "customerpriceUpdate";
                 rest.put($scope.customerPrice).success(function(data) {
                     notification('Price list successfully updated', 'success');
@@ -9521,7 +9525,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.customerPrice.price_language = $scope.price_language;
                 $scope.customerPrice.price_basis = $scope.price_basis;
                 $scope.customerPrice.price_id = $scope.price_id;
-                $scope.customerPrice.resource_id = $scope.ExternalPricelistId;
+                if($scope.pricePageId == 1){
+                    $scope.customerPrice.resource_id = $scope.UserId;
+                }else{
+                    $scope.customerPrice.resource_id = $scope.ExternalPricelistId;
+                }
                 rest.path = "customerpriceSave";
                 rest.post($scope.customerPrice).success(function(data) {
                     notification('Price list successfully saved', 'success');

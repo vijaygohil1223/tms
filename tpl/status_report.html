@@ -22,8 +22,9 @@
                         <div class="col-sm-12">
                            <div class="panel panel-default">
                               <div class="panel-heading font-bold">Select</div>
-                              <div class="panel-body">
+                              <div class="">
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>Company code (rights)</label>
                                        <input type="text" select2-center-client data-typeid="2" id="companyCode1"
@@ -32,11 +33,13 @@
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','companyCode')"
-                                          ng-if="orderReport.companyCode"><i class="glyph-icon fa-times"
+                                          ng-if="orderReport.companyCode"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
+                                    </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>
                                           <!-- Customers -->Client
@@ -48,11 +51,13 @@
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','customer')"
-                                          ng-if="orderReport.customer"><i class="glyph-icon fa-times"
+                                          ng-if="orderReport.customer"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
+                                    </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>Contact Person(Client)</label>
                                        <input type="text" ng-select2-usertype data-typeid="2" id="conatct-person"
@@ -62,11 +67,13 @@
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','contactPerson')"
-                                          ng-if="orderReport.contactPerson"><i class="glyph-icon fa-times"
+                                          ng-if="orderReport.contactPerson"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
+                                    </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>Scoop Status</label>
                                        <input type="text" select2-job-detailitm-status data-typeid="2" id="itemStatus"
@@ -75,11 +82,13 @@
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','itemStatus')"
-                                          ng-if="orderReport.itemStatus"><i class="glyph-icon fa-times"
+                                          ng-if="orderReport.itemStatus"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
+                                    </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>Project Status</label>
                                        <input type="text" select2-proj-jobs data-typeid="2" id="projectStatus"
@@ -89,11 +98,13 @@
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','projectStatus')"
-                                          ng-if="orderReport.projectStatus"><i class="glyph-icon fa-times"
+                                          ng-if="orderReport.projectStatus"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
+                                    </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>Project Types</label>
                                        <input type="text" select2-proj-type data-typeid="2" id="projectType"
@@ -102,11 +113,13 @@
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','projectType')"
-                                          ng-if="orderReport.projectType"><i class="glyph-icon fa-times"
+                                          ng-if="orderReport.projectType"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
                                     </div>
                                  </div>
+                                 </div>
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>Source Language</label>
                                        <input type="text" select2-order-languages-data data-typeid="2"
@@ -116,11 +129,13 @@
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','sourceLanguage')"
-                                          ng-if="orderReport.sourceLanguage"><i class="glyph-icon fa-times"
+                                          ng-if="orderReport.sourceLanguage"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
+                                    </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>Target Language</label>
                                        <input type="text" select2-order-languages-data data-typeid="2"
@@ -130,7 +145,7 @@
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','targetLanguage')"
-                                          ng-if="orderReport.targetLanguage"><i class="glyph-icon fa-times"
+                                          ng-if="orderReport.targetLanguage"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
                                     </div>
                                  </div>

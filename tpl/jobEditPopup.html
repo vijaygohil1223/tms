@@ -295,7 +295,7 @@
                                                             <tr id="work1_{{$index}}" class="put_row putinstruct" ng-repeat="war in wrInstruct" style="background-color:#FFF;">
                                                                 <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
                                                                 <td style="width:80%;"><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
-                                                                <td style="width:20%;"><a href="javascript:void(0)" ng-click="removeWorkIns($index)" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>
+                                                                <td style="width:20%;"><a href="javascript:void(0)" ng-click="removeWorkIns($index)" title="delete" class="deletebtn"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                                             </tr>
                                                             <tr class="workIn" style="display:none;">
                                                                 <td >
@@ -366,7 +366,7 @@
                                                 <div class="panel-body">
                                                     <div class="col-sm-12 m-b">
                                                         <div class="filecsv-upload">
-                                                            <div class="m-b">Import CSV</div>
+                                                            <div>Import CSV</div>
                                                             <label for="file-input" class="fa fa-upload newUpload" style="cursor: pointer;"></label>
                                                             <input type="file" ng-file-select="onFileSelect($files)" isabled="isClean() || formUpload.$invalid" accept=".xlsx, .xls, .csv" id="file-input" style="visibility:hidden;">
                                                         </div>
@@ -374,12 +374,12 @@
                                                     <div class="col-sm-12">    
                                                         <table class="table m-b-none default footable-loaded footable" style="width: 50%;">
                                                             <th>#</th>
-                                                            <th>Quantity</th>
                                                             <th>Price Unit</th>
+                                                            <th>Source Words</th>
                                                             <tr ng-repeat="cs in csvData">
                                                                 <td>{{cs.id}}</td>
-                                                                <td>{{cs.quantity}}</td>
-                                                                <td>{{cs.pricelist}}</td>
+                                                                <td>{{cs.name}}</td>
+                                                                <td>{{cs.words}}</td>
                                                             </tr>
                                                         </table>
                                                     </div> 
@@ -434,7 +434,7 @@
                                                                          <input type="text" select2-item-tax class="form-control" id="itemTaxP{{index+1}}" name="itemTaxP" ng-model="it.itemTaxP"/>
                                                                       </div> -->
                                                                         <div class="col-sm-1 m-t-sm p-0">
-                                                                            <a href="javascript:void(0);" ng-click="itemQuentityDelete(jobdetail.job_summmeryId,$index,$parent.$index)"><i class="fa fa-times" aria-hidden="true" style="color:red !important"></i></a>
+                                                                            <a href="javascript:void(0);" ng-click="itemQuentityDelete(jobdetail.job_summmeryId,$index,$parent.$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true" style="color:red !important"></i></a>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-sm-12 put_row">

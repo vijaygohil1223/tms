@@ -15,7 +15,7 @@
           <div class="panel panel-default">
             <div class="panel-body">
               <form id="knowledge-caledar-event-form">
-              <div class="col-sm-12">
+              <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Event Title</label>
@@ -36,7 +36,7 @@
                                         </div>
                                     </div>  
               
-                  <div class="panel-footer">
+                  <div class="panel-footer pl-0 pr-0">
                                     <button class="btn m-b-xs w-xs btn-info btnSave" ng-click="save('knowledge-caledar-event-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
                                 </div>
             </form>
@@ -57,7 +57,7 @@
                                                 <td ng-bind="event.event_title"></td>
                                                 <td ng-bind="event.event_startdate"></td>
                                                 <td ng-bind="event.event_enddate"></td>
-                                                <td><a href="javascript:void(0)" ng-click="getEvent(event.event_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  / <a href="javascript:void(0)" ng-click="deleteModel(event.event_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                                <td><a href="javascript:void(0)" ng-click="getEvent(event.event_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  <a href="javascript:void(0)" ng-click="deleteModel(event.event_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                             </tr>
                                         </tbody>
             </table>

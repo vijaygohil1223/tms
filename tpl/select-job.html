@@ -9,19 +9,15 @@
     <div ui-butterbar></div>
     <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
     <div class="md-content page_content_wrapper" id="top">
-
-      <!-- <div class="bg-light lter b-b wrapper-md ng-scope">
-          <h1 class="m-n font-thin h3">Resource Type</h1>
-        </div> -->
+      <div class="content_head bg-light lter b-b wrapper-md ng-scope">
+        <h1 class="m-n font-thin h3">Job Chain</h1>
+      </div>
       <div class="wrapper-md ng-scope">
         <div class="panel panel-default">
           <div class="panel-body">
             <form id="Child-price-form">
-              <div class="panel-heading font-bold">
-                <h4>Job Chain</h4>
-              </div>
               <div class="panel-body">
-                <div class="col-sm-12">
+                <div class="row">
                   <div class="col-sm-4">
                     <div class="form-group">
                       <h4>New :</h4>
@@ -89,9 +85,8 @@
                 <td>
                   <a href="javascript:void(0);" ng-click="chainEditId(jobL.job_chain_id);"><i
                       class="glyph-icon fa-edit"></i></a>
-                  /
                   <a href="javascript:void(0);" ng-click="chainDeleteId(jobL.job_chain_id)"><i
-                      class="glyph-icon fa-times"></i></a>
+                      class="iconDelete glyph-icon fa-times"></i></a>
                 </td>
               </tr>
             </tbody>

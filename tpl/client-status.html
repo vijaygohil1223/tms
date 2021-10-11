@@ -15,7 +15,7 @@
           <div class="panel panel-default">
             <div class="panel-body">
               <form id="user-type-form">
-              <div class="col-sm-12">
+              <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Name of Client Status</label>
@@ -40,8 +40,8 @@
                                         </div>
                                     </div>
               
-                  <div class="panel-footer">
-                      <button class="btn btn-info " ng-click="save('user-type-form');" style="margin-left:15px;"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
+                  <div class="panel-footer pl-0 pr-0">
+                      <button class="btn btn-info " ng-click="save('user-type-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
                   </div>
             </form>
             </div>
@@ -60,7 +60,7 @@
                                                 <td ng-bind="t.status_name"></td>
                                                 <td ng-if="t.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
                                                 <td ng-if="t.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td> 
-                                                <td><a href="javascript:void(0)" ng-click="getType(t.status_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  / <a href="javascript:void(0)" ng-click="deleteModel(t.status_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                                <td><a href="javascript:void(0)" ng-click="getType(t.status_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>   <a href="javascript:void(0)" ng-click="deleteModel(t.status_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                             </tr>
                                             <tr ng-show="clientstatusEmpty">
                                                 <td colspan="4" ng-bind="dataNotFound"></td>

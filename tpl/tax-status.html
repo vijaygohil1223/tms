@@ -17,7 +17,7 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <form id="tax-status-form">
-              <div class="col-sm-12">
+              <div class="row">
                 <div class="col-sm-4">
                   <div class="form-group">
                     <label>Tax Name</label>
@@ -44,8 +44,8 @@
                 </div>
               </div>
 
-              <div class="panel-footer">
-                <button class="btn m-b-xs w-xs btn-info" style="margin-left:15px;"
+              <div class="panel-footer pl-0 pr-0">
+                <button class="btn m-b-xs w-xs btn-info"
                   ng-click="save('tax-status-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
 
               </div>
@@ -69,8 +69,8 @@
                 <td ng-if="tax.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
                 <td ng-if="tax.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td>
                 <td><a href="javascript:void(0)" ng-click="getTax(tax.tax_id, 'top');" title="edit"><i
-                      class="glyph-icon fa-edit"></i></a> / <a href="javascript:void(0)"
-                    ng-click="deleteModel(tax.tax_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                      class="glyph-icon fa-edit"></i></a>  <a href="javascript:void(0)"
+                    ng-click="deleteModel(tax.tax_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
               </tr>
             </tbody>
           </table>

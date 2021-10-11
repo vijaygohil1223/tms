@@ -7,17 +7,19 @@
       <div ui-butterbar></div>
       <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside" ></a>
       <div class="md-content page_content_wrapper" id="top">
-      <div class="content_head bg-light lter b-b wrapper-md ng-scope">
+      <div class="content_head bg-light lter b-b wrapper-md ng-scope d-flex justify-space-between">
           <h1 class="m-n font-thin h3">Master Price Unit</h1>
-        </div>
-        <div class="wrapper-md ng-scope">
+          <div>            
         <a href="#/master-price" class="btn btn-info active">Master Price</a>
         <a href="#/child-price" class="btn btn-info">Child Price</a>
         <a href="#/rounding-price" class="btn btn-info">Rounding Price</a>
+          </div>
+        </div>
+        <div class="wrapper-md ng-scope">
           <div class="panel panel-default">
             <div class="panel-body">
               <form id="master-price-form">
-                  <div class="col-sm-12">
+                  <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Name</label>
@@ -35,7 +37,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="panel-footer">
+                                    <div class="panel-footer pl-0 pr-0">
                                     <button class="btn btn-info btnSave" ng-click="save('master-price-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
                                 </div>
               </form>
@@ -59,7 +61,7 @@
                                                 <td ng-if="mp.is_active == '0'">
                                                   <span class="label bg-danger" title="   Inactive">Inactive</span>
                                                 </td> 
-                                                <td><a href="javascript:void(0)" ng-click="getMasterPrice(mp.master_price_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  / <a href="javascript:void(0)" ng-click="deleteMasterprice(mp.master_price_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                                <td><a href="javascript:void(0)" ng-click="getMasterPrice(mp.master_price_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  <a href="javascript:void(0)" ng-click="deleteMasterprice(mp.master_price_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                             </tr>
                                              
                                         </tbody>
