@@ -2895,12 +2895,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             console.log('$priceList',$scope.priceList);
             console.log('$newPriceList',newPriceList);
             $scope.lngPriceList = [];
-            setTimeout(() => {
+            //setTimeout(() => {
                 angular.forEach(newPriceList, function(val, i) {
                     var langList = JSON.parse(val.price_language);                    
                     const price = JSON.parse(val.price_basis);                    
                     console.log('lang',langList[0].languagePrice);
                     angular.forEach(langList, function(val2, i2) {
+                        console.log('$scope.jobdetail.ItemLanguage',$scope.jobdetail.ItemLanguage);
                         if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
                             console.log('price',price);
                             angular.forEach(price, function(val3, i3) {
@@ -2909,10 +2910,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         }
                     });    
                 }); 
-            }, 700);
-            console.log('$scope.lngPriceList=all',$scope.lngPriceList);
-            console.log('$scope.resource=id',$scope.jobdetail.resource);
-            var lngPriceList = $scope.lngPriceList;
+                console.log('$scope.lngPriceList=all',$scope.lngPriceList);
+                console.log('$scope.resource=id',$scope.jobdetail.resource);
+                var lngPriceList = $scope.lngPriceList;
+            //}, 700);
+            
             $scope.csvData = [];
             var csvID =$scope.jobdetail.job_summmeryId;
             $scope.getFile = function(files) {
