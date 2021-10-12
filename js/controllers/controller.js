@@ -2895,21 +2895,22 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             console.log('$priceList',$scope.priceList);
             console.log('$newPriceList',newPriceList);
             $scope.lngPriceList = [];
-            angular.forEach(newPriceList, function(val, i) {
-                var langList = JSON.parse(val.price_language);                    
-                const price = JSON.parse(val.price_basis);                    
-                console.log('lang',langList[0].languagePrice);
-                angular.forEach(langList, function(val2, i2) {
-                    if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
-                        console.log('price',price);
-                        angular.forEach(price, function(val3, i3) {
-                            $scope.lngPriceList.push(val3);
-                        });            
-                    }
-                });    
-                
-            });
-            console.log('$scope.lngPriceList',$scope.lngPriceList);
+            setTimeout(() => {
+                angular.forEach(newPriceList, function(val, i) {
+                    var langList = JSON.parse(val.price_language);                    
+                    const price = JSON.parse(val.price_basis);                    
+                    console.log('lang',langList[0].languagePrice);
+                    angular.forEach(langList, function(val2, i2) {
+                        if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
+                            console.log('price',price);
+                            angular.forEach(price, function(val3, i3) {
+                                $scope.lngPriceList.push(val3);
+                            });            
+                        }
+                    });    
+                }); 
+            }, 700);
+            console.log('$scope.lngPriceList=all',$scope.lngPriceList);
             console.log('$scope.resource=id',$scope.jobdetail.resource);
             var lngPriceList = $scope.lngPriceList;
             $scope.csvData = [];
@@ -2928,7 +2929,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         angular.forEach(csv, function(val, i) {
                             var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
                             console.log('lngPriceListFilt',lngPriceListFilt);
-                            console.log('cav-val',val[1]);
+                            console.log('csv-val',val[1]);
                             var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
                             
                             if(val)
