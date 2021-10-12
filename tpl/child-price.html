@@ -102,7 +102,7 @@
                                             <td ng-bind="childu.unit"></td>
                                             <td ng-if="childu.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
                                             <td ng-if="childu.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td>
-                                            <td><a href="javascript:void(0)" ng-click="ChildunitEdit(childu.child_price_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  / <a href="javascript:void(0)" ng-click="deleteChildprice(childu.child_price_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                            <td><a href="javascript:void(0)" ng-click="ChildunitEdit(childu.child_price_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>   <a href="javascript:void(0)" ng-click="deleteChildprice(childu.child_price_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                         </tr>
                                         
                                     </tbody>

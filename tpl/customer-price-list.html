@@ -35,7 +35,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-1" ng-show="customerPriceId">
-                                        <a><i class="fa fa-times" ng-click="removecustomerPriceId()"></i></a>
+                                        <a><i class="iconDelete glyph-icon fa-times" ng-click="removecustomerPriceId()"></i></a>
                                     </div>
                                     <div class="col-sm-5">
                                         <div class="form-group">
@@ -179,7 +179,7 @@
 
                                         </td>
                                         <td>
-                                            <a><i class="fa fa-times" ng-click="removePriceLanguage($index)"></i></a>
+                                            <a><i class="iconDelete glyph-icon fa-times" ng-click="removePriceLanguage($index)"></i></a>
                                         </td>
                                         <td>
                                             <a><i class="fa fa-caret-right" aria-hidden="true"
@@ -225,7 +225,7 @@
                                                 </div>
                                                 <div class="col-sm-1">
                                                     <a ng-click="basePriceCheck($index)"><i
-                                                            ng-class="(priceBase.basePricecheck == 1) ? 'fa fa-check' : 'fa fa-times'"
+                                                            ng-class="(priceBase.basePricecheck == 1) ? 'fa fa-check' : 'iconDelete glyph-icon fa-times'"
                                                             id="basePriceCheck{{$index}}" aria-hidden="true"></i></a>
                                                 </div>
                                                 <div class="col-sm-3" id="basePriceUnit{{$index}}">
@@ -246,7 +246,7 @@
                                                     {{basePrice[$index] * baseQuentity[$index]}}
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <a><i class="fa fa-times"
+                                                    <a><i class="iconDelete glyph-icon fa-times"
                                                             ng-click="removeBasePrice($index)"></i></a>
                                                 </div>
                                                 <div class="col-sm-2 none standardTime{{$index}}">

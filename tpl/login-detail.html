@@ -139,9 +139,9 @@
                                 <!-- <td><a target="_blank" class="summeryColor" ng-href="http://{{client.vWebsite}}/" ng-bind="client.vWebsite"></a></td>  -->
                                 <td ng-bind="client.vWebsite"></td>
                                 <td><a href="javascript:void(0)" ng-click="getclientEdit(client.iClientId);"
-                                        title="edit"><i class="glyph-icon fa-edit"></i></a> / <a
+                                        title="edit"><i class="glyph-icon fa-edit"></i></a> <a
                                         href="javascript:void(0)" ng-click="deletelogindetail(client.iClientId)"
-                                        title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                        title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                             </tr>
                             <tr ng-show="contactLoginEmpty">
                                 <td colspan="4" ng-bind="dataNotFound"></td>

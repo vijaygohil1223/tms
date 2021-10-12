@@ -54,7 +54,7 @@
                                                 <td ng-bind="customer.group_name"></td>
                                                 <td ng-if="customer.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
                                                 <td ng-if="customer.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td> 
-                                                <td><a href="javascript:void(0)" ng-click="customerGroupEdit(customer.group_id,'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  / <a href="javascript:void(0)" ng-click="deleteCustomerGroup(customer.group_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                                <td><a href="javascript:void(0)" ng-click="customerGroupEdit(customer.group_id,'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>   <a href="javascript:void(0)" ng-click="deleteCustomerGroup(customer.group_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                             </tr>
                                             <tr ng-show="customertypeEmpty">
                                                 <td colspan="4" ng-bind="dataNotFound"></td>

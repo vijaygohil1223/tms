@@ -70,9 +70,9 @@
                 <td ng-if="round.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
                 <td ng-if="round.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td>
                 <td><a href="javascript:void(0)" ng-click="roundingPriceEdit(round.rounding_id, 'top');" title="edit"><i
-                      class="glyph-icon fa-edit"></i></a> / <a href="javascript:void(0)"
+                      class="glyph-icon fa-edit"></i></a> <a href="javascript:void(0)"
                     ng-click="deleteRoundingprice(round.rounding_id)" title="delete"><i
-                      class="glyph-icon fa-times"></i></a></td>
+                      class="iconDelete glyph-icon fa-times"></i></a></td>
               </tr>
             </tbody>
           </table>

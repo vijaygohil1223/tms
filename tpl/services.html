@@ -126,7 +126,7 @@
                                                 <td ng-if="ser.is_active == '0'" class="ng-scope"><span class="label bg-danger" title="Inactive">Inactive</span></td> 
                                                 <td ng-if="ser.is_active == '1'" class="ng-scope"><span class="label bg-success" title="Inactive">Active</span></td> 
                                                 <td>
-                                                    <a href="javascript:void(0)" ng-click="getService(ser.sId, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  / <a href="javascript:void(0)" ng-click="deleteService(ser.sId)" title="delete"><i class="glyph-icon fa-times"></i></a>
+                                                    <a href="javascript:void(0)" ng-click="getService(ser.sId, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>   <a href="javascript:void(0)" ng-click="deleteService(ser.sId)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
                                                 </td>
                                             </tr>
                                             <tr ng-show="serviceEmpty">

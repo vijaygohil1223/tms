@@ -2840,6 +2840,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $window.localStorage.jobstatusName = " ";
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
 
+    if ($scope.DetailId){
+        $scope.priceList = [];
+        rest.path = 'customerpriceAll/' + 2;  //2 for external userID
+        rest.get().success(function(data) {
+            $scope.priceList = data;
+        });
+        
+    }
+
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
@@ -2870,7 +2879,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             
             console.log('$scope.itemPriceUni-', $scope.itemPriceUni);
             console.log('$scope.job_summmeryId-', $scope.jobdetail.job_summmeryId);
-            console.log('$scope.jobdetail',$scope.jobdetail);
             /*if (isNaN(Date.parse($scope.jobdetail.due_date))) {
                 $timeout(function() {
                     var date = new Date();
@@ -2882,6 +2890,28 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobdetail.due_date = currentdateT;
                 }, 300);
             }*/
+            var priceList = $scope.priceList;
+            var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == $scope.jobdetail.resource; });
+            console.log('$priceList',$scope.priceList);
+            console.log('$newPriceList',newPriceList);
+            $scope.lngPriceList = [];
+            angular.forEach(newPriceList, function(val, i) {
+                var langList = JSON.parse(val.price_language);                    
+                const price = JSON.parse(val.price_basis);                    
+                console.log('lang',langList[0].languagePrice);
+                angular.forEach(langList, function(val2, i2) {
+                    if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
+                        console.log('price',price);
+                        angular.forEach(price, function(val3, i3) {
+                            $scope.lngPriceList.push(val3);
+                        });            
+                    }
+                });    
+                
+            });
+            console.log('$scope.lngPriceList',$scope.lngPriceList);
+            console.log('$scope.resource=id',$scope.jobdetail.resource);
+            var lngPriceList = $scope.lngPriceList;
             $scope.csvData = [];
             var csvID =$scope.jobdetail.job_summmeryId;
             $scope.getFile = function(files) {
@@ -2896,33 +2926,42 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $scope.csvData = [];
                         var gtotal =  0;
                         angular.forEach(csv, function(val, i) {
+                            var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
+                            console.log('lngPriceListFilt',lngPriceListFilt);
+                            console.log('cav-val',val[1]);
+                            var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
+                            
                             if(val)
-                            var total = 2 * val[0];
+                            var total = itemVal * val[0];
+                            
                             var obj = {
                                 'id': numindex,
                                 'quantity': val[0],
                                 'pricelist': val[1],
-                                'itemPrice': 2,
-                                'itemTotal': total,
+                                'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
+                                'itemTotal': total ? numberFormatComma(total) : 0 ,
                             }; 
                             $scope.csvData.push(obj);
                             gtotal += total;
                             console.log('gtotal',gtotal);
                             numindex++;
                         }); 
-                        console.log('idstring',csvID);
                         console.log('gtotal===',gtotal);
                         var itmpr = angular.element('#totalItemPrice').text();
-                        if(itmpr)
-                            itmpr = numberFormatCommaToPoint(itmpr);
+                        var itmpr = itmpr ? numberFormatCommaToPoint(itmpr) : 0;
+                        console.log('itmpr',itmpr);
                         //var mgTotal = (parseFloat(itmpr)+parseFloat(gtotal);
                         //angular.element('#totalItemPrice').text(mgTotal);
                         //$scope.newtotal_price = gtotal;
                         console.log('before=',$scope.itemPriceUni[csvID]);
                         //$scope.itemPriceUni[csvID] = $scope.csvData;
-                        $scope.itemPriceUni[csvID].push.apply($scope.itemPriceUni[csvID], $scope.csvData)
+                        if($scope.itemPriceUni.length > 0){
+                            $scope.itemPriceUni[csvID].push.apply($scope.itemPriceUni[csvID], $scope.csvData)
+                        }else{
+                            $scope.itemPriceUni[csvID] = $scope.csvData;
+                            //$scope.itemPriceUni[csvID].push($scope.csvData)
+                        }
                         console.log('after=',$scope.itemPriceUni[csvID]);
-                        
                         $scope.jobdetail.total_price = parseFloat(itmpr)+parseFloat(gtotal);
                         //$scope.csvData = [];     
                     }

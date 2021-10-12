@@ -46,7 +46,7 @@
                         
                         <a href="javascript:void(0)" class="btn btn-info" ng-click="viewFileManagerInternal(userprofiledata.iUserId)" title="File Manager" style="margin-left:0px;margin-top: 50px;"><i class="fa fa-folder-open" style="margin-right:5px"></i>File Manager</a>
                         
-                        <button ng-hide="userprofiledata.iUserId == 1" class="btn btn-info" ng-click="deleteUser(userprofiledata.iUserId,userprofiledata.vProfilePic,userprofiledata.vUserName, userprofiledata.iFkUserTypeId)" title="Delete" style="margin-left:0px;margin-top: 50px;"><i class="glyph-icon fa-times"></i> Delete</button> 
+                        <button ng-hide="userprofiledata.iUserId == 1" class="btn btn-info" ng-click="deleteUser(userprofiledata.iUserId,userprofiledata.vProfilePic,userprofiledata.vUserName, userprofiledata.iFkUserTypeId)" title="Delete" style="margin-left:0px;margin-top: 50px;"><i class="iconDelete glyph-icon fa-times-white"></i> Delete</button> 
 
                          <button ng-show="loginUserId == 1 && userprofiledata.iUserId != 1" class="btn btn-info" ng-click="changeUserStatus(userprofiledata.eUserStatus)" title="Active/inActive Internal Resource." style="margin-left:0px;margin-top: 50px;">
                                     <span ng-if="userprofiledata.eUserStatus == 3">Set As InActive</span>

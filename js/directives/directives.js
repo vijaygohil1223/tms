@@ -1927,7 +1927,7 @@ app.directive('ngRow2', ['$compile', function($compile) { // inject $compile ser
                     var input = angular.element('<tr class="put_row2" id="' + len + '">' +
                         '<td><input ng-model="new_value[' + scope.counterr + ']" type="text" class="form-control" id="new_value_'+scope.counterr+'" name="new_value[]" placeholder="Value name"/> </td>' +
                         '<td><input ng-model="new_description[' + scope.counterr + ']" type="text" id="new_description_'+scope.counterr+'" class="form-control name="new_description[]" placeholder="Description" /></td>' +
-                        '<td><a href="javascript:void(0)" ng-click="deleteValue2(' + scope.counterr + ', ' + len + ')" title="delete"><i class="glyph-icon fa-times"></i></a></td>' +
+                        '<td><a href="javascript:void(0)" ng-click="deleteValue2(' + scope.counterr + ', ' + len + ')" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>' +
                         '</tr>');
                     var compile = $compile(input)(scope);
                     if (len > 0) {
@@ -2926,7 +2926,7 @@ app.directive('customerGroupClone', ['$compile', function($compile) { // inject 
                 }
 
                 if (scope.customName != undefined && match != true) {
-                    var input = angular.element('<div class="cus' + scope.jobcustomerCount + '"><a href="javascript:void(0)" ng-click="removeCustomer(' + scope.jobcustomerCount + ')"><i class="glyph-icon fa-times" aria-hidden="true"></i></a>' +
+                    var input = angular.element('<div class="cus' + scope.jobcustomerCount + '"><a href="javascript:void(0)" ng-click="removeCustomer(' + scope.jobcustomerCount + ')"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>' +
                         '&nbsp;&nbsp;<span class="none" id="Cuscode' + scope.jobcustomerCount + '">' + scope.customCode + '</span>' +
                         '<span class="none" id="Cusid' + scope.jobcustomerCount + '">' + scope.customId + '</span>' +
                         '<span id="Cusname' + scope.jobcustomerCount + '">' + scope.customName + '</span>' +
@@ -3007,7 +3007,7 @@ app.directive('workInstruction1', ['$compile', function($compile) { // inject $c
                     '<td><div class="checkbox"><label class="i-checks i-checks-sm">' +
                     '<input type="checkbox" id="display_' + scope.counter + '" name="display" ng-true-value="1" ng-false-value="0" ng-model="display' + scope.counter + '">' +
                     '<i></i></label></div></td>' +
-                    '<td><a href="javascript:void(0)" ng-click="deleteValue(' + scope.counter + ')" title="delete"><i class="glyph-icon fa-times"></i></a></td></tr>'
+                    '<td><a href="javascript:void(0)" ng-click="deleteValue(' + scope.counter + ')" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td></tr>'
                 );
 
                 var compile = $compile(input)(scope);
@@ -3053,7 +3053,7 @@ app.directive('jobWorkInstruction', ['$compile', function($compile) { // inject 
                             '<td class="none"><span id="work_id' + scope.counter + '">' + strD[0] + '<span></td>' +
                             '<td><span id="work_name' + scope.counter + '">' + strD[1] + '<span></td>' +
                             '<td><span class="checkList"></span></td>' +
-                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete"><i class="fa fa-times"></i></a></td>'
+                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>'
                         );
                         var compile = $compile(input)(scope);
                         var test = $('.workIn').before(input);
@@ -3556,7 +3556,7 @@ app.directive('languagePriceList', function($http, rest, $timeout, $compile, $lo
                     }
                     // var data = '<tr class="priceLPrice"><td>'+source[j]+' > '+target[i]+'</td></tr>';
                     // obj.push(data);<td><a><i class="fa fa-caret-right" aria-hidden="true" ng-click="sendPriceLanguage(' + count + ')"></i></a></td>
-                    var wrap = angular.element('<tr class="priceLPrice" style="cursor:pointer" id="priceLanguageID' + count + '" ng-click="sendPriceLanguage(' + count + ')"><td class="priceLanguage' + count + '">' + source[j] + ' > ' + target[i] + '</td><td><a><i class="glyph-icon fa-times" ng-click="removePriceLanguage(' + count + ')"></i></a></td>/tr>');
+                    var wrap = angular.element('<tr class="priceLPrice" style="cursor:pointer" id="priceLanguageID' + count + '" ng-click="sendPriceLanguage(' + count + ')"><td class="priceLanguage' + count + '">' + source[j] + ' > ' + target[i] + '</td><td><a><i class="iconDelete glyph-icon fa-times" ng-click="removePriceLanguage(' + count + ')"></i></a></td>/tr>');
                     var wrapc = $compile(wrap)(scope)
                     $('.itemList').before(wrapc);
                     j++;
@@ -3647,7 +3647,7 @@ app.directive('basePriceAdd', function($http, rest, $timeout, $compile, $log) {
                                             '<div class="col-sm-3" id="basePriceUnit' + count + '">' + val.name + '</div>' +
                                             '<div class="col-sm-2"><input type="text" class="form-control" id="basePrice' + count + '" only-digits name="basePrice" ng-model="basePrice[' + count + ']" required ng-change="basePriceChnage(' + count + ', basePrice[' + count + '])"></div>' +
                                             '<div class="col-sm-2" id="baseWaiting' + count + '"></div>' +
-                                            '<div class="col-sm-2"><a><i class="glyph-icon fa-times" ng-click="removeBasePrice(' + count + ')"></i></a></div>' +
+                                            '<div class="col-sm-2"><a><i class="iconDelete glyph-icon fa-times" ng-click="removeBasePrice(' + count + ')"></i></a></div>' +
                                             
                                             '</td></tr>';
                                             count++; 
@@ -4611,7 +4611,7 @@ app.directive('jobWorkInstruction2', ['$compile', function($compile) { // inject
                         .element('<tr id="work1_' + scope.counter + '" class="put_row">' +
                             '<td class="none"><span id="work_id' + scope.counter + '">' + strD1 + '<span></td>' +
                             '<td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name' + scope.counter + '">' + strD2 + '<span></td>' +
-                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete"><i class="fa fa-times"></i></a></td>'
+                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>'
                         );
                         var compile = $compile(input)(scope);
                         var test = $('.workIn').before(input);
@@ -4662,7 +4662,7 @@ app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject
                         .element('<tr id="work1_' + scope.counter + '" class="put_row putinstruct" style="background-color:#FFF;">' +
                             '<td class="none"><span id="work_id' + scope.counter + '">' + scope.counter + '<span></td>' +
                             '<td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name' + scope.counter + '">' + strD2 + '<span></td>' +
-                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete" class="deletebtn"><i class="fa fa-times"></i></a></td>'
+                            '<td><a href="javascript:void(0)" ng-click="removeWorkIns(' + scope.counter + ')" title="delete" class="deletebtn"><i class="iconDelete glyph-icon fa-times"></i></a></td>'
                         );
                         var compile = $compile(input)(scope);
                         if(len==1){
@@ -4906,7 +4906,6 @@ app.directive('select2CreateScoop', function($http, rest, $timeout) {
                         maximumSelectionSize:1
                     });
                     $('.scoopText input').attr("placeholder", "Create Scoop");
-                    $('.scoopText input').css("min-width", "150px");
                 }, 200);
 
             //}).error(function(data, error, status) {});

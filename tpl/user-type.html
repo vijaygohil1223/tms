@@ -82,7 +82,7 @@
                       <td ng-bind="t.vType"></td>
                       <td ng-bind="t.eTypeStatus"></td>
                       <td><span ng-if="t.iTypeId=='1' || t.iTypeId=='2' || t.iTypeId=='3' || t.iTypeId=='4'"><i class="fa fa-edit disableColor"></i> <span class="disableColor">/ </span><i class="fa fa-times disableColor"></i></span>
-                      <span ng-if="t.iTypeId!='1' && t.iTypeId!='2' && t.iTypeId!='3' && t.iTypeId!='4'"><a href="javascript:void(0)" ng-click="getType(t.iTypeId,'top')"><i class="glyph-icon fa-edit"></i></a> / <a href="javascript:void(0)" ng-click="deleteType(t.iTypeId)"><i class="glyph-icon fa-times"></i></a></span></td>
+                      <span ng-if="t.iTypeId!='1' && t.iTypeId!='2' && t.iTypeId!='3' && t.iTypeId!='4'"><a href="javascript:void(0)" ng-click="getType(t.iTypeId,'top')"><i class="glyph-icon fa-edit"></i></a>  <a href="javascript:void(0)" ng-click="deleteType(t.iTypeId)"><i class="iconDelete glyph-icon fa-times"></i></a></span></td>
                   </tr>
                   <tr ng-show="usertype.length==0">
                       <td colspan="4" ng-bind="dataNotFound"></td>

@@ -54,7 +54,7 @@
                                                 <td ng-bind="up.position_name"></td>
                                                 <td ng-if="up.status == '1'"><span class="label bg-success" title="active">Active</span></td>
                                                 <td ng-if="up.status == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td> 
-                                                <td><a href="javascript:void(0)" ng-click="getType(up.position_id,'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  / <a href="javascript:void(0)" ng-click="deleteModel(up.position_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+                                                <td><a href="javascript:void(0)" ng-click="getType(up.position_id,'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>   <a href="javascript:void(0)" ng-click="deleteModel(up.position_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                             </tr>
                                             <tr ng-show="!userPosition.length">
                                                 <td colspan="4" ng-bind="dataNotFound"></td>

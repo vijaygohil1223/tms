@@ -102,7 +102,7 @@
 																				<td  style='font-size:1em;'>{{events.title}}</td>
 							                                                    <td  style='font-size:1em;'>{{events.start | limitTo:10 | date:'dd/MM/yyyy'}}</td>
 							                                                    <td  style='font-size:1em;'>{{events.end | limitTo:10 | date:'dd/MM/yyyy'}}</td>
-							                                                    <td  ng-hide="btn_resource_add"><!--<a href="#/internal/{{user.iUserId}}" title="edit"><i class="glyph-icon fa-edit"></i></a> /--> <a href="javascript:void(0)" ng-click="deleteEvent(events.event_id)" title="delete"><i class="glyph-icon fa-times"></i></a></td>
+							                                                    <td  ng-hide="btn_resource_add"><!--<a href="#/internal/{{user.iUserId}}" title="edit"><i class="glyph-icon fa-edit"></i></a> /--> <a href="javascript:void(0)" ng-click="deleteEvent(events.event_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
 																			</tr>
 																		</table>
 					                                                </div>
