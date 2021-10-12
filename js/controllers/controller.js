@@ -2929,25 +2929,25 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             $scope.csvData = [];
                             var gtotal =  0;
                             angular.forEach(csv, function(val, i) {
-                                var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
-                                console.log('lngPriceListFilt',lngPriceListFilt);
-                                console.log('csv-val',val[1]);
-                                var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
-                                
-                                if(val)
-                                var total = itemVal * val[0];
-                                
-                                var obj = {
-                                    'id': numindex,
-                                    'quantity': val[0],
-                                    'pricelist': val[1],
-                                    'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
-                                    'itemTotal': total ? numberFormatComma(total) : 0 ,
-                                }; 
-                                $scope.csvData.push(obj);
-                                gtotal += total;
-                                console.log('gtotal',gtotal);
-                                numindex++;
+                                if(i != 0){
+                                    var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
+                                    var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
+                                    
+                                    if(val)
+                                    var total = itemVal * val[0];
+                                    
+                                    var obj = {
+                                        'id': numindex,
+                                        'quantity': val[0],
+                                        'pricelist': val[1],
+                                        'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
+                                        'itemTotal': total ? numberFormatComma(total) : 0 ,
+                                    }; 
+                                    $scope.csvData.push(obj);
+                                    gtotal += total;
+                                    console.log('gtotal',gtotal);
+                                    numindex++;
+                                }    
                             }); 
                             console.log('gtotal===',gtotal);
                             var itmpr = angular.element('#totalItemPrice').text();
@@ -9360,7 +9360,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = 'customerpriceGetOne/' + id;
         rest.get().success(function(data) {
             $scope.customerPrice = data;
-            angular.element('#price_currency').select2('val', 'USD');
+            console.log('pricechange',data);
+            angular.element('#price_currency').select2('val', data.price_currency);
             angular.element('#calculation_basis').select2('val', data.calculation_basis);
             angular.element('#rounding_proc').select2('val', data.rounding_proc);
             var check = false;

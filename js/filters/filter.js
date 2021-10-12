@@ -433,7 +433,7 @@ app.filter('CurrencyNumbersCommaformat', function($filter) {
 });
 app.filter('NumbersCommaformat', function($filter) {
     return function(input) {
-        if (input == undefined || input == 0 || input == '') {
+        if (input == undefined || input == '') {
             return '';
         } else {
             //console.log(input);
