@@ -3086,7 +3086,7 @@ app.directive('select2CurrencyConvert', function($http, rest, $timeout) {
                 element.select2({
                     allowClear: true,
                     data: users,
-                    multiple:true,
+                    // multiple:true,
                     maximumSelectionSize:1
                 });
             }, 200);
@@ -3762,7 +3762,19 @@ app.directive('select2PriceList', function($http, rest, $timeout) {
             var obj = [];
             rest.path = 'customerpriceAll/' + scope.pricePageId;
             rest.get().success(function(data) {
-                angular.forEach(data, function(val, i) {
+                var newdata = data;
+                if(scope.pricePageId == 1){
+                    console.log('pricelist = UserId',scope.UserId);
+                    newdata = data.filter( function (data) {
+                        return data.resource_id == scope.UserId;  
+                    });
+                }
+                if(scope.pricePageId == 2){
+                    newdata = data.filter( function (data) {
+                        return data.resource_id == scope.ExternalPricelistId;  
+                    });
+                }
+                angular.forEach(newdata, function(val, i) {
                     obj.push({
                         'id': val.price_list_id,
                         'text': val.price_name

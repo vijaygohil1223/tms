@@ -2924,7 +2924,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         preview: 0,
                         download: true,
                         complete: function(results, files,err) {
-                            var csv =results.data;
+                            var csv = results.data;
                             var numindex=0;
                             $scope.csvData = [];
                             var gtotal =  0;
@@ -2949,10 +2949,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     numindex++;
                                 }    
                             }); 
-                            console.log('gtotal===',gtotal);
                             var itmpr = angular.element('#totalItemPrice').text();
-                            var itmpr = itmpr ? numberFormatCommaToPoint(itmpr) : 0;
-                            console.log('itmpr',itmpr);
+                            itmpr = itmpr ? numberFormatCommaToPoint(itmpr) : 0;
                             //var mgTotal = (parseFloat(itmpr)+parseFloat(gtotal);
                             //angular.element('#totalItemPrice').text(mgTotal);
                             //$scope.newtotal_price = gtotal;

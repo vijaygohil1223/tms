@@ -472,6 +472,7 @@ app.filter('NumbersCommaformatzero', function($filter) {
                 a2='';
             }else{ var a2 = ','+a[1].slice(0, 2); }
             var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            n1 = n1 ? n1 : 0 ;
             return n1 + a2;
         }
     }
