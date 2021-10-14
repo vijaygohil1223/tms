@@ -506,8 +506,8 @@ function numberFormatCommaToPoint(input) {
         var a = new Array();
         a = numarray;
         var a1 = a[0];
-        var n2 = 0;
-        var n1 = 0;
+        var n2 = '';
+        var n1 = '';
         if (a[1] == undefined && a[1] !== '00') {
             a[1] = '';
         } else { var n2 = '.' + a[1].slice(0, 2); }
@@ -2867,7 +2867,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                 $scope.itemPriceUni[$scope.jobdetail.job_summmeryId] = JSON.parse($scope.jobdetail.price);
                 for (var j = 0; j < $scope.itemPriceUni[$scope.jobdetail.job_summmeryId].length; j++) {
-                    $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal = numberFormatComma($scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal);
+                    $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal ? numberFormatComma($scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal) : 0 ;
                 }
             }
             if ($scope.jobdetail.total_price.length == 0) {
@@ -2929,8 +2929,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             var numindex=0;
                             $scope.csvData = [];
                             var gtotal =  0;
+                            var Isnumpattern = /^[0-9,\.\? ]+$/;
+                            var isError = false;
                             angular.forEach(csv, function(val, i) {
-                                if(i != 0){
+                                if(i != 0 && Isnumpattern.test(val[0]) ){
                                     var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
                                     
@@ -2945,11 +2947,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                         'itemTotal': total ? numberFormatComma(total) : 0 ,
                                     }; 
                                     $scope.csvData.push(obj);
+                                    if(total)
                                     gtotal += total;
-                                    console.log('gtotal',gtotal);
                                     numindex++;
+                                }else{
+                                    if(i!=0)
+                                    isError = true;
                                 }    
-                            }); 
+                            });
+                            // notification csv first column will be quantity
+                            if(isError == true)
+                            notification('Please upload valid CSV', 'warning');
+                                 
                             var itmpr = angular.element('#totalItemPrice').text();
                             itmpr = itmpr ? numberFormatCommaToPoint(itmpr) : 0;
                             //var mgTotal = (parseFloat(itmpr)+parseFloat(gtotal);
@@ -3223,22 +3232,22 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.itemQuentityDelete = function(id, index, parentIndex) {
 
-            var totalPrice1 = $scope.jobdetail.total_price;
-            var totalPrice = totalPrice1.toFixed(2);
+        var totalPrice1 = $scope.jobdetail.total_price;
+        var totalPrice = totalPrice1.toFixed(2);
 
-            var price1 = $scope.itemPriceUni[id][index].itemTotal;
+        var price1 = $scope.itemPriceUni[id][index].itemTotal;
 
-            var price = numberFormatCommaToPoint(price1);
+        var price = numberFormatCommaToPoint(price1);
 
-            if (totalPrice == price) {
-                $scope.jobdetail.total_price = 0;
-            } else {
-                var total = totalPrice - price;
-                $scope.jobdetail.total_price = total;
-            }
-
-            $scope.itemPriceUni[id].splice(index, 1);
+        if (totalPrice == price) {
+            $scope.jobdetail.total_price = 0;
+        } else {
+            var total = totalPrice - price;
+            $scope.jobdetail.total_price = total;
         }
+
+        $scope.itemPriceUni[id].splice(index, 1);
+    }
         // end job price
 
     $scope.savejobDetail = function(formId) {
@@ -3279,9 +3288,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             var itemPriceUnit = [];
             itemPriceUnit = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId];
+            console.log('itemPriceUnit', itemPriceUnit)
+            
             if (itemPriceUnit) {
                 for (var j = 0; j < itemPriceUnit.length; j++) {
-                    itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? numberFormatCommaToPoint(itemPriceUnit[j].itemTotal) :0 ;
+                    itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? numberFormatCommaToPoint(itemPriceUnit[j].itemTotal) : 0 ;
                 }
             }
             $scope.jobdetail.price = JSON.stringify(itemPriceUnit);
@@ -3289,7 +3300,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             delete $scope.jobdetail['quantity'];
 
             // end - jobprices 
-            //console.log('$scope.jobdetail.price',$scope.jobdetail.price);
+            console.log('$scope.jobdetail.price',$scope.jobdetail.price);
 
             if ($scope.jobdetail.contact_person == '') {
                 notification('Please select project manager', 'warning');
