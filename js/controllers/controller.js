@@ -506,8 +506,8 @@ function numberFormatCommaToPoint(input) {
         var a = new Array();
         a = numarray;
         var a1 = a[0];
-        var n2 = '';
-        var n1 = '';
+        var n2 = 0;
+        var n1 = 0;
         if (a[1] == undefined && a[1] !== '00') {
             a[1] = '';
         } else { var n2 = '.' + a[1].slice(0, 2); }
@@ -2923,6 +2923,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         header: false,
                         preview: 0,
                         download: true,
+                        delimiter: "',','\t'",
                         complete: function(results, files,err) {
                             var csv = results.data;
                             var numindex=0;
@@ -3280,7 +3281,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             itemPriceUnit = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId];
             if (itemPriceUnit) {
                 for (var j = 0; j < itemPriceUnit.length; j++) {
-                    itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                    itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? numberFormatCommaToPoint(itemPriceUnit[j].itemTotal) :0 ;
                 }
             }
             $scope.jobdetail.price = JSON.stringify(itemPriceUnit);
@@ -3288,6 +3289,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             delete $scope.jobdetail['quantity'];
 
             // end - jobprices 
+            //console.log('$scope.jobdetail.price',$scope.jobdetail.price);
 
             if ($scope.jobdetail.contact_person == '') {
                 notification('Please select project manager', 'warning');
