@@ -3064,6 +3064,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
             $scope.jobdetail = data[0];
+            console.log('$scope.jobdetail=single', data)
             //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
             var due_timeval = $scope.jobdetail.due_date.split(" ")[1];
             var due_timeval = due_timeval.substring(0, 5);
