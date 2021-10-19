@@ -2855,7 +2855,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             console.log("data-2", data);
 
             $scope.jobdetail = data[0];
-
+            $scope.jobdetail.ItemLanguage = '';
             var srcLang = 'English (US)';
             var trgLang = 'English (US)';
             rest.path = 'jobItemQuantityget/' + data[0].order_id + '/'+ data[0].item_id;
@@ -3079,6 +3079,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $timeout(function() {
                 $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('-').reverse().join('.') + ' ' + time;
             }, 100);*/
+            $scope.jobdetail.ItemLanguage = '';
             rest.path = 'jobItemQuantityget/' + data[0].order_id + '/'+ data[0].item_id;
             rest.get().success(function(data) {
                 
@@ -3090,7 +3091,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 var srcLang = srcLang ? srcLang : 'English (US)';
                 var trgLang = trgLang ? trgLang : 'English (US)';
 
-                console.log('srcLang',srcLang); 
+                console.log('srcLang- here is language list',srcLang); 
                 console.log('trgLang',trgLang);
                 
                 $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang; 
@@ -3111,7 +3112,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.wrInstruct = JSON.parse($scope.jobdetail.work_instruction);
             }
 
-            $scope.jobdetail.ItemLanguage = data[0].ItemLanguage;
+            //$scope.jobdetail.ItemLanguage = data[0].ItemLanguage;
             $scope.jobdetail.created_date = data[0].created_date;
             angular.element('#itemStatus').select2('val', data[0].item_status);
             angular.element('#contactPerson').select2('val', data[0].contact_person);
