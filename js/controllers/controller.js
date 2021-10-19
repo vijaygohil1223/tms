@@ -2993,7 +2993,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     console.log('$scope.itemPriceUni=csv',$scope.itemPriceUni);
                     console.log('job=detail',$scope.jobdetail);
                 };
-            }, 500);
+            }, 1000);
             
                 
             $cookieStore.put('editJobact', data[0]);
@@ -22153,14 +22153,19 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.changeFormat = () => {
         var dateData = $('#dateFormat').select2('data');
-
+        console.log('dateData', dateData)
+        
         $scope.dateFormatD = moment($scope.toDayDate).format(dateData.text);
+        console.log('$scope.toDayDate', $scope.toDayDate)
 
         var dateSeparator = $('#dateSeparator').select2('data');
+        console.log('dateSeparator', dateSeparator)
         if (dateSeparator) {
             if ($scope.prevSeparator == '/') {
                 $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
                 $scope.dateFormatD = $scope.dateFormatD.replace($scope.replaceTxt, dateSeparator.text);
+                console.log('$scope.dateFormatD==', $scope.dateFormatD)
+
             } else if ($scope.prevSeparator == '.') {
                 $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
                 $scope.dateFormatD = $scope.dateFormatD.replace(/\./g, dateSeparator.text);
@@ -22168,6 +22173,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
                 $scope.dateFormatD = $scope.dateFormatD.replace($scope.replaceTxt, dateSeparator.text);
             }
+            
         }
     }
 
