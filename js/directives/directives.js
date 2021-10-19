@@ -4924,3 +4924,72 @@ app.directive('select2CreateScoop', function($http, rest, $timeout) {
         }
     }
 });
+// --------- select2 Work Flow ---------------------//
+app.directive('select2Workflow2', function($http, rest, $timeout,$window) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element) {
+            rest.path = 'Jobsummeryget' ;
+            rest.get().success(function(data) {
+                var prType = [];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        id: 'j'+value.job_id,
+                        text: value.service_name + ' (' + value.job_code + ')' 
+                    };
+                    prType.push(obj);
+                });
+                console.log('prType',prType);
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: prType,
+                        multiple:true,
+                        maximumSelectionSize:1
+                    });
+                }, 200);
+
+            }).error(function(data, error, status) {});
+        }
+    }
+});
+//External and internal user group select2
+app.directive('select2Workflow', function($http, rest, $timeout, $log) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element) {
+            rest.path = "Jobsummeryget";
+            rest.get().success(function(data) {
+                console.log("data-directory",data)
+                var obj = [];
+                var group = ["Job"];
+                children = [];
+
+                for (var j = 0; j < group.length; j++) {
+                    obj.push({
+                        'text': group[j],
+                        'children': [],
+                    });
+                            
+                    angular.forEach(data, function(val, i) {
+                        if ((val.job_id - 1) == j) {
+                            obj[(val.job_id - 1)]['children'].push({
+                                id: 'j'+val.job_id,
+                                text: val.service_name + ' (' + val.job_code + ')' 
+                            })
+                        }
+                    });
+                }
+
+                element.select2({
+                    allowClear: true,
+                    data: obj,
+                    multiple:true,
+                    maximumSelectionSize:1
+                });
+            });
+        }
+    }
+});

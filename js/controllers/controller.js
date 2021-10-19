@@ -2855,10 +2855,22 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             console.log("data-2", data);
 
             $scope.jobdetail = data[0];
-            var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
-            var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
-            $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
 
+            var srcLang = 'English (US)';
+            var trgLang = 'English (US)';
+            rest.path = 'jobItemQuantityget/' + data[0].order_id + '/'+ data[0].item_id;
+            rest.get().success(function(data) {
+                var sourceData = JSON.parse(data.source_lang);
+                var targetData = JSON.parse(data.target_lang);
+                srcLang =  sourceData.sourceLang;   
+                trgLang =  targetData.sourceLang;  
+                console.log('srcLang',srcLang); 
+            });
+    
+            //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
+            //var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
+            $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+            console.log('$scope.jobdetail.ItemLanguage',$scope.jobdetail.ItemLanguage);
             $scope.dueDate = $scope.jobdetail.due_date;
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
 
@@ -3067,10 +3079,25 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $timeout(function() {
                 $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('-').reverse().join('.') + ' ' + time;
             }, 100);*/
+            rest.path = 'jobItemQuantityget/' + data[0].order_id + '/'+ data[0].item_id;
+            rest.get().success(function(data) {
+                
+                var sourceData = JSON.parse(data.source_lang);
+                var targetData = JSON.parse(data.target_lang);
+                var srcLang =  sourceData.sourceLang;   
+                var trgLang =  targetData.sourceLang;  
+                
+                var srcLang = srcLang ? srcLang : 'English (US)';
+                var trgLang = trgLang ? trgLang : 'English (US)';
 
-            var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
-            var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
-            $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+                console.log('srcLang',srcLang); 
+                console.log('trgLang',trgLang);
+                
+                $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang; 
+            });
+            //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
+            //var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
+            //$scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang; 
             /*if (isNaN(Date.parse($scope.jobdetail.due_date))) {
                 $timeout(function() {
                     var date = new Date();
@@ -13794,6 +13821,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 angular.element('#coordinator').select2('val', cor);
             }, 1000);
         }).error(errorCallback);
+        
+       
+
     }
 
     $scope.ItemNext = function(formId, id) {
@@ -13877,7 +13907,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                     if ($scope.itemList[formIndex].attached_workflow) {
                         if ($('#jobchainName' + formId).val() !== 'select') {
-                            notification('workflow already attached', 'warning');
+                            //notification('workflow already attached', 'warning');
                         }
                     } else {
                         if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
@@ -14179,6 +14209,25 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 rest.get().success(function(data) {
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
+                    
+                    //console.log('$scope.joboption',$scope.joboption);
+                    var jobChainoption = $scope.jobchainoption;
+
+                    var chaintext = val.attached_workflow.split('jobChain -');
+                    //console.log('jobtext', jobtext[1])
+                    var chainworkflow = jobChainoption.filter(x => x.job_name  == chaintext[1] ).map(x => x.job_chain_id);
+                    //console.log('workflow', workflow);
+                    if(chainworkflow.length >0)
+                    $('#jobchainName' + val.itemId).val('c'+chainworkflow);
+
+                    var joboption = $scope.joboption;
+                    var jobtext = val.attached_workflow.split('SingleJob -');
+                    //console.log('jobtext', jobtext[1])
+                    var jobworkflow = joboption.filter(x => x.service_name + ' (' + x.job_code + ')' == jobtext[1] ).map(x => x.job_id);
+                    //console.log('workflow', workflow);
+                    if(jobworkflow.length >0)
+                    $('#jobchainName' + val.itemId).val('j'+jobworkflow);
+
                     $scope.itemList[i].manager = data.project_manager;
                     $scope.itemList[i].coordinator = data.project_coordinator;
                     if (val.price) {

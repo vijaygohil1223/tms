@@ -299,8 +299,7 @@ class jobs_detail {
 
         $data = $this->_db->getone('tms_items ti', null, 'tpl.*,tc.*,ti.*,tmo.order_number, tmo.abbrivation');
 
-        //echo $this->_db->getLastQuery();exit;
-
+        
         return $data;
 
     }
