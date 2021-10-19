@@ -3115,7 +3115,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             //$scope.jobdetail.ItemLanguage = data[0].ItemLanguage;
             $scope.jobdetail.created_date = data[0].created_date;
-            angular.element('#itemStatus').select2('val', data[0].item_status);
+            //angular.element('#itemStatus').select2('val', data[0].item_status);
             angular.element('#contactPerson').select2('val', data[0].contact_person);
             angular.element('#resources').select2('val', data[0].resource);
 
