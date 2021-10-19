@@ -2993,7 +2993,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     console.log('$scope.itemPriceUni=csv',$scope.itemPriceUni);
                     console.log('job=detail',$scope.jobdetail);
                 };
-            }, 1000);
+            }, 200);
             
                 
             $cookieStore.put('editJobact', data[0]);
