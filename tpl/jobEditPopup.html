@@ -185,7 +185,7 @@
                                                         <div class="form-group">
                                                             <div class="left">
                                                                 <label>Resources *</label>
-                                                                <input select2-job-detail-resource type="text" class="form-control" id="resources" name="resources" ng-model="jobdetail.resource" />
+                                                                <input select2-job-detail-resource type="text" class="form-control" id="resources" name="resources" ng-model="jobdetail.resource" ng-change="resourceChange(jobdetail.resource)" />
                                                             </div>
                                                             <div class="right">
                                                                 <a href="javascript:void(0)"  ng-click="jobsumemailResource(jobdetail.resource,jobdetail.job_summmeryId)"><span class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a>

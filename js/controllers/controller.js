@@ -2901,25 +2901,64 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobdetail.due_date = currentdateT;
                 }, 300);
             }*/
+            $scope.lngPriceList = [];
+            var resource_id_csv = $scope.jobdetail.resource;
+            $scope.isResourceChange = 0;
+            $scope.resourceChange = function (resID) {
+                console.log('$scope.changeItemField', resID);
+                console.log('$(\'#resources\').val()', $('#resources').val());
+                if(resID){
+                    resource_id_csv = resID;
+                    $scope.isResourceChange = 1;
+                
+                    var priceList = $scope.priceList;
+                    var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
+                    console.log('$priceList',$scope.priceList);
+                    console.log('$newPriceList',newPriceList);
+                    //$scope.lngPriceList = [];
+                    
+                    console.log('$scope.priceList-usersList-',$scope.priceList);
+                
+                    angular.forEach(newPriceList, function(val, i) {
+                        var langList = JSON.parse(val.price_language);                    
+                        const price = JSON.parse(val.price_basis);                    
+                        console.log('lang',langList[0].languagePrice);
+                        angular.forEach(langList, function(val2, i2) {
+                            //$scope.jobdetail.ItemLanguage = angular.element('#sourceLang').text;
+                            console.log('$scope.jobdetail.ItemLanguage',$scope.jobdetail.ItemLanguage);
+                            if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
+                                console.log('price',price);
+                                angular.forEach(price, function(val3, i3) {
+                                    $scope.lngPriceList.push(val3);
+                                });            
+                            }
+                        });    
+                    }); 
+                    console.log('$scope.lngPriceList=all',$scope.lngPriceList);
+                    console.log('$scope.resource=id',$scope.jobdetail.resource);
+                    var lngPriceList = $scope.lngPriceList;
+                    console.log('lngPriceList', lngPriceList)
+                
+                }
 
+                
+            }
             setTimeout(() => {
+                //function csvResorce() {
+                
                 var priceList = $scope.priceList;
-                var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == $scope.jobdetail.resource; });
+                var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
                 console.log('$priceList',$scope.priceList);
                 console.log('$newPriceList',newPriceList);
-                $scope.lngPriceList = [];
                 
                 console.log('$scope.priceList-usersList-',$scope.priceList);
-            
+                //$scope.lngPriceList = [];
                 angular.forEach(newPriceList, function(val, i) {
                     var langList = JSON.parse(val.price_language);                    
                     const price = JSON.parse(val.price_basis);                    
                     console.log('lang',langList[0].languagePrice);
                     angular.forEach(langList, function(val2, i2) {
-                        
-                        
                         //$scope.jobdetail.ItemLanguage = angular.element('#sourceLang').text;
-                        
                         console.log('$scope.jobdetail.ItemLanguage',$scope.jobdetail.ItemLanguage);
                         if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
                             console.log('price',price);
@@ -2932,7 +2971,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 console.log('$scope.lngPriceList=all',$scope.lngPriceList);
                 console.log('$scope.resource=id',$scope.jobdetail.resource);
                 var lngPriceList = $scope.lngPriceList;
-            
+                console.log('lngPriceList-old======', lngPriceList)
+                
                 // import CSV
                 $scope.csvData = [];
                 var csvID =$scope.jobdetail.job_summmeryId;
@@ -2953,7 +2993,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             angular.forEach(csv, function(val, i) {
                                 if(i != 0 && Isnumpattern.test(val[0]) ){
                                     var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
+                                    console.log('lngPriceList', lngPriceList)
+                                    console.log('lngPriceList=scope', $scope.lngPriceList)
+                                    console.log('lngPriceListFilt', lngPriceListFilt)
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
+                                    console.log('itemVal', itemVal)
                                     
                                     if(val)
                                     var total = itemVal * val[0];
@@ -3000,8 +3044,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     console.log('$scope.itemPriceUni=csv',$scope.itemPriceUni);
                     console.log('job=detail',$scope.jobdetail);
                 };
+
+                    
+                //}
+                //csvResorce();
+                
             }, 2000);
-            
+            if($scope.isResourceChange == 1){
+                //csvResorce();
+                console.log('function is called');
+            }
                 
             $cookieStore.put('editJobact', data[0]);
             if (data[0].order_id) {
