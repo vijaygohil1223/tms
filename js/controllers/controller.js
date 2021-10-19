@@ -13907,7 +13907,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                     if ($scope.itemList[formIndex].attached_workflow) {
                         if ($('#jobchainName' + formId).val() !== 'select') {
-                            //notification('workflow already attached', 'warning');
+                            var jobchainval = $('#jobchainName' + formId).val();
+                            var jobchainName = $("#jobchainName"+formId + " option[value="+jobchainval+"]").text();
+                            var scoopitemData = $scope.TblItemList;
+                            var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow  == 'SingleJob -'+ jobchainName ).map(x => x.attached_workflow);
+                            if(chainworkflow.length == 0){
+                                notification('workflow already attached', 'warning'); 
+                            }
+                            // notification('workflow already attached', 'warning');
                         }
                     } else {
                         if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
@@ -14198,7 +14205,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.get().success(function(data) {
             $scope.itemList = data;
             $scope.TblItemList = data;
-
             $scope.projectItemEmpty = jQuery.isEmptyObject(data);
             $scope.totalPrice = 0;
             var cont = [];
@@ -14227,6 +14233,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     //console.log('workflow', workflow);
                     if(jobworkflow.length >0)
                     $('#jobchainName' + val.itemId).val('j'+jobworkflow);
+
+                    if ($('#jobchainName' + val.itemId).val() !== 'select') {
+                        //$('#jobchainName' + val.itemId).attr('disabled',true);
+                    }    
 
                     $scope.itemList[i].manager = data.project_manager;
                     $scope.itemList[i].coordinator = data.project_coordinator;
