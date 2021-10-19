@@ -2846,9 +2846,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.get().success(function(data) {
             $scope.priceList = data;
         });
-        
     }
-
+    
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
@@ -2902,17 +2901,25 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobdetail.due_date = currentdateT;
                 }, 300);
             }*/
-            var priceList = $scope.priceList;
-            var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == $scope.jobdetail.resource; });
-            console.log('$priceList',$scope.priceList);
-            console.log('$newPriceList',newPriceList);
-            $scope.lngPriceList = [];
+
             setTimeout(() => {
+                var priceList = $scope.priceList;
+                var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == $scope.jobdetail.resource; });
+                console.log('$priceList',$scope.priceList);
+                console.log('$newPriceList',newPriceList);
+                $scope.lngPriceList = [];
+                
+                console.log('$scope.priceList-usersList-',$scope.priceList);
+            
                 angular.forEach(newPriceList, function(val, i) {
                     var langList = JSON.parse(val.price_language);                    
                     const price = JSON.parse(val.price_basis);                    
                     console.log('lang',langList[0].languagePrice);
                     angular.forEach(langList, function(val2, i2) {
+                        
+                        
+                        //$scope.jobdetail.ItemLanguage = angular.element('#sourceLang').text;
+                        
                         console.log('$scope.jobdetail.ItemLanguage',$scope.jobdetail.ItemLanguage);
                         if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
                             console.log('price',price);
@@ -3089,12 +3096,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 var srcLang =  sourceData.sourceLang;   
                 var trgLang =  targetData.sourceLang;  
                 
-                var srcLang = srcLang ? srcLang : 'English (US)';
-                var trgLang = trgLang ? trgLang : 'English (US)';
+                var srcLang = srcLang ? srcLang : '';
+                var trgLang = trgLang ? trgLang : '';
 
-                console.log('srcLang- here is language list',srcLang); 
-                console.log('trgLang',trgLang);
-                
                 $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang; 
             });
             //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
