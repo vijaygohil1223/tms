@@ -2851,7 +2851,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
-            console.log("data-2", data);
+            console.log("data-2new", data);
 
             $scope.jobdetail = data[0];
             $scope.jobdetail.ItemLanguage = '';
@@ -13939,7 +13939,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                     var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
                     var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
-
                     var sourceObj = {
                         sourceLang: srcLang,
                         dataNgSrc: sourceField.children().attr('data-ng-src'),
@@ -14041,7 +14040,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                                 // Remove if Display Assign PO Link
                                                 //$scope.jobitem.po_number = '';
                                                 $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
-
+                                                $scope.jobitem.ItemLanguage = srcLang+' > '+trgLang;
                                                 $scope.jobitem.price = '';
                                                 $scope.jobitem.total_price = parseFloat(0.00);
                                                 rest.path = 'jobSummarySave';
@@ -14127,7 +14126,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                                                             $scope.jobitem.item_status = 'New';
                                                             $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
-
+                                                            $scope.jobitem.ItemLanguage = srcLang+' > '+trgLang;
+                                                
                                                             $scope.jobitem.job_chain_id = $scope.jobi.jobSummery;
                                                             $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
 
@@ -16090,6 +16090,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             if ($scope.jobi.jobSummery) {
                 var dd = $scope.jobi.jobSummery;
+                //var dd = $scope.jobi.jobSummery[0];
                 $scope.jobi.jobSummery = dd.substr(1);
                 $scope.matchjob = dd.slice(0, 1);
                 if ($scope.matchjob == 'j') {
@@ -16143,7 +16144,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 // Remove if Display Assign PO Link
                                 //$scope.jobitem.po_number = '';
                                 $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
-
+                                /* var checkisArrat = Array.isArray($scope.jobitem.item_id);
+                                $scope.jobitem.item_id = $scope.jobitem.item_id[0]; */
+                                console.log('$scope.jobitem=post', $scope.jobitem)
+                                    
                                 rest.path = 'jobSummarySave';
                                 rest.post($scope.jobitem).success(function(data) {
                                     if (data) {
@@ -22138,7 +22142,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.dateFormatD = moment($scope.toDayDate).format($window.localStorage.getItem('global_dateFormat'));
     $scope.loginUserId = $window.localStorage.getItem('session_iUserId');
 
-
     rest.path = 'getAllFormat/' + $window.localStorage.getItem('session_iUserId');
     rest.get().success(function(data) {
         $scope.dtFormatList = data;
@@ -22149,12 +22152,19 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = 'getdateFormatById/' + id;
         rest.get().success(function(data) {
             $scope.dateModel = data;
+            console.log('$scope.dateModel', $scope.dateModel)
             $scope.dateFormatD = data.dateformat;
             $('#dateFormat').select2('data', { id: data.select2_val, text: data.dateformat });
             $('#dateFormat').val(data.select2_val).trigger('change');
 
             $('#dateSeparator').select2('data', { id: data.dateSeparator, text: data.dateSeparator });
+            if(data.dateSeparator == ','){
+                $scope.changeDateSeparator();
+                //$('#dateSeparator').val(data.dateSeparator).trigger('change');
+                angular.element('#dateSeparator').select2('val', data.dateSeparator);
+            }
             $('#dateSeparator').val(data.dateSeparator).trigger('change');
+            
         }).error(errorCallback);
         scrollToId(eID);
     }
@@ -22170,14 +22180,20 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.dateModel.is_active = 0;
                 }
                 var dateData = $('#dateFormat').select2('data');
+                if(dateData.length > 0){
+                    dateData.text = (dateData.length>0) ? dateData[0].text : dateData;
+                    dateData.id = (dateData.length>0) ? dateData[0].id : dateData;
+                }
 
                 $scope.dateModel.dateFormat = dateData.text;
                 $scope.dateModel.select2_val = dateData.id;
                 $scope.dateModel.iUserId = $window.localStorage.getItem('session_iUserId');
                 if ($scope.dateModel.dateformat_id) {
                     $routeParams.id = $scope.dateModel.dateformat_id;
+                    
                     rest.path = 'updateDateFormat';
                     rest.put($scope.dateModel).success(function(data) {
+                        
                         if (data.status == 422) {
                             notification(data.msg, 'error');
                         }
@@ -22211,19 +22227,55 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.changeFormat = () => {
         var dateData = $('#dateFormat').select2('data');
-        console.log('dateData', dateData)
-        
-        $scope.dateFormatD = moment($scope.toDayDate).format(dateData.text);
-        console.log('$scope.toDayDate', $scope.toDayDate)
+        if(dateData.length>0){
+            dateData = dateData[0].text;
+            //dateData.text = dateData;
+            $scope.dateFormatD = moment($scope.toDayDate).format(dateData);
+            
+            var dateSeparator = $('#dateSeparator').select2('data');
+            if(dateSeparator.length > 0)
+            dateSeparator.text = dateSeparator[0].text;
 
+            //if(dateSeparator){
+            if(dateSeparator.length > 0){
+                    if($scope.prevSeparator == '/'){
+                    $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
+                    $scope.dateFormatD = $scope.dateFormatD.replace($scope.replaceTxt,dateSeparator.text);
+                }else if($scope.prevSeparator == '.'){
+                    $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
+                    $scope.dateFormatD = $scope.dateFormatD.replace(/\./g,dateSeparator.text);
+                }else{
+                    $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
+                    $scope.dateFormatD = $scope.dateFormatD.replace($scope.replaceTxt,dateSeparator.text);
+                }
+            }
+        }    
+    }
+
+    $scope.changeDateSeparator = () => {
+        var separatorArray = ['/', ',', '.'];
         var dateSeparator = $('#dateSeparator').select2('data');
-        console.log('dateSeparator', dateSeparator)
-        if (dateSeparator) {
+            
+        if(dateSeparator.length > 0 || $('#dateSeparator').val()== ',' ){
+            var go = true;
+            $.each(separatorArray, function(i, val) {
+                if (go) {
+                    var contains = $scope.dateFormatD.includes(val);
+                    console.log('$scope.dateFormatD', $scope.dateFormatD)
+                    if (contains) {
+                        $scope.prevSeparator = val;
+                        go = false;
+                    }
+                }
+            })
+
+            dateSeparator = $('#dateSeparator').select2('data');
+            if(dateSeparator.length > 0)
+            dateSeparator.text = (dateSeparator.length>0) ? dateSeparator[0].text : $('#dateSeparator').val();
+
             if ($scope.prevSeparator == '/') {
                 $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
                 $scope.dateFormatD = $scope.dateFormatD.replace($scope.replaceTxt, dateSeparator.text);
-                console.log('$scope.dateFormatD==', $scope.dateFormatD)
-
             } else if ($scope.prevSeparator == '.') {
                 $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
                 $scope.dateFormatD = $scope.dateFormatD.replace(/\./g, dateSeparator.text);
@@ -22231,38 +22283,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
                 $scope.dateFormatD = $scope.dateFormatD.replace($scope.replaceTxt, dateSeparator.text);
             }
-            
-        }
+        }    
     }
-
-    $scope.changeDateSeparator = () => {
-        var separatorArray = ['/', ',', '.'];
-
-        var go = true;
-        $.each(separatorArray, function(i, val) {
-            if (go) {
-                var contains = $scope.dateFormatD.includes(val);
-                if (contains) {
-                    $scope.prevSeparator = val;
-                    go = false;
-                }
-            }
-        })
-
-        var dateSeparator = $('#dateSeparator').select2('data');
-        if ($scope.prevSeparator == '/') {
-            $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
-            $scope.dateFormatD = $scope.dateFormatD.replace($scope.replaceTxt, dateSeparator.text);
-        } else if ($scope.prevSeparator == '.') {
-            $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
-            $scope.dateFormatD = $scope.dateFormatD.replace(/\./g, dateSeparator.text);
-        } else {
-            $scope.replaceTxt = new RegExp($scope.prevSeparator, "g");
-            $scope.dateFormatD = $scope.dateFormatD.replace($scope.replaceTxt, dateSeparator.text);
-        }
-
-    }
-
 
     $scope.deleteModel = function(id) {
         bootbox.confirm("Are you sure you want to delete this row?", function(result) {

@@ -706,7 +706,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
     }
     .select2-search-choice{
       animation-name: sliding;
-      animation-duration: 4s;
+      animation-duration: 3s;
       overflow: hidden;
       transition: all 0.3s;
       white-space: nowrap;

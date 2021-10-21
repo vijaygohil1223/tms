@@ -377,7 +377,9 @@ app.filter('customNumber', function($filter,$window) {
                 }
             }else{
                 return number
+                
             }
+            
         }
     };
 });
