@@ -14916,14 +14916,20 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     // DataTables configurable options
     $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('scrollY', '100%').withOption('scrollX', '100%').withOption('scrollCollapse', true).withOption('paging', false).withOption('paging', false).withOption('paging', false);
 
+    $scope.lang_st = [];
     if ($routeParams.id) {
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function(data) {
             $scope.jobitList = [];
+            console.log('$scope.jobitList', $scope.jobitList)
 
             angular.forEach(data, function(val, i) {
                 //console.log('job-val',val);
-
+                
+                /* var newSourceLang1 = newSourceLang.sourceLang
+                console.log('newSourceLang', newSourceLang1)
+                var newTargetLang = angular.toJson(val.target_lang);
+                 */
                 if (val.due_date != null) {
                     /*var sales = val.total_amount
                     sales = $filter('customNumber')(sales);
@@ -14935,7 +14941,22 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             html: true,
                         });
                     }, 3000);*/
-
+                    // To get language list when create new job (insert)
+                    var newSourceLang = '';
+                    var newTargetLang = '';
+                    if(val.source_lang)
+                    newSourceLang = JSON.parse(val.source_lang).sourceLang;
+                    if(val.target_lang)
+                    newTargetLang = JSON.parse(val.target_lang).sourceLang;
+                    var objLan = {
+                        order_id: val.order_id,
+                        itemId: val.itemId,
+                        item_number: val.item_number,
+                        newSourceLang: newSourceLang,
+                        newTargetLang: newTargetLang
+                    }
+                    $scope.lang_st.push(objLan);
+                    
                     $scope.jobitList.push(val);
                 }
             });
@@ -15647,11 +15668,20 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         var JobSummeryId = val.id;
                         var job_id = angular.element("#jobSummeryId" + JobSummeryId).val();
                         var ItemId = angular.element("#move_job_item_id").val();
+                        var jobItemLanguage = '';
+                        var newLag = $scope.lang_st.filter((st) => st.item_number == ItemId);
+                        if(newLag.length > 0){
+                            var newlangIns = newLag[0].newSourceLang + ' > '+ newLag[0].newTargetLang;
+                            jobItemLanguage = newlangIns;
+                        }
                         var JobObj = {
                             "item_id": ItemId,
                             "job_id": job_id,
-                            "oId": $window.localStorage.orderID
+                            "oId": $window.localStorage.orderID,
                         }
+                        if(jobItemLanguage)
+                        JobObj.ItemLanguage = jobItemLanguage;
+
                         $routeParams.id = JobSummeryId;
                         rest.path = 'moveJob';
                         rest.put(JobObj).success(function(data) {
@@ -16081,6 +16111,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
         return deferred.promise;
     };
+
+    
     $scope.jobList = function(id) {
 
         if ($('#jobchainName').val() == 'select' || $('#jobDropDown').val() == 'select') {
@@ -16146,7 +16178,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
                                 /* var checkisArrat = Array.isArray($scope.jobitem.item_id);
                                 $scope.jobitem.item_id = $scope.jobitem.item_id[0]; */
-                                console.log('$scope.jobitem=post', $scope.jobitem)
+                                var newLag = $scope.lang_st.filter((st) => st.item_number == $scope.jobitem.item_id);
+                                if(newLag.length > 0){
+                                    var newlangIns = newLag[0].newSourceLang + ' > '+ newLag[0].newTargetLang;
+                                    $scope.jobitem.ItemLanguage = newlangIns;
+                                }
                                     
                                 rest.path = 'jobSummarySave';
                                 rest.post($scope.jobitem).success(function(data) {
@@ -16231,6 +16267,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                                     /* Job Status To New When Creating New Job*/
                                                     $scope.jobitem.item_status = 'New';
                                                     //$scope.jobitem.po_number = '';
+                                                    // to insert lang pair in job
+                                                    var newLag = $scope.lang_st.filter((st) => st.item_number == $scope.jobitem.item_id);
+                                                    if(newLag.length > 0){
+                                                        var newlangIns = newLag[0].newSourceLang + ' > '+ newLag[0].newTargetLang;
+                                                        $scope.jobitem.ItemLanguage = newlangIns;
+                                                    }
                                                     $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
                                                     //$scope.jobitem.chainId = chainId;
                                                     $scope.jobitem.job_chain_id = $scope.jobi.jobSummery;
@@ -22313,8 +22355,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.get().success(function(data) {
             $scope.separator = data;
             $('#separatorChar').select2('data', { id: data.separatorChar, text: data.separatorChar });
+            if(data.separatorChar == ','){
+                angular.element('#separatorChar').select2('val', data.separatorChar);
+            }else{
+                //$('#separatorChar').val(data.separatorChar).trigger('change');
+            }
             $('#separatorChar').val(data.separatorChar).trigger('change');
-
+            
+            
 
         }).error(errorCallback);
         scrollToId(eID);
