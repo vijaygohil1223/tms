@@ -9472,6 +9472,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.priceLanguageList = JSON.parse(data.price_language);
             $scope.baseQuentity = [];
             $scope.basePrice = [];
+            $scope.baseTtl = [];
             var quantity = 0;
             var standard = 0;
             angular.forEach(JSON.parse(data.price_basis), function(val, i) {
@@ -9483,6 +9484,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.standardTime) {
                     standard += parseInt(val.standardTime);
                 }
+                $scope.baseTtl[i] = $scope.baseQuentity[i] * $scope.basePrice[i];
+                $scope.basePrice[i] = $filter('customNumber')(val.basePrice);
 
             });
             $scope.planedHourTotal = standard;
@@ -9500,6 +9503,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     };
 
     $scope.save = function(frmId) {
+        console.log('frmId', frmId)
         if (angular.element('#' + frmId).valid()) {
             var setPriceLanguage = angular.element('.setPriceLanguage').text();
             if (setPriceLanguage == 'Change prices') {
@@ -9552,6 +9556,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
+                    basePrice = numberFormatCommaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
@@ -9647,6 +9652,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
+                    basePrice = numberFormatCommaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
@@ -9711,7 +9717,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     });
 
     $scope.basePriceOtyChnage = function(id) {
-        $scope.baseTotal[id] = $scope.baseQuentity[id] * parseFloat($scope.basePrice[id]);
+        console.log('data', $scope.basePrice[id])
+        var bsprice1 = $scope.basePrice[id];
+        console.log('bsprice1', bsprice1)
+        var basePrice1 = bsprice1.replace(/[.]/g, '');
+        console.log('basePrice1', basePrice1)
+        var basePrice = basePrice1.replace(/[,]/g, '.');
+        console.log('basePrice', parseFloat(basePrice))
+        $scope.baseTotal[id] = $scope.baseQuentity[id] * parseFloat(basePrice);
+        $scope.baseTtl[id] = $scope.baseTotal[id];
     }
 
     /*Used For Dynamically added element STRAT*/
@@ -9848,7 +9862,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 standardTime: ""
                             };
                             $scope.baseQuentity[$scope.priceBasiList.length] = 1;
-                            $scope.basePrice[$scope.priceBasiList.length] = data.rate;
+                            $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
+                            $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate; 
                             $scope.priceBasiList.push(newPriceObj);
                             //$('#priceUnit').val('');
                             $("#priceUnit").select2("val", "");
@@ -9892,7 +9907,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             standardTime: ""
                         };
                         $scope.baseQuentity[$scope.priceBasiList.length] = 1;
-                        $scope.basePrice[$scope.priceBasiList.length] = data.rate;
+                        $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
+                        $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate; 
                         $scope.priceBasiList.push(newPriceObj);
                         //$('#priceUnit').val('');
                         $("#priceUnit").select2("val", "");
@@ -18997,6 +19013,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     };
 
     $scope.save = function(frmId) {
+        console.log('frmId', frmId)
         if (angular.element('#' + frmId).valid()) {
             var setPriceLanguage = angular.element('.setPriceLanguage').text();
             if (setPriceLanguage == 'Change prices') {
@@ -19022,7 +19039,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
 
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
-                    var basePrice = angular.element('#basePrice' + i).val().trim();
+                    var basePrice = numberFormatCommaToPoint( angular.element('#basePrice' + i).val().trim() );
+                    console.log('basePrice-B', basePrice)
+                    
                     var standardTime = angular.element('.standardTime' + i).text().trim();
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
@@ -19088,7 +19107,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         var basePricecheck = 0;
                     }
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
-                    var basePrice = angular.element('#basePrice' + i).val().trim();
+                    //var basePrice = angular.element('#basePrice' + i).val().trim();
+                    var basePrice = numberFormatCommaToPoint( angular.element('#basePrice' + i).val().trim() );
+                    console.log('basePrice-A', basePrice)
+                    
                     var standardTime = angular.element('.standardTime' + i).text().trim();
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,

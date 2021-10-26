@@ -510,7 +510,7 @@
                                                         <div class="col-sm-2">
 
                                                             <input type="text" class="form-control"
-                                                                id="basePrice{{$index}}" only-digits name="basePrice"
+                                                                id="basePrice{{$index}}" only-digits2 name="basePrice"
                                                                 ng-model="basePrice[$index]" required
                                                                 ng-change="basePriceOtyChnage($index)"
                                                                 value="{{priceBase.basePrice}}">
@@ -526,8 +526,8 @@
 
                                                         <div ng-if="basePrice[$index] && baseQuentity[$index]"
                                                             class="col-sm-2" id="baseWaiting{{$index}}">
-
-                                                            {{basePrice[$index] * baseQuentity[$index] | customNumber}}
+                                                            {{ baseTtl[$index] | customNumber }}
+                                                            <!-- {{basePrice[$index] * baseQuentity[$index] | customNumber}} -->
 
                                                         </div>
 

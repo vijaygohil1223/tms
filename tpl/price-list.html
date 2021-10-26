@@ -475,7 +475,7 @@ $('#priceUnit').css('display', 'block');
 
                                                             <div class="col-sm-2">
 
-                                                                <input type="text" class="form-control" id="basePrice{{$index}}" only-digits name="basePrice" ng-model="basePrice[$index]" required ng-change="basePriceOtyChnage($index)">
+                                                                <input type="text" class="form-control" id="basePrice{{$index}}" only-digits2 name="basePrice" ng-model="basePrice[$index]" required ng-change="basePriceOtyChnage($index)">
 
                                                             </div>
 
@@ -486,8 +486,8 @@ $('#priceUnit').css('display', 'block');
                                                             </div>
 
                                                              <div ng-if="basePrice[$index] && baseQuentity[$index]" class="col-sm-2" id="baseWaiting{{$index}}">
-
-                                                                {{basePrice[$index] * baseQuentity[$index] | number:2}}
+                                                                {{ baseTtl[$index] | customNumber}}
+                                                                <!-- {{basePrice[$index] * baseQuentity[$index] | number:2}} -->
 
                                                             </div>
 

@@ -2880,6 +2880,31 @@ app.directive('onlyDigits', function() {
     };
 });
 
+//------------------ only digits copy2 allow | Decimal point using Comma -------------------//
+app.directive('onlyDigits2', function() {
+    return {
+        require: 'ngModel',
+        restrict: 'A',
+        link: function(scope, element, attr, ctrl) {
+            function inputValue(val) {
+                if (val) {
+                    //var digits = val.replace(/[^0-9.]/g, '');
+                    var digits = val.replace(/[^0-9,.]/g, '');
+                    // if (digits.split(',').length > 2) {
+                    //     digits = digits.substring(0, digits.length - 1);
+                    // }
+                    if (digits !== val) {
+                        ctrl.$setViewValue(digits);
+                        ctrl.$render();
+                    }
+                    return digits;
+                }
+                return undefined;
+            }
+            ctrl.$parsers.push(inputValue);
+        }
+    };
+});
 
 //--------------item language------------------//
 app.directive('select2ItemLanguage', function($http, rest, $timeout) {
