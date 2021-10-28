@@ -986,8 +986,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.proejctsToDisplay = [];
 
-
-
     //Getting Jobs from getJobsFromTmsSummeryView
     $scope.getJobList = function() {
         rest.path = 'getJobsFromTmsSummeryView';
