@@ -23210,7 +23210,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var deferred = $q.defer();
             rest.path = "discussionOrder/" + $routeParams.id;
             rest.get().success(function(data) {
-                //setTimeout(function() {
+                setTimeout(function() {
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function(val, i) {
                         var dataId = val.id;
@@ -23230,10 +23230,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         //
                         var msgReadArr = val.read_id.split(",");
                         var msgReadArrFilter = msgReadArr.filter(function (el) {
-                            if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
-                                return el;
-                            }
-                            return 0;
+                        if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
+                            return el;
+                        }
+                        return 0;
                         });
 
                         $('#comment-list').find(' > li[data-id^=c]').css('display','none');
@@ -23362,12 +23362,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
                             if (dateSeprt != dateSeprt2) {
-                                //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                $('#comment-list').find(' > li[new-id=' + dataId + ']').append('<span>' + timeText + '</span>');
+                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
                             }
                         } else {
-                            //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
-                            $('#comment-list').find(' > li[new-id=' + dataId + ']').append('<span>' + timeText + '</span>');
+                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
                         }
 
                         
@@ -23410,7 +23408,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                     }
                 
-                //}, 1500);
+                }, 1500);
                 commentsArray = data;
                 console.log('commentsArray=', commentsArray);
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
@@ -23418,12 +23416,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             }).error(errorCallback);
 
-            return deferred.promise;
+            //return deferred.promise;
 
         }
-
-        //$scope.commentsArrayAll();
-        
+        $scope.commentsArrayAll();
     }
 
     
@@ -23557,7 +23553,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             textareaPlaceholderText: 'Type message here...',
             getComments: function(success, error) {
                 
-                //$timeout(function() {
+                $timeout(function() {
                     if($routeParams.id){
                         setInterval(() => {
                             rest.path = "discussionOrder/" + $routeParams.id;
@@ -23597,9 +23593,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 //if( (NewcommentsArray.length > commentsArray.length && ) )
                                 //console.log('new cmtArr.length',newcmtArr.length);
                                 var arrayNotload = $('#comment-list').find(' > li').length;
-                                //if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)){
-                                if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0){
-                                        //console.log('we are in');
+                                if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)){
                                     $('#comment-list').find(' > li[data-id^=c]').hide();
                                     rest.path = "discussionCommentread";
                                     rest.put($scope.commentReadArray).success(function(res) {
@@ -23630,22 +23624,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             //console.log('usercommentsArr=after',usercommentsArr.length);
                         }, 5000);
                     }
-                    //success(commentsArray); 
-                    $scope.commentsArrayAll()
-                        .then(function(_promiseData) {
-                            console.log('_promiseData', _promiseData)
-                            console.log('$scope.msgIDArr', $scope.msgIDArr)
-                            success(_promiseData);
-                            $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                            //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                            //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-                            $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
-                            $('#comment-list').on('dragstart', function(event) { event.preventDefault(); });
-                            
-                        });
                     
-    
-                //}, 500);
+                    success(commentsArray); 
+                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                    //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                    //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                    $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
+                    $('#comment-list').on('dragstart', function(event) { event.preventDefault(); });
+                    
+                }, 500);
             },
             searchUsers: function(term, success, error) {
                 setTimeout(function() {
