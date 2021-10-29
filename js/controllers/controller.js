@@ -23230,10 +23230,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         //
                         var msgReadArr = val.read_id.split(",");
                         var msgReadArrFilter = msgReadArr.filter(function (el) {
-                        if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
-                            return el;
-                        }
-                        return 0;
+                            if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
+                                return el;
+                            }
+                            return 0;
                         });
 
                         $('#comment-list').find(' > li[data-id^=c]').css('display','none');
@@ -23362,10 +23362,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
                             if (dateSeprt != dateSeprt2) {
-                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                $('#comment-list').find(' > li[new-id=' + dataId + ']').append('<span>' + timeText + '</span>');
                             }
                         } else {
-                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                            //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                            $('#comment-list').find(' > li[new-id=' + dataId + ']').append('<span>' + timeText + '</span>');
                         }
 
                         
@@ -23632,6 +23634,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.commentsArrayAll()
                         .then(function(_promiseData) {
                             console.log('_promiseData', _promiseData)
+                            console.log('$scope.msgIDArr', $scope.msgIDArr)
                             success(_promiseData);
                             $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                             //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);

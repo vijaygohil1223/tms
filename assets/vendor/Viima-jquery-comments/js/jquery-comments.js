@@ -184,6 +184,7 @@
                     //fileMimeType: 'file_mime_type',
                     fullname: 'fullname',
                     user_id: 'user_id',
+                    read_id: 'read_id',
                     profileURL: 'profile_url',
                     profilePictureURL: 'profile_picture_url',
                     createdByAdmin: 'created_by_admin',
@@ -1846,9 +1847,10 @@
                 'data-id': commentModel.id,
                 'class': 'comment'
             }).data('model', commentModel);
-
+            
             if (commentModel.createdByCurrentUser) commentEl.addClass('by-current-user');
             if (commentModel.createdByAdmin) commentEl.addClass('by-admin');
+            console.log('commentModel', commentModel)
 
             var login_user_id = localStorage.getItem("session_iUserId");
             if(commentModel.user_id == login_user_id){
@@ -1861,29 +1863,31 @@
             var childComments = $('<ul/>', {
                 'class': 'child-comments'
             });
-
+            
             // Comment wrapper
             var commentWrapper = this.createCommentWrapperElement(commentModel);
 
             const todayDate = new Date();
-            var newDate = new Date(commentModel.created);
+            var ndt = new Date(commentModel.created);
+            var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
 
+            var dd = ("0" + ndt.getDate()).slice(-2);
+            var yy = ndt.getFullYear();
+            var timeText = dd + '-' + mm + '-' + yy;
+            
+            var newDate = new Date(commentModel.created);
             if (newDate.getDate() == todayDate.getDate() &&
                 newDate.getMonth() == todayDate.getMonth() &&
                 newDate.getFullYear() == todayDate.getFullYear()) {
-                //console.log('commentModel',commentModel.created);
-                //$('li[new-id=' + commentModel.id + ']').prepend('<li style="color:blue">'+commentModel.created+'</li>');
-                setTimeout(function() {
-                    var seperateDate = jQuery('li[new-id=' + commentModel.id + ']').text();
-                    var mm = ("0" + (todayDate.getMonth() + 1)).slice(-2);
-                    var dd = ("0" + todayDate.getDate()).slice(-2);
-                    var checktoday = dd + '-' + mm + '-' + todayDate.getFullYear();
-                    if (checktoday == seperateDate) {
-                        //$('li[data-id=' + commentModel.id + ']').prepend('<div style="color:blue" id="dtseperator"></div>');
-                    }
-
-                }, 100);
+            
+                var timeText = 'Today';
             }
+            var newEl = $('<li/>', {
+                'new-id': commentModel.id,
+                'class': 'seperatordate comment',
+                'text': timeText,
+                'date-time': timeText,
+            });
 
             setTimeout(() => {
                 if(commentModel.content){
@@ -1893,14 +1897,18 @@
                     var mimeTypeParts = commentModel.fileMimeType.split('/');
                     var file_type = '';
                     if (mimeTypeParts.length == 2) {
-                        //var file_format = mimeTypeParts[1];
                         file_type = mimeTypeParts[0];
                     }
                     if (file_type == 'image' || file_type == 'video') {
                         $('li[data-id=' + commentModel.id + ']').find('.wrapper').addClass('imgblock');
                     }    
                 }
+                if(!($('li[date-time=' + timeText + ']').length > 0)){
+                    $('li[data-id=' + commentModel.id + ']').before(newEl);
+                }
             }, 100);
+            
+            // commentEl.find('.comment[data-id="' + commentModel.id + '"]').before(newEl);
 
             commentEl.append(commentWrapper);
             
