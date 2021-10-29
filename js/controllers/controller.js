@@ -23036,7 +23036,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     }
 
-}).controller('commentchatController', function($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $uibModalInstance, items) {
+}).controller('commentchatController', function($scope, $q, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $uibModalInstance, items) {
 
     var loginid = $window.localStorage.getItem("session_iUserId");
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
@@ -23207,9 +23207,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         var newUserCommentsArr = [];
         $scope.msgIDArr = [];
         $scope.commentsArrayAll = async function() {
+            var deferred = $q.defer();
             rest.path = "discussionOrder/" + $routeParams.id;
             rest.get().success(function(data) {
-                setTimeout(function() {
+                //setTimeout(function() {
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function(val, i) {
                         var dataId = val.id;
@@ -23226,7 +23227,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             $('li[data-id=' + dataId + ']').find('.content').html(data);
                             $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                         }*/
-
+                        //
                         var msgReadArr = val.read_id.split(",");
                         var msgReadArrFilter = msgReadArr.filter(function (el) {
                         if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
@@ -23388,10 +23389,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         if(val.id){
                             $scope.msgIDArr.push(val.id)
                         }
-                        
+                                                
                         
                     });
 
+                    deferred.resolve(promises);
                     $(".comment-wrapper").each(function(i, v) {
                         /*var dateTime = $(this).find('time')[0].innerText;
                         console.log(dateTime);
@@ -23406,7 +23408,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                     }
                 
-                }, 1500);
+                //}, 1500);
                 commentsArray = data;
                 console.log('commentsArray=', commentsArray);
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
@@ -23414,12 +23416,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             }).error(errorCallback);
 
+            return deferred.promise;
 
         }
 
-        $scope.commentsArrayAll();
+        //$scope.commentsArrayAll();
         
     }
+
+    
 
 
     if ($routeParams.id) {
@@ -23550,7 +23555,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             textareaPlaceholderText: 'Type message here...',
             getComments: function(success, error) {
                 
-                $timeout(function() {
+                //$timeout(function() {
                     if($routeParams.id){
                         setInterval(() => {
                             rest.path = "discussionOrder/" + $routeParams.id;
@@ -23559,6 +23564,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 var newUserCommentsArr = NewcommentsArray.filter(function(NewcommentsArray) { return NewcommentsArray.user_id != loginid });
                                 //console.log('newUsercommentsArr',newUserCommentsArr.length);
                                 //console.log('NewcommentsArray=L',NewcommentsArray.length);
+                                // FOR read unread comments
                                 var cmtArr = [];
                                 var cmtArr = NewcommentsArray.filter(function(NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
                                 
@@ -23589,8 +23595,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 //if( (NewcommentsArray.length > commentsArray.length && ) )
                                 //console.log('new cmtArr.length',newcmtArr.length);
                                 var arrayNotload = $('#comment-list').find(' > li').length;
-                                if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)){
-                                    //console.log('we are in');
+                                //if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)){
+                                if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0){
+                                        //console.log('we are in');
                                     $('#comment-list').find(' > li[data-id^=c]').hide();
                                     rest.path = "discussionCommentread";
                                     rest.put($scope.commentReadArray).success(function(res) {
@@ -23621,15 +23628,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             //console.log('usercommentsArr=after',usercommentsArr.length);
                         }, 5000);
                     }
-                    success(commentsArray); 
+                    //success(commentsArray); 
+                    $scope.commentsArrayAll()
+                        .then(function(_promiseData) {
+                            console.log('_promiseData', _promiseData)
+                            success(_promiseData);
+                            $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                            //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                            //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                            $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
+                            $('#comment-list').on('dragstart', function(event) { event.preventDefault(); });
+                            
+                        });
                     
-                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                    //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                    //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-                    $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
-                    $('#comment-list').on('dragstart', function(event) { event.preventDefault(); });
     
-                }, 500);
+                //}, 500);
             },
             searchUsers: function(term, success, error) {
                 setTimeout(function() {
