@@ -78,7 +78,10 @@ function authenticate(\Slim\Route $route) {
             $userData = $authenticate->getUser($user_id);
         }
         // set sql mode - To solve issue of join and insert query
-        db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO',''))");
+        db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'STRICT_TRANS_TABLES',''))");
+        db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_ZERO_IN_DATE',''))");
+        db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE',''))");
+        db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ERROR_FOR_DIVISION_BY_ZERO',''))");
         
     } else {
         // api key is missing in header
