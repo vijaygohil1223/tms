@@ -23230,10 +23230,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         //
                         var msgReadArr = val.read_id.split(",");
                         var msgReadArrFilter = msgReadArr.filter(function (el) {
-                        if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
-                            return el;
-                        }
-                        return 0;
+                            if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
+                                return el;
+                            }
+                            return 0;
                         });
 
                         $('#comment-list').find(' > li[data-id^=c]').css('display','none');
