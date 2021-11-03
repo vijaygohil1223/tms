@@ -2658,16 +2658,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     withOption('dom', 'frtilp');
 
     $scope.dtOptionsJob = DTOptionsBuilder.newOptions().
-        //withOption('scrollY', '100%').
-        //withOption('scrollX', '100%').
     withOption('responsive', true).
     withOption('oLanguage', {
         "sSearch": '<i class="fa fa-search searchicn" aria-hidden="true"></i> _INPUT_ ',
         "sSearchPlaceholder": "Search",
-    });
+    }).
     //withOption('pageLength', 100).
         // withOption('scrollCollapse', true).
-    //withOption('dom', 'frtilp');
+    withOption('dom', 'tfrilp');
 
 
 }).controller('usertypeController', function($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
