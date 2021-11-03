@@ -292,6 +292,63 @@ td { font-size: 11px; } */
   .projecttable tr>td:nth-child(2) {
     text-align: left;
   }
+  /*  Overview project status tags */
+  .status-tags{
+    margin: 10px 0 10px 10px;
+  }
+  .status-tags .btn{
+    background-color: #f7f8fd;
+    padding: 9px 14px;
+    margin: 8px 10px;
+    border-radius: 10px;
+  }
+  .status-tags .btn:hover{
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+  }
+  .status-tags .bg-info{
+    color: #737f8b;
+    background: #e5eaf0;  
+    margin-left: 4px;
+  }
+  .status-tags a{
+    background-color: transparent !important;
+    color: #9290a8 !important;
+  }
+  .status-tags .btn-default.active {
+    background: #fff;
+    box-shadow: none;  
+  }
+  .status-tags .btn-default.active a {
+     color: #4e2fc4 !important;
+  }
+  .status-tags .btn-default.active .bg-info{
+    color: #fff !important;
+    background: #4e2fc4;  
+  }
+  .overview-list.projecttable .dataTables_paginate{
+    width: 100%;
+  }
+  .overview-list.projecttable .pagination{
+    display: flex;
+  }
+  .overview-list.projecttable #scoopjobAllTbl_filter{
+    right: 5px ;
+  }
+  .overview-list.projecttable .dataTables_filter{
+    right: 5px !important;
+  }
+  /* .overview-list.projecttable .dataTables_paginate{
+    margin-right: initial !important;
+  }
+  .overview-list.projecttable .dataTables_wrapper {
+      padding-top: 50px;
+  }
+  .overview-list.projecttable .dataTables_info{
+    padding-left: 5px;
+  } */
+
+
+
 
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
@@ -1536,7 +1593,71 @@ td { font-size: 11px; } */
                         </div>
                       </div>
                     </div>
-                    <div class="twelve columns filter-wrapper d-flex ">
+                    <div class="status-tags">
+                      <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='all'}">
+                        <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','all')">
+                            All <span class="badge bg-info">{{scoopAlljobsCount}}</span></a>
+                      </div>
+                      <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopAssigned'}">
+                        <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopAssigned')">
+                            To be Assign <span class="badge bg-info">{{scoopAssignedCount}}</span></a>
+                      </div>
+                      <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopProgress'}">
+                        <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopProgress')">
+                            In progress <span class="badge bg-info">{{scoopProgressCount}}</span></a>
+                      </div>
+                      <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopLinguist'}">
+                        <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopLinguist')">
+                            Completed by linguist <span class="badge bg-info">{{scoopLinguistCount}}</span></a>
+                      </div>
+                      <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopQaReady'}">
+                        <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopQaReady')">
+                            QA Ready <span class="badge bg-info">{{scoopQaReadyCount}}</span></a>
+                      </div>
+                      <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopTobedelivered'}">
+                          <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopTobedelivered')">
+                            To be Delivered <span class="badge bg-info">{{scoopTobedeliveredCount}}</span></a>
+                      </div>
+                        <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopDelivered'}">
+                          <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopDelivered')">
+                            Delivered <span class="badge bg-info">{{scoopDeliveredCount}}</span></a>
+                        </div>
+                        <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopApproved'}">
+                          <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopApproved')">
+                            Approved <span class="badge bg-info">{{scoopApprovedCount}}</span></a>
+                        </div>
+                        <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopInvoiced'}">
+                          <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopInvoiced')">
+                            Invoiced <span class="badge bg-info">{{scoopInvoicedCount}}</span></a>
+                        </div>
+                        <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopPaid'}">
+                          <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopPaid')">
+                            Paid <span class="badge bg-info">{{scoopPaidCount}}</span></a>
+                        </div>
+                        <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopWithoutInvoice'}">
+                          <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopWithoutInvoice')">
+                            Without invoice <span class="badge bg-info">{{scoopWithoutInvoiceCount}}</span></a>
+                        </div>
+                        <div class="btn m-b-xs btn-default" ng-class="{ 'active': scoopjobStatus=='scoopCancelled'}">
+                          <a href="javascript:void(0)"
+                            ng-click="scoopjobstatusRecord('scoop','scoopCancelled')">
+                            Cancelled <span class="badge bg-info">{{scoopCancelledCount}}</span></a>
+                        </div>
+                      
+
+                    </div>
+                    <!-- <div class="twelve columns filter-wrapper d-flex ">
                       <ul class="nav-bar-filter mb-0 overviewli" id="nav-bar-filter">
                         <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='all'}">
                           <a href="javascript:void(0)"
@@ -1605,12 +1726,12 @@ td { font-size: 11px; } */
                           </ul>
                         </li>    
                       </ul>
-                    </div>
+                    </div> -->
                      <!-- Scoop Jobs List based on status -->
-                <div class="b-t overview-list" ng-show="isoverviewProject">
+                <div class="b-t overview-list projecttable" ng-show="isoverviewProject">
                   <div class="table-responsive">
                     <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
-                    <table class="table table-striped b-b" datatable="ng" id="scoopjobAllTbl" dt-options="">
+                    <table class="table table-striped b-b" datatable="ng" id="scoopjobAllTbl" dt-options="dtOptionsJob">
                       <thead>
                         <tr>
                           <th>#</th>
@@ -1705,10 +1826,10 @@ td { font-size: 11px; } */
                       </li>    
                     </ul>
                     <!-- Jobs List based on status -->
-                <div class="b-t overview-list"  ng-show="isoverviewJobs">
+                <div class="b-t overview-list projecttable"  ng-show="isoverviewJobs">
                   <div class="table-responsive">
                     <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
-                    <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="">
+                    <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsJob">
                       <thead>
                         <tr>
                           <th>#</th>
