@@ -77,7 +77,7 @@ function authenticate(\Slim\Route $route) {
             $user_id = $authenticate->getUserId($api_key);
             $userData = $authenticate->getUser($user_id);
         }
-        // set sql mode - To solve issue of join and insert query
+        // Replace sql mode - To solve issue of join and insert query
         db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'STRICT_TRANS_TABLES',''))");
         db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_ZERO_IN_DATE',''))");
         db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE',''))");
