@@ -2855,7 +2855,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.priceList = data;
         });
     }
-    
+    $scope.csvProgress = true;
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
@@ -2942,53 +2942,42 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             }
                         });    
                     }); 
-                    console.log('$scope.lngPriceList=all',$scope.lngPriceList);
-                    console.log('$scope.resource=id',$scope.jobdetail.resource);
                     var lngPriceList = $scope.lngPriceList;
-                    console.log('lngPriceList', lngPriceList)
-                
                 }
 
                 
             }
             setTimeout(() => {
                 //function csvResorce() {
-                
                 var priceList = $scope.priceList;
                 var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
-                console.log('$priceList',$scope.priceList);
-                console.log('$newPriceList',newPriceList);
-                
-                console.log('$scope.priceList-usersList-',$scope.priceList);
                 //$scope.lngPriceList = [];
                 angular.forEach(newPriceList, function(val, i) {
                     var langList = JSON.parse(val.price_language);                    
                     const price = JSON.parse(val.price_basis);                    
-                    console.log('lang',langList[0].languagePrice);
                     angular.forEach(langList, function(val2, i2) {
                         //$scope.jobdetail.ItemLanguage = angular.element('#sourceLang').text;
-                        console.log('$scope.jobdetail.ItemLanguage',$scope.jobdetail.ItemLanguage);
                         if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
-                            console.log('price',price);
                             angular.forEach(price, function(val3, i3) {
                                 $scope.lngPriceList.push(val3);
                             });            
                         }
                     });    
                 }); 
-                console.log('$scope.lngPriceList=all',$scope.lngPriceList);
-                console.log('$scope.resource=id',$scope.jobdetail.resource);
                 var lngPriceList = $scope.lngPriceList;
-                console.log('lngPriceList-old======', lngPriceList)
                 
                 // import CSV
                 $scope.csvData = [];
                 var csvID =$scope.jobdetail.job_summmeryId;
+                var percent = 0;
                 $scope.getFile = function(files) {
                     console.log('files', files);
+                    if(!files)
+                    $scope.csvProgress = false;
                     Papa.parse(files, {
                         header: false,
-                        preview: 0,
+                        //preview: 5,
+                        //worker:true,
                         download: true,
                         delimiter: "',','\t'",
                         complete: function(results, files,err) {
@@ -3001,12 +2990,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             angular.forEach(csv, function(val, i) {
                                 if(i != 0 && Isnumpattern.test(val[0]) ){
                                     var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
-                                    console.log('lngPriceList', lngPriceList)
-                                    console.log('lngPriceList=scope', $scope.lngPriceList)
-                                    console.log('lngPriceListFilt', lngPriceListFilt)
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
-                                    console.log('itemVal', itemVal)
-                                    
                                     if(val)
                                     var total = itemVal * val[0];
                                     
@@ -3020,6 +3004,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     $scope.csvData.push(obj);
                                     if(total)
                                     gtotal += total;
+                                    
+                                    percent += Math.round(100 / (results.data.length -1));
+                                    $(".progress-bar").width(percent+'%')
+                                    if(i == (results.data.length -1))
+                                    $(".progress-bar").width('100%')
+                                    
                                     numindex++;
                                 }else{
                                     if(i!=0)
@@ -3027,9 +3017,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 }    
                             });
                             // notification csv first column will be quantity
-                            if(isError == true)
-                            notification('Please upload valid CSV', 'warning');
-                                 
+                            if(isError == true){
+                                notification('Please upload valid CSV', 'warning');
+                                $scope.csvProgress = false;
+                            }
+                            
+                            setTimeout(() => {
+                                $scope.csvProgress = false;
+                                percent = 0;
+                            }, 7000);
+                            
                             var itmpr = angular.element('#totalItemPrice').text();
                             itmpr = itmpr ? numberFormatCommaToPoint(itmpr) : 0;
                             //var mgTotal = (parseFloat(itmpr)+parseFloat(gtotal);
@@ -3052,7 +3049,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     console.log('$scope.itemPriceUni=csv',$scope.itemPriceUni);
                     console.log('job=detail',$scope.jobdetail);
                 };
-
                     
                 //}
                 //csvResorce();
@@ -3086,8 +3082,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $timeout(function() {
                 $("#scoopId > [value=" + $scope.jobdetail.item_id + "]").attr("selected", "true");
             }, 600);
-
-            
 
         }).error(errorCallback);
 

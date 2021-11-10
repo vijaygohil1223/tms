@@ -648,7 +648,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 40px;}
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 11px 8px 0 !important;}
     .boxgtr{ margin: 15px 130px;}
-    .status-tags .btn{margin: 10px 10px;}
+    .status-tags .btn{margin: 10px 8px;}
 }
 @media only screen and (min-width: 1800px) {
   .boxgtr{ margin: 15px 130px;}
@@ -763,12 +763,6 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
     color: #fff !important;
     background: #4e2fc4;  
   }
-  .overview-list.projecttable .dataTables_paginate{
-    /* width: 100%; */
-  }
-  .overview-list.projecttable .pagination{
-    /* display: flex; */
-  }
   .overview-list.projecttable #scoopjobAllTbl_filter{
     right: 5px ;
   }
@@ -778,7 +772,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   .overview-list.projecttable  .dataTables_wrapper{
     margin-top: 50px;
   }
-   .overview-list.projecttable .dataTables_paginate{
+  .overview-list.projecttable .dataTables_paginate{
     margin-right: initial !important;
   }
   /*.overview-list.projecttable .dataTables_wrapper {
@@ -786,6 +780,9 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   } */
   .overview-list.projecttable .dataTables_info{
     padding-left: 5px;
+  }
+  .csvprogress.progress{
+    background-color: #fff !important;
   }
 
     
