@@ -637,25 +637,25 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 
 /* Start Media responsive */
 @media only screen and (min-width: 900px) {
-  .status-tags .btn{min-width: 170px;text-align: left;flex: 1 1 0px;}
+  .status-tags .btn{text-align: left;flex: 1 1 0px;}
   .boxgtr{ margin: 15px 28px;}
 }
 @media only screen and (min-width: 1400px) {
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 35px;}
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 8px 8px 0 !important;}
-}
-@media only screen and (min-width: 1550px) {
+  }
+  @media only screen and (min-width: 1550px) {
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li{margin-right: 40px;}
     .page_content_wrapper .white_box_wrapper .white_box .projecttable .nav-tabs > li > a{padding: 10px 11px 8px 0 !important;}
     .boxgtr{ margin: 15px 130px;}
-    .status-tags .btn{margin: 10px 8px;}
+    .status-tags .btn{min-width: 170px;}
 }
 @media only screen and (min-width: 1800px) {
   .boxgtr{ margin: 15px 130px;}
 }
 .projectjobdv2{
     display: flex;
-    padding: 10px 9px 10px 13px;
+    padding: 10px 9px 20px 13px;
     margin-bottom: 0;
   }
   /* .projectjobul,  .projectjobli2{
@@ -738,8 +738,8 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   }
   .status-tags .btn{
     background-color: #f7f8fd;
-    padding: 8px 10px;
-    /* margin: 8px 2px; */
+    padding:0;
+    margin: 10px 8px;
     border-radius: 10px;
   }
   .status-tags .btn:hover{
@@ -753,6 +753,16 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   .status-tags a{
     background-color: transparent !important;
     color: #9290a8 !important;
+    display: block;
+    padding: 8px 6px;
+  }
+  @media only screen and (min-width: 1550px) {
+    .status-tags a{
+      padding: 8px 10px;
+    }
+  }
+  .status-tags a:hover{
+    text-decoration: none;
   }
   .status-tags .btn-default.active {
     background: #fff;
@@ -771,20 +781,31 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   .overview-list.projecttable .dataTables_filter{
     right: 5px !important;
   }
-  .overview-list.projecttable  .dataTables_wrapper{
+  .overview-list.projecttable .dataTables_wrapper{
     margin-top: 50px;
   }
   .overview-list.projecttable .dataTables_paginate{
     margin-right: initial !important;
   }
-  /*.overview-list.projecttable .dataTables_wrapper {
-      padding-top: 50px;
-  } */
-  .overview-list.projecttable .dataTables_info{
-    padding-left: 5px;
+.overview-list .dataTables_info{
+  width: auto;
+  float: left;
+  margin-top: 5px;
+  padding-left: 10px !important;
+}
+@media only screen and (min-width: 1550px) {
+  .overview-list .dataTables_info{
+    width: 33.3333%;
   }
-  .csvprogress.progress{
-    background-color: #fff;
-  }
-
+}
+.overview-list .dataTables_length{
+  width: auto;
+  float: left;
+  margin: 0 30px;
+}
+.overview-list .dataTables_paginate{
+  width: auto;
+  float: right;
+  right: 0;
+}
     
