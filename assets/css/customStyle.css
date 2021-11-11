@@ -739,7 +739,7 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   .status-tags .btn{
     background-color: #f7f8fd;
     padding:0;
-    margin: 10px 8px;
+    margin: 10px 5px;
     border-radius: 10px;
   }
   .status-tags .btn:hover{
@@ -807,5 +807,8 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   width: auto;
   float: right;
   right: 0;
+}
+.csvprogress.progress{
+  background-color: #fff;
 }
     

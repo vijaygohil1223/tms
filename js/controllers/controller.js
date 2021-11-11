@@ -2970,10 +2970,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.csvData = [];
                 var csvID =$scope.jobdetail.job_summmeryId;
                 var percent = 0;
+                var csvColmnArr = ['Repetition','101%','100%','95%-99%','85%-94%','75%-84%','50%-74%','No match'];
                 $scope.getFile = function(files) {
                     console.log('files', files);
                     if(!files)
-                    $scope.csvProgress = false;
+                        $scope.csvProgress = false;
+                    $scope.csvFilename = files.name;
                     Papa.parse(files, {
                         header: false,
                         //preview: 5,
@@ -2981,23 +2983,26 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         download: true,
                         delimiter: "',','\t'",
                         complete: function(results, files,err) {
+                            console.log('results', results)
                             var csv = results.data;
+                            if(csv[7]["Repetition"])
                             var numindex=0;
                             $scope.csvData = [];
                             var gtotal =  0;
                             var Isnumpattern = /^[0-9,\.\? ]+$/;
                             var isError = false;
                             angular.forEach(csv, function(val, i) {
-                                if(i != 0 && Isnumpattern.test(val[0]) ){
+                                //if(i != 0 && Isnumpattern.test(val[0]) ){
+                                if(csvColmnArr.includes(val[0]) ){
                                     var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
                                     if(val)
-                                    var total = itemVal * val[0];
+                                    var total = itemVal * val[1];
                                     
                                     var obj = {
                                         'id': numindex,
-                                        'quantity': val[0],
-                                        'pricelist': val[1],
+                                        'quantity': val[1],
+                                        'pricelist': val[0],
                                         'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
                                         'itemTotal': total ? numberFormatComma(total) : 0 ,
                                     }; 
@@ -3005,27 +3010,30 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     if(total)
                                     gtotal += total;
                                     
-                                    percent += Math.round(100 / (results.data.length -1));
-                                    $(".progress-bar").width(percent+'%')
-                                    if(i == (results.data.length -1))
-                                    $(".progress-bar").width('100%')
                                     
                                     numindex++;
                                 }else{
-                                    if(i!=0)
-                                    isError = true;
-                                }    
+                                    //if(i!=0)
+                                    //isError = true;
+                                }
+                                percent += Math.round(100 / (results.data.length));
+                                console.log('results.data.length', results.data.length)
+                                console.log('percent', percent)
+                                $(".progress-bar").width(percent+'%')
+                                if(percent >=97 )
+                                $(".progress-bar").width('100%')
+                                        
                             });
                             // notification csv first column will be quantity
-                            if(isError == true){
-                                notification('Please upload valid CSV', 'warning');
-                                $scope.csvProgress = false;
-                            }
+                            // if(isError == true){
+                            //     notification('Please upload valid CSV', 'warning');
+                            //     $scope.csvProgress = false;
+                            // }
                             
                             setTimeout(() => {
                                 $scope.csvProgress = false;
                                 percent = 0;
-                            }, 7000);
+                            }, 9000);
                             
                             var itmpr = angular.element('#totalItemPrice').text();
                             itmpr = itmpr ? numberFormatCommaToPoint(itmpr) : 0;
