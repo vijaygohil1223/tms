@@ -24,7 +24,9 @@ body{padding-top: 62px;}
 .mb-0 {
     margin-bottom: 0px !important;
 }
-
+.pb-15{
+  padding-bottom: 15px !important;
+}
 .d-flex{
     display: flex;
 }
@@ -229,6 +231,9 @@ div.dataTables_length select{margin: 0 5px;}
   .overviewli li.list-group-item {
     padding: 10px 1.5px 8px 0; 
   }
+  .overviewli li.list-group-item:last-child{
+    margin-bottom: -1px;
+  }
   .projecttable .nav-tabs>li::before,
   .projecttable .nav-tabs>li::after, 
   .overviewli li::before,
@@ -410,8 +415,8 @@ div.dataTables_length select{margin: 0 5px;}
     height: 2px;
     background-color: #fff;
     left: -14px;
-    right: -27px;
-    bottom: -11px;
+    right: -30px;
+    bottom: -12px;
   }
   .overview-list{
       position: relative;
@@ -655,8 +660,9 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 }
 .projectjobdv2{
     display: flex;
-    padding: 10px 9px 20px 13px;
+    padding: 10px 9px 1px 13px;
     margin-bottom: 0;
+    border-bottom: 1px solid #dee5e7;
   }
   /* .projectjobul,  .projectjobli2{
     display: flex;
@@ -787,23 +793,23 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   .overview-list.projecttable .dataTables_paginate{
     margin-right: initial !important;
   }
-.overview-list .dataTables_info{
+.overview-list .dataTables_info,.mynewtabs .dataTables_info{
   width: auto;
   float: left;
   margin-top: 5px;
   padding-left: 10px !important;
 }
 @media only screen and (min-width: 1550px) {
-  .overview-list .dataTables_info{
+  .overview-list .dataTables_info,.mynewtabs .dataTables_info{
     width: 33.3333%;
   }
 }
-.overview-list .dataTables_length{
+.overview-list .dataTables_length,.mynewtabs .dataTables_length{
   width: auto;
   float: left;
   margin: 0 30px;
 }
-.overview-list .dataTables_paginate{
+.overview-list .dataTables_paginate,.mynewtabs .dataTables_paginate{
   width: auto;
   float: right;
   right: 0;

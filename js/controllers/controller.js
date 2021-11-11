@@ -3028,7 +3028,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             // if(isError == true){
                             //     notification('Please upload valid CSV', 'warning');
                             //     $scope.csvProgress = false;
-                            // }
+                            // }  
                             
                             setTimeout(() => {
                                 $scope.csvProgress = false;
@@ -3050,7 +3050,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             }
                             console.log('after=',$scope.itemPriceUni[csvID]);
                             $scope.jobdetail.total_price = parseFloat(itmpr)+parseFloat(gtotal);
-                            //$scope.csvData = [];     
+                            //$scope.csvData = [];      
                         }
                     });
 
