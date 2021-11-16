@@ -3378,6 +3378,7 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 }
 
                 var price = angular.element('#priceUnit'+scope.it.itemId).val();
+                console.log('price', price)
                 if(price == 0){
                     notification('please select price','warning');
                     return false;

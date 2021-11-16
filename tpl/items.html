@@ -243,7 +243,7 @@
                                                                               label="{{master.name}}">
                                                                               <option ng-repeat="child in childPrice"
                                                                                  ng-if="child.master_price_id == master.master_price_id"
-                                                                                 value="{{child.name}},{{child.rate}}">
+                                                                                 value="{{master.name}} {{child.name}},{{child.rate}}">
                                                                                  {{child.name}}</option>
                                                                            </optgroup>
                                                                         </select>

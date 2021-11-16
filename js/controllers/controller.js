@@ -2909,6 +2909,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobdetail.due_date = currentdateT;
                 }, 300);
             }*/
+            // service - 
             $scope.lngPriceList = [];
             var resource_id_csv = $scope.jobdetail.resource;
             $scope.isResourceChange = 0;
@@ -2920,11 +2921,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.isResourceChange = 1;
                 
                     var priceList = $scope.priceList;
-                    var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
+                    //var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
+                    var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
+                    var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
+                
                     console.log('$priceList',$scope.priceList);
                     console.log('$newPriceList',newPriceList);
-                    //$scope.lngPriceList = [];
-                    
+                    $scope.lngPriceList = [];
                     console.log('$scope.priceList-usersList-',$scope.priceList);
                 
                     angular.forEach(newPriceList, function(val, i) {
@@ -2937,20 +2940,29 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
                                 console.log('price',price);
                                 angular.forEach(price, function(val3, i3) {
+                                    if(val3.basePriceUnit.includes($scope.jobdetail.project_type_name))
                                     $scope.lngPriceList.push(val3);
+                                    console.log('$scope.lngPriceList', $scope.lngPriceList)
                                 });            
                             }
                         });    
                     }); 
                     var lngPriceList = $scope.lngPriceList;
+                    console.log('lngPriceList', lngPriceList)
                 }
 
                 
             }
             setTimeout(() => {
-                //function csvResorce() {
+                // function csvResorce() {
                 var priceList = $scope.priceList;
-                var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
+                console.log('$scope.priceList', $scope.priceList)
+                
+                console.log('specialization', $scope.jobdetail.proj_specialization.split(',') )
+                var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
+                var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
+                
+                console.log('newPriceList', newPriceList)
                 //$scope.lngPriceList = [];
                 angular.forEach(newPriceList, function(val, i) {
                     var langList = JSON.parse(val.price_language);                    
@@ -2959,13 +2971,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         //$scope.jobdetail.ItemLanguage = angular.element('#sourceLang').text;
                         if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
                             angular.forEach(price, function(val3, i3) {
+                                if(val3.basePriceUnit.includes($scope.jobdetail.project_type_name))
                                 $scope.lngPriceList.push(val3);
                             });            
                         }
                     });    
                 }); 
                 var lngPriceList = $scope.lngPriceList;
-                
+                console.log('$scope.lngPriceList', $scope.lngPriceList)
+                    
                 // import CSV
                 $scope.csvData = [];
                 var csvID =$scope.jobdetail.job_summmeryId;
@@ -2981,7 +2995,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         //preview: 5,
                         //worker:true,
                         download: true,
-                        delimiter: "',','\t'",
+                        delimiter: "',','\t',';'",
                         complete: function(results, files,err) {
                             console.log('results', results)
                             var csv = results.data;
@@ -2991,18 +3005,23 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             var gtotal =  0;
                             var Isnumpattern = /^[0-9,\.\? ]+$/;
                             var isError = false;
+                            lngPriceList = $scope.lngPriceList;
+                            console.log('lngPriceList-res -chnage', lngPriceList)
+                                    
+                            console.log('$scope.lngPriceList', $scope.lngPriceList);
                             angular.forEach(csv, function(val, i) {
                                 //if(i != 0 && Isnumpattern.test(val[0]) ){
                                 if(csvColmnArr.includes(val[0]) ){
-                                    var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit == val[1]; });
+                                    var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { const lngBasePriceUnit = lngPriceList.basePriceUnit.replace($scope.jobdetail.project_type_name + ' - ',''); return lngBasePriceUnit == val[0]; });
+
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
                                     if(val)
                                     var total = itemVal * val[1];
-                                    
+                                    var matchStr = val[0] != 'No match' ? ' Match' : ''; 
                                     var obj = {
                                         'id': numindex,
-                                        'quantity': val[1],
-                                        'pricelist': val[0],
+                                        'quantity': val[2],
+                                        'pricelist': 'Words '+$scope.jobdetail.project_type_name + ' ' + val[0] + matchStr,
                                         'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
                                         'itemTotal': total ? numberFormatComma(total) : 0 ,
                                     }; 
@@ -3360,8 +3379,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var obj = [];
             $('[id^=work_name]').each(function(i, v) {
                 //var dateTime = $(this).find('time')[0].innerText;
-                console.log('iii', i);
-                console.log('vvvv', v.innerText);
                 obj.push({
                     work_id: i,
                     work_name: v.innerText
@@ -3418,7 +3435,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             //console.log('due_timevl1',due_timevl1);
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
             //console.log('date-time',$scope.jobdetail.due_date);
-
+            
+            // this field used in tabel join for csv pay calculation
+            if($scope.jobdetail.project_type_name)
+            delete $scope.jobdetail.project_type_name;
+            if($scope.jobdetail.project_type)
+            delete $scope.jobdetail.project_type;
+            if($scope.jobdetail.proj_specialization)
+            delete $scope.jobdetail.proj_specialization;
+            
             //job start recent activity store in cookie
             var arr1 = $.map($scope.jobdetail, function(el) {
                 return el;
@@ -9485,6 +9510,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.baseTtl = [];
             var quantity = 0;
             var standard = 0;
+            var childPriceId = 0;
+            $scope.childPriceId = [];
             angular.forEach(JSON.parse(data.price_basis), function(val, i) {
                 $scope.baseQuentity[i] = val.baseQuentity;
                 $scope.basePrice[i] = val.basePrice;
@@ -9494,6 +9521,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.standardTime) {
                     standard += parseInt(val.standardTime);
                 }
+                if (val.childPriceId) {
+                    childPriceId = val.childPriceId;
+                }
+                $scope.childPriceId[i] = childPriceId;
+                
                 $scope.baseTtl[i] = $scope.baseQuentity[i] * $scope.basePrice[i];
                 $scope.basePrice[i] = $filter('customNumber')(val.basePrice);
 
@@ -9565,15 +9597,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
 
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
+                    var childPriceId = angular.element('#childPriceId' + i).val().trim();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
                     basePrice = numberFormatCommaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
+                    console.log('priceBasiList',$scope.priceBasiList);
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
                         'basePricecheck': basePricecheck,
                         'basePriceUnit': basePriceUnit,
                         'basePrice': basePrice,
-                        'standardTime': standardTime
+                        'standardTime': standardTime,
+                        'childPriceId': childPriceId
                     });
                 }
 
@@ -9661,6 +9696,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         var basePricecheck = 0;
                     }
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
+                    var childPriceId = angular.element('#childPriceId' + i).val().trim();
+                    console.log('childPriceId=edit', childPriceId)
                     var basePrice = angular.element('#basePrice' + i).val().trim();
                     basePrice = numberFormatCommaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
@@ -9669,7 +9706,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         'basePricecheck': basePricecheck,
                         'basePriceUnit': basePriceUnit,
                         'basePrice': basePrice,
-                        'standardTime': standardTime
+                        'standardTime': standardTime,
+                        'childPriceId': childPriceId
                     });
                 }
 
@@ -9773,6 +9811,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
+    setTimeout( ()=> {
+        rest.path = 'prtype';
+        rest.get().success(function(data) {
+            $scope.projectType = data;
+            console.log('$scope.projectType', $scope.projectType)
+        }).error(errorCallback);
+        
+    },1000)
+    
+
     $scope.masterChildDropDown = function() {
         $scope.pricesArray = [];
         $timeout(function() {
@@ -9785,12 +9833,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                 $scope.pricesArray.push(obj1);
             })
-            console.log("$scope.pricesArray", $scope.pricesArray);
-
 
             angular.forEach($scope.masterPrice, function(v, i) {
                 angular.forEach($scope.childPrice, function(val1, i1) {
+                    //console.log('$scope.childPrice', $scope.childPrice)
                     if (v.master_price_id == val1.master_price_id) {
+                        
                         var obj2 = {
                             id: val1.child_price_id,
                             text: val1.name
@@ -9856,6 +9904,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 angular.forEach(selectedPricesArray, function(val, i) {
                     rest.path = 'childpriceGetOne/' + val;
                     rest.get().success(function(data) {
+                        var prType = $scope.projectType.filter(x => x.pr_type_id  == data.service )
+                        var projType = prType.length>0 ? prType[0].project_name +' - ' : ''; 
                         var exists = false;
                         angular.forEach($scope.priceBasiList, function(val1, i1) {
                             if (val1.basePriceUnit == data.name) {
@@ -9865,16 +9915,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                         if (!exists) {
                             var newPriceObj = {
-                                basePrice: data.rate,
+                                basePrice: projType + data.rate,
                                 basePriceUnit: data.name,
                                 basePricecheck: 1,
                                 baseQuentity: "1",
-                                standardTime: ""
+                                standardTime: "",
+                                childPriceId: data.child_price_id
                             };
                             $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                             $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
                             $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate; 
                             $scope.priceBasiList.push(newPriceObj);
+                            console.log('$scope.priceBasiList==AA', $scope.priceBasiList)
                             //$('#priceUnit').val('');
                             $("#priceUnit").select2("val", "");
                         }
@@ -9901,6 +9953,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             } else {
                 rest.path = 'childpriceGetOne/' + selectedPrices;
                 rest.get().success(function(data) {
+                    var prType = $scope.projectType.filter(x => x.pr_type_id  == data.service )
+                    var projType = prType.length>0 ? prType[0].project_name +' - ' : ''; 
+                    
                     var exists = false;
                     angular.forEach($scope.priceBasiList, function(val, i) {
                         if (val.basePriceUnit == data.name) {
@@ -9911,15 +9966,17 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     if (!exists) {
                         var newPriceObj = {
                             basePrice: data.rate,
-                            basePriceUnit: data.name,
+                            basePriceUnit: projType + data.name,
                             basePricecheck: 1,
                             baseQuentity: "1",
-                            standardTime: ""
+                            standardTime: "", 
+                            childPriceId: data.child_price_id
                         };
                         $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                         $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
                         $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate; 
                         $scope.priceBasiList.push(newPriceObj);
+                        console.log('$scope.priceBasiList==added', $scope.priceBasiList)
                         //$('#priceUnit').val('');
                         $("#priceUnit").select2("val", "");
                     } else {
@@ -15329,6 +15386,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
 
         //getting ProjectOrderName and indirect clint name
+        // rest.path = 'getClientIndirectClient/' + $routeParams
         rest.path = 'getClientIndirectClient/' + $routeParams.id;
         rest.get().success(function(data) {
             if (data.order_number) {
@@ -15345,8 +15403,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     var allitCheked = [];
     $scope.itemAll = [];
     if ($routeParams.id) {
-
-
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function(data1) {
             $scope.itemLength = data1;
@@ -16892,7 +16948,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             
             $timeout(function() {
                 if($routeParams.id){
-                    setInterval(() => {
+                    var interval = setInterval(() => {
                         rest.path = "discussionOrder/" + $routeParams.id;
                         rest.get().success(function(data) {
                             var NewcommentsArray = data;
@@ -16915,7 +16971,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     }
                                     $scope.newCommentReadArray.push(newCmtObj);
                                     if($scope.newCommentReadArray.length == cmtArr.length){
-                                        //console.log('cmtArr-'+cmti, $scope.newCommentReadArray);   
+                                        console.log('cmtArr-'+cmti, $scope.newCommentReadArray);   
                                         rest.path = "discussionCommentread";
                                         rest.put($scope.newCommentReadArray).success(function(res) {
                                             //console.log('res',res);
@@ -16958,6 +17014,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             }
                         });
                         //console.log('usercommentsArr=after',usercommentsArr.length);
+                        //interval
+                        var urlExist = window.location.href;
+                        if(! (urlExist.includes('#/discussion/'))){
+                            clearInterval(interval);
+                        }
+
                     }, 5000);
                 }
                 success(commentsArray); 

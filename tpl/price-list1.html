@@ -490,7 +490,9 @@
                                                                 ng-change="basePriceOtyChnage($index)"
                                                                 ng-model="baseQuentity[$index]"
                                                                 value="{{priceBase.baseQuentity}}" required>
-
+                                                                
+                                                                <input type="hidden"  name="childPriceId" ng-model="childPriceId[$index]" id="childPriceId{{$index}}"
+                                                                value="{{priceBase.childPriceId}}" >
                                                         </div>
 
                                                         <div class="col-sm-1">
@@ -508,27 +510,22 @@
                                                         </div>
 
                                                         <div class="col-sm-2">
-
                                                             <input type="text" class="form-control"
                                                                 id="basePrice{{$index}}" only-digits2 name="basePrice"
                                                                 ng-model="basePrice[$index]" required
                                                                 ng-change="basePriceOtyChnage($index)"
                                                                 value="{{priceBase.basePrice}}">
-
                                                         </div>
 
                                                         <div ng-if="!basePrice[$index] || !baseQuentity[$index]"
                                                             class="col-sm-2" id="baseWaiting{{$index}}">
-
                                                             0
-
                                                         </div>
 
                                                         <div ng-if="basePrice[$index] && baseQuentity[$index]"
                                                             class="col-sm-2" id="baseWaiting{{$index}}">
                                                             {{ baseTtl[$index] | customNumber }}
                                                             <!-- {{basePrice[$index] * baseQuentity[$index] | customNumber}} -->
-
                                                         </div>
 
                                                         <div class="col-sm-2">

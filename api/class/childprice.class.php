@@ -45,10 +45,12 @@ class childprice {
 	   }
 	   
 	   public function childpriceupdate($id,$data){
-	   		$this->_db->where('name',$data['name']);
+			// same name and project type
+			$this->_db->where('name',$data['name']);
+    		$this->_db->where('service',$data['service']);
     		$match = $this->_db->getOne('tms_child_price_unit');
-    		if($match && $match['child_price_id'] !=$id){
-    			$return['status'] = 422;
+    		if($match && $match['child_price_id'] !=$id ){
+				$return['status'] = 422;
         		$return['msg'] = 'Name already exists.';
     		}else{
 			   	$data['updated_date'] = date('Y-m-d H:i:s');
