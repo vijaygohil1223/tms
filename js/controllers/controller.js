@@ -510,7 +510,9 @@ function numberFormatCommaToPoint(input) {
         var n1 = '';
         if (a[1] == undefined && a[1] !== '00') {
             a[1] = '';
-        } else { var n2 = '.' + a[1].slice(0, 2); }
+        } else { 
+            var n2 = '.' + a[1].slice(0, a[1].length); 
+        }
         //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "");
         var n1 = a1.toString().replace(/\./g, "");
         return n1 + n2;
@@ -2873,7 +2875,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 trgLang =  targetData.sourceLang;  
                 console.log('srcLang',srcLang); 
             });
-            console.log('$scope.jobdetail.project_type_name--before cv', $scope.jobdetail.project_type_name)
                                     
             //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             //var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
@@ -2983,7 +2984,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.csvData = [];
                 var csvID =$scope.jobdetail.job_summmeryId;
                 var percent = 0;
-                var csvColmnArr = ['Repetition','101%','100%','95%-99%','85%-94%','75%-84%','50%-74%','No match'];
+                var csvColmnArr = ['Repetition','101%','100%','95%-99%','85%-94%','75%-84%','50%-74%','No match','(New)','New'];
                 $scope.getFile = function(files) {
                     console.log('files', files);
                     if(!files)
@@ -3006,7 +3007,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             var isError = false;
                             lngPriceList = $scope.lngPriceList;
                             console.log('lngPriceList-res -chnage', lngPriceList)
-                                    
+                            
                             console.log('$scope.lngPriceList', $scope.lngPriceList);
                             angular.forEach(csv, function(val, i) {
                                 //if(i != 0 && Isnumpattern.test(val[0]) ){
@@ -3017,7 +3018,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
                                     if(val)
-                                    var total = itemVal * val[1];
+                                    var total = itemVal * val[2];
                                     var matchStr = val[0] != 'No match' ? ' Match' : ''; 
                                     var obj = {
                                         'id': numindex,
@@ -3029,7 +3030,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     $scope.csvData.push(obj);
                                     if(total)
                                     gtotal += total;
-                                    
                                     
                                     numindex++;
                                 }else{
@@ -3053,7 +3053,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             setTimeout(() => {
                                 $scope.csvProgress = false;
                                 percent = 0;
-                            }, 9000);
+                            }, 10000);
                             
                             var itmpr = angular.element('#totalItemPrice').text();
                             itmpr = itmpr ? numberFormatCommaToPoint(itmpr) : 0;
@@ -3081,10 +3081,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 //}
                 //csvResorce();
                 
-            }, 3000);
+            }, 2500);
             if($scope.isResourceChange == 1){
                 //csvResorce();
-                console.log('function is called');
             }
                 
             $cookieStore.put('editJobact', data[0]);
