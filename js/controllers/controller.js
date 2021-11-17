@@ -2922,8 +2922,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 
                     var priceList = $scope.priceList;
                     //var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
-                    var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
-                    var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
+                    //var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
+                    var projSpecialization = $scope.jobdetail.proj_specialization.toString();
+                    console.log('$scope.jobdetail.proj_specialization', $scope.jobdetail.proj_specialization)
+                    //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
+                    var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
                 
                     console.log('$priceList',$scope.priceList);
                     console.log('$newPriceList',newPriceList);
@@ -2957,10 +2960,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 // function csvResorce() {
                 var priceList = $scope.priceList;
                 console.log('$scope.priceList', $scope.priceList)
-                
-                console.log('specialization', $scope.jobdetail.proj_specialization.split(',') )
-                var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
-                var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
+                //var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
+                var projSpecialization = $scope.jobdetail.proj_specialization.toString();
+                var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
                 
                 console.log('newPriceList', newPriceList)
                 //$scope.lngPriceList = [];
