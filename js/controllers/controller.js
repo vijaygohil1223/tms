@@ -2873,7 +2873,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 trgLang =  targetData.sourceLang;  
                 console.log('srcLang',srcLang); 
             });
-    
+            console.log('$scope.jobdetail.project_type_name--before cv', $scope.jobdetail.project_type_name)
+                                    
             //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             //var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
             $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
@@ -2883,7 +2884,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             if ($scope.jobdetail.price) {
                 //$scope.itemPriceUni = JSON.parse($scope.jobdetail.price);
-
                 $scope.itemPriceUni[$scope.jobdetail.job_summmeryId] = JSON.parse($scope.jobdetail.price);
                 for (var j = 0; j < $scope.itemPriceUni[$scope.jobdetail.job_summmeryId].length; j++) {
                     $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal ? numberFormatComma($scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal) : 0 ;
@@ -2892,7 +2892,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if ($scope.jobdetail.total_price.length == 0) {
                 angular.element('#totalItemPrice').text('0.0');
             } else {
-
                 //angular.element('#totalItemPrice').text(data.total_price);
             }
             
@@ -3012,6 +3011,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             angular.forEach(csv, function(val, i) {
                                 //if(i != 0 && Isnumpattern.test(val[0]) ){
                                 if(csvColmnArr.includes(val[0]) ){
+
+                                    console.log('$scope.jobdetail.project_type_name--csv', $scope.jobdetail.project_type_name)
                                     var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { const lngBasePriceUnit = lngPriceList.basePriceUnit.replace($scope.jobdetail.project_type_name + ' - ',''); return lngBasePriceUnit == val[0]; });
 
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
@@ -3021,7 +3022,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     var obj = {
                                         'id': numindex,
                                         'quantity': val[2],
-                                        'pricelist': 'Words '+$scope.jobdetail.project_type_name + ' ' + val[0] + matchStr,
+                                        'pricelist': 'Words '+ $scope.jobdetail.project_type_name + ' ' + val[0] + matchStr,
                                         'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
                                         'itemTotal': total ? numberFormatComma(total) : 0 ,
                                     }; 
@@ -3080,7 +3081,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 //}
                 //csvResorce();
                 
-            }, 2000);
+            }, 3000);
             if($scope.isResourceChange == 1){
                 //csvResorce();
                 console.log('function is called');
