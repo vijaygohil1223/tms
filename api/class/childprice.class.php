@@ -11,9 +11,11 @@ class childprice {
 	    }
 		
 	    public function childpricesave($data){
-	    	$this->_db->where('name',$data['name']);
-	    	$match = $this->_db->getOne('tms_child_price_unit');
-	    	if($match){
+	    	// same name and project type
+			$this->_db->where('name',$data['name']);
+    		$this->_db->where('service',$data['service']); 
+    		$match = $this->_db->getOne('tms_child_price_unit');
+			if($match){
 	    			$return['status'] = 422;
             		$return['msg'] = 'Name already exists.';
 	    	}else{
