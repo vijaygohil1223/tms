@@ -82,6 +82,7 @@ function authenticate(\Slim\Route $route) {
         db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_ZERO_IN_DATE',''))");
         db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'NO_ZERO_DATE',''))");
         db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ERROR_FOR_DIVISION_BY_ZERO',''))");
+        db::getInstance()->rawQuery("SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
         
     } else {
         // api key is missing in header

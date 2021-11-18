@@ -2922,11 +2922,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 
                     var priceList = $scope.priceList;
                     //var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
-                    //var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
-                    var projSpecialization = $scope.jobdetail.proj_specialization.toString();
-                    console.log('$scope.jobdetail.proj_specialization', $scope.jobdetail.proj_specialization)
-                    //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
-                    var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
+                    //var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
+                    console.log('$scope.jobdetail.proj_specialization.toString()', $scope.jobdetail.proj_specialization.toString().split(','))
+                    var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
+                    console.log('$scope.jobdetail.proj_specialization==', $scope.jobdetail.proj_specialization)
+                    var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
+                    //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
                 
                     console.log('$priceList',$scope.priceList);
                     console.log('$newPriceList',newPriceList);
@@ -2961,8 +2962,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 var priceList = $scope.priceList;
                 console.log('$scope.priceList', $scope.priceList)
                 //var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
-                var projSpecialization = $scope.jobdetail.proj_specialization.toString();
-                var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
+                var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
+                console.log('$scope.jobdetail.proj_specialization', $scope.jobdetail.proj_specialization)
+                var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
+                //var projSpecialization = $scope.jobdetail.proj_specialization.toString();
+                //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
                 
                 console.log('newPriceList', newPriceList)
                 //$scope.lngPriceList = [];
@@ -3008,14 +3012,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             var Isnumpattern = /^[0-9,\.\? ]+$/;
                             var isError = false;
                             lngPriceList = $scope.lngPriceList;
-                            console.log('lngPriceList-res -chnage', lngPriceList)
-                            
-                            console.log('$scope.lngPriceList', $scope.lngPriceList);
                             angular.forEach(csv, function(val, i) {
                                 //if(i != 0 && Isnumpattern.test(val[0]) ){
                                 if(csvColmnArr.includes(val[0]) ){
-
-                                    console.log('$scope.jobdetail.project_type_name--csv', $scope.jobdetail.project_type_name)
                                     var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { const lngBasePriceUnit = lngPriceList.basePriceUnit.replace($scope.jobdetail.project_type_name + ' - ',''); return lngBasePriceUnit == val[0]; });
 
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
@@ -3039,11 +3038,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     //isError = true;
                                 }
                                 percent += Math.round(100 / (results.data.length));
-                                console.log('results.data.length', results.data.length)
-                                console.log('percent', percent)
                                 $(".progress-bar").width(percent+'%')
                                 if(percent >=97 )
                                 $(".progress-bar").width('100%')
+                                   
+                                if(i == results.data.length-1){
+                                    setTimeout(()=>{
+                                        $scope.csvProgress = false;
+                                    },1000);
+                                    setTimeout( ()=>{
+                                        $scope.csvProgress = true;
+                                        percent = 0;
+                                        $(".progress-bar").width('0%')
+                                        $('#file-input').val('');
+                                    },2000)
+                                }
                                         
                             });
                             // notification csv first column will be quantity
@@ -3051,10 +3060,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             //     notification('Please upload valid CSV', 'warning');
                             //     $scope.csvProgress = false;
                             // }  
-                            
                             setTimeout(() => {
-                                $scope.csvProgress = false;
-                                percent = 0;
+                                /* $scope.csvProgress = false;
+                                percent = 0; */
                             }, 10000);
                             
                             var itmpr = angular.element('#totalItemPrice').text();
@@ -14014,10 +14022,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
                     }
 
-
                     $scope.itemList[formIndex].order_id = $window.localStorage.orderID;
                     $scope.itemList[formIndex].total_amount = $scope.total_amount;
-
 
                     var sourceField = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale");
                     var targetField = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale");
@@ -18834,12 +18840,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if (angular.element('#' + formId).valid()) {
             if ($scope.childprice.child_price_id) {
                 $routeParams.id = $scope.childprice.child_price_id;
+                
+                $scope.childprice.rate = numberFormatCommaToPoint($scope.childprice.rate);
                 rest.path = 'childpriceupdate';
                 rest.put($scope.childprice).success(function() {
                     notification('Record updated successfully.', 'success');
                     $route.reload();
                 }).error(errorCallback);
             } else {
+                $scope.childprice.rate = numberFormatCommaToPoint($scope.childprice.rate);
                 rest.path = 'childpricesave';
                 rest.post($scope.childprice).success(function(data) {
                     notification('Record inserted successfully.', 'success');
@@ -18862,6 +18871,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.element("#mamaster_price_id").select2('val', data.master_price_id);
             angular.element("#unit").select2('val', data.unit);
             angular.element("#service").select2('val', data.service);
+            $scope.childprice.rate = numberFormatComma($scope.childprice.rate);
         }).error(errorCallback);
         scrollToId(eID);
     }

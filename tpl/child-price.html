@@ -33,7 +33,10 @@
                                         <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Rate</label>
-                                                <input type="number" name="code" class="form-control" placeholder="Enter rate" min="0" ng-model="childprice.rate" allow-decimal-numbers required>
+                                                <!-- <input type="number" name="code" class="form-control" placeholder="Enter rate" min="0" ng-model="childprice.rate" allow-decimal-numbers required>
+                                                 -->
+                                                 <input type="text" name="code" class="form-control" placeholder="Enter rate" ng-model="childprice.rate" only-digits2 required>
+                                                
                                             </div>
                                         </div>
                                     </div>
