@@ -525,7 +525,7 @@ function fileUrlExists(url) {
     http.send();
     return http.status != 404;
 }
-// date format for comment
+//  date format for comment
 function commentDateToformat(nwdate, dtseperator = '-') {
     var d = new Date(nwdate);
     var mm = (d.getMonth() + 1);
