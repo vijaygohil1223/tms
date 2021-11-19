@@ -3034,7 +3034,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     
                                     numindex++;
                                 }else{
-                                    //if(i!=0)
+                                    //if(i!=0) 
                                     //isError = true;
                                 }
                                 percent += Math.round(100 / (results.data.length));
@@ -18869,7 +18869,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.get().success(function(data) {
             $scope.childprice = data;
             angular.element("#mamaster_price_id").select2('val', data.master_price_id);
-            angular.element("#unit").select2('val', data.unit);
+            //angular.element("#unit").select2('val', data.unit);
+            $('#unit').select2('data', {id: data.unit, text: data.unit});
             angular.element("#service").select2('val', data.service);
             $scope.childprice.rate = numberFormatComma($scope.childprice.rate);
         }).error(errorCallback);

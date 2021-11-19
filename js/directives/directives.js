@@ -2862,7 +2862,6 @@ app.directive('onlyDigits', function() {
             function inputValue(val) {
                 if (val) {
                     var digits = val.replace(/[^0-9.]/g, '');
-
                     if (digits.split('.').length > 2) {
                         digits = digits.substring(0, digits.length - 1);
                     }
@@ -2889,7 +2888,7 @@ app.directive('onlyDigits2', function() {
             function inputValue(val) {
                 if (val) {
                     //var digits = val.replace(/[^0-9.]/g, '');
-                    var digits = val.replace(/[^0-9,.]/g, '');
+                    var digits = val.replace(/[^0-9,]/g,'').replace(/(,.*?),(.*,)?/, "$1");
                     // if (digits.split(',').length > 2) {
                     //     digits = digits.substring(0, digits.length - 1);
                     // }
@@ -2919,7 +2918,6 @@ app.directive('select2ItemLanguage', function($http, rest, $timeout) {
                     var obj = {
                         id: value.pl_id,
                         text: value.source_lang + ' > ' + value.target_lang
-
                     };
                     prType.push(obj);
                 });
