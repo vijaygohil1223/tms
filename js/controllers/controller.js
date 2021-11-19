@@ -2123,7 +2123,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobsListAll = jobOverDue;
                 }
 
-                console.log('$scope.jobsListAll',$scope.jobsListAll);
             }, 200);
 
         }).error(errorCallback);
@@ -2897,7 +2896,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
             
             console.log('$scope.itemPriceUni-', $scope.itemPriceUni);
-            console.log('$scope.job_summmeryId-', $scope.jobdetail.job_summmeryId);
             /*if (isNaN(Date.parse($scope.jobdetail.due_date))) {
                 $timeout(function() {
                     var date = new Date();
@@ -2914,8 +2912,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var resource_id_csv = $scope.jobdetail.resource;
             $scope.isResourceChange = 0;
             $scope.resourceChange = function (resID) {
-                console.log('$scope.changeItemField', resID);
-                console.log('$(\'#resources\').val()', $('#resources').val());
                 if(resID){
                     resource_id_csv = resID;
                     $scope.isResourceChange = 1;
@@ -2923,14 +2919,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     var priceList = $scope.priceList;
                     //var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
                     //var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
-                    console.log('$scope.jobdetail.proj_specialization.toString()', $scope.jobdetail.proj_specialization.toString().split(','))
                     var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
-                    console.log('$scope.jobdetail.proj_specialization==', $scope.jobdetail.proj_specialization)
                     var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist != -1 ; });
                     //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
                 
-                    console.log('$priceList',$scope.priceList);
-                    console.log('$newPriceList',newPriceList);
                     $scope.lngPriceList = [];
                     console.log('$scope.priceList-usersList-',$scope.priceList);
                 
@@ -2940,19 +2932,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         console.log('lang',langList[0].languagePrice);
                         angular.forEach(langList, function(val2, i2) {
                             //$scope.jobdetail.ItemLanguage = angular.element('#sourceLang').text;
-                            console.log('$scope.jobdetail.ItemLanguage',$scope.jobdetail.ItemLanguage);
                             if($scope.jobdetail.ItemLanguage == val2.languagePrice ){
-                                console.log('price',price);
                                 angular.forEach(price, function(val3, i3) {
                                     if(val3.basePriceUnit.includes($scope.jobdetail.project_type_name))
                                     $scope.lngPriceList.push(val3);
-                                    console.log('$scope.lngPriceList', $scope.lngPriceList)
                                 });            
                             }
                         });    
                     }); 
                     var lngPriceList = $scope.lngPriceList;
-                    console.log('lngPriceList', lngPriceList)
                 }
 
                 
@@ -3070,7 +3058,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             //var mgTotal = (parseFloat(itmpr)+parseFloat(gtotal);
                             //angular.element('#totalItemPrice').text(mgTotal);
                             //$scope.newtotal_price = gtotal;
-                            console.log('before=',$scope.itemPriceUni[csvID]);
                             //$scope.itemPriceUni[csvID] = $scope.csvData;
                             if($scope.itemPriceUni.length > 0){
                                 $scope.itemPriceUni[csvID].push.apply($scope.itemPriceUni[csvID], $scope.csvData)
@@ -3078,14 +3065,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 $scope.itemPriceUni[csvID] = $scope.csvData;
                                 //$scope.itemPriceUni[csvID].push($scope.csvData)
                             }
-                            console.log('after=',$scope.itemPriceUni[csvID]);
                             $scope.jobdetail.total_price = parseFloat(itmpr)+parseFloat(gtotal);
                             //$scope.csvData = [];      
                         }
                     });
-
-                    console.log('$scope.itemPriceUni=csv',$scope.itemPriceUni);
-                    console.log('job=detail',$scope.jobdetail);
                 };
                     
                 //}
@@ -3280,7 +3263,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     rest.path = 'masterPriceitemgetFromPriceList';
     rest.get().success(function(data) {
         $scope.masterPrice = data;
-        console.log("$scope.masterPrice", $scope.masterPrice);
     }).error(errorCallback);
 
     rest.path = 'childPriceitemget';
@@ -3406,11 +3388,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }*/
             $scope.work_instruction = JSON.stringify(obj);
             $scope.jobdetail.work_instruction = $scope.work_instruction;
-            console.log('jobdata', $scope.jobdetail);
 
             var itemPriceUnit = [];
             itemPriceUnit = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId];
-            console.log('itemPriceUnit', itemPriceUnit)
             
             if (itemPriceUnit) {
                 for (var j = 0; j < itemPriceUnit.length; j++) {
@@ -3422,8 +3402,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             delete $scope.jobdetail['quantity'];
 
             // end - jobprices 
-            console.log('$scope.jobdetail.price',$scope.jobdetail.price);
-
             if ($scope.jobdetail.contact_person == '') {
                 notification('Please select project manager', 'warning');
                 return false;
@@ -4160,11 +4138,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         if (folderId != undefined) {
                             $scope.showLoder = true;
                             rest.path = 'filemanagerfolderDownload/' + folderId;
-                            console.log('nosuc');
                             rest.get().success(function(data) {
-                                console.log('a');
                                 $scope.downloadAllfile = data;
-                                console.log('allfile', $scope.downloadAllfile);
                                 var zipdwnld = new JSZip();
                                 var fileUrls = [];
                                 var folderArr = [];
@@ -5348,7 +5323,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.get().success(function(data) {
                 $timeout(function() {
                     $scope.displayfolder = data;
-                    console.log('displayfolder-data', $scope.displayfolder);
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function(val, i) {
                         $scope.displayfolder[i].countchild = val.categories.length;
@@ -5476,7 +5450,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 rest.path = 'filemanagerfolderDownload/' + folderId;
                                 rest.get().success(function(data) {
                                     $scope.downloadAllfile = data;
-                                    console.log('allfile', $scope.downloadAllfile);
                                     var zipdwnld = new JSZip();
                                     var fileUrls = [];
                                     var folderArr = [];
@@ -5706,7 +5679,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 $scope.menuRclkID = '';
                                 $scope.menuRclkName = '';
                             }, 500);
-
                         }],
 
                         ['Delete', function($itemScope) {
@@ -5714,8 +5686,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 if (result == true) {
                                     $scope.copyfile = [];
                                     FilesLength = angular.element('file').hasClass('activeselect');
-                                    console.log('delete', FilesLength);
-
+                                    
                                     if (FilesLength) {
                                         $.each($('file'), function() {
                                             if (angular.element('#' + this.id).hasClass('activeselect')) {
@@ -5804,10 +5775,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 angular.element('#' + value.id).removeClass('activeselect');
                             });
                             FilesLength = angular.element('file').hasClass('activeselect');
-                            console.log('a');
                             if (FilesLength) {
-                                console.log('b');
-
                                 $.each($('file'), function() {
                                     if (angular.element('#' + this.id).hasClass('activeselect')) {
                                         $scope.copyfile.push({
@@ -5821,7 +5789,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     angular.element('#' + value.id).addClass('activeselect');
                                 });
                             } else {
-                                console.log('c');
                                 if ($scope.menuRclkID) {
                                     var folderId2 = $scope.menuRclkID;
                                 } else {
@@ -5834,7 +5801,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     }
                                 });
                                 if (alreadyInCopy) {
-                                    console.log('d');
 
                                     angular.forEach($scope.copyfile, function(value, key) {
                                         angular.element('#' + value.id).addClass('activeselect');
@@ -5842,7 +5808,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     alert('File already copied');
                                     angular.element('#' + $itemScope.display.fmanager_id).addClass('activeselect');
                                 } else {
-                                    console.log('e');
 
                                     if ($scope.menuRclkID) {
                                         var folderId = $scope.menuRclkID;
@@ -5997,7 +5962,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 rest.get().success(function(data) {
                     $scope.showLoder = true;
                     $scope.displayfolder = data.data;
-                    console.log('$scope.folderup', $scope.displayfolder);
                     var fid = [];
                     var fname = [];
                     if (data.info.parent_id == 0) {
@@ -6012,7 +5976,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function(val, i) {
                         $scope.displayfolder[i].countchild = val.categories.length;
-                        console.log('$scope.displayfolder[i].countchild', $scope.displayfolder[i].countchild);
                         $scope.displayfolder[i].name = val.name.toString();
 
                         if (val.item_id != 0) {
@@ -6020,7 +5983,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             ItemNo = val.name.match(/\d+$/);
                             if (ItemNo) {
                                 $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
-
                             }
                         }
                     })
@@ -17006,6 +16968,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 $scope.commentsArrayAll();  
                                 success(NewcommentsArray);  
                                 $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                if($('.cmtleft').length > 0 || $('.cmtright').length > 0)
                                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                                 $('#comment-list').find(' > li[data-id^=c]').hide();
                                 // to remove same li date div

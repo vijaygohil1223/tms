@@ -368,12 +368,11 @@
             this.$el.find('> .spinner').remove();
 
             setTimeout(() => {
+                if($('.cmtleft').length > 0 || $('.cmtright').length > 0)
                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight); 
-                console.log('getAttachCount',this.getAttachments().length)
                 //$('.att_count').text(this.getAttachments().length);
             }, 1000);
             $('.att_count').text(this.getAttachments().length);
-            console.log('this is called');
 
             this.options.refresh();
 
@@ -871,7 +870,6 @@
             
             if (sortKey == 'attachments') {
                 this.sortAndReArrangeComments('sortKey');
-                console.log('sort',sortKey);
                 setTimeout(() => {
                     this.$el.find('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
                 }, 1000);
