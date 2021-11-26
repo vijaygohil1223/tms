@@ -9832,12 +9832,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 angular.forEach($scope.childPrice, function(val1, i1) {
                     //console.log('$scope.childPrice', $scope.childPrice)
                     if (v.master_price_id == val1.master_price_id) {
-                        
                         var obj2 = {
                             id: val1.child_price_id,
                             text: val1.name
                         }
-
                         $scope.pricesArray[i].children.push(obj2);
                     }
                 })
@@ -9966,7 +9964,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     if (!exists) {
                         var newPriceObj = {
                             basePrice: data.rate,
-                            basePriceUnit: projType + data.name,
+                            basePriceUnit: data.name,
                             basePricecheck: 1,
                             baseQuentity: "1",
                             standardTime: "", 
