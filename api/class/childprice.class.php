@@ -13,7 +13,7 @@ class childprice {
 	    public function childpricesave($data){
 	    	// same name and project type
 			$this->_db->where('name',$data['name']);
-    		$this->_db->where('service',$data['service']); 
+    		$this->_db->where('master_price_id',$data['master_price_id']); 
     		$match = $this->_db->getOne('tms_child_price_unit');
 			if($match){
 	    			$return['status'] = 422;
@@ -23,7 +23,7 @@ class childprice {
 		    	$data['updated_date'] = date('Y-m-d H:i:s');
 		    	$id = $this->_db->insert('tms_child_price_unit', $data);
 
-		    	if ($id) {
+		    	if($id) {
 		    	   $return['status'] = 200;
 		    	   $return['msg'] = 'Successfully Inserted.';
 		    	} else {
@@ -34,7 +34,7 @@ class childprice {
 	    	return $return;
 	    }
 	   public function childPriceGetAll(){
-	   		$query = 'select tcpu.*,tmp.name AS masterPriceName from tms_child_price_unit As tcpu INNER JOIN tms_master_price  AS tmp ON tcpu.master_price_id = tmp.master_price_id ORDER BY tcpu.child_price_id DESC';
+	   		$query = 'select tcpu.*,tmp.name AS masterPriceName,tmp.code AS masterCode from tms_child_price_unit As tcpu INNER JOIN tms_master_price  AS tmp ON tcpu.master_price_id = tmp.master_price_id ORDER BY tcpu.child_price_id DESC';
 	   		$data = $this->_db->rawQuery($query);
 	   		/*$this->_db->orderBy("is_active","Desc");
 		   	$data = $this->_db->get('tms_child_price_unit');*/
@@ -49,7 +49,7 @@ class childprice {
 	   public function childpriceupdate($id,$data){
 			// same name and project type
 			$this->_db->where('name',$data['name']);
-    		$this->_db->where('service',$data['service']);
+    		$this->_db->where('master_price_id',$data['master_price_id']);
     		$match = $this->_db->getOne('tms_child_price_unit');
     		if($match && $match['child_price_id'] !=$id ){
 				$return['status'] = 422;

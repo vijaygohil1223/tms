@@ -1296,10 +1296,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     };
 
-
-
-
-
     //my tasks job display
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = "taskJobget/" + $cookieStore.get('session_iUserId');
@@ -1676,7 +1672,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     data[i].itemsTargetLang = newLangData;
                 }
 
-                //  ----linguist List----- / 
+                //  ----linguist List----- /
                 $scope.jobLinguist = [];
                 rest.path = 'jobsummeryGet/' + val.orderId;
                 rest.get().success(function(data) {
@@ -1806,7 +1802,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.projectsToDisplay.push(val);
                 }
                 val.itemDuedate_new = val.itemDuedate ? val.itemDuedate : '';
-            
+                
             });
             console.log("allproj", $scope.projectsAll);
 
@@ -2996,38 +2992,48 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             if(csv[7]["Repetition"])
                             var numindex=0;
                             $scope.csvData = [];
-                            var gtotal =  0;
+                            var gtotal = 0;
                             var Isnumpattern = /^[0-9,\.\? ]+$/;
                             var isError = false;
                             lngPriceList = $scope.lngPriceList;
+                            console.log('lngPriceList', lngPriceList)
                             angular.forEach(csv, function(val, i) {
-                                //if(i != 0 && Isnumpattern.test(val[0]) ){
-                                if(csvColmnArr.includes(val[0]) ){
-                                    var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { const lngBasePriceUnit = lngPriceList.basePriceUnit.replace($scope.jobdetail.project_type_name + ' - ',''); return lngBasePriceUnit == val[0]; });
-
-                                    var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
-                                    if(val)
-                                    var total = itemVal * val[2];
-                                    var matchStr = val[0] != 'No match' ? ' Match' : ''; 
-                                    var obj = {
-                                        'id': numindex,
-                                        'quantity': val[2],
-                                        'pricelist': 'Words '+ $scope.jobdetail.project_type_name + ' ' + val[0] + matchStr,
-                                        'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
-                                        'itemTotal': total ? numberFormatComma(total) : 0 ,
-                                    }; 
-                                    $scope.csvData.push(obj);
-                                    if(total)
-                                    gtotal += total;
+                                //if(csvColmnArr.includes(val[0]) ){
+                                if(i > 8 && Isnumpattern.test(val[2]) ){
+                                    //var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { const lngBasePriceUnit = lngPriceList.basePriceUnit.replace($scope.jobdetail.project_type + ' - ',''); return lngBasePriceUnit == val[0]; });
+                                    var isPercentVal = 0;
+                                    if (val[0].match(/%.*%/)) { // Check if there are 2 % sign remove first one to compare
+                                        isPercentVal = val[0].replace('%', ''); // Remove the first one
+                                    }
+                                    val[0] = isPercentVal ? isPercentVal : val[0] ;
+                                    var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit.includes(val[0]) ; });
                                     
-                                    numindex++;
+                                    var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
+                                    var pricelistData = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePriceUnit : '' ;
+                                    if(itemVal){
+                                        if(val)
+                                        var total = itemVal * val[2];
+                                        var matchStr = val[0] != 'No match' ? ' Match' : ''; 
+                                        var obj = {
+                                            'id': numindex,
+                                            'quantity': val[2],
+                                            //'pricelist': 'Words '+ $scope.jobdetail.project_type_name + ' ' + val[0] + matchStr,
+                                            'pricelist': pricelistData,
+                                            'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
+                                            'itemTotal': total ? numberFormatComma(total) : 0 ,
+                                        }; 
+                                        $scope.csvData.push(obj);
+                                        if(total)
+                                        gtotal += total;
+                                        numindex++;
+                                    }    
                                 }else{
-                                    //if(i!=0) 
-                                    //isError = true;
+                                    //if(i!=0)
+                                    //isError = true; 
                                 }
                                 percent += Math.round(100 / (results.data.length));
                                 $(".progress-bar").width(percent+'%')
-                                if(percent >=97 )
+                                if(percent >= 97 )
                                 $(".progress-bar").width('100%')
                                    
                                 if(i == results.data.length-1){
@@ -9484,6 +9490,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var standard = 0;
             var childPriceId = 0;
             $scope.childPriceId = [];
+            var masterPriceId = 0;
+            $scope.masterPriceId = [];
             angular.forEach(JSON.parse(data.price_basis), function(val, i) {
                 $scope.baseQuentity[i] = val.baseQuentity;
                 $scope.basePrice[i] = val.basePrice;
@@ -9497,6 +9505,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     childPriceId = val.childPriceId;
                 }
                 $scope.childPriceId[i] = childPriceId;
+                if (val.masterPriceId) {
+                    masterPriceId = val.masterPriceId;
+                }
+                $scope.masterPriceId[i] = masterPriceId;
                 
                 $scope.baseTtl[i] = $scope.baseQuentity[i] * $scope.basePrice[i];
                 $scope.basePrice[i] = $filter('customNumber')(val.basePrice);
@@ -9570,6 +9582,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
                     var childPriceId = angular.element('#childPriceId' + i).val().trim();
+                    var masterPriceId = angular.element('#masterPriceId' + i).val().trim();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
                     basePrice = numberFormatCommaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
@@ -9580,7 +9593,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         'basePriceUnit': basePriceUnit,
                         'basePrice': basePrice,
                         'standardTime': standardTime,
-                        'childPriceId': childPriceId
+                        'childPriceId': childPriceId,
+                        'masterPriceId': masterPriceId
                     });
                 }
 
@@ -9668,8 +9682,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         var basePricecheck = 0;
                     }
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
-                    var childPriceId = angular.element('#childPriceId' + i).val().trim();
-                    console.log('childPriceId=edit', childPriceId)
+                    var childPriceId = angular.element('#childPriceId' + i).val();
+                    var masterPriceId = angular.element('#masterPriceId' + i).val();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
                     basePrice = numberFormatCommaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
@@ -9679,7 +9693,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         'basePriceUnit': basePriceUnit,
                         'basePrice': basePrice,
                         'standardTime': standardTime,
-                        'childPriceId': childPriceId
+                        'childPriceId': childPriceId,
+                        'masterPriceId': masterPriceId
                     });
                 }
 
@@ -9783,8 +9798,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
+    // master price list as Project Type 
     setTimeout( ()=> {
-        rest.path = 'prtype';
+        /* rest.path = 'prtype';
+        rest.get().success(function(data) {
+            $scope.projectType = data;
+            console.log('$scope.projectType', $scope.projectType)
+        }).error(errorCallback); */
+        
+        rest.path = 'masterPriceGetdata';
         rest.get().success(function(data) {
             $scope.projectType = data;
             console.log('$scope.projectType', $scope.projectType)
@@ -9876,8 +9898,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 angular.forEach(selectedPricesArray, function(val, i) {
                     rest.path = 'childpriceGetOne/' + val;
                     rest.get().success(function(data) {
-                        var prType = $scope.projectType.filter(x => x.pr_type_id  == data.service )
-                        var projType = prType.length>0 ? prType[0].project_name +' - ' : ''; 
+                        var prType = $scope.projectType.filter(x => x.master_price_id  == data.master_price_id )
+                        var projType = prType.length>0 ? prType[0].code +' - ' : ''; 
                         var exists = false;
                         angular.forEach($scope.priceBasiList, function(val1, i1) {
                             if (val1.basePriceUnit == data.name) {
@@ -9887,12 +9909,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                         if (!exists) {
                             var newPriceObj = {
-                                basePrice: projType + data.rate,
+                                basePrice: data.rate,
                                 basePriceUnit: data.name,
                                 basePricecheck: 1,
                                 baseQuentity: "1",
                                 standardTime: "",
-                                childPriceId: data.child_price_id
+                                childPriceId: data.child_price_id,
+                                masterPriceId: data.master_price_id
                             };
                             $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                             $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
@@ -9923,10 +9946,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }).error(errorCallback);
                 })
             } else {
+
+                console.log('i think we are going here...')
                 rest.path = 'childpriceGetOne/' + selectedPrices;
                 rest.get().success(function(data) {
-                    var prType = $scope.projectType.filter(x => x.pr_type_id  == data.service )
-                    var projType = prType.length>0 ? prType[0].project_name +' - ' : ''; 
+                    console.log('data', data)
+                    //var prType = $scope.projectType.filter(x => x.master_price_id  == data.service )
+                    var prType = $scope.projectType.filter(x => x.master_price_id  == data.master_price_id )
+                    console.log('$scope.projectType', $scope.projectType)
+                    var projType = prType.length>0 ? prType[0].code +' - ' : ''; 
                     
                     var exists = false;
                     angular.forEach($scope.priceBasiList, function(val, i) {
@@ -9942,7 +9970,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             basePricecheck: 1,
                             baseQuentity: "1",
                             standardTime: "", 
-                            childPriceId: data.child_price_id
+                            childPriceId: data.child_price_id,
+                            masterPriceId: data.master_price_id
                         };
                         $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                         $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
@@ -16465,12 +16494,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 angular.element('#managerDesignation').html(val.vUserName);
                 var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
                 angular.element('.managerIcon').html(managerpic);
-                
             } else if (val.vResourcePosition == 4) {
                 angular.element('#QASpecialist').html(val.vUserName);
                 var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
                 angular.element('.QAIcon').html(QApic);
-            
             }
         })
     }).error(errorCallback);
@@ -16479,7 +16506,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
     rest.get().success(function(data) {
         $scope.general = data;
-        console.log('$scope.general',$scope.general);
         //$scope.general.order_date = $scope.general.order_date;
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
         //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');

@@ -80,7 +80,9 @@ class masterprice {
 		   	return $return;
 	   }
 	   public function mastergetPrice(){
-	   		$info = array("Character","days","document","fixed rate", "hours","lines","minimum price","minutes","months","pages","paragraphs","segments","terms","units","words","years"); 
-	   		return $info;
+	   		//$info = array("Character","days","document","fixed rate", "hours","lines","minimum price","minutes","months","pages","paragraphs","segments","terms","units","words","years"); 
+	   		$this->_db->where('is_active',1);
+		   	$info = $this->_db->get('tms_price_unit');
+	   	 	return $info;
 	   }
 }

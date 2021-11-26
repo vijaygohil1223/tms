@@ -491,8 +491,10 @@
                                                                 ng-model="baseQuentity[$index]"
                                                                 value="{{priceBase.baseQuentity}}" required>
                                                                 
-                                                                <input type="hidden"  name="childPriceId" ng-model="childPriceId[$index]" id="childPriceId{{$index}}"
+                                                                <input type="hidden" name="childPriceId" ng-model="childPriceId[$index]" id="childPriceId{{$index}}"
                                                                 value="{{priceBase.childPriceId}}" >
+                                                                <input type="hidden" name="masterPriceId" ng-model="masterPriceId[$index]" id="masterPriceId{{$index}}"
+                                                                value="{{priceBase.masterPriceId}}" >
                                                         </div>
 
                                                         <div class="col-sm-1">

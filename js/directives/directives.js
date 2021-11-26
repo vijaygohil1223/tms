@@ -1361,8 +1361,8 @@ app.directive('select2ChildUnit', function($http, rest, $timeout) {
                 var lang = [];
                 $.each(data, function(key, value) {
                     var obj = {
-                        'id': value,
-                        'text': value
+                        'id': value.unit_name,
+                        'text': value.unit_name
                     };
                     lang.push(obj);
                 });
