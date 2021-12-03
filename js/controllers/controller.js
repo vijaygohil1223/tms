@@ -2535,6 +2535,20 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.holidayStatus("Upcoming");
 
+    // widget Absent Linguist
+    $scope.absentLinguistlist = function() {
+        rest.path = 'user/' + 2;
+        rest.get().success(function(data) {
+            var absentLngstlist = data.data;
+            console.log('$scope.absentLngstlist', $scope.absentLngstlist)
+            var absentLngstFilter = absentLngstlist.filter(x => x.is_available == 0 );
+            console.log('newLinguistData', absentLngstFilter.length)
+            $scope.absentLngstlist = absentLngstFilter;
+                            
+        }).error(errorCallback);
+    }
+    $scope.absentLinguistlist();
+
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
     }
@@ -9975,9 +9989,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
                         $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate; 
                         $scope.priceBasiList.push(newPriceObj);
-                        console.log('$scope.priceBasiList==added', $scope.priceBasiList)
+                        //console.log('$scope.priceBasiList==added', $scope.priceBasiList)
                         //$('#priceUnit').val('');
-                        $("#priceUnit").select2("val", "");
+                        $("#priceUnit").select2("val","");
                     } else {
                         notification('Prices already exists.', 'warning');
                     }

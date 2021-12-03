@@ -62,7 +62,7 @@ select{color: #3615a0;}
 .summeryColor{color: #3615a0;}
 
 /* button */
-.btn{border-radius: 20px;}
+.btn{border-radius: 8px;}
 
 .form-control{border-color: #ddd;}
 .page_dashboard{overflow-y: hidden;}
@@ -157,7 +157,6 @@ div.dataTables_length select{margin: 0 5px;}
 .nav-pills.nav-wizard > li:hover .nav-wedge{border-color: #c1c6ce #c1c6ce #c1c6ce transparent;}
 .nav-pills.nav-wizard > li:hover .nav-arrow{border-color: transparent transparent transparent #c1c6ce;}
 
-
 /* sidebar */
 .sidebar_wrapper.md-aside{position: fixed; top: 62px; left: 0; max-width: 220px !important; height: calc(100vh - 62px); padding: 10px 0 20px;}
 .sidebar_wrapper .sidebar_new{margin: 0 10px;}
@@ -237,7 +236,7 @@ div.dataTables_length select{margin: 0 5px;}
   .projecttable .nav-tabs>li::before,
   .projecttable .nav-tabs>li::after, 
   .overviewli li::before,
-  .overviewli li::after  {
+  .overviewli li::after {
     display: block;
     content: " ";
     position: absolute;

@@ -459,6 +459,10 @@ $('#priceUnit').css('display', 'block');
 
                                                                 <input type="text" id="basepriceQuantity{{$index}}" only-digits class="form-control" name="basepriceQuantity" ng-change="basePriceOtyChnage($index)" ng-model="baseQuentity[$index]" required>
 
+                                                                <input type="hidden" name="childPriceId" ng-model="childPriceId[$index]" id="childPriceId{{$index}}"
+                                                                value="{{priceBase.childPriceId}}" >
+                                                                <input type="hidden" name="masterPriceId" ng-model="masterPriceId[$index]" id="masterPriceId{{$index}}"
+                                                                value="{{priceBase.masterPriceId}}" >
                                                             </div>
 
                                                             <div class="col-sm-1">
