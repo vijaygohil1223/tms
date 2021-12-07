@@ -1804,7 +1804,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 val.itemDuedate_new = val.itemDuedate ? val.itemDuedate : '';
                 
             });
-            console.log("allproj", $scope.projectsAll);
+            //console.log("allproj", $scope.projectsAll);
 
         });
     };
