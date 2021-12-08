@@ -3019,8 +3019,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     if (val[0].match(/%.*%/)) { // Check if there are 2 % sign remove first one to compare
                                         isPercentVal = val[0].replace('%', ''); // Remove the first one
                                     }
-                                    val[0] = isPercentVal ? isPercentVal : val[0] ;
-                                    var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit.includes(val[0]) ; });
+                                    val[0] = isPercentVal ? isPercentVal : val[0];
+                                    var lngPriceListFilt = lngPriceList.filter(function(lngPriceList) { return lngPriceList.basePriceUnit.includes(val[0]) || (val[0] == 'No match' && lngPriceList.basePriceUnit.includes('(New)')) ; });
                                     
                                     var itemVal = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePrice : 0 ;
                                     var pricelistData = (lngPriceListFilt.length > 0) ? lngPriceListFilt[0].basePriceUnit : '' ;

@@ -1548,7 +1548,7 @@ td { font-size: 11px; } */
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
                         <a><span class="holidayTabActive" ng-click="holidayStatus('Upcoming')"
-                            style="padding: 11px">Upcoming Delivery </span></a>
+                            style="padding: 11px">Upcoming Deliveries </span></a>
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
                         <li class="list-group-item" ng-hide="holidayShow" ng-repeat="upcome in upcommingList">
@@ -1719,7 +1719,7 @@ td { font-size: 11px; } */
                   </div>
                 </div>
               </div>
-              <div class="col-md-9 chid-tables">
+              <div class="col-md-12 chid-tables">
                 <div class="box">
                   <div class="white_box panel panel-default pb-15">
                     <div class="panel-heading">
@@ -1818,134 +1818,7 @@ td { font-size: 11px; } */
                 </div>                
               </div>
               
-              <div class="col-sm-3 rightBox-group">
-                <!-- <div class="box-group-head white_box h3" style="text-align: center">
-                  Overview
-                </div>
-                <div class="box">
-                  <div class="white_box panel panel-default">
-                    <div class="panel-heading">
-                      <div class="clearfix">
-                        <div class="clear">
-                          <div class="h4">Projects</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="list-group no-radius alt">
-                      <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='all'}">
-                        <span class="badge bg-info">{{scoopAlljobsCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','all')">
-                          All</a>
-                      </li>
-                      <li class="list-group-item"  ng-class="{ 'active': scoopjobStatus=='scoopAssigned'}">
-                        <span class="badge bg-info">{{scoopAssignedCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopAssigned')">
-                          To be Assigned</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopProgress'}">
-                        <span class="badge bg-info">{{scoopProgressCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopProgress')">
-                          In progress</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopLinguist'}">
-                        <span class="badge bg-info">{{scoopLinguistCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopLinguist')">
-                          Completed by linguist</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopQaReady'}">
-                        <span class="badge bg-info">{{scoopQaReadyCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopQaReady')">
-                          QA Ready</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopTobedelivered'}">
-                        <span class="badge bg-info">{{scoopTobedeliveredCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopTobedelivered')">
-                          To be Delivered</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopDelivered'}">
-                        <span class="badge bg-info">{{scoopDeliveredCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopDelivered')">
-                          Delivered</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopApproved'}">
-                        <span class="badge bg-info">{{scoopApprovedCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopApproved')">
-                          Approved</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopInvoiced'}">
-                        <span class="badge bg-info">{{scoopInvoicedCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopInvoiced')">
-                          Invoiced</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopPaid'}">
-                        <span class="badge bg-info">{{scoopPaidCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopPaid')">
-                          Paid</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopWithoutInvoice'}">
-                        <span class="badge bg-info">{{scoopWithoutInvoiceCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopWithoutInvoice')">
-                          Without invoice</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': scoopjobStatus=='scoopCancelled'}">
-                        <span class="badge bg-info">{{scoopCancelledCount}}</span><a href="javascript:void(0)"
-                          ng-click="scoopjobstatusRecord('scoop','scoopCancelled')">
-                          Cancelled</a>
-                      </li>
-                      -->
-                      <!-- <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueToday'}">
-                        <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectScoopList('All')">
-                          All</a>
-                      </li> -->
-                      
-                      <!-- <li class="list-group-item">
-                        <span class="badge bg-info">{{filteredTodos.length}}</span><a href="javascript:void(0)"
-                          ng-click="goToProjectList('All')">
-                          All</a>
-                      </li> -->
-                    <!-- </div>
-                  </div>
-                </div>
-                <div class="box">
-                  <div class="white_box panel panel-default">
-                    <div class="panel-heading">
-                      <div class="clearfix">
-                        <div class="clear">
-                          <div class="h4">Jobs</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="list-group no-radius alt">
-                      <li class="list-group-item"  ng-class="{ 'active': jobsactive=='Requested'}">
-                        <span class="badge bg-info">{{jobRequestesCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('jobs','Requested')">
-                          Requested</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='inProgress'}">
-                        <span class="badge bg-info">{{jobInProgressCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('jobs','inProgress')">
-                          In progress</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueToday'}">
-                        <span class="badge bg-info">{{jobDueTodayCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('jobs','DueToday')">
-                          Due Today</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueTomorrow'}">
-                        <span class="badge bg-info">{{jobDueTomorrowCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('jobs','DueTomorrow')">
-                          Due Tomorrow</a>
-                      </li>
-                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='Overdue'}">
-                        <span class="badge bg-info">{{jobOverDueCount}}</span><a href="javascript:void(0)"
-                          ng-click="jobstatusRecord('jobs','Overdue')">
-                          Overdue</a>
-                      </li>
-                      
-                    </div>
-                  </div>
-                </div> --> 
+              <!-- <div class="col-sm-3 rightBox-group">
                 <div class="box">
                   <div class="white_box panel panel-default">
                     <div class="panel-heading">
@@ -1977,12 +1850,6 @@ td { font-size: 11px; } */
                       <md-progress-linear id="holidaysLoading" style="width: 50%; margin-left: 24%; margin-top: 48%"
                         md-mode="indeterminate" class="m-b"></md-progress-linear>
                       <span style="padding: 45px" ng-if="!upcommingList.length">No upcomming holiday</span>
-                      <!-- <li class="list-group-item" ng-hide="holidayShow" ng-if="!upcommingList.length">
-                        <span ng-bind="dataNotFound"></span>
-                      </li>
-                      <li class="list-group-item" ng-show="holidayShow" ng-if="!ongoingList.length">
-                        <span ng-bind="dataNotFound"></span>
-                      </li> -->
                     </ul>
                     <div class="panel-footer" style="background: #e6e9ef">
                       <span class="pull-right badge bg-info" ng-hide="holidayShow" ng-bind="upLength">32</span>
@@ -1991,7 +1858,7 @@ td { font-size: 11px; } */
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
