@@ -1636,7 +1636,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         //$routeParams.id = 5;
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
-            console.log('orderdata', data);
             angular.forEach(data, function(val, i) {
                 val.progrss_precentage = -1;
                 $scope.projectsAll = data;
@@ -1955,7 +1954,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
     };
     $scope.scoopjobstatusRecord('scoop','');    
-
+    $scope.alljobsWidget = [];
     $scope.isoverviewJobs = false;
     $scope.jobstatusRecord = function(statusType,jobStatus) {
         if(jobStatus){
@@ -2012,7 +2011,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             // var jobCancelledCount = 0;
             angular.forEach($scope.dashboardJobList, function(val, i) {
                 val.item_id = pad(val.item_id, 3);
-
                 if (val.ItemLanguage) {
                     val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
                 }
@@ -2094,6 +2092,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 // $scope.jobPaidCount = jobPaidCount;
                 // $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
                 //$scope.jobsListAll = allJobsData;
+                
+                /* All jobs list for widget */ 
+                $scope.alljobsWidget = allJobsData;
+                
                 if($scope.jobstatusFilter == 'all'){
                     $scope.jobsListAll = allJobsData;
                 }
@@ -2119,7 +2121,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.jobsListAll = jobOverDue;
                 }
 
-            }, 200);
+            }, 1000);
 
         }).error(errorCallback);
     };
@@ -2548,6 +2550,36 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
     }
     $scope.absentLinguistlist();
+    
+    rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
+    rest.get().success(function(data) {
+        console.log('jobdeliver-user', data.vResourcePosition)
+        $scope.vResourcePosition = data.vResourcePosition;
+    });
+    setTimeout(() => {
+        console.log('$scope.projectsAll-all projects', $scope.projectsAll)
+        const items = { ...localStorage };
+        console.log('items', items)
+        
+        console.log('$scope.alljobsWidget - now', $scope.alljobsWidget)
+        //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
+        const currentDatestr = new Date();
+        const currentDate = currentDatestr.toISOString().split('T')[0];
+        console.log('todayDate', currentDate)
+        if($scope.vResourcePosition == 2){
+            $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId") );
+            $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.project_manager_id == $window.localStorage.getItem("session_iUserId") );
+            console.log('$scope.upJobsDue', $scope.upJobsDue)
+        }
+        if($scope.vResourcePosition == 3){
+            $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
+            $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
+        }
+        if($scope.vResourcePosition == 4){
+            $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
+            $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
+        }
+    }, 3000);
 
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
