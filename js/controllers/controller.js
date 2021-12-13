@@ -2579,7 +2579,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
             $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
         }
-    }, 3000);
+    }, 5000);
 
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
