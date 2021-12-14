@@ -1314,7 +1314,9 @@ class jobs_detail {
     public function jobSummeryJobDetailsUpdate($id,$data) {
         unset($data['auto_job'],$data['fmanager_id'],$data['userName'],$data['contactPerson'],$data['projectName'],$data['projectManager']);
         //unset($data['quantity'],$data['itemPrice']);
-
+        if(isset($data['proj_specialization'])) {
+            unset($data['proj_specialization']); 
+        }    
         if(isset($data ['due_date'])) {
 
             $data ['due_date'] = date('Y-m-d H:i:s', strtoTime($data ['due_date']));

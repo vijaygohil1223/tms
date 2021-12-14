@@ -3519,6 +3519,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
             delete $scope.jobdetail['ProjectDueDate'];
 
+            console.log('$scope.jobdetail==update', $scope.jobdetail)
             $routeParams.id;
             rest.path = 'jobSummeryJobDetailsUpdate';
             rest.put($scope.jobdetail).success(function(data) {
@@ -15035,6 +15036,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $scope.resource = resourceId;
         $scope.jobd.resource = $scope.resource;
         $routeParams.id = sumId;
+        console.log('$scope.jobd', $scope.jobd)
+        
         rest.path = 'jobSummeryJobDetailsUpdate';
         rest.put($scope.jobd).success(function(data) {
             $route.reload();
