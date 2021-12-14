@@ -1029,7 +1029,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             // var jobWithoutInvoicedCount = 0;
             // var jobCancelledCount = 0;
 
-
             angular.forEach($scope.dashboardJobList, function(val, i) {
                 val.item_id = pad(val.item_id, 3);
 
@@ -1970,7 +1969,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function(data) {
             $scope.dashboardJobList = data;
-            //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
+            console.log("$scope.dashboardJobList", $scope.dashboardJobList);
             var allJobsData = [];
             var Requested = [];
             var NewJob = [];
@@ -2014,6 +2013,17 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.ItemLanguage) {
                     val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
                 }
+                if (val.item_source_lang) {
+                    val.item_source_lang = JSON.parse(val.item_source_lang);
+                }
+                if (val.item_source_lang) {
+                    val.item_target_lang = JSON.parse(val.item_target_lang);
+                }
+                /* var sourceData = JSON.parse(data.source_lang);
+                var targetData = JSON.parse(data.target_lang);
+                srcLang =  sourceData.sourceLang;   
+                trgLang =  targetData.sourceLang; */ 
+
                 if (val.po_number.length < 1) {
                     pendingPo.push(val);
                 }
@@ -2104,6 +2114,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 if($scope.jobstatusFilter == 'inProgress'){
                     $scope.jobsListAll = inProgerss;
+                    console.log('$scope.jobsListAll-PROGRESS', $scope.jobsListAll)
                 }
                 if($scope.jobstatusFilter == 'DueToday'){
                     $scope.jobsListAll = inProgerss;
@@ -2561,7 +2572,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         const items = { ...localStorage };
         console.log('items', items)
         
-        console.log('$scope.alljobsWidget - now', $scope.alljobsWidget)
         //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
         const currentDatestr = new Date();
         const currentDate = currentDatestr.toISOString().split('T')[0];

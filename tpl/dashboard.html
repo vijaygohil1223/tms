@@ -1550,7 +1550,7 @@ td { font-size: 11px; } */
                         <a><span class="holidayTabActive" style="padding: 11px">Upcoming Deliveries </span></a>
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
-                        <li class="list-group-item" ng-hide="holidayShow" ng-repeat="upcomProj in upProjDeliveries">
+                        <li class="list-group-item" ng-repeat="upcomProj in upProjDeliveries">
                           <!-- <span >{{ upcomProj.orderNumber }}</span> -->
                           <a href="javascript:void(0)" ng-click="goToProjectViewdetail(upcomProj.orderId)">
                             {{upcomProj.orderNumber}}
@@ -1582,7 +1582,7 @@ td { font-size: 11px; } */
                         <a><span class="holidayTabActive" style="padding: 11px">Due Jobs</span></a>
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
-                        <li class="list-group-item" ng-hide="holidayShow" ng-repeat="upcomJob in upJobsDue">
+                        <li class="list-group-item" ng-repeat="upcomJob in upJobsDue">
                           <span >{{ upcomJob.po_number }}</span>
                           <!-- <a href="javascript:void(0)" ng-click="goToProjectViewdetail(upcomJob.orderId)">
                             {{upcomJob.po_number}}
@@ -1753,7 +1753,7 @@ td { font-size: 11px; } */
                           <th>Scoop Number</th>
                           <!-- <th>Job Number</th> -->
                           <th>Client</th>
-                          <th>Account</th>
+                          <!-- <th>Account</th> -->
                           <!-- <th>Type</th> -->
                           <th>Language Pair</th>
                           <th>Project Manager</th>
@@ -1772,12 +1772,60 @@ td { font-size: 11px; } */
                             <span ng-if="!jList.po_number"> - </span>
                             <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
                           </td> -->
-                          <td>{{jList.Client}}</td>
-                          <td>{{jList.indirectClient}}</td>
+                          <td><!-- {{jList.Client}} -->
+                            <article class="media">
+                              <span class="customerthumb pull-left thumb-sm"
+                                ng-if="jList.clientlogo != undefined && jList.clientlogo !='' "><img
+                                  ng-src="uploads/logo/{{jList.clientlogo}}" alt="..." class="img-circle" /></span>
+                              <span class="
+                                  customerthumb
+                                  pull-left
+                                  thumb-sm
+                                  fa-stack fa-lg
+                                " ng-if="jList.clientlogo == '' ">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-user fa-stack-1x text-white"></i>
+                              </span>
+                              <div class="media-body">
+                                <a href="" class="h5">{{jList.Client}}</a>
+                              </div>
+                            </article>
+                            <br />
+                            <article class="media acmt5">
+                              <span class="customerthumb pull-left thumb-sm">
+                                <i class="fa fa-address-card"></i>
+                              </span>
+                              <div class="media-body">
+                                <a href="" class="h5">{{jList.indirectClient}}</a>
+                              </div>
+                            </article>
+                          </td>
+                          <!-- <td>{{jList.indirectClient}}</td> -->
                           <!-- <td>{{jList.type}}</td> -->
                           <td>
-                            <span ng-if="!jList.ItemLanguage"> - </span>
-                            <span ng-if="jList.ItemLanguage">{{jList.ItemLanguage}}</span>
+                            <!-- <span ng-if="!jList.ItemLanguage"> - </span>
+                            <span ng-if="jList.ItemLanguage">{{jList.ItemLanguage}}</span> -->
+                            <div class="langtd" ng-if="jList.item_source_lang">
+                              <span class="langflag"><img ng-src="{{ jList.item_source_lang.dataNgSrc }}"
+                                  alt="..." /></span>
+                              <div class="media-body">
+                                <span class="labeltitle">
+                                  {{ jList.item_source_lang.sourceLang
+                                  }}
+                                </span>
+                              </div>
+                              &nbsp;&nbsp;
+                              <span class="label bg-light">
+                                <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
+                              <span class="langflag"><img ng-src="{{ jList.item_target_lang.dataNgSrc }}"
+                                  alt="..." /></span>
+                              <div class="media-body">
+                                <span class="labeltitle">
+                                  {{ jList.item_target_lang.sourceLang
+                                  }}
+                                </span>
+                              </div>
+                            </div>
                           </td>
                           <td>
                             <span ng-if="jList.contact_person != ''">{{jList.contact_person}}</span>
@@ -1788,7 +1836,7 @@ td { font-size: 11px; } */
                             <span ng-if="jList.resource == ''">-</span>
                           </td>
                           <td>-</td>
-                          <td>{{jList.item_status}}</td>
+                          <td style="white-space:nowrap;">{{jList.item_status}}</td>
                           <!-- <td>{{jList.created_date | dateFormat}}</td> -->
                           <!-- <td>
                             <span ng-if="jList.due_date == '0000-00-00 00:00:00'"> - </span>
