@@ -816,4 +816,22 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .csvprogress.progress{
   background-color: #fff;
 }
-    
+.widgetbtn {
+  display: inline-block;
+  padding: 10px;
+  width: 100%;
+}    
+.panel-heading.wrapper.b-b.b-light.d-flex.justify-space-between a {
+  display: block;
+  width: 50%;
+}
+.widgetBox ul li{
+  width: 100%;
+  float: left;
+}
+.text-eclipse{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+}
