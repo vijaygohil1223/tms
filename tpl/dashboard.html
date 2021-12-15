@@ -295,7 +295,9 @@ td { font-size: 11px; } */
   .widgetBox:first-child {
     padding-left: 0px!important;
   }
-  
+  .widgetBox .panel-heading.wrapper.b-b.b-light{
+    text-align: center;
+  }
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
     .sidenav {
@@ -1547,7 +1549,7 @@ td { font-size: 11px; } */
                         </div>
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
-                        <a><span class="holidayTabActive" style="padding: 11px">Upcoming Deliveries </span></a>
+                        <a><span class="holidayTabActive" style="padding: 11px 25px">Upcoming Deliveries </span></a>
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
                         <li class="list-group-item" ng-repeat="upcomProj in upProjDeliveries">
@@ -1558,7 +1560,7 @@ td { font-size: 11px; } */
                           <span class="pull-right label bg-primary inline m-t-sm" ng-bind="upcomProj.ponumber"></span>
                           <!-- <span ng-bind="upcomProj.ponumber"></span> -->
                         </li>
-                        <span style="padding: 45px" ng-if="!upProjDeliveries.length">No Upcoming Deliveries</span>
+                        <li class="list-group-item" ng-if="!upProjDeliveries.length">No Upcoming Deliveries</li>
                       </ul>
                       <div class="panel-footer" style="background: #e6e9ef">
                         <span class="pull-right badge bg-info" ng-bind="upProjDeliveries.length">0</span>
@@ -1579,7 +1581,7 @@ td { font-size: 11px; } */
                         </div>
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
-                        <a><span class="holidayTabActive" style="padding: 11px">Due Jobs</span></a>
+                        <a><span class="holidayTabActive" style="padding:11px 57px">Due Jobs</span></a>
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
                         <li class="list-group-item" ng-repeat="upcomJob in upJobsDue">
@@ -1590,7 +1592,7 @@ td { font-size: 11px; } */
                           <span class="pull-right label bg-primary inline m-t-sm" ng-bind="upcomJob.Client"></span>
                           <!-- <span ng-bind="upcomJob.ponumber"></span> -->
                         </li>
-                        <span style="padding: 45px" ng-if="!upJobsDue.length">No Upcoming Due Jobs</span>
+                        <li class="list-group-item" ng-if="!upJobsDue.length" >No Upcoming Due Jobs</li>
                       </ul>
                       <div class="panel-footer" style="background: #e6e9ef">
                         <span class="pull-right badge bg-info" ng-bind="upJobsDue.length">0</span>
@@ -1611,8 +1613,8 @@ td { font-size: 11px; } */
                         </div>
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
-                          <a><span class="holidayTabActive" style="padding: 11px">Birthday</span></a>
-                          <a><span style="padding: 11px">Holidays</span></a>    
+                          <a><span class="holidayTabActive" style="padding:11px 14px">Birthday</span></a>
+                          <a><span style="padding:11px 14px">Holidays</span></a>    
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
                         <li class="list-group-item">
@@ -1638,7 +1640,7 @@ td { font-size: 11px; } */
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
                         <a><span class="holidayTabActive" ng-click="holidayStatus('Upcoming')"
-                            style="padding: 11px">Absent Linguists</span></a>
+                            style="padding:11px 34px">Absent Linguists</span></a>
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
                         <li class="list-group-item" ng-repeat="absentList in absentLngstlist">
@@ -1646,7 +1648,7 @@ td { font-size: 11px; } */
                            -->
                           <span ng-bind="absentList.vUserName"></span>
                         </li>
-                        <span style="padding: 45px" ng-if="!absentLngstlist.length">No absences linguist</span>
+                        <li class="list-group-item" ng-if="!absentLngstlist.length">No absences linguist</li>
                       </ul>
                       <div class="panel-footer" style="background: #e6e9ef">
                         <span class="pull-right badge bg-info" ng-if="absentLngstlist" ng-bind="absentLngstlist.length"></span>
@@ -1668,9 +1670,9 @@ td { font-size: 11px; } */
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
                         <a><span class="holidayTab1" ng-click="holidayStatus('Upcoming')"
-                            style="padding: 11px">Upcoming</span></a>
+                            style="padding:11px 12px">Upcoming</span></a>
                         <a><span class="holidayTab2" ng-click="holidayStatus('Ongoing')"
-                            style="padding: 11px">Ongoing</span></a>
+                            style="padding:11px 12px">Ongoing</span></a>
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
                         <li class="list-group-item" ng-hide="holidayShow" ng-repeat="upcome in upcommingList">
@@ -1696,8 +1698,8 @@ td { font-size: 11px; } */
                         </li> -->
                       </ul>
                       <div class="panel-footer" style="background: #e6e9ef">
-                        <span class="pull-right badge bg-info" ng-hide="holidayShow" ng-bind="upLength">32</span>
-                        <span class="pull-right badge bg-info" ng-show="holidayShow" ng-bind="onLength">32</span>
+                        <span class="pull-right badge bg-info" ng-hide="holidayShow" ng-bind="upLength">0</span>
+                        <span class="pull-right badge bg-info" ng-show="holidayShow" ng-bind="onLength">0</span>
                         <span>&nbsp;</span>
                       </div>
                     </div>
@@ -1757,7 +1759,6 @@ td { font-size: 11px; } */
                           <th>Language Pair</th>
                           <th>Project Manager</th>
                           <th>Resource</th>
-                          <th>Progress (in %)</th>
                           <th>Status</th>
                           <!-- <th>Start Date</th> -->
                           <!-- <th>Deadline</th> -->
@@ -1834,7 +1835,7 @@ td { font-size: 11px; } */
                             <span ng-if="jList.resource != ''">{{jList.resource}}</span>
                             <span ng-if="jList.resource == ''">-</span>
                           </td>
-                          <td>-</td>
+                          <!-- <td>-</td> -->
                           <td style="white-space:nowrap;">{{jList.item_status}}</td>
                           <!-- <td>{{jList.created_date | dateFormat}}</td> -->
                           <!-- <td>

@@ -2589,7 +2589,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
             $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
         }
-    }, 5500);
+    }, 6000);
 
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
@@ -3036,6 +3036,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     if(!files)
                         $scope.csvProgress = false;
                     $scope.csvFilename = files.name;
+                    $scope.csvmatchMsg = false;
                     Papa.parse(files, {
                         header: false,
                         //preview: 5,
@@ -3102,6 +3103,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                         $(".progress-bar").width('0%')
                                         $('#file-input').val('');
                                     },2000)
+                                    
+                                    $scope.csvmatchMsg = ($scope.csvData.length <= 0) ? true :false;
+                                    setTimeout( ()=>{
+                                        $scope.csvmatchMsg = false;
+                                    },7000);
                                 }
                                         
                             });
@@ -3519,7 +3525,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
             delete $scope.jobdetail['ProjectDueDate'];
 
-            console.log('$scope.jobdetail==update', $scope.jobdetail)
             $routeParams.id;
             rest.path = 'jobSummeryJobDetailsUpdate';
             rest.put($scope.jobdetail).success(function(data) {
