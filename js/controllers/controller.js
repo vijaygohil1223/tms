@@ -974,7 +974,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
     /*Recent Activity Code End*/
 
-}).controller('dashboardController', function($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder) {
+}).controller('dashboardController', function($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.jobfolderId = " ";
     $window.localStorage.scoopfolderId = " ";
@@ -1601,7 +1601,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.get().success(function(data) {
             $scope.langsListAll = data;
         }).error(errorCallback);
-    }    
+    } 
+
+    // User data with postion for widget box
+    rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
+    rest.get().success(function(data) {
+        console.log('jobdeliver-user', data.vResourcePosition)
+        $scope.vResourcePosition = data.vResourcePosition;
+    });
 
     // Tab view Project List
     $scope.projectsAll = [];
@@ -2105,7 +2112,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 
                 /* All jobs list for widget */ 
                 $scope.alljobsWidget = allJobsData;
-                console.log('allJobsData', allJobsData)
                 
                 if($scope.jobstatusFilter == 'all'){
                     $scope.jobsListAll = allJobsData;
@@ -2132,6 +2138,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if($scope.jobstatusFilter == 'Overdue'){
                     $scope.jobsListAll = jobOverDue;
                 }
+
+                /* Start Upcoming Due Jobs - widgetBox */
+                const currentDatestr = new Date();
+                const currentDate = currentDatestr.toISOString().split('T')[0];
+                if($scope.vResourcePosition == 2){
+                    $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
+                }
+                if($scope.vResourcePosition == 3){
+                    $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
+                }
+                if($scope.vResourcePosition == 4){
+                    $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
+                }
+                /* End */
+                
 
             }, 1000);
 
@@ -2563,33 +2584,24 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
     $scope.absentLinguistlist();
     
-    rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
-    rest.get().success(function(data) {
-        console.log('jobdeliver-user', data.vResourcePosition)
-        $scope.vResourcePosition = data.vResourcePosition;
-    });
     setTimeout(() => {
-        console.log('$scope.projectsAll-all projects', $scope.projectsAll)
-        const items = { ...localStorage };
-        console.log('items', items)
-        
         //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
         const currentDatestr = new Date();
         const currentDate = currentDatestr.toISOString().split('T')[0];
-        console.log('todayDate', currentDate)
         if($scope.vResourcePosition == 2){
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId") );
-            $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
+            //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
         }
         if($scope.vResourcePosition == 3){
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
-            $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
+            //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
         }
         if($scope.vResourcePosition == 4){
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
-            $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
+            //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
         }
-    }, 5500);
+
+    }, 1500);
 
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
