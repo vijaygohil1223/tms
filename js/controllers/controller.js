@@ -2105,6 +2105,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 
                 /* All jobs list for widget */ 
                 $scope.alljobsWidget = allJobsData;
+                console.log('allJobsData', allJobsData)
                 
                 if($scope.jobstatusFilter == 'all'){
                     $scope.jobsListAll = allJobsData;
@@ -2578,8 +2579,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         console.log('todayDate', currentDate)
         if($scope.vResourcePosition == 2){
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId") );
-            $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.project_manager_id == $window.localStorage.getItem("session_iUserId") );
-            console.log('$scope.upJobsDue', $scope.upJobsDue)
+            $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
         }
         if($scope.vResourcePosition == 3){
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
@@ -2589,7 +2589,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
             $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
         }
-    }, 6000);
+    }, 5500);
 
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
@@ -2912,8 +2912,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function(data) {
-            console.log("data-2new", data);
-
             $scope.jobdetail = data[0];
             $scope.jobdetail.ItemLanguage = '';
             var srcLang = 'English (US)';
