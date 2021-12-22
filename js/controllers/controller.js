@@ -2121,7 +2121,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 if($scope.jobstatusFilter == 'inProgress'){
                     $scope.jobsListAll = inProgerss;
-                    console.log('$scope.jobsListAll-PROGRESS', $scope.jobsListAll)
                 }
                 if($scope.jobstatusFilter == 'DueToday'){
                     $scope.jobsListAll = inProgerss;
@@ -9520,8 +9519,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
-    $scope.removeBasePrice = function(id) {
-        $scope.priceBasiList.splice(id, 1);
+    $scope.removeBasePrice = function(index) {
+        $scope.priceBasiList.splice(index, 1);
+        // Also remove from price and total sum price
+        $scope.basePrice.splice(index, 1);
+        $scope.baseTtl.splice(index, 1);
     }
 
     $scope.basePriceCheck = function(id) {
@@ -9604,18 +9606,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         console.log('frmId', frmId)
         if (angular.element('#' + frmId).valid()) {
             var setPriceLanguage = angular.element('.setPriceLanguage').text();
+            
             if (setPriceLanguage == 'Change prices') {
                 if (angular.element('[id^=priceLanguageID]').length > 0) {
-                    $('#priceLanguageID0').css('border', '1px solid red');
-                    $('#priceLanguageID0').addClass('face');
+                    if ($scope.customerPrice.price_list_id && angular.element('#customerPriceName').length < 0 ) {
+                        $('#priceLanguageID0').css('border', '1px solid red');
+                        $('#priceLanguageID0').addClass('face');
 
-                    $timeout(function() {
-                        $('#priceLanguageID0').removeClass('face');
-                        $('#priceLanguageID0').css('border', '0px solid red');
-                    }, 3000);
+                        $timeout(function() {
+                            $('#priceLanguageID0').removeClass('face');
+                            $('#priceLanguageID0').css('border', '0px solid red');
+                        }, 3000);
 
-                    notification('Please set language', 'warning');
-                    return false;
+                        notification('Please set language', 'warning');
+                        return false;
+                    }    
                 } else {
                     $('.itemList').css('border', '1px solid red');
                     $('.itemList').addClass('face');
