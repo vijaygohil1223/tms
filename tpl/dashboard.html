@@ -1759,6 +1759,8 @@ td { font-size: 11px; } */
                           <th>Language Pair</th>
                           <th>Project Manager</th>
                           <th>Resource</th>
+                          <th>Job Type</th>
+                          <th>Job Due Date</th>
                           <th>Status</th>
                           <!-- <th>Start Date</th> -->
                           <!-- <th>Deadline</th> -->
@@ -1767,7 +1769,8 @@ td { font-size: 11px; } */
                       <tbody>
                         <tr ng-repeat="jList in jobsListAll">
                           <td>{{$index + 1}}</td>
-                          <td>{{jList.item_id}}</td>
+                          <!-- <td>{{jList.item_id}}</td> -->
+                          <td style="white-space:nowrap;"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.proj_scoop_no}}</a></td>
                           <!-- <td>
                             <span ng-if="!jList.po_number"> - </span>
                             <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
@@ -1835,7 +1838,13 @@ td { font-size: 11px; } */
                             <span ng-if="jList.resource != ''">{{jList.resource}}</span>
                             <span ng-if="jList.resource == ''">-</span>
                           </td>
+                          <td>{{jList.job_type_name}}</td>
                           <!-- <td>-</td> -->
+                          <td>
+                            <span ng-if="jList.due_date != '0000-00-00 00:00:00'" style="display: none;">{{jList.due_date}}</span>
+                            <span ng-if="jList.due_date == '0000-00-00 00:00:00'"> - </span>
+                            <span ng-if="jList.due_date != '0000-00-00 00:00:00'">{{jList.due_date | dateFormatDisplayFront }}</span>
+                          </td>
                           <td style="white-space:nowrap;">{{jList.item_status}}</td>
                           <!-- <td>{{jList.created_date | dateFormat}}</td> -->
                           <!-- <td>

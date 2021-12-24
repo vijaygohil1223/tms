@@ -2026,6 +2026,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (val.item_source_lang) {
                     val.item_target_lang = JSON.parse(val.item_target_lang);
                 }
+                val.proj_scoop_no =  val.po_number ? val.po_number.substr(0, val.po_number.indexOf('_')) + '-' + val.item_id : val.item_id;
+
                 /* var sourceData = JSON.parse(data.source_lang);
                 var targetData = JSON.parse(data.target_lang);
                 srcLang =  sourceData.sourceLang;   
@@ -2644,6 +2646,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
 
     };
+
+    /* Redirect To Project Jobs Section */
+    $scope.goTojobDetail = function(id) {
+        $location.path('/jobs-detail/' + id);
+    }
 
     $timeout(function() {
         //jQuery.fn.init('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
@@ -3508,6 +3515,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             delete $scope.jobdetail.project_type;
             if($scope.jobdetail.proj_specialization)
             delete $scope.jobdetail.proj_specialization;
+            /* if($scope.jobdetail.job_type_name)
+            delete $scope.jobdetail.job_type_name; */
             
             //job start recent activity store in cookie
             var arr1 = $.map($scope.jobdetail, function(el) {
