@@ -3560,7 +3560,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
                 rest.path = "saveLog";
                 rest.post($scope.logMaster).success(function(data) {});
-                //log file end
+                //log file end - 
                 //$location.path('jobs-detail/' + $scope.DetailId);
                 notification('Job successfully updated.', 'success');
                 $uibModalInstance.dismiss('cancel');

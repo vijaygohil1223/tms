@@ -79,8 +79,6 @@ td { font-size: 11px; } */
     white-space: nowrap;
   }
 
- 
-
   .projecttable .media-body {
     width: auto;
   }
@@ -366,7 +364,7 @@ td { font-size: 11px; } */
                       class="fa fa-plus"></i>&nbsp; Create Project</a>
                    
                   <tabset id="dynamicAddAnchore" class="tab-container projecttable tab_dashboard" style="background-color: #f3f3fa;">
-                    <tab>
+                    <tab class="tab-due-today">
                       <tab-heading>
                         <i class="glyphicon glyphicon-triangle-bottom"></i> Due
                         Today
@@ -533,7 +531,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab>
+                    <tab class="tab-assigned">
                       <tab-heading>
                         <i class="glyphicon glyphicon-plus-sign"></i> To be
                         Assigned
@@ -700,7 +698,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab>
+                    <tab class="tab-in-progress">
                       <tab-heading>
                         <i class="glyphicon glyphicon-tree-deciduous"></i> In
                         Progress
@@ -864,7 +862,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab>
+                    <tab class="tab-qa-ready">
                       <tab-heading>
                         <i class="glyphicon glyphicon-ok-circle"></i> QA Ready
                         <span class="badge bg-info">{{projectsQaReadyCount}}</span>
@@ -1027,7 +1025,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab>
+                    <tab class="tab-to-be-delivered">
                       <tab-heading>
                         <i class="glyphicon glyphicon-send"></i> To be Delivered
                         <span class="badge bg-info">{{projectsToBeDeliveredCount}}</span>
@@ -1190,7 +1188,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab>
+                    <tab class="tab-due-tomorrow">
                       <tab-heading>
                         <i class="glyphicon glyphicon-ice-lolly"></i> Due
                         Tomorrow
@@ -1354,7 +1352,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab>
+                    <tab class="tab-my-projects">
                       <tab-heading>
                         <i class="glyphicon glyphicon-list"></i> My Projects
                         <span class="badge bg-info">{{projectsAllCount}}</span>
@@ -1541,12 +1539,8 @@ td { font-size: 11px; } */
                 <div class="col-sm-3 rightBox-group widgetBox">
                   <div class="box">
                     <div class="white_box panel panel-default">
-                      <div class="panel-heading">
-                        <div class="clearfix">
-                          <div class="clear">
-                            <div class="h4">Upcoming Deliveries</div>
-                          </div>
-                        </div>
+                      <div class="panel-heading gradient-deliveries">
+                        <img src="./img/delivery.svg" alt="Upcoming Deliveries" />
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
                         <a><span class="holidayTabActive widgetbtn">Upcoming Deliveries </span></a>
@@ -1573,12 +1567,8 @@ td { font-size: 11px; } */
                 <div class="col-sm-3 rightBox-group widgetBox">
                   <div class="box">
                     <div class="white_box panel panel-default">
-                      <div class="panel-heading">
-                        <div class="clearfix">
-                          <div class="clear">
-                            <div class="h4">Upcoming Due Jobs</div>
-                          </div>
-                        </div>
+                      <div class="panel-heading gradient-due-jobs">
+                        <img src="./img/work-job.svg" alt="Due Jobs" height="50" />
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
                         <a><span class="holidayTabActive widgetbtn" >Due Jobs</span></a>
@@ -1605,12 +1595,8 @@ td { font-size: 11px; } */
                 <div class="col-sm-3 rightBox-group widgetBox">
                   <div class="box">
                     <div class="white_box panel panel-default">
-                      <div class="panel-heading">
-                        <div class="clearfix">
-                          <div class="clear">
-                            <div class="h4">Birthday and Holidays</div>
-                          </div>
-                        </div>
+                      <div class="panel-heading gradient-birthday-holidays">
+                        <img src="./img/calendar.png" alt="Due Jobs" height="50" />
                       </div>
                       <div class="panel-heading wrapper b-b b-light d-flex justify-space-between">
                           <a><span class="holidayTabActive widgetbtn" >Birthday</span></a>
@@ -1631,12 +1617,8 @@ td { font-size: 11px; } */
                 <div class="col-sm-3 rightBox-group widgetBox">
                   <div class="box">
                     <div class="white_box panel panel-default">
-                      <div class="panel-heading">
-                        <div class="clearfix">
-                          <div class="clear">
-                            <div class="h4">Absent Linguists</div>
-                          </div>
-                        </div>
+                      <div class="panel-heading gradient-absent">
+                        <img src="./img/absent-linguists.png" alt="Due Jobs" height="50" />
                       </div>
                       <div class="panel-heading wrapper b-b b-light">
                         <a><span class="holidayTabActive widgetbtn" ng-click="holidayStatus('Upcoming')"
@@ -1661,12 +1643,8 @@ td { font-size: 11px; } */
                 <div class="col-md-3 rightBox-group widgetBox">
                   <div class="box">
                     <div class="white_box panel panel-default">
-                      <div class="panel-heading">
-                        <div class="clearfix">
-                          <div class="clear">
-                            <div class="h4">National Holidays</div>
-                          </div>
-                        </div>
+                      <div class="panel-heading gradient-holidays">
+                        <img src="./img/holiday.svg" alt="National Holidays" height="50" />
                       </div>
                       <div class="panel-heading wrapper b-b b-light d-flex justify-space-between">
                         <a><span class="holidayTab1 widgetbtn" ng-click="holidayStatus('Upcoming')"
@@ -1717,27 +1695,27 @@ td { font-size: 11px; } */
                       </div>
                     </div>
                     <ul class="alt projectjobdv2 overviewli">
-                      <li class="list-group-item"  ng-class="{ 'active': jobsactive=='Requested'}">
+                      <li class="list-group-item tab-requested"  ng-class="{ 'active': jobsactive=='Requested'}">
                         <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','Requested')">
                           Requested <span class="badge bg-info">{{jobRequestesCount}}</span></a>
                       </li>
-                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='inProgress'}">
+                      <li class="list-group-item tab-in-progress" ng-class="{ 'active': jobsactive=='inProgress'}">
                         <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','inProgress')">
                           In progress <span class="badge bg-info">{{jobInProgressCount}}</span></a>
                       </li>
-                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueToday'}">
+                      <li class="list-group-item tab-due-today" ng-class="{ 'active': jobsactive=='DueToday'}">
                         <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','DueToday')">
                           Due Today <span class="badge bg-info">{{jobDueTodayCount}}</span></a>
                       </li>
-                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='DueTomorrow'}">
+                      <li class="list-group-item tab-due-tomorrow" ng-class="{ 'active': jobsactive=='DueTomorrow'}">
                         <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','DueTomorrow')">
                           Due Tomorrow <span class="badge bg-info">{{jobDueTomorrowCount}}</span></a>
                       </li>
-                      <li class="list-group-item" ng-class="{ 'active': jobsactive=='Overdue'}">
+                      <li class="list-group-item tab-overdue" ng-class="{ 'active': jobsactive=='Overdue'}">
                         <a href="javascript:void(0)"
                           ng-click="jobstatusRecord('jobs','Overdue')">
                           Overdue <span class="badge bg-info">{{jobOverDueCount}}</span></a>
@@ -1761,6 +1739,7 @@ td { font-size: 11px; } */
                           <th>Resource</th>
                           <th>Job Type</th>
                           <th>Job Due Date</th>
+                          <th>Due Date</th>
                           <th>Status</th>
                           <!-- <th>Start Date</th> -->
                           <!-- <th>Deadline</th> -->
@@ -1775,7 +1754,7 @@ td { font-size: 11px; } */
                             <span ng-if="!jList.po_number"> - </span>
                             <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
                           </td> -->
-                          <td><!-- {{jList.Client}} -->
+                          <td style="white-space:nowrap;"><!-- {{jList.Client}} -->
                             <article class="media">
                               <span class="customerthumb pull-left thumb-sm"
                                 ng-if="jList.clientlogo != undefined && jList.clientlogo !='' "><img
@@ -1790,7 +1769,7 @@ td { font-size: 11px; } */
                                 <i class="fa fa-user fa-stack-1x text-white"></i>
                               </span>
                               <div class="media-body">
-                                <a href="" class="h5">{{jList.Client}}</a>
+                                <span class="h5">{{jList.Client}}</span>
                               </div>
                             </article>
                             <br />
@@ -1799,7 +1778,7 @@ td { font-size: 11px; } */
                                 <i class="fa fa-address-card"></i>
                               </span>
                               <div class="media-body">
-                                <a href="" class="h5">{{jList.indirectClient}}</a>
+                                <span class="h5">{{jList.indirectClient}}</span>
                               </div>
                             </article>
                           </td>
@@ -1840,10 +1819,15 @@ td { font-size: 11px; } */
                           </td>
                           <td>{{jList.job_type_name}}</td>
                           <!-- <td>-</td> -->
-                          <td>
+                          <td style="white-space: nowrap;">
                             <span ng-if="jList.due_date != '0000-00-00 00:00:00'" style="display: none;">{{jList.due_date}}</span>
                             <span ng-if="jList.due_date == '0000-00-00 00:00:00'"> - </span>
                             <span ng-if="jList.due_date != '0000-00-00 00:00:00'">{{jList.due_date | dateFormatDisplayFront }}</span>
+                          </td>
+                          <td style="white-space: nowrap;">
+                            <span ng-if="jList.item_due_date != '0000-00-00 00:00:00'" style="display: none;">{{jList.item_due_date}}</span>
+                            <span ng-if="jList.item_due_date == '0000-00-00 00:00:00'"> - </span>
+                            <span ng-if="jList.item_due_date != '0000-00-00 00:00:00'">{{jList.item_due_date | dateFormatDisplayFront }}</span>
                           </td>
                           <td style="white-space:nowrap;">{{jList.item_status}}</td>
                           <!-- <td>{{jList.created_date | dateFormat}}</td> -->
