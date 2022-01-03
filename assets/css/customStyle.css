@@ -327,37 +327,44 @@ div.dataTables_length select{margin: 0 5px;}
   .projecttable .nav-tabs>li.tab-due-today,  
   .projecttable .nav-tabs>li.tab-due-today::before,
   .projecttable .nav-tabs>li.tab-due-today::after{
-    background-color: #cb9bb3 !important;
+    /* background-color: #fae9f1 !important; */
+    background-color: #7D0541 !important;      
   }
   .projecttable .nav-tabs>li.tab-assigned,  
   .projecttable .nav-tabs>li.tab-assigned::before,
   .projecttable .nav-tabs>li.tab-assigned::after{
-    background-color: #ffff99 !important;
+    /*background-color: #ffff99 !important;*/
+    background-color: #FFFF00 !important;
   }
   .projecttable .nav-tabs>li.tab-in-progress,  
   .projecttable .nav-tabs>li.tab-in-progress::before,
   .projecttable .nav-tabs>li.tab-in-progress::after{
-    background-color: #fde3a2 !important;
+    /* background-color: #fde3a2 !important; */
+    background-color: #FBB917 !important;
   }
   .projecttable .nav-tabs>li.tab-qa-ready, 
   .projecttable .nav-tabs>li.tab-qa-ready::before,
   .projecttable .nav-tabs>li.tab-qa-ready::after{
-    background-color: #b5e9e9 !important;
+    /* background-color: #b5e9e9 !important; */
+    background-color: #46C7C7 !important;    
   }
   .projecttable .nav-tabs>li.tab-to-be-delivered,  
   .projecttable .nav-tabs>li.tab-to-be-delivered::before,
   .projecttable .nav-tabs>li.tab-to-be-delivered::after{
-    background-color: #99cccc !important;
+    /* background-color: #99cccc !important; */
+    background-color: #008080 !important;
   }
   .projecttable .nav-tabs>li.tab-due-tomorrow, 
   .projecttable .nav-tabs>li.tab-due-tomorrow::before,
   .projecttable .nav-tabs>li.tab-due-tomorrow::after{
-    background-color: #d6dfe9 !important;
+    /* background-color: #d6dfe9 !important; */
+    background-color: #98AFC7 !important;
   }
   .projecttable .nav-tabs>li.tab-my-projects,  
   .projecttable .nav-tabs>li.tab-my-projects::before,
   .projecttable .nav-tabs>li.tab-my-projects::after{
-    background-color: #b2e1d0 !important;
+    /* background-color: #b2e1d0 !important; */
+    background-color: #3EB489 !important;
   }
   .projecttable .nav-tabs>li.active.tab-due-today,
   .projecttable .nav-tabs>li.active.tab-due-today::before,
@@ -428,6 +435,9 @@ div.dataTables_length select{margin: 0 5px;}
     color: #fff;
   }
   .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li > a{
+    color: #fff !important;
+  }
+  .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.tab-assigned > a{
     color: #000 !important;
   }
   .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.active:not(.tab-assigned) > a{
@@ -528,18 +538,22 @@ div.dataTables_length select{margin: 0 5px;}
   }
   [class*='gradient']{
     padding: 0 !important;
-    height: 81px;
+    height: 50px;
     text-align: center;
-    line-height: 81px;
+    line-height: 50px;
   }
  [class*='gradient'] img{
     max-width: 80px;
+    max-height: 30px;
     display: inline-block;
   }
+  .gradient-deliveries img {
+    max-height: 50px;
+  }
   #nav-bar-filter > li {
-    margin-left: 5px;
-    border-bottom: 0;
-}
+      margin-left: 5px;
+      border-bottom: 0;
+  }
 #nav-bar-filter {
     padding: 10px 8px 0;
 }
