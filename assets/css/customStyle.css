@@ -538,17 +538,17 @@ div.dataTables_length select{margin: 0 5px;}
   }
   [class*='gradient']{
     padding: 0 !important;
-    height: 40px;
+    height: 36px;
     text-align: center;
-    line-height: 40px;
+    line-height: 36px;
   }
  [class*='gradient'] img{
     max-width: 80px;
-    max-height: 25px;
+    max-height: 22px;
     display: inline-block;
   }
   .gradient-deliveries img {
-    max-height: 48px;
+    max-height: 42px;
   }
   .panel-heading.tabtitle {
       padding: 7px 15px;
