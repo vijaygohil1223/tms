@@ -538,17 +538,20 @@ div.dataTables_length select{margin: 0 5px;}
   }
   [class*='gradient']{
     padding: 0 !important;
-    height: 50px;
+    height: 40px;
     text-align: center;
-    line-height: 50px;
+    line-height: 40px;
   }
  [class*='gradient'] img{
     max-width: 80px;
-    max-height: 30px;
+    max-height: 25px;
     display: inline-block;
   }
   .gradient-deliveries img {
-    max-height: 50px;
+    max-height: 48px;
+  }
+  .panel-heading.tabtitle {
+      padding: 7px 15px;
   }
   #nav-bar-filter > li {
       margin-left: 5px;
@@ -674,7 +677,7 @@ div.dataTables_length select{margin: 0 5px;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_overdue{color: #f44237; background: rgb(244 66 55 / 20%);}
 
 .panel-default .panel-heading .panel-heading{background-color: #fff !important; border-radius: 10px 10px 0 0;}
-.page_content_wrapper .white_box_wrapper .rightBox-group .h3{margin-bottom: 10px; padding: 12px 10px;background-color: #FFBF00;color: #fff;}
+.page_content_wrapper .white_box_wrapper .rightBox-group .h4{margin-bottom: 10px; padding: 8px 10px;background-color: #FFBF00;color: #fff;}
 .white_box.panel.panel-default.pb-15 .panel-heading{background-color: #40E0D0;color: #fff;}
 .page_content_wrapper .white_box_wrapper .rightBox-group .box .panel-default{overflow: hidden;}
 .page_content_wrapper .white_box_wrapper .rightBox-group .box .panel-default > .panel-heading{background: #e6e9ef !important; padding: 15px; border-radius: 8px 8px 0 0;}
