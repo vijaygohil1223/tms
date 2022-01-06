@@ -327,37 +327,37 @@ div.dataTables_length select{margin: 0 5px;}
   .projecttable .nav-tabs>li.tab-due-today,  
   .projecttable .nav-tabs>li.tab-due-today::before,
   .projecttable .nav-tabs>li.tab-due-today::after{
-    background-color: #46C7C7 !important;    
+    background-color: #d6dfe9 !important;    
   }
   .projecttable .nav-tabs>li.tab-assigned,  
   .projecttable .nav-tabs>li.tab-assigned::before,
   .projecttable .nav-tabs>li.tab-assigned::after{
-    background-color: #46C7C7 !important;    
+    background-color: #d6dfe9 !important;    
   }
   .projecttable .nav-tabs>li.tab-in-progress,  
   .projecttable .nav-tabs>li.tab-in-progress::before,
   .projecttable .nav-tabs>li.tab-in-progress::after{
-    background-color: #46C7C7 !important;    
+    background-color: #d6dfe9 !important;    
   }
   .projecttable .nav-tabs>li.tab-qa-ready, 
   .projecttable .nav-tabs>li.tab-qa-ready::before,
   .projecttable .nav-tabs>li.tab-qa-ready::after{
-    background-color: #46C7C7 !important;    
+    background-color: #d6dfe9 !important;    
   }
   .projecttable .nav-tabs>li.tab-to-be-delivered,  
   .projecttable .nav-tabs>li.tab-to-be-delivered::before,
   .projecttable .nav-tabs>li.tab-to-be-delivered::after{
-    background-color: #46C7C7 !important;    
+    background-color: #d6dfe9 !important;    
   }
   .projecttable .nav-tabs>li.tab-due-tomorrow, 
   .projecttable .nav-tabs>li.tab-due-tomorrow::before,
   .projecttable .nav-tabs>li.tab-due-tomorrow::after{
-    background-color: #46C7C7 !important;    
+    background-color: #d6dfe9 !important;    
   }
   .projecttable .nav-tabs>li.tab-my-projects,  
   .projecttable .nav-tabs>li.tab-my-projects::before,
   .projecttable .nav-tabs>li.tab-my-projects::after{
-    background-color: #46C7C7 !important;    
+    background-color: #d6dfe9 !important;    
   }
   .projecttable .nav-tabs>li.active.tab-due-today,
   .projecttable .nav-tabs>li.active.tab-due-today::before,
@@ -383,7 +383,7 @@ div.dataTables_length select{margin: 0 5px;}
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress.active::after{
     background-color: #3B9C9C !important;    
   } */
-  .projecttable .nav-tabs>li.active.tab-qa-ready,
+  /* .projecttable .nav-tabs>li.active.tab-qa-ready,
   .projecttable .nav-tabs>li.active.tab-qa-ready::before,
   .projecttable .nav-tabs>li.active.tab-qa-ready::after{
     background-color: #3B9C9C !important;
@@ -392,7 +392,7 @@ div.dataTables_length select{margin: 0 5px;}
   .projecttable .nav-tabs>li.active.tab-to-be-delivered::before,
   .projecttable .nav-tabs>li.active.tab-to-be-delivered::after{
     background-color: #3B9C9C !important;    
-  }
+  } */
   .projecttable .nav-tabs>li.active.tab-due-tomorrow,
   .projecttable .nav-tabs>li.active.tab-due-tomorrow::before,
   .projecttable .nav-tabs>li.active.tab-due-tomorrow::after
@@ -415,16 +415,16 @@ div.dataTables_length select{margin: 0 5px;}
   .projecttable .nav-tabs>li.active.tab-my-projects::before,
   .projecttable .nav-tabs>li.active.tab-my-projects::after{
     background-color: #98AFC7 !important;    
-  } */
+  } 
   .projecttable .nav-tabs>li.active.tab-my-projects,
   .projecttable .nav-tabs>li.active.tab-my-projects::before,
   .projecttable .nav-tabs>li.active.tab-my-projects::after{
     background-color: #3B9C9C !important;    
-  }
+  }*/
   .projecttable .nav-tabs>li.active,
   .projecttable .nav-tabs>li.active::before,
   .projecttable .nav-tabs>li.active::after{
-    background-color: #3B9C9C !important;    
+    background-color: #98AFC7 !important;    
   }
   .projecttable .nav-tabs>li.active .glyphicon{
     color: #fff !important;    
@@ -450,7 +450,7 @@ div.dataTables_length select{margin: 0 5px;}
     color: #fff;
   }
   .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li > a{
-    color: #fff !important;
+    color: #000 !important;
   }
   /* .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.tab-assigned > a{
     color: #000 !important;
