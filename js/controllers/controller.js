@@ -1959,6 +1959,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
         }).error(errorCallback);
     };
+
     $scope.scoopjobstatusRecord('scoop','');    
     $scope.alljobsWidget = [];
     $scope.isoverviewJobs = false;
@@ -2139,7 +2140,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if($scope.jobstatusFilter == 'Overdue'){
                     $scope.jobsListAll = jobOverDue;
                 }
-
+                //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
+                if($scope.jobsListAll){
+                    $scope.jobsListAll = $scope.jobsListAll.sort(function(a,b){
+                        const aDate = a.due_date;
+                        const bDate = b.due_date;
+                        if(!aDate.includes("1970-01-01"))
+                            return new Date(a.due_date) - new Date(b.due_date);
+                    });
+                }
                 /* Start Upcoming Due Jobs - widgetBox */
                 const currentDatestr = new Date();
                 const currentDate = currentDatestr.toISOString().split('T')[0];
