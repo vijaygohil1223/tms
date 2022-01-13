@@ -2164,7 +2164,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 /* End */
                 
 
-            }, 1000);
+            }, 2000);
 
         }).error(errorCallback);
     };
