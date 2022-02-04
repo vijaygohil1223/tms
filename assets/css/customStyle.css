@@ -327,37 +327,37 @@ div.dataTables_length select{margin: 0 5px;}
   .projecttable .nav-tabs>li.tab-due-today,  
   .projecttable .nav-tabs>li.tab-due-today::before,
   .projecttable .nav-tabs>li.tab-due-today::after{
-    background-color: #d6dfe9 !important;    
+    background-color: #64c5eb !important;    
   }
   .projecttable .nav-tabs>li.tab-assigned,  
   .projecttable .nav-tabs>li.tab-assigned::before,
   .projecttable .nav-tabs>li.tab-assigned::after{
-    background-color: #d6dfe9 !important;    
+    background-color: #64c5eb !important;    
   }
   .projecttable .nav-tabs>li.tab-in-progress,  
   .projecttable .nav-tabs>li.tab-in-progress::before,
   .projecttable .nav-tabs>li.tab-in-progress::after{
-    background-color: #d6dfe9 !important;    
+    background-color: #64c5eb !important;    
   }
   .projecttable .nav-tabs>li.tab-qa-ready, 
   .projecttable .nav-tabs>li.tab-qa-ready::before,
   .projecttable .nav-tabs>li.tab-qa-ready::after{
-    background-color: #d6dfe9 !important;    
+    background-color: #64c5eb !important;    
   }
   .projecttable .nav-tabs>li.tab-to-be-delivered,  
   .projecttable .nav-tabs>li.tab-to-be-delivered::before,
   .projecttable .nav-tabs>li.tab-to-be-delivered::after{
-    background-color: #d6dfe9 !important;    
+    background-color: #64c5eb !important;    
   }
   .projecttable .nav-tabs>li.tab-due-tomorrow, 
   .projecttable .nav-tabs>li.tab-due-tomorrow::before,
   .projecttable .nav-tabs>li.tab-due-tomorrow::after{
-    background-color: #d6dfe9 !important;    
+    background-color: #64c5eb !important;    
   }
   .projecttable .nav-tabs>li.tab-my-projects,  
   .projecttable .nav-tabs>li.tab-my-projects::before,
   .projecttable .nav-tabs>li.tab-my-projects::after{
-    background-color: #d6dfe9 !important;    
+    background-color: #64c5eb !important;    
   }
   .projecttable .nav-tabs>li.active.tab-due-today,
   .projecttable .nav-tabs>li.active.tab-due-today::before,
@@ -404,7 +404,10 @@ div.dataTables_length select{margin: 0 5px;}
   .white_box .projectjobdv2.overviewli .list-group-item.active, .list-group-item.active:hover,
   .white_box .projectjobdv2.overviewli .list-group-item.active::before,
   .white_box .projectjobdv2.overviewli .list-group-item.active::after{
-      background-color: #98AFC7 !important;    
+    background-color: #7F58AF !important;    
+  }
+  .white_box .projectjobdv2.overviewli .list-group-item.active span.badge.bg-info{
+    background-color: #64C5EB;
   }
     .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active,
     .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active::before,
@@ -424,13 +427,13 @@ div.dataTables_length select{margin: 0 5px;}
   .projecttable .nav-tabs>li.active,
   .projecttable .nav-tabs>li.active::before,
   .projecttable .nav-tabs>li.active::after{
-    background-color: #98AFC7 !important;    
+    background-color: #7f58af !important;    
   }
   .projecttable .nav-tabs>li.active .glyphicon{
     color: #fff !important;    
   }
   .projecttable .nav-tabs>li.active .badge{
-    background-color: #4aa8a8 !important;    
+    background-color: #64c5eb !important;    
   }
  
   .tab-container.projecttable.tab_dashboard .nav-tabs>li.active>a::after{
@@ -440,13 +443,13 @@ div.dataTables_length select{margin: 0 5px;}
   }
   .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li > a .glyphicon,
   .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.active > a .glyphicon{
-    color: #3B9C9C;
+    color: #7f58af;
   }
   .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li > a .badge,
   .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.active > a .badge,
   .white_box .projectjobdv2.overviewli .list-group-item .bg-info,
   .white_box .projectjobdv2.overviewli .list-group-item.active .bg-info{
-    background:#3B9C9C;
+    background:#7f58af;
     color: #fff;
   }
   .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li > a{
@@ -455,7 +458,7 @@ div.dataTables_length select{margin: 0 5px;}
   /* .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.tab-assigned > a{
     color: #000 !important;
   } */
-  .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.active:not(.tab-assigned) > a{
+  .page_content_wrapper .white_box_wrapper .white_box .tab-container.projecttable.tab_dashboard .nav-tabs > li.active > a{
     color: #fff !important;
   }
   .white_box .projectjobdv2.overviewli li.list-group-item {
@@ -465,27 +468,27 @@ div.dataTables_length select{margin: 0 5px;}
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested::after{
-    background-color: #d6dfe9;
+    background-color: #64c5eb;
   }
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress::after{
-    background-color: #d6dfe9;
+    background-color: #64c5eb;
   }
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-today::after{
-    background-color: #d6dfe9;
+    background-color: #64c5eb;
   }
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow::after{
-    background-color: #d6dfe9;
+    background-color: #64c5eb;
   }
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue::after{
-    background-color: #d6dfe9;
+    background-color: #64c5eb;
   }
   .white_box .projectjobdv2.overviewli li.list-group-item > a{
     color: #000 !important;
@@ -498,12 +501,12 @@ div.dataTables_length select{margin: 0 5px;}
   .page_dashboard .page_content_wrapper .white_box_wrapper .rightBox-group .box .holidayTabActive,
   .page_dashboard .page_content_wrapper .white_box_wrapper .rightBox-group .box .bg-info,
   .page_dashboard .bg-primary{
-    background: #3B9C9C;
-    border-color: #3B9C9C;
+    background: #7f58af;
+    border-color: #7f58af;
   }
   .page_dashboard .sidebar_wrapper .sidebar_new > li.active > a,
   .page_dashboard .sidebar_wrapper .sidebar_new li .badge{
-    background: #3B9C9C !important;
+    background: #7f58af !important;
   }
   .page_dashboard .page_content_wrapper .pagination > .active > a{
     color: #fff;
@@ -693,8 +696,8 @@ div.dataTables_length select{margin: 0 5px;}
 .page_content_wrapper .white_box_wrapper .white_box .projecttable .table-striped > tbody > tr > td .projstatus.projectstatus_overdue{color: #f44237; background: rgb(244 66 55 / 20%);}
 
 .panel-default .panel-heading .panel-heading{background-color: #fff !important; border-radius: 10px 10px 0 0;}
-.page_content_wrapper .white_box_wrapper .rightBox-group .h4{margin-bottom: 10px; padding: 8px 10px;background-color: #FFBF00;color: #fff;}
-.white_box.panel.panel-default.pb-15 .panel-heading{background-color: #40E0D0;color: #fff;}
+.page_content_wrapper .white_box_wrapper .rightBox-group .h4{margin-bottom: 10px; padding: 8px 10px;background-color: #FEB326;color: #fff;}
+.white_box.panel.panel-default.pb-15 .panel-heading{background-color: #E84D8A;color: #fff;}
 .page_content_wrapper .white_box_wrapper .rightBox-group .box .panel-default{overflow: hidden;}
 .page_content_wrapper .white_box_wrapper .rightBox-group .box .panel-default > .panel-heading{background: #e6e9ef !important; padding: 15px; border-radius: 8px 8px 0 0;}
 .page_content_wrapper .white_box_wrapper .rightBox-group .box .panel-default > .panel-heading.b-light{background: #fff !important;}
