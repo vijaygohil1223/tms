@@ -373,7 +373,7 @@ div.dataTables_length select{margin: 0 5px;}
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested.active,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested.active::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested.active::after{
-    background-color: #98AFC7 !important;    
+    background-color: #7F58AF !important    
   }
   /* .projecttable .nav-tabs>li.active.tab-in-progress,
   .projecttable .nav-tabs>li.active.tab-in-progress::before,
@@ -412,7 +412,7 @@ div.dataTables_length select{margin: 0 5px;}
     .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active,
     .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active::before,
     .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active::after  {
-      background-color: #98AFC7 !important;    
+      background-color: #7F58AF !important;    
    }
   /* .projecttable .nav-tabs>li.active.tab-my-projects,
   .projecttable .nav-tabs>li.active.tab-my-projects::before,
@@ -647,7 +647,7 @@ div.dataTables_length select{margin: 0 5px;}
     margin-right: initial;
     position: relative;
   }
-  .projecttable .nav-tabs>li.active>a::after  {
+  .projecttable .nav-tabs>li.active>a::after {
     position: absolute;
     content: "";
     height: 2px;
