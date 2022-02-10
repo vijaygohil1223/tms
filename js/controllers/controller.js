@@ -2747,6 +2747,25 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         // withOption('scrollCollapse', true).
     withOption('dom', 'tfrilp');
 
+    // After Linguist login
+    $scope.projectJobdetail = function(jobId) {
+        console.log('popid-jobId',jobId)
+        scrollBodyToTop();
+        //$location.path('/job-summery-details/' + id);
+        $routeParams.id = jobId;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/jobDetailPopup.html',
+            controller: 'projectjobDetailPopupController',
+            size: '',
+            resolve: {
+                items: function() {
+                    return $scope.data;
+                }
+            }
+        });
+    }
+    
 
 }).controller('usertypeController', function($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
     rest.path = 'usertype';
@@ -21687,6 +21706,210 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectInvoiceRedirect = function() {
         $location.path('/project-detail/' + $routeParams.id);
     }
+
+}).controller('projectjobDetailPopupController', function($interval, $scope, $log, $window, $compile, $timeout, $uibModal,$uibModalInstance, rest, $route, $rootScope, $routeParams, $location) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.DetailId = $window.localStorage.projectJobChainOrderId;
+    $window.localStorage.jobfolderId = $routeParams.id;
+    // $window.localStorage.orderID = " ";
+
+    $window.localStorage.pId = " ";
+    $window.localStorage.setItem("parentId", " ");
+
+    if ($scope.DetailId) {
+        rest.path = 'jobitemsGet/' + $scope.DetailId;
+        rest.get().success(function(data) {
+            $scope.jobitList = data;
+        })
+    }
+
+    $scope.popupOpenFilemanager = function(id) {
+        closeWindows();
+        $window.localStorage.ItemClient = '';
+        var ItemcodeNumber = angular.element('#companyCode').text();
+        $window.localStorage.ItemcodeNumber = ItemcodeNumber;
+        // start to get downloaded folder name with client name
+        console.log('$window.localStorage.orderID', $window.localStorage.orderID);
+        rest.path = 'customer/' + $window.localStorage.orderID;
+        rest.get().success(function(res) {
+            $scope.customer = res;
+            if (res) {
+                rest.path = 'client/' + $scope.customer.client;
+                rest.get().success(function(cData) {
+                    $scope.directClientData = cData
+                    $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                }).error(function(data, error, status) {});
+            }
+        })
+        // end
+        var soPopup = $window.open(id + "/" + $routeParams.id, "popup", "width=1000,height=650");
+        soPopup.addEventListener("beforeunload", function() {
+            localStorage['parentId'] = ' ';
+            localStorage['pId'] = ' ';
+            return false;
+        }, false);
+        openWindows.push(soPopup);
+    }
+
+    var getCountJobFolderProjectDetail = function() {
+        var count = $window.localStorage.getItem("sourceFolderCount");
+        if (!count) {
+            count = 0;
+        }
+
+        var type = $window.localStorage.getItem("jobFoldertype");
+
+        if (type) {
+            if (type == 'source') {
+                $('#proDetailSourceCount').text(count);
+            }
+            if (type == 'target') {
+                $('#proDetailTargetCount').text(count);
+            }
+        }
+    }
+    $interval(getCountJobFolderProjectDetail, 1000);
+
+    if ($routeParams.id) {
+        rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
+        rest.get().success(function(data) {
+            $scope.jobdetail = data[0];
+            var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
+            var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
+            $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+            $scope.jobdetail.priceLinguist = '';
+            if ($scope.jobdetail.price) {
+                $scope.jobdetail.price = JSON.parse(data[0].price);
+            }
+            //console.log('$scope.jobdetail-linguis',$scope.jobdetail);
+
+            //page redirect job discussion
+            $scope.jobDiscussionRedirect = data[0].order_id
+            $window.localStorage.jobOrderId = data[0].order_id;
+
+            if (data[0].order_id) {
+                $window.localStorage.orderID = data[0].order_id;
+                rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + $scope.jobdetail.item_id;
+                rest.get().success(function(data) {
+                    $scope.totalPrice = data.total_amount;
+                    $scope.itemList = JSON.parse(data.price);
+                    $scope.itemPriceEmpty = jQuery.isEmptyObject($scope.itemList);
+                })
+            }
+
+            if ($scope.jobdetail.work_instruction) {
+                $scope.wrInstruct = JSON.parse($scope.jobdetail.work_instruction);
+                $scope.wrInstructEmpty = jQuery.isEmptyObject($scope.wrInstruct);
+            }
+
+
+            $scope.jobdetail.created_date = data[0].created_date;
+
+            //count file
+            if (data) {
+                rest.path = 'filefolderstget/' + data[0].fmanager_id + '/' + $routeParams.id;
+                rest.get().success(function(data) {
+                    var sourceFile = [];
+                    var targetFile = [];
+                    angular.element('.sourceC').text(data.source);
+                    angular.element('.targteC').text(data.target);
+                }).error(errorCallback);
+            }
+
+            //getting freelancer payment information data
+            rest.path = "getUserDataById/" + $scope.jobdetail.resource;
+            rest.get().success(function(dataUser) {
+                $scope.vBankInfo = JSON.parse(dataUser.userPaymentData.vBankInfo);
+                $scope.currencyCodeDisplay = $scope.vBankInfo.currency_code;
+            }).error(errorCallback);
+        }).error(errorCallback);
+    }
+
+    //accept job status
+    $scope.acceptjobstatus = function(status, action) {
+        switch (action) {
+            case "accept":
+                if (status == 'Requested') {
+                    $scope.item_status = "Assigned-waiting";
+                }
+                if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
+                    $scope.job = {};
+                }
+                $scope.job.item_status = $scope.item_status;
+                break;
+            case "reject":
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'tpl/jobrejectreason.html',
+                    controller: 'jobStatusRejectController',
+                    size: ''
+                });
+                break;
+            case "start":
+                if (status == 'Assigned-waiting') {
+                    $scope.item_status = "In-progress";
+                }
+                if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
+                    $scope.job = {};
+                }
+                $scope.job.item_status = $scope.item_status;
+                break;
+            case "save":
+                $scope.item_status = "Delivered";
+                if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
+                    $scope.job = {};
+                }
+                $scope.job.item_status = $scope.item_status;
+                break;
+        }
+
+        if ($scope.job.item_status) {
+            $routeParams.id;
+            //console.log("$scope.job.item_status", $scope.job.item_status);return false;
+            rest.path = 'acceptJobStatus';
+            //console.log("$scope.job", $scope.job);return false;
+            rest.put($scope.job).success(function(data) {
+                if (data.status == 200 && data.emailSend == 'true') {
+                    if ($scope.job.item_status == 'Delivered') {
+                        notification('job is delivered successfully and email sent to project manager.', 'success');
+                    } else {
+                        notification('job is accepted successfully and email sent to project manager.', 'success');
+                    }
+                    $route.reload();
+                }
+                //$location.path('/dashboard');
+            }).error(errorCallback);
+        }
+    }
+
+    $scope.jobsumemailResource = function(resourceName) {
+        if (resourceName) {
+            rest.path = 'contact_personGet/' + $scope.jobdetail.contact_person;
+            rest.get().success(function(data) {
+                $window.localStorage.ResourceMsg = data.iUserId;
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'tpl/jobresourcemsg.html',
+                    controller: 'jobResourceMsgController',
+                    size: '',
+                    resolve: {
+                        items: function() {
+                            return $scope.data;
+                        }
+                    }
+                });
+            }).error(errorCallback);
+        }
+    }
+
+    //invoice of redirect
+    $scope.projectInvoiceRedirect = function() {
+        $location.path('/project-detail/' + $routeParams.id);
+    }
+
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
 
 }).controller('invoiceViewController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
