@@ -401,6 +401,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'jobstatusReportController',
             activetab: 'Jobs-status-report',
             role: '1'
+        }).when('/overview-report', {
+            templateUrl: modulesPath + 'overview_report.html',
+            controller: 'overviewReportController',
+            activetab: 'overview-report',
+            role: '1'
         }).when('/project-job-detail/:id', {
             templateUrl: modulesPath + 'project_job_detail.html',
             controller: 'projectjobDetailController',

@@ -410,6 +410,23 @@ app.filter('currencyCommaformat', function($filter) {
         }
     }
 });
+app.filter('currencyCommaDcmlformat', function($filter) {
+    return function(input) {
+        if (input == undefined || input == 0 || input == '') {
+            //return '$ None';
+            return '0';
+        } else {
+            //var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
+            //var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
+            //const input1 = input % 1 != 0 ? (Math.round(input * 100) / 100).toFixed(2) : input;
+            var input1 = input.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+            var currencydata = input1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "-");
+            var currencydata1 = currencydata.replace(".", ',');
+            //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            return currencydata1.replace("-", '.');
+        }
+    }
+});
 app.filter('CurrencyNumbersCommaformat', function($filter) {
     return function(input) {
         if (input == undefined || input == 0 || input == '') {

@@ -268,6 +268,22 @@
 
             </li>
 
+            <li
+            ng-mouseover="menuHoverIn('srjMenu');"
+            ng-mouseleave="menuHoverOut('srjMenu')"
+          >
+            <a href="#/overview-report" md-ink-ripple>
+              <span class="font-bol">Overview Reports</span>
+            </a>
+      
+            <i
+              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);"
+              id="srjMenu"
+              title="Add to Favourite"
+            ></i>
+          </li>
+
         </ul>
 
     </li>

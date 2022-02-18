@@ -6853,6 +6853,577 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
+}).controller('overviewReportController', function($scope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.iUserId = "";
+
+    var Dateobject = [];
+    for (var i = 11; i >= 0; i--) {
+        var now = new Date();
+        var date = new Date(now.setMonth(now.getMonth() - i));
+        var datex = ("0" + date.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+        var str = pad(date.getMonth() + 1, 2) + "-" + date.getFullYear();
+        Dateobject.push({
+            id: str
+        });
+    }
+
+    //export to excel
+    $scope.exportData = function(action) {
+        switch (action) {
+            case "result":
+                var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+                saveAs(blob, "Order-status-report.xls");
+                break;
+            case "month":
+                var blob = new Blob([document.getElementById('itemExport').innerHTML], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+                saveAs(blob, "Order-month-status-report.xls");
+                break;
+            case "projectType":
+                var blob = new Blob([document.getElementById('ProjectTypeexport').innerHTML], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+                saveAs(blob, "Order-Project-Type-status-report.xls");
+                break;
+            case "customers":
+                var blob = new Blob([document.getElementById('customersExports').innerHTML], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+                saveAs(blob, "Order-customers-status-report.xls");
+                break;
+        }
+    };
+
+    //current year get
+    $scope.date = new Date();
+    var year = $scope.date.getFullYear();
+    $scope.Currentyear = year.toString().substr(2, 2);
+    //get contact person by customers
+    $scope.getContact = function(id, element) {
+        $routeParams.id = id;
+        rest.path = 'contact';
+        rest.model().success(function(data) {
+            var cont = [];
+            angular.forEach(data.data, function(val, i) {
+                var obj = {
+                    'id': val.iContactId,
+                    'text': val.vFirstName + ' ' + val.vLastName
+                };
+                cont.push(obj);
+            });
+            angular.element('#' + element).select2({
+                allowClear: true,
+                data: cont
+            });
+        }).error(errorCallback);
+    };
+
+    // Overview Report Amount Total
+    $scope.currentDayAmt = 0;
+    $scope.allProjectAmt = 0;
+    $scope.tobeAssignAmt = 0;
+    $scope.inProgressAmt = 0;
+    $scope.qaReadyAmt = 0;
+    $scope.tobeDeliveredAmt = 0;
+    $scope.deliveredAmt = 0;
+    $scope.approvedAmt = 0;
+    $scope.dueTodayAmt = 0;
+    $scope.dueTomorrowAmt = 0;
+    rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+    rest.get().success(function(data) {
+        $scope.ProjreportsData = data;
+        console.log('$scope.ProjreportsData', $scope.ProjreportsData)
+        angular.forEach(data, function(val, i) {
+            if(val.totalAmount){
+                $scope.allProjectAmt += val.totalAmount;            
+                if(val.itemStatus == 'To be Assigned'){
+                    $scope.tobeAssignAmt += val.totalAmount;            
+                }
+                if(val.itemStatus == 'In Progress'){
+                    $scope.inProgressAmt += val.totalAmount;            
+                }
+                if(val.itemStatus == 'QA Ready'){
+                    $scope.qaReadyAmt += val.totalAmount;            
+                }
+                if(val.itemStatus == 'To be Delivered'){
+                    $scope.tobeDeliveredAmt += val.totalAmount;            
+                }
+                if(val.itemStatus == 'Delivered'){
+                    $scope.deliveredAmt += val.totalAmount;            
+                }
+                if(val.itemStatus == 'Approved'){
+                    $scope.approvedAmt += val.totalAmount;            
+                }
+                if (val.DueDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
+                    $scope.dueTodayAmt += val.totalAmount; 
+                }
+                if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                    $scope.dueTomorrowAmt += val.totalAmount; 
+                }
+                // Project/scoop added for today
+                if (val.orderDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
+                    $scope.currentDayAmt += val.totalAmount; 
+                    console.log('$scope.currentDayAmt', $scope.currentDayAmt)
+                }
+                
+            }
+        })
+    });
+
+    //status oreder report find
+    $scope.statusReportsearch = function(frmId, eID) {
+        if ($scope.orderReport == undefined || $scope.orderReport == null || $scope.orderReport == "") {
+            notification('Please Select option', 'information');
+        } else {
+            rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function(data) {
+                $scope.statusResult = data;
+                // angular.forEach(data, function(val, i) {
+                // })
+            });    
+
+            rest.path = 'statusorderReportFind';
+            rest.get().success(function(data) {
+                    //$scope.statusResult = data['data'];
+                    $scope.Dateobject = Dateobject;
+                    $scope.statusInfo = data['projectScoopInfo'];
+                    $scope.statusProjectType = data['Typeinfo'];
+                    $scope.statusCustomerType = data['customerType'];
+                    $scope.totalItemAmout = 0;
+                    var result = [];
+
+                    console.log('item status', $scope.orderReport.itemStatus)
+                    console.log('projectStatus status', $scope.orderReport.projectStatus)
+                    //Month Chart start
+                    angular.forEach($scope.Dateobject, function(val, i) {
+                        angular.forEach($scope.statusInfo, function(value, j) {
+                            $timeout(function() {
+                                for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
+                                    var QuentityDate = angular.element('#masterQDate' + k).text();
+                                    var obj = [];
+                                    obj.push(QuentityDate);
+                                    if (value.QuentityDate == QuentityDate) {
+                                        if (val.id == value.QuentityDate) {
+                                            $scope.totalItemAmout += value.TotalAmount;
+                                            var prn = $scope.totalItemAmout * 12 / 100;
+                                            $scope.totalItemAvg = prn;
+                                            angular.element('#itemAmount' + i).text(value.TotalAmount);
+                                        } else {
+
+                                        }
+                                    }
+                                }
+                            }, 100);
+                        })
+                    })
+
+                    var obj = [];
+                    $timeout(function() {
+                        var dupQuentity = [];
+                        for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
+                            var QuentityDate = angular.element('#masterQDate' + k).text();
+                            dupQuentity.push(QuentityDate);
+                        }
+
+                        for (var i = 0; i < 12; i++) {
+                            var itemDate = angular.element('#itemDate' + i).text();
+                            if (jQuery.inArray(itemDate, dupQuentity) == -1) {
+                                angular.element('#itemAmount' + i).text(0);
+                            }
+                        }
+
+                        $scope.checkOrderItem = angular.element('.orderRClass').length;
+                        for (var i = 0; i < angular.element('[id^=itemAmount]').length; i++) {
+                            var item = angular.element('#itemAmount' + i).text();
+                            var itemTotal = angular.element('#totalItemAmout').text();
+                            if (item != "") {
+                                obj.push(parseInt(item));
+                                var total = parseFloat(item) * 100 / parseFloat(itemTotal);
+                                total.toFixed(2) == 'NaN' ? angular.element('#itemShare' + i).text('0.0%') : angular.element('#itemShare' + i).text(total.toFixed(2) + '%');
+                            } else {
+                                obj.push(0);
+                                angular.element('#itemAmount' + i).text(0);
+                                angular.element('#itemShare' + i).text('0.0%');
+                            }
+                        }
+                        $scope.addItemGraph(obj);
+                    }, 500);
+                    //Month Chart end
+
+                    
+                })
+                //scrollToId(eID);
+            scrollToId(eID)
+        }
+    }
+
+    //items total graph
+    var chart;
+    $scope.addItemGraph = function(statInfo) {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'monthChart',
+                type: 'column',
+                height: 400,
+                options3d: {
+                    enabled: true,
+                    alpha: 15,
+                    beta: 15,
+                    viewDistance: 25,
+                    depth: 40,
+                },
+                marginTop: 80,
+                marginRight: 40
+            },
+            plotOptions: {
+                column: {
+                    depth: 40,
+                    stacking: true,
+                    grouping: false
+                }
+            },
+            title: {
+                text: 'Total (Orders)/Month (' + $scope.Dateobject[0].id + ' - ' + $scope.Dateobject[11].id + ') '
+            },
+            xAxis: {
+                categories: [$scope.Dateobject[0].id, $scope.Dateobject[1].id, $scope.Dateobject[2].id, $scope.Dateobject[3].id, $scope.Dateobject[4].id, $scope.Dateobject[5].id, $scope.Dateobject[6].id, $scope.Dateobject[7].id, $scope.Dateobject[8].id, $scope.Dateobject[9].id, $scope.Dateobject[10].id, $scope.Dateobject[11].id]
+            },
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Month (' + $scope.Dateobject[0].id + ' - ' + $scope.Dateobject[11].id + ')'
+                }
+            },
+            tooltip: {
+                headerFormat: '<b>{point.key}</b><br>',
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y} / {point.stackTotal}'
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    depth: 40
+                }
+            },
+            series: []
+        });
+
+        var odata = [{
+            data: statInfo,
+            stack: 0
+        }];
+
+        angular.forEach(odata, function(item, itemNo) {
+            chart.addSeries({
+                data: item.data,
+                stack: item.stack
+            }, false);
+        });
+        chart.redraw();
+    }
+
+    //Display serach remove
+    $scope.reseteSearch = function() {
+        $route.reload();
+    }
+
+    //redirect to customer page
+    $scope.customerOrder = function(id) {
+        rest.path = 'order/' + id;
+        rest.get().success(function(data) {
+            // debugger;
+            $scope.orderdata = data;
+            $window.localStorage.orderNo = $scope.orderdata.order_number;
+            $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+            $window.localStorage.orderID = id;
+            $window.localStorage.iUserId = id;
+            $window.localStorage.userType = 3;
+            $window.localStorage.currentUserName = data.vClientName;
+            $location.path('/project-customer');
+        }).error(errorCallback);
+    };
+
+    //serch data action
+    $scope.statucOrderAction = function(action) {
+        switch (action) {
+            case "Change project status":
+                $scope.projectStatus = true;
+                $scope.itemStatus = false;
+                break;
+            case "Change item status":
+                $scope.itemStatus = true;
+                $scope.projectStatus = false;
+                break;
+            case "Remove selection":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+            case "Export to excel":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+            case "Select all":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+        }
+    }
+
+    //search data action
+    $scope.statusAction = function(action) {
+        switch (action) {
+            case "Change project status":
+                var projectStatus = angular.element('#projectStatusdata').val();
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (orderselect == 'true') {
+                        var orderId = angular.element('#orderCheckData' + i).val();
+                        $routeParams.id = orderId;
+                        rest.path = 'ordersearchProjectStatusUpdate/' + $routeParams.id + '/' + projectStatus;
+                        rest.get().success(function(data) {
+                            $route.reload();
+                        }).error(errorCallback);
+                    }
+                }
+                break;
+            case "Change item status":
+                var itemStatus = angular.element('#itemStatusdata').val();
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (orderselect == 'true') {
+                        var orderId = angular.element('#orderCheckData' + i).val();
+                        $routeParams.id = orderId;
+                        rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
+                        rest.get().success(function(data) {
+                            $route.reload();
+                        }).error(errorCallback);
+                    }
+                }
+                break;
+            case "Remove selection":
+                break;
+            case "Export to excel":
+                var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                });
+                saveAs(blob, "Order-status-report.xls");
+                $route.reload();
+                break;
+            case "Select all":
+                $scope.checkdata = "ordercheck";
+                break;
+        }
+    }
+
+    // Start Job data search
+    // Overview Report Amount Total - Job
+    $scope.requestedJobAmt = 0;
+    $scope.inProgressJobAmt = 0;
+    $scope.preparationJobAmt = 0;
+    $scope.deliveredJobAmt = 0;
+    $scope.approvedJobAmt = 0;
+    $scope.dueTodayJobAmt = 0;
+    $scope.dueTomorrowJobAmt = 0;
+    $scope.overdueJobAmt = 0;
+    
+    rest.path = 'getJobsFromTmsSummeryView';
+    rest.get().success(function(data) {
+        $scope.jobReportdata = data;
+        console.log('$scope.jobReportdata', $scope.jobReportdata)
+        angular.forEach(data, function(val, i) {
+            if(val.total_price){
+                //$scope.preparationJobAmt += val.totalAmount;            
+                if(val.item_status == 'Requested'){
+                    $scope.requestedJobAmt += val.total_price;            
+                }
+                if(val.item_status == 'In-progress'){
+                    $scope.inProgressJobAmt += val.total_price;            
+                }
+                if(val.item_status == 'In preparation'){
+                    $scope.preparationJobAmt += val.total_price;            
+                }
+                if(val.item_status == 'Overdue'){
+                    $scope.overdueJobAmt += val.total_price;            
+                }
+                if(val.item_status == 'Delivered'){
+                    $scope.deliveredJobAmt += val.total_price;            
+                }
+                if(val.item_status == 'Approved'){
+                    $scope.approvedJobAmt += val.total_price;            
+                }
+                if(val.item_status == 'Delivered'){
+                    $scope.deliveredJobAmt += val.total_price;            
+                }
+                if(val.item_status == 'Delivered'){
+                    $scope.deliveredJobAmt += val.total_price;            
+                }
+                if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
+                    $scope.dueTodayJobAmt += val.total_price; 
+                }
+                if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                    $scope.dueTomorrowJobAmt += val.total_price; 
+                }
+            }
+        })        
+    });    
+        //Job report search start
+        $scope.jobstatusReportsearch = function(frmId, eID) {
+
+            if ($scope.jobReport == undefined || $scope.jobReport == null || $scope.jobReport == "") {
+                notification('Please Select option', 'information');
+            } else if (jQuery.isEmptyObject($scope.jobReport) == true) {
+                notification('Please Select option', 'information');
+                $route.reload();
+            } else {
+                rest.path = 'statusJobReportFind';
+                rest.get().success(function(data) {
+                    $scope.jobstatusResult = data;
+                    console.log("$scope.jobstatusResult", $scope.jobstatusResult);
+                })
+                scrollToId(eID);
+            }
+        }
+    // End Job search data
+
+    //select field clear
+    $scope.clearCode = function(frmId, action) {
+        switch (action) {
+            case "itemStatus":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.itemStatus = '';
+                    angular.element('#itemStatus').select2('val', '');
+                    angular.forEach($scope.orderReport, function(value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "projectStatus":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.projectStatus = '';
+                    angular.element('#projectStatus').select2('val', '');
+                    angular.forEach($scope.orderReport, function(value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "projectType":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.projectType = '';
+                    angular.element('#projectType').select2('val', '');
+                    angular.forEach($scope.orderReport, function(value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "sourceLanguage":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.sourceLanguage = '';
+                    angular.element('#sourceLanguage').select2('val', '');
+                    angular.forEach($scope.orderReport, function(value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "targetLanguage":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.targetLanguage = '';
+                    angular.element('#targetLanguage').select2('val', '');
+                    angular.forEach($scope.orderReport, function(value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+        }
+    }
+
+    // test
+    //remove job search 
+    $scope.jobclearCode = function(frmId, action) {
+        switch (action) {
+            case "jobStatus":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.jobStatus = '';
+                    angular.element('#jobStatus1').select2('val', '');
+                    angular.forEach($scope.jobReport, function(value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.jobstatusResult = '';
+                    }
+                }
+                break;
+            case "itemStatus":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.itemStatus = '';
+                    angular.element('#itemStatus1').select2('val', '');
+                    angular.forEach($scope.jobReport, function(value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "userTypes":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.orderTypes = '';
+                    angular.element('#userTypes1').select2('val', '');
+                    angular.forEach($scope.jobReport, function(value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+        }
+    }
+
 }).controller('resourcesController', function($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams, $cookieStore, $timeout, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     //country holiday get
