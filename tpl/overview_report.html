@@ -10,7 +10,6 @@
   .bg-card:hover{
     box-shadow: 1px 5px 1px 1px #6254b9;
   }
-
   .light-card:hover, .cd-card:hover{
     box-shadow: 1px 5px 1px 1px #e2e2e9;
   }
@@ -511,6 +510,17 @@
                           <div class="bottom text-right w-full">
                             <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
                           </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-4">
+                        <div class="block panel padder-v bg-primary item bg-card">
+                          <div class="text-white font-thin h3">
+                            <span>${{completedJobAmt | currencyCommaDcmlformat}}</span>
+                          </div>
+                          <span class="text-muted text-s">Completed</span>
+                          <span class="bottom text-right w-full">
+                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
+                          </span>
                         </div>
                       </div>
                     </div>

@@ -1073,3 +1073,36 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   text-overflow: ellipsis;
   width: 100%;
 }
+
+/* Overview Report */
+/*
+.light-card, .cd-card{
+  border-radius: 5px;
+  border: 0.1px solid #f7f1f1;
+  box-shadow: 0px 0.5px 0px 0px;
+}
+.light-card{
+  background: linear-gradient(90deg, #FFF 0%, #F1F0F0 75%);
+}
+.light-card span.text-muted.text-s{
+  color: #777;
+}
+.bg-card{
+  background: linear-gradient(90deg, #7266ba 0%, rgba(9,9,121,1) 75%);
+}
+.bg-card{
+  border-radius: 6px;
+}
+.bg-card:hover{
+  box-shadow: 1px 5px 1px 1px #6254b9;
+}
+
+.light-card:hover, .cd-card:hover{
+  box-shadow: 1px 5px 1px 1px #e2e2e9;
+}
+.bg-card .glyphicon-flash{
+  font-size: 20px;
+}
+.light-card i.glyphicon.glyphicon-stats.text-primary.m-l-sm.m-r-sm {
+    font-size: 10px;
+} */

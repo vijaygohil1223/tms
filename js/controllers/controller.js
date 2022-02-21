@@ -6868,35 +6868,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     }
 
-    //export to excel
-    $scope.exportData = function(action) {
-        switch (action) {
-            case "result":
-                var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-status-report.xls");
-                break;
-            case "month":
-                var blob = new Blob([document.getElementById('itemExport').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-month-status-report.xls");
-                break;
-            case "projectType":
-                var blob = new Blob([document.getElementById('ProjectTypeexport').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-Project-Type-status-report.xls");
-                break;
-            case "customers":
-                var blob = new Blob([document.getElementById('customersExports').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-customers-status-report.xls");
-                break;
-        }
-    };
 
     //current year get
     $scope.date = new Date();
@@ -6922,7 +6893,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
     };
 
-    // Overview Report Amount Total
+    // Overview Report Project Amount Total
     $scope.currentDayAmt = 0;
     $scope.allProjectAmt = 0;
     $scope.tobeAssignAmt = 0;
@@ -7147,32 +7118,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
     };
 
-    //serch data action
-    $scope.statucOrderAction = function(action) {
-        switch (action) {
-            case "Change project status":
-                $scope.projectStatus = true;
-                $scope.itemStatus = false;
-                break;
-            case "Change item status":
-                $scope.itemStatus = true;
-                $scope.projectStatus = false;
-                break;
-            case "Remove selection":
-                $scope.projectStatus = false;
-                $scope.itemStatus = false;
-                break;
-            case "Export to excel":
-                $scope.projectStatus = false;
-                $scope.itemStatus = false;
-                break;
-            case "Select all":
-                $scope.projectStatus = false;
-                $scope.itemStatus = false;
-                break;
-        }
-    }
-
     //search data action
     $scope.statusAction = function(action) {
         switch (action) {
@@ -7229,6 +7174,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.dueTodayJobAmt = 0;
     $scope.dueTomorrowJobAmt = 0;
     $scope.overdueJobAmt = 0;
+    $scope.completedJobAmt = 0;
     
     rest.path = 'getJobsFromTmsSummeryView';
     rest.get().success(function(data) {
@@ -7260,6 +7206,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 if(val.item_status == 'Delivered'){
                     $scope.deliveredJobAmt += val.total_price;            
+                }
+                if(val.item_status == 'Completed'){
+                    $scope.completedJobAmt += val.total_price;            
                 }
                 if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
                     $scope.dueTodayJobAmt += val.total_price; 
