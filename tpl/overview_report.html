@@ -59,10 +59,10 @@
             <div class="col-md-12">
               <div class="">
                 <div class="row row-sm text-center">
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="block panel padder-v bg-primary item bg-card">
                       <div class="text-white font-thin h3">
-                        <span>${{dueTodayAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{dueTodayAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">Due today</span>
                       <span class="bottom text-right w-full">
@@ -70,10 +70,10 @@
                       </span>
                     </div>
                   </div>
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="panel padder-v item light-card">
                       <div class="text-primary-dk font-thin h3">
-                        <span>${{tobeAssignAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{tobeAssignAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">To be assigned</span>
                       <div class="bottom text-right w-full">
@@ -81,10 +81,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="panel padder-v item light-card">
                       <div class="text-primary-dk font-thin h3">
-                        <span>${{inProgressAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{inProgressAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">In Progress</span>
                       <div class="bottom text-right w-full">
@@ -93,10 +93,10 @@
                     </div>
                   </div>
 
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="panel padder-v item light-card">
                       <div class="text-primary-dk font-thin h3">
-                        <span>${{qaReadyAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{qaReadyAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">QA Ready</span>
                       <div class="bottom text-right w-full">
@@ -104,10 +104,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="block panel padder-v bg-primary item bg-card">
                       <div class="text-white font-thin h3">
-                        <span>${{tobeDeliveredAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{tobeDeliveredAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">To be Delivered</span>
                       <span class="bottom text-right w-full">
@@ -115,10 +115,10 @@
                       </span>
                     </div>
                   </div>
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="panel padder-v item light-card">
                       <div class="text-primary-dk font-thin h3">
-                        <span>${{dueTomorrowAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{dueTomorrowAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">Due Tomorrow</span>
                       <div class="bottom text-right w-full">
@@ -126,10 +126,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="panel padder-v item light-card">
                       <div class="text-primary-dk font-thin h3">
-                        <span>${{deliveredAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{deliveredAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">Delivered</span>
                       <div class="bottom text-right w-full">
@@ -137,10 +137,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="panel padder-v item light-card">
                       <div class="text-primary-dk font-thin h3">
-                        <span>${{approvedAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{approvedAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">Approved</span>
                       <div class="bottom text-right w-full">
@@ -148,10 +148,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-xs-4">
+                  <div class="col-sm-4">
                     <div class="block panel padder-v bg-primary item bg-card">
                       <div class="text-white font-thin h3">
-                        <span>${{allProjectAmt | currencyCommaDcmlformat}}</span>
+                        <span>€{{allProjectAmt | currencyCommaDcmlformat}}</span>
                       </div>
                       <span class="text-muted text-s">All</span>
                       <span class="bottom text-right w-full">
@@ -166,7 +166,7 @@
                       </div>
                       <div class="col dk padder-v r-r">
                         <div class="text-primary-dk font-thin h3">
-                          <span>${{currentDayAmt | currencyCommaDcmlformat}}</span>
+                          <span>€{{currentDayAmt | currencyCommaDcmlformat}}</span>
                         </div>
                         <span class="text-muted text-s">Current Day</span>
                       </div>
@@ -284,14 +284,14 @@
                               </div>
                             </div>
                           </div>
-                          <!-- <div class="col-xs-4 m-b-md text-center">
+                          <!-- <div class="col-sm-4 m-b-md text-center">
                             <div class="r bg-light dker item hbox no-border">
                               <div class="col w-xs v-middle hidden-md">
                                 <i class="glyphicon glyphicon-calendar" style="font-size: 20px;"></i>
                               </div>
                               <div class="col dk padder-v r-r">
                                 <div class="text-primary-dk font-thin h1">
-                                  <span>${{currentDayAmt}}</span>
+                                  <span>€{{currentDayAmt}}</span>
                                 </div>
                                 <span class="text-muted text-xs">Current Day</span>
                               </div>
@@ -424,10 +424,10 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="row row-sm text-center">
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="block panel padder-v bg-primary item bg-card">
                           <div class="text-white font-thin h3">
-                            <span>${{requestedJobAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{requestedJobAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">Requested</span>
                           <span class="bottom text-right w-full">
@@ -435,10 +435,10 @@
                           </span>
                         </div>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="panel padder-v item light-card">
                           <div class="text-primary-dk font-thin h3">
-                            <span>${{inProgressJobAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{inProgressJobAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">In Progress</span>
                           <div class="bottom text-right w-full">
@@ -446,10 +446,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="panel padder-v item light-card">
                           <div class="text-primary-dk font-thin h3">
-                            <span>${{inProgressAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{inProgressAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">Due Today</span>
                           <div class="bottom text-right w-full">
@@ -457,10 +457,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="panel padder-v item light-card">
                           <div class="text-primary-dk font-thin h3">
-                            <span>${{qaReadyAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{qaReadyAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">Due Tomorrow</span>
                           <div class="bottom text-right w-full">
@@ -468,10 +468,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="block panel padder-v bg-primary item bg-card">
                           <div class="text-white font-thin h3">
-                            <span>${{preparationJobAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{preparationJobAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">In preparation</span>
                           <span class="bottom text-right w-full">
@@ -479,10 +479,10 @@
                           </span>
                         </div>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="panel padder-v item light-card">
                           <div class="text-primary-dk font-thin h3">
-                            <span>${{overdueJobAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{overdueJobAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">Overdue</span>
                           <div class="bottom text-right w-full">
@@ -490,10 +490,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="panel padder-v item light-card">
                           <div class="text-primary-dk font-thin h3">
-                            <span>${{deliveredJobAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{deliveredJobAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">Delivered</span>
                           <div class="bottom text-right w-full">
@@ -501,10 +501,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="panel padder-v item light-card">
                           <div class="text-primary-dk font-thin h3">
-                            <span>${{approvedJobAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{approvedJobAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">Approved</span>
                           <div class="bottom text-right w-full">
@@ -512,10 +512,10 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-xs-4">
+                      <div class="col-sm-4">
                         <div class="block panel padder-v bg-primary item bg-card">
                           <div class="text-white font-thin h3">
-                            <span>${{completedJobAmt | currencyCommaDcmlformat}}</span>
+                            <span>€{{completedJobAmt | currencyCommaDcmlformat}}</span>
                           </div>
                           <span class="text-muted text-s">Completed</span>
                           <span class="bottom text-right w-full">

@@ -446,7 +446,7 @@ app.filter('CurrencyNumbersCommaformat', function($filter) {
                 a[1]='';
             }else{ var a2 = ','+a[1].slice(0, 2); }
             var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
-            return n1 + a2 + ' USD';
+            return n1 + a2 + ' EUR';
         }
     }
 });
