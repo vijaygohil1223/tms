@@ -12806,7 +12806,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
-                $scope.currencyType = vBankInfo.currency_code;
+                //$scope.currencyType = vBankInfo.currency_code;
+                $scope.vBankInfo.currency_code = 'EUR,€'; 
+                $scope.currencyType = 'EUR,€';
 
                 $scope.currencyPaymentMethod = vBankInfo.payment_method;
                 if ($scope.currencyPaymentMethod == 'Bank Transfer') {
@@ -12825,6 +12827,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }).error(errorCallback);
 
             $scope.invoiceList = data;
+            console.log('$scope.invoiceList', $scope.invoiceList)
 
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
 
@@ -12841,13 +12844,20 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
 
             $scope.grandTotal = 0;
+            $scope.grandJobTotal = 0;
             angular.forEach($scope.invoiceList, function(val, i) {
                 if (val.item) {
                     angular.forEach(val.item, function(v, i) {
                         $scope.grandTotal += v.itemTotal;
                     })
                 }
+                if (val.jobpriceList) {
+                    angular.forEach(val.jobpriceList, function(v, i) {
+                        $scope.grandJobTotal += v.itemTotal;
+                    })
+                }
             })
+
         }).error(errorCallback);
     }
 
@@ -22489,6 +22499,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }).error(errorCallback);
 
             $scope.invoiceList = data;
+            console.log('$scope.invoiceList', $scope.invoiceList)
 
             $scope.grandTotal = 0;
             angular.forEach($scope.invoiceList, function(val, i) {

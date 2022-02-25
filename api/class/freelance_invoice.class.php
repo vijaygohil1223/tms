@@ -154,7 +154,7 @@ class Freelance_invoice {
                 //$this->_db->join('tms_general tg','tg.order_id = tsv.order_id', 'INNER');
                 $this->_db->join('tms_customer tcu','tcu.order_id = tsv.order_id', 'INNER');
                 $this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
-                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tci.vCodeRights As company_code, tsv.job_code AS jobCode');
+                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice');
                 
                 //, tci.vEmailAddress  AS companyEmail
                 $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
@@ -175,6 +175,14 @@ class Freelance_invoice {
                     if($info['price']){
                         foreach (json_decode($info['price']) as $field => $val) {
                             $data['item'][] = (array) $val;
+                        }
+                    }
+                }
+
+                if($data){
+                    if($data['jobPrice']){
+                        foreach (json_decode($data['jobPrice']) as $field => $val) {
+                            $data['jobpriceList'][] = (array) $val;
                         }
                     }
                 }

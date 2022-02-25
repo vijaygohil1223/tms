@@ -133,19 +133,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="item in invL.item track by $index">
+                                    <!-- <tr ng-repeat="item in invL.item track by $index">
                                         <td ng-bind="$index+1"></td>
                                         <td ng-bind="item.pricelist"></td>
                                         <td ng-bind="item.quantity"></td>
                                         <td ng-bind="item.itemPrice | customNumber"></td>
                                         <td ng-bind="item.itemTotal | customNumber"></td>
                                         <td class="none" ng-init="invL.item.subTotal = invL.item.subTotal + item.itemTotal"></td>
+                                    </tr> -->
+                                    <tr ng-repeat="jobpr in invL.jobpriceList track by $index">
+                                        <td ng-bind="$index+1"></td>
+                                        <td ng-bind="jobpr.pricelist"></td>
+                                        <td ng-bind="jobpr.quantity"></td>
+                                        <td ng-bind="jobpr.itemPrice"></td>
+                                        <td ng-bind="jobpr.itemTotal | customNumber"></td>
+                                        <td class="none" ng-init="invL.jobpr.jobsubTotal = invL.jobpr.jobsubTotal + jobpr.itemTotal"></td>
                                     </tr>
                                     <tr ng-if="$index == invoiceLength">
                                         <td colspan="4" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="width:9%;">
                                             {{currencyType}}
-                                            {{grandTotal | customNumber}}
+                                            {{grandJobTotal | customNumber}}
                                         </td>
                                     </tr>
                                     <tr ng-if="$index == invoiceLength">
@@ -159,7 +167,7 @@
                                     <tr ng-if="$index == invoiceLength">
                                         <td colspan="4" class="text-right no-border"><strong>Total </strong></td>
                                         <td>{{currencyType}}
-                                {{grandTotal | customNumber}}
+                                {{grandJobTotal | customNumber}}
                                         </td>
                                     </tr>
                                 </tbody>
