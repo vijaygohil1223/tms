@@ -6853,7 +6853,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
-}).controller('overviewReportController', function($scope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
+}).controller('overviewReportController', function($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
 
@@ -7372,6 +7372,38 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 break;
         }
     }
+
+    var todayDate = $filter('date')(new Date(), 'yyyy-MM-dd');
+                
+    $scope.allpayableAmt = 0;
+    $scope.allPay = 0;
+    $scope.allPayCost = 0;
+    $scope.dueTdaypayable = 0;
+    $scope.getinvoiceData = function() {
+        rest.path = "viewAllInvoice1/save";
+        rest.get().success(function(data) {
+            $scope.invoiceList = data;
+            console.log("$scope.invoiceList", $scope.invoiceList);
+            angular.forEach(data, function(val, i) {
+                $scope.allPayCost += val.Invoice_cost; 
+                if(val.paid_amount)
+                $scope.allPay += val.paid_amount; 
+            });
+            //$scope.allpayableAmt =  $scope.allPayCost - $scope.allPay;   
+        }).error(errorCallback);
+
+        // In Preparation invoice
+        $scope.inPreparationPay = 0 ;
+        rest.path = "viewAllInvoice1/draft";
+        rest.get().success(function(data) {
+            $scope.invoiceListDraft = data;
+            angular.forEach(data, function(val, i) {
+                $scope.inPreparationPay += val.Invoice_cost; 
+            });
+        }).error(errorCallback);
+    }
+
+    $scope.getinvoiceData();
 
 }).controller('resourcesController', function($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams, $cookieStore, $timeout, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -12916,7 +12948,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.element('#btnSave').show();
             angular.element('#btnDraft').show();
             angular.element('#btnCancel').show();
-            /*$("#toAddEleAfterDwonload").before(btnPaid);
+            /*
+            $("#toAddEleAfterDwonload").before(btnPaid);
             $("#toAddEleAfterDwonload").before(btnMarkAsCancel);
             $("#toAddEleAfterDwonload").before(btnSave);
             $("#toAddEleAfterDwonload").before(btnDraft);

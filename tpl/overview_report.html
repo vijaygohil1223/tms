@@ -1,37 +1,26 @@
 <style>
-  .light-card, .cd-card{
-    border-radius: 5px;
-    border: 0.1px solid #f7f1f1;
-    box-shadow: 0px 0.5px 0px 0px;
-    box-shadow: 1px 2px 1px 1px #e2e2e9;
+  .boxfv ul.list-group {
+      overflow-y: auto;
+      height: auto;
   }
-  .bg-card{
-    border-radius: 6px;
-    box-shadow: 1px 2px 1px 1px #6254b9;   
+  .boxfv{
+    padding-right: 7px;
+    width: 20%;
   }
-  .bg-card:hover{
-    box-shadow: 1px 5px 1px 1px #6254b9;
+  .boxfv small.text-muted{
+    color: #777;
   }
-  .light-card:hover, .cd-card:hover{
-    box-shadow: 1px 5px 1px 1px #e2e2e9;
+  .boxfv .panel-heading{
+    padding: 10px;
+    border-radius: 6px 6px 0 0;
   }
-  .bg-card .glyphicon-flash{
-    font-size: 20px;
+  .boxfv h5{
+    color: white;
   }
-  .light-card i.glyphicon.glyphicon-stats.text-primary.m-l-sm.m-r-sm {
-      font-size: 10px;
+  .boxfv .panel {
+      border: 0.5px solid #efeaea;
+      border-radius: 7px 7px 0 0;
   }
-  .bgheader{
-    background-color: #f6f8f8;
-    padding-top: 15px;
-    border: 1px solid #edf1f2;
-    border-color: #edf1f2;
-    padding-bottom: 15px;
-  }
-  .payreceive ul.list-group {
-    overflow-y: auto;
-    height: auto;
-  }  
 </style>
 
 <div
@@ -66,125 +55,136 @@
           </div>
         </div>
       </div>
-      <div class="wrapper-md ng-scope">
+      <div class="wrapper-md ng-scope report-overview">
         <div class="panel panel-default">
           <div class="panel-body">
-            <div class="col-md-12">
+            <div class="col-md-12 colsize-lg">
               <div class="">
-                <div class="row row-sm text-center">
-                  <div class="col-sm-4">
-                    <div class="block panel padder-v bg-primary item bg-card">
-                      <div class="text-white font-thin h4">
-                        <span>€ {{dueTodayAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">Due today</span>
-                      <span class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                      </span>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="panel padder-v item light-card">
-                      <div class="text-primary-dk font-thin h4">
-                        <span>€ {{tobeAssignAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">To be assigned</span>
-                      <div class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="panel padder-v item light-card">
-                      <div class="text-primary-dk font-thin h4">
-                        <span>€ {{inProgressAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">In Progress</span>
-                      <div class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-4">
-                    <div class="panel padder-v item light-card">
-                      <div class="text-primary-dk font-thin h4">
-                        <span>€ {{qaReadyAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">QA Ready</span>
-                      <div class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="block panel padder-v bg-primary item bg-card">
-                      <div class="text-white font-thin h4">
-                        <span>€ {{tobeDeliveredAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">To be Delivered</span>
-                      <span class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                      </span>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="panel padder-v item light-card">
-                      <div class="text-primary-dk font-thin h4">
-                        <span>€ {{dueTomorrowAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">Due Tomorrow</span>
-                      <div class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="panel padder-v item light-card">
-                      <div class="text-primary-dk font-thin h4">
-                        <span>€ {{deliveredAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">Delivered</span>
-                      <div class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="panel padder-v item light-card">
-                      <div class="text-primary-dk font-thin h4">
-                        <span>€ {{approvedAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">Approved</span>
-                      <div class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="block panel padder-v bg-primary item bg-card">
-                      <div class="text-white font-thin h4">
-                        <span>€ {{allProjectAmt | currencyCommaDcmlformat}}</span>
-                      </div>
-                      <span class="text-muted text-s">All</span>
-                      <span class="bottom text-right w-full">
-                        <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                      </span>
-                    </div>
-                  </div>
-                  <div class="col-xs-8 m-b-md">
-                    <div class="r dker item hbox no-border cd-card" style="background-color: #f4f4fb;">
-                      <div class="col w-xs v-middle hidden-md" style="background-color: #ececf5;">
-                        <i class="glyphicon glyphicon-calendar" style="font-size: 20px;"></i>
-                      </div>
-                      <div class="col dk padder-v r-r">
-                        <div class="text-primary-dk font-thin h4">
-                          <span>€ {{currentDayAmt | currencyCommaDcmlformat}}</span>
+                <div class="row row-sm">
+                    <div class="row wraper">
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-purple">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Current Day</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{currentDayAmt | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
                         </div>
-                        <span class="text-muted text-s">Current Day</span>
                       </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-green">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Due Today</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{dueTodayAmt | currencyCommaDcmlformat}}</small>
+                               </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-blue">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">In Progress</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{inProgressAmt | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-pink">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">To be Assigned</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{tobeAssignAmt | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                          <div class="panel-heading wrapper b-b bg-safron">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Delivered</h5>
+                          </div>
+                          <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                <small class="text-muted clear text-ellipsis">€ {{deliveredAmt | currencyCommaDcmlformat}}</small>
+                              </li>
+                          </ul>
+                        </div>
                     </div>
                   </div>
+                  <div class="row wraper">
+                    <div class="col-sm-3 boxfv">
+                      <div class="panel no-border">
+                          <div class="panel-heading wrapper b-b bg-purple">
+                            <h5 class="font-thin m-t-none m-b-none text-muted">All</h5>
+                          </div>
+                          <ul class="list-group list-group-lg m-b-none">
+                            <li class="list-group-item">
+                                <small class="text-muted clear text-ellipsis">€ {{allProjectAmt | currencyCommaDcmlformat}}</small>
+                            </li>
+                          </ul>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 boxfv">
+                      <div class="panel no-border">
+                          <div class="panel-heading wrapper b-b bg-green">
+                            <h5 class="font-thin m-t-none m-b-none text-muted">Due Tomorrow</h5>
+                          </div>
+                          <ul class="list-group list-group-lg m-b-none">
+                            <li class="list-group-item">
+                                <small class="text-muted clear text-ellipsis">€ {{dueTomorrowAmt | currencyCommaDcmlformat}}</small>
+                            </li>
+                          </ul>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 boxfv">
+                      <div class="panel no-border">
+                          <div class="panel-heading wrapper b-b bg-blue">
+                            <h5 class="font-thin m-t-none m-b-none text-muted">QA Ready</h5>
+                          </div>
+                          <ul class="list-group list-group-lg m-b-none">
+                            <li class="list-group-item">
+                                <small class="text-muted clear text-ellipsis">€ {{qaReadyAmt | currencyCommaDcmlformat}}</small>
+                            </li>
+                          </ul>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 boxfv">
+                      <div class="panel no-border">
+                          <div class="panel-heading wrapper b-b bg-pink">
+                            <h5 class="font-thin m-t-none m-b-none text-muted">To be Delivered</h5>
+                          </div>
+                          <ul class="list-group list-group-lg m-b-none">
+                            <li class="list-group-item">
+                                <small class="text-muted clear text-ellipsis">€ {{tobeDeliveredAmt | currencyCommaDcmlformat}}</small>
+                            </li>
+                          </ul>
+                      </div>
+                    </div>
+                    <div class="col-sm-3 boxfv">
+                      <div class="panel no-border">
+                        <div class="panel-heading wrapper b-b bg-safron">
+                            <h5 class="font-thin m-t-none m-b-none text-muted">Approved</h5>
+                        </div>
+                        <ul class="list-group list-group-lg m-b-none">
+                            <li class="list-group-item">
+                              <small class="text-muted clear text-ellipsis">€ {{approvedAmt | currencyCommaDcmlformat}}</small>
+                            </li>
+                        </ul>
+                      </div>
+                  </div>
+                </div>
                 </div>
               </div>
             </div>
@@ -200,58 +200,6 @@
                 </div> -->
                 <div class="panel-body">
                   <div class="row">
-                    <!-- <div class="col-sm-6" ng-show="checkOrderItem!=0 && checkOrderItem!=undefined"> -->
-                      <!-- <div class="col-sm-6 none">
-                        <div class="col-sm-5" id="itemExport">
-                          <table class="table m-b-none default footable-loaded footable">
-                              <thead>
-                                <th>Month</th>
-                                <th>Total</th>
-                                <th>%Share</th>
-                              </thead>
-                              <tbody>
-                                <div>
-                                    <tr ng-repeat="d in Dateobject" class="itemData">
-                                      <td id="itemDate{{$index}}" ng-bind="d.id"></td>
-                                      <td id="itemAmount{{$index}}"></td>
-                                      <td id="itemShare{{$index}}"></td>
-                                    </tr>
-                                </div>
-                                <tr>
-                                    <td>Total (EUR)</td>
-                                    <td id="totalItemAmout" ng-bind="totalItemAmout | customNumber"></td>
-                                    <td id="totalItemPer"><span ng-if='totalItemAmout'>100%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Average Month (Quantity - 12)</td>
-                                    <td ng-bind="totalItemAvg | customNumber"></td>
-                                    <td id="totalAvgPer"><span ng-if="totalItemAvg">12%</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="even"><button class="btn btn-info"
-                                          ng-click="exportData('month')">Excel</button> </td>
-                                </tr>
-                              </tbody>
-                          </table>
-                        </div>
-                        <div class="col-sm-12">
-                          <div id="monthChart" style="height: 400px" ng-bind="chart"></div>
-                        </div>
-                          <table class="table m-b-none default footable-loaded footable none">
-                            <thead>
-                                <th>Month</th>
-                                <th>Total</th>
-                                <th>%Share</th>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="s in statusInfo | filter : orderReport" class="itemData">
-                                  <td id="masterQDate{{$index}}">{{s.QuentityDate}}</td>
-                                  <td id="masterQAmount{{$index}}">{{s.TotalAmount | customNumber}}</td>
-                                </tr>
-                            </tbody>
-                          </table>
-                   </div> -->
-
                       <div class="">
                       <!-- start -->
                       <div class="row wrapper">
@@ -430,112 +378,113 @@
         <div class="panel-body">
           <div class="">
             <div class="panel panel-default">
-              <div class="panel-heading font-bold">
+              <div class="panel-heading font-bold bg-title">
                 <h4>Jobs</h4>
               </div>
               <div class="panel-body">
                 <div class="row">
-                  <div class="col-md-12">
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-4">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{requestedJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Requested</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{inProgressJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">In Progress</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
+                  <div class="col-md-12 colsize-lg">
+                    <div class="row row-sm">
+                      <div class="row wraper">
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-purple">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Requested</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ {{requestedJobAmt | currencyCommaDcmlformat}}</small>
+                                </li>
+                              </ul>
                           </div>
                         </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{inProgressAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Due Today</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{qaReadyAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Due Tomorrow</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-green">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">In progress</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ {{inProgressJobAmt | currencyCommaDcmlformat}}</small>
+                                </li>
+                              </ul>
                           </div>
                         </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{preparationJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">In preparation</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{overdueJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Overdue</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-blue">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Due Today</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ {{dueTodayJobAmt | currencyCommaDcmlformat}}</small>
+                                </li>
+                              </ul>
                           </div>
                         </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{deliveredJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Delivered</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{approvedJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Approved</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-pink">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Due Tomorrow</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ {{dueTomorrowJobAmt | currencyCommaDcmlformat}}</small>
+                                </li>
+                              </ul>
                           </div>
                         </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{completedJobAmt | currencyCommaDcmlformat}}</span>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-safron">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">In preparation</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{preparationJobAmt | currencyCommaDcmlformat}}</small>
+                                </li>
+                            </ul>
                           </div>
-                          <span class="text-muted text-s">Completed</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
+                      </div>
+                    </div>
+                    <div class="row wraper">
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-purple">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Overdue</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{overdueJobAmt | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
                         </div>
                       </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-green">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Delivered</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{deliveredJobAmt | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-blue">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Approved</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{approvedJobAmt | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
+                        </div>
+                      </div>
+                  </div>
                     </div>
                   </div>
                 </div>
@@ -627,258 +576,164 @@
         <div class="panel-body">
           <div class="">
             <div class="panel panel-default">
-              <!-- <div class="panel-heading font-bold">
-                <h4>Jobs</h4>
-              </div> -->
+              <div class="panel-heading font-bold bg-title">
+                <h4>Payable</h4>
+              </div>
               <div class="panel-body">
                 <div class="row text-center">
-                  <div class="col-md-4">
-                    <div class="row row-sm pb-15">
-                      <div class="col-sm-12">
-                        <div class="bgheader"><h4>Payable</h4></div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{requestedJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">All</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{inProgressJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">In preparation</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
+                  <div class="col-md-12 colsize-lg">
+                    
+                    <div class="row row-sm">
+                      <div class="row wraper">
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-purple">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">All</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ 0</small>
+                                </li>
+                              </ul>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{requestedJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Outstanding</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{inProgressJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Due Today</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-green">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">In preparation</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ 10,50</small>
+                                </li>
+                              </ul>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{requestedJobAmt | currencyCommaDcmlformat}}</span>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-blue">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Outstanding</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ 10,50</small>
+                                </li>
+                              </ul>
                           </div>
-                          <span class="text-muted text-s">Overdue</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
                         </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-pink">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Due Today</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ 10,50</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-safron">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Overdue</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ 400</small>
+                                </li>
+                            </ul>
+                          </div>
                       </div>
                     </div>
                   </div>
-
-                  <div class="col-md-4 col-sm-offset-1">
-                    <div class="row row-sm pb-15">
-                      <div class="col-sm-12">
-                        <div class="bgheader"><h4>Receivable</h4></div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{requestedJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">All</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{inProgressJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">In preparation</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{requestedJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Outstanding</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="panel padder-v item light-card">
-                          <div class="text-primary-dk font-thin h4">
-                            <span>€ {{inProgressJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Due Today</span>
-                          <div class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row row-sm text-center">
-                      <div class="col-sm-10">
-                        <div class="block panel padder-v bg-primary item bg-card">
-                          <div class="text-white font-thin h4">
-                            <span>€ {{requestedJobAmt | currencyCommaDcmlformat}}</span>
-                          </div>
-                          <span class="text-muted text-s">Overdue</span>
-                          <span class="bottom text-right w-full">
-                            <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                          </span>
-                        </div>
-                      </div>
-                    </div>                   
+                  
                   </div>
-                  <!-- 
-                  <div class="col-sm-5 payreceive text-center">
-                    <div class="panel b-a">
-                      <div class="panel-heading b-b b-light">
-                        <a href="" class="font-bold">Payable</a>
-                      </div>
-                      <ul class="list-group list-group-lg no-bg auto text-center">
-                        <li class="list-group-item clearfix">
-                          <div class="col-sm-10 col-md-offset-1">
-                            <div class="block panel padder-v bg-primary item bg-card">
-                              <div class="text-white font-thin h4">
-                                <span class="ng-binding">€ 0</span>
-                              </div>
-                              <span class="text-muted text-s">All</span>
-                              <span class="bottom text-right w-full">
-                                <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="list-group-item clearfix">
-                          <div class="col-sm-10 col-md-offset-1">
-                            <div class="panel padder-v item light-card">
-                              <div class="text-primary-dk font-thin h4">
-                                <span>€ {{inProgressJobAmt | currencyCommaDcmlformat}}</span>
-                              </div>
-                              <span class="text-muted text-s">Overdue</span>
-                              <div class="bottom text-right w-full">
-                                <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="list-group-item clearfix">
-                          <div class="col-sm-10 col-md-offset-1">
-                            <div class="block panel padder-v bg-primary item bg-card">
-                              <div class="text-white font-thin h4">
-                                <span class="ng-binding">€ 0</span>
-                              </div>
-                              <span class="text-muted text-s">In Preparation</span>
-                              <span class="bottom text-right w-full">
-                                <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>       
-                  </div>
-                  <div class="col-sm-5 payreceive text-center col-md-offset-1">
-                    <div class="panel b-a">
-                      <div class="panel-heading b-b b-light">
-                        <a href="" class="font-bold">Receivable</a>
-                      </div>
-                      <ul class="list-group list-group-lg no-bg auto text-center">
-                        <li class="list-group-item clearfix">
-                          <div class="col-sm-10 col-md-offset-1">
-                            <div class="block panel padder-v bg-primary item bg-card">
-                              <div class="text-white font-thin h4">
-                                <span class="ng-binding">€ 0</span>
-                              </div>
-                              <span class="text-muted text-s">All</span>
-                              <span class="bottom text-right w-full">
-                                <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="list-group-item clearfix">
-                          <div class="col-sm-10 col-md-offset-1">
-                            <div class="panel padder-v item light-card">
-                              <div class="text-primary-dk font-thin h4">
-                                <span>€ {{inProgressJobAmt | currencyCommaDcmlformat}}</span>
-                              </div>
-                              <span class="text-muted text-s">Overdue</span>
-                              <div class="bottom text-right w-full">
-                                <i class="glyphicon glyphicon-stats text-primary m-l-sm m-r-sm"></i>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                        <li class="list-group-item clearfix">
-                          <div class="col-sm-10 col-md-offset-1">
-                            <div class="block panel padder-v bg-primary item bg-card">
-                              <div class="text-white font-thin h4">
-                                <span class="ng-binding">€ 0</span>
-                              </div>
-                              <span class="text-muted text-s">In Preparation</span>
-                              <span class="bottom text-right w-full">
-                                <i class="glyphicon glyphicon-flash text-muted m-r-sm"></i>
-                              </span>
-                            </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>       
-                  </div>
-                   -->
+                 
                 </div>
 
               </div>
             </div>
+            <div class="panel panel-default">
+              <div class="panel-heading font-bold bg-title">
+                <h4>Receivable</h4>
+              </div>
+              <div class="panel-body">
+                <div class="row text-center">
+                  <div class="col-md-12 colsize-lg">
+                    
+                    <div class="row row-sm">
+                      <div class="row wraper">
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-purple">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">All</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ 300</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-green">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">In preparation</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ 800</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-blue">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Outstanding</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ 100</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-pink">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Due Today</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ 0</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-safron">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Overdue</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ 2400</small>
+                                </li>
+                            </ul>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  </div>
+                 
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </div>
       </div>       
