@@ -6946,6 +6946,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     });
 
     //status oreder report find
+    $scope.statusResult = [];
+    $scope.totalProjectHide = false;
     $scope.statusReportsearch = function(frmId, eID) {
         if ($scope.orderReport == undefined || $scope.orderReport == null || $scope.orderReport == "") {
             notification('Please Select option', 'information');
@@ -6953,9 +6955,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function(data) {
                 $scope.statusResult = data;
+                console.log('$scope.statusResult', $scope.statusResult)
                 // angular.forEach(data, function(val, i) {
                 // })
-            });    
+            }); 
+            
+            $scope.totalProjectHide = true;
+            $scope.projSearchTotal = function(statusResult){
+                if(statusResult)
+                return statusResult.reduce( function(totalStatusamt, statusDt){
+                    return totalStatusamt + statusDt.totalAmount
+                }, 0);
+            }
 
             rest.path = 'statusorderReportFind';
             rest.get().success(function(data) {
@@ -6967,8 +6978,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.totalItemAmout = 0;
                     var result = [];
 
-                    console.log('item status', $scope.orderReport.itemStatus)
-                    console.log('projectStatus status', $scope.orderReport.projectStatus)
                     //Month Chart start
                     angular.forEach($scope.Dateobject, function(val, i) {
                         angular.forEach($scope.statusInfo, function(value, j) {
@@ -6991,40 +7000,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             }, 100);
                         })
                     })
-
-                    var obj = [];
-                    $timeout(function() {
-                        var dupQuentity = [];
-                        for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
-                            var QuentityDate = angular.element('#masterQDate' + k).text();
-                            dupQuentity.push(QuentityDate);
-                        }
-
-                        for (var i = 0; i < 12; i++) {
-                            var itemDate = angular.element('#itemDate' + i).text();
-                            if (jQuery.inArray(itemDate, dupQuentity) == -1) {
-                                angular.element('#itemAmount' + i).text(0);
-                            }
-                        }
-
-                        $scope.checkOrderItem = angular.element('.orderRClass').length;
-                        for (var i = 0; i < angular.element('[id^=itemAmount]').length; i++) {
-                            var item = angular.element('#itemAmount' + i).text();
-                            var itemTotal = angular.element('#totalItemAmout').text();
-                            if (item != "") {
-                                obj.push(parseInt(item));
-                                var total = parseFloat(item) * 100 / parseFloat(itemTotal);
-                                total.toFixed(2) == 'NaN' ? angular.element('#itemShare' + i).text('0.0%') : angular.element('#itemShare' + i).text(total.toFixed(2) + '%');
-                            } else {
-                                obj.push(0);
-                                angular.element('#itemAmount' + i).text(0);
-                                angular.element('#itemShare' + i).text('0.0%');
-                            }
-                        }
-                        $scope.addItemGraph(obj);
-                    }, 500);
-                    //Month Chart end
-
                     
                 })
                 //scrollToId(eID);
@@ -7179,7 +7154,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     rest.path = 'getJobsFromTmsSummeryView';
     rest.get().success(function(data) {
         $scope.jobReportdata = data;
-        console.log('$scope.jobReportdata', $scope.jobReportdata)
+        console.log('$scope.jobReportdata----', $scope.jobReportdata)
         angular.forEach(data, function(val, i) {
             if(val.total_price){
                 //$scope.preparationJobAmt += val.totalAmount;            
@@ -7201,12 +7176,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if(val.item_status == 'Approved'){
                     $scope.approvedJobAmt += val.total_price;            
                 }
-                if(val.item_status == 'Delivered'){
-                    $scope.deliveredJobAmt += val.total_price;            
-                }
-                if(val.item_status == 'Delivered'){
-                    $scope.deliveredJobAmt += val.total_price;            
-                }
                 if(val.item_status == 'Completed'){
                     $scope.completedJobAmt += val.total_price;            
                 }
@@ -7219,7 +7188,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         })        
     });    
+
         //Job report search start
+        $scope.jobstatusResult = [];
+        $scope.totalJobHide = false;
         $scope.jobstatusReportsearch = function(frmId, eID) {
 
             if ($scope.jobReport == undefined || $scope.jobReport == null || $scope.jobReport == "") {
@@ -7228,10 +7200,19 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 notification('Please Select option', 'information');
                 $route.reload();
             } else {
-                rest.path = 'statusJobReportFind';
+                //rest.path = 'statusJobReportFind';
+                rest.path = 'getJobsFromTmsSummeryView';
                 rest.get().success(function(data) {
                     $scope.jobstatusResult = data;
-                    console.log("$scope.jobstatusResult", $scope.jobstatusResult);
+                    console.log("$scope.jobstatusResult ==>", $scope.jobstatusResult);
+                    // Search amount Total Job
+                    $scope.totalJobHide = true;
+                    $scope.jobSearchTotal = function(jobstatusResult){
+                        if(jobstatusResult)
+                        return jobstatusResult.reduce( function(totaljobStatusamt, jobstatusDt){
+                            return totaljobStatusamt + jobstatusDt.total_price
+                        }, 0);
+                    }
                 })
                 scrollToId(eID);
             }
@@ -7242,7 +7223,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.clearCode = function(frmId, action) {
         switch (action) {
             case "itemStatus":
+                $scope.totalJobtHide = false;
+                console.log('$scope.totalJobtHide', $scope.totalJobtHide)
                 if ($scope.orderReport != undefined) {
+                    $scope.totalProjectHide = false;
                     $scope.orderReport.itemStatus = '';
                     angular.element('#itemStatus').select2('val', '');
                     angular.forEach($scope.orderReport, function(value, key) {
@@ -7273,54 +7257,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
                 }
                 break;
-            case "projectType":
-                if ($scope.orderReport != undefined) {
-                    $scope.orderReport.projectType = '';
-                    angular.element('#projectType').select2('val', '');
-                    angular.forEach($scope.orderReport, function(value, key) {
-                        if (value === "" || value === null) {
-                            delete $scope.orderReport[key];
-                        }
-                    });
-                    if (jQuery.isEmptyObject($scope.orderReport)) {
-                        $scope.statusResult = '';
-                        $scope.orderReport = undefined;
-                        $scope.checkOrderItem = undefined;
-                    }
-                }
-                break;
-            case "sourceLanguage":
-                if ($scope.orderReport != undefined) {
-                    $scope.orderReport.sourceLanguage = '';
-                    angular.element('#sourceLanguage').select2('val', '');
-                    angular.forEach($scope.orderReport, function(value, key) {
-                        if (value === "" || value === null) {
-                            delete $scope.orderReport[key];
-                        }
-                    });
-                    if (jQuery.isEmptyObject($scope.orderReport)) {
-                        $scope.statusResult = '';
-                        $scope.orderReport = undefined;
-                        $scope.checkOrderItem = undefined;
-                    }
-                }
-                break;
-            case "targetLanguage":
-                if ($scope.orderReport != undefined) {
-                    $scope.orderReport.targetLanguage = '';
-                    angular.element('#targetLanguage').select2('val', '');
-                    angular.forEach($scope.orderReport, function(value, key) {
-                        if (value === "" || value === null) {
-                            delete $scope.orderReport[key];
-                        }
-                    });
-                    if (jQuery.isEmptyObject($scope.orderReport)) {
-                        $scope.statusResult = '';
-                        $scope.orderReport = undefined;
-                        $scope.checkOrderItem = undefined;
-                    }
-                }
-                break;
         }
     }
 
@@ -7330,7 +7266,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         switch (action) {
             case "jobStatus":
                 if ($scope.jobReport != undefined) {
-                    $scope.jobReport.jobStatus = '';
+                    $scope.totalJobHide = false;
+                    $scope.jobReport.item_status = '';
                     angular.element('#jobStatus1').select2('val', '');
                     angular.forEach($scope.jobReport, function(value, key) {
                         if (value === "" || value === null) {
@@ -7346,20 +7283,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if ($scope.jobReport != undefined) {
                     $scope.jobReport.itemStatus = '';
                     angular.element('#itemStatus1').select2('val', '');
-                    angular.forEach($scope.jobReport, function(value, key) {
-                        if (value === "" || value === null) {
-                            delete $scope.jobReport[key];
-                        }
-                    });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
-                        $scope.statusResult = '';
-                    }
-                }
-                break;
-            case "userTypes":
-                if ($scope.jobReport != undefined) {
-                    $scope.jobReport.orderTypes = '';
-                    angular.element('#userTypes1').select2('val', '');
                     angular.forEach($scope.jobReport, function(value, key) {
                         if (value === "" || value === null) {
                             delete $scope.jobReport[key];

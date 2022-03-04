@@ -229,9 +229,6 @@ class Freelance_invoice {
     	$this->_db->where('invoice_id', $id);
     	$idd = $this->_db->update('tms_invoice', $data);
     	
-
-
-
         if($idd && $partPaymentInsert) {
     		$request['status'] = 200;
     		$request['msg'] = "Successfully updated";
