@@ -11,13 +11,16 @@
         <div class="md-content page_content_wrapper">
 
             <div class="content_head bg-light lter b-b wrapper-md ng-scope">
-                <a href="" class="btn btn-sm btn-info pull-right" style="margin-top:-16px"
-                    ng-click="printIt(invoiceDetail.invoice_number)">Download</a>
-                <a ng-show="userRight==1" href="javascript:history.back()" class="btn btn-sm btn-info pull-right"
-                    style="margin-right: 10px;margin-top: -16px"> Back</a>
-                <a ng-show="userRight==2" href="javascript:history.back()" class="btn btn-sm btn-info pull-right"
-                    style="margin-right: 10px;margin-top: -16px"> Back</a>
-
+                <div class="pull-right">
+                    <a ng-show="userRight==1" href="javascript:history.back()" class="btn btn-sm btn-info"
+                        > Back</a>
+                    <a ng-show="userRight==2" href="javascript:history.back()" class="btn btn-sm btn-info"
+                        > Back</a>
+                    <a href="" class="btn btn-sm btn-info"
+                        ng-click="printIt(invoiceDetail.invoice_number)">Download</a>
+                    <a href="" class="btn btn-sm btn-info" ng-show="reminderBtnHideShow"
+                    ng-click="sendRemiderinvoice(invoiceDetail.invoice_number)">Send Reminder</a>
+                </div>        
             </div>
             <div class="wrapper-md ng-scope">
                 <div class="panel panel-default" id="exportable">

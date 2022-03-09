@@ -178,6 +178,8 @@
                             <button id="btnSave" ng-show="invoiceDetail.invoice_type!='save'" class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
                             <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="save('invoice-form', 'draft');"> Draft</button>
                             <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="cancel();"> Cancel</button>
+                            <button id="btnApproved" class="btn btn-success btnSave" ng-show="invoiceDetail.is_approved==1" ng-click="invoiceApproved('0');" ng-disabled="isDisabledApprvd"> Approved</button>
+                            <button id="btnApproved" class="btn btn-warning btnSave" ng-show="invoiceDetail.is_approved==0" ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd" style="color: #454f59 !important;"> UnApproved</button>
                         </div>
                     </div>
                 </div>

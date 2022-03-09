@@ -3124,10 +3124,22 @@ $app->get('/getInvoicePartPayments/:id','authenticate', function($id) {
     $result = $invoice->getInvoicePartPayments($id);
     echoResponse(200, $result);
 });
+$app->post('/sendInvoiceMail', 'authenticate',function () use($app) {
+    $invoice = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->sendInvoiceMail($data);
+    echoResponse(200, $result);
+});
 $app->put('/invoiceStatusChange/:id','authenticate', function ($id) use($app) {
     $invoice = new Freelance_invoice ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $invoice->invoiceStatusChange($data, $id);
+    echoResponse(200, $result);
+});
+$app->put('/invoiceStatusApproved/:id','authenticate', function ($id) use($app) {
+    $invoice = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->invoiceStatusApproved($data, $id);
     echoResponse(200, $result);
 });
 $app->put('/updateJobSummeryItemStatus/:id','authenticate', function ($id) use($app) {

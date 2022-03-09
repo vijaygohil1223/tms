@@ -12812,6 +12812,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     })
                 }
             })
+            if($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid'){
+                $scope.isDisabledApprvd = true;
+            }
 
         }).error(errorCallback);
     }
@@ -12824,6 +12827,19 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = "invoiceStatusChange";
         rest.put(obj).success(function(data) {
             $location.path("/invoice-data");
+        });
+    }
+
+    $scope.invoiceApproved = function(frmId) {
+        var obj = {
+            "is_approved": frmId
+        };
+        $routeParams.id = $scope.invoiceDetail.invoice_id;
+        rest.path = "invoiceStatusApproved";
+        rest.put(obj).success(function(data) {
+            console.log('data', data)
+            $location.path("/invoice-data");
+
         });
     }
     $scope.save = function(frmId, invoiceType) {
@@ -12845,12 +12861,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         var btnSave = angular.element('#btnSave');
         var btnDraft = angular.element('#btnDraft');
         var btnCancel = angular.element('#btnCancel');
+        var btnApproved = angular.element('#btnApproved');
 
         angular.element('#btnPaid').hide();
         angular.element('#btnMarkAsCancel').hide();
         angular.element('#btnSave').hide();
         angular.element('#btnDraft').hide();
         angular.element('#btnCancel').hide();
+        angular.element('#btnApproved').hide();
 
         kendo.drawing.drawDOM($("#exportable")).then(function(group) {
             group.options.set("font", "8px DejaVu Sans");
@@ -12871,6 +12889,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.element('#btnSave').show();
             angular.element('#btnDraft').show();
             angular.element('#btnCancel').show();
+            angular.element('#btnApproved').show();
             /*
             $("#toAddEleAfterDwonload").before(btnPaid);
             $("#toAddEleAfterDwonload").before(btnMarkAsCancel);
@@ -22467,6 +22486,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             })
 
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
+            console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
             $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
@@ -22500,6 +22520,42 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
             });
             kendo.drawing.pdf.saveAs(group, number + ".pdf");
+        });
+    }
+    
+    $scope.reminderBtnHideShow = false;
+    $timeout(function() {
+        var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
+        if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.is_approved == 1)){
+            if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                $scope.reminderBtnHideShow = true;
+            }
+        }
+        
+    }, 500);
+
+    $scope.sendRemiderinvoice = function(number){
+        kendo.drawing.drawDOM($("#exportable"))
+        .then(function (group) {
+        // Render the result as a PDF file
+            return kendo.drawing.exportPDF(group, {
+                //paperSize: "auto",
+            });
+        })
+        .done(function (data) {
+            $scope.invoicemailDetail = {'pdfData': data,
+                                        'invoiceno':number,
+                                        'freelanceEmail':$scope.invoiceDetail.freelanceEmail,
+                                        'freelanceName':$scope.invoiceDetail.freelanceName,
+                                        'emailRemind1':$scope.invoiceDetail.emailRemind1,
+                                        'emailRemind2':$scope.invoiceDetail.emailRemind2,
+                                        };
+            rest.path = 'sendInvoiceMail';
+            rest.post($scope.invoicemailDetail).success(function(data) {
+                if(data.status==200){
+                    notification('Reminder mail has been sent successfully', 'success');
+                }
+            }).error(errorCallback);
         });
     }
 

@@ -154,11 +154,11 @@ class Freelance_invoice {
                 //$this->_db->join('tms_general tg','tg.order_id = tsv.order_id', 'INNER');
                 $this->_db->join('tms_customer tcu','tcu.order_id = tsv.order_id', 'INNER');
                 $this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
-                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice');
+                $this->_db->join('tms_users tcm', 'tsv.contact_person=tcm.iUserId', 'LEFT');
+                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice, tsv.contact_person AS projectManagerId, tcm.vEmailAddress as emailRemind1, tcm.vSecondaryEmailAddress as emailRemind2');
                 
                 //, tci.vEmailAddress  AS companyEmail
                 $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
-                
 
                 $data['companyName'] = $companyName[0]['name'];
 
@@ -239,6 +239,23 @@ class Freelance_invoice {
 
     	return $request;
     }
+    public function invoiceStatusApproved($data, $id) {
+        $data['modified_date'] = date('Y-m-d');
+    	$this->_db->where('invoice_id', $id);
+    	$idd = $this->_db->update('tms_invoice', $data);
+    	
+        if($idd) {
+    		$request['status'] = 200;
+    		$request['msg'] = "Successfully updated";
+    	} else {
+    		$request['status'] = 401;
+    		$request['msg'] = "Not updated";
+    	}
+
+    	return $request;
+    }
+
+
     public function updateJobSummeryItemStatus($data, $id) {
     	$this->_db->where('job_summmeryId', $id);
     	$idd = $this->_db->update('tms_summmery_view', $data);
@@ -311,4 +328,78 @@ class Freelance_invoice {
         $data = $this->_db->get('tms_invoice_payments');
         return $data;
     }
+
+    public function sendInvoiceMail($data) {
+        $pdf_content = explode("base64,",$data['pdfData']);
+        $bin = base64_decode($pdf_content[1], true);
+        // if (strpos($bin, '%PDF') !== 0) {
+        //     throw new Exception('Missing the PDF file ');
+        // }
+        $path = '../../uploads/invoice/';
+        // if ( !file_exists($dir) ) {
+        //     mkdir ($dir, 0755);
+        // }
+        $pdfFile = $path.$data['invoiceno'].'.pdf';
+
+        // Start Email Config
+        $body = "<p> Hello </p>";
+        $body .= "<p> Invoice outstanding with Reminder </p>";
+        $body .= "Invoice No : " .$data['invoiceno']. ", </p>";
+        $body .= "Linguist Name : " .$data['freelanceName']. ", </p>";
+        $body .= "Linguist Email : " .$data['freelanceEmail']. "</p>";
+        $subject = "Invoice Reminder";
+        $Username = 'TMS';
+
+        $to = $data['emailRemind1'];
+        //$from = $data['data']['vEmailAddress'];
+        $this->_mailer = new PHPMailer();
+        //        $this->_mailer = 'ISO-8859-1';
+        $this->_mailer->IsSMTP();
+        $this->_mailer->Host = "ssl://smtp.gmail.com";
+        $this->_mailer->SMTPAuth = "true";
+        $this->_mailer->Port = "465";
+        $this->_mailer->Username = "ChrisGilesItWorks@gmail.com";
+        $this->_mailer->Password = "Knh@Admin@123";
+
+        $this->_mailer->From = "Tms Admin";
+        $this->_mailer->SetFrom = 'tmsadmin@tms.com';
+        $this->_mailer->FromName = $data['freelanceName'];
+        if($data['emailRemind2']){
+            $this->_mailer->AddCC(trim($data['emailRemind2']));
+        }
+            
+        $this->_mailer->Subject = $subject;
+
+        $this->_mailer->Body = $body;
+        $this->_mailer->WordWrap = 100;
+        $this->_mailer->AddAddress($to);
+        //$this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
+        $this->_mailer->IsHTML(true);
+        // End email config
+        # Write the PDF contents to a local file
+        if(file_put_contents($pdfFile, $bin)){
+            if ($pdfFile != '') {
+                $this->_mailer->AddAttachment($pdfFile);
+            }
+            if ($this->_mailer->Send()) { //output success or failure messages
+                $result['status'] = 200;
+                $result['msg'] = 'Thank you for your email';
+                $path = "../../uploads/attatchment/";
+                $pdfFiles = glob($pdfFile);
+                if($pdfFiles){
+                    unlink($pdfFile);
+                }
+                return $result;
+            } else {
+                $result['status'] = 422;
+                $result['msg'] = 'Could not send mail!';
+                return $result;
+            }
+        }else{
+            return $result['status'] = 422;
+        }
+
+
+    }
+
 }
