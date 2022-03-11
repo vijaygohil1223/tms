@@ -3087,10 +3087,22 @@ $app->post('/invoiceCreate','authenticate', function()  use($app) {
     $result = $invoice->invoiceCreate($data);
     echoResponse(200, $result);
 });
+$app->post('/clientInvoiceCreate','authenticate', function()  use($app) {
+    $invoice = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->clientInvoiceCreate($data);
+    echoResponse(200, $result);
+});
 $app->post('/invoiceSave', 'authenticate',function () use($app) {
     $invoice = new Freelance_invoice ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $invoice->saveInvoice($data);
+    echoResponse(200, $result);
+});
+$app->post('/clientinvoiceSave', 'authenticate',function () use($app) {
+    $invoice = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->saveclientInvoice($data);
     echoResponse(200, $result);
 });
 $app->get('/viewAllInvoice/:type/:userId', 'authenticate',function($type,$userId) {
@@ -3107,6 +3119,11 @@ $app->get('/viewAllInvoice1/:type','authenticate', function($type) {
 $app->get('/getAllInvoiceByUserId/:type/:userId','authenticate', function($type,$userId) {
     $invoice = new Freelance_invoice ();
     $result = $invoice->getAllInvoiceByUserId($type,$userId);
+    echoResponse(200, $result);
+});
+$app->get('/getAllInvoiceClient/:type/:userId','authenticate', function($type,$userId) {
+    $invoice = new Freelance_invoice ();
+    $result = $invoice->getAllInvoiceClient($type,$userId);
     echoResponse(200, $result);
 });
 $app->get('/invoiceViewOne/:id', 'authenticate',function($id) {

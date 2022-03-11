@@ -402,4 +402,122 @@ class Freelance_invoice {
 
     }
 
+	// Client invoice serach data get
+	public function clientInvoiceCreate($data1) {
+		$infoD = array();
+		$paymentDue = self::getAll('invoice_due_id',1,'tms_invoice_due_period');
+		foreach ($data1['id'] as $k => $v) {
+            //  $qry = "SELECT gen.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, 
+            // gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, 
+            // gen.project_name AS projectName, c.vUserName AS contactName, stus.status_name AS clientStatus, 
+            // c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, 
+            // gen.project_price, gen.expected_start_date, cust.contact AS contactPerson,its.item_number,
+            //  its.item_status AS itemStatus, its.po_number AS itemPonumber, its.start_date AS itemStartdate,
+            //   its.due_date AS itemDuedate,its.source_lang AS itemsSourceLang, its.target_lang AS 
+            //   itemsTargetLang, its.itemId, gen.project_status AS projectStatus, gen.project_type AS 
+            //   projectType, plang.source_lang AS sourceLanguage, plang.target_lang AS targetLanguage, 
+            //   its.total_amount AS totalAmount, inc.vUserName AS accountname, tu.vUserName AS pm_name,
+            //    cust.project_coordinator AS project_coordinator_id, cust.project_manager AS project_manager_id,
+            //     cust.QA_specialist AS qa_specialist_id, ps.project_status_name AS projectstatus_name, 
+            //     ps.status_color AS projectstatus_color FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status";
+            // $data = $this->_db->rawQuery($qry);
+
+			$this->_db->where('itemId', $v['id']);
+			$this->_db->join('tms_users tu', 'tu.iUserId=ti.contact_person', 'LEFT');
+			$this->_db->join('tms_general gen', 'gen.order_id=ti.order_id', 'LEFT');
+			$this->_db->join('tms_customer tcu','tcu.order_id = ti.order_id', 'INNER');
+			$this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
+			//$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tg.company_code, tsv.job_code AS jobCode');
+			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone');
+
+            //echo $this->_db->getLastQuery();
+            //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
+
+			$data['companyName'] = 'test';
+
+			//payment due date number of day
+			$data['number_of_days'] = $paymentDue[0]['number_of_days'];
+
+			//invoiceNumber Count
+			$data['invoiceCount'] = count(self::get('tms_invoice_client'));
+            //echo '<pre>'; print_r($data); echo '</pre>';exit;
+
+			if(isset($data['orderId'])) {
+				//$info = self::getAll('order_id',$data['orderId'],'tms_items');
+                $this->_db->where('item_number',$data['item_number']);
+                $this->_db->where('order_id',$data['orderId']);
+                $info = $this->_db->getOne('tms_items');
+                $data['item'] = [];
+				if($info){
+                    if($info['price']){
+                        foreach (json_decode($info['price']) as $field => $val) {
+                            $data['item'][] = (array) $val;
+                        }
+                    }
+                }
+			}
+			$infoD[$k] = $data;
+		}
+        return $infoD;
+	}
+
+    //invoice and draft save
+    public function saveclientInvoice($data) {
+        $invoiceAlreadyAdded = false;
+        if($data['scoop_id']){
+            $invoiceRecords = $this->_db->get('tms_invoice_client');
+
+            foreach ($invoiceRecords as $k => $v) {
+                foreach (json_decode($v['scoop_id'],true) as $ke => $val) {
+                    $existedJobId = $val['id'];
+                    foreach (json_decode($data['scoop_id'],true) as $k1 => $v1) {
+                        $postedJobId = $v1['id'];
+                        if($postedJobId == $existedJobId){
+                            $invoiceAlreadyAdded = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(!$invoiceAlreadyAdded){
+            $data['created_date'] = date('Y-m-d');
+            $data['modified_date'] = date('Y-m-d');
+            $data['value_date'] = date('Y-m-d');
+            $data['invoice_date'] = date('Y-m-d');
+            $id = $this->_db->insert('tms_invoice_client', $data);
+            if($id) {
+                $result['status'] = 200;
+                $result['msg'] = "Successfully saved";
+            } else {
+                $result['status'] = 401;
+                $result['msg'] = "Not saved";
+            }
+            return $result;
+        }else{
+            $result['status'] = 422;
+            $result['msg'] = "Invoice already added for this Project / scoop";
+            return $result;
+        }
+
+    }
+    
+    /* Get All client invoice */
+    public function getAllInvoiceClient($type,$userId) {
+        //echo $userId;exit;
+        $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','LEFT');
+        $this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id','LEFT');
+        $this->_db->join('tms_items ti', 'ti.itemId=tmInvoice.scoop_id','LEFT');
+        $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
+        $this->_db->where('tmInvoice.invoice_type', $type);
+        //$this->_db->where('tmInvoice.freelance_id',$userId);
+        $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount');
+        //echo $this->_db->getLastQuery();
+        foreach ($data as $key => $value) {
+            $data[$key]['companyName'] = ''; 
+        }
+        
+        return $data;
+    }
+
 }

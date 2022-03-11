@@ -506,6 +506,16 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'invoiceInternalController',
             activetab: 'invoice-data',
             role: '1'
+        }).when('/invoice-client', {
+            templateUrl: modulesPath + 'client_invoice_detail.html',
+            controller: 'clientInvoiceController',
+            activetab: 'invoice-client',
+            role: '1'
+        }).when('/client-invoice-create', {
+            templateUrl: modulesPath + 'client_invoice_create.html',
+            controller: 'clientInvoiceCreateController',
+            activetab: 'invoice-client',
+            role: '1'
         }).when('/statement', {
             templateUrl: modulesPath + 'statement.html',
             controller: 'statementController',

@@ -1639,7 +1639,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectOverdueCount = 0;
 
     $scope.allProjectListing = function() {
-        //$routeParams.id = 5;
+        //$routeParams.id = 5 ;
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
             angular.forEach(data, function(val, i) {
@@ -12839,7 +12839,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.put(obj).success(function(data) {
             console.log('data', data)
             $location.path("/invoice-data");
-
         });
     }
     $scope.save = function(frmId, invoiceType) {
@@ -21873,6 +21872,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.path = 'freelanceJob/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function(data) {
                 $scope.InvoiceResult = data;
+                console.log('$scope.InvoiceResult', $scope.InvoiceResult)
                 $scope.searchPonumber = search;
                 var obj = [];
                 obj.push({
@@ -22011,7 +22011,160 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.cancel = function() {
         $uibModalInstance.close();
     }
+}).controller('clientInvoiceController', function($scope, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
+    $scope.search = function(search) {
+        if (search) {
+            rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function(data) {
+                //$scope.InvoiceResult = data;
+                $scope.InvoiceResult = data.filter(function (el) {
+                    return el.itemStatus == 'Approved' || el.itemStatus == 'Completed by linguist';
+                });
+                console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+                $scope.searchOrderNumber = search;
+                var obj = [];
+                obj.push({
+                    'InvoiceList': $scope.InvoiceResult,
+                    'searchOrderNumber': $scope.searchOrderNumber
+                });
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'tpl/clientInvoiceCreatePopup.html',
+                    controller: 'clientInvoiceCreatePopupCtrl',
+                    size: '',
+                    resolve: {
+                        items: function() {
+                            return obj;
+                        }
+                    }
+                });
+            }).error(errorCallback);
+        } else {
+            notification('Please enter Project / Scoop number.', 'warning');
+        }
+        $scope.jobId = "";
+    }
+
+    $scope.invoiceChange = function(data, companyCode) {
+        // $log.log(data+ ' ' +companyCode);
+    }
+
+    $scope.invoicebuttonShow = function(id) {
+        $scope.jobId = id;
+    }
+
+    $scope.addInvoice = function(data) {
+        var client = "";
+        var flag = 0;
+        var array = [];
+
+        angular.forEach(data, function(val, i) {
+            if (val.SELECTED == 1) {
+                if (!client) {
+                    client = val.contactName;
+                }
+                if (val.contactName != client) {
+                    flag = 1;
+                } else {
+                    array.push(val.itemId);
+                }
+            }
+        });
+
+        if (flag != 1 && array.length) {
+            $cookieStore.put('invoiceScoopId', array);
+            $location.path('/client-invoice-create');
+        } else {
+            if ($scope.InvoiceResult != undefined && flag != 1) {
+                notification("Pelase select Project Scoop", "warning");
+            } else {
+                notification("You cannot add two different client invoice", "warning");
+            }
+        }
+
+    }
+
+    //Display invoice 
+    $scope.viewInvoice = function(type) {
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/invoiceall_view.html',
+            controller: 'invoiceViewController',
+            size: '',
+            width: 1000,
+            resolve: {
+                items: function() {
+                    return type;
+                }
+            }
+        });
+
+        modalInstance.result.then(function(selectedItem) {
+            $scope.selected = selectedItem;
+            $route.reload();
+        });
+    }
+
+    $scope.getAllInvoice = function() {
+        rest.path = "getAllInvoiceClient/save/" + 1;
+        rest.get().success(function(invoices) {
+            console.log('invoices', invoices)
+            $scope.invoiceUnpaid = [];
+            $scope.invoiceCompleted = [];
+            angular.forEach(invoices, function(val, i) {
+                if (val.invoice_status == 'Complete') {
+                    $scope.invoiceCompleted.push(val);
+                } else {
+                    $scope.invoiceUnpaid.push(val);
+                }
+            });
+        }).error(errorCallback);
+    }
+    $scope.getAllInvoice();
+
+}).controller('clientInvoiceCreatePopupCtrl', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.InvoiceResult = items[0].InvoiceList;
+    $scope.searchOrderNumber = items[0].searchOrderNumber;
+    $scope.addInvoice = function(data) {
+        console.log('data', data)
+        var client = "";
+        var flag = 0;
+        var array = [];
+
+        angular.forEach(data, function(val, i) {
+            console.log('val-we  are in', val)
+            if (val.SELECTED == 1) {
+                console.log('val.SELECTED', val.SELECTED)
+                if (!client) {
+                    client = val.contactName;
+                }
+                if (val.contactName != client) {
+                    flag = 1;
+                } else {
+                    array.push(val.itemId);
+                }
+            }
+        });
+
+        if (flag != 1 && array.length) {
+            $cookieStore.put('invoiceScoopId', array);
+            $location.path('/client-invoice-create');
+            $scope.cancel();
+        } else {
+            if ($scope.InvoiceResult != undefined && flag != 1) {
+                notification("Pelase select Project scoop to create invoice.", "warning");
+            } else {
+                notification("You cannot add two different company invoice", "warning");
+            }
+        }
+
+    }
+    $scope.cancel = function() {
+        $uibModalInstance.close();
+    }
 }).controller('projectjobDetailController', function($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
@@ -22455,7 +22608,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
-                $scope.currencyType = vBankInfo.currency_code;
+                //$scope.currencyType = vBankInfo.currency_code;
+                $scope.currency_code = 'EUR,€'; 
 
                 $scope.currencyPaymentMethod = vBankInfo.payment_method;
                 if ($scope.currencyPaymentMethod == 'Bank Transfer') {
@@ -22665,6 +22819,118 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.cancel = function() {
         $location.path('/invoice-detail');
+    }
+
+}).controller('clientInvoiceCreateController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.invoiceList = [];
+    //get data of invoice
+    if ($cookieStore.get('invoiceScoopId').length) {
+        var obj = [];
+        angular.forEach($cookieStore.get('invoiceScoopId'), function(val, i) {
+            obj.push({ "id": val });
+        });
+
+        $scope.invoiceLt = {};
+        $scope.invoiceLt.id = obj;
+        console.log('$scope.invoiceLt.id', $scope.invoiceLt.id)
+        rest.path = "clientInvoiceCreate";
+        rest.post($scope.invoiceLt).success(function(data) {
+            console.log('$scope.invoiceLt', $scope.invoiceLt)
+            $scope.invoiceDetail = data[0];
+            rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
+            rest.get().success(function(dataUser) {
+                $scope.userPaymentData = dataUser.userPaymentData;
+                //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                //$scope.currencyType = vBankInfo.currency_code;
+                //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                $scope.currencyPaymentMethod = 'Bank Transfer';
+                //$scope.vBankInfo.currency_code = 'EUR,€'; 
+                $scope.currencyType = '€ ';
+                if ($scope.currencyPaymentMethod == 'Bank Transfer') {
+                    $timeout(function() {
+                        $("#Bank").prop('checked', true);
+                    }, 100);
+
+                } else {
+                    $timeout(function() {
+                        $("#Paypal").prop('checked', true);
+                    }, 100);
+                }
+
+                $scope.invoiceDetail.payment = $scope.currencyPaymentMethod;
+
+            }).error(errorCallback);
+
+            var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
+            var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
+            $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
+
+            var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
+            var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
+            $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
+
+            var date = new Date();
+            $scope.invoiceDetail.invoiceNumber = data[0].orderNumber + '_' + pad(data[0].invoiceCount + 1, 3);
+            $scope.invoiceDetail.invoiceDate = date;
+            $scope.invoiceDetail.scoop_id = obj;
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, data[0].number_of_days);
+            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            $scope.invoiceList = data;
+            console.log('$scope.invoiceList', $scope.invoiceList)
+
+            $scope.grandTotal = 0;
+            angular.forEach($scope.invoiceList, function(val, i) {
+                if (val.item) {
+                    angular.forEach(val.item, function(v, i) {
+                        $scope.grandTotal += v.itemTotal;
+                    })
+                }
+            })
+
+        });
+    }
+
+    $scope.save = function(frmId, invoiceType) {
+        if ($scope.invoiceD == undefined || $scope.invoiceD == null || $scope.invoiceD == "") {
+            $scope.invoiceData = {};
+        }
+
+        switch (invoiceType) {
+            case "save":
+                $scope.invoiceData.invoice_type = invoiceType;
+                break;
+            case "draft":
+                $scope.invoiceData.invoice_type = invoiceType;
+                break;
+        }
+
+        $scope.invoiceData.freelance_id = $scope.invoiceDetail.freelanceId;
+        $scope.invoiceData.customer_id = $scope.invoiceDetail.clientId;
+        $scope.invoiceData.scoop_id = JSON.stringify(obj);
+        $scope.invoiceData.payment_type = $scope.invoiceDetail.payment;
+        $scope.invoiceData.invoice_number = $scope.invoiceDetail.invoiceNumber;
+
+        $scope.invoiceData.Invoice_cost = $scope.grandTotal;
+
+        if ($scope.invoiceDetail.payment) {
+            rest.path = "clientinvoiceSave";
+            rest.post($scope.invoiceData).success(function(data) {
+                if (data.status == 422) {
+                    notification('Invoice already added for this Project / Scoop.', 'error');
+                } else {
+                    $location.path('/invoice-client');
+                }
+            });
+        } else {
+            notification("Please add payment detail", 'warning');
+        }
+    }
+
+    $scope.cancel = function() {
+        $location.path('/invoice-client');
     }
 
 }).controller('viewProjectController', function($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {

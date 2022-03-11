@@ -294,19 +294,34 @@
 
                         </li> -->
 
-    <li ng-if="userRight==1" ng-mouseover="menuHoverIn('invoiceMenu');" ng-mouseleave="menuHoverOut('invoiceMenu')">
-
+    <!-- <li ng-if="userRight==1" ng-mouseover="menuHoverIn('invoiceMenu');" ng-mouseleave="menuHoverOut('invoiceMenu')">
         <a href="#/invoice-data" md-ink-ripple>
-
-                                <i class="glyphicon glyphicon-credit-card  icon" style="color:#aa66cc;"></i>
-
-                                <span  class="font-bold">Invoices</span>
-
-                            </a>
-
+            <i class="glyphicon glyphicon-credit-card  icon" style="color:#aa66cc;"></i>
+            <span  class="font-bold">Invoices</span>
+        </a>
         <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="invoiceMenu" title="Add to Favourite"></i>
+    </li> -->
 
-    </li>
+    <li ng-if="adminRole==1" class="sidebarArrow">
+        <a href class="auto" md-ink-ripple>
+        <i class="glyphicon glyphicon-credit-card  icon" style="color:#aa66cc;"></i>
+        <span  class="font-bold">Invoice</span>
+        </a>
+        <ul class="nav nav-sub dk">
+           <li ng-mouseleave="menuHoverOut('clientMenu')">
+              <a href="#/invoice-data" md-ink-ripple>
+              <span class="font-bol">Linguist Invoice</span>
+              </a>
+              <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="clientMenu" title="Add to Favourite"></i>
+           </li>
+           <li ng-mouseleave="menuHoverOut('accountsMenu')">
+              <a href="#/invoice-client" md-ink-ripple>
+                <span class="font-bol">Client Invoice</span>
+              </a>
+              <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="accountsMenu" title="Add to Favourite"></i>
+           </li>
+        </ul>
+     </li>
 
     <!-- <li ng-if="userRight==1" ng-class="{active: activetab == '/project'}">
 

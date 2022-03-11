@@ -325,6 +325,22 @@ app.filter('filterByTags', function($log) {
         return filtered;
     };
 });
+app.filter('filterInvoiceByTags', function($log) {
+    return function(items, tags) {
+        var filtered = [];
+        (items || []).forEach(function(item) {
+            var scoopNo = item.orderNumber;
+            var matches = tags.some(function(tag) {
+                return (scoopNo.search(tag.text.toUpperCase()) > -1) ||
+                    (scoopNo.search(tag.text.toUpperCase()) > -1);
+            });
+            if (matches) {
+                filtered.push(item);
+            }
+        });
+        return filtered;
+    };
+});
 app.filter('dateRange', function() {
         return function( items, fromDate, toDate ) {
             var filtered = [];
