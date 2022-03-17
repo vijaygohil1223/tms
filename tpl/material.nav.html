@@ -308,18 +308,19 @@
         <span  class="font-bold">Invoice</span>
         </a>
         <ul class="nav nav-sub dk">
-           <li ng-mouseleave="menuHoverOut('clientMenu')">
+            <li ng-mouseleave="menuHoverOut('accountsMenu')">
+                <a href="#/invoice-client" md-ink-ripple>
+                  <span class="font-bol">Client Invoice</span>
+                </a>
+                <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="accountsMenu" title="Add to Favourite"></i>
+             </li>
+            <li ng-mouseleave="menuHoverOut('clientMenu')">
               <a href="#/invoice-data" md-ink-ripple>
               <span class="font-bol">Linguist Invoice</span>
               </a>
               <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="clientMenu" title="Add to Favourite"></i>
-           </li>
-           <li ng-mouseleave="menuHoverOut('accountsMenu')">
-              <a href="#/invoice-client" md-ink-ripple>
-                <span class="font-bol">Client Invoice</span>
-              </a>
-              <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="accountsMenu" title="Add to Favourite"></i>
-           </li>
+            </li>
+           
         </ul>
      </li>
 

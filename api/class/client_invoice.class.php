@@ -1,7 +1,7 @@
 <?php
 require_once 'users.class.php';
 require_once 'client.class.php';
-class Freelance_invoice {
+class Client_invoice {
 
 	public function __construct() {
 		$this->_db = db::getInstance ();
@@ -112,19 +112,18 @@ class Freelance_invoice {
     }
     
     //display invoice
-    public function viewAllInvoice($type,$userId) {
-		$this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','LEFT');
+    public function viewAllClientInvoice($type,$userId) {
+        $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','LEFT');
 		$this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id','LEFT');
-		$this->_db->join('tms_summmery_view tsv', 'tsv.job_summmeryId=tmInvoice.job_id','LEFT');
-		$this->_db->orderBy('tmInvoice.invoice_id', 'asc');
+		$this->_db->join('tms_items ti', 'ti.itemId=tmInvoice.scoop_id','LEFT');
+        $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
     	$this->_db->where('tmInvoice.invoice_type', $type);
-    	$this->_db->where('tu.iUserId', $userId);
-    	$data = $this->_db->get('tms_invoice tmInvoice', null,'tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount');
-    	foreach ($data as $key => $value) {
-    		$companyName = self::getAll('abbrivation',substr($value['company_code'],0,-2),'tms_centers');
-    		$data[$key]['companyName'] = isset($companyName[0]['name'])?$companyName[0]['name']:'';	
+    	//$this->_db->where('tu.iUserId', $userId);
+    	$data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS itemId, ti.order_id AS orderId, tc.iClientId AS clientId,tc.vUserName AS clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount');
+        foreach ($data as $key => $value) {
+    		// $companyName = self::getAll('abbrivation',substr($value['company_code'],0,-2),'tms_centers');
+    		// $data[$key]['companyName'] = isset($companyName[0]['name'])?$companyName[0]['name']:'';	
     	}
-    	
     	return $data;
     }
     public function viewAllInvoice1($type) {
@@ -133,7 +132,7 @@ class Freelance_invoice {
 		$this->_db->join('tms_summmery_view tsv', 'tsv.job_summmeryId=tmInvoice.job_id','LEFT');
 		$this->_db->orderBy('tmInvoice.invoice_id', 'asc');
     	$this->_db->where('tmInvoice.invoice_type', $type);
-    	$data = $this->_db->get('tms_invoice tmInvoice', null,'tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.is_approved');
+    	$data = $this->_db->get('tms_invoice tmInvoice', null,'tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount');
     	foreach ($data as $key => $value) {
     		$companyName = self::getAll('abbrivation',substr($value['company_code'],0,-2),'tms_centers');
     		$data[$key]['companyName'] = isset($companyName[0]['name'])?$companyName[0]['name']:'';	
@@ -143,30 +142,29 @@ class Freelance_invoice {
     }
     
     //display one invoice
-    public function invoiceViewOne($id) {
-    	$id1 = self::getAll('invoice_id',$id,'tms_invoice');
-    	$paymentDue = self::getAll('invoice_due_id',1,'tms_invoice_due_period');
+    public function clientInvoiceViewOne($id) {
+        //print_r($id);
+    	$id1 = self::getAll('invoice_id',$id,'tms_invoice_client');
+        $paymentDue = self::getAll('invoice_due_id',1,'tms_invoice_due_period');
 
-    		foreach (json_decode($id1[0]['job_id']) as $k => $v) {
-    			
-	    		$this->_db->where('job_summmeryId', $v->id);
-				$this->_db->join('tms_users tu', 'tu.iUserId=tsv.resource', 'LEFT');
-                //$this->_db->join('tms_general tg','tg.order_id = tsv.order_id', 'INNER');
-                $this->_db->join('tms_customer tcu','tcu.order_id = tsv.order_id', 'INNER');
+    		foreach (json_decode($id1[0]['scoop_id']) as $k => $v) {
+                $this->_db->where('ti.itemId', $v->id);
+                $this->_db->join('tms_users tu', 'tu.iUserId=ti.contact_person', 'LEFT');
+                $this->_db->join('tms_general gen', 'gen.order_id=ti.order_id', 'LEFT');
+                $this->_db->join('tms_customer tcu','tcu.order_id = ti.order_id', 'INNER');
                 $this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
-                $this->_db->join('tms_users tcm', 'tsv.contact_person=tcm.iUserId', 'LEFT');
-                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice, tsv.contact_person AS projectManagerId, tcm.vEmailAddress as emailRemind1, tcm.vSecondaryEmailAddress as emailRemind2');
+                $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
+                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tcc.vEmail as companycontactEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone');
                 
-                //, tci.vEmailAddress  AS companyEmail
-                $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
-
-                $data['companyName'] = $companyName[0]['name'];
+                //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
+    
+                //$data['companyName'] = 'test';                
 
                 //payment due date number of day
                 $data['number_of_days'] = $paymentDue[0]['number_of_days'];
 
                 //invoiceNumber Count
-                $data['invoiceCount'] = count(self::get('tms_invoice'));
+                $data['invoiceCount'] = count(self::get('tms_invoice_client'));
                 $this->_db->where('item_number',$data['item_number']);
                 $this->_db->where('order_id',$data['orderId']);
                 $info = $this->_db->getOne('tms_items');
@@ -180,24 +178,12 @@ class Freelance_invoice {
                 }
 
                 if($data){
-                    if($data['jobPrice']){
-                        foreach (json_decode($data['jobPrice']) as $field => $val) {
+                    if($data['scoopPrice']){
+                        foreach (json_decode($data['scoopPrice']) as $field => $val) {
                             $data['jobpriceList'][] = (array) $val;
                         }
                     }
                 }
-
-                /*if(isset($data['orderId'])) {
-                    $info = self::getAll('order_id',$data['orderId'],'tms_items');
-                    $data['item'] = [];
-                    foreach ($info as $key => $value) {
-                        if($value['price']){
-                            foreach (json_decode($value['price']) as $field => $val) {
-                                $data['item'][] = (array) $val;
-                            }
-                        }
-                    }
-                }*/
 				$infoD[$k] = array_merge($data, $id1[0]);
 	    	}
 	    	return $infoD;
@@ -208,7 +194,7 @@ class Freelance_invoice {
     	$data['value_date'] = date('Y-m-d');
     	$data['invoice_type'] = "save";
     	$this->_db->where('invoice_id', $id);
-    	$id = $this->_db->update('tms_invoice',$data);
+    	$id = $this->_db->update('tms_invoice_client',$data);
     	return $id;
     }
 
@@ -220,14 +206,14 @@ class Freelance_invoice {
         $partPaidAmount['invoice_partial_paid_amount']  = $data['partPaid'];
     	$partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
         
-        $partPaymentInsert = $this->_db->insert('tms_invoice_payments', $partPaidAmount);
+        $partPaymentInsert = $this->_db->insert('tms_invoice_client_payments', $partPaidAmount);
 
         /* Insert Part paid invoice payment detail in database END */
 
         unset($data['partPaid']);
         $data['modified_date'] = date('Y-m-d');
     	$this->_db->where('invoice_id', $id);
-    	$idd = $this->_db->update('tms_invoice', $data);
+    	$idd = $this->_db->update('tms_invoice_client', $data);
     	
         if($idd && $partPaymentInsert) {
     		$request['status'] = 200;
@@ -239,10 +225,10 @@ class Freelance_invoice {
 
     	return $request;
     }
-    public function invoiceStatusApproved($data, $id) {
+    public function invoiceStatusIrrecoverable($data, $id) {
         $data['modified_date'] = date('Y-m-d');
     	$this->_db->where('invoice_id', $id);
-    	$idd = $this->_db->update('tms_invoice', $data);
+    	$idd = $this->_db->update('tms_invoice_client', $data);
     	
         if($idd) {
     		$request['status'] = 200;
@@ -323,9 +309,9 @@ class Freelance_invoice {
 
 
     // //getInvoicePartPayments
-    public function getInvoicePartPayments($id) {
+    public function getClientInvoicePartPayments($id) {
         $this->_db->where('invoice_id', $id);
-        $data = $this->_db->get('tms_invoice_payments');
+        $data = $this->_db->get('tms_invoice_client_payments');
         return $data;
     }
 
@@ -342,17 +328,18 @@ class Freelance_invoice {
         $pdfFile = $path.$data['invoiceno'].'.pdf';
 
         // Start Email Config
-        $body = "<p> Invoice outstanding with Reminder </p>";
-        $body .= "Invoice No : " .$data['invoiceno']. ", </p>";
-        $body .= "Linguist Name : " .$data['freelanceName']. ", </p>";
-        $body .= "Linguist Email : " .$data['freelanceEmail']. "</p>";
-        $subject = "Invoice Reminder";
-        $Username = 'TMS';
+        $body = "<p> Hi ".$data['clientCompanyName']." </p>";
+        $body .= "<p>Please see attached invoice number : <b>" .$data['invoiceno']. "</b> </p>";
+        $body .= "<p> From :TMS </p>";
+        $body .= "Email: " .$data['freelanceEmail']. "</p>";
+        
+        $subject = ($data['outstanding_reminder']==1) ? "Outstanding Invoice" : 'Invoice';
 
-        $to = $data['emailRemind1'];
+        $to = $data['companycontactEmail'];
+        //$to = 'anil.kanhasoft@gmail.com';
         //$from = $data['data']['vEmailAddress'];
         $this->_mailer = new PHPMailer();
-        //        $this->_mailer = 'ISO-8859-1';
+        // $this->_mailer = 'ISO-8859-1';
         $this->_mailer->IsSMTP();
         $this->_mailer->Host = "ssl://smtp.gmail.com";
         $this->_mailer->SMTPAuth = "true";
@@ -360,12 +347,9 @@ class Freelance_invoice {
         $this->_mailer->Username = "ChrisGilesItWorks@gmail.com";
         $this->_mailer->Password = "Knh@Admin@123";
 
-        $this->_mailer->From = "Tms Admin";
+        $this->_mailer->From = "TMS";
         $this->_mailer->SetFrom = 'tmsadmin@tms.com';
         $this->_mailer->FromName = $data['freelanceName'];
-        if($data['emailRemind2']){
-            $this->_mailer->AddCC(trim($data['emailRemind2']));
-        }
             
         $this->_mailer->Subject = $subject;
 
@@ -375,12 +359,18 @@ class Freelance_invoice {
         //$this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
         $this->_mailer->IsHTML(true);
         // End email config
-        # Write the PDF contents to a local file
+        // Write the PDF contents to a local file
+        
         if(file_put_contents($pdfFile, $bin)){
             if ($pdfFile != '') {
                 $this->_mailer->AddAttachment($pdfFile);
             }
             if ($this->_mailer->Send()) { //output success or failure messages
+                $upData['value_date'] = date('Y-m-d');
+                $upData['is_invoice_sent'] = 1;
+                $this->_db->where('invoice_id', $data['invoice_id']);
+                $this->_db->update('tms_invoice_client',$upData);
+
                 $result['status'] = 200;
                 $result['msg'] = 'Thank you for your email';
                 $path = "../../uploads/attatchment/";
@@ -399,6 +389,109 @@ class Freelance_invoice {
         }
 
 
+    }
+
+	// Client invoice serach data get
+	public function clientInvoiceCreate($data1) {
+		$infoD = array();
+		$paymentDue = self::getAll('invoice_due_id',1,'tms_invoice_due_period');
+		foreach ($data1['id'] as $k => $v) {
+			$this->_db->where('itemId', $v['id']);
+			$this->_db->join('tms_users tu', 'tu.iUserId=ti.contact_person', 'LEFT');
+			$this->_db->join('tms_general gen', 'gen.order_id=ti.order_id', 'LEFT');
+			$this->_db->join('tms_customer tcu','tcu.order_id = ti.order_id', 'INNER');
+			$this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
+			//$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tg.company_code, tsv.job_code AS jobCode');
+			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone');
+
+            //echo $this->_db->getLastQuery();
+            //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
+
+			$data['companyName'] = 'test';
+
+			//payment due date number of day
+			$data['number_of_days'] = $paymentDue[0]['number_of_days'];
+
+			//invoiceNumber Count
+			$data['invoiceCount'] = count(self::get('tms_invoice_client'));
+            //echo '<pre>'; print_r($data); echo '</pre>';exit;
+
+			if(isset($data['orderId'])) {
+				//$info = self::getAll('order_id',$data['orderId'],'tms_items');
+                $this->_db->where('item_number',$data['item_number']);
+                $this->_db->where('order_id',$data['orderId']);
+                $info = $this->_db->getOne('tms_items');
+                $data['item'] = [];
+				if($info){
+                    if($info['price']){
+                        foreach (json_decode($info['price']) as $field => $val) {
+                            $data['item'][] = (array) $val;
+                        }
+                    }
+                }
+			}
+			$infoD[$k] = $data;
+		}
+        return $infoD;
+	}
+
+    //invoice and draft save
+    public function saveclientInvoice($data) {
+        $invoiceAlreadyAdded = false;
+        if($data['scoop_id']){
+            $invoiceRecords = $this->_db->get('tms_invoice_client');
+
+            foreach ($invoiceRecords as $k => $v) {
+                foreach (json_decode($v['scoop_id'],true) as $ke => $val) {
+                    $existedJobId = $val['id'];
+                    foreach (json_decode($data['scoop_id'],true) as $k1 => $v1) {
+                        $postedJobId = $v1['id'];
+                        if($postedJobId == $existedJobId){
+                            $invoiceAlreadyAdded = true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(!$invoiceAlreadyAdded){
+            $data['created_date'] = date('Y-m-d');
+            $data['modified_date'] = date('Y-m-d');
+            $data['value_date'] = date('Y-m-d');
+            $data['invoice_date'] = date('Y-m-d');
+            $id = $this->_db->insert('tms_invoice_client', $data);
+            if($id) {
+                $result['status'] = 200;
+                $result['msg'] = "Successfully saved";
+            } else {
+                $result['status'] = 401;
+                $result['msg'] = "Not saved";
+            }
+            return $result;
+        }else{
+            $result['status'] = 422;
+            $result['msg'] = "Invoice already added for this Project / scoop";
+            return $result;
+        }
+
+    }
+    
+    /* Get All client invoice */
+    public function getAllInvoiceClient($type,$userId) {
+        //echo $userId;exit;
+        $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','LEFT');
+        $this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id','LEFT');
+        $this->_db->join('tms_items ti', 'ti.itemId=tmInvoice.scoop_id','LEFT');
+        $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
+        $this->_db->where('tmInvoice.invoice_type', $type);
+        //$this->_db->where('tmInvoice.freelance_id',$userId);
+        $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount');
+        //echo $this->_db->getLastQuery();
+        foreach ($data as $key => $value) {
+            $data[$key]['companyName'] = ''; 
+        }
+        
+        return $data;
     }
 
 }

@@ -22,9 +22,9 @@
                                     <form id="search-invoice">
                                         <div class="col-lg-12">
                                             <div class="col-lg-4">
-                                                <span>Enter Project / Scoop No. : </span>
+                                                <span>Enter Project No. : </span>
                                                 <!-- <span><input  type="text" id="invoices" class="form-control" name="iGender"  ng-model="searchPonumber.poNumber" placeholder="Search PO Number" autocomplete="off"/></span> -->
-                                                <tags-input ng-model="searchOrderNumber" placeholder="Search Project/Scoop No."></tags-input>
+                                                <tags-input ng-model="searchOrderNumber" placeholder="Search Project No."></tags-input>
                                             </div>
                                             <div class="col-lg-1" style="margin-top: 24px;">
                                                 <span><button class="btn btn-sm btn-info" ng-click="search(searchOrderNumber)">ok</button></span>
@@ -48,11 +48,11 @@
                     <div class="bg-light lter b-b wrapper-md">
                         <h4 class="m-n font-thin">Unpaid/Partially Paid Invoices</h4>
                     </div>
-                    <table  class="table table-striped b-t b-b table-bordered" datatable="ng">
+                    <table class="table table-striped b-t b-b table-bordered" datatable="ng">
                         <thead>
                         <th>#</th>
                         <th>Invoice number</th>
-                        <th>Freelancer name</th>
+                        <!-- <th>Freelancer name</th> -->
                         <th>Company name</th>
                         <th>Invoice status</th>
                         <th>Action</th>
@@ -61,14 +61,14 @@
                             <tr ng-repeat="invoiceL in invoiceUnpaid">
                                 <td ng-bind="$index + 1"></td>
                                 <td ng-bind="invoiceL.invoice_number"></td>
-                                <td ng-bind="invoiceL.freelanceName"></td>
-                                <td ng-bind="invoiceL.companyName"></td>
-                                <td >
+                                <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
+                                <td ng-bind="invoiceL.clientCompanyName"></td>
+                                <td>
                                     <span ng-bind="invoiceL.invoice_status"></span>
                                 </td>
                                 <td>
                                     <div class="trActiontitle">
-                                        <a href="#/invoice-view/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i class="fa fa-eye" ></i></a>
+                                        <a href="#/client-invoice-view/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i class="fa fa-eye" ></i></a>
                                         <!-- </br>
                                         <strong>View Payments</strong> -->
                                     </div>
@@ -88,7 +88,7 @@
                         <thead>
                         <th>#</th>
                         <th>Invoice number</th>
-                        <th>Freelancer name</th>
+                        <!-- <th>Freelancer name</th> -->
                         <th>Company name</th>
                         <th>Invoice status</th>
                         <th>Action</th>
@@ -97,7 +97,7 @@
                             <tr ng-repeat="invoiceL in invoiceCompleted">
                                 <td ng-bind="$index + 1"></td>
                                 <td ng-bind="invoiceL.invoice_number"></td>
-                                <td ng-bind="invoiceL.freelanceName"></td>
+                                <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
                                 <td ng-bind="invoiceL.companyName"></td>
                                 <td >
                                     <span ng-bind="invoiceL.invoice_status"></span>

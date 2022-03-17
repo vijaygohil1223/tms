@@ -496,6 +496,16 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'freelancerInvoiceViewController',
             activetab: 'invoice-view',
             role: ['1', '2']
+        }).when('/client-invoice-view/:id', { /* Client Invoice View */
+            templateUrl: modulesPath + 'client_invoice_view.html',
+            controller: 'clientInvoiceViewController',
+            activetab: 'invoice-view',
+            role: '1'            
+        }).when('/client-invoice-show/:id', {
+            templateUrl: modulesPath + 'client_invoice_show.html',
+            controller: 'clientInvoiceShowController',
+            activetab: 'client-invoice-show',
+            role: '1'
         }).when('/invoice-due-period', {
             templateUrl: modulesPath + 'invoice-due-period.html',
             controller: 'InvoiceDuePeriodController',

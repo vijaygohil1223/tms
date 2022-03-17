@@ -7302,6 +7302,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.allPay = 0;
     $scope.allPayCost = 0;
     $scope.dueTdaypayable = 0;
+    $scope.outstandingPayable = 0;
+    $scope.overduePayable = 0;
+    var outstandingCostPay = 0; 
+    var outstandingPaidPay = 0; 
+    var overdueCostPay = 0; 
+    var overduePaidPay = 0; 
     $scope.getinvoiceData = function() {
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function(data) {
@@ -7310,9 +7316,40 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.forEach(data, function(val, i) {
                 $scope.allPayCost += val.Invoice_cost; 
                 if(val.paid_amount)
-                $scope.allPay += val.paid_amount; 
+                $scope.allPay += val.paid_amount;
+                
+                // var newPaydueDate = TodayAfterNumberOfDays(val.created_date, 30)
+                // if((val.invoice_type != 'draft' && val.invoice_status != 'Complete' && val.is_approved == 1)){
+                //     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                //         $scope.outStandPay += val.paid_amount;
+                //     }
+                // }
+
+                console.log('val.invoice_date',val.invoice_date )
+                if((val.invoice_type != 'draft' && val.is_approved == 1)){
+                    if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
+                        outstandingCostPay += val.Invoice_cost; 
+                        outstandingPaidPay += val.paid_amount; 
+                    }
+                    if (val.invoice_date.split(' ')[0] > dateFormat(new Date()).split(".").reverse().join("-")) {
+                        overdueCostPay += val.Invoice_cost; 
+                        console.log('overdueCostPay', overdueCostPay)
+                        overduePaidPay += val.paid_amount; 
+                        console.log('overduePaidPay', overduePaidPay)
+                    }
+                }    
+                if (val.invoice_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                    //$scope.outStandPay += val.paid_amount; 
+                }
+
+                // console.log('$scope.outStandPay',$scope.outStandPay )
+
             });
             //$scope.allpayableAmt =  $scope.allPayCost - $scope.allPay;   
+            $scope.outstandingPayable = outstandingCostPay - outstandingPaidPay ;
+            $scope.overduePayable = overdueCostPay - overduePaidPay;
+            console.log('$scope.overduePayable', $scope.overduePayable)
+            console.log('$scope.outStandPay',$scope.outstandingPayable )
         }).error(errorCallback);
 
         // In Preparation invoice
@@ -12721,6 +12758,434 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             });
         }
     }
+}).controller('clientInvoiceShowController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.is_disabled = false;    
+    $scope.invoicePaid = function(frmId) {
+        var obj = {
+            "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
+            "paid_amount": $scope.invoiceList[0].paid_amount,
+            "statusId": $scope.invoiceList[0].invoice_id,
+            "Currency": $scope.invoiceList[0].Currency
+        };
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/clientInvoiceAmount.html',
+            controller: 'clientInvoiceAmountController',
+            size: '',
+            resolve: {
+                items: function() {
+                    return obj;
+                }
+            }
+        });
+        modalInstance.result.then(function(selectedItem) {
+            $route.reload();
+        });
+    }
+
+    if ($routeParams.id) {
+        rest.path = "clientInvoiceViewOne/" + $routeParams.id;
+        rest.get().success(function(data) {
+            $scope.invoiceDetail = data[0];
+
+            $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
+
+            rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
+            rest.get().success(function(dataUser) {
+                //$scope.userData = dataUser.userData;
+                $scope.userPaymentData = dataUser.userPaymentData;
+                //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                //$scope.currencyType = vBankInfo.currency_code;
+                //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                $scope.currencyPaymentMethod = 'Bank Transfer';
+                //$scope.vBankInfo.currency_code = 'EUR,€'; 
+                $scope.currencyType = '€ ';
+                if ($scope.currencyPaymentMethod == 'Bank Transfer') {
+                    $timeout(function() {
+                        $("#Bank").prop('checked', true);
+                    }, 100);
+
+                } else {
+                    $timeout(function() {
+                        $("#Paypal").prop('checked', true);
+                    }, 100);
+                }
+
+                $scope.invoiceDetail.payment = $scope.currencyPaymentMethod;
+
+            }).error(errorCallback);
+
+            $scope.invoiceList = data;
+            console.log('$scope.invoiceList', $scope.invoiceList)
+
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
+
+            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            $scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
+
+
+            var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
+            var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
+            $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
+
+            var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
+            var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
+            $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
+
+            $scope.grandTotal = 0;
+            $scope.grandJobTotal = 0;
+            angular.forEach($scope.invoiceList, function(val, i) {
+                if (val.item) {
+                    angular.forEach(val.item, function(v, i) {
+                        $scope.grandTotal += v.itemTotal;
+                    })
+                }
+                if (val.jobpriceList) {
+                    angular.forEach(val.jobpriceList, function(v, i) {
+                        $scope.grandJobTotal += v.itemTotal;
+                    })
+                }
+            })
+            
+            if($scope.invoiceDetail.invoice_status == 'Irrecoverable'){
+                angular.element('#irrecoverable').addClass('btn-danger');
+                angular.element('#irrecoverable').removeClass('btn-info');
+                $scope.is_disabled = true;
+            }
+            $scope.reminderBtnHideShow = false;
+            $timeout(function() {
+                var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
+                console.log('newPaydueDate', newPaydueDate)
+                if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')){
+                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                        $scope.reminderBtnHideShow = true;
+                    }
+                }
+                
+            }, 500);
+
+        }).error(errorCallback);
+    }
+
+    $scope.invoiceCancel = function(frmId) {
+        var obj = {
+            "invoice_status": "Cancel"
+        };
+        $routeParams.id = $scope.invoiceDetail.invoice_id;
+        rest.path = "invoiceStatusChange";
+        rest.put(obj).success(function(data) {
+            $location.path("/invoice-data");
+        });
+    }
+
+    $scope.save = function(frmId, invoiceType) {
+        if ($scope.invoiceD == undefined || $scope.invoiceD == null || $scope.invoiceD == "") {
+            $scope.invoiceData = {};
+        }
+
+        rest.path = "clientInvoiceUpdate/" + $routeParams.id;
+        rest.get().success(function(updatedata) {
+            console.log('$scope.invoiceDetail',$scope.invoiceDetail);
+            if(updatedata){
+                // Hide button from page
+                angular.element('#btnPaid').hide();
+                angular.element('#btnMarkAsCancel').hide();
+                angular.element('#btnSave').hide();
+                angular.element('#btnDraft').hide();
+                angular.element('#btnCancel').hide();
+                angular.element('#irrecoverable').hide();
+                
+                kendo.drawing.drawDOM($("#exportable"))
+                    .then(function (group) {
+                    // Render the result as a PDF file
+                        return kendo.drawing.exportPDF(group, {
+                            //paperSize: "auto",
+                        });
+                    })
+                    .done(function (data) {
+                        $scope.invoicemailDetail = {
+                                'pdfData': data,
+                                'invoice_id':$scope.invoiceDetail.invoice_id,
+                                'invoiceno':$scope.invoiceDetail.invoice_number,
+                                'freelanceEmail':$scope.invoiceDetail.freelanceEmail,
+                                'freelanceName':$scope.invoiceDetail.freelanceName,
+                                'clientCompanyName':$scope.invoiceDetail.clientCompanyName,
+                                'companycontactEmail':$scope.invoiceDetail.companycontactEmail,
+                                'outstanding_reminder':0,
+                            };
+                        rest.path = 'sendClientInvoiceMail';
+                        rest.post($scope.invoicemailDetail).success(function(data) {
+                            console.log('data', data)
+                            if(data.status == 200){
+                                notification('Invoice has been sent successfully', 'success');
+                                setTimeout(() => {
+                                    $location.path('/client-invoice-show/'+$routeParams.id); 
+                                }, 200);
+                                angular.element('#btnPaid').show();
+                                angular.element('#btnMarkAsCancel').show();
+                                //angular.element('#btnSave').show();
+                                angular.element('#btnDraft').show();
+                                angular.element('#btnCancel').show();
+                                angular.element('#irrecoverable').show();
+                            }
+                        }).error(errorCallback);
+                    });
+            }else{
+                $location.path('/invoice-detail');
+            }
+            
+        });
+    }
+
+    $scope.printIt = function(number) {
+        console.log("number", number);
+
+        var btnPaid = angular.element('#btnPaid');
+        var btnMarkAsCancel = angular.element('#btnMarkAsCancel');
+        var btnSave = angular.element('#btnSave');
+        var btnDraft = angular.element('#btnDraft');
+        var btnCancel = angular.element('#btnCancel');
+        var irrecoverable = angular.element('#irrecoverable');
+
+        angular.element('#btnPaid').hide();
+        angular.element('#btnMarkAsCancel').hide();
+        angular.element('#btnSave').hide();
+        angular.element('#btnDraft').hide();
+        angular.element('#btnCancel').hide();
+        angular.element('#irrecoverable').hide();
+
+        kendo.drawing.drawDOM($("#exportable")).then(function(group) {
+            group.options.set("font", "8px DejaVu Sans");
+            /*group.options.set("pdf", {
+                margin: {
+                    left   : "40mm",
+                    top    : "0mm",
+                    right  : "40mm",
+                    bottom : "0mm"
+                }
+            });*/
+            kendo.drawing.pdf.saveAs(group, number + ".pdf");
+        });
+
+        $timeout(function() {
+            angular.element('#btnPaid').show();
+            angular.element('#btnMarkAsCancel').show();
+            angular.element('#btnSave').show();
+            angular.element('#btnDraft').show();
+            angular.element('#btnCancel').show();
+            angular.element('#irrecoverable').show();
+
+        }, 200);
+    }
+
+    // Start Invoice Outstanding with reminder - invoices which are past their due date and reminder has been sent to the client 
+    $scope.sendRemiderinvoice = function(number){
+        kendo.drawing.drawDOM($("#exportable"))
+        .then(function (group) {
+        // Render the result as a PDF file
+            return kendo.drawing.exportPDF(group, {
+                //paperSize: "auto",
+            });
+        })
+        .done(function (data) {
+            $scope.invoicemailDetail = {
+                    'pdfData': data,
+                    'invoice_id':$scope.invoiceDetail.invoice_id,
+                    'invoiceno':$scope.invoiceDetail.invoice_number,
+                    'freelanceEmail':$scope.invoiceDetail.freelanceEmail,
+                    'freelanceName':$scope.invoiceDetail.freelanceName,
+                    'clientCompanyName':$scope.invoiceDetail.clientCompanyName,
+                    'companycontactEmail':$scope.invoiceDetail.companycontactEmail,
+                    'outstanding_reminder':1,
+                };
+            rest.path = 'sendClientInvoiceMail';
+            rest.post($scope.invoicemailDetail).success(function(data) {
+                if(data.status==200){
+                    notification('Reminder mail has been sent successfully', 'success');
+                }
+            }).error(errorCallback);
+        });
+    }
+    // End Invoice send Outstaing Reminder
+
+    // Not Recoverable Invoice
+    $scope.isIrrecoverableInvoice = function(frmId) {
+        var inStatus = ($scope.invoiceDetail.invoice_status == 'Irrecoverable') ? 'Open' : 'Irrecoverable';
+        var dtObj = {
+            "invoice_status": inStatus
+        };
+        $routeParams.id = $scope.invoiceDetail.invoice_id;
+        rest.path = "invoiceStatusIrrecoverable";
+        rest.put(dtObj).success(function(data) {
+            console.log('irecorecaravle-data', data)
+            console.log('$scope.invoiceDetail',$scope.invoiceDetail)
+            $route.reload();
+        });
+    }
+
+}).controller('invoiceAmountController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $uibModalInstance, items, $filter) {
+    $scope.closeAmount = true;
+    $scope.currencySymbol = items.Currency;
+    $scope.totalAmount = items.Invoice_cost;
+    console.log("$scope.totalAmount", $scope.totalAmount);
+    $scope.amountToPaid = items.paid_amount;
+    console.log("$scope.amountToPaid", $scope.amountToPaid);
+    if (items.paid_amount == 0) {
+        $scope.dueAmount = items.Invoice_cost;
+    } else {
+        $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
+        $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
+    }
+
+    $scope.statusChange = function(status) {
+        if (status == "Part") {
+            $scope.closeAmount = false;
+        } else {
+
+            $scope.closeAmount = true;
+            $scope.am = "Amount";
+            $scope.invoiceComplete = items.Invoice_cost - items.paid_amount;
+        }
+    }
+
+
+    $scope.ok = function(frmId) {
+        // if any change in amount box and then select to completed replace value in box amount
+        // to complete ampunt
+        if ($scope.closeAmount) {
+            $scope.inv.paid_amount = $scope.dueAmount;
+        }
+        if (!$('#paidStatus').val()) {
+            notification('Please select status.', 'error');
+            return false;
+        }
+
+        var checkHireamount = parseFloat($scope.inv.paid_amount) + parseFloat($scope.amountToPaid);
+
+        if (angular.element('#' + frmId).valid()) {
+
+            if ($scope.inv.paid_amount == undefined) {
+                notification("Enter valid amount.", 'error');
+                return false;
+            }
+            if (checkHireamount > items.Invoice_cost) {
+                var errorMsg = "High amount you can't enter , please enter " + $scope.dueAmount + " or less amount.";
+                notification(errorMsg, 'error');
+                return false;
+            } else if ($scope.inv.paid_amount == 0) {
+                notification("Zero amount not allowed", 'error');
+                return false;
+            } else {
+
+                var date = $filter('date')(new Date(), 'yyyy/MM/dd');
+                $scope.inv.paid_date = date;
+                $scope.inv.partPaid = $scope.inv.paid_amount;
+                $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
+                if ($scope.inv.paid_amount == items.Invoice_cost) {
+                    $scope.inv.invoice_status = "Complete";
+                } else {
+                    $scope.inv.invoice_status = "Part Paid";
+                }
+                if ($scope.closeAmount == true) {
+                    $scope.inv.paid_amount = items.Invoice_cost;
+                    $scope.inv.invoice_status = "Complete";
+                }
+                $routeParams.id = items.statusId;
+                rest.path = "invoiceStatusChange";
+                rest.put($scope.inv).success(function(data) {
+                    $uibModalInstance.dismiss('cancel');
+                    $route.reload();
+                });
+            }
+        }
+    }
+
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    }
+}).controller('clientInvoiceAmountController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $uibModalInstance, items, $filter) {
+    $scope.closeAmount = true;
+    $scope.currencySymbol = items.Currency;
+    $scope.totalAmount = items.Invoice_cost;
+    console.log("$scope.totalAmount", $scope.totalAmount);
+    $scope.amountToPaid = items.paid_amount;
+    console.log("$scope.amountToPaid", $scope.amountToPaid);
+    if (items.paid_amount == 0) {
+        $scope.dueAmount = items.Invoice_cost;
+    } else {
+        $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
+        $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
+    }
+
+    $scope.statusChange = function(status) {
+        if (status == "Part") {
+            $scope.closeAmount = false;
+        } else {
+
+            $scope.closeAmount = true;
+            $scope.am = "Amount";
+            $scope.invoiceComplete = items.Invoice_cost - items.paid_amount;
+        }
+    }
+
+
+    $scope.ok = function(frmId) {
+        // if any change in amount box and then select to completed replace value in box amount
+        // to complete ampunt
+        if ($scope.closeAmount) {
+            $scope.inv.paid_amount = $scope.dueAmount;
+        }
+        if (!$('#paidStatus').val()) {
+            notification('Please select status.', 'error');
+            return false;
+        }
+
+        var checkHireamount = parseFloat($scope.inv.paid_amount) + parseFloat($scope.amountToPaid);
+
+        if (angular.element('#' + frmId).valid()) {
+
+            if ($scope.inv.paid_amount == undefined) {
+                notification("Enter valid amount.", 'error');
+                return false;
+            }
+            if (checkHireamount > items.Invoice_cost) {
+                var errorMsg = "High amount you can't enter , please enter " + $scope.dueAmount + " or less amount.";
+                notification(errorMsg, 'error');
+                return false;
+            } else if ($scope.inv.paid_amount == 0) {
+                notification("Zero amount not allowed", 'error');
+                return false;
+            } else {
+
+                var date = $filter('date')(new Date(), 'yyyy/MM/dd');
+                console.log('date', date)
+                $scope.inv.paid_date = date;
+                $scope.inv.partPaid = $scope.inv.paid_amount;
+                $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
+                if ($scope.inv.paid_amount == items.Invoice_cost) {
+                    $scope.inv.invoice_status = "Complete";
+                } else {
+                    $scope.inv.invoice_status = "Part Paid";
+                }
+                if ($scope.closeAmount == true) {
+                    $scope.inv.paid_amount = items.Invoice_cost;
+                    $scope.inv.invoice_status = "Complete";
+                }
+                $routeParams.id = items.statusId;
+                rest.path = "clientInvoiceStatusChange";
+                rest.put($scope.inv).success(function(data) {
+                    $uibModalInstance.dismiss('cancel');
+                    $route.reload();
+                });
+            }
+        }
+    }
+
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    }
 }).controller('invoiceShowController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
@@ -12915,86 +13380,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         // });
     }
 
-}).controller('invoiceAmountController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $uibModalInstance, items, $filter) {
-    $scope.closeAmount = true;
-    $scope.currencySymbol = items.Currency;
-    $scope.totalAmount = items.Invoice_cost;
-    console.log("$scope.totalAmount", $scope.totalAmount);
-    $scope.amountToPaid = items.paid_amount;
-    console.log("$scope.amountToPaid", $scope.amountToPaid);
-    if (items.paid_amount == 0) {
-        $scope.dueAmount = items.Invoice_cost;
-    } else {
-        $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
-        $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
-    }
-
-    $scope.statusChange = function(status) {
-        if (status == "Part") {
-            $scope.closeAmount = false;
-        } else {
-
-            $scope.closeAmount = true;
-            $scope.am = "Amount";
-            $scope.invoiceComplete = items.Invoice_cost - items.paid_amount;
-        }
-    }
-
-
-    $scope.ok = function(frmId) {
-        // if any change in amount box and then select to completed replace value in box amount
-        // to complete ampunt
-        if ($scope.closeAmount) {
-            $scope.inv.paid_amount = $scope.dueAmount;
-        }
-        if (!$('#paidStatus').val()) {
-            notification('Please select status.', 'error');
-            return false;
-        }
-
-        var checkHireamount = parseFloat($scope.inv.paid_amount) + parseFloat($scope.amountToPaid);
-
-        if (angular.element('#' + frmId).valid()) {
-
-            if ($scope.inv.paid_amount == undefined) {
-                notification("Enter valid amount.", 'error');
-                return false;
-            }
-            if (checkHireamount > items.Invoice_cost) {
-                var errorMsg = "High amount you can't enter , please enter " + $scope.dueAmount + " or less amount.";
-                notification(errorMsg, 'error');
-                return false;
-            } else if ($scope.inv.paid_amount == 0) {
-                notification("Zero amount not allowed", 'error');
-                return false;
-            } else {
-
-                var date = $filter('date')(new Date(), 'yyyy/MM/dd');
-                $scope.inv.paid_date = date;
-                $scope.inv.partPaid = $scope.inv.paid_amount;
-                $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
-                if ($scope.inv.paid_amount == items.Invoice_cost) {
-                    $scope.inv.invoice_status = "Complete";
-                } else {
-                    $scope.inv.invoice_status = "Part Paid";
-                }
-                if ($scope.closeAmount == true) {
-                    $scope.inv.paid_amount = items.Invoice_cost;
-                    $scope.inv.invoice_status = "Complete";
-                }
-                $routeParams.id = items.statusId;
-                rest.path = "invoiceStatusChange";
-                rest.put($scope.inv).success(function(data) {
-                    $uibModalInstance.dismiss('cancel');
-                    $route.reload();
-                });
-            }
-        }
-    }
-
-    $scope.cancel = function() {
-        $uibModalInstance.dismiss('cancel');
-    }
 }).controller('statementController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userId = $window.localStorage.getItem("session_iUserId");
@@ -22090,8 +22475,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.viewInvoice = function(type) {
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
-            templateUrl: 'tpl/invoiceall_view.html',
-            controller: 'invoiceViewController',
+            templateUrl: 'tpl/invoiceClientall_view.html',
+            controller: 'clientInvoiceViewPopupController',
             size: '',
             width: 1000,
             resolve: {
@@ -22931,6 +23316,163 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.cancel = function() {
         $location.path('/invoice-client');
+    }
+
+}).controller('clientInvoiceViewController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.is_disabled = false;
+            
+    if ($routeParams.id) {
+        rest.path = "clientInvoiceViewOne/" + $routeParams.id;
+        rest.get().success(function(data) {
+            $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
+            rest.get().success(function(dataUser) {
+                //$scope.userData = dataUser.userData;
+                $scope.userPaymentData = dataUser.userPaymentData;
+                //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                //$scope.currencyType = vBankInfo.currency_code;
+                //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                $scope.currencyPaymentMethod = 'Bank Transfer';
+                //$scope.vBankInfo.currency_code = 'EUR,€'; 
+                $scope.currencyType = '€ ';
+                if ($scope.currencyPaymentMethod == 'Bank Transfer') {
+                    $timeout(function() {
+                        $("#Bank").prop('checked', true);
+                    }, 100);
+
+                } else {
+                    $timeout(function() {
+                        $("#Paypal").prop('checked', true);
+                    }, 100);
+                }
+
+                $scope.invoiceDetail.payment = $scope.currencyPaymentMethod;
+
+            }).error(errorCallback);
+
+            $scope.invoiceList = data;
+            console.log('$scope.invoiceList', $scope.invoiceList)
+
+            $scope.grandTotal = 0;
+            angular.forEach($scope.invoiceList, function(val, i) {
+                if (val.item) {
+                    angular.forEach(val.item, function(v, i) {
+                        $scope.grandTotal += v.itemTotal;
+                    })
+                }
+            })
+
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
+            console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
+            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
+            var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
+            $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
+
+            var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
+            var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
+            $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
+            
+            if($scope.invoiceDetail.invoice_status == 'Irrecoverable'){
+                angular.element('#irrecoverable').addClass('btn-danger');
+                angular.element('#irrecoverable').removeClass('btn-info');
+                $scope.is_disabled = true;
+            }
+            // send Outstanding invoice Button
+            $scope.reminderBtnHideShow = false;
+            $timeout(function() {
+                var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
+                if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')){
+                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                        $scope.reminderBtnHideShow = true;
+                    }
+                }
+            }, 500);
+
+        }).error(errorCallback);
+    }
+
+    $scope.getInvoicePartPayments = function() {
+        rest.path = "getClientInvoicePartPayments/" + $routeParams.id;
+        rest.get().success(function(partPayments) {
+            $scope.partPaymentList = partPayments;
+            console.log("$scope.partPaymentList", $scope.partPaymentList);
+        });
+    }
+    $scope.getInvoicePartPayments();
+
+    $scope.printIt = function(number) {
+        kendo.drawing.drawDOM($("#exportable")).then(function(group) {
+            group.options.set("font", "12px DejaVu Sans");
+            group.options.set("pdf", {
+                margin: {
+                    left: "40mm",
+                    top: "0mm",
+                    right: "40mm",
+                    bottom: "0mm"
+                }
+            });
+            kendo.drawing.pdf.saveAs(group, number + ".pdf");
+        });
+    }
+    
+    // Start Invoice Outstanding with reminder - invoices which are past their due date and reminder has been sent to the client 
+    $scope.sendRemiderinvoice = function(number){
+        kendo.drawing.drawDOM($("#exportable"))
+        .then(function (group) {
+        // Render the result as a PDF file
+            return kendo.drawing.exportPDF(group, {
+                //paperSize: "auto",
+            });
+        })
+        .done(function (data) {
+            $scope.invoicemailDetail = {
+                    'pdfData': data,
+                    'invoice_id':$scope.invoiceDetail.invoice_id,
+                    'invoiceno':$scope.invoiceDetail.invoice_number,
+                    'freelanceEmail':$scope.invoiceDetail.freelanceEmail,
+                    'freelanceName':$scope.invoiceDetail.freelanceName,
+                    'clientCompanyName':$scope.invoiceDetail.clientCompanyName,
+                    'companycontactEmail':$scope.invoiceDetail.companycontactEmail,
+                    'outstanding_reminder':1,
+                };
+            rest.path = 'sendClientInvoiceMail';
+            rest.post($scope.invoicemailDetail).success(function(data) {
+                if(data.status==200){
+                    notification('Reminder mail has been sent successfully', 'success');
+                }
+            }).error(errorCallback);
+        });
+    }
+    // End Invoice send Outstaing Reminder
+    
+}).controller('clientInvoiceViewPopupController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    var userId = $cookieStore.get('session_iUserId');
+    if (items) {
+        rest.path = "viewAllClientInvoice/" + items + '/' + userId;
+        rest.get().success(function(data) {
+            $scope.invoiceList = data;
+
+            if ($.isEmptyObject(data) == true) {
+                $uibModalInstance.close();
+                notification("Invoice not available", "warning");
+            }
+
+            $scope.type = items;
+        }).error(errorCallback);
+    }
+
+    $scope.viewData = function(id) {
+        $location.path('/client-invoice-show/' + id);
+        $uibModalInstance.close();
+    }
+
+    $scope.cancel = function() {
+        $uibModalInstance.close();
     }
 
 }).controller('viewProjectController', function($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {

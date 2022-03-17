@@ -3087,22 +3087,10 @@ $app->post('/invoiceCreate','authenticate', function()  use($app) {
     $result = $invoice->invoiceCreate($data);
     echoResponse(200, $result);
 });
-$app->post('/clientInvoiceCreate','authenticate', function()  use($app) {
-    $invoice = new Freelance_invoice ();
-    $data = json_decode($app->request->getBody(), TRUE);
-    $result = $invoice->clientInvoiceCreate($data);
-    echoResponse(200, $result);
-});
 $app->post('/invoiceSave', 'authenticate',function () use($app) {
     $invoice = new Freelance_invoice ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $invoice->saveInvoice($data);
-    echoResponse(200, $result);
-});
-$app->post('/clientinvoiceSave', 'authenticate',function () use($app) {
-    $invoice = new Freelance_invoice ();
-    $data = json_decode($app->request->getBody(), TRUE);
-    $result = $invoice->saveclientInvoice($data);
     echoResponse(200, $result);
 });
 $app->get('/viewAllInvoice/:type/:userId', 'authenticate',function($type,$userId) {
@@ -3119,11 +3107,6 @@ $app->get('/viewAllInvoice1/:type','authenticate', function($type) {
 $app->get('/getAllInvoiceByUserId/:type/:userId','authenticate', function($type,$userId) {
     $invoice = new Freelance_invoice ();
     $result = $invoice->getAllInvoiceByUserId($type,$userId);
-    echoResponse(200, $result);
-});
-$app->get('/getAllInvoiceClient/:type/:userId','authenticate', function($type,$userId) {
-    $invoice = new Freelance_invoice ();
-    $result = $invoice->getAllInvoiceClient($type,$userId);
     echoResponse(200, $result);
 });
 $app->get('/invoiceViewOne/:id', 'authenticate',function($id) {
@@ -3184,6 +3167,63 @@ $app->get('/getReportedImages', 'authenticate',function () use($app) {
 $app->delete('/UpdateImageStatus/:imgName/:status','authenticate', function ($imgName,$status) use($app) {
     $deleteIMage = new Knowledgefunpic();
     $result = $deleteIMage->UpdateImageStatus($imgName,$status);
+    echoResponse(200, $result);
+});
+// ------------------ Client Invoice -----------------------------------//
+$app->post('/clientInvoiceCreate','authenticate', function()  use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->clientInvoiceCreate($data);
+    echoResponse(200, $result);
+});
+$app->post('/clientinvoiceSave', 'authenticate',function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->saveclientInvoice($data);
+    echoResponse(200, $result);
+});
+$app->get('/viewAllClientInvoice/:type/:userId', 'authenticate',function($type,$userId) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->viewAllClientInvoice($type,$userId);
+    echoResponse(200, $result);
+});
+$app->get('/getAllInvoiceClient/:type/:userId','authenticate', function($type,$userId) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getAllInvoiceClient($type,$userId);
+    echoResponse(200, $result);
+});
+$app->get('/getClientInvoicePartPayments/:id','authenticate', function($id) {
+    $invoice = new client_invoice ();
+    $result = $invoice->getClientInvoicePartPayments($id);
+    echoResponse(200, $result);
+});
+
+$app->get('/clientInvoiceViewOne/:id', 'authenticate',function($id) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->clientInvoiceViewOne($id);
+    echoResponse(200, $result);
+});
+$app->put('/clientInvoiceStatusChange/:id','authenticate', function ($id) use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->invoiceStatusChange($data, $id);
+    echoResponse(200, $result);
+});
+$app->get('/clientInvoiceUpdate/:id','authenticate', function($id) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->invoiceUpdate($id);
+    echoResponse(200, $result);
+});
+$app->post('/sendClientInvoiceMail', 'authenticate',function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->sendInvoiceMail($data);
+    echoResponse(200, $result);
+});
+$app->put('/invoiceStatusIrrecoverable/:id','authenticate', function ($id) use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->invoiceStatusIrrecoverable($data, $id);
     echoResponse(200, $result);
 });
 //-------------------Resource Postion----------------//

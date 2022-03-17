@@ -1086,3 +1086,10 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .bg-title{
   background-color: #f4f4fb !important;
 }
+.thfont th{
+  font-weight: initial;
+}
+.btn-info[disabled]{
+  background-color: #502dc4;
+  border-color: #502dc4;
+}

@@ -63,7 +63,6 @@
                             ng-bind="invoiceDetail.orderNumber"></strong></br>
                         </p>
                       </div>
-
                       <div class="col-xs-6">
                         <strong>Company:</strong>
                         <h4 ng-bind="invoiceDetail.clientCompanyName"></h4>
@@ -143,28 +142,41 @@
                                 </p> -->
                   </div>
                   <div class="line"></div>
-                  <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+                  <!-- <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
                     class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index"
-                    id="InvoiceTbl">
+                    id="InvoiceTbl"> -->
+                  <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+                    class="table table-striped bg-white b-a"
+                    id="InvoiceTbl">  
                     <thead>
-                      <tr ng-if="$index == 0">
+                      <tr>
                         <th style="width: 60px">#</th>
-                        <th style="width: 230px">PRICE UNIT</th>
-                        <th>QUANTITY</th>
-                        <th style="width: 140px">UNIT PRICE</th>
+                        <th style="width: 230px">PROJECT</th>
+                        <th>SCOOP</th>
+                        <th style="width: 140px">PRICE</th>
                         <th style="width: 90px">TOTAL</th>
                       </tr>
-                      <tr>
+                      <!-- <tr>
                         <th style="width: 60px">({{$index + 1}})</th>
+                        <th>Project Number A: {{invL.orderNumber}}</th>
                         <th style="width: 230px">Scoop No : {{ invL.item_number | numberFixedLen:3 }}</th>
-                        <th>Project Number : {{invL.orderNumber}}</th>
-                        <th style="width: 90px"></th>
-                        <th style="width: 90px"></th>
-                      </tr>
+                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
+                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
+                      </tr> -->
 
                     </thead>
-                    <tbody>
-                      <tr ng-repeat="item in invL.item track by $index">
+                    <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+                    class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index"
+                    >
+                      <tr class="thfont">
+                        <th style="width: 60px">({{$index + 1}})</th>
+                        <th>Project Number: {{invL.orderNumber}}</th>
+                        <th style="width: 230px">Scoop No : {{ invL.item_number | numberFixedLen:3 }}</th>
+                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
+                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
+                      </tr>
+
+                      <tr class="none" ng-repeat="item in invL.item track by $index">
                         <td ng-bind="$index+1"></td>
                         <td ng-bind="item.pricelist"></td>
                         <td ng-bind="item.quantity"></td>
