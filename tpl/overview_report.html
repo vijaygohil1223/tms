@@ -611,7 +611,7 @@
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ 0</small>
+                                    <small class="text-muted clear text-ellipsis">€ {{allpayableAmt | currencyCommaDcmlformat}}</small>
                                 </li>
                               </ul>
                           </div>
@@ -623,7 +623,7 @@
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ 10,50</small>
+                                    <small class="text-muted clear text-ellipsis">€ {{inPreparationPayable | currencyCommaDcmlformat}}</small>
                                 </li>
                               </ul>
                           </div>
@@ -635,7 +635,7 @@
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ 10,50</small>
+                                    <small class="text-muted clear text-ellipsis">€ {{outstandingPayable | currencyCommaDcmlformat}}</small>
                                 </li>
                               </ul>
                           </div>
@@ -647,7 +647,7 @@
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ 10,50</small>
+                                    <small class="text-muted clear text-ellipsis">€ {{todayPayable | currencyCommaDcmlformat}}</small>
                                 </li>
                               </ul>
                           </div>
@@ -659,7 +659,7 @@
                             </div>
                             <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                  <small class="text-muted clear text-ellipsis">€ 400</small>
+                                  <small class="text-muted clear text-ellipsis">€ {{overduePayable | currencyCommaDcmlformat}}</small>
                                 </li>
                             </ul>
                           </div>
@@ -690,7 +690,7 @@
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ 300</small>
+                                    <small class="text-muted clear text-ellipsis">€ {{allReceivablesAmt | currencyCommaDcmlformat}}</small>
                                 </li>
                               </ul>
                           </div>
@@ -702,7 +702,7 @@
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ 800</small>
+                                    <small class="text-muted clear text-ellipsis">€ {{inPreparationReceivables | currencyCommaDcmlformat}}</small>
                                 </li>
                               </ul>
                           </div>
@@ -714,7 +714,7 @@
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ 100</small>
+                                    <small class="text-muted clear text-ellipsis">€ {{outstandingReceivables | currencyCommaDcmlformat}}</small>
                                 </li>
                               </ul>
                           </div>
@@ -726,7 +726,7 @@
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ 0</small>
+                                    <small class="text-muted clear text-ellipsis">€ {{todayReceivables | currencyCommaDcmlformat}}</small>
                                 </li>
                               </ul>
                           </div>
@@ -738,7 +738,7 @@
                             </div>
                             <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                  <small class="text-muted clear text-ellipsis">€ 2400</small>
+                                  <small class="text-muted clear text-ellipsis">€ {{overdueReceivables | currencyCommaDcmlformat}}</small>
                                 </li>
                             </ul>
                           </div>

@@ -119,9 +119,10 @@ class Client_invoice {
         $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
     	$this->_db->where('tmInvoice.invoice_type', $type);
     	//$this->_db->where('tu.iUserId', $userId);
-    	$data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS itemId, ti.order_id AS orderId, tc.iClientId AS clientId,tc.vUserName AS clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount');
-        foreach ($data as $key => $value) {
-    		// $companyName = self::getAll('abbrivation',substr($value['company_code'],0,-2),'tms_centers');
+    	$data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS itemId, ti.order_id AS orderId, tc.iClientId AS clientId,tc.vUserName AS clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.created_date');
+
+        if($data){
+        	// $companyName = self::getAll('abbrivation',substr($value['company_code'],0,-2),'tms_centers');
     		// $data[$key]['companyName'] = isset($companyName[0]['name'])?$companyName[0]['name']:'';	
     	}
     	return $data;

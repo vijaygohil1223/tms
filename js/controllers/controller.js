@@ -6853,9 +6853,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
-}).controller('overviewReportController', function($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter) {
+}).controller('overviewReportController', function($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $cookieStore, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
+    var session_iUserId = $cookieStore.get('session_iUserId') ? $cookieStore.get('session_iUserId') : 0;
 
     var Dateobject = [];
     for (var i = 11; i >= 0; i--) {
@@ -7296,74 +7297,144 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
+//get of invoice due period
+$scope.invoicePeriodDays = 0;
+$scope.getDataInvoicePeriod = function() {
+    rest.path = "getAllInvoicePeriod";
+    rest.get().success(function(data) {
+        $scope.dueperiodList = data;
+        if($scope.dueperiodList.length>0){
+            $scope.invoicePeriodDays = $scope.dueperiodList[0].number_of_days;
+        }
+        //$scope.getOne(data[0].invoice_due_id);
+    }).error(errorCallback);
+}
+$scope.getDataInvoicePeriod();
+
     var todayDate = $filter('date')(new Date(), 'yyyy-MM-dd');
-                
+
     $scope.allpayableAmt = 0;
-    $scope.allPay = 0;
-    $scope.allPayCost = 0;
-    $scope.dueTdaypayable = 0;
     $scope.outstandingPayable = 0;
     $scope.overduePayable = 0;
-    var outstandingCostPay = 0; 
-    var outstandingPaidPay = 0; 
-    var overdueCostPay = 0; 
-    var overduePaidPay = 0; 
+    $scope.todayPayable = 0;
+
+    var allPaidAmt = 0;
+    var allPayCostAmt = 0;
+    var outstandingCostAmt = 0; 
+    var outstandingPaidAmt = 0; 
+    var overdueCostAmt = 0; 
+    var overduePaidAmt = 0; 
+    var todayCostAmt = 0; 
+    var todayPaidAmt = 0; 
     $scope.getinvoiceData = function() {
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function(data) {
             $scope.invoiceList = data;
             console.log("$scope.invoiceList", $scope.invoiceList);
             angular.forEach(data, function(val, i) {
-                $scope.allPayCost += val.Invoice_cost; 
+                allPayCostAmt += val.Invoice_cost; 
                 if(val.paid_amount)
-                $scope.allPay += val.paid_amount;
-                
-                // var newPaydueDate = TodayAfterNumberOfDays(val.created_date, 30)
-                // if((val.invoice_type != 'draft' && val.invoice_status != 'Complete' && val.is_approved == 1)){
-                //     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
-                //         $scope.outStandPay += val.paid_amount;
-                //     }
-                // }
+                allPaidAmt += val.paid_amount;
 
-                console.log('val.invoice_date',val.invoice_date )
+                var newPaydueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriodDays)
                 if((val.invoice_type != 'draft' && val.is_approved == 1)){
-                    if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
-                        outstandingCostPay += val.Invoice_cost; 
-                        outstandingPaidPay += val.paid_amount; 
+                    //if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                        outstandingCostAmt += val.Invoice_cost; 
+                        outstandingPaidAmt += val.paid_amount; 
                     }
-                    if (val.invoice_date.split(' ')[0] > dateFormat(new Date()).split(".").reverse().join("-")) {
-                        overdueCostPay += val.Invoice_cost; 
-                        console.log('overdueCostPay', overdueCostPay)
-                        overduePaidPay += val.paid_amount; 
-                        console.log('overduePaidPay', overduePaidPay)
+                    if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
+                        overdueCostAmt += val.Invoice_cost; 
+                        overduePaidAmt += val.paid_amount; 
+                    }
+                    if (newPaydueDate == dateFormat(new Date()).split(".").reverse().join("-")) {
+                        todayCostAmt += val.Invoice_cost; 
+                        todayPaidAmt += val.paid_amount; 
                     }
                 }    
-                if (val.invoice_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
-                    //$scope.outStandPay += val.paid_amount; 
-                }
-
-                // console.log('$scope.outStandPay',$scope.outStandPay )
 
             });
-            //$scope.allpayableAmt =  $scope.allPayCost - $scope.allPay;   
-            $scope.outstandingPayable = outstandingCostPay - outstandingPaidPay ;
-            $scope.overduePayable = overdueCostPay - overduePaidPay;
-            console.log('$scope.overduePayable', $scope.overduePayable)
-            console.log('$scope.outStandPay',$scope.outstandingPayable )
+            $scope.allpayableAmt =  allPayCostAmt - allPaidAmt;   
+            $scope.outstandingPayable = outstandingCostAmt - outstandingPaidAmt;
+            $scope.overduePayable = overdueCostAmt - overduePaidAmt;
+            $scope.todayPayable = todayCostAmt - todayPaidAmt;
         }).error(errorCallback);
 
-        // In Preparation invoice
-        $scope.inPreparationPay = 0 ;
+        // In Preparation invoice amount
+        $scope.inPreparationPayable = 0 ;
         rest.path = "viewAllInvoice1/draft";
         rest.get().success(function(data) {
             $scope.invoiceListDraft = data;
             angular.forEach(data, function(val, i) {
-                $scope.inPreparationPay += val.Invoice_cost; 
+                $scope.inPreparationPayable += val.Invoice_cost; 
             });
         }).error(errorCallback);
     }
 
     $scope.getinvoiceData();
+
+    // Receiveable Payments (Invoice sent to clients) 
+    $scope.allReceivablesAmt = 0;
+    $scope.outstandingReceivables = 0;
+    $scope.overdueReceivables = 0;
+    $scope.todayReceivables = 0;
+
+    var allPaidRecvbl = 0;
+    var allPayCostRecvbl = 0;
+    var outstandingCostRecvbl = 0; 
+    var outstandingPaidRecvbl = 0; 
+    var overdueCostRecvbl = 0; 
+    var overduePaidRecvbl = 0; 
+    var todayCostRecvbl = 0; 
+    var todayPaidRecvbl = 0; 
+    $scope.getClientinvoiceData = function() {
+        rest.path = "viewAllClientInvoice/save/"+session_iUserId;
+        rest.get().success(function(data) {
+            $scope.invoiceList = data;
+            console.log('$scope.invoiceList-client', $scope.invoiceList)
+            angular.forEach(data, function(val, i) {
+                allPayCostRecvbl += val.Invoice_cost; 
+                if(val.paid_amount)
+                allPaidRecvbl += val.paid_amount;
+                
+                var newPaydueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriodDays)
+                if(val.invoice_type != 'draft'){
+                    //if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                        outstandingCostRecvbl += val.Invoice_cost; 
+                        outstandingPaidRecvbl += val.paid_amount; 
+                    }
+                    if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
+                        overdueCostRecvbl += val.Invoice_cost; 
+                        overduePaidRecvbl += val.paid_amount; 
+                    }
+                    if (newPaydueDate == dateFormat(new Date()).split(".").reverse().join("-")) {
+                        todayCostRecvbl += val.Invoice_cost; 
+                        todayPaidRecvbl += val.paid_amount; 
+                    }
+                }    
+
+            });
+            $scope.allReceivablesAmt =  allPayCostRecvbl - allPaidRecvbl;   
+            $scope.outstandingReceivables = outstandingCostRecvbl - outstandingPaidRecvbl;
+            $scope.overdueReceivables = overdueCostRecvbl - overduePaidRecvbl;
+            $scope.todayReceivables = todayCostRecvbl - todayPaidRecvbl;
+
+        }).error(errorCallback);
+
+        // In Preparation Client invoice amount
+        $scope.inPreparationReceivables = 0 ;
+        rest.path = "viewAllClientInvoice/draft/"+session_iUserId;
+        rest.get().success(function(data) {
+            $scope.invoiceListDraft = data;
+            angular.forEach(data, function(val, i) {
+                $scope.inPreparationReceivables += val.Invoice_cost; 
+            });
+        }).error(errorCallback);
+    
+    }    
+
+    $scope.getClientinvoiceData();
 
 }).controller('resourcesController', function($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams, $cookieStore, $timeout, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
