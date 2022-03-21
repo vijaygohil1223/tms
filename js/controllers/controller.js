@@ -7297,19 +7297,19 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
-//get of invoice due period
-$scope.invoicePeriodDays = 0;
-$scope.getDataInvoicePeriod = function() {
-    rest.path = "getAllInvoicePeriod";
-    rest.get().success(function(data) {
-        $scope.dueperiodList = data;
-        if($scope.dueperiodList.length>0){
-            $scope.invoicePeriodDays = $scope.dueperiodList[0].number_of_days;
-        }
-        //$scope.getOne(data[0].invoice_due_id);
-    }).error(errorCallback);
-}
-$scope.getDataInvoicePeriod();
+    //get of invoice due period
+    $scope.invoicePeriodDays = 30;
+    $scope.getDataInvoicePeriod = function() {
+        rest.path = "getAllInvoicePeriod";
+        rest.get().success(function(data) {
+            $scope.dueperiodList = data;
+            if($scope.dueperiodList.length>0){
+                $scope.invoicePeriodDays = $scope.dueperiodList[0].number_of_days;
+            }
+            //$scope.getOne(data[0].invoice_due_id);
+        }).error(errorCallback);
+    }
+    $scope.getDataInvoicePeriod();
 
     var todayDate = $filter('date')(new Date(), 'yyyy-MM-dd');
 
@@ -7337,13 +7337,14 @@ $scope.getDataInvoicePeriod();
                 allPaidAmt += val.paid_amount;
 
                 var newPaydueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriodDays)
+                console.log('$scope.invoicePeriodDays', $scope.invoicePeriodDays)
                 if((val.invoice_type != 'draft' && val.is_approved == 1)){
                     //if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
-                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
                         outstandingCostAmt += val.Invoice_cost; 
                         outstandingPaidAmt += val.paid_amount; 
                     }
-                    if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
+                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
                         overdueCostAmt += val.Invoice_cost; 
                         overduePaidAmt += val.paid_amount; 
                     }
@@ -7400,11 +7401,11 @@ $scope.getDataInvoicePeriod();
                 var newPaydueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriodDays)
                 if(val.invoice_type != 'draft'){
                     //if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
-                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
                         outstandingCostRecvbl += val.Invoice_cost; 
                         outstandingPaidRecvbl += val.paid_amount; 
                     }
-                    if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
+                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
                         overdueCostRecvbl += val.Invoice_cost; 
                         overduePaidRecvbl += val.paid_amount; 
                     }
