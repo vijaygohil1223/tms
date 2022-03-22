@@ -208,6 +208,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'currencyController',
             activetab: 'currency',
             role: '1'
+        }).when('/banking-details', {
+            templateUrl: modulesPath + 'banking_details.html',
+            controller: 'bankingDetailsController',
+            activetab: 'banking-details',
+            role: '1'
         }).when('/property', {
             templateUrl: modulesPath + 'properties.html',
             controller: 'PropertyController',

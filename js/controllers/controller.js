@@ -7311,12 +7311,16 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
     $scope.getDataInvoicePeriod();
 
-    var todayDate = $filter('date')(new Date(), 'yyyy-MM-dd');
-
+//---- Payable Invoice Calculation ---//
     $scope.allpayableAmt = 0;
-    $scope.outstandingPayable = 0;
+    $scope.submitPayable = 0;
+    $scope.approvedPayable = 0;
     $scope.overduePayable = 0;
+    $scope.outstandingPayable = 0;
+    $scope.outstandRmndrPayable = 0;
     $scope.todayPayable = 0;
+    $scope.paidPayable = 0;
+    $scope.cancelPayable = 0;
 
     var allPaidAmt = 0;
     var allPayCostAmt = 0;
@@ -7336,8 +7340,24 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if(val.paid_amount)
                 allPaidAmt += val.paid_amount;
 
+                if(val.invoice_status == "Open"){
+                    $scope.submitPayable += val.Invoice_cost;
+                }
+                if(val.is_approved == 1 && val.invoice_status == 'Open'){
+                    $scope.approvedPayable += val.Invoice_cost;
+                }    
+                if(val.is_approved == 1 && val.reminder_sent == 1 && val.invoice_status != 'Complete'){
+                    $scope.outstandRmndrPayable += val.Invoice_cost;
+                    console.log('$scope.outstandRmndrPayable', $scope.outstandRmndrPayable)
+                }
+                if(val.invoice_status == 'Paid' || val.invoice_status == 'Complete'){
+                    $scope.paidPayable += val.Invoice_cost;
+                }
+                if(val.invoice_status == 'Cancel'){
+                    $scope.cancelPayable += val.Invoice_cost;
+                }    
+
                 var newPaydueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriodDays)
-                console.log('$scope.invoicePeriodDays', $scope.invoicePeriodDays)
                 if((val.invoice_type != 'draft' && val.is_approved == 1)){
                     //if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
                     if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
@@ -7379,7 +7399,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.outstandingReceivables = 0;
     $scope.overdueReceivables = 0;
     $scope.todayReceivables = 0;
-
+    $scope.toBesentReceivables = 0;
+    $scope.outstandRmndrReceivables = 0;
+    $scope.cancelReceivables = 0;
+    $scope.paidReceivables = 0;
+    $scope.irRecoverableReceivables = 0;
+    
     var allPaidRecvbl = 0;
     var allPayCostRecvbl = 0;
     var outstandingCostRecvbl = 0; 
@@ -7398,9 +7423,25 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if(val.paid_amount)
                 allPaidRecvbl += val.paid_amount;
                 
+                if(val.invoice_status == "Open"){
+                    $scope.toBesentReceivables += val.Invoice_cost;
+                }
+                if(val.reminder_sent == 1 && val.invoice_status != 'Complete'){
+                    $scope.outstandRmndrReceivables += val.Invoice_cost;
+                }
+                if(val.invoice_status == 'Paid' || val.invoice_status == 'Complete'){
+                    $scope.paidReceivables += val.Invoice_cost;
+                }
+                if(val.invoice_status == 'Cancel'){
+                    $scope.cancelReceivables += val.Invoice_cost;
+                }                
+                if(val.invoice_status == 'Irrecoverable'){
+                    $scope.irRecoverableReceivables += val.Invoice_cost;
+                }                
+                
                 var newPaydueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriodDays)
                 if(val.invoice_type != 'draft'){
-                    //if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    // if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
                     if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
                         outstandingCostRecvbl += val.Invoice_cost; 
                         outstandingPaidRecvbl += val.paid_amount; 
@@ -13352,6 +13393,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid'){
                 $scope.isDisabledApprvd = true;
             }
+            if($scope.userRight!=1)
+                $scope.isDisabledApprvd = true;
 
         }).error(errorCallback);
     }
@@ -18550,6 +18593,118 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         this.hoverEdit = false;
     };
 
+}).controller('bankingDetailsController', function($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    rest.path = 'bankDetails';
+    rest.get().success(function(data) {
+        $scope.currencyData = data;
+        //$scope.def = data[0].country_name;
+        var currency = [];
+        angular.forEach(data, function(val, i) {
+            if (val.currency_front == 1) {
+                currency.push(val.currency_front);
+            }
+        })
+        $scope.currencyEmpty = jQuery.isEmptyObject(data);
+        $scope.checkFront = parseInt(currency);
+    }).error(errorCallback);
+
+    $scope.currencyListChange = function(code, id, nameC, date) {
+        if ($scope.currn == "" || $scope.currn == undefined || $scope.currn == null) {
+            $scope.currn = {};
+        }
+        var cod = code.split(',');
+        $scope.country_name = cod[0];
+        $scope.currency_code = code;
+        $scope.date = date;
+        $scope.curDef = code.split(',')[0];
+        $scope.currn.curDef = $scope.curDef;
+        $scope.currn.country_name = $scope.country_name;
+        $scope.currn.currency_code = $scope.currency_code;
+        $scope.currn.date = $scope.date;
+        $routeParams.id = id;
+        rest.path = 'currencyUpdate';
+        rest.put($scope.currn).success(function() {
+            notification('Default currency successfully changed', 'success');
+            $route.reload();
+        }).error(errorCallback);
+    }
+
+    $scope.currencyChange = function(id) {
+        var currenctCode = id.split(',');
+       // $scope.country_name = currenctCode[0];
+       // $scope.currency.country_name = $scope.country_name;
+    }
+
+    $scope.getType = function(id, curId, eID) {
+        $routeParams.id = id;
+        rest.path = 'bankDetails';
+        rest.model().success(function(data) {
+            $scope.currency = data;
+            angular.element('#currencyCoded').select2('val', data.currency_code);
+        }).error(errorCallback);
+        scrollToId(eID);
+    }
+
+    $scope.save = function(formId) {
+        console.log('$scope.currency=TOP',$scope.currency)                
+        if (angular.element("#" + formId).valid()) {
+            var currencyData = $('#currencyCoded').select2('data');
+            //$scope.currency.currency_name = currencyData.name;
+            if ($scope.currency.bank_id) {
+                // $scope.curDef = angular.element('#country_name0').text();
+                // $scope.date = angular.element('#Currencydate').val();
+                // $scope.currency.date = $scope.date;
+                // $scope.currency.curDef = $scope.curDef;
+                $routeParams.id = $scope.currency.bank_id;
+                rest.path = 'bankDetails';
+                rest.put($scope.currency).success(function() {
+                    notification('Record updated successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            } else {
+                if (!$('#currencyCoded').val()) {
+                    return false;
+                }
+                // $scope.curDef = angular.element('#country_name0').text();
+                // $scope.date = angular.element('#Currencydate').val();
+                // $scope.currency.date = $scope.date;
+                // $scope.currency.curDef = $scope.curDef;
+                console.log('$scope.currency',$scope.currency)                
+                rest.path = 'bankDetails';
+                rest.post($scope.currency).success(function(data) {
+                    notification('Record inserted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        }
+    };
+
+    $scope.deleteModel = function(id) {
+        bootbox.confirm("Are you sure you want to delete this row?", function(result) {
+            if (result == true) {
+                rest.path = 'currency/' + id;
+                rest.delete().success(function() {
+                    notification('Record deleted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        });
+    };
+
+    $scope.getCurr = function(id, code) {
+        $scope.currencyDef = id;
+        angular.element('#currencyListCode' + id).select2('val', code);
+    }
+
+    $scope.hoverIn = function() {
+        this.hoverEdit = true;
+    };
+
+    $scope.hoverOut = function() {
+        this.hoverEdit = false;
+    };
+
 }).controller('holidayController', function($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $cookieStore) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
@@ -23066,7 +23221,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
                 //$scope.currencyType = vBankInfo.currency_code;
-                $scope.currency_code = 'EUR,€'; 
+                $scope.vBankInfo.currency_code = 'EUR, €';
+                $scope.currency_code = 'EUR, €'; 
 
                 $scope.currencyPaymentMethod = vBankInfo.payment_method;
                 if ($scope.currencyPaymentMethod == 'Bank Transfer') {
@@ -23156,6 +23312,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         .done(function (data) {
             $scope.invoicemailDetail = {'pdfData': data,
                                         'invoiceno':number,
+                                        'invoice_id':$routeParams.id,
                                         'freelanceEmail':$scope.invoiceDetail.freelanceEmail,
                                         'freelanceName':$scope.invoiceDetail.freelanceName,
                                         'emailRemind1':$scope.invoiceDetail.emailRemind1,
@@ -23190,8 +23347,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.userPaymentData = dataUser.userPaymentData;
                 var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
-                $scope.currencyType = vBankInfo.currency_code;
+                //$scope.currencyType = vBankInfo.currency_code;
                 $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                $scope.vBankInfo.currency_code = 'EUR, €'; 
+                $scope.currencyType = 'EUR, €';
                 $scope.currencyPaymentMethod = vBankInfo.payment_method;
                 if ($scope.currencyPaymentMethod == 'Bank Transfer') {
                     $timeout(function() {

@@ -699,6 +699,13 @@
 
                     </li>
 
+                    <li ng-class="{'active menuBg': activetab == '/banking-details'}" ng-mouseover="menuHoverIn('invoiceDueMenu');" ng-mouseleave="menuHoverOut('invoiceDueMenu')">
+                        <a href="#/banking-details" md-ink-ripple>
+                        <span class="font-bol underSubmenu">Banking Info</span>
+                        </a>
+                        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="invoiceDueMenu" title="Add to Favourite"></i>
+                    </li>
+
                     <!-- <li ng-class="{'active menuBg': activetab == '/work-instruction'}" ng-mouseover="menuHoverIn('workInstructionsMenu');" ng-mouseleave="menuHoverOut('workInstructionsMenu')">
 
                         <a href="#/work-instruction" md-ink-ripple>

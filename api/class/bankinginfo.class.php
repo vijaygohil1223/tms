@@ -1,6 +1,6 @@
 <?php
 
-class currency {
+class bankinginfo {
 
     public function __construct() {
         $this->_db = db::getInstance();
@@ -23,28 +23,17 @@ class currency {
     }
 
     public function save($data) {
-        $this->_db->where('country_name',$data['country_name']);
-        $exists = $this->_db->getOne('tms_currency');
+        $this->_db->where('bank_code',$data['bank_code']);
+        $exists = $this->_db->getOne('tms_banking_info');
         if($exists){
             $return['status'] = 422;
             $return['msg'] = 'Currency already exists.';
         }else{
 
-            /*$default = self::currencyConverts(1,$data['curDef'],$data['country_name']);
-            $current = self::currencyConverts($data['rate'],$data['country_name'],$data['curDef']);
-            $data['c_current'] = $current;
-            $data['c_default'] = $default;*/
-
-            $xref  = simplexml_load_file('http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml');
-            $nodes = $xref->xpath('//*[@currency="'.$data['country_name'].'"]');
-            
-            $data['current_curency_rate'] = ((array) $nodes[0]['rate']);
-            $data['current_curency_rate'] = $data['current_curency_rate'][0];
-            
             $data['created_date'] = date('Y-m-d H:i:s');
             $data['updated_date'] = date('Y-m-d H:i:s');
             unset($data['curDef']);
-            $id = $this->_db->insert('tms_currency', $data);
+            $id = $this->_db->insert('tms_banking_info', $data);
             if ($id) {
                 $return['status'] = 200;
                 $return['msg'] = 'Insert Successfully.';
@@ -63,7 +52,7 @@ class currency {
             $return['status'] = 422;
             $return['msg'] = 'Currency already exists.';
         }else{
-           /* if($data['curDef']!='default') {
+            /* if($data['curDef']!='default') {
                 $default = self::currencyConverts(1,$data['curDef'],$data['country_name']);
                 $current = self::currencyConverts($data['rate'],$data['country_name'],$data['curDef']);
                 $data['c_current'] = $current;
@@ -119,7 +108,7 @@ class currency {
     }
 
     public function getAll() {
-        $results = $this->_db->get('tms_currency');
+        $results = $this->_db->get('tms_banking_info');
         return $results;
     }
     
@@ -223,7 +212,7 @@ class currency {
             $result = fgetcsv($handle);
             fclose($handle);
         }
-        print_r($result);
+        //print_r($result);
 
         //echo '1 '.$from.' is worth '.$result[0].' '.$to.' Based on data on '.$result[1].' '.$result[2];exit;
     }

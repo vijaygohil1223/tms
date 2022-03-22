@@ -631,6 +631,42 @@
                         <div class="col-sm-3 boxfv">
                           <div class="panel no-border">
                               <div class="panel-heading wrapper b-b bg-blue">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Submitted</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ {{submitPayable | currencyCommaDcmlformat}}</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-pink">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Approved</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ {{approvedPayable | currencyCommaDcmlformat}}</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-safron">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Outstanding Reminder</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ {{outstandRmndrPayable | currencyCommaDcmlformat}}</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-purple">
                                 <h5 class="font-thin m-t-none m-b-none text-muted">Outstanding</h5>
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
@@ -642,7 +678,7 @@
                         </div>
                         <div class="col-sm-3 boxfv">
                           <div class="panel no-border">
-                              <div class="panel-heading wrapper b-b bg-pink">
+                              <div class="panel-heading wrapper b-b bg-green">
                                 <h5 class="font-thin m-t-none m-b-none text-muted">Due Today</h5>
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
@@ -654,7 +690,7 @@
                         </div>
                         <div class="col-sm-3 boxfv">
                           <div class="panel no-border">
-                            <div class="panel-heading wrapper b-b bg-safron">
+                            <div class="panel-heading wrapper b-b bg-blue">
                                 <h5 class="font-thin m-t-none m-b-none text-muted">Overdue</h5>
                             </div>
                             <ul class="list-group list-group-lg m-b-none">
@@ -663,7 +699,31 @@
                                 </li>
                             </ul>
                           </div>
-                      </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-pink">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Paid</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{paidPayable | currencyCommaDcmlformat}}</small>
+                                </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-safron">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Cancelled</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{cancelPayable | currencyCommaDcmlformat}}</small>
+                                </li>
+                            </ul>
+                          </div>
+                        </div>
                     </div>
                   </div>
                   
@@ -710,6 +770,18 @@
                         <div class="col-sm-3 boxfv">
                           <div class="panel no-border">
                               <div class="panel-heading wrapper b-b bg-blue">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">To be sent</h5>
+                              </div>
+                              <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                    <small class="text-muted clear text-ellipsis">€ {{toBesentReceivables | currencyCommaDcmlformat}}</small>
+                                </li>
+                              </ul>
+                          </div>
+                        </div>
+                        <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                              <div class="panel-heading wrapper b-b bg-pink">
                                 <h5 class="font-thin m-t-none m-b-none text-muted">Outstanding</h5>
                               </div>
                               <ul class="list-group list-group-lg m-b-none">
@@ -721,28 +793,77 @@
                         </div>
                         <div class="col-sm-3 boxfv">
                           <div class="panel no-border">
-                              <div class="panel-heading wrapper b-b bg-pink">
-                                <h5 class="font-thin m-t-none m-b-none text-muted">Due Today</h5>
-                              </div>
-                              <ul class="list-group list-group-lg m-b-none">
-                                <li class="list-group-item">
-                                    <small class="text-muted clear text-ellipsis">€ {{todayReceivables | currencyCommaDcmlformat}}</small>
-                                </li>
-                              </ul>
-                          </div>
-                        </div>
-                        <div class="col-sm-3 boxfv">
-                          <div class="panel no-border">
                             <div class="panel-heading wrapper b-b bg-safron">
-                                <h5 class="font-thin m-t-none m-b-none text-muted">Overdue</h5>
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Outstanding Reminder</h5>
                             </div>
                             <ul class="list-group list-group-lg m-b-none">
                                 <li class="list-group-item">
-                                  <small class="text-muted clear text-ellipsis">€ {{overdueReceivables | currencyCommaDcmlformat}}</small>
+                                  <small class="text-muted clear text-ellipsis">€ {{outstandRmndrReceivables | currencyCommaDcmlformat}}</small>
                                 </li>
                             </ul>
                           </div>
                       </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-purple">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Due Today</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{todayReceivables | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-green">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Overdue</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{overdueReceivables | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-blue">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Paid</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{paidReceivables | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 boxfv">
+                        <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-pink">
+                              <h5 class="font-thin m-t-none m-b-none text-muted">Cancelled</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                              <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{cancelReceivables | currencyCommaDcmlformat}}</small>
+                              </li>
+                            </ul>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 boxfv">
+                          <div class="panel no-border">
+                            <div class="panel-heading wrapper b-b bg-safron">
+                                <h5 class="font-thin m-t-none m-b-none text-muted">Irrecoverable</h5>
+                            </div>
+                            <ul class="list-group list-group-lg m-b-none">
+                                <li class="list-group-item">
+                                  <small class="text-muted clear text-ellipsis">€ {{irRecoverableReceivables | currencyCommaDcmlformat}}</small>
+                                </li>
+                            </ul>
+                          </div>
+                      </div>
+
                     </div>
                   </div>
                   

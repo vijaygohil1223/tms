@@ -1,0 +1,153 @@
+<div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
+    data-ng-include=" 'tpl/material.header.html' ">
+</div>
+<div layout="row">
+    <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs"
+        data-ng-include=" 'tpl/material.aside.html' ">
+    </div>
+    <div flex layout="column">
+        <div ui-butterbar></div>
+        <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
+        <div class="md-content page_content_wrapper" id="top">
+
+            <div class="content_head bg-light lter b-b wrapper-md ng-scope">
+                <h1 class="m-n font-thin h3">Banking Details </h1>
+            </div>
+            <div class="wrapper-md ng-scope">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form id="adminCurrency">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Bank Name</label>
+                                        <input type="text" name="bank_name" class="form-control" placeholder="Enter Bank Name"  ng-model="currency.bank_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Account Holder Name</label>
+                                        <input type="text" name="holder_name" class="form-control" placeholder="Enter Account Holder Name"  ng-model="currency.holder_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Currency Code</label>
+                                        <input type="text" select2-currency-convert data-typeid="1" id="currencyCoded"
+                                            class="form-control" name="currencyCoded" ng-model="currency.currency_code"
+                                            required ng-change="currencyChange(currency.currency_code)" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>IBAN</label>    
+                                        <input type="text" name="iban" class="form-control" placeholder="Enter IBAN"  ng-model="currency.iban" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Swift / Bic</label>
+                                        <input type="text" name="swift_bic" class="form-control" placeholder="Enter Swift/Bic No"  ng-model="currency.swift_bic" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Bank code</label>    
+                                        <input type="text" name="bank_code" class="form-control" placeholder="Enter Bank Code"  ng-model="currency.bank_code" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Routing Number</label>
+                                        <input type="text" name="routing_number" class="form-control" placeholder="Enter Routing Number"  ng-model="currency.routing_number" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Address</label>
+                                        <input type="text" name="address" class="form-control" placeholder="Enter Address"  ng-model="currency.address">
+                                    </div>
+                                </div>
+
+                                <!-- <div class="col-sm-4">
+                                            <div class="checkbox">
+                                                <label ng-if="checkFront==1 && edcFront==1" class="i-checks i-checks-sm" style="padding-top: 20px;">
+                                                    <input type="checkbox" name="is_active" ng-true-value="1" ng-false-value="0" ng-model="currency.currency_front" ng-checked="currency.currency_front == 1">
+                                                    <i></i>
+                                                    Currency in front of amount (Set as Active)
+                                                </label>
+                                                <label ng-if="checkFront==1 && edcFront!=1" class="i-checks i-checks-sm" style="padding-top: 20px;">
+                                                    <input type="checkbox" name="is_active" ng-true-value="1" ng-false-value="0" ng-model="currency.currency_front" ng-checked="checkFront==1" disabled>
+                                                    <i></i>
+                                                    Currency in front of amount (Set as Active)
+                                                </label>
+                                                <label ng-if="checkFront!=1 && edcFront!=1" class="i-checks i-checks-sm" style="padding-top: 20px;">
+                                                    <input type="checkbox" name="is_active" ng-true-value="1" ng-false-value="0" ng-model="currency.currency_front" ng-checked="currency.currency_front == 1">
+                                                    <i></i>
+                                                    Currency in front of amount (Set as Active)
+                                                </label>
+                                            </div>
+                                        </div> -->
+                                <!-- <div class="col-sm-4">
+                                    <div class="checkbox">
+                                        <label class="i-checks i-checks-sm" style="padding-top: 20px;">
+                                            <input type="checkbox" name="is_active" ng-true-value="1" ng-false-value="0"
+                                                ng-model="currency.ob_exchange_rate_auto"
+                                                ng-checked="currency.ob_exchange_rate_auto == 1">
+                                            <i></i>
+                                            Obtain Exchange Rate automatically at night
+                                        </label>
+                                    </div>
+                                </div> -->
+                            </div>
+
+                            <div class="panel-footer pl-0 pr-0">
+                                <button class="btn btn-info " ng-click="save('adminBanking');"><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                    Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
+                        <thead>
+                            <th>#</th>
+                            <th>Bank name</th>
+                            <th>Account Holder Name</th>
+                            <th>Currency</th>
+                            <th>IBAN</th>
+                            <th>Address</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="t in currencyData"
+                                ng-class="(t.bank_id == currency.bank_id) ? 'rowactivate' : ''">
+                                <td ng-bind="$index + 1"></td>
+                                <td> {{ t.bank_name }}</td>
+                                <td> {{ t.holder_name }}</td>
+                                <td> {{ t.currency_code }}</td>
+                                <td> {{ t.iban }}</td>
+                                <td> {{ t.address }}</td>
+                                <td ng-if="t.ob_exchange_rate_auto == '0'"><span ng-if="t.default_front!=1"></span> <span class="label bg-danger"
+                                        title="Inactive">Inactive</span><span ng-if="t.default_front==1"></span></td>
+                                <td>
+                                    <span ng-if="t.default_front=='1'">Default</span>
+                                    <span ng-if="t.default_front!='1'">
+                                        <a href="javascript:void(0)" ng-click="getType(t.bank_id, $index, 'top');"
+                                            title="edit"><i class="glyph-icon fa-edit"></i></a>
+                                        <a href="javascript:void(0)" ng-click="deleteModel(t.bank_id)"
+                                            title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr ng-show="currencyEmpty">
+                                <td colspan="4" ng-bind="dataNotFound"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- footer copy right -->
+                <div data-ng-include="'tpl/copyRight.html'"></div>
+            </div>
+        </div>
+    </div>

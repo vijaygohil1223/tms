@@ -3534,5 +3534,27 @@ $app->delete('/workinstructs/:id','authenticate', function ($id) {
     echoResponse($result ['status'], $result);
 });
 // End Work instructs //
+// Start Bank Details //
+$app->post('/bankDetails','authenticate', function () use($app) {
+    $bankinginfo = new bankinginfo ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $bankinginfo->save($data);
+    echoResponse($result ['status'], $result);
+});
+$app->put('/bankDetails/:id','authenticate', function ($id) use($app) {
+    $bankinginfo = new bankinginfo ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $bankinginfo->update($id, $data);
+    echoResponse($result ['status'], $result);
+});
+
+$app->get('/bankDetails','authenticate', function () use($app) {
+    $bankinginfo = new bankinginfo ();
+    $result = $bankinginfo->getAll();
+    echoResponse(200, $result);
+});
+// Emd Bank Details //
+
+
 $app->run();
 ?>

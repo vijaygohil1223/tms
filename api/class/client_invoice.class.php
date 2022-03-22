@@ -119,7 +119,7 @@ class Client_invoice {
         $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
     	$this->_db->where('tmInvoice.invoice_type', $type);
     	//$this->_db->where('tu.iUserId', $userId);
-    	$data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS itemId, ti.order_id AS orderId, tc.iClientId AS clientId,tc.vUserName AS clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.created_date');
+    	$data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS itemId, ti.order_id AS orderId, tc.iClientId AS clientId,tc.vUserName AS clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.created_date,tmInvoice.reminder_sent');
 
         if($data){
         	// $companyName = self::getAll('abbrivation',substr($value['company_code'],0,-2),'tms_centers');
@@ -367,7 +367,11 @@ class Client_invoice {
                 $this->_mailer->AddAttachment($pdfFile);
             }
             if ($this->_mailer->Send()) { //output success or failure messages
-                $upData['value_date'] = date('Y-m-d');
+                if(isset($data['outstanding_reminder'])){
+                    if($data['outstanding_reminder']==1)
+                    $upData['reminder_sent'] = 1;
+                }
+                $upData['modified_date'] = date('Y-m-d');
                 $upData['is_invoice_sent'] = 1;
                 $this->_db->where('invoice_id', $data['invoice_id']);
                 $this->_db->update('tms_invoice_client',$upData);
