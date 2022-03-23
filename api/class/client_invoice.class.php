@@ -184,6 +184,8 @@ class Client_invoice {
                             $data['jobpriceList'][] = (array) $val;
                         }
                     }
+                    
+                    $data['vBankInfo'] = self::getDefaultbankDetails();
                 }
 				$infoD[$k] = array_merge($data, $id1[0]);
 	    	}
@@ -309,7 +311,7 @@ class Client_invoice {
     }
 
 
-    // //getInvoicePartPayments
+    // getInvoicePartPayments
     public function getClientInvoicePartPayments($id) {
         $this->_db->where('invoice_id', $id);
         $data = $this->_db->get('tms_invoice_client_payments');
@@ -434,6 +436,8 @@ class Client_invoice {
                         }
                     }
                 }
+
+                $data['vBankInfo'] = self::getDefaultbankDetails();
 			}
 			$infoD[$k] = $data;
 		}
@@ -496,6 +500,13 @@ class Client_invoice {
             $data[$key]['companyName'] = ''; 
         }
         
+        return $data;
+    }
+
+    // get Default Bank Details
+    public function getDefaultbankDetails() {
+        $this->_db->where('is_default', 1);
+        $data = $this->_db->get('tms_banking_info');
         return $data;
     }
 

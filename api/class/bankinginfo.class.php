@@ -46,28 +46,15 @@ class bankinginfo {
     }
 
     public function update($id, $data) {
-        $this->_db->where('country_name',$data['country_name']);
-        $exists = $this->_db->getOne('tms_currency');
-        if($exists && $exists['currency_id'] != $id){
+        $this->_db->where('bank_code',$data['bank_code']);
+        $exists = $this->_db->getOne('tms_banking_info');
+        if($exists && $exists['bank_id'] != $id){
             $return['status'] = 422;
             $return['msg'] = 'Currency already exists.';
         }else{
-            /* if($data['curDef']!='default') {
-                $default = self::currencyConverts(1,$data['curDef'],$data['country_name']);
-                $current = self::currencyConverts($data['rate'],$data['country_name'],$data['curDef']);
-                $data['c_current'] = $current;
-                $data['c_default'] = $default;
-            }*/
-            $xref  = simplexml_load_file('http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml');
-            $nodes = $xref->xpath('//*[@currency="'.$data['country_name'].'"]');
-            
-            $data['current_curency_rate'] = ((array) $nodes[0]['rate']);
-            $data['current_curency_rate'] = $data['current_curency_rate'][0];
-
             $data['updated_date'] = date('Y-m-d H:i:s');
-            unset($data['curDef']);
-            $this->_db->where('currency_id', $id);
-            $id = $this->_db->update('tms_currency', $data);
+            $this->_db->where('bank_id', $id);
+            $id = $this->_db->update('tms_banking_info', $data);
             if ($id) {
                 $return['status'] = 200;
                 $return['msg'] = 'Insert Successfully.';
@@ -112,48 +99,23 @@ class bankinginfo {
         return $results;
     }
     
+
     public function delete($id) {
-        $this->_db->where('currency_id', $id);
-        //$id = $this->_db->delete('tms_currency');
-
-        $data = $this->_db->getOne('tms_currency');
-        $currency = $data['country_name'];
-
-
-        //Checking currency in tms_client table
-        $queryMatch = "select client_currency from tms_client where client_currency like '$currency%'";
-        $exeQueryMatch = $this->_db->rawQuery($queryMatch);
-
-        //Checking currency in tms_client table
-        $queryMatch1 = "select price_currency from tms_customer_price_list where price_currency like '$currency%'";
-        $exeQueryMatch1 = $this->_db->rawQuery($queryMatch1);
-
-
-        //echo count($exeQueryMatch1).'---'.count($exeQueryMatch);exit;
-        if(count($exeQueryMatch1) > 1 && count($exeQueryMatch) > 1){
-            // echo 'if';exit;
-            $return['status'] = 422;
-            $return['msg'] = 'you can not delete currency it is in use.';
-        }else{
-            // echo 'else';exit;
-            $this->_db->where('currency_id', $id);
-            $id = $this->_db->delete('tms_currency');
+        $this->_db->where('bank_id', $id);
+        $id = $this->_db->delete('tms_banking_info');
+        if ($id) {
             $return['status'] = 200;
             $return['msg'] = 'Deleted Successfully.';
+        } else {
+            $return['status'] = 422;
+            $return['msg'] = 'Not inserted.';
         }
-        // if ($id) {
-        //     $return['status'] = 200;
-        //     $return['msg'] = 'Deleted Successfully.';
-        // } else {
-        //     $return['status'] = 422;
-        //     $return['msg'] = 'Not inserted.';
-        // }
         return $return;
     }
 
     public function getTypeById($id) {
-        $this->_db->where('currency_id', $id);
-        $result = $this->_db->getOne('tms_currency');
+        $this->_db->where('bank_id', $id);
+        $result = $this->_db->getOne('tms_banking_info');
         return $result;
     }
     
