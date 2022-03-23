@@ -12909,8 +12909,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 //$scope.userData = dataUser.userData;
                 $scope.userPaymentData = dataUser.userPaymentData;
                 //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
-                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
-                //$scope.currencyType = vBankInfo.currency_code;
+                var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                $scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                $scope.currencyType = vBankInfo.currency_code;
                 //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 $scope.currencyPaymentMethod = 'Bank Transfer';
                 //$scope.vBankInfo.currency_code = 'EUR,€'; 
@@ -18597,68 +18599,40 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'bankDetails';
     rest.get().success(function(data) {
-        $scope.currencyData = data;
+        $scope.bankingInfoData = data;
         //$scope.def = data[0].country_name;
-        var currency = [];
+        var bankingInfo = [];
         angular.forEach(data, function(val, i) {
-            if (val.currency_front == 1) {
-                currency.push(val.currency_front);
+            if (val.bankingInfo_front == 1) {
+                bankingInfo.push(val.bankingInfo_front);
             }
         })
-        $scope.currencyEmpty = jQuery.isEmptyObject(data);
-        $scope.checkFront = parseInt(currency);
+        $scope.bankingInfoEmpty = jQuery.isEmptyObject(data);
+        $scope.checkFront = parseInt(bankingInfo);
     }).error(errorCallback);
 
-    $scope.currencyListChange = function(code, id, nameC, date) {
-        if ($scope.currn == "" || $scope.currn == undefined || $scope.currn == null) {
-            $scope.currn = {};
-        }
-        var cod = code.split(',');
-        $scope.country_name = cod[0];
-        $scope.currency_code = code;
-        $scope.date = date;
-        $scope.curDef = code.split(',')[0];
-        $scope.currn.curDef = $scope.curDef;
-        $scope.currn.country_name = $scope.country_name;
-        $scope.currn.currency_code = $scope.currency_code;
-        $scope.currn.date = $scope.date;
-        $routeParams.id = id;
-        rest.path = 'currencyUpdate';
-        rest.put($scope.currn).success(function() {
-            notification('Default currency successfully changed', 'success');
-            $route.reload();
-        }).error(errorCallback);
-    }
-
-    $scope.currencyChange = function(id) {
-        var currenctCode = id.split(',');
-       // $scope.country_name = currenctCode[0];
-       // $scope.currency.country_name = $scope.country_name;
-    }
-
+    $scope.activeHide = false;
     $scope.getType = function(id, curId, eID) {
+        $scope.activeHide = true;
+    
         $routeParams.id = id;
         rest.path = 'bankDetails';
         rest.model().success(function(data) {
-            $scope.currency = data;
+            $scope.bankingInfo = data;
             angular.element('#currencyCoded').select2('val', data.currency_code);
         }).error(errorCallback);
         scrollToId(eID);
     }
 
     $scope.save = function(formId) {
-        console.log('$scope.currency=TOP',$scope.currency)                
         if (angular.element("#" + formId).valid()) {
-            var currencyData = $('#currencyCoded').select2('data');
+            var bankingInfoData = $('#currencyCoded').select2('data');
+            $scope.bankingInfo.payment_method = 'Bank Transfer';
             //$scope.currency.currency_name = currencyData.name;
-            if ($scope.currency.bank_id) {
-                // $scope.curDef = angular.element('#country_name0').text();
-                // $scope.date = angular.element('#Currencydate').val();
-                // $scope.currency.date = $scope.date;
-                // $scope.currency.curDef = $scope.curDef;
-                $routeParams.id = $scope.currency.bank_id;
+            if ($scope.bankingInfo.bank_id) {
+                $routeParams.id = $scope.bankingInfo.bank_id;
                 rest.path = 'bankDetails';
-                rest.put($scope.currency).success(function() {
+                rest.put($scope.bankingInfo).success(function() {
                     notification('Record updated successfully.', 'success');
                     $route.reload();
                 }).error(errorCallback);
@@ -18666,13 +18640,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (!$('#currencyCoded').val()) {
                     return false;
                 }
-                // $scope.curDef = angular.element('#country_name0').text();
-                // $scope.date = angular.element('#Currencydate').val();
-                // $scope.currency.date = $scope.date;
-                // $scope.currency.curDef = $scope.curDef;
-                console.log('$scope.currency',$scope.currency)                
                 rest.path = 'bankDetails';
-                rest.post($scope.currency).success(function(data) {
+                rest.post($scope.bankingInfo).success(function(data) {
                     notification('Record inserted successfully.', 'success');
                     $route.reload();
                 }).error(errorCallback);
@@ -18683,7 +18652,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.deleteModel = function(id) {
         bootbox.confirm("Are you sure you want to delete this row?", function(result) {
             if (result == true) {
-                rest.path = 'currency/' + id;
+                rest.path = 'bankDetails/' + id;
                 rest.delete().success(function() {
                     notification('Record deleted successfully.', 'success');
                     $route.reload();
@@ -18691,11 +18660,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         });
     };
-
-    $scope.getCurr = function(id, code) {
-        $scope.currencyDef = id;
-        angular.element('#currencyListCode' + id).select2('val', code);
-    }
 
     $scope.hoverIn = function() {
         this.hoverEdit = true;
@@ -23458,9 +23422,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.get().success(function(dataUser) {
                 $scope.userPaymentData = dataUser.userPaymentData;
                 //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
-                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
-                //$scope.currencyType = vBankInfo.currency_code;
-                //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                $scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                $scope.currencyType = vBankInfo.currency_code;
+                
                 $scope.currencyPaymentMethod = 'Bank Transfer';
                 //$scope.vBankInfo.currency_code = 'EUR,€'; 
                 $scope.currencyType = '€ ';
@@ -23561,11 +23527,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function(dataUser) {
                 //$scope.userData = dataUser.userData;
+                //$scope.userPaymentData = dataUser.userPaymentData;
                 $scope.userPaymentData = dataUser.userPaymentData;
                 //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
-                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                $scope.currencyType = vBankInfo.currency_code.split(',')[1];
                 //$scope.currencyType = vBankInfo.currency_code;
-                //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 $scope.currencyPaymentMethod = 'Bank Transfer';
                 //$scope.vBankInfo.currency_code = 'EUR,€'; 
                 $scope.currencyType = '€ ';

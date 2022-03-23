@@ -82,23 +82,21 @@
                       <table class="table table-striped b-t b-b table-bordered">
                         <tbody>
                           <tr>
-                            <th><span class="TblSpan">Payment Method</span></th>
-                            <td><span>Bank Transfer</span></td>
+                              <th><span class="TblSpan">Payment Method</span></th>
+                              <td><span ng-bind="vBankInfo.payment_method" class="ng-binding"></span></td>
                           </tr>
                           <tr>
-                            <th><span class="TblSpan">Bank Address</span></th>
-                            <td><span>TMS</span></td>
+                              <th><span class="TblSpan">Bank Address</span></th>
+                              <td><span ng-bind="vBankInfo.address" class="ng-binding"></span></td>
                           </tr>
                           <tr>
-                            <th><span class="TblSpan">Account Holder</span></th>
-                            <td><span>TMS</span></td>
-                          
+                              <th><span class="TblSpan">Account Holder</span></th>
+                              <td><span  ng-bind="vBankInfo.holder_name" class="ng-binding"></span></td>
                           </tr>
                           <tr>
-                            <th><span class="TblSpan">Currency</span></th>
-                            <td><span>EUR, €</span></td>
+                              <th><span class="TblSpan">Currency</span></th>
+                              <td><span  ng-bind="vBankInfo.currency_code" class="ng-binding"></span></td>
                           </tr>
-
                         </tbody>
                       </table>
                     </div>
@@ -106,17 +104,16 @@
                       <table class="table table-striped b-t b-b table-bordered">
                         <tbody>
                           <tr>
-                            <th><span class="TblSpan">IBAN</span></th>
-                            <td><span>123456</span></td>
-
+                              <th><span class="TblSpan">IBAN</span></th>
+                              <td><span ng-bind="vBankInfo.iban" class="ng-binding"></span></td>
                           </tr>
                           <tr>
-                            <th><span class="TblSpan">SWIFT/BIC</span></th>
-                            <td><span>123456</span></td>
+                              <th><span class="TblSpan">SWIFT/BIC</span></th>
+                              <td><span ng-bind="vBankInfo.swift_bic" class="ng-binding"></span></td>
                           </tr>
                           <tr>
-                            <th><span class="TblSpan">Routing Number</span></th>
-                            <td><span>123456</span></td>
+                              <th><span class="TblSpan">Routing Number</span></th>
+                              <td><span  ng-bind="vBankInfo.bank_code" class="ng-binding"></span></td>
                           </tr>
                         </tbody>
                       </table>

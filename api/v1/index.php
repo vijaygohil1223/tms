@@ -3547,11 +3547,20 @@ $app->put('/bankDetails/:id','authenticate', function ($id) use($app) {
     $result = $bankinginfo->update($id, $data);
     echoResponse($result ['status'], $result);
 });
-
+$app->get('/bankDetails/:id','authenticate', function ($id) use($app) {
+    $bankinginfo = new bankinginfo ();
+    $result = $bankinginfo->getTypeById($id);
+    echoResponse(200, $result);
+});
 $app->get('/bankDetails','authenticate', function () use($app) {
     $bankinginfo = new bankinginfo ();
     $result = $bankinginfo->getAll();
     echoResponse(200, $result);
+});
+$app->delete('/bankDetails/:id','authenticate', function ($id) use($app) {
+    $bankinginfo = new bankinginfo ();
+    $result = $bankinginfo->delete($id);
+    echoResponse($result ['status'], $result);
 });
 // Emd Bank Details //
 
