@@ -187,6 +187,14 @@
                                     <td colspan="4" class="text-right no-border"><strong>Total</strong></td>
                                     <td>{{currencyType}} <strong> {{grandTotal | customNumber}} </strong></td>
                                   </tr>
+                                  <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
+                                    <td colspan="4" class="text-right no-border"><strong>Paid</strong></td>
+                                    <td style="width:10%;">{{currencyType}} {{invL.paid_amount | customNumber}}</td>
+                                  </tr>  
+                                  <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
+                                      <td colspan="4" class="text-right no-border"><strong>Total Due Amount</strong></td>
+                                      <td style="width:10%;">{{currencyType}} <strong> {{invL.Invoice_cost - invL.paid_amount | customNumber}}</strong></td>
+                                  </tr>
                                 </tbody>
                               </table>
                             <div id="toAddEleAfterDwonload"></div>

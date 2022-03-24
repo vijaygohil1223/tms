@@ -22448,7 +22448,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.path = 'freelanceJob/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function(data) {
                 $scope.InvoiceResult = data;
-                console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+                $scope.InvoiceResult = data.filter(function (el) {
+                    return el.item_status == 'Approved' || el.item_status == 'Overdue';
+                });
                 $scope.searchPonumber = search;
                 var obj = [];
                 obj.push({
@@ -22711,7 +22713,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         var array = [];
 
         angular.forEach(data, function(val, i) {
-            console.log('val-we  are in', val)
             if (val.SELECTED == 1) {
                 console.log('val.SELECTED', val.SELECTED)
                 if (!client) {

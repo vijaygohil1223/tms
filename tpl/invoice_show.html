@@ -31,7 +31,7 @@
                                 <span ng-bind="invoiceDetail.invoice_date"></span></br>
                                 <span>Payment due date : </span><span ng-bind="invoiceDetail.paymentDueDate"></span>
                             </div>
-                            <div class="col-xs-12" style="background-color: #edf1f2;    border: 1px solid #cacaca;">
+                            <div class="col-xs-12 well">
                                 <div class="col-xs-6">
                                     <p class="m-t m-b">
                                         <span>Job <!-- Number --> : </span>
@@ -151,7 +151,7 @@
                                     </tr>
                                     <tr ng-if="$index == invoiceLength">
                                         <td colspan="4" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="width:9%;">
+                                        <td style="width:10%;">
                                             {{currencyType}}
                                             {{grandJobTotal | customNumber}}
                                         </td>
@@ -166,9 +166,18 @@
                                     </tr>
                                     <tr ng-if="$index == invoiceLength">
                                         <td colspan="4" class="text-right no-border"><strong>Total </strong></td>
-                                        <td>{{currencyType}}
-                                {{grandJobTotal | customNumber}}
+                                        <td style="width:10%;">{{currencyType}}
+                                            {{grandJobTotal | customNumber}}
                                         </td>
+                                    </tr>
+                                    <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
+                                        <td colspan="4" class="text-right no-border"><strong>Paid
+                                                </strong></td>
+                                        <td style="width:10%;">{{currencyType}} {{invL.paid_amount | customNumber}}</td>
+                                    </tr>
+                                    <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
+                                        <td colspan="4" class="text-right no-border"><strong>Total Due Amount</strong></td>
+                                        <td style="width:10%;">{{currencyType}} {{invL.Invoice_cost - invL.paid_amount | customNumber}}</td>
                                     </tr>
                                 </tbody>
                             </table>
