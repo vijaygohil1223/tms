@@ -3197,7 +3197,6 @@ $app->get('/getClientInvoicePartPayments/:id','authenticate', function($id) {
     $result = $invoice->getClientInvoicePartPayments($id);
     echoResponse(200, $result);
 });
-
 $app->get('/clientInvoiceViewOne/:id', 'authenticate',function($id) {
     $invoice = new Client_invoice ();
     $result = $invoice->clientInvoiceViewOne($id);

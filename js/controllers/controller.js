@@ -7375,7 +7375,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }    
 
             });
-            $scope.allpayableAmt =  allPayCostAmt - allPaidAmt;   
+            //$scope.allpayableAmt =  allPayCostAmt - allPaidAmt;   
+            $scope.allpayableAmt =  allPayCostAmt;   
             $scope.outstandingPayable = outstandingCostAmt - outstandingPaidAmt;
             $scope.overduePayable = overdueCostAmt - overduePaidAmt;
             $scope.todayPayable = todayCostAmt - todayPaidAmt;
@@ -7457,7 +7458,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }    
 
             });
-            $scope.allReceivablesAmt =  allPayCostRecvbl - allPaidRecvbl;   
+            //$scope.allReceivablesAmt =  allPayCostRecvbl - allPaidRecvbl;   
+            $scope.allReceivablesAmt =  allPayCostRecvbl;   
             $scope.outstandingReceivables = outstandingCostRecvbl - outstandingPaidRecvbl;
             $scope.overdueReceivables = overdueCostRecvbl - overduePaidRecvbl;
             $scope.todayReceivables = todayCostRecvbl - todayPaidRecvbl;
@@ -12989,9 +12991,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             "invoice_status": "Cancel"
         };
         $routeParams.id = $scope.invoiceDetail.invoice_id;
-        rest.path = "invoiceStatusChange";
+        rest.path = "clientInvoiceStatusChange";
         rest.put(obj).success(function(data) {
-            $location.path("/invoice-data");
+            $location.path("/invoice-client");
         });
     }
 
@@ -23258,7 +23260,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.reminderBtnHideShow = false;
     $timeout(function() {
         var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
-        if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.is_approved == 1)){
+        if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Cancel' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.is_approved == 1)){
             if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
                 $scope.reminderBtnHideShow = true;
             }
@@ -23585,7 +23587,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.reminderBtnHideShow = false;
             $timeout(function() {
                 var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
-                if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')){
+                if($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.invoice_status != 'Cancel'){
                     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
                         $scope.reminderBtnHideShow = true;
                     }

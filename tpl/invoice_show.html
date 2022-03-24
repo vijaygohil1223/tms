@@ -166,7 +166,7 @@
                                     </tr>
                                     <tr ng-if="$index == invoiceLength">
                                         <td colspan="4" class="text-right no-border"><strong>Total </strong></td>
-                                        <td style="width:10%;">{{currencyType}}
+                                        <td style="white-space: nowrap;">{{currencyType}}
                                             {{grandJobTotal | customNumber}}
                                         </td>
                                     </tr>
@@ -177,7 +177,7 @@
                                     </tr>
                                     <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
                                         <td colspan="4" class="text-right no-border"><strong>Total Due Amount</strong></td>
-                                        <td style="width:10%;">{{currencyType}} {{invL.Invoice_cost - invL.paid_amount | customNumber}}</td>
+                                        <td style="white-space: nowrap;">{{currencyType}} {{invL.Invoice_cost - invL.paid_amount | customNumber}}</td>
                                     </tr>
                                 </tbody>
                             </table>

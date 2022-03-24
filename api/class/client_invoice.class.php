@@ -204,13 +204,14 @@ class Client_invoice {
     public function invoiceStatusChange($data, $id) {
         /* Insert Part paid invoice payment detail in database START */
         
-        $partPaidAmount = array();
-        $partPaidAmount['invoice_id']                   = $id;
-        $partPaidAmount['invoice_partial_paid_amount']  = $data['partPaid'];
-    	$partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
-        
-        $partPaymentInsert = $this->_db->insert('tms_invoice_client_payments', $partPaidAmount);
-
+        if(isset($data['partPaid'])){
+            $partPaidAmount = array();
+            $partPaidAmount['invoice_id']                   = $id;
+            $partPaidAmount['invoice_partial_paid_amount']  = $data['partPaid'];
+            $partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
+            
+            $partPaymentInsert = $this->_db->insert('tms_invoice_client_payments', $partPaidAmount);
+        }    
         /* Insert Part paid invoice payment detail in database END */
 
         unset($data['partPaid']);
@@ -218,7 +219,7 @@ class Client_invoice {
     	$this->_db->where('invoice_id', $id);
     	$idd = $this->_db->update('tms_invoice_client', $data);
     	
-        if($idd && $partPaymentInsert) {
+        if($idd && isset($partPaymentInsert)) {
     		$request['status'] = 200;
     		$request['msg'] = "Successfully updated";
     	} else {
