@@ -7348,9 +7348,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }    
                 if(val.is_approved == 1 && val.reminder_sent == 1 && val.invoice_status != 'Complete'){
                     $scope.outstandRmndrPayable += val.Invoice_cost;
-                    console.log('$scope.outstandRmndrPayable', $scope.outstandRmndrPayable)
                 }
-                if(val.invoice_status == 'Paid' || val.invoice_status == 'Complete'){
+                if(val.invoice_status == 'Part Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete'){
                     $scope.paidPayable += val.Invoice_cost;
                 }
                 if(val.invoice_status == 'Cancel'){
@@ -7430,7 +7429,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if(val.reminder_sent == 1 && val.invoice_status != 'Complete'){
                     $scope.outstandRmndrReceivables += val.Invoice_cost;
                 }
-                if(val.invoice_status == 'Paid' || val.invoice_status == 'Complete'){
+                if(val.invoice_status == 'Part Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete'){
                     $scope.paidReceivables += val.Invoice_cost;
                 }
                 if(val.invoice_status == 'Cancel'){
@@ -13202,12 +13201,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
                 if ($scope.inv.paid_amount == items.Invoice_cost) {
                     $scope.inv.invoice_status = "Complete";
+                    $scope.inv.is_approved = 1;
                 } else {
                     $scope.inv.invoice_status = "Part Paid";
+                    $scope.inv.is_approved = 1;
                 }
                 if ($scope.closeAmount == true) {
                     $scope.inv.paid_amount = items.Invoice_cost;
                     $scope.inv.invoice_status = "Complete";
+                    $scope.inv.is_approved = 1;
                 }
                 $routeParams.id = items.statusId;
                 rest.path = "invoiceStatusChange";
@@ -13333,6 +13335,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function(data) {
             $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail- Invoice show', $scope.invoiceDetail)
 
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
 
@@ -13394,7 +13397,17 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     })
                 }
             })
-            if($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid'){
+            
+            if($scope.grandJobTotal > $scope.invoiceDetail.Invoice_cost){
+                $scope.updtInvoiceCost = {'Invoice_cost' : $scope.grandJobTotal, 'is_update' : 1};
+                console.log('$scope.updtInvoiceCost', $scope.updtInvoiceCost)
+                $routeParams.id = $routeParams.id;
+                rest.path = "invoiceStatusChange";
+                rest.put($scope.updtInvoiceCost).success(function(data) {
+                    $route.reload();
+                });                
+            }
+            if($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid' || $scope.invoiceDetail.invoice_status == 'Part Paid'){
                 $scope.isDisabledApprvd = true;
             }
             if($scope.userRight!=1)

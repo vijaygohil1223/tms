@@ -211,6 +211,11 @@ class Freelance_invoice {
         /* Insert Part paid invoice payment detail in database END */
 
         unset($data['partPaid']);
+        // Update data if invoice cost is < Payment Linguist in Job section
+        if(isset($data['is_update'])){
+            $partPaymentInsert = 1;
+            unset($data['is_update']);
+        }
         $data['modified_date'] = date('Y-m-d');
     	$this->_db->where('invoice_id', $id);
     	$idd = $this->_db->update('tms_invoice', $data);
