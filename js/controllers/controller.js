@@ -7346,7 +7346,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if(val.is_approved == 1 && val.invoice_status == 'Open'){
                     $scope.approvedPayable += val.Invoice_cost;
                 }    
-                if(val.is_approved == 1 && val.reminder_sent == 1 && val.invoice_status != 'Complete'){
+                if(val.is_approved == 1 && val.reminder_sent == 1 && val.invoice_status != 'Complete' && val.invoice_status != 'Cancel' && val.invoice_status != 'Paid'){
                     $scope.outstandRmndrPayable += val.Invoice_cost;
                 }
                 if(val.invoice_status == 'Part Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete'){
@@ -7426,7 +7426,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if(val.invoice_status == "Open"){
                     $scope.toBesentReceivables += val.Invoice_cost;
                 }
-                if(val.reminder_sent == 1 && val.invoice_status != 'Complete'){
+                //if(val.reminder_sent == 1 && val.invoice_status != 'Complete'){
+                if(val.reminder_sent == 1 && val.invoice_status != 'Complete' && val.invoice_status != 'Cancel' && val.invoice_status != 'Paid'){
                     $scope.outstandRmndrReceivables += val.Invoice_cost;
                 }
                 if(val.invoice_status == 'Part Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete'){
@@ -13159,7 +13160,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if (status == "Part") {
             $scope.closeAmount = false;
         } else {
-
             $scope.closeAmount = true;
             $scope.am = "Amount";
             $scope.invoiceComplete = items.Invoice_cost - items.paid_amount;
