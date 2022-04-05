@@ -200,7 +200,7 @@
                             <div id="toAddEleAfterDwonload"></div>
                             <button id="btnPaid" ng-show="userRight==1" class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
                             <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'" class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as cancel</button>
-                            <button id="btnSave" ng-show="invoiceDetail.invoice_type!='save'" class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; To be sent</button>
+                            <button id="btnSave" ng-show="invoiceDetail.invoice_type!='save' || invoiceDetail.is_invoice_sent!=1 && invoiceDetail.invoice_status!='Complete'" class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; To be sent</button>
                             <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="save('invoice-form', 'draft');"> Draft</button>
                             <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="cancel();"> Cancel</button>
                             <button id="irrecoverable" class="btn btn-info btnSave" ng-show="reminderBtnHideShow" ng-click="isIrrecoverableInvoice();"> Irrecoverable </button>

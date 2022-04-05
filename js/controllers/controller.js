@@ -848,7 +848,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
 
 
-
     rest.path = 'getFvMenu/' + $window.localStorage.getItem("session_iUserId");
     rest.get().success(function(data) {
         if (data.data) {
@@ -1604,11 +1603,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     } 
 
     // User data with postion for widget box
-    rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
-    rest.get().success(function(data) {
-        console.log('jobdeliver-user', data.vResourcePosition)
-        $scope.vResourcePosition = data.vResourcePosition;
-    });
+    if($window.localStorage.getItem("session_iUserId")){
+        rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
+        rest.get().success(function(data) {
+            console.log('jobdeliver-user', data.vResourcePosition)
+            $scope.vResourcePosition = data.vResourcePosition;
+        });
+    }    
 
     // Tab view Project List
     $scope.projectsAll = [];
@@ -1676,25 +1677,26 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 } else {
                     data[i].itemsTargetLang = newLangData;
                 }
-
-                //  ----linguist List----- /
+                //  ----linguist List----- / 
                 $scope.jobLinguist = [];
-                rest.path = 'jobsummeryGet/' + val.orderId;
-                rest.get().success(function(data) {
-                    //$scope.jobLinguist = data;
-                    angular.forEach(data, function(val2, i2) {
-                        if(val2 && val2.resource){
-                            if(val.orderId == val2.order_id && val.item_number == val2.item_id){
-                                $scope.jobLinguist.push(val2);
+                if($window.localStorage.getItem("session_iUserId")){
+                    rest.path = 'jobsummeryGet/' + val.orderId;
+                    rest.get().success(function(data) {
+                        //$scope.jobLinguist = data;
+                        angular.forEach(data, function(val2, i2) {
+                            if(val2 && val2.resource){
+                                if(val.orderId == val2.order_id && val.item_number == val2.item_id){
+                                    $scope.jobLinguist.push(val2);
+                                }
                             }
-                        }
-                    });    
-                    $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
-                    val.jobLinguist = $scope.jobLinguist;
-                    //console.log('$scope.jobLinguist',$scope.jobLinguist);
-                    //console.log('val.orderId',val.orderId);
-                    $scope.jobLinguist = [];    
-                });
+                        });    
+                        $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
+                        val.jobLinguist = $scope.jobLinguist;
+                        //console.log('$scope.jobLinguist',$scope.jobLinguist);
+                        //console.log('val.orderId',val.orderId);
+                        $scope.jobLinguist = [];    
+                    });
+                }
 
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;
@@ -2582,15 +2584,17 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     // widget Absent Linguist
     $scope.absentLinguistlist = function() {
-        rest.path = 'user/' + 2;
-        rest.get().success(function(data) {
-            var absentLngstlist = data.data;
-            console.log('$scope.absentLngstlist', $scope.absentLngstlist)
-            var absentLngstFilter = absentLngstlist.filter(x => x.is_available == 0 );
-            console.log('newLinguistData', absentLngstFilter.length)
-            $scope.absentLngstlist = absentLngstFilter;
-                            
-        }).error(errorCallback);
+        if($window.localStorage.getItem("session_iUserId")){    
+            rest.path = 'user/' + 2;
+            rest.get().success(function(data) {
+                var absentLngstlist = data.data;
+                console.log('$scope.absentLngstlist', $scope.absentLngstlist)
+                var absentLngstFilter = absentLngstlist.filter(x => x.is_available == 0 );
+                console.log('newLinguistData', absentLngstFilter.length)
+                $scope.absentLngstlist = absentLngstFilter;
+                                
+            }).error(errorCallback);
+        }    
     }
     $scope.absentLinguistlist();
     
@@ -12971,6 +12975,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 angular.element('#irrecoverable').removeClass('btn-info');
                 $scope.is_disabled = true;
             }
+            // 
+            console.log($scope.invoiceDetail)
             $scope.reminderBtnHideShow = false;
             $timeout(function() {
                 var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
@@ -13002,9 +13008,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.invoiceData = {};
         }
 
+        console.log('$scope.invoiceD=',$scope.invoiceD )
         rest.path = "clientInvoiceUpdate/" + $routeParams.id;
         rest.get().success(function(updatedata) {
-            console.log('$scope.invoiceDetail',$scope.invoiceDetail);
+            console.log('updatedata-after-suc', updatedata)
+            console.log('$scope.invoiceDetail-suc',$scope.invoiceDetail);
             if(updatedata){
                 // Hide button from page
                 angular.element('#btnPaid').hide();
@@ -13014,6 +13022,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 angular.element('#btnCancel').hide();
                 angular.element('#irrecoverable').hide();
                 
+                console.log('Invoice Edit Detrail', $scope.invoiceDetail)
                 kendo.drawing.drawDOM($("#exportable"))
                     .then(function (group) {
                     // Render the result as a PDF file
@@ -13034,7 +13043,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             };
                         rest.path = 'sendClientInvoiceMail';
                         rest.post($scope.invoicemailDetail).success(function(data) {
-                            console.log('data', data)
+                            console.log('sendClientInvoiceMail=data', data)
                             if(data.status == 200){
                                 notification('Invoice has been sent successfully', 'success');
                                 setTimeout(() => {
@@ -13974,7 +13983,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
 
     $scope.getContact = function(id, element) {
-
+        console.log('element', element)
+        console.log('client-id', id)
+        console.log('we are here')
         $window.localStorage.setItem('directClientIdStore', id);
         $routeParams.id = id;
         rest.path = 'contact';
@@ -13995,6 +14006,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
         rest.path = 'orderdataget/' + id;
         rest.get().success(function(data) {
+            console.log('is it orderno-data', data)
             $scope.orderNumber(data);
         }).error(errorCallback);
 
@@ -22749,7 +22761,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if ($scope.InvoiceResult != undefined && flag != 1) {
                 notification("Pelase select Project scoop to create invoice.", "warning");
             } else {
-                notification("You cannot add two different company invoice", "warning");
+                notification("You cannot add two different client invoice", "warning");
             }
         }
 
