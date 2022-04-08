@@ -205,14 +205,14 @@ class Client_invoice {
         /* Insert Part paid invoice payment detail in database START */
 
         
-        // if(isset($data['partPaid'])){
-        //     $partPaidAmount = array();
-        //     $partPaidAmount['invoice_id']                   = $id;
-        //     $partPaidAmount['invoice_partial_paid_amount']  = $data['partPaid'];
-        //     $partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
+        if(isset($data['partPaid'])){
+            $partPaidAmount = array();
+            $partPaidAmount['invoice_id']                   = $id;
+            $partPaidAmount['invoice_partial_paid_amount']  = $data['partPaid'];
+            $partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
             
-        //     $partPaymentInsert = $this->_db->insert('tms_invoice_client_payments', $partPaidAmount);
-        // }    
+            $partPaymentInsert = $this->_db->insert('tms_invoice_client_payments', $partPaidAmount);
+        }    
         /* Insert Part paid invoice payment detail in database END */
 
 
@@ -221,11 +221,10 @@ class Client_invoice {
     	$this->_db->where('invoice_id', $id);
     	$idd = $this->_db->update('tms_invoice_client', $data);
 
-        $this->_db->where('invoice_id', $id);
-        $invoiceRecords = $this->_db->get('tms_invoice_client');
-        
-        // Update scoop item status 
+        // Update scoop item status When invoice status change to complete
         if($idd && isset($data['invoice_status'])){
+            $this->_db->where('invoice_id', $id);
+            $invoiceRecords = $this->_db->get('tms_invoice_client');
             if($data['invoice_status'] == 'Complete'){
                 foreach (json_decode($invoiceRecords[0]['scoop_id']) as $field => $val) {
                     $scpData['updated_date'] = date('Y-m-d H:i:s');

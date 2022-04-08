@@ -24981,10 +24981,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
-    rest.path = 'languagesGet';
-    rest.get().success(function(data) {
-        $scope.langsList = data;
-    }).error(errorCallback);
+    if($window.localStorage.getItem("session_iUserId")){
+        rest.path = 'languagesGet';
+        rest.get().success(function(data) {
+            $scope.langsList = data;
+        }).error(errorCallback);
+    }    
 
     $scope.disableField = false;
     $scope.LangEdit = function(id, eID) {

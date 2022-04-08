@@ -219,7 +219,21 @@ class Freelance_invoice {
         $data['modified_date'] = date('Y-m-d');
     	$this->_db->where('invoice_id', $id);
     	$idd = $this->_db->update('tms_invoice', $data);
-    	
+        
+        // Update Job status When invoice status change to complete
+        if($idd && isset($data['invoice_status'])){
+            $this->_db->where('invoice_id', $id);
+            $invoiceRecords = $this->_db->get('tms_invoice');
+            if($data['invoice_status'] == 'Complete'){
+                foreach (json_decode($invoiceRecords[0]['job_id']) as $field => $val) {
+                    $jbData['updated_date'] = date('Y-m-d H:i:s');
+                    $jbData['item_status']  = 'Paid';
+                    $this->_db->where('job_summmeryId', $val->id);
+                    $jbStsId = $this->_db->update('tms_summmery_view', $jbData);
+                }
+            }    
+        }    
+
         if($idd && isset($partPaymentInsert)) {
     		$request['status'] = 200;
     		$request['msg'] = "Successfully updated";
