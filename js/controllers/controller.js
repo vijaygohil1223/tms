@@ -1119,7 +1119,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
 
     //$scope.getJobList();
-    //$scope.getAllProjects();
 
     $scope.DtTblOption = {
         "dom": '<"pull-right"l><<t>p><"clear">'
@@ -1594,8 +1593,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
 
     }
-    $scope.langsListAll = [];
-    if($window.localStorage.getItem("session_iUserId")){
+    if($window.localStorage.getItem("session_iUserId") != undefined){
+        console.log('console api key error languagesGet Out $window.localStorage.getItem("session_iUserId"):', $window.localStorage.getItem("session_iUserId"))
+        $scope.langsListAll = [];
         rest.path = 'languagesGet';
         rest.get().success(function(data) {
             $scope.langsListAll = data;
@@ -1604,6 +1604,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     // User data with postion for widget box
     if($window.localStorage.getItem("session_iUserId")){
+        console.log('viewExternalget api key e...');
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
             console.log('jobdeliver-user', data.vResourcePosition)
@@ -1650,7 +1651,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 if (val.itemsSourceLang) {
                     data[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
-                    var sourceLangName =data[i].itemsSourceLang.sourceLang;
+                    var sourceLangName = data[i].itemsSourceLang.sourceLang;
                     if(sourceLangName){
                         if($scope.langsListAll){
                             var sourceLang = $scope.langsListAll.find(obj => {
@@ -2325,6 +2326,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     // freelance job wise data get
     if ($window.localStorage.session_iUserId && $scope.userRight == 2) {
+
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function(data) {
             $scope.jobList = data;
@@ -3754,6 +3756,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
     }
 
+    $scope.hideuploadBtn = false;
+    if($window.localStorage.jobFoldertype == 'source'){
+        $scope.hideuploadBtn = true;
+    }
     //project root get display front
     if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
@@ -9892,7 +9898,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $timeout(function() {
         $scope.redirectToCViewId = $window.localStorage.iUserId;
     }, 100);
-
+    if($scope.userRight == 2){
+        $window.localStorage.userType = 1;
+        $scope.uType = 1;
+        console.log('in cond $scope.uType', $scope.uType)
+    }
     if ($scope.currentUserName == 'undefined undefined') {
         $scope.currentUserName = 'undefined';
     }
@@ -10747,18 +10757,27 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     } else {
         $routeParams.id = $scope.clientId;
     }
-
     $scope.displaybankOption = false;
     $scope.displayPaypalOption = false;
     $timeout(function() {
         $scope.redirectToPayClientViewId = $window.localStorage.iUserId;
     }, 100);
 
+    if($scope.userRight == 2){
+        $window.localStorage.userType = 1;
+        $scope.uType = 1;
+    }
+
+
     if ($routeParams.id != ' ' && $routeParams.id != undefined) {
+        
         rest.path = 'getuserpayment/' + $routeParams.id + '/' + $window.localStorage.userType;
         rest.get().success(function(data) {
+            console.log('data-daaa', data)
             if (data == null) {
                 $scope.paymentData = {};
+                $scope.payment = {};
+                $scope.bank = {};
             } else {
                 $scope.paymentData = data;
             }
@@ -10790,7 +10809,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $scope.notRootParamsId = true;
     }
 
-    if ($scope.clientId != " ") {
+    if ($scope.clientId != " " && $scope.userRight != 2) {
         $routeParams.id = $scope.clientId;
         rest.path = 'getClientpayment/' + $routeParams.id;
         rest.get().success(function(data) {
@@ -10977,7 +10996,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     //vat number api
 
     $scope.vatCount = function(payment) {
-        console.log("payment", payment);
+        console.log("payment-vat", payment);
         if (payment == 'paymentDataNotAvailble') {
             angular.element('#vatLoader').css('display', 'none');
             return false;
@@ -11104,6 +11123,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
 
     $scope.paymentChange = function() {
+
         var selectedMethod = $('#paymentMethod').val().split(':')[1];
         if (selectedMethod === 'Bank Transfer') {
             $scope.displaybankOption = true;
@@ -13526,11 +13546,40 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.userId = $window.localStorage.getItem("session_iUserId");
     $scope.dueAmount = 0;
     $scope.search = {}
+    var statmntPaid = [];
+    var statmntPartPaid = [];
+    var statmntUnPaid = [];
+    $scope.allCount = 0;
+    $scope.partPaidCount = 0;
+    $scope.unPaidCount = 0;
+    $scope.paidCount = 0;
+
     if ($scope.userRight == '2') {
         var id = $scope.userId;
         rest.path = "getFreelanceStatement/" + id;
         rest.get().success(function(data) {
             $scope.stamementList = data;
+            angular.forEach($scope.stamementList, function(val, i){
+                if(val.is_approved == 1){
+                    if(val.paid_amount != 0 && val.paid_amount < val.Amount){
+                        statmntPartPaid.push(val);            
+                    }
+                    if(val.paid_amount == 0){
+                        statmntUnPaid.push(val);            
+                    }
+                    if(val.invoice_status == 'Complete'){
+                        statmntPaid.push(val);   
+                    }       
+                }    
+            });
+            $scope.allCount = $scope.stamementList.length ;
+            $scope.partPaidCount = statmntPartPaid.length ;
+            $scope.unPaidCount = statmntUnPaid.length ;
+            $scope.paidCount = statmntPaid.length ;
+
+            // angular.forEach($scope.stamementList, function(val, i) {
+            //     $scope.stamementList[i].paymentDueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod.number_of_days);
+            // })
             Array.prototype.sum = function(prop) {
                 var total = 0
                 for (var i = 0, _len = this.length; i < _len; i++) {
@@ -13542,7 +13591,35 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var paidAmount = $scope.stamementList.sum('paid_amount');
 
             $scope.dueAmount = tolaAmount - paidAmount;
+
         });
+
+        $scope.highlightSearch = "All";
+        $scope.sortStatement = function(action, eID) {
+            switch (action) {
+                case "All":
+                    $scope.highlightSearch = "All";
+                    $route.reload();
+                    break;
+                case "Complete":
+                    $scope.stRow = "Complete";
+                    $scope.highlightSearch = "Complete";
+                    $scope.stamementList = statmntPaid;
+                    break;
+                case "partPaid":
+                    $scope.jobRow = "partPaid";
+                    $scope.highlightSearch = "partPaid";
+                    $scope.stamementList = statmntPartPaid;
+                    break;
+                case "unPaid":
+                    $scope.jobRow = "unPaid";
+                    $scope.highlightSearch = "unPaid";
+                    $scope.stamementList = statmntUnPaid;
+                    break;
+                                    
+            }
+            //scrollToId(eID);
+        }
 
     } else {
 
@@ -13598,13 +13675,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if ($scope.search.dueDateFrom) {
                 $scope.search.dueDateFrom = originalDateFormatNew($scope.search.dueDateFrom);
                 $scope.search.dueDateFrom = moment($scope.search.dueDateFrom).subtract($scope.invoicePeriod.number_of_days, 'd').format('YYYY-MM-DD');
-
             }
 
             if ($scope.search.dueDateTo) {
                 $scope.search.dueDateTo = originalDateFormatNew($scope.search.dueDateTo);
                 $scope.search.dueDateTo = moment($scope.search.dueDateTo).subtract($scope.invoicePeriod.number_of_days, 'd').format('YYYY-MM-DD');
-
             }
 
             rest.path = 'filterStatement';
@@ -17347,7 +17422,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             notification('Please select option.', 'warning');
             return false;
         } else {
-
+        
             if ($scope.jobi.jobSummery) {
                 var dd = $scope.jobi.jobSummery;
                 //var dd = $scope.jobi.jobSummery[0];
@@ -22791,7 +22866,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         var ItemcodeNumber = angular.element('#companyCode').text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
         // start to get downloaded folder name with client name
-        console.log('$window.localStorage.orderID', $window.localStorage.orderID);
+        console.log('popupfl-orderID', $window.localStorage.orderID);
         rest.path = 'customer/' + $window.localStorage.orderID;
         rest.get().success(function(res) {
                 $scope.customer = res;
@@ -22969,7 +23044,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $location.path('/project-detail/' + $routeParams.id);
     }
 
-}).controller('projectjobDetailPopupController', function($interval, $scope, $log, $window, $compile, $timeout, $uibModal,$uibModalInstance, rest, $route, $rootScope, $routeParams, $location) {
+}).controller('projectjobDetailPopupController', function($interval, $scope, $log, $window, $compile, $timeout, $uibModal,$uibModalInstance, rest, $route, $rootScope, $routeParams, $location, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
     $window.localStorage.jobfolderId = $routeParams.id;
@@ -23061,6 +23136,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             if ($scope.jobdetail.work_instruction) {
                 $scope.wrInstruct = JSON.parse($scope.jobdetail.work_instruction);
+                console.log('$scope.wrInstruct', $scope.wrInstruct)
                 $scope.wrInstructEmpty = jQuery.isEmptyObject($scope.wrInstruct);
             }
 
@@ -23087,6 +23163,26 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
     }
 
+    // Work instruction tick mark
+    $scope.wiUpdate = [];
+    $scope.checkWorkInstruct = function(id){
+        var workObj = []; 
+        angular.forEach($scope.wrInstruct, function(value, key) {
+            
+            var work_checked = $('#workcheck'+value.work_id).is(':checked');
+            workObj.push({
+                work_id: value.work_id,
+                work_name: value.work_name,
+                work_checked: work_checked,
+            });
+            console.log('value',value)
+        });
+        $scope.wiUpdate = JSON.stringify(workObj);            
+        rest.path = 'jobSummeryWorkinstructUpdate';
+        rest.put($scope.wiUpdate).success(function(data) {
+
+        }).error(errorCallback);
+    }
     //accept job status
     $scope.acceptjobstatus = function(status, action) {
         switch (action) {
@@ -23168,6 +23264,754 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectInvoiceRedirect = function() {
         $location.path('/project-detail/' + $routeParams.id);
     }
+
+    // Start comment chat
+    var loginid = $window.localStorage.getItem("session_iUserId");
+    var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
+    $scope.login_userid = $window.localStorage.getItem("session_iUserId");
+
+    // if (items) {
+    //     $routeParams.id = items;
+    // }
+    console.log('$routeParams.id',$routeParams.id);
+    console.log('$scope.DetailId', $scope.jobDiscussionRedirect)
+    rest.path = 'viewProjectCustomerDetail';
+    rest.model().success(function(data) {
+        $scope.customer = data;
+        $window.localStorage.clientproCustomerName = $scope.customer.client;
+        $window.localStorage.ContactPerson = $scope.customer.contact;
+        $routeParams.ClientIdd = data['client'];
+        $window.localStorage.ClientName = $routeParams.ClientIdd;
+        if ($scope.customer.memo) {
+            $scope.warn = true;
+            $timeout(function() {
+                $scope.warn = false;
+            }, 10000);
+        }
+    }).error(errorCallback);
+
+    //$routeParams.id;
+    $scope.jobLinguist = [];
+    var linguistObj = [];
+    if ($routeParams.id) {
+        rest.path = 'jobsummeryGet/' + $scope.jobDiscussionRedirect;
+        rest.get().success(function(data) {
+            //$scope.jobLinguist = data;
+            angular.forEach(data, function(val, i) {
+                // var linguistObj = {
+                //     id: val.id,
+                //     read_id: loginid
+                // }
+                if(val.resource){
+                    $scope.jobLinguist.push(val);
+                }
+            });    
+            $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
+            console.log('$scope.jobLinguist',$scope.jobLinguist);
+
+        });
+    }
+    var projectTeam = [];
+    rest.path = 'contactPerson';
+    rest.model().success(function(data) {
+        console.log('contactperson-data',data);
+        angular.forEach(data, function(val, i) {
+            if (val.vResourcePosition == 3) {
+                angular.element('#coordinatorIcon').html(val.vUserName);
+                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.coordinatorIcon').html(coordpic);
+            
+            } else if (val.vResourcePosition == 2) {
+                angular.element('#managerDesignation').html(val.vUserName);
+                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.managerIcon').html(managerpic);
+                
+            } else if (val.vResourcePosition == 4) {
+                angular.element('#QASpecialist').html(val.vUserName);
+                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' +val.vProfilePic+ '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                angular.element('.QAIcon').html(QApic);
+            
+            }
+        })
+    }).error(errorCallback);
+
+    $routeParams.id = $routeParams.id;
+    rest.path = 'generalVieData/' + $scope.jobDiscussionRedirect + '/' + $window.localStorage.ClientName;
+    rest.get().success(function(data) {
+        $scope.general = data;
+        console.log('$scope.general',$scope.general);
+        //$scope.general.order_date = $scope.general.order_date;
+        //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
+        //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
+        if($scope.general.due_date)
+        $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
+        if($scope.general.heads_up){
+            if($scope.general.expected_start_date && $scope.general.expected_start_date != '0000-00-00 00:00:00' && $scope.general.expected_start_date != "Invalid Date"){
+                $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
+                $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
+            }else{
+                $scope.general.expected_start_date = '-';
+            }
+        }else{
+            if($scope.general.order_date){
+                $scope.general.expected_start_date = $scope.general.order_date.split(' ')[0].split('.').reverse().join('-');
+                $scope.general.expected_start_date = moment($scope.general.order_date).format("DD-MM-YYYY");
+            }else{
+                $scope.general.expected_start_date = '-';
+            }
+        }            
+        
+        // if ($scope.general.order_date == undefined) {
+        //     var currentdate = new Date();
+        //     $scope.general.order_date = getDatetime(currentdate);
+        // }
+        $scope.generaldata = {};
+        //$scope.generaldata.order_no = $window.localStorage.orderNo;
+        //$scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+
+        if ($scope.general == null) {
+            $scope.general = {};
+            $scope.generaldata = {};
+            //$scope.generaldata.order_no = $window.localStorage.orderNo;
+            //$scope.generaldata.abbrivation = $window.localStorage.abbrivation;
+            // if ($scope.general.order_no == "") {
+
+            // }
+        }
+        //console.log('$scope.generaldata',$scope.general);
+    }).error(errorCallback);
+
+    //-- project Team Users --//
+    $scope.teamArray = [];
+    rest.path = "users";
+    rest.get().success(function(data) {
+    // console.log("datadata",data);
+    angular.forEach(data.data, function(val, i) {
+        //if(val.iUserId != loginid && val.freelancer == 'freelancer' ){
+        if(val.iUserId != loginid){
+            $scope.teamArray.push(val.iUserId);
+        }    
+    });
+    }).error(errorCallback);
+
+    $scope.projectPriceChat = 0;
+    if ($scope.jobDiscussionRedirect) {   
+        rest.path = 'itemsGet/' + $scope.jobDiscussionRedirect;
+        rest.get().success(function(data) {
+            angular.forEach(data, function(val, i) {
+                //console.log('total_price',val.total_price);
+                if(val.total_price){
+                    $scope.projectPriceChat += val.total_price;
+                }
+            });
+            //console.log('alltotal',$scope.projectPriceChat);
+                    
+        }); 
+        
+    
+        
+    }    
+
+    if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
+        $location.path('/dashboard1');
+        notification('Please create project.', 'warning');
+    }
+    $window.localStorage.getItem("session_iUserId");
+    $window.localStorage.getItem("session_vUserName");
+    $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.backtoPage = function() {
+        if ($window.localStorage.getItem("session_iFkUserTypeId") == 1) {
+            $location.path('jobs-detail/' + $window.localStorage.orderID);
+        } else {
+            $location.path('dashboard1');
+        }
+    }
+
+    if ($routeParams.id) {
+
+        var commentsArray = [];
+        var NewcommentsArray = [];
+        $scope.commentReadArray = [];
+        var promises = [];
+        var usercommentsArr=[];
+        var newUserCommentsArr = [];
+        $scope.msgIDArr = [];
+        $scope.commentsArrayAll = async function() {
+            var deferred = $q.defer();
+            rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
+            rest.get().success(function(data) {
+                setTimeout(function() {
+                    //var setintrvlMenu = setInterval(function() {
+                    angular.forEach(data, function(val, i) {
+                        var dataId = val.id;
+
+                        /*if (val.content == "") {
+                            var dataId = val.id;
+                            var hrefClass = 'attachment';
+                            var hrefTarget = '_blank';
+                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
+                            if(val.user_id == 1){
+                                //$('li[data-id=' + dataId + ']').addClass('cmtright');
+                                //$(time).addClass('cmtright');
+                            }
+                            $('li[data-id=' + dataId + ']').find('.content').html(data);
+                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                        }*/
+                        //
+                        var msgReadArr = val.read_id.split(",");
+                        var msgReadArrFilter = msgReadArr.filter(function (el) {
+                            if($scope.teamArray.indexOf(parseInt(el)) != -1 ){
+                                return el;
+                            }
+                            return 0;
+                        });
+
+                        $('#comment-list').find(' > li[data-id^=c]').css('display','none');
+                        $('#comment-list').find(' > li[data-id^=c]').hide();
+                        //$('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
+                        //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
+
+                        if (userprofilepic) {
+                            $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
+                        }
+                        var filedata = '';
+                        if (val.fileURL != "") {
+                            var filetype = val.fileMimeType;
+                            var filetype1 = filetype.includes("image/");
+                            var file_format = '';
+                            var file_type = '';
+                            var mimeTypeParts = val.fileMimeType.split('/');
+                            if (mimeTypeParts.length == 2) {
+                                file_format = mimeTypeParts[1];
+                                file_type = mimeTypeParts[0];
+                            }
+                            // Icon
+                            var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                                'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
+                            ];
+
+                            var iconClass = 'fa fa-file-o';
+                            // File Extension name
+                            var extName = '';
+                            var extParts = val.fileURL.split('/');
+                            var extFileName = extParts[extParts.length - 1];
+                            var extFileName = extFileName.split('?')[0];
+                            extName = extFileName.split('.')[1];
+
+                            if (availableIcons.indexOf(file_format) > 0) {
+                                iconClass = 'fa fa-file-' + file_format + '-o';
+                            } else if (availableIcons.indexOf(file_type) > 0) {
+                                iconClass = 'fa fa-file-' + file_type + '-o';
+                            } else if (extName == 'docx') {
+                                iconClass = 'fa fa-file-word-o';
+                            } else if (extName == 'xlsx' || extName == 'xlsm') {
+                                iconClass = 'fa fa-file-excel-o';
+                            } else if (extName == 'zip') {
+                                iconClass = 'fa fa-file-archive-o';
+                            }
+
+                            //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                            //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                            var cmtimgName = val.fileURL + '?v=' + jQuery.now();
+
+                            if (file_type == 'image') {
+                                var filehtml = '<img src=' + cmtimgName + '></img>';
+                            } else if (file_type == 'video') {
+                                var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
+                            } else {
+                                var filename = val.fileURL;
+                                var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
+                            }
+                            var hrefClass = 'attachment';
+                            var hrefTarget = '_blank';
+                            filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+
+                        }
+                        if (val.user_id == loginid) {
+                            //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                            $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+
+                            if (val.content == '' || val.content == null) {
+                                //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                                //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                            } else {
+                                //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
+                                //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
+                            }
+                            if(msgReadArrFilter.length > 0){
+                                $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
+                            }
+                        } else {
+                            //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
+                            //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
+                            if (val.content == "" || val.content == null) {
+                                //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                                //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                            }
+                        }
+                        // if (file_type == 'image' || file_type == 'video') {
+                        //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
+                        // }
+                        //console.log(val.content)
+                        if(val.content){        
+                            $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                        }
+                        //$compile(val.content)($scope);
+                        // ------------ Script for date seperating in chat box --------------//
+                        var ndt = new Date(data[i].created);
+                        var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                        var dd = ("0" + ndt.getDate()).slice(-2);
+                        var yy = ndt.getFullYear();
+                        //var timeText = dd + '-' + mm + '-' + yy;
+                        //var dateSeprt = dd + '-' + mm + '-' + yy;
+                        var dateSeprt = commentDateToformat(data[i].created);
+
+                        // const todayDate = new Date();
+                        // if (ndt.getDate() == todayDate.getDate() &&
+                        //     ndt.getMonth() == todayDate.getMonth() &&
+                        //     ndt.getFullYear() == todayDate.getFullYear()) {
+                        //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                        //     var timeText = 'Today';
+                        // }
+                        var timeText = commentDatetimeToText(data[i].created);
+                        if (timeText == "Today") {
+                            $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                        }
+                        // ------count total attachment------//
+                        let totalAttachment = 0;
+                        totalAttachment = $('#attachment-list').find('li .attachment').length;
+                        //$('.att_count').text(totalAttachment);
+
+
+                        if (i > 0) {
+                            var ndt1 = new Date(data[i - 1].created);
+                            // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                            // var dd = ("0" + ndt.getDate()).slice(-2);
+                            // var yy = ndt.getFullYear();
+                            //var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                            var dateSeprt2 = commentDateToformat(data[i - 1].created);
+
+                            if (dateSeprt != dateSeprt2) {
+                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                            }
+                        } else {
+                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                        }
+
+                        
+                        var msgRead_id = val.read_id;
+                        
+                        if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
+                            //console.log('msgRead_id',msgRead_id);
+                        } else {
+                            var cmtObj = {
+                                id: val.id,
+                                read_id: loginid
+                            }
+                            $scope.commentReadArray.push(cmtObj);
+                        }
+                        // Read/ Unread - check comment id exist in db
+                        promises.push(val);
+
+                        if(val.user_id != loginid){
+                            usercommentsArr.push(val.user_Id)
+                        }
+                        if(val.id){
+                            $scope.msgIDArr.push(val.id)
+                        }
+                                                
+                        
+                    });
+
+                    deferred.resolve(promises);
+                    $(".comment-wrapper").each(function(i, v) {
+                        /*var dateTime = $(this).find('time')[0].innerText;
+                        console.log(dateTime);
+                        //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
+                        dateTime = moment(dateTime).format('DD-MM-YYYY');
+                        $(this).find('time')[0].innerText = dateTime;*/
+
+                        //$(this).find('time')[0].append("testing");
+                    });
+
+                    if(data.length == promises.length){
+                        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                    }
+                
+                }, 1500);
+                commentsArray = data;
+                console.log('commentsArray=', commentsArray);
+                //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
+                //console.log('usercommentsArr=before',usercommentsArr.length);
+
+            }).error(errorCallback);
+
+            //return deferred.promise;
+
+        }
+        $scope.commentsArrayAll();
+    }
+
+    
+
+
+    if ($routeParams.id) {
+            console.log('$scope.jobDiscussionRedirect', $scope.jobDiscussionRedirect)
+        $scope.usersArray = [];
+        rest.path = "users";
+        //$timeout(function () {
+        rest.get().success(function(data) {
+            // console.log("datadata",data);
+            angular.forEach(data.data, function(val, i) {
+                var uObj = {
+                    id: val.iUserId,
+                    fullname: val.vUserName,
+                    email: val.vEmailAddress,
+                    profile_picture_url: "uploads/profilePic/user-icon.png"
+                }
+                $scope.usersArray.push(uObj);
+            });
+
+        }).error(errorCallback);
+        // console.log('discussion-usersArray',$scope.usersArray);
+        //}, 100);
+        // emoji text
+        $scope.emojitext = [];
+        /*rest.path = "emojitext";
+        $timeout(function() {
+            rest.get().success(function(data) {
+                //console.log("emojidata",data);
+                    angular.forEach(data, function(val, i) {
+                        var eObj = {
+                            id              : val.id,
+                            emojiname        : val.emojiname,
+                            emojipic          : val.emojipic,
+                        }
+                        $scope.emojitext.push(eObj);
+                    });
+                
+            }).error(errorCallback);
+        }, 200);*/
+    }
+
+    //emoji text change
+    //$timeout(function() {
+    //$scope.emojimap=[];
+    // we are using this for emoji
+    var emojimap = {
+        "<3": "\u2764\uFE0F",
+        "</3": "\uD83D\uDC94",
+        ":D": "\uD83D\uDE00",
+        //":)": "\uD83D\uDE03",
+        ":)": "🙂",
+        ";)": "\uD83D\uDE09",
+        ":(": "\uD83D\uDE12",
+        ":p": "\uD83D\uDE1B",
+        ";p": "\uD83D\uDE1C",
+        ":'(": "\uD83D\uDE22",
+        ":o)": "\uD83D\uDE2E",
+        ":*": "\uD83D\uDC8B",
+        ":>": "\uD83D\uDE06",
+        ":blush": "\uD83D\uDE0A",
+        ">:(": "\uD83D\uDE20",
+        ":-)": "\uD83D\uDE42",
+        ":'(": "\uD83D\uDE22",
+        "):": "\uD83D\uDE1E",
+        ":-\\\\": "\uD83D\uDE15",
+        "<\\/3": "\uD83D\uDC94",
+        "8)": "\uD83D\uDE0E",
+        ":|": "\uD83D\uDE10",
+        ":o": "\uD83D\uDE2E"
+    };
+
+    $timeout(function() {
+        if ($scope.jobDiscussionRedirect) {
+            //$timeout(function() {
+            rest.path = "discussionCommentread";
+            rest.put($scope.commentReadArray).success(function(res) {
+                //console.log('res',res);
+                if (res.status == 1) {
+                    jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
+                }
+            });
+            //},2300);
+        }
+
+        //  Scroll to bottom  
+        // jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        // jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+
+        //$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
+
+        jQuery("#addemoji").emojioneArea({
+            autoHideFilters: true,
+            useSprite: true,
+            //accepts values: 'image',
+            //default: 'unicode',
+            //accepts values: 'unicode' | 'shortname' | 'image'
+            //pickerPosition: "bottom"
+        });
+
+    }, 2800);
+
+
+
+    $timeout(function() {
+        var el = $("#addemoji").emojioneArea();
+        el[0].emojioneArea.on("emojibtn.click", function() {
+            const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+            //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+            const emoji = '<img class="emojiImg" src="'+emoji1+'">';
+             $('.textarea').append(emoji).trigger("change");
+
+            //$('.textarea').val($('.textarea').val()+emoji);
+        });
+
+        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+        jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+
+    }, 3000);
+
+    $timeout(function() {
+
+        var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
+            roundProfilePictures: true,
+            textareaRows: 1,
+            enableAttachments: true,
+            enablePinging: true,
+            currentUserId: loginid,
+            enableHashtags: true,
+            textareaPlaceholderText: 'Type message here...',
+            getComments: function(success, error) {
+                
+                $timeout(function() {
+                    if($scope.jobDiscussionRedirect){
+                        setInterval(() => {
+                            rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
+                            rest.get().success(function(data) {
+                                var NewcommentsArray = data;
+                                var newUserCommentsArr = NewcommentsArray.filter(function(NewcommentsArray) { return NewcommentsArray.user_id != loginid });
+                                //console.log('newUsercommentsArr',newUserCommentsArr.length);
+                                //console.log('NewcommentsArray=L',NewcommentsArray.length);
+                                // FOR read unread comments
+                                var cmtArr = [];
+                                var cmtArr = NewcommentsArray.filter(function(NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                
+                                var newcmtArr = commentsArray.filter(function(commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                
+                                //console.log('cmtArr',cmtArr.length);
+                                // --- update read id //
+                                $scope.newCommentReadArray = [];
+                                if(cmtArr){
+                                    angular.forEach(cmtArr, function(cmtval, cmti) {
+                                        var newCmtObj = {
+                                            id: cmtval.id,
+                                            read_id: loginid
+                                        }
+                                        $scope.newCommentReadArray.push(newCmtObj);
+                                        if($scope.newCommentReadArray.length == cmtArr.length){
+                                            //console.log('cmtArr-'+cmti, $scope.newCommentReadArray);   
+                                            rest.path = "discussionCommentread";
+                                            rest.put($scope.newCommentReadArray).success(function(res) {
+                                                //console.log('res',res);
+                                                if (res.status == 1) {
+                                                    //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                                }
+                                            });
+                                        }
+                                    });    
+                                }
+                                //if( (NewcommentsArray.length > commentsArray.length && ) )
+                                //console.log('new cmtArr.length',newcmtArr.length);
+                                var arrayNotload = $('#comment-list').find(' > li').length;
+                                if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)){
+                                    $('#comment-list').find(' > li[data-id^=c]').hide();
+                                    rest.path = "discussionCommentread";
+                                    rest.put($scope.commentReadArray).success(function(res) {
+                                        //console.log('res',res);
+                                        if (res.status == 1) {
+                                            jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
+                                        }
+                                    });
+                                    //console.log('we are working');
+                                    $scope.commentsArrayAll();  
+                                    success(NewcommentsArray);  
+                                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                    jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                                    $('#comment-list').find(' > li[data-id^=c]').hide();
+                                    usercommentsArr=[];
+                                    // to remove same li date div
+                                    var seen = {};
+                                    $('.seperatordate').each(function() {
+                                        var txt = $(this).text();
+                                        if (seen[txt])
+                                            $(this).remove();
+                                        else
+                                            seen[txt] = true;
+                                    });
+                                    // end script
+                                }
+                            });
+                            //console.log('usercommentsArr=after',usercommentsArr.length);
+                        }, 5000);
+                    }
+                    
+                    success(commentsArray); 
+                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                    //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                    //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                    $('.userprof').on('dragstart', function(event) { event.preventDefault(); });
+                    $('#comment-list').on('dragstart', function(event) { event.preventDefault(); });
+                    
+                }, 500);
+            },
+            searchUsers: function(term, success, error) {
+                setTimeout(function() {
+                    success($scope.usersArray.filter(function(user) {
+    
+                        var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
+                        var isNotSelf = user.id != loginid;
+                        return containsSearchTerm && isNotSelf;
+                    }));
+                }, 1000);
+            },
+    
+            searchEmojitext: function(term, success, error) {
+                setTimeout(function() {
+                    success($scope.emojitext.filter(function(emojitxt) {
+                        var containsSearchTerm = emojitxt.emojiname.toLowerCase().indexOf(term.toLowerCase()) != -1;
+                        return containsSearchTerm;
+                    }));
+                }, 500);
+            },
+            postComment: function(data, success, error) {
+                // data.order_id = $routeParams.id;
+                // data.user_id = $window.localStorage.getItem("session_iUserId");
+                // data.fullname = $window.localStorage.getItem("session_vUserName");
+                // data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                // data.pings = '';
+                // data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+                // rest.path = "discussionOrder";
+                // rest.post(data).success(function (info) {
+    
+                // }).error(errorCallback);
+                // $timeout(function () {
+                //     success(data);
+                // }, 500);
+                data.order_id = $scope.jobDiscussionRedirect;
+                data.user_id = $window.localStorage.getItem("session_iUserId");
+                data.fullname = $window.localStorage.getItem("session_vUserName");
+                data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+    
+                function escapeSpecialChars(regex) {
+                    return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+                }
+                for (var i in emojimap) {
+                    var regex = new RegExp(escapeSpecialChars(i), 'gim');
+                    data.content = data.content.replace(regex, emojimap[i]);
+                }
+    
+                var pingsvalue = [];
+                if (data.content) {
+                    $(Object.keys(data.pings)).each(function(index, userId) {
+                        var fullname = data.pings[userId];
+                        var pingText = '@' + fullname;
+                        data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
+    
+                        pingsvalue[index] = Object.keys(data.pings)[index];
+                    });
+                }
+                console.log('alldata',data);
+                data.pings = pingsvalue.toString();
+                rest.path = "discussionOrder";
+                rest.post(data).success(function(info) {
+    
+                }).error(errorCallback);
+                $timeout(function() {
+                    success(data);
+                }, 500);
+            },
+            putComment: function(data, success, error) {
+                $routeParams.id = data.id;
+                data.login_userid = $window.localStorage.getItem("session_iUserId");
+                rest.path = 'discussionOrder';
+                rest.put(data).success(function(res) {
+                    if (res.Status == 401) {
+                        notification("You can not edit other user message", "error");
+                        $timeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else if (res.Status == 200) {
+                        notification("Successfully edited", "success");
+                    } else {
+                        notification("Please try later", "warning");
+                    }
+                }).error(errorCallback);
+                $timeout(function() {
+                    success(data);
+                }, 500);
+            },
+            deleteComment: function(data, success, error) {
+                data.login_userid = $window.localStorage.getItem("session_iUserId");
+                rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
+                rest.delete(data).success(function(data) {
+                    if (data.Status == 401) {
+                        notification("You can not edit other user message", "error");
+                        $timeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else if (data.Status == 200) {
+                        notification("Successfully edited", "success");
+                    } else {
+                        notification("Please try later", "warning");
+                    }
+                }).error(errorCallback);
+                $timeout(function() {
+                    success();
+                }, 500);
+            },
+            upvoteComment: function(data, success, error) {
+                $routeParams.id = data.id;
+                rest.path = 'discussionOrder';
+                rest.put(data).success(function(data) {
+    
+                }).error(errorCallback);
+                $timeout(function() {
+                    success(data);
+                }, 500);
+            },
+            uploadAttachments: function(dataArray, success, error, data) {
+                /*"fileURL":dataArray[0].file_url,*/
+                $(dataArray).each(function(index, dataArrays) {
+                    var obj = {
+                        "order_id": $scope.jobDiscussionRedirect,
+                        "user_id": $window.localStorage.getItem("session_iUserId"),
+                        "fullname": $window.localStorage.getItem("session_vUserName"),
+                        "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
+                        "fileURL": "uploads/discussionfile/" + dataArray[index].file.name2,
+                        "fileMimeType": dataArray[index].file.type,
+                        "created": dataArray[index].created,
+                        "modified": dataArray[index].modified,
+                        "created_by_current_user": '1',
+                        "upvote_count": '0',
+                        "user_has_upvoted": '0',
+                        "read_id": $window.localStorage.getItem("session_iUserId") + ',',
+    
+                    }
+                    rest.path = "discussionOrder";
+                    rest.post(obj).success(function(info) {
+    
+                    }).error(errorCallback);
+                    dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
+                    dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                });
+                $timeout(function() {
+                    success(dataArray);
+                }, 500);
+            }
+        });
+    }, 1000);
 
     $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
@@ -24982,10 +25826,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
 
     if($window.localStorage.getItem("session_iUserId")){
+        console.log('console api key error Out ---2');
         rest.path = 'languagesGet';
         rest.get().success(function(data) {
             $scope.langsList = data;
+            console.log('console api key error In---2');
         }).error(errorCallback);
+
     }    
 
     $scope.disableField = false;

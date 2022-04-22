@@ -66,7 +66,7 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             templateUrl: modulesPath + 'communication.html',
             controller: 'communicationController',
             //activetab: 'dashboard',
-            role: '1'
+            role: ['1','2']
         }).when('/calender', {
             templateUrl: modulesPath + 'calender.html',
             controller: 'CalendarCtrl',
@@ -76,12 +76,12 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             templateUrl: modulesPath + 'property.html',
             controller: 'propController',
             //activetab: 'dashboard',
-            role: '1'
+            role: ['1','2']
         }).when('/payment', {
             templateUrl: modulesPath + 'payment.html',
             controller: 'paymentController',
             //activetab: 'dashboard',
-            role: '1'
+            role: ['1','2']
         }).when('/user-task', {
             templateUrl: modulesPath + 'userTask.html',
             controller: 'usertaskController',
@@ -139,7 +139,7 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
         templateUrl: modulesPath + 'price-list1.html',
         controller: 'pricelistController',
         activetab: 'client',
-        role: '1'
+        role: ['1','2']
     }).when('/login-detail', {
         templateUrl: modulesPath + 'login-detail.html',
         controller: 'clientLoginController',
@@ -255,7 +255,7 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             templateUrl: modulesPath + 'contact-external.html',
             controller: 'contactController',
             activetab: 'job',
-            role: '1'
+            role: ['1','2']
         }).when('/services', {
             templateUrl: modulesPath + 'services.html',
             controller: 'serviceController',
@@ -315,7 +315,7 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             templateUrl: modulesPath + 'viewexternal.html',
             controller: 'viewExternaldetailController',
             activetab: 'job-chain',
-            role: '1'
+            role: ['1','2']
         }).when('/viewinternal/:id', {
             templateUrl: modulesPath + 'viewinternal.html',
             controller: 'viewInternaldetailController',

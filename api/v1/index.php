@@ -2400,6 +2400,12 @@ $app->put('/jobSummeryDetailsUpdate/:id','authenticate', function ($id) use($app
     $result = $itemsJob->jobSummeryDetailsUpdate($id, $data);
     echoResponse($result ['status'], $result);
 });
+$app->put('/jobSummeryWorkinstructUpdate/:id','authenticate', function ($id) use($app) {
+    $itemsJob = new jobs_detail ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $itemsJob->jobSummeryWorkinstructUpdate($id, $data);
+    echoResponse($result ['status'], $result);
+});
 $app->put('/jobSummeryJobDetailsUpdate/:id','authenticate', function ($id) use($app) {
     $itemsJob = new jobs_detail ();
     $data = json_decode($app->request->getBody(), TRUE);

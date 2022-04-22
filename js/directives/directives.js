@@ -635,7 +635,11 @@ app.directive('select2Property', function($http, rest, $timeout, $window) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'propertyactive/' + $window.localStorage.priority;
+            var priority = $window.localStorage.priority ;
+            if($window.localStorage.getItem("session_iFkUserTypeId")==2){
+                priority = 'resource';
+            }
+            rest.path = 'propertyactive/' + priority;
             rest.get().success(function(data) {
                 var property = [];
                 $.each(data, function(key, value) {

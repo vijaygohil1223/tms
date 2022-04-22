@@ -1,3 +1,8 @@
+<style>
+  .overviewli>li>a {
+    text-decoration: auto;
+}
+</style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
   data-ng-include=" 'tpl/material.header.html' ">
 </div>
@@ -118,6 +123,36 @@
 
         <!-- Statment data for freelancer page -->
         <div class="panel panel-default" ng-if="userRight==2">
+          <ul class="alt projectjobdv2 overviewli">
+            <li class="list-group-item tab-requested"  ng-class="(highlightSearch == 'All') ? 'active' : ''">
+              <a href="javascript:void(0)" ng-click="sortStatement('All', 'middle')">
+                All 
+                <span ng-if="allCount" class="badge bg-info">{{AllCount}}</span>
+                <span ng-if="!allCount" class="badge bg-info">0</span>
+              </a>
+            </li>
+            <li class="list-group-item tab-in-progress" ng-class="(highlightSearch == 'Complete') ? 'active' : ''">
+              <a href="javascript:void(0)" ng-click="sortStatement('Complete', 'middle')">
+                Paid 
+                <span ng-if="paidCount" class="badge bg-info"><span ng-bind="paidCount"></span></span>
+                <span ng-if="!paidCount" class="badge bg-info">0</span>
+              </a>
+            </li>
+            <li class="list-group-item tab-due-today" ng-class="(highlightSearch == 'partPaid') ? 'active' : ''">
+              <a href="javascript:void(0)" ng-click="sortStatement('partPaid', 'middle')">
+              Part Paid
+                <span ng-if="partPaidCount" class="badge bg-info">{{partPaidCount}}</span>
+                <span ng-if="!partPaidCount" class="badge bg-info">0</span>
+              </a>  
+            </li>
+            <li class="list-group-item tab-due-today" ng-class="(highlightSearch == 'unPaid') ? 'active' : ''">
+              <a href="javascript:void(0)" ng-click="sortStatement('unPaid', 'middle')">
+              Unpaid 
+                <span ng-if="unPaidCount" class="badge bg-info">{{unPaidCount}}</span>
+                <span ng-if="!unPaidCount" class="badge bg-info">0</span>
+              </a>  
+            </li>
+          </ul>
           <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
             <thead>
               <th>#</th>
@@ -130,7 +165,8 @@
               <th>Pending amount</th>
             </thead>
             <tbody>
-              <tr ng-repeat="s in stamementList track by $index">
+              <!-- <tr ng-repeat="s in stamementList track by $index"> -->
+              <tr ng-repeat="s in stamementList  track by $index">  
                 <td ng-bind="$index + 1"></td>
                 <td>{{s.vUserName}}</td>
                 <td ng-if="s.created_date == '0000-00-00 00:00:00'">-</td>

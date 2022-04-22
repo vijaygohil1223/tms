@@ -294,7 +294,11 @@
                                                             </tr>
                                                             <tr id="work1_{{$index}}" class="put_row putinstruct" ng-repeat="war in wrInstruct" style="background-color:#FFF;">
                                                                 <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
-                                                                <td style="width:80%;"><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> <span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
+                                                                <td style="width:80%;">
+                                                                    <span style="color:green;" ng-if="war.work_checked==true"><i class="fa fa-check" aria-hidden="true"></i> </span> 
+                                                                    <span style="color:#e7dede" ng-if="war.work_checked==false || !war.work_checked"><i class="fa fa-minus" aria-hidden="true"></i> </span> &nbsp;&nbsp;
+                                                                    <span id="work_name{{$index}}" ng-bind="war.work_name"><span>
+                                                                </td>
                                                                 <td style="width:20%;"><a href="javascript:void(0)" ng-click="removeWorkIns($index)" title="delete" class="deletebtn"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                                             </tr>
                                                             <tr class="workIn" style="display:none;">

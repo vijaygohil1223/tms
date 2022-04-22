@@ -277,13 +277,13 @@ vendor-prefixes.less:76
       </div>
       
       <form id="customer-form">
-         <nav class="navbar navbar-default" style="background:#e6e6e6;">
+         <nav class="navbar navbar-default" style='background:#e6e6e6'>
             <div class="container-fluid">
                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                   <ul class="nav navbar-nav pull-left">
                      <li title="Level up" class="toolbar"><a href="javascript:void(0);" class="glyphicon glyphicon-level-up" ng-click="higherlevelFolder(folid)"></a></li>
                      <li title="Upload" class="toolbar"><a href="javascript:void(0);" ng-click="uploadbtn()" class="glyphicon glyphicon-upload"></a></li>
-                     <li title="New folder" class="toolbar toolbar-new-folder"><a href="javascript:void(0);" ng-click="mkdir()" class="glyphicon glyphicon-folder-open"></a></li>
+                     <li title="New folder" class="toolbar toolbar-new-folder" ng-if="hideuploadBtn==false"><a href="javascript:void(0);" ng-click="mkdir()" class="glyphicon glyphicon-folder-open"></a></li>
                      <li title="Delete Selected" class="toolbar toolbar-listview"><a href="javascript:void(0);" class="glyphicon glyphicon-trash" ng-click="deleteSelected()"></a></li>
                   </ul>
 
@@ -299,7 +299,7 @@ vendor-prefixes.less:76
          </nav>
 
          <div id="filesContainer" context-menu="menuOptionsPaste">
-            <div id="uploadContainer" class="">
+            <div id="uploadContainer" class="" ng-if="hideuploadBtn==false">
                <div id="w4-tab1" class="tab-pane active" style="display: block;">
                   <div class="panel panel-default" style="width:70%;border:none;margin:10px auto;">
                      <div class="panel-heading filehead brdrfile">

@@ -36,59 +36,328 @@
         padding-top: 10px;
     }
     .custm-table table{
-            border:1px solid #c1c1c1;
-        }
-        .custm-table thead tr{
-            background: #2cb1da;
-            color: #fff;border:1px solid #c1c1c1;
-        }
-        .custm-table tbody tr td{border:1px solid #c1c1c1;}
-        .custm-table thead tr th{border:1px solid #c1c1c1;}
-        .custm-table tbody tr:nth-child(even):hover{opacity: 0.8;}
-        .custm-table tbody tr:nth-child(odd) {background: #e2e2e2;border:1px solid #c1c1c1;}
-        .custm-table tbody tr:nth-child(odd):hover{opacity: 0.8;}
-        .fa-remove:before, .fa-close:before, .fa-times:before {
-            content: "\f00d";
-            color: white !important;
-        }
-        .modal-content {
-        position: relative;
-        background-color: #fff;
-        /* -webkit-background-clip: padding-box; */
-        /* background-clip: padding-box; */
-        /* border: 1px solid #999; */
-        /* border: 1px solid rgba(0, 0, 0, .2); */
-        /* border-radius: 6px; */
-        outline: 0;
-        /* -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5); */
-        /* box-shadow: 0 3px 9px rgba(0, 0, 0, .5); */
+       border:1px solid #c1c1c1;
     }
-    .itemsheader{
-      border-bottom: 1px solid #eaeff0;
-      margin-bottom: 12px;
-      padding-bottom: 7px;
-      font-weight: bold;
+    .custm-table thead tr{
+        background: #2cb1da;
+        color: #fff;border:1px solid #c1c1c1;
     }
-    .itemfield .form-group{
-      /*  margin-bottom: 5px !important;*/
+    .custm-table tbody tr td{border:1px solid #c1c1c1;}
+    .custm-table thead tr th{border:1px solid #c1c1c1;}
+    .custm-table tbody tr:nth-child(even):hover{opacity: 0.8;}
+    .custm-table tbody tr:nth-child(odd) {background: #e2e2e2;border:1px solid #c1c1c1;}
+    .custm-table tbody tr:nth-child(odd):hover{opacity: 0.8;}
+    .fa-remove:before, .fa-close:before, .fa-times:before {
+        content: "\f00d";
+        color: white !important;
     }
-    .itemfield .fa-times:before, .deletebtn .fa-times:before {
-        color: red !important;
-    }
-    .filetarget{
-        padding-left: 50px;
-    }
-    .worktable tr{
-        background-color: #2196f3 !important;
-    }
-    .paymentsection .itemstotal, .paymentsection .itemsheader, .paymentsection .itemfield, .paymentsection .put_row{
-        padding-left: 0px;
-    }
-    .bg-light.lter, .bg-light .lter {
-        background-color: #f6f8f8;
-        padding: 20px 40px;
-    }
+    .modal-content {
+    position: relative;
+    background-color: #fff;
+    /* -webkit-background-clip: padding-box; */
+    /* background-clip: padding-box; */
+    /* border: 1px solid #999; */
+    /* border: 1px solid rgba(0, 0, 0, .2); */
+    /* border-radius: 6px; */
+    outline: 0;
+    /* -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5); */
+    /* box-shadow: 0 3px 9px rgba(0, 0, 0, .5); */
+}
+.itemsheader{
+    border-bottom: 1px solid #eaeff0;
+    margin-bottom: 12px;
+    padding-bottom: 7px;
+    font-weight: bold;
+}
+.itemfield .fa-times:before, .deletebtn .fa-times:before {
+    color: red !important;
+}
+.filetarget{
+    padding-left: 50px;
+}
+.worktable tr{
+    background-color: #2196f3 !important;
+}
+.paymentsection .itemstotal, .paymentsection .itemsheader, .paymentsection .itemfield, .paymentsection .put_row{
+    padding-left: 0px;
+}
+.bg-light.lter, .bg-light .lter {
+    background-color: #f6f8f8;
+    padding: 20px 40px;
+}
+
+/* Chat tab design  */
+.discussion_page{
+  background: #f4f4fb;
+}
+  .modal-dialog{
+    width: 85%;
+  }
+  .chatbox{
+    padding: 15px;
+  }
+  
+  .jquery-comments .commenting-field.main {
+    /* position: absolute;
+    bottom: -130px;
+    width: 95%;
+    opacity: 1;
+    z-index: 1; */
+  }
+
+  ul#comment-list,
+  #attachment-list {
+    max-height: 320px;
+    overflow-y: scroll;
+    position: relative;
+    margin-bottom: 10px !important;
+  }
+
+  /* width Style for scroll*/
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  .arrow.left:after {
+    /*    border-right-color: #edf1f2;*/
+  }
+
+  .commenting-field.main .profile-picture {
+    float: left;
+  }
+
+  .jquery-comments ul.main li.comment {
+    width: auto;
+    float: right;
+    position: relative;
+    margin-bottom: 50px;
+    color: #fff;
+    min-width: 220px;
+  }
+
+  .jquery-comments ul.main li.comment .wrapper .content a.attachment>* {
+    max-width: 80px;
+    max-height: 80px;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .jquery-comments ul.main li.comment .comment-wrapper {
+    border-top: none;
+    padding: 0;
+  }
+
+  .userpic {
+    width: 40px;
+    float: left;
+    margin-left: 10px;
+  }
+
+  .cmtright .name {
+    margin-right: 5px;
+  }
+
+  .cmtright .attachment {
+    color: #FFF;
+  }
+
+  .cmtright .profile-picture,
+  .cmtright .name {
+    float: right;
+  }
+
+  .cmtleft .profile-picture,
+  .cmtleft .name {
+    float: left !important;
+  }
+
+  .livemsg .profile-picture,
+  .livemsg .name {
+    float: right;
+  }
+
+  .textcomplete-item .details .name {
+    float: none;
+    margin-right: auto;
+  }
+
+  .jquery-comments ul.navigation li[data-sort-key="attachments"] {
+    float: none;
+  }
+
+  .jquery-comments ul.main li.comment .wrapper {
+    background-color: #4285F4;
+    border-radius: 25px 25px 0px 025px;
+    margin-right: 55px;
+    width: auto;
+    float: right;
+  }
+
+  .jquery-comments ul.main li.comment.pull-left .wrapper {
+    margin-right: 0;
+    margin-left: 55px;
+    border-radius: 25px 25px 25px 0px;
+    float: left;
+    color: #333;
+    background-color: #e3eaf2;
+  }
+
+  .jquery-comments ul.main li.comment .wrapper a {
+    color: #fff;
+  }
+
+  .jquery-comments ul.main li.comment.pull-left .wrapper a {
+    color: #333;
+  }
+
+  .livemsg .profile-picture {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+
+  .livemsg .pull-left .profile-picture {
+    left: 0;
+    margin-left: 1rem;
+    margin-right: 0;
+  }
+
+  .jquery-comments ul.main li.comment time {
+    position: absolute;
+    top: 100%;
+    margin-top: 5px;
+  }
+
+  .livemsg .name {
+    position: absolute;
+    top: 100%;
+    right: 55px;
+    margin-top: 3px;
+    font-weight: 500;
+    margin-right: 0;
+    min-width: 100px;
+    text-align: right;
+  }
+
+  .livemsg .pull-left .name {
+    right: auto;
+    left: 55px;
+    text-align: left;
+  }
+
+  .jquery-comments ul.main li.comment.pull-left time {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 5px;
+  }
+
+  .jquery-comments .textarea-wrapper .close {
+    display: none !important;
+  }
+
+  .textcomplete-item .details .name {
+    float: none;
+    margin-right: auto;
+    position: relative;
+    right: initial;
+    top: initial;
+    text-align: initial;
+    margin-top: auto;
+  }
+
+  .textcomplete-item .profile-picture {
+    position: relative;
+  }
+
+  .commenting-field .profile-picture {
+    position: relative;
+    float: left;
+  }
+
+  .control-row .send {
+    border-radius: 0px 2px 2px 15px;
+    padding: 5px 20px !important;
+  }
+
+  .control-row .upload {
+    padding: 5px 20px !important;
+    margin-right: 15px;
+  }
+
+  li[data-sort-key='oldest'] {
+    margin-left: -27px;
+  }
+
+  .emojionearea-editor {
+    /*display: none !important;*/
+    width: 0px;
+  }
+
+  .emojionearea,
+  .emojionearea.form-control {
+    -moz-box-shadow: initial;
+    -webkit-box-shadow: initial;
+    box-shadow: initial;
+    -moz-transition: none;
+    -o-transition: none;
+    -webkit-transition: none;
+    transition: none;
+    border: none;
+    float: right;
+    width: auto;
+  }
+
+  .emojionearea.emojionearea-inline {
+    height: auto;
+  }
+/* date seperator */
+.seperatordate {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.seperatordate::before,
+.seperatordate::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #b4b6b9;
+}
+.seperatordate:not(:empty)::before {
+  margin-right: .25em;
+}
+
+.seperatordate:not(:empty)::after {
+  margin-left: .25em;
+}
+li.seperatordate.comment {
+    width: 100% !important;
+    margin: 0 0 30px 0 !important;
+    max-width: initial !important;
+    color: #b4b6b9 !important;
+}
+.hideusername{
+ display: none;
+} 
+/* End chat */
+
 </style>
+
     <div class="bolck">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-right:50px;display:none;" ng-click="cancel()">×</button>
@@ -98,6 +367,13 @@
         <div class="app-content-body ">
             <div class="bg-light lter b-b wrapper-md" id="userprofile-ctrl" >
                 <!-- <section class="panel form-wizard" id="w4" ng-stepform="dynamic"> -->
+                <tabset active="active">    
+                    <tab index="1">
+                        <tab-heading>
+                            <i class="fa fa-address-card"></i>
+                            <span>Job Details</span>
+                        </tab-heading>
+                    
                         <div class="tab-content">
                             <div id="w4-tab1" class="tab-pane active">
                                 <form id="jobDetails-form">
@@ -177,10 +453,10 @@
                                                     </div>
                                                     <div class="col-sm-12">
                                                         <div class="col-sm-6">
-                                                            <a style="padding:2px" href="javascript:void(0);" ng-click="popupOpenFilemanager('#/filemanager/source')"><span class="orderin"></span>Source &nbsp;(<span class="sourceC" id="proDetailSourceCount"></span>)</a>
+                                                            <a style="padding:2px" href="javascript:void(0);" ng-click="popupOpenFilemanager('#/filemanager/source')"><span class="orderin"></span>Download &nbsp;(<span class="sourceC" id="proDetailSourceCount"></span>)</a>
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <a style="padding:2px" href="javascript:void(0)" ng-click="popupOpenFilemanager('#/filemanager/target')"><span class="orderout"></span>Target &nbsp;(<span class="targteC" id="proDetailTargetCount"></span>)</a>
+                                                            <a style="padding:2px" href="javascript:void(0)" ng-click="popupOpenFilemanager('#/filemanager/target')"><span class="orderout"></span>Upload &nbsp;(<span class="targteC" id="proDetailTargetCount"></span>)</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -197,8 +473,11 @@
                                                         <tbody>
                                                             <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
                                                                 <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
-                                                                <td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> &nbsp;&nbsp;<span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
-                                                                <td><span class="checkList"></span></td>
+                                                                <td>
+                                                                    <!-- <span style="color:green;"> <i class="fa fa-check" aria-hidden="true"></i> </span> -->
+                                                                    <span id="work_name{{$index}}" ng-bind="war.work_name"><span>
+                                                                </td>
+                                                                <td><span class="checkList"></span> <input type="checkbox" id="workcheck{{war.work_id}}" value="war.work_checked" ng-checked="war.work_checked == true" name="work_checked" ng-click="checkWorkInstruct(war.work_id)"> </td>
                                                             </tr>
                                                             <tr ng-show="wrInstructEmpty">
                                                                 <td colspan="4" ng-bind="dataNotFound"></td>
@@ -246,6 +525,112 @@
                                    
                                 </form>
                             </div>
+                    </tab>
+                    <tab index="0">
+                        <tab-heading>
+                            <i class="fa fa-info-circle"></i>
+                            <span>Discussion</span>
+                        </tab-heading>
+                        <div class="tab-content">
+                            <div id="w4-tab1" class="tab-pane discussion_page active">
+                                
+                                <div class="panel-body chatbox">
+                                    <div class="row d-flex">
+                                      <div class="col-sm-8 livemsg w-100">
+                                          <div id="comments-container"></div>
+                                      </div>
+                                      <div class="col-md-4 statusBox">
+                                        <span style="display: inline-block; padding:0px 20px 10px 20px"><b>Status</b></span> 
+                                        <div class="navside white r box-shadow-z0 nav-center" layout="column">
+                                          <div flex-no-shrink=""
+                                            style="background:#fff; border-radius: 5px;">
+                                            <nav ui-nav="">
+                                              <ul class="nav">
+                                                <li>
+                                                    <span class="nav-text">
+                                                      <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs" style="color: {{general.status_color}}"></i> {{general.project_status}}</span>
+                                                      <small class="block text-muted"> </small></span>
+                                                </li>
+                                                <!-- <li>
+                                                    <span class="nav-icon"><i class="fa fa-clock-o"></i></span>
+                                                    <span class="nav-text">{{general.due_date}}<small class="block text-muted">Deadline</small></span>
+                                                </li>
+                                                <li>
+                                                    <span class="nav-icon"><i class="fa fa-user"></i></span>
+                                                    <span class="nav-text"><span id="manager"></span><small class="block text-muted">Project Manager</small></span>
+                                                </li>
+                                                <li>
+                                                    <span class="nav-icon"><i class="fa fa-indent"></i></span>
+                                                    <span class="nav-text">{{general.project_price | currencyCommaformat}} USD<small class="block text-muted">Project Price</small></span>
+                                                </li> -->
+                                                <li class="projectName">
+                                                  <i class="fa fa-tasks"></i>
+                                                  <div class="caption">
+                                                    <div class="name">{{general.project_name}}<label>Project Name</label></div>
+                                                  </div>
+                                                </li>
+                                                <li class="deadline">
+                                                  <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+                                                  <div class="caption">
+                                                    <div class="Delivery-date">{{general.due_date }}<label>Estimated delivery</label></div>
+                                                    <div class="startDate"><strong>Started:</strong> {{general.expected_start_date}}</div>
+                                                  </div>
+                                                </li>
+                                                <li class="task-price">
+                                                  <div class="caption">
+                                                    <i class="fa fa-snowflake-o" aria-hidden="true"></i>
+                                                    <label>Project Price</label>
+                                                  </div>
+                                                  <span class="price">{{projectPriceChat | CurrencyNumbersCommaformat}}</span>
+                                                </li>
+                                                <li class="userSection">
+                                                  <span class="sec-title">Project Members:</span>
+                                                  <div class="top">
+                                                    <figure class="managerIcon"></figure>
+                                                    <div class="user-info">
+                                                      <div class="user-name"><span id="managerDesignation">Mayank Vadiya</span><span class="designation">Project Manager</span></div>
+                                                    </div>
+                                                  </div>
+                                                  <div class="projectTeam">
+                                                    <div class="team-list">
+                                                      <div class="list-item">
+                                                        <figure class="coordinatorIcon"></figure>
+                                                        <div class="right">
+                                                          <strong id="coordinatorIcon"> </strong>
+                                                          <span class="designation">Project Coordinator</span>
+                                                        </div>
+                                                      </div>
+                                                      <div class="list-item">
+                                                        <figure class="QAIcon"></figure>
+                                                        <div class="right">
+                                                          <strong id="QASpecialist"> - </strong>
+                                                          <span class="designation">QA Specialist</span>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <div class="team-list">
+                                                      <div class="list-item" ng-repeat="linguist in jobLinguist" >
+                                                        <figure style="background: url(uploads/profilePic/{{linguist.resourcePic}}) no-repeat center;background-size: cover;">  </figure>
+                                                        <div class="right">
+                                                          <strong>{{linguist.vUserName}}</strong>
+                                                          <span class="designation">Linguist</span>
+                                                        </div>
+                                                      </div>
+                                                      
+                                                    </div>
+                                                  </div>
+                                                </li>
+                                              </ul>
+                                            </nav>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </tab>
+                </tabset>
                     </div>
     
                 <!-- </section> -->

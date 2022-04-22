@@ -47,7 +47,7 @@
                                             ng-bind="viewExternalCommunicational.vResourceType">.</span></span>
                                     </span>
                                 </div>
-                                <div class="btn-group d-flex">
+                                <div class="btn-group d-flex" ng-if="userRight==1">
                                     <button class="btn btn-info" ng-click="emailSent(viewExternalCommunicational.iUserId,'External','1')" title="Email"><i class="fa fa-envelope-o"></i> Email</button>
                                     <a class="btn btn-info" href="#/user-profile/{{viewExternalCommunicational.iUserId}}" title="edit"><i class="glyph-icon fa-edit-white"></i>Edit</a>
                                     <a href="javascript:void(0)" class="btn btn-info" ng-click="viewFileManager(viewExternalCommunicational.iUserId)" title="File Manager"><i class="fa fa-folder-open"></i>File Manager</a>
@@ -56,6 +56,10 @@
                                         <span ng-if="viewExternalCommunicational.eUserStatus == 3">Set As InActive</span>
                                         <span ng-if="viewExternalCommunicational.eUserStatus != 3">Set As Active</span>
                                     </button>
+                                </div>
+                                <div class="btn-group d-flex" ng-if="userRight==2">
+                                    <a class="btn btn-info" href="#/user-profile/{{viewExternalCommunicational.iUserId}}" title="edit"><i class="glyph-icon fa-edit-white"></i>Edit</a>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -155,7 +159,7 @@
                                                 <span ng-bind="viewExternalCommunicational.vEmailAddress"></span>
                                                 <a href="javascript:void(0)"
                                                     ng-click="emailSent(viewExternalCommunicational.iUserId,'External','1')"
-                                                    title="Email" class="trActionIcon"><i class="fa fa-envelope-o"
+                                                    title="Email" class="trActionIcon" ng-if="userRight==1"><i class="fa fa-envelope-o"
                                                         style="font-size:15px;"></i></a>
                                             </td>
                                         </tr>
@@ -165,7 +169,7 @@
                                                 <span ng-bind="viewExternalCommunicational.vSecondaryEmailAddress"></span>
                                                 <a href="javascript:void(0)"
                                                     ng-click="emailSent(viewExternalCommunicational.iUserId,'External','1','toSecondaryEmail')"
-                                                    title="Email" class="trActionIcon"><i class="fa fa-envelope-o"
+                                                    title="Email" class="trActionIcon" ng-if="userRight==1"><i class="fa fa-envelope-o"
                                                         style="font-size:15px;"></i></a>
                                             </td>
                                         </tr>
@@ -427,7 +431,7 @@
                                         </tr>
                                     </table>
                                     <div class="text-right m-t-sm">
-                                        <a class="btn btn-info" ng-click="newfeedback('scrollToNew')">New feedback</a>
+                                        <a class="btn btn-info" ng-click="newfeedback('scrollToNew')" ng-if="userRight==1">New feedback</a>
                                         <!-- <a class="btn btn-info" ng-click="viewfeedback('scrollToNew')">view feedback</a> -->
                                         <a class="btn btn-info" ng-click="viewfeedbackPoup()">view feedback</a>
                                     </div>

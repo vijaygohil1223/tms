@@ -898,12 +898,18 @@
                             </a>
 
     </li>
-    <li class="line dk hidden-folded"  ng-if="userRight==1"></li>
-    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs" ng-if="userRight==1">          
+    <li class="line dk hidden-folded"></li>
+    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">          
         <span class="font-bold" style="color: #8d99a7;">Insights</span>
     </li>
     <li ng-if="userRight==1">
         <a href="#/viewinternal/1">
+            <i class="icon-user icon text-success-lter"></i>
+            <span>Profile</span>
+        </a>
+    </li>
+    <li ng-if="userRight==2">
+        <a href="#/viewExternal/{{uId}}">
             <i class="icon-user icon text-success-lter"></i>
             <span>Profile</span>
         </a>

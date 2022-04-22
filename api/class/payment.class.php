@@ -49,7 +49,7 @@ class payment {
     	return $data;
     }
     public function getClientpayment($id){
-    	$this->_db->where('iClientId', $id);
+        $this->_db->where('iClientId', $id);
     	$data = $this->_db->getOne('tms_payment');
     	return $data;
     }
@@ -86,9 +86,10 @@ class payment {
             $return['From'] = 'norway';
             return $return; 
         }else{//26375245
-            //Prepare the URL 
+
             $url = 'http://ec.europa.eu/taxation_customs/vies/viesquer.do?ms='.$country1.'&iso='.$country1.'&vat='.$vatnum1.'&name=&companyType=&street1=&postcode=&city=&BtnSubmitVat=Verify';
-            
+            //$response = file_get_contents($url);
+            //echo $response;                 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_TIMEOUT, 5);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);

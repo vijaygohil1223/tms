@@ -2253,5 +2253,19 @@ class jobs_detail {
 
     } 
 
+    public function jobSummeryWorkinstructUpdate($id, $data) {
+        $updt = json_encode($data);
+        $this->_db->where('job_summmeryId', $id);
+        $id = $this->_db->update('tms_summmery_view', array('work_instruction'=>$updt) );
+        if($id) {
+            $request['status'] = 200;
+            $request['msg'] = "Successfully updated";
+        } else {
+            $request['status'] = 401;
+            $request['msg'] = "Not updated";
+        }
+        return $request;
+    }
+    
 }
 
