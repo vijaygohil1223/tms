@@ -1593,9 +1593,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
 
     }
-    if($window.localStorage.getItem("session_iUserId") != undefined){
+    $scope.langsListAll = [];
+    if($cookieStore.get('session_iUserId') != undefined){
         console.log('console api key error languagesGet Out $window.localStorage.getItem("session_iUserId"):', $window.localStorage.getItem("session_iUserId"))
-        $scope.langsListAll = [];
         rest.path = 'languagesGet';
         rest.get().success(function(data) {
             $scope.langsListAll = data;
@@ -1603,8 +1603,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     } 
 
     // User data with postion for widget box
-    if($window.localStorage.getItem("session_iUserId")){
-        console.log('viewExternalget api key e...');
+    if($cookieStore.get('session_iUserId') != undefined){
+        console.log("api key issue $cookieStore.get('session_iUserId'):",$cookieStore.get('session_iUserId'));
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
             console.log('jobdeliver-user', data.vResourcePosition)
@@ -2586,7 +2586,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     // widget Absent Linguist
     $scope.absentLinguistlist = function() {
-        if($window.localStorage.getItem("session_iUserId")){    
+        if($cookieStore.get('session_iUserId') != undefined){
             rest.path = 'user/' + 2;
             rest.get().success(function(data) {
                 var absentLngstlist = data.data;
@@ -18289,6 +18289,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             // $timeout(function () {
             //     success(data);
             // }, 500);
+            data.job_id = 0;
             data.order_id = $routeParams.id;
             data.user_id = $window.localStorage.getItem("session_iUserId");
             data.fullname = $window.localStorage.getItem("session_vUserName");
@@ -18386,6 +18387,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     "modified": dataArray[index].modified,
                     "created_by_current_user": '1',
                     "upvote_count": '0',
+                    "job_id": 0,
                     "user_has_upvoted": '0',
                     "read_id": $window.localStorage.getItem("session_iUserId") + ',',
 
@@ -23060,6 +23062,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         })
     }
 
+    var defaultParamsJobid = $routeParams.id;
+    $scope.jobDetailSelect = function(){
+        $routeParams.id = defaultParamsJobid;
+        $window.localStorage.jobfolderId = defaultParamsJobid;
+    }
+
     $scope.popupOpenFilemanager = function(id) {
         closeWindows();
         $window.localStorage.ItemClient = '';
@@ -23157,6 +23165,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             //getting freelancer payment information data
             rest.path = "getUserDataById/" + $scope.jobdetail.resource;
             rest.get().success(function(dataUser) {
+                console.log('dataUser-detail', dataUser)
                 $scope.vBankInfo = JSON.parse(dataUser.userPaymentData.vBankInfo);
                 $scope.currencyCodeDisplay = $scope.vBankInfo.currency_code;
             }).error(errorCallback);
@@ -23265,7 +23274,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $location.path('/project-detail/' + $routeParams.id);
     }
 
+
     // Start comment chat
+$scope.discussionChat = function(){
+    console.log('discussionChat called')
+    console.log('$window.localStorage.ClientName',$window.localStorage.ClientName)
+    $routeParams.id = $scope.jobDiscussionRedirect;                
+
     var loginid = $window.localStorage.getItem("session_iUserId");
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
@@ -23278,6 +23293,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     rest.path = 'viewProjectCustomerDetail';
     rest.model().success(function(data) {
         $scope.customer = data;
+        console.log('$scope.customer', $scope.customer)
         $window.localStorage.clientproCustomerName = $scope.customer.client;
         $window.localStorage.ContactPerson = $scope.customer.contact;
         $routeParams.ClientIdd = data['client'];
@@ -23336,10 +23352,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }).error(errorCallback);
 
     $routeParams.id = $routeParams.id;
-    rest.path = 'generalVieData/' + $scope.jobDiscussionRedirect + '/' + $window.localStorage.ClientName;
+    rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
     rest.get().success(function(data) {
         $scope.general = data;
         console.log('$scope.general',$scope.general);
+        console.log('$scope.jobDiscussionRedirect-generl',$scope.jobDiscussionRedirect)
         //$scope.general.order_date = $scope.general.order_date;
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
         //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
@@ -23386,12 +23403,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     rest.path = "users";
     rest.get().success(function(data) {
     // console.log("datadata",data);
-    angular.forEach(data.data, function(val, i) {
-        //if(val.iUserId != loginid && val.freelancer == 'freelancer' ){
-        if(val.iUserId != loginid){
-            $scope.teamArray.push(val.iUserId);
-        }    
-    });
+        angular.forEach(data.data, function(val, i) {
+            //if(val.iUserId != loginid && val.freelancer == 'freelancer' ){
+            if(val.iUserId != loginid){
+                $scope.teamArray.push(val.iUserId);
+            }    
+        });
     }).error(errorCallback);
 
     $scope.projectPriceChat = 0;
@@ -23441,6 +23458,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
             rest.get().success(function(data) {
                 setTimeout(function() {
+                    console.log('data-repeating - timeout',data);
+                    console.log('loginIDDtimeout',loginid);
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function(val, i) {
                         var dataId = val.id;
@@ -23755,7 +23774,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }, 2800);
 
 
-
     $timeout(function() {
         var el = $("#addemoji").emojioneArea();
         el[0].emojioneArea.on("emojibtn.click", function() {
@@ -23898,6 +23916,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 // $timeout(function () {
                 //     success(data);
                 // }, 500);
+                data.job_id = defaultParamsJobid;
                 data.order_id = $scope.jobDiscussionRedirect;
                 data.user_id = $window.localStorage.getItem("session_iUserId");
                 data.fullname = $window.localStorage.getItem("session_vUserName");
@@ -23995,6 +24014,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         "modified": dataArray[index].modified,
                         "created_by_current_user": '1',
                         "upvote_count": '0',
+                        "job_id": defaultParamsJobid,
                         "user_has_upvoted": '0',
                         "read_id": $window.localStorage.getItem("session_iUserId") + ',',
     
@@ -24012,7 +24032,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         });
     }, 1000);
-
+};
     $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
@@ -26493,6 +26513,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 // $timeout(function () {
                 //     success(data);
                 // }, 500);
+                data.job_id = 0;
                 data.order_id = $routeParams.id;
                 data.user_id = $window.localStorage.getItem("session_iUserId");
                 data.fullname = $window.localStorage.getItem("session_vUserName");
@@ -26590,6 +26611,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         "modified": dataArray[index].modified,
                         "created_by_current_user": '1',
                         "upvote_count": '0',
+                        "job_id": 0,
                         "user_has_upvoted": '0',
                         "read_id": $window.localStorage.getItem("session_iUserId") + ',',
     

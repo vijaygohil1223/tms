@@ -368,7 +368,7 @@ li.seperatordate.comment {
             <div class="bg-light lter b-b wrapper-md" id="userprofile-ctrl" >
                 <!-- <section class="panel form-wizard" id="w4" ng-stepform="dynamic"> -->
                 <tabset active="active">    
-                    <tab index="1">
+                    <tab index="1" select="jobDetailSelect()">
                         <tab-heading>
                             <i class="fa fa-address-card"></i>
                             <span>Job Details</span>
@@ -526,9 +526,9 @@ li.seperatordate.comment {
                                 </form>
                             </div>
                     </tab>
-                    <tab index="0">
-                        <tab-heading>
-                            <i class="fa fa-info-circle"></i>
+                    <tab index="0" select="discussionChat()">
+                        <tab-heading >
+                            <i class="fa fa-commenting-o"></i>
                             <span>Discussion</span>
                         </tab-heading>
                         <div class="tab-content">

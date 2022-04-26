@@ -122,6 +122,7 @@ class general {
     }
 
     public function generalVieData($id,$client_id) {
+        
         $this->_db->where("order_id", $id);
         $results = $this->_db->getOne('tms_general');
 
