@@ -276,7 +276,7 @@ class Freelance_invoice {
     }
     public function getFreelanceStatement($id){
          
-        $data = $this->_db->rawQuery("SELECT tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.is_approved,tmInvoice.created_date FROM tms_users AS tu INNER JOIN tms_invoice AS tmInvoice ON tu.iUserId = tmInvoice.freelance_id WHERE tu.iUserId = $id");
+        $data = $this->_db->rawQuery("SELECT tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.is_approved,tmInvoice.reminder_sent,tmInvoice.created_date FROM tms_users AS tu INNER JOIN tms_invoice AS tmInvoice ON tu.iUserId = tmInvoice.freelance_id WHERE tu.iUserId = $id");
         return $data;
     }
     public function filterStatement($filterParams){
@@ -362,8 +362,8 @@ class Freelance_invoice {
         $this->_mailer->Host = "ssl://smtp.gmail.com";
         $this->_mailer->SMTPAuth = "true";
         $this->_mailer->Port = "465";
-        $this->_mailer->Username = "ChrisGilesItWorks@gmail.com";
-        $this->_mailer->Password = "Knh@Admin@123";
+        $this->_mailer->Username = SMTP_EMAIL_USER;
+        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
 
         $this->_mailer->From = "Tms Admin";
         $this->_mailer->SetFrom = 'tmsadmin@tms.com';

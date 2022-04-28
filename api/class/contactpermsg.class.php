@@ -204,8 +204,8 @@ class contactPerMsg {
         $this->_mailer->Host = "ssl://smtp.gmail.com";
         $this->_mailer->SMTPAuth = "true";
         $this->_mailer->Port = "465";
-        $this->_mailer->Username = "ChrisGilesItWorks@gmail.com";
-        $this->_mailer->Password = "Admin@Kanhasoft@123";
+        $this->_mailer->Username = SMTP_EMAIL_USER;
+        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
 
         $this->_mailer->From = "Kanhasoft.com";
         $this->_mailer->FromName = "Kanhasoft";
@@ -449,8 +449,8 @@ class contactPerMsg {
         $this->_mailer->Host = "ssl://smtp.gmail.com";
         $this->_mailer->SMTPAuth = "true";
         $this->_mailer->Port = "465";
-        $this->_mailer->Username = "ChrisGilesItWorks@gmail.com";
-        $this->_mailer->Password = "Admin@Kanhasoft@123";
+        $this->_mailer->Username = SMTP_EMAIL_USER;
+        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
 
         $this->_mailer->From = "Kanhasoft.com";
         $this->_mailer->FromName = "Kanhasoft";
@@ -487,6 +487,7 @@ class contactPerMsg {
             $result['status'] = 200;
             $result['msg'] = 'Could not send mail!';
         }
+
         if(isset($result['status'])) {
             if(isset($emailImageData)) {
                 $img = explode("/",$emailImageData);

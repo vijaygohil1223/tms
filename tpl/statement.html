@@ -138,18 +138,18 @@
                 <span ng-if="!paidCount" class="badge bg-info">0</span>
               </a>
             </li>
-            <li class="list-group-item tab-due-today" ng-class="(highlightSearch == 'partPaid') ? 'active' : ''">
-              <a href="javascript:void(0)" ng-click="sortStatement('partPaid', 'middle')">
-              Part Paid
-                <span ng-if="partPaidCount" class="badge bg-info">{{partPaidCount}}</span>
-                <span ng-if="!partPaidCount" class="badge bg-info">0</span>
-              </a>  
-            </li>
             <li class="list-group-item tab-due-today" ng-class="(highlightSearch == 'unPaid') ? 'active' : ''">
               <a href="javascript:void(0)" ng-click="sortStatement('unPaid', 'middle')">
               Unpaid 
                 <span ng-if="unPaidCount" class="badge bg-info">{{unPaidCount}}</span>
                 <span ng-if="!unPaidCount" class="badge bg-info">0</span>
+              </a>  
+            </li>
+            <li class="list-group-item tab-due-today" ng-class="(highlightSearch == 'reminderPaid') ? 'active' : ''">
+              <a href="javascript:void(0)" ng-click="sortStatement('reminderPaid', 'middle')">
+              Requested
+                <span ng-if="remiderPayCount" class="badge bg-info">{{remiderPayCount}}</span>
+                <span ng-if="!remiderPayCount" class="badge bg-info">0</span>
               </a>  
             </li>
           </ul>
