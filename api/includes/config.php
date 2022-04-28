@@ -9,8 +9,8 @@ define('DB_USERNAME', 'root'); // please enter mysql user name
 define('DB_PASSWORD', 'kWb24pEBdUj4uKOA'); // please enter mysql user password
 define('DB_DATABASE', 'kanhawhp_tms'); // please enter your database name
 
-define('SMTP_EMAIL_USER', 'anil.kanhasoft@gmail.com'); // smtp username
-define('SMTP_EMAIL_PASSWORD', 'Anil@567'); // smtp password
+define('SMTP_EMAIL_USER', 'ChrisGilesItWorks@gmail.com'); // smtp username
+define('SMTP_EMAIL_PASSWORD', 'Knh@Admin@123'); // smtp password
 
 define('DB_PREFIX', 'tms_');
 define('LOGOUT_TIME', 1800);
