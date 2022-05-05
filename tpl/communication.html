@@ -90,7 +90,8 @@
                                                         </div> -->
                                                         <div class="col-md-6">
                                                             <label class="control-label"><strong>Creator :</strong></label>
-                                                            <span>{{CreatedBy}}</span>
+                                                            <span ng-if="CreatedBy!='undefined undefined'">{{CreatedBy}}</span>
+                                                            <span ng-if="csv_import=1">{{userprofiledata.created_by_name}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-12 pl-0">
@@ -267,6 +268,12 @@
                                                         </div>
                                                         <label for="vSkypeName" class="error"></label>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label>Specialization</label>
+                                                        <input select2-specialization-record type="text" class="form-control" name="specialization" id="specialization" ng-model="userprofiledata.specialization" required>
+                                                        <label for="specialization" class="error"></label>
+                                                    </div>
+                                                    
                                                     <!-- <div class="form-group">
                                                         <label class="control-label">Notes</label>
                                                         <textarea class="form-control"  name="tMemo" ng-model="userprofiledata.tMemo" ng-blur="notesWarning()" style="resize: none;"></textarea>

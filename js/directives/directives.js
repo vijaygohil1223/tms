@@ -3245,6 +3245,34 @@ app.directive('select2SpecializationProject', function($http, rest, $timeout) {
         }
     }
 });
+/* Specalization for Linguist Profile */
+app.directive('select2SpecializationRecord', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            rest.path = 'getAllSpecialization';
+            rest.get().success(function(data) {
+                var type = [];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        'id': value.id,
+                        'text': value.name
+                    };
+                    type.push(obj);
+                });
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: type,
+                        multiple: true,
+                        closeOnSelect:false
+                    });
+                }, 500);
+            }).error(function(data, error, status) {});
+        }
+    }
+});
 app.directive('select2ItemTax', function($http, rest, $timeout, $log) {
     return {
         restrict: 'EA',

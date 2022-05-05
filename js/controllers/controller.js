@@ -26651,6 +26651,269 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         });
     };
+}).controller('csvLingstProfileController', function($scope, $q, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder) {
+    //debugger;
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+
+    const filterByReference = (arr1, arr2) => {
+        let resIds = [];
+        let res = [];
+        res = arr1.filter(el => {
+           return arr2.find(element => {
+              let element2 = element.trim();  
+              if(element2 === el.name){
+                 return resIds.push(el.id);    
+              }
+           });
+        });
+        return resIds;
+    }
+    // To find software hardware and cat Tools Properties ids
+    //$cookieStore.get('session_iUserId');
+    const filterByReferenceProp = (arr1, arr2) => {
+        let resIds = [];
+        let res = [];
+        res = arr1.filter(el => {
+            
+           return arr2.find(element => {
+             //console.log('element', element)
+              let element2 = element.trim();  
+              if(element2 === el.value_name){
+                 return resIds.push(el.value_id);    
+              }
+           });
+        });
+        return resIds;
+    }
+
+    $scope.propList = [];
+    rest.path = "getAllPropertiesValue";
+    rest.get().success(function(data) {
+        $scope.propList = data;
+    });
+    
+    $scope.specializeList = [];
+    rest.path = "getAllSpecialization";
+    rest.get().success(function(data) {
+        $scope.specializeList = data;
+    });
+
+    // To get phone code country code To add data in mobile
+    $scope.cpuntryMobilecodeList = [];    
+    fetch('country-phonecode.json')
+        .then(response => response.json())
+        .then(data => {
+            $scope.cpuntryMobilecodeList = data;
+        }
+    );
+    
+
+    $scope.csvDataInsrt = [];
+    var percent = 0;
+    $scope.csvFieds = []
+    $scope.getFile = function(files) {
+        console.log('files', files);
+        if(!files)
+        $scope.csvProgress = false;
+        $scope.csvFilename = files.name;
+        $scope.csvmatchMsg = false;
+        Papa.parse(files, {
+            //header: false,
+            //preview: 5,
+            //worker:true,
+            download: true,
+            //delimiter: ";",
+            //skipEmptyLines: true,
+            encoding: "utf-8",
+            complete: function(results, files,err) {
+                console.log('results', results)
+                var csv = results.data;
+                console.log('csv', csv[0])
+                var numindex=0;
+                $scope.csvData = [];
+                var gtotal = 0;
+                var Isnumpattern = /^[0-9,\.\? ]+$/;
+                var isError = false;
+                $scope.csvFieds = csv[0]; 
+                $scope.csvData = csv; 
+                console.log('$scope.csvData', $scope.csvData)
+                angular.forEach(csv, function(val, i) {
+                    var dtCreationDate = '0000-00-00';
+                    var dtLast_job = '0000-00-00';
+                    
+                    /// avoid first row contain Fields name        
+                    if(i > 0){
+                            var deferred = $q.defer();
+                            
+                            if(val[3]=="�")
+                            val[3]='';
+                            if(val[9]=="�")
+                            val[9]='';
+                            if(val[11]=="�")
+                            val[11]='';
+                            
+                            if(val[15]){
+                                var dt = (val[15]).split('.')
+                                if(dt.length == 3){
+                                    var dtCreationDate = dt[2] + '-' + dt[1] + '-' + dt[0]
+                                }
+                            }
+                            if(val[16]){
+                                var last_dt = (val[16]).split('.')
+                                if(dt.length == 3){
+                                    var dtLast_job = last_dt[2] + '-' + last_dt[1] + '-' +last_dt[0]
+                                }
+                            }
+                            var email1 = '';
+                            var email2 = '';
+                            if(val[10]){
+                                var all_eml = (val[10]).split(';')
+                                if(all_eml.length > 1){
+                                    console.log('all_eml', all_eml)
+                                    var email1 = all_eml[0];
+                                    var email2 = all_eml[1];
+                                }else{
+                                    var email1 = all_eml[0] ? all_eml[0] : '';
+                                }
+                            }        
+                            var address1 = [];
+
+                            var address1 = [
+                                {"id":"address1_street_number","value": val[7] ? val[7] : '' },
+                                {"id":"address1_locality","value":val[5] ? val[5] : ''},
+                                {"id":"address1_administrative_area_level_1","value":val[2]  ? val[2] : ''},
+                                {"id":"address1_country","value":val[4]  ? val[4] : ''},
+                                {"id":"address1_postal_code","value":val[6]  ? val[6] : ''}
+                            ]
+                            var cTitlePhone = '';
+                            var cFlagCode = '';
+                            var countryCode = '';
+                            if(val[4]){
+                                var countryPhoneArr = $scope.cpuntryMobilecodeList.filter(function (el) {
+                                    return el.name==val[4];
+                                });
+                                if(countryPhoneArr.length>0){
+                                    cFlagCode =  'iti-flag ' + countryPhoneArr[0].code 
+                                    cTitlePhone = countryPhoneArr[0].name + ' : ' + '+' + countryPhoneArr[0].phone 
+                                
+                                    countryCode =  countryPhoneArr[0].code 
+                                }    
+                            }
+                            var countryObj = {
+                                "countryTitle": cTitlePhone,
+                                "countryFlagClass": cFlagCode,
+                                "mobileNumber": val[9] ? val[9] : ''
+                            }
+                            //console.table(countryObj);
+                            var paymentObj = {
+                                "tax_id": val[13],
+                                "country_code": countryCode,
+                                "tax_type": val[21]
+                            }
+                            console.log('paymentObj',paymentObj)
+
+                            //filterByReference - find specialization value exist in main array.
+                            var specializationArr = '';
+                            if(val[30]){
+                                var spclArr2 = (val[30]).split(','); 
+                                deferred.resolve(filterByReference($scope.specializeList,spclArr2));
+                                var specializationArr = filterByReference($scope.specializeList,spclArr2);
+                                //if(specializationArr.length>0)
+                                specializationArr = specializationArr.length > 0 ? specializationArr.toString() : '';
+                                console.log('specializationArr', specializationArr)
+                            }
+                            
+                            var hardwareVal = '';
+                            if(val[26]){
+                                var hardArr2 = (val[26]).split(','); 
+                                deferred.resolve(filterByReferenceProp($scope.propList,hardArr2));
+                                var hardwareVal = filterByReferenceProp($scope.propList,hardArr2);
+                                hardwareVal = hardwareVal.length > 0 ? hardwareVal.toString() : '';
+                                console.log('hardwareVal', hardwareVal)
+                            }
+                            var softwareVal = '';
+                            if(val[29]){
+                                var softArr2 = (val[29]).split(','); 
+                                deferred.resolve(filterByReferenceProp($scope.propList,softArr2));
+                                var softwareVal = filterByReferenceProp($scope.propList,softArr2);
+                                softwareVal = softwareVal.length > 0 ? softwareVal.toString() : '';
+                            }
+                            
+                            var obj = {
+                                'vUserName' : val[8],
+                                'vFirstName': val[8],
+                                'vEmailAddress' : email1,
+                                'vSecondaryEmailAddress':email2,
+                                'iMobile' : JSON.stringify(countryObj),
+                                'vPhoneNumber' : val[9],
+                                'vWebsite': val[3],
+                                'address1Detail' : JSON.stringify(address1),
+                                'tmemo': val[11],
+                                'activation_status' : val[12]==='Active' ? 1 : 0,
+                                'vTimeZoneCity': val[5],
+                                'vAddress1' : val[7],
+                                'vAddress2' : val[1],
+                                'iGender' : 1,
+                                'freelancer' : 'translation',
+                                'specialization' : specializationArr,
+                                'vSalesId' : val[13],
+                                'created_by_name': val[18],
+                                'dtCreationDate' : dtCreationDate,
+                                'dtLast_job' : dtLast_job,
+                                'propSoftware' : softwareVal,
+                                'propHardware' : hardwareVal,
+                                'vpaymentInfo' : JSON.stringify(paymentObj),
+                            }; 
+                            $scope.csvDataInsrt.push(obj);
+                            
+                            numindex++;
+//}  
+
+                    percent += Math.round(100 / (results.data.length));
+                    $(".progress-bar").width(percent+'%')
+                    if(percent >= 97 )
+                    $(".progress-bar").width('100%')
+                       
+                    if(i == results.data.length-1){
+                        setTimeout(()=>{
+                            $scope.csvProgress = false;
+                        },1000);
+                        setTimeout( ()=>{
+                            $scope.csvProgress = true;
+                            percent = 0;
+                            $(".progress-bar").width('0%')
+                            $('#file-input').val('');
+                        },2000)
+                        
+                        
+                    }
+
+                }
+                            
+                });
+                console.log('$scope.csvDataInsrt', $scope.csvDataInsrt);
+                //$scope.csvData = [];      
+            }
+        });
+    };
+
+    $scope.saveLinguistData = function(formId) {
+        //if (angular.element("#" + formId).valid()) {
+        rest.path = 'savelinguistCsvProfile';
+        rest.post($scope.csvDataInsrt).success(function(data) {
+            console.log('data', data)
+            notification('Record inserted successfully.', 'success');
+            $route.reload();
+        }).error(errorCallback);
+        //}
+    };
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('scrollX', 'true').
+    withOption('responsive', true).
+    withOption('pageLength', 50).
+    withOption('scrollCollapse', true);
+
 
 }).controller('activitydetailController', function($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

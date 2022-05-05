@@ -40,6 +40,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'userController',
             activetab: 'dashboard',
             role: '1'
+        }).when('/csv-linguist-profile', {
+            templateUrl: modulesPath + 'csv-linguist-profile.html',
+            controller: 'csvLingstProfileController',
+            activetab: 'dashboard',
+            role: '1'
         }).when('/resourcetype', {
             templateUrl: modulesPath + 'user-type.html',
             controller: 'usertypeController',

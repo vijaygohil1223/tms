@@ -965,6 +965,11 @@ $app->delete('/values/:id', 'authenticate',function ($id) {
     $result = $value->delete($id);
     echoResponse($result ['status'], $result);
 });
+$app->get('/getAllPropertiesValue', function () use($app) {
+    $value = new value ();
+    $result = $value->getAll();
+    echoResponse(200, $result);
+});
 
 // -------------user/client property --------------------//
 
@@ -3568,7 +3573,17 @@ $app->delete('/bankDetails/:id','authenticate', function ($id) use($app) {
     echoResponse($result ['status'], $result);
 });
 // Emd Bank Details //
-
+$app->post('/savelinguistCsvProfile', 'authenticate',function () use($app) {
+    $csv = new users ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $csv->savelinguistCsvProfile($data);
+    echoResponse(200, $result);
+});
+$app->get('/getAllSpecialization','authenticate', function () use($app) {
+    $specialz = new users ();
+    $result = $specialz->getAllSpecialization();
+    echoResponse(200, $result);
+});
 
 $app->run();
 ?>

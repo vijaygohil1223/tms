@@ -262,6 +262,8 @@ class users {
     }
 
     public function saveuserprofileexternelS($user) {
+        print_r($user);
+        exit;
         $activationToken = sha1(mt_rand(10000,99999).time());
         $emailPassToSend =  $user['vPassword'];
         $user['activation_token'] = $activationToken;
@@ -1077,4 +1079,120 @@ array(
         }
         return $return;
     }
+
+    // Specialization Data
+    public function getAllSpecialization() {
+        $this->_db->where("is_active", 1);
+        return $results = $this->_db->get('tms_specialization');
+    }
+
+    // Linguist Profile Import csv
+    public function savelinguistCsvProfile($userData) {
+
+        foreach ($userData as $user) {
+           $resourceNumber = self::userProfileNumberGet(2);
+           $user['iResourceNumber'] = str_pad($resourceNumber, 4, '0',STR_PAD_LEFT);
+           $propSoftware = $user['propSoftware'];
+           $propHardware = $user['propHardware'];
+           $vPaymentInfo = $user['vpaymentInfo'];
+           unset($user['propSoftware']);
+           unset($user['propHardware']);
+           unset($user['vpaymentInfo']);
+            
+            $activationToken = sha1(mt_rand(10000,99999).time());
+            //$emailPassToSend =  $user['vPassword'];
+            $user['activation_token'] = $activationToken;
+            
+            $this->_username = $user['vUserName'];
+            $this->_useremail = $user['vEmailAddress'];
+            if ($this->getUser_Username() && $this->getUser_Email()) {
+                $return['status'] = 422;
+                $return['msg'] = 'User name OR email already exists.';
+            }
+            // else if ($this->getUser_Email()) {
+            //     $return['status'] = 422;
+            //     $return['msg'] = 'Email address already exists.';
+            // }
+            else {
+                $user['iFkUserTypeId'] = 2;
+                $user['csv_import'] = 1;
+                $user['eUserStatus'] = 3;
+                $user['vResourceType'] = 4;
+                $user['vPassword'] = 123; // static for import csv data
+                $user['org_pass'] = $user['vPassword'];
+                $user['vPassword'] = md5($user['vPassword']);
+                $user['vProfilePic'] = 'user-icon.png';
+                //$user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
+                //$user['dtCreationDate'] = date('Y-m-d H:i:s')/*$user['dtCreationDate']*/;
+                $user['dtCreatedDate'] = date('Y-m-d H:i:s');
+                $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
+
+                $id = $this->_db->insert(TBL_USERS, $user);
+                // echo $this->_db->getLastQuery();
+                
+                if ($id) {
+                    $data['created_date'] = date('Y-m-d H:i:s');
+                    $data['updated_date'] = date('Y-m-d H:i:s');
+                    $data['user_id'] = $id;
+                    $data['name'] = 'external-'.$user['iResourceNumber'];
+                    $exResourceFmanager = $this->_db->insert('tms_filemanager', $data);
+                    //Inserting Default Folders in External Resource File Manager
+                    if($exResourceFmanager){
+                        $defaultFolderArray = array('Data','Projects','Invoice');
+                        foreach ($defaultFolderArray as $key => $value) {
+                            $info['name'] = $value;
+                            $info['is_default_folder'] = 1;
+                            if($value == 'Projects'){
+                                $info['is_ex_project_folder'] = 1;
+                            }else{
+                                $info['is_ex_project_folder'] =0;
+                            }
+                            $info['parent_id'] = $exResourceFmanager;
+                            $this->_db->insert('tms_filemanager',$info);
+                        }
+                    }
+                    
+                    if($propSoftware != ''){
+                        $softData['user_id'] = $id; 
+                        $softData['type'] = 1; 
+                        $softData['property_id'] = 1; // property id from tms_property tabel
+                        $softData['value_id'] = $propSoftware; 
+                        $softData['created_date'] = date('Y-m-d H:i:s'); 
+                        $softData['updated_date'] = date('Y-m-d H:i:s'); 
+                        $sDataIns = $this->_db->insert('tms_user_property', $softData);
+                    }
+                    if($propHardware != ''){
+                        $hardData['user_id'] = $id; 
+                        $hardData['type'] = 1; 
+                        $hardData['property_id'] = 10; // property id from tms_property tabel
+                        $hardData['value_id'] = $propHardware; 
+                        $hardData['created_date'] = date('Y-m-d H:i:s'); 
+                        $hardData['updated_date'] = date('Y-m-d H:i:s'); 
+                        $hDataIns = $this->_db->insert('tms_user_property', $hardData);
+                    }
+
+                    if($vPaymentInfo != ''){
+                        $payData['iUserId'] = $id; 
+                        $payData['iType'] = 1; 
+                        $payData['iClientId'] = 0;
+                        $payData['vPaymentInfo'] = $vPaymentInfo; 
+                        $payData['dtCreatedDate'] = date('Y-m-d H:i:s'); 
+                        $payData['dtUpdatedDate'] = date('Y-m-d H:i:s'); 
+                        $hDataIns = $this->_db->insert('tms_payment', $payData);
+                    }
+
+                    $return['status'] = 200;
+                    $return['msg'] = 'Inserted Successfully.';
+                    $return['iUserId'] = $id;
+                    $this->_userid = $id;
+                    $return['userData'] = $this->getUser_Id();
+                } else {
+                    $return['status'] = 422;
+                    $return['msg'] = 'Not inserted.';
+                }
+            }
+        }    
+        return $return;    
+    }
+
 }
