@@ -13583,12 +13583,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     if(val.paid_amount == 0){
                         statmntUnPaid.push(val);            
                     }
-                    if(val.invoice_status == 'Complete'){
+                    if(val.invoice_status == 'Complete' || (val.is_approved == 1 && val.paid_amount > 0)){
                         statmntPaid.push(val);   
                     }
                     if(val.invoice_status == 'Open' && val.is_approved == 1 &&  val.reminder_sent==1){
                         statmntReminderPaid.push(val);   
-                        console.log('statmntReminderPaid', statmntReminderPaid)
                     }       
                     
                 }    
