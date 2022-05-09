@@ -26722,7 +26722,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             //preview: 5,
             //worker:true,
             download: true,
-            //delimiter: ";",
+            delimiter: "",
             //skipEmptyLines: true,
             encoding: "utf-8",
             complete: function(results, files,err) {
