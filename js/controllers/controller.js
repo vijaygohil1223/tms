@@ -24032,6 +24032,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
 }).controller('freelancerInvoiceViewController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.reminderBtnHideShow = false;
+
     if ($routeParams.id) {
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function(data) {
@@ -24086,6 +24088,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
 
+            var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
+            if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Cancel' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.is_approved == 1)){
+                if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    $scope.reminderBtnHideShow = true;
+                }
+            }
+
         }).error(errorCallback);
     }
 
@@ -24113,15 +24122,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     }
     
-    $scope.reminderBtnHideShow = false;
     $timeout(function() {
-        var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
-        if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Cancel' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.is_approved == 1)){
-            if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
-                $scope.reminderBtnHideShow = true;
-            }
-        }
-        
+        // var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
+        // if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Cancel' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.is_approved == 1)){
+        //     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+        //         $scope.reminderBtnHideShow = true;
+        //     }
+        // }
     }, 500);
 
     $scope.sendRemiderinvoice = function(number){
@@ -26809,7 +26816,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 "country_code": countryCode,
                                 "tax_type": val[21]
                             }
-                            console.log('paymentObj',paymentObj)
+                            //console.log('paymentObj',paymentObj)
 
                             //filterByReference - find specialization value exist in main array.
                             var specializationArr = '';
@@ -26828,7 +26835,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 deferred.resolve(filterByReferenceProp($scope.propList,hardArr2));
                                 var hardwareVal = filterByReferenceProp($scope.propList,hardArr2);
                                 hardwareVal = hardwareVal.length > 0 ? hardwareVal.toString() : '';
-                                console.log('hardwareVal', hardwareVal)
                             }
                             var softwareVal = '';
                             if(val[29]){
@@ -26836,6 +26842,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 deferred.resolve(filterByReferenceProp($scope.propList,softArr2));
                                 var softwareVal = filterByReferenceProp($scope.propList,softArr2);
                                 softwareVal = softwareVal.length > 0 ? softwareVal.toString() : '';
+                            }
+                            var catToolsVal = '';
+                            if(val[22]){
+                                var catToolsArr2 = (val[22]).split(','); 
+                                deferred.resolve(filterByReferenceProp($scope.propList,catToolsArr2));
+                                var catToolsVal = filterByReferenceProp($scope.propList,catToolsArr2);
+                                catToolsVal = catToolsVal.length > 0 ? catToolsVal.toString() : '';
+                                console.log('catToolsVal', catToolsVal)
                             }
                             
                             var obj = {
@@ -26861,6 +26875,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 'dtLast_job' : dtLast_job,
                                 'propSoftware' : softwareVal,
                                 'propHardware' : hardwareVal,
+                                'propCatTools' : catToolsVal,
                                 'vpaymentInfo' : JSON.stringify(paymentObj),
                             }; 
                             $scope.csvDataInsrt.push(obj);

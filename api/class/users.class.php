@@ -579,8 +579,8 @@ array(
                 $this->_mailer->Host = "ssl://smtp.gmail.com";
                 $this->_mailer->SMTPAuth = "true";
                 $this->_mailer->Port = "465";
-                $this->_mailer->Username = "ChrisGilesItWorks@gmail.com";
-                $this->_mailer->Password = "Admin@Kanhasoft@123";
+                $this->_mailer->Username = SMTP_EMAIL_USER;
+                $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
 
                 $this->_mailer->From = "Kanhasoft.com";
                 $this->_mailer->FromName = "TMS Admin";
@@ -1094,9 +1094,11 @@ array(
            $user['iResourceNumber'] = str_pad($resourceNumber, 4, '0',STR_PAD_LEFT);
            $propSoftware = $user['propSoftware'];
            $propHardware = $user['propHardware'];
+           $propCatTools = $user['propCatTools'];
            $vPaymentInfo = $user['vpaymentInfo'];
            unset($user['propSoftware']);
            unset($user['propHardware']);
+           unset($user['propCatTools']);
            unset($user['vpaymentInfo']);
             
             $activationToken = sha1(mt_rand(10000,99999).time());
@@ -1155,7 +1157,7 @@ array(
                     if($propSoftware != ''){
                         $softData['user_id'] = $id; 
                         $softData['type'] = 1; 
-                        $softData['property_id'] = 1; // property id from tms_property tabel
+                        $softData['property_id'] = 1; // 'Software' property id from tms_property tabel
                         $softData['value_id'] = $propSoftware; 
                         $softData['created_date'] = date('Y-m-d H:i:s'); 
                         $softData['updated_date'] = date('Y-m-d H:i:s'); 
@@ -1164,11 +1166,21 @@ array(
                     if($propHardware != ''){
                         $hardData['user_id'] = $id; 
                         $hardData['type'] = 1; 
-                        $hardData['property_id'] = 10; // property id from tms_property tabel
+                        $hardData['property_id'] = 10; // 'Hardware' property id from tms_property tabel
                         $hardData['value_id'] = $propHardware; 
                         $hardData['created_date'] = date('Y-m-d H:i:s'); 
                         $hardData['updated_date'] = date('Y-m-d H:i:s'); 
                         $hDataIns = $this->_db->insert('tms_user_property', $hardData);
+                    }
+
+                    if($propCatTools != ''){
+                        $cToolsData['user_id'] = $id; 
+                        $cToolsData['type'] = 1; 
+                        $cToolsData['property_id'] = 11; // 'Cat Tools' property id from tms_property tabel
+                        $cToolsData['value_id'] = $propCatTools; 
+                        $cToolsData['created_date'] = date('Y-m-d H:i:s'); 
+                        $cToolsData['updated_date'] = date('Y-m-d H:i:s'); 
+                        $hDataIns = $this->_db->insert('tms_user_property', $cToolsData);
                     }
 
                     if($vPaymentInfo != ''){

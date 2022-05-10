@@ -102,7 +102,7 @@ class general {
         $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
 
         $this->_mailer->From = "Kanhasoft.com";
-        $this->_mailer->FromName = "Kanhasoft";
+        $this->_mailer->FromName = "TMS";
 
         $this->_mailer->Subject = "Job Detail's";
 
