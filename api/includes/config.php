@@ -12,6 +12,7 @@ define('DB_DATABASE', 'kanhawhp_tms'); // please enter your database name
 define('SMTP_EMAIL_USER', 'tms.kanhasoft@gmail.com');
 define('SMTP_EMAIL_PASSWORD', 'anil@567');
 
+
 define('DB_PREFIX', 'tms_');
 define('LOGOUT_TIME', 1800);
 define('DECIMAL', 2);
