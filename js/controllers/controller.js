@@ -1595,7 +1595,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
     $scope.langsListAll = [];
     if($cookieStore.get('session_iUserId') != undefined){
-        console.log('console api key error languagesGet Out $window.localStorage.getItem("session_iUserId"):', $window.localStorage.getItem("session_iUserId"))
         rest.path = 'languagesGet';
         rest.get().success(function(data) {
             $scope.langsListAll = data;
@@ -1604,7 +1603,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     // User data with postion for widget box
     if($cookieStore.get('session_iUserId') != undefined){
-        console.log("api key issue $cookieStore.get('session_iUserId'):",$cookieStore.get('session_iUserId'));
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
             console.log('jobdeliver-user', data.vResourcePosition)
@@ -2326,7 +2324,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     // freelance job wise data get
     if ($window.localStorage.session_iUserId && $scope.userRight == 2) {
-
+        console.log('freelanceJob call before login',$cookieStore.get('session_iUserId'));
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function(data) {
             $scope.jobList = data;
@@ -9024,6 +9022,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
 
             $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
+            console.log('$scope.userprofiledata', $scope.userprofiledata)
+            $scope.userprofiledata.dtLast_job = moment($scope.userprofiledata.dtLast_job).format($scope.dateFormatGlobal);
+            console.log('$scope.userprofiledata.dtLast_job', $scope.userprofiledata.dtLast_job)
+
 
             if (data.address1Detail) {
                 angular.forEach(JSON.parse(data.address1Detail), function(val, i) {
@@ -25820,11 +25822,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
 
     if($window.localStorage.getItem("session_iUserId")){
-        console.log('console api key error Out ---2');
         rest.path = 'languagesGet';
         rest.get().success(function(data) {
             $scope.langsList = data;
-            console.log('console api key error In---2');
         }).error(errorCallback);
 
     }    
@@ -26826,7 +26826,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 var specializationArr = filterByReference($scope.specializeList,spclArr2);
                                 //if(specializationArr.length>0)
                                 specializationArr = specializationArr.length > 0 ? specializationArr.toString() : '';
-                                console.log('specializationArr', specializationArr)
                             }
                             
                             var hardwareVal = '';
@@ -26849,12 +26848,22 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 deferred.resolve(filterByReferenceProp($scope.propList,catToolsArr2));
                                 var catToolsVal = filterByReferenceProp($scope.propList,catToolsArr2);
                                 catToolsVal = catToolsVal.length > 0 ? catToolsVal.toString() : '';
-                                console.log('catToolsVal', catToolsVal)
+                            }
+                            var firstName = val[8];
+                            var lastName = '';
+                            if(val[8]){
+                                var uName = val[8].split(' '); 
+                                if(uName.length ==2){
+                                    firstName = uName[0];
+                                    lastName = uName[1];
+                                    console.log('lastName', lastName)
+                                }
                             }
                             
                             var obj = {
                                 'vUserName' : val[8],
-                                'vFirstName': val[8],
+                                'vFirstName': firstName,
+                                'vLastName': lastName,
                                 'vEmailAddress' : email1,
                                 'vSecondaryEmailAddress':email2,
                                 'iMobile' : JSON.stringify(countryObj),

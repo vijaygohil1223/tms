@@ -262,8 +262,6 @@ class users {
     }
 
     public function saveuserprofileexternelS($user) {
-        print_r($user);
-        exit;
         $activationToken = sha1(mt_rand(10000,99999).time());
         $emailPassToSend =  $user['vPassword'];
         $user['activation_token'] = $activationToken;
@@ -1103,19 +1101,72 @@ array(
             
             $activationToken = sha1(mt_rand(10000,99999).time());
             //$emailPassToSend =  $user['vPassword'];
-            $user['activation_token'] = $activationToken;
+            $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
+
+            $proptDataIns['type'] = 1; 
+            $proptDataIns['created_date'] = date('Y-m-d H:i:s'); 
+            $proptDataIns['updated_date'] = date('Y-m-d H:i:s'); 
             
             $this->_username = $user['vUserName'];
             $this->_useremail = $user['vEmailAddress'];
+            
             if ($this->getUser_Username() && $this->getUser_Email()) {
-                $return['status'] = 422;
-                $return['msg'] = 'User name OR email already exists.';
+                $ChaeckUserId = $this->getUser_Username(); 
+                $updatedID = $ChaeckUserId['iUserId'];
+                if($updatedID){
+                    $this->_db->where('iUserId', $updatedID);
+                    $this->_db->update(TBL_USERS, $user);
+
+                    $proptData['updated_date'] = date('Y-m-d H:i:s'); 
+                    if($propSoftware != ''){
+                        $proptData['value_id'] = $propSoftware; 
+                        $this->_db->where('user_id', $updatedID);
+                        $this->_db->where('property_id', 1);
+                        $this->_db->update('tms_user_property', $proptData);
+                    }
+                    if($propHardware != ''){
+                        $proptData['value_id'] = $propHardware; 
+                        $this->_db->where('user_id', $updatedID);
+                        $this->_db->where('property_id', 10);
+                        $this->_db->update('tms_user_property', $proptData);
+
+                        $this->_db->where('user_id', $updatedID);
+                        $this->_db->where('property_id', 10);
+                        $propRec10 = $this->_db->get('tms_user_property');
+                    }
+                    if($propCatTools != ''){
+                        $proptData['value_id'] = $propCatTools; 
+                        $this->_db->where('user_id', $updatedID);
+                        $this->_db->where('property_id', 11);
+                        $this->_db->update('tms_user_property', $proptData);
+
+                        $this->_db->where('user_id', $updatedID);
+                        $this->_db->where('property_id', 11);
+                        $isExistProp = $this->_db->get('tms_user_property');
+                        if(!$isExistProp){
+                            $proptDataIns['property_id'] = 11; // 'Cat Tools' property id from tms_property tabel
+                            $proptDataIns['value_id'] = $propCatTools; 
+                            $proptDataIns['user_id'] = $updatedID; 
+                            $hDataIns = $this->_db->insert('tms_user_property', $proptDataIns);
+                        }    
+                    }
+
+                    if($vPaymentInfo != ''){
+                        $payData['vPaymentInfo'] = $vPaymentInfo; 
+                        $payData['dtUpdatedDate'] = date('Y-m-d H:i:s'); 
+                        $this->_db->where('iUserId', $updatedID);
+                        $this->_db->where('iType', 1);
+                        $this->_db->where('iClientId', 0);
+                        $this->_db->update('tms_payment', $payData);
+                    }
+                }   
+                $return['status'] = 200;
+                $return['msg'] = 'User record updated.';
+                //$return['msg'] = 'User name OR email already exists.';
             }
-            // else if ($this->getUser_Email()) {
-            //     $return['status'] = 422;
-            //     $return['msg'] = 'Email address already exists.';
-            // }
             else {
+                $user['activation_token'] = $activationToken;
+                // User Data
                 $user['iFkUserTypeId'] = 2;
                 $user['csv_import'] = 1;
                 $user['eUserStatus'] = 3;
@@ -1127,7 +1178,6 @@ array(
                 //$user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
                 //$user['dtCreationDate'] = date('Y-m-d H:i:s')/*$user['dtCreationDate']*/;
                 $user['dtCreatedDate'] = date('Y-m-d H:i:s');
-                $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
 
                 $id = $this->_db->insert(TBL_USERS, $user);
                 // echo $this->_db->getLastQuery();
@@ -1153,34 +1203,23 @@ array(
                             $this->_db->insert('tms_filemanager',$info);
                         }
                     }
-                    
+
+                    $proptDataIns['user_id'] = $id; 
                     if($propSoftware != ''){
-                        $softData['user_id'] = $id; 
-                        $softData['type'] = 1; 
-                        $softData['property_id'] = 1; // 'Software' property id from tms_property tabel
-                        $softData['value_id'] = $propSoftware; 
-                        $softData['created_date'] = date('Y-m-d H:i:s'); 
-                        $softData['updated_date'] = date('Y-m-d H:i:s'); 
-                        $sDataIns = $this->_db->insert('tms_user_property', $softData);
+                        $proptDataIns['property_id'] = 1; // 'Software' property id from tms_property tabel
+                        $proptDataIns['value_id'] = $propSoftware; 
+                        $sDataIns = $this->_db->insert('tms_user_property', $proptDataIns);
                     }
                     if($propHardware != ''){
-                        $hardData['user_id'] = $id; 
-                        $hardData['type'] = 1; 
-                        $hardData['property_id'] = 10; // 'Hardware' property id from tms_property tabel
-                        $hardData['value_id'] = $propHardware; 
-                        $hardData['created_date'] = date('Y-m-d H:i:s'); 
-                        $hardData['updated_date'] = date('Y-m-d H:i:s'); 
-                        $hDataIns = $this->_db->insert('tms_user_property', $hardData);
+                        $proptDataIns['property_id'] = 10; // 'Hardware' property id from tms_property tabel
+                        $proptDataIns['value_id'] = $propHardware; 
+                        $hDataIns = $this->_db->insert('tms_user_property', $proptDataIns);
                     }
 
                     if($propCatTools != ''){
-                        $cToolsData['user_id'] = $id; 
-                        $cToolsData['type'] = 1; 
-                        $cToolsData['property_id'] = 11; // 'Cat Tools' property id from tms_property tabel
-                        $cToolsData['value_id'] = $propCatTools; 
-                        $cToolsData['created_date'] = date('Y-m-d H:i:s'); 
-                        $cToolsData['updated_date'] = date('Y-m-d H:i:s'); 
-                        $hDataIns = $this->_db->insert('tms_user_property', $cToolsData);
+                        $proptDataIns['property_id'] = 11; // 'Cat Tools' property id from tms_property tabel
+                        $proptDataIns['value_id'] = $propCatTools; 
+                        $hDataIns = $this->_db->insert('tms_user_property', $proptDataIns);
                     }
 
                     if($vPaymentInfo != ''){
