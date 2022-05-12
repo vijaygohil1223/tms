@@ -236,8 +236,8 @@
                                                     <th>Due date</th>
                                                     <th>Project Manager</th>
                                                     <th>Status</th>
-                                                    <th>Source</th>
-                                                    <th>Target</th>
+                                                    <th>Download <!-- Source --> </th>
+                                                    <th>Upload <!-- Target --> </th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -321,8 +321,14 @@
                                                         <input ng-show="job[{{$index}}]" type="text" select2-job-detailitm-status class="form-control" name="status[]" ng-model="it.item_status[$index]" />
                                                         <input ng-show="it.job_summmeryId == id" type="text" select2-job-detailitm-status class="form-control" name="status" ng-model="it.item_status" />
                                                     </td>
-                                                    <td><a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'source')"><span class="orderin"></span>&nbsp;(<span class="sourceC{{it.job_summmeryId}}" id="sourceCount-{{it.job_summmeryId}}"></span>)</td>
-                                                <td style="width:7%;"><a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'target')"><span class="orderout"></span>&nbsp;(<span class="targteC{{it.job_summmeryId}}" id="targetCount-{{it.job_summmeryId}}"></span>)</a></td>
+                                                    <td>
+                                                        <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'target')"><span class="orderout"></span>&nbsp;(<span class="targteC{{it.job_summmeryId}}" id="targetCount-{{it.job_summmeryId}}"></span>)</a>
+                                                        <!-- <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'source')"><span class="orderin"></span>&nbsp;(<span class="sourceC{{it.job_summmeryId}}" id="sourceCount-{{it.job_summmeryId}}"></span>) </a>-->
+                                                    </td>
+                                                    <td style="width:7%;">
+                                                        <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'source')"><span class="orderin"></span>&nbsp;(<span class="sourceC{{it.job_summmeryId}}" id="sourceCount-{{it.job_summmeryId}}"></span>) </a>
+                                                        <!-- <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'target')"><span class="orderout"></span>&nbsp;(<span class="targteC{{it.job_summmeryId}}" id="targetCount-{{it.job_summmeryId}}"></span>)</a> -->
+                                                    </td>
                                                     <td>
                                                         <!-- <span ng-if="it.auto_status == 'Manual'">
                                                             <a href="javascript:void(0)">

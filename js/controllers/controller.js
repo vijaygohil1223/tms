@@ -3770,8 +3770,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.hideuploadBtn = false;
     if($window.localStorage.jobFoldertype == 'source'){
-        $scope.hideuploadBtn = true;
+        $scope.hideuploadBtn = ($scope.userRight==2) ? true : false;
     }
+    if($window.localStorage.jobFoldertype == 'target'){
+        $scope.hideuploadBtn = ($scope.userRight==2) ? false : true;
+    }
+        
     //project root get display front
     if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
@@ -4595,6 +4599,19 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $('#propertyModal').modal('show');
                     }],
                 ];
+                
+                //Source to Download and Target to Upload
+                // Remove download option in (Download Upload)
+                if($window.localStorage.jobFoldertype == 'target' && $scope.userRight==2){
+                    $scope.menuOptionsFiles.splice(0,1);
+                    $scope.menuOptionsFolder.splice(0,1);
+                }
+                if($window.localStorage.jobFoldertype == 'source' && $scope.userRight==1){
+                    $scope.menuOptionsFiles.splice(0,1);
+                    $scope.menuOptionsFolder.splice(0,1);
+                }                
+                
+
             }, 200);
         }).error(errorCallback);
     } else {
