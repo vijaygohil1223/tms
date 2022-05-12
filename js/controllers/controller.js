@@ -9008,10 +9008,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }, 100);
 
 
-
-
-
-
             $window.localStorage.admminusername = $scope.userprofiledata.vUserName;
             $window.localStorage.notewarning = $scope.userprofiledata.tMemo;
 
@@ -9022,10 +9018,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
 
             $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
-            console.log('$scope.userprofiledata', $scope.userprofiledata)
+            if($scope.userprofiledata.dtBirthDate == 'Invalid date')
+            $scope.userprofiledata.dtBirthDate = '';
+            
             $scope.userprofiledata.dtLast_job = moment($scope.userprofiledata.dtLast_job).format($scope.dateFormatGlobal);
-            console.log('$scope.userprofiledata.dtLast_job', $scope.userprofiledata.dtLast_job)
-
+            if($scope.userprofiledata.dtLast_job == 'Invalid date')
+            $scope.userprofiledata.dtLast_job = '';
 
             if (data.address1Detail) {
                 angular.forEach(JSON.parse(data.address1Detail), function(val, i) {
