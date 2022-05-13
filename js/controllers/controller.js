@@ -4599,9 +4599,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $('#propertyModal').modal('show');
                     }],
                 ];
-                
+
                 //Source to Download and Target to Upload
-                // Remove download option in (Download Upload)
+                //Remove download option in (Download Upload)
                 if($window.localStorage.jobFoldertype == 'target' && $scope.userRight==2){
                     $scope.menuOptionsFiles.splice(0,1);
                     $scope.menuOptionsFolder.splice(0,1);
@@ -11050,15 +11050,59 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.get().success(function(data) {
                 if (data.From == 'europa') {
                     $scope.payment.country_code = payment.country_code;
+                    // if (data) {
+                    //     if (data.data) {
+                    //         $scope.payment.tax_id = payment.country_code + payment.tax_id;
+                    //         $scope.vatList = data.data.substring(12250, 13222);
+                    //     }
+                    // }
+
+                    // if ($scope.vatList.length > 0) {
+                    //     angular.element('.vatNumberValid').html($scope.vatList);
+                    //     angular.element('.invalidStyle').text('No, invalid VAT number');
+                    //     $scope.blockVat = true;
+                    //     angular.element('#vatResponseFormTable').addClass('table');
+                    //     angular.element('#vatResponseFormTable').addClass('table-bordered');
+                    // } else {
+                    //     notification('Unable to get vat information, please try again.', 'warning');
+                    //     angular.element('.vatNumberValid').html('');
+                    // }
+
                     if (data) {
                         if (data.data) {
                             $scope.payment.tax_id = payment.country_code + payment.tax_id;
-                            $scope.vatList = data.data.substring(12250, 13222);
+                            //$scope.vatList = data.data.substring(20550, 21550);
+                            $scope.vatList = data.data;
+                            // var part = str.substring( str.lastIndexOf(":") + 1, str.lastIndexOf(";") );
                         }
                     }
 
-                    if ($scope.vatList.length > 0) {
-                        angular.element('.vatNumberValid').html($scope.vatList);
+                    if ($scope.vatList.valid =='true') {
+                        let response = '';
+                        response += '<table class="table table-bordered table-striped">';
+                        response += '<tbody>';
+                        response += '<tr>';
+                        response += '<th>Member State</th>';
+                        response += '<td>' + $scope.vatList.countryCode + '</td>';
+                        response += '</tr>';
+                        response += '<tr>';
+                        response += '<th>VAT Number</th>';
+                        response += '<td>' + $scope.vatList.countryCode + ' ' + $scope.vatList.vatNumber + '</td>';
+                        response += '</tr>';
+                        response += '<tr>';
+                        response += '<th>Name</th>';
+                        response += '<td>' + $scope.vatList.name + '</td>';
+                        response += '</tr>';
+                        //response += '</tr>';
+                        response += '<tr>';
+                        response += '<th>Address</th>';
+                        response += '<td>' + $scope.vatList.address + '.</td>';
+                        
+                        response += '</tr>';
+                        response += '</tbody>';
+                        response += '</table>';
+                        angular.element('.vatNumberValid').html(response);
+                        //angular.element('.vatNumberValid').html($scope.vatList);
                         angular.element('.invalidStyle').text('No, invalid VAT number');
                         $scope.blockVat = true;
                         angular.element('#vatResponseFormTable').addClass('table');
@@ -11069,33 +11113,31 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
                     angular.element('#vatLoader').css('display', 'none');
                 } else {
-                    if (data.data != null && data.data != undefined && data.data != '' && data.data.status != 400) {
+                    //if (data.data != null && data.data != undefined && data.data != '' && data.data.status != 400) {
+                    
+                    console.log('vat data', data)
+                    $scope.vatnorwayData = data.data;
+                    console.log('$scope.vatnorwayData', $scope.vatnorwayData)
+                    if ($scope.vatnorwayData != null && $scope.vatnorwayData != '' && $scope.vatnorwayData.data.valid == true && $scope.vatnorwayData.code != 400) {
                         var response = '';
                         response += '<div id="true" style="display:none">true</div>';
                         response += '<table class="table table-bordered table-striped">';
                         response += '<tbody>';
                         response += '<tr>';
                         response += '<th>Member State</th>';
-                        response += '<td>' + data.data.forretningsadresse.landkode + '</td>';
+                        response += '<td>' + $scope.vatnorwayData.data.company.country_code + '</td>';
                         response += '</tr>';
                         response += '<tr>';
                         response += '<th>VAT Number</th>';
-                        response += '<td>' + data.data.forretningsadresse.landkode + ' ' + data.data.organisasjonsnummer + '</td>';
+                        response += '<td>' + $scope.vatnorwayData.data.company.country_code + ' ' + $scope.vatnorwayData.data.company.vat_number + '</td>';
                         response += '</tr>';
                         response += '<tr>';
                         response += '<th>Name</th>';
-                        response += '<td>' + data.data.navn + '</td>';
-                        response += '</tr>';
+                        response += '<td>' + $scope.vatnorwayData.data.company.company_name + '</td>';
                         response += '</tr>';
                         response += '<tr>';
                         response += '<th>Address</th>';
-
-                        if (data.data.forretningsadresse.postnummer) {
-                            response += '<td>' + data.data.forretningsadresse.adresse + ' - ' + data.data.forretningsadresse.postnummer + ', ' + data.data.forretningsadresse.land + '.</td>';
-                        } else {
-                            response += '<td>' + data.data.forretningsadresse.adresse + ' - ' + data.data.forretningsadresse.poststed + ', ' + data.data.forretningsadresse.land + '.</td>';
-                        }
-
+                        response += '<td>' + $scope.vatnorwayData.data.company.company_address + '</td>';
                         response += '</tr>';
                         response += '</tbody>';
                         response += '</table>';

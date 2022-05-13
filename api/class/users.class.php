@@ -797,6 +797,35 @@ array(
     public function cityTimeZoneget($id) {
         //$id = 'China';
         $location = urlencode($id);
+        $geoapiKey = '34b84344790146fe81584b20f1376807';
+        //$url = "http://maps.googleapis.com/maps/api/geocode/json?address={$location}&sensor=false";
+        $url = "https://api.ipgeolocation.io/timezone?apiKey=".$geoapiKey."&location=".$location;
+        $data = file_get_contents($url);
+        
+        // Get the lat/lng out of the data
+        $data = json_decode($data);
+        
+        if(!$data) return false;
+        if(!is_object($data->geo)) return false;
+        if(!is_numeric($data->geo->latitude)) return false;
+        if(!is_numeric($data->geo->longitude)) return false;
+        $lat = $data->geo->latitude;
+        $lng = $data->geo->longitude;
+
+        $dt = new DateTimeZone($data->timezone);
+        $time = explode(":",$data->time_24);
+        
+        $hours = $time[0];
+        $minutes = $time[1];
+        date_default_timezone_set($data->timezone);
+        $info['timeZone'] ="(GMT " .$hours.'.'.$minutes .') '.$data->timezone;
+        $info['timeZoneCity'] = $id;
+        return $info;
+    }
+    // city vise info old api
+    public function cityTimeZoneget_oldAPI($id) {
+        //$id = 'China';
+        $location = urlencode($id);
         $url = "http://maps.googleapis.com/maps/api/geocode/json?address={$location}&sensor=false";
         $data = file_get_contents($url);
         
