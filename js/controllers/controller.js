@@ -26843,18 +26843,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 angular.forEach(csv, function(val, i) {
                     var dtCreationDate = '0000-00-00';
                     var dtLast_job = '0000-00-00';
-                    
                     /// avoid first row contain Fields name        
                     if(i > 0){
                             var deferred = $q.defer();
-                            
                             if(val[3]=="�")
                             val[3]='';
                             if(val[9]=="�")
                             val[9]='';
                             if(val[11]=="�")
                             val[11]='';
-                            
                             if(val[15]){
                                 var dt = (val[15]).split('.')
                                 if(dt.length == 3){
@@ -26898,7 +26895,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 if(countryPhoneArr.length>0){
                                     cFlagCode =  'iti-flag ' + countryPhoneArr[0].code 
                                     cTitlePhone = countryPhoneArr[0].name + ' : ' + '+' + countryPhoneArr[0].phone 
-                                
                                     countryCode =  countryPhoneArr[0].code 
                                 }    
                             }
@@ -26914,7 +26910,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 "tax_type": val[21]
                             }
                             //console.log('paymentObj',paymentObj)
-
                             //filterByReference - find specialization value exist in main array.
                             var specializationArr = '';
                             if(val[30]){
@@ -26924,7 +26919,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 //if(specializationArr.length>0)
                                 specializationArr = specializationArr.length > 0 ? specializationArr.toString() : '';
                             }
-                            
                             var hardwareVal = '';
                             if(val[26]){
                                 var hardArr2 = (val[26]).split(','); 
@@ -26956,7 +26950,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     console.log('lastName', lastName)
                                 }
                             }
-                            
                             var obj = {
                                 'vUserName' : val[8],
                                 'vFirstName': firstName,

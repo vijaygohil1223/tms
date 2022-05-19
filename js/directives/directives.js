@@ -3237,13 +3237,6 @@ app.directive('select2SpecializationProject', function($http, rest, $timeout) {
                     };
                     type.push(obj);
                 });
-                // $.each(data, function(i, val) {
-                //     var obj = {
-                //         'id': i,
-                //         'text': val
-                //     }
-                //     type.push(obj)
-                // });
                 $timeout(function() {
                     element.select2({
                         allowClear: true,

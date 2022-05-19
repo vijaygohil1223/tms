@@ -1127,11 +1127,9 @@ array(
            unset($user['propHardware']);
            unset($user['propCatTools']);
            unset($user['vpaymentInfo']);
-            
             $activationToken = sha1(mt_rand(10000,99999).time());
             //$emailPassToSend =  $user['vPassword'];
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
-
             $proptDataIns['type'] = 1; 
             $proptDataIns['created_date'] = date('Y-m-d H:i:s'); 
             $proptDataIns['updated_date'] = date('Y-m-d H:i:s'); 
