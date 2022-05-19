@@ -973,7 +973,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
     /*Recent Activity Code End*/
 
-}).controller('dashboardController', function($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q) {
+}).controller('dashboardController', function($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.jobfolderId = " ";
     $window.localStorage.scoopfolderId = " ";
@@ -2323,7 +2323,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
 
     // freelance job wise data get
-    if ($window.localStorage.session_iUserId && $scope.userRight == 2) {
+    if ($cookieStore.get('session_iUserId') && $window.localStorage.session_iUserId && $scope.userRight == 2) {
         console.log('freelanceJob call before login',$cookieStore.get('session_iUserId'));
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function(data) {
@@ -2367,12 +2367,39 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.ipCount = ip.length;
             $scope.Delivered = Delivered.length;
             $scope.Approved = Approved.length;
+
+            // Pagination with ng-repeat filter
+            $scope.page = 1;
+            //$scope.displayItems = $scope.jobList.slice(0, 3);
+            $scope.pageChanged = function() {
+                var startPos = ($scope.page - 1) * 10;
+                //$scope.displayItems = $scope.totalItems.slice(startPos, startPos + 3);
+                console.log($scope.page);
+            };
+
         }).error(errorCallback);
     }
+
+    
 
     //job action like all, request etc
     $scope.highlightSearch = "All";
     $scope.sortJob = function(action, eID) {
+                    //pagination controls
+                    // $scope.currentPage = 1;
+                    // $scope.totalItems = $scope.jobList.length;
+                    // $scope.entryLimit = 8; // items per page
+                    // $scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+                    // console.log('$scope.noOfPages', $scope.noOfPages)
+        
+                    // $scope.$watch('In_progress', function (newVal, oldVal) {
+                    //     $scope.filtered = filterFilter($scope.jobList, newVal);
+                    //     console.log('$scope.filtered', $scope.filtered)
+                    //     $scope.totalItems = $scope.filtered.length;
+                    //     $scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
+                    //     $scope.currentPage = 1;
+                    // }, true);
+
         switch (action) {
             case "All":
                 $scope.highlightSearch = "All";
@@ -2405,6 +2432,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
         scrollToId(eID);
     }
+
+    $scope.resetFilters = function () {
+		// needs to be a function or it won't trigger a $watch
+		$scope.search = {};
+	};
+
 
     $scope.statusAction = function(action, item) {
         if ($.isEmptyObject(item) != true) {
@@ -2747,9 +2780,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         "sSearch": '<i class="fa fa-search searchicn" aria-hidden="true"></i> _INPUT_ ',
         "sSearchPlaceholder": "Search",
     }).
-    //withOption('pageLength', 100).
+    //withOption('pageLength', 25).
         // withOption('scrollCollapse', true).
     withOption('dom', 'tfrilp');
+
+    $scope.dtOptionsJob2 = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 25);
     
     $scope.modalOpen = false;
     // After Linguist login
@@ -23664,7 +23701,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
 
                             if (i > 0) {
-                                console.log('hi');
                                 var ndt1 = new Date(data[i - 1].created);
                                 var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
@@ -23832,7 +23868,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     
                     $timeout(function() {
                         if($scope.jobDiscussionRedirect){
-                            var usercommentsArrLen = usercommentsArr.length ; 
+                            
+                            var newLoginidArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
+                            console.log('newLoginidArr-BEFORE', newLoginidArr.length)
+                            //var usercommentsArrLen = usercommentsArr.length ;
+                            var usercommentsArrLen = newLoginidArr.length ;
+                                    
                             setInterval(() => {
                                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                                 rest.get().success(function(data) {
@@ -23844,6 +23885,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     // FOR read unread comments
                                     var cmtArr = [];
                                     var cmtArr = NewcommentsArray.filter(function(NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                    // console.log('cmtArr', cmtArr)
                                     
                                     var newcmtArr = commentsArray.filter(function(commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
                                     
@@ -23873,12 +23915,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     //console.log('new cmtArr.length',newcmtArr.length);
                                     
                                     var arrayNotload = $('#comment-list').find(' > li').length;
-                                    
-                                    //console.log('usercommentsArrLen-outside', usercommentsArrLen)
-                                    //console.log('cmtArr -out side',cmtArr);
+                                        
+                                    //if(newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)){
                                     if(newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)){
-                                        console.log('usercommentsArr -length', usercommentsArr.length)
-                                        console.log('newUserCommentsArr- -length', newUserCommentsArr.length)
                                         //if(usercommentsArrLen == 0 ){
                                             usercommentsArrLen = newUserCommentsArr.length;
                                         //}
@@ -23897,7 +23936,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                         jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                                         $('#comment-list').find(' > li[data-id^=c]').hide();
                                         usercommentsArr=[];
-                                        // to remove same li date div
+                                        // to remove same date li div
                                         var seen = {};
                                         $('.seperatordate').each(function() {
                                             var txt = $(this).text();
@@ -23909,7 +23948,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                         // end script
                                     }
                                 });
-                                //console.log('usercommentsArr=after',usercommentsArr.length);
+                                // console.log('usercommentsArr=after',usercommentsArr.length);
                             }, 5000);
                         }
                         
@@ -26468,7 +26507,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     });    
                                 }
                                 //if( (NewcommentsArray.length > commentsArray.length && ) )
-                                //console.log('new cmtArr.length',newcmtArr.length);
+
+                                
                                 var arrayNotload = $('#comment-list').find(' > li').length;
                                 if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)){
                                     $('#comment-list').find(' > li[data-id^=c]').hide();

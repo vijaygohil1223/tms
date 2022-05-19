@@ -493,7 +493,6 @@ app.filter('NumbersCommaformatzero', function($filter) {
         if (input == undefined || input == 0 || input == '') {
             return '';
         } else {
-            console.log(input);
             //var str1 = input.toFixed(2);
             var str1 = input;
             var str=str1.toString();

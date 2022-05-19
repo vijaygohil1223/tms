@@ -2041,13 +2041,7 @@ td { font-size: 11px; } */
                                   </tr>
                                 </thead>
                               </table> -->
-                                <table class=" table table-striped b-b
-                                    table
-                                    m-b-none
-                                    default
-                                    footable-loaded footable
-                                  " style="padding-left: 0px;">
-
+                                <table class="table table-striped b-b table m-b-none default footable-loaded footable" style="padding-left: 0px;">
                                   <thead>
                                     <th>#</th>
                                     <th>Job Number</th>
@@ -2057,9 +2051,20 @@ td { font-size: 11px; } */
                                     <th>Due date</th>
                                     <th>Status</th>
                                   </thead>
+                                  <!-- <tfoot>
+                                    <td colspan="7">
+                                      <div class="pagination pull-right">
+                                        <uib-pagination class="pagination-sm pagination" total-items="JobL.length" ng-model="page"
+                                  ng-change="pageChanged()" previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page=10></uib-pagination>
+                                      </div>  
+                                  </tfoot> -->
                                   <tbody id="middle">
+                                    <!-- 
+                                      //Added for pagination filter
+                                      <tr ng-repeat="job in JobL=(jobList | filter : jobRow   ) | limitTo:10:10*(page-1)"> 
+                                    -->
                                     <tr ng-repeat="job in JobL=(jobList | filter : jobRow)">
-                                      <td ng-bind="$index + 1">
+                                        <td ng-bind="$index + 1">
                                         <!-- <input type="checkbox" id="orderCheck{{$index}}" name="orderCheck{{$index}}" ng-model="checkor" ng-checked="checkdata=='ordercheck'">
                                         <input type="text" class="none" id="orderCheckData{{$index}}" name="orderCheckData{{$index}}" ng-model="result.jobId"> -->
                                       </td>
@@ -2098,6 +2103,7 @@ td { font-size: 11px; } */
                                       <td colspan="4" ng-bind="dataNotFound"></td>
                                     </tr>
                                   </tbody>
+                                  
                                 </table>
                               </div>
                               <div class="table-responsive none" id="exportableRecord">

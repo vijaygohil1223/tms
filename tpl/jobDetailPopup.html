@@ -576,10 +576,10 @@ li.seperatordate.comment {
                                                     <div class="startDate"><strong>Started:</strong> {{general.expected_start_date}}</div>
                                                   </div>
                                                 </li>
-                                                <li class="task-price">
+                                                <li class="task-price" ng-if="userRight==1">
                                                   <div class="caption">
                                                     <i class="fa fa-snowflake-o" aria-hidden="true"></i>
-                                                    <label>Project Price</label>
+                                                    <label>Project Price </label>
                                                   </div>
                                                   <span class="price">{{projectPriceChat | CurrencyNumbersCommaformat}}</span>
                                                 </li>

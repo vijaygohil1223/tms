@@ -1718,6 +1718,7 @@ app.directive('googleplace', function($log,rest) {
             };
 
             scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
+            console.log('scope.gPlace', scope.gPlace)
             google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
                 var geoComponents = scope.gPlace.getPlace();
                 var latitude = geoComponents.geometry.location.lat();
@@ -3226,22 +3227,33 @@ app.directive('select2SpecializationProject', function($http, rest, $timeout) {
                 'General Bussiness', 'General Casino & Poker', 'General Entertainment', 'IT-Search Engine Optimization (SEO)', 'IT-Software', 'IT-Software (UI)', 'Legal', 'Legal Patents', 'Medical', 'Medical CLinical Trials', 'Medical Dentisty', 'Medical Health Care',
                 'Technical', 'Technical Automotive', 'Technical Chemistry', 'Technical Electronics', 'Technical Engineering'
             ];
-            var type = [];
-            $.each(data, function(i, val) {
-                var obj = {
-                    'id': i,
-                    'text': val
-                }
-                type.push(obj)
-            });
-            $timeout(function() {
-                element.select2({
-                    allowClear: true,
-                    data: type,
-                    multiple: true,
-                    closeOnSelect:false
+            rest.path = 'getAllSpecialization';
+            rest.get().success(function(data) {
+                var type = [];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        'id': value.id,
+                        'text': value.name
+                    };
+                    type.push(obj);
                 });
-            }, 500);
+                // $.each(data, function(i, val) {
+                //     var obj = {
+                //         'id': i,
+                //         'text': val
+                //     }
+                //     type.push(obj)
+                // });
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: type,
+                        multiple: true,
+                        closeOnSelect:false
+                    });
+                }, 500);
+            }).error(function(data,error,status){});
+
         }
     }
 });
