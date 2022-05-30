@@ -40,6 +40,59 @@
                                  </div>
                                  <div class="col-sm-6 form-group">
                                     <div class="row">
+                                       <div class="col-sm-11">
+                                          <label>
+                                             Project Manager
+                                          </label>
+                                          <input type="text" select2-manager id="pm_name"
+                                             class="form-control" name="pm_name" ng-model="orderReport.pm_name"
+                                             />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','pm_name')"
+                                             ng-if="orderReport.pm_name"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group">
+                                    <div class="row">
+                                       <div class="col-sm-11">
+                                          <label>
+                                             Email Subject
+                                          </label>
+                                          <input type="text" id="emailSubject"
+                                             class="form-control" name="emailSubject" ng-model="orderReport.emailSubject"
+                                             />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','emailSubject')"
+                                             ng-if="orderReport.emailSubject"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group">
+                                    <div class="row">
+                                       <div class="col-sm-11">
+                                          <label>
+                                             PO number
+                                          </label>
+                                          <input type="text" id="itemPonumber"
+                                             class="form-control" name="itemPonumber" ng-model="orderReport.itemPonumber"/>
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','itemPonumber')"
+                                             ng-if="orderReport.itemPonumber"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group">
+                                    <div class="row">
                                     <div class="col-sm-11">
                                        <label>
                                           <!-- Customers -->Client
@@ -52,6 +105,24 @@
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','customer')"
                                           ng-if="orderReport.customer"><i class="iconDelete glyph-icon fa-times"
+                                             aria-hidden="true"></i></a>
+                                    </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group">
+                                    <div class="row">
+                                    <div class="col-sm-11">
+                                       <label>
+                                          Account
+                                       </label>
+                                       <input type="text" select2-indirect id="indirect_customer1"
+                                          class="form-control" name="indirect_customer" ng-model="orderReport.indirect_customer"
+                                          />
+                                    </div>
+                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                       <a href="javascript:void(0)"
+                                          ng-click="clearCode('order-status-report','indirect_customer')"
+                                          ng-if="orderReport.indirect_customer"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
                                     </div>
                                     </div>
@@ -135,21 +206,38 @@
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
+                                       <div class="row">
+                                       <div class="col-sm-11">
+                                          <label>Target Language</label>
+                                          <input type="text" select2-order-languages-data data-typeid="2"
+                                             id="targetLanguage" class="form-control" name="targetLanguage"
+                                             ng-model="orderReport.targetLanguage" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','targetLanguage')"
+                                             ng-if="orderReport.targetLanguage"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group">
                                     <div class="row">
                                     <div class="col-sm-11">
-                                       <label>Target Language</label>
-                                       <input type="text" select2-order-languages-data data-typeid="2"
-                                          id="targetLanguage" class="form-control" name="targetLanguage"
-                                          ng-model="orderReport.targetLanguage" />
+                                       <label>Due Date</label>
+                                       <input type="text" ng-datepicker2
+                                          id="itemDuedate" class="form-control" name="itemDuedate"
+                                          ng-model="orderReport.itemDuedate"/>
                                     </div>
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','targetLanguage')"
-                                          ng-if="orderReport.targetLanguage"><i class="iconDelete glyph-icon fa-times"
+                                          ng-click="clearCode('order-status-report','itemDuedate')"
+                                          ng-if="orderReport.itemDuedate"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
                                     </div>
                                  </div>
                               </div>
+
                            </div>
                         </div>
                      </div>
@@ -210,17 +298,18 @@
                                        <th>#</th>
                                        <th>Orders Number</th>
                                        <!-- <th>Order Date</th> -->
+                                       <th>Project name</th>
+                                       <th>Email Subject</th>
                                        <th>
                                           <!-- Customers -->Client
                                        </th>
-                                       <!-- <th>Project name</th> -->
                                        <th>Status</th>
                                        <th>Prices</th>
-                                       <th>Price in selected currency</th>
+                                       <!-- <th>Price in selected currency</th> -->
                                     </thead>
                                     <tbody>
                                        <tr ng-repeat="result in staturRes=(statusResult | filter : orderReport)"
-                                          class="orderRClass">
+                                          class="orderRClass" ng-init="setTotals(result)" ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice">
                                           <td>
                                              <input type="checkbox" id="orderCheck{{$index}}"
                                                 name="orderCheck{{$index}}" ng-model="checkor"
@@ -230,17 +319,24 @@
                                                 ng-model="result.orderId">
                                           </td>
                                           <td><a href="#/viewProject/{{result.orderId}}"
-                                                class="summeryColor">{{result.orderNumber}}</a></td>
+                                                class="summeryColor">{{result.orderNumber}}</a><span>-{{ result.item_number | numberFixedLen:3 }}</span></td>
+                                          <td>{{ result.projectName }}</td>
+                                          <td>{{ result.emailSubject }}</td>
                                           <!-- <td ng-bind="result.orderDate | globalDtFormat"></td> -->
                                           <td><a href="#/viewdirect/{{result.customer}}"
                                                 class="summeryColor"><span>{{result.contactName}}</span></a></td>
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td ng-bind="result.clientStatus"></td>
                                           <td ng-bind="result.totalAmount | customNumber">--</td>
-                                          <td>--</td>
+                                          <!-- <td>{{ result.jobTotalPrice }}</td> -->
+                                       </tr>
+                                       <tr ng-if="staturRes.length">
+                                          <td colspan="5"></td>
+                                          <td> <strong> Gross Profit </strong> </td>
+                                          <td> <strong>{{ clReportTotal | customNumber }}</strong> </td>
                                        </tr>
                                        <tr ng-show="!staturRes.length">
-                                          <td colspan="8" ng-bind="dataNotFound"></td>
+                                          <td colspan="7" ng-bind="dataNotFound"></td>
                                        </tr>
                                     </tbody>
                                  </table>

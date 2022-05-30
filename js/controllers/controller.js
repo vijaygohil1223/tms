@@ -6443,14 +6443,28 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }).error(errorCallback);
     };
 
+    $scope.clReportTotal = 0;
+    $scope.setTotals = function(item){
+        if (item){
+            const jobTotalPrice = item.jobTotalPrice ? item.jobTotalPrice : 0 ;
+            const itemtotalAmount = item.totalAmount ? item.totalAmount : 0 ;
+            console.log('jobTotalPrice', jobTotalPrice);
+            $scope.clReportTotal += itemtotalAmount - jobTotalPrice;
+            console.log('item.totalAmount', item.totalAmount)
+        }
+    }
+
     //status oreder report find
     $scope.statusReportsearch = function(frmId, eID) {
         if ($scope.orderReport == undefined || $scope.orderReport == null || $scope.orderReport == "") {
             notification('Please Select option', 'information');
         } else {
+
             rest.path = 'statusorderReportFind';
             rest.get().success(function(data) {
                     $scope.statusResult = data['data'];
+                    console.log('$scope.statusResult', $scope.statusResult)
+
                     $scope.Dateobject = Dateobject;
                     $scope.statusInfo = data['info'];
                     $scope.statusProjectType = data['Typeinfo'];
@@ -6878,23 +6892,23 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
                 }
                 break;
-            case "projectType":
-                if ($scope.orderReport != undefined) {
-                    $scope.orderReport.projectType = '';
-                    angular.element('#projectType').select2('val', '');
-                    angular.forEach($scope.orderReport, function(value, key) {
-                        if (value === "" || value === null) {
-                            delete $scope.orderReport[key];
+            case "itemDuedate":
+                    if ($scope.orderReport != undefined) {
+                        $scope.orderReport.itemDuedate = '';
+                        angular.element('#itemDuedate').text;
+                        angular.forEach($scope.orderReport, function(value, key) {
+                            if (value === "" || value === null) {
+                                delete $scope.orderReport[key];
+                            }
+                        });
+                        if (jQuery.isEmptyObject($scope.orderReport)) {
+                            $scope.statusResult = '';
+                            $scope.orderReport = undefined;
+                            $scope.checkOrderItem = undefined;
                         }
-                    });
-                    if (jQuery.isEmptyObject($scope.orderReport)) {
-                        $scope.statusResult = '';
-                        $scope.orderReport = undefined;
-                        $scope.checkOrderItem = undefined;
                     }
-                }
-                break;
-            case "sourceLanguage":
+                    break;
+                case "sourceLanguage":
                 if ($scope.orderReport != undefined) {
                     $scope.orderReport.sourceLanguage = '';
                     angular.element('#sourceLanguage').select2('val', '');
@@ -8996,6 +9010,23 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         });
     }
+
+    $scope.getLocationdetail = function(id) {
+        fetch('https://api.geoapify.com/v1/geocode/search?text='+ id +'&format=json&apiKey=52e8e340f8af4936bfb46512c9dbc3b5', { 
+        method: 'GET'
+        })
+        .then(function(response) { 
+            return response.json(); })
+        .then(function(data) {
+            //console.log('data', data)
+            if(data.results && data.results.length > 0){
+                $scope.vCity1 = data.results[0].city;
+                $scope.vState1 = data.results[0].state;
+                $scope.vCountry1 = data.results[0].country;
+                $scope.vZipcode1 = data.results[0].postcode;
+            }
+        });
+    }     
 
     $scope.checkfirstname = function() {
         if ($scope.userprofiledata.iUserId) {
@@ -13037,9 +13068,23 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function(data) {
             $scope.invoiceDetail = data[0];
-
+            if($scope.invoiceDetail.clientVatinfo){
+                const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
+                $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
+            }
+            if($scope.invoiceDetail.companyAddressDtl){
+                const companyAddressDtl = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                $scope.postalcodeAddr = '';
+                if(companyAddressDtl.length > 4){
+                    const cityAddr = (companyAddressDtl[1].value) ? companyAddressDtl[1].value + ', ' : ''; 
+                    const stateAddr = (companyAddressDtl[2].value) ? companyAddressDtl[2].value + ', ' : ''; 
+                    const countryAddr = (companyAddressDtl[3].value) ? companyAddressDtl[3].value : ''; 
+                    $scope.postalcodeAddr = (companyAddressDtl[4].value) ? companyAddressDtl[4].value : ''; 
+                    $scope.invoiceDetail.companyAddressDtl = cityAddr + stateAddr + countryAddr;
+                }
+            }
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
-
+            console.log('$scope.invoiceDetail',$scope.invoiceDetail)
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function(dataUser) {
                 //$scope.userData = dataUser.userData;
@@ -13280,6 +13325,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $route.reload();
         });
     }
+
 
 }).controller('invoiceAmountController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $uibModalInstance, items, $filter) {
     $scope.closeAmount = true;
@@ -21694,12 +21740,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             });
         $scope.fileAttatchName = file.name;
     };
-
     rest.path = 'generalMsg';
     rest.get().success(function(data) {
         $scope.cPersonMsg = [];
         $scope.cPersonMsg = data;
         $scope.cPersonMsg.vEmailAddress = $window.localStorage.generalMsg;
+        $scope.cPersonMsg.msgEmailSubject = $scope.msgEmailSubject;
+        console.log('$window.localStorage.msgSubject', $window.localStorage.msgSubject)
         $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>';
     }).error(errorCallback);
 
@@ -21713,6 +21760,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.path = 'sendgeneralMsg';
             rest.post(data).success(function(data) {
                 notification('Mail send successfully', 'success');
+                $window.localStorage.msgSubject = '';
             }).error(errorCallback);
             $timeout(function() {
                 $uibModalInstance.close(data);
@@ -22768,6 +22816,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.invoiceUnpaid = [];
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function(val, i) {
+                        
                 if (val.invoice_status == 'Complete') {
                     $scope.invoiceCompleted.push(val);
                 } else {
@@ -22816,7 +22865,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.cancel = function() {
         $uibModalInstance.close();
     }
-}).controller('clientInvoiceController', function($scope, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route) {
+}).controller('clientInvoiceController', function($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.search = function(search) {
@@ -22912,22 +22961,71 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     }
 
+
+    $scope.getInvoicePeriod = function(id) {
+        rest.path = "getOneInvoicePeriod/" + 1;
+        rest.get().success(function(data) {
+            $scope.invoicePeriod = data;
+            $scope.invoicePeriod = $scope.invoicePeriod.number_of_days ? $scope.invoicePeriod.number_of_days : 30; 
+            console.log('$scope.invoicePeriod', $scope.invoicePeriod)
+        }).error(errorCallback);
+    }
+    $scope.getInvoicePeriod();
+
+
     $scope.getAllInvoice = function() {
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function(invoices) {
             console.log('invoices', invoices)
+            //get of invoice due period
             $scope.invoiceUnpaid = [];
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function(val, i) {
+            var invoice_duedate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod);
+        
                 if (val.invoice_status == 'Complete') {
                     $scope.invoiceCompleted.push(val);
+                    var ckey = $scope.invoiceUnpaid.length;
+                    if(ckey>0)
+                    $scope.invoiceUnpaid[ckey-1].invoice_duedate = invoice_duedate;
                 } else {
                     $scope.invoiceUnpaid.push(val);
+                    var ukey = $scope.invoiceUnpaid.length;
+                    if(ukey>0)
+                    $scope.invoiceUnpaid[ukey-1].invoice_duedate = invoice_duedate;
                 }
             });
         }).error(errorCallback);
     }
     $scope.getAllInvoice();
+
+    $scope.msgEmailSubject = '';
+    $scope.generalEmail = function(id,invoiceNo) {
+        rest.path = 'viewcontactdirectEdit/' + id;
+        rest.get().success(function(data) {
+            $scope.contactlist = data;
+            const email = ($scope.contactlist.length > 0) ? $scope.contactlist[0].vEmail : '';
+            $scope.msgEmailSubject = invoiceNo;
+            if (id != undefined && id != " " && id != null) {
+                $window.localStorage.generalMsg = email;
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'tpl/generalmsg.html',
+                    controller: 'generalmsgController',
+                    size: '',
+                    scope:$scope,
+                    resolve: {
+                        items: function() {
+                            return $scope.msgEmailSubject;
+                        }
+                    }
+                });
+            } else {
+                notification('Please Add Email', 'warning');
+            }
+        }).error(errorCallback);
+         
+    };
 
 }).controller('clientInvoiceCreatePopupCtrl', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -24488,6 +24586,22 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.get().success(function(data) {
             $scope.invoiceDetail = data[0];
             console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            if($scope.invoiceDetail.clientVatinfo){
+                const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
+                $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
+            }
+            if($scope.invoiceDetail.companyAddressDtl){
+                const companyAddressDtl = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                $scope.postalcodeAddr = '';
+                if(companyAddressDtl.length > 4){
+                    const cityAddr = (companyAddressDtl[1].value) ? companyAddressDtl[1].value + ', ' : ''; 
+                    const stateAddr = (companyAddressDtl[2].value) ? companyAddressDtl[2].value + ', ' : ''; 
+                    const countryAddr = (companyAddressDtl[3].value) ? companyAddressDtl[3].value : ''; 
+                    $scope.postalcodeAddr = (companyAddressDtl[4].value) ? companyAddressDtl[4].value : ''; 
+                    $scope.invoiceDetail.companyAddressDtl = cityAddr + stateAddr + countryAddr;
+                }
+            }
+            
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function(dataUser) {
                 //$scope.userData = dataUser.userData;
@@ -24505,7 +24619,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $timeout(function() {
                         $("#Bank").prop('checked', true);
                     }, 100);
-
                 } else {
                     $timeout(function() {
                         $("#Paypal").prop('checked', true);
@@ -26861,7 +26974,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             if(val[16]){
                                 var last_dt = (val[16]).split('.')
                                 if(dt.length == 3){
-                                    var dtLast_job = last_dt[2] + '-' + last_dt[1] + '-' +last_dt[0]
+                                    var dtLast_job = last_dt[2] + '-' + last_dt[1] + '-' + last_dt[0]
                                 }
                             }
                             var email1 = '';

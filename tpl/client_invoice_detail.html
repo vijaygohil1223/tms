@@ -53,7 +53,10 @@
                         <th>#</th>
                         <th>Invoice number</th>
                         <!-- <th>Freelancer name</th> -->
+                        <th>Price</th>
+                        <th>Due Date</th>
                         <th>Company name</th>
+                        <th>Creation Date</th>
                         <th>Invoice status</th>
                         <th>Action</th>
                         </thead>
@@ -62,7 +65,12 @@
                                 <td ng-bind="$index + 1"></td>
                                 <td ng-bind="invoiceL.invoice_number"></td>
                                 <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
-                                <td ng-bind="invoiceL.clientCompanyName"></td>
+                                <td> {{ invoiceL.Invoice_cost | customNumber }}</td>
+                                <td> {{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                                <td> {{ invoiceL.clientCompanyName }}
+                                    <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)" title="Comment" class="trActionIcon"> &nbsp;<i class="fa fa-envelope-o" style="font-size:18px;"></i></a>
+                                </td>
+                                <td> {{ invoiceL.created_date | globalDtFormat }}</td>
                                 <td>
                                     <span ng-bind="invoiceL.invoice_status"></span>
                                 </td>
@@ -89,7 +97,10 @@
                         <th>#</th>
                         <th>Invoice number</th>
                         <!-- <th>Freelancer name</th> -->
+                        <th>Price</th>
+                        <th>Due Date</th>
                         <th>Company name</th>
+                        <th>Creation Date</th>
                         <th>Invoice status</th>
                         <th>Action</th>
                         </thead>
@@ -98,13 +109,20 @@
                                 <td ng-bind="$index + 1"></td>
                                 <td ng-bind="invoiceL.invoice_number"></td>
                                 <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
-                                <td ng-bind="invoiceL.companyName"></td>
+                                <td> {{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                                <td> {{ invoiceL.Invoice_cost | customNumber }}</td>
+                                <!-- <td ng-bind="invoiceL.companyName"></td> -->
+                                <td>
+                                    {{invoiceL.clientCompanyName}}
+                                    <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)" title="Comment" class="trActionIcon"> &nbsp;<i class="fa fa-envelope-o" style="font-size:18px;"></i></a>
+                                </td>
+                                <td> {{ invoiceL.created_date | globalDtFormat }}</td>
                                 <td >
                                     <span ng-bind="invoiceL.invoice_status"></span>
                                 </td>
                                 <td>
                                     <div class="trActiontitle">
-                                        <a href="#/invoice-view/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i class="fa fa-eye" ></i></a>
+                                        <a href="#/client-invoice-view/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i class="fa fa-eye" ></i></a>
                                         <!-- </br>
                                         <strong>View Payments</strong> -->
                                     </div>

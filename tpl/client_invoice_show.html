@@ -44,24 +44,25 @@
                             </div>
                             <div class="col-xs-12 well">
                                 <div class="col-xs-6">
-                                    <!-- <p class="m-t m-b">Order date: <strong>26th Mar 2013</strong><br>
-                                        Order status: <span class="label bg-success">Shipped</span><br>
-                                        Order ID: <strong>#9399034</strong>
-                                    </p> -->
-                                    <p class="m-t m-b">
+                                    <!-- <p class="m-t m-b">
                                         <span>Project Number : </span><strong
                                         ng-bind="invoiceDetail.orderNumber"></strong></br>
-                                    </p>
-                                </div>
-                                <div class="col-xs-6">
+                                    </p> -->
                                     <strong>Company:</strong>
                                     <h4 ng-bind="invoiceDetail.clientCompanyName"></h4>
                                     <p>
-                                        <span ng-bind="invoiceDetail.companyAddress"></span></br>
                                         Phone: <span ng-bind="invoiceDetail.companyPhone"></span>
-                                        <!--  <br> Email: <span ng-bind="invoiceDetail.companyEmail"></span>
-                                   <br> -->
+                                        <br> Vat Number: <span ng-bind="invoiceDetail.clientVatinfo"></span>
+                                        <!-- <br> Email: <span ng-bind="invoiceDetail.companyEmail"></span> -->
                                     </p>
+                                </div>
+                                <div class="col-xs-6">
+                                    <p><strong>Address</strong></p>
+                                    <p>
+                                        <span ng-bind="invoiceDetail.companyAddress"></span></br>
+                                        <span ng-bind="invoiceDetail.companyAddressDtl"></span></br>
+                                        <span ng-bind="postalcodeAddr"></span>
+                                    </p>                                                    
                                 </div>
                             </div>
                             <div class="col-sm-12" style="padding:0;bottom:10px;top:3px">

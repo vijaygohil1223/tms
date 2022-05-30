@@ -281,6 +281,10 @@ class Freelance_invoice {
     }
     public function filterStatement($filterParams){
         //echo '<pre>'; print_r($filterParams); echo '</pre>';
+        $this->_db->where('invoice_due_id', '1');
+		$invc_due_period = $this->_db->getOne('tms_invoice_due_period');
+        $invc_due_period =  isset($invc_due_period['number_of_days']) ?  $invc_due_period['number_of_days'] : 30;
+        
         $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','INNER');
         if(isset($filterParams['dueDateFrom']) && isset($filterParams['dueDateTo'])){
 
@@ -298,13 +302,21 @@ class Freelance_invoice {
             $this->_db->where('tmInvoice.freelance_id', $filterParams['resource']);
         }
         if(isset($filterParams['invoiceStatus'])){
-            $this->_db->where('tmInvoice.invoice_status', $filterParams['invoiceStatus']);
+            if($filterParams['invoiceStatus'] == 'Approved'){
+                $this->_db->where('tmInvoice.is_approved','1');
+                $this->_db->where('tmInvoice.invoice_status','Open');
+            }else if($filterParams['invoiceStatus'] == 'Overdue'){
+                //$this->_db->where('DATE(tmInvoice.created_date) + INTERVAL 30 DAY','CURDATE()',' > ');
+                $this->_db->where('DATEDIFF(NOW(),tmInvoice.created_date)', $invc_due_period ,' > ');
+            }else{
+                $this->_db->where('tmInvoice.invoice_status', $filterParams['invoiceStatus']);
+            }
         }
         if(isset($filterParams['invoiceNumber'])){
             $this->_db->where('tmInvoice.invoice_number', $filterParams['invoiceNumber']);
         }
-        
-        $data = $this->_db->get('tms_invoice tmInvoice', null,' tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date');
+        $data = $this->_db->get('tms_invoice tmInvoice', null,' tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date,tmInvoice.is_approved');
+        //echo $this->_db->getLastQuery();
         return $data;
     }
 

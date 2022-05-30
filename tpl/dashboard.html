@@ -377,6 +377,7 @@ td { font-size: 11px; } */
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
+                            <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
                             <th>Deadline</th>
@@ -394,8 +395,7 @@ td { font-size: 11px; } */
                                   {{order.orderNumber}}
                                 </a>
                                 <small class="block m-t-sm">
-                                  <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.itemPonumber}}</span>
+                                  <span class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3}}</span>
                                 </small>
                               </td>
                               <td>
@@ -452,6 +452,7 @@ td { font-size: 11px; } */
                                   <span class="badge bg-warning">Linguist</span>
                                 </div> -->
                               </td>
+                              <td>{{ order.itemPonumber }}</td>
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
@@ -544,6 +545,7 @@ td { font-size: 11px; } */
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
+                            <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
                             <th>Deadline</th>
@@ -561,8 +563,8 @@ td { font-size: 11px; } */
                                   {{order.orderNumber}}
                                 </a>
                                 <small class="block m-t-sm">
-                                  <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.itemPonumber}}</span>
+                                  <span
+                                    class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
                                 </small>
                               </td>
                               <td>
@@ -616,6 +618,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
+                              <td>{{ order.itemPonumber }}</td>
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
@@ -711,6 +714,7 @@ td { font-size: 11px; } */
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
+                            <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
                             <th>Deadline</th>
@@ -728,8 +732,8 @@ td { font-size: 11px; } */
                                   {{order.orderNumber}}
                                 </a>
                                 <small class="block m-t-sm">
-                                  <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.itemPonumber}}</span>
+                                  <span
+                                    class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
                                 </small>
                               </td>
                               <td>
@@ -783,6 +787,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
+                              <td>{{ order.itemPonumber }}</td>
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
@@ -874,6 +879,7 @@ td { font-size: 11px; } */
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
+                            <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
                             <th>Deadline</th>
@@ -891,8 +897,8 @@ td { font-size: 11px; } */
                                   {{order.orderNumber}}
                                 </a>
                                 <small class="block m-t-sm">
-                                  <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.itemPonumber}}</span>
+                                  <span
+                                    class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
                                 </small>
                               </td>
                               <td>
@@ -946,6 +952,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
+                              <td>{{ order.itemPonumber }}</td>
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
@@ -1037,6 +1044,7 @@ td { font-size: 11px; } */
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
+                            <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
                             <th>Deadline</th>
@@ -1054,8 +1062,8 @@ td { font-size: 11px; } */
                                   {{order.orderNumber}}
                                 </a>
                                 <small class="block m-t-sm">
-                                  <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.itemPonumber}}</span>
+                                  <span
+                                    class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
                                 </small>
                               </td>
                               <td>
@@ -1109,6 +1117,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
+                              <td>{{ order.itemPonumber }}</td>
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
@@ -1201,6 +1210,7 @@ td { font-size: 11px; } */
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
+                            <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
                             <th>Deadline</th>
@@ -1218,8 +1228,8 @@ td { font-size: 11px; } */
                                   {{order.orderNumber}}
                                 </a>
                                 <small class="block m-t-sm">
-                                  <span class="labeltitle">PO Number : </span><br /><span
-                                    class="label bg-light">{{order.itemPonumber}}</span>
+                                  <span
+                                    class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
                                 </small>
                               </td>
                               <td>
@@ -1273,6 +1283,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
+                              <td>{{ order.itemPonumber }}</td>
                               <td>{{order.pm_name}}</td>
                               <td><span ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </span>
                                <span ng-if="!order.jobLinguist.length"> - </span>
@@ -1364,13 +1375,13 @@ td { font-size: 11px; } */
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
+                            <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
                             <th>Price</th>
-                            <!-- <th>PO Number</th> -->
                             <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
@@ -1381,8 +1392,7 @@ td { font-size: 11px; } */
                                   {{order.orderNumber}}
                                 </a>
                                 <small class="block m-t-sm">
-                                  <span class="labeltitle">PO Number : </span><br /><span class="label bg-light"
-                                    title="{{order.itemPonumber}}">{{order.itemPonumber | Textcharacter}}</span>
+                                  <span class="label bg-light">Scoop - {{order.item_number | numberFixedLen:3 }}</span>
                                 </small>
                               </td>
                               <td>
@@ -1435,6 +1445,10 @@ td { font-size: 11px; } */
                                     </span>
                                   </div>
                                 </div>
+                              </td>
+                              <td>
+                                <!-- {{order.itemPonumber | Textcharacter}} -->
+                                {{order.itemPonumber}}
                               </td>
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>

@@ -131,7 +131,8 @@
                                                         <div class="col-sm-4 pl-0">
                                                             <div class="form-group">
                                                                 <label class="control-label">City</label>
-                                                                <input class="form-control" id="timeZoneCity" ng-model="userprofiledata.vTimeZoneCity" ng-blur="cityTimezone(userprofiledata.vTimeZoneCity)" ng-model="userprofiledata.vTimeZoneCity" details="timeZone" google-city/>
+                                                                <input class="form-control" id="timeZoneCity" ng-model="userprofiledata.vTimeZoneCity" ng-blur="cityTimezone(userprofiledata.vTimeZoneCity)" ng-model="userprofiledata.vTimeZoneCity" details="timeZone"/>
+                                                                <!-- <input class="form-control" id="timeZoneCity" ng-model="userprofiledata.vTimeZoneCity" ng-blur="cityTimezone(userprofiledata.vTimeZoneCity)" ng-model="userprofiledata.vTimeZoneCity" details="timeZone" google-city/> -->
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-8 pl-0">
@@ -144,7 +145,7 @@
                                                         <div class="col-sm-12 pl-0">
                                                             <div class="form-group">
                                                                 <label>Date of Birth</label>
-                                                                <input type="text" class="form-control" id="dtBirthDate" ng-outgoing name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" required onkeydown="return false">
+                                                                <input type="text" class="form-control" id="dtBirthDate" ng-outgoing name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" onkeydown="return false">    
                                                             </div>
                                                             <!-- <div class="form-group">
                                                                 <label>Facebook Link</label>
@@ -161,7 +162,8 @@
                                                             <div class="form-group">
                                                                 <div class="col-sm-8 pl-0">
                                                                     <label>Profile Picture</label>
-                                                                    <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)" ng-required="userprofiledata.vProfilePic == undefined"/>
+                                                                    <!-- <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)" ng-required="userprofiledata.vProfilePic == undefined"/> -->
+                                                                    <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)"/>
                                                                 </div>
                                                                 <div class="col-sm-4">  
                                                                     <div class="thumb-info mb-md">
@@ -185,11 +187,11 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Company Name</label>
-                                                                <input type="text"  class="form-control" name="companyName" ng-model="userprofiledata.companyName" required />
+                                                                <input type="text"  class="form-control" name="companyName" ng-model="userprofiledata.companyName"/>
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Last Job</label>
-                                                                <input type="text" class="form-control" id="dtLast_job" ng-datepicker2 name="dtLast_job" ng-model="userprofiledata.dtLast_job" required onkeydown="return false">
+                                                                <input type="text" class="form-control" id="dtLast_job" ng-datepicker2 name="dtLast_job" ng-model="userprofiledata.dtLast_job" onkeydown="return false">
                                                             </div>
                                                             <div class="form-group" >
                                                                 <div class="redio">
@@ -243,7 +245,7 @@
                                                         <label>Secondary Email Address</label>
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><a   ng-if="userprofiledata.vSecondaryEmailAddress" href="javascript:void(0)" ng-click="workingHour(userprofiledata.iUserId,'internal','2')"><i class="fa fa-inbox"></i></a><i class="fa fa-inbox" ng-if="!userprofiledata.vSecondaryEmailAddress"></i></span>
-                                                            <input type="email" class="form-control" name="vSecondaryEmailAddress" id="vSecondaryEmailAddress"  ng-model="userprofiledata.vSecondaryEmailAddress" required="">
+                                                            <input type="email" class="form-control" name="vSecondaryEmailAddress" id="vSecondaryEmailAddress"  ng-model="userprofiledata.vSecondaryEmailAddress">
                                                         </div>
                                                         <label for="vSecondaryEmailAddress" class="error"></label>
                                                     </div>
@@ -251,14 +253,14 @@
                                                         <label>Website</label>
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><a target="_blank" ng-href="http://{{userprofiledata.vWebsite}}"><i class="fa fa-external-link"></i></a></span>
-                                                            <input type="text" class="form-control" name="website" ng-model="userprofiledata.vWebsite" required> 
+                                                            <input type="text" class="form-control" name="website" ng-model="userprofiledata.vWebsite"> 
                                                         </div>
                                                         <label for="website" class="error"></label>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="Mobile" class="control-label">Mobile</label>
                                                         <div class="input-group" style="width:100% !important">
-                                                            <input type="text" class="form-control" id="iMobile" name="iMobile"  ng-model="userprofiledata.iMobile" international-phone-number  required />
+                                                            <input type="text" class="form-control" id="iMobile" name="iMobile"  ng-model="userprofiledata.iMobile" international-phone-number />
                                                         </div>
                                                         <label for="iMobile" class="error"></label>
                                                         <span id="valid-msg" class="hide" style="color:green">✓ Valid</span>
@@ -268,7 +270,7 @@
                                                         <label>Skype Name</label>
                                                         <div class="input-group">
                                                             <span class="input-group-addon"><a target="_blank" ng-href="skype:{{userprofiledata.vSkypeName}}"><i class="fa fa-skype"></i></a></span>
-                                                            <input type="text" class="form-control"  name="vSkypeName" ng-model="userprofiledata.vSkypeName" required>
+                                                            <input type="text" class="form-control"  name="vSkypeName" ng-model="userprofiledata.vSkypeName">
                                                         </div>
                                                         <label for="vSkypeName" class="error"></label>
                                                     </div>
@@ -277,7 +279,6 @@
                                                         <input select2-specialization-record type="text" class="form-control" name="specialization" id="specialization" ng-model="userprofiledata.specialization" required>
                                                         <label for="specialization" class="error"></label>
                                                     </div>
-                                                    
                                                     <!-- <div class="form-group">
                                                         <label class="control-label">Notes</label>
                                                         <textarea class="form-control"  name="tMemo" ng-model="userprofiledata.tMemo" ng-blur="notesWarning()" style="resize: none;"></textarea>
@@ -302,7 +303,8 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label>Address</label>
-                                                            <input class="form-control" id="address1" ng-model="userprofiledata.vAddress1" details="address1" googleplace required/>
+                                                            <input class="form-control" id="address1" ng-blur="getLocationdetail(userprofiledata.vAddress1)" ng-model="userprofiledata.vAddress1" details="address1" required/>
+                                                            <!-- <input class="form-control" id="address1" ng-model="userprofiledata.vAddress1" details="address1" googleplace required/> -->
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4 none">
@@ -314,13 +316,13 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label class="control-label">City</label>
-                                                            <input type="text" class="form-control city"  id="address1_locality" name="route" ng-model="vCity1"  disabled required>          
+                                                            <input type="text" class="form-control city"  id="address1_locality" name="route" ng-model="vCity1"  required>          
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label class="control-label">State</label>
-                                                            <input type="text" class="form-control locality" id="address1_administrative_area_level_1"  name="vState" ng-model="vState1"  disabled required>   
+                                                            <input type="text" class="form-control locality" id="address1_administrative_area_level_1"  name="vState" ng-model="vState1"  required>   
                                                         </div>
                                                     </div>
                                                 </div>
@@ -328,13 +330,13 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label class="control-label">Country</label>
-                                                            <input type="text" class="form-control country" name="vCountry" id="address1_country" ng-model="vCountry1"  disabled required> 
+                                                            <input type="text" class="form-control country" name="vCountry" id="address1_country" ng-model="vCountry1"  required> 
                                                         </div>                       
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label class="control-label">Zip Code</label>
-                                                            <input type="text" class="form-control postal_code" id="address1_postal_code" name="vZipcode" ng-model="vZipcode1"  disabled required> 
+                                                            <input type="text" class="form-control postal_code" id="address1_postal_code" name="vZipcode" ng-model="vZipcode1"  required> 
                                                         </div>                       
                                                     </div>
                                                 </div>

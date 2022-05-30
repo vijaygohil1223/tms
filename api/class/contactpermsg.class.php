@@ -312,11 +312,17 @@ class contactPerMsg {
         } else {
             $message = " ";
         }
+        if(isset($data['data']['msgEmailSubject'])) {
+            $subject = 'Invoice comment-' .$data['data']['msgEmailSubject'];
+            $emailsignData = '';
+        } else {
+            $subject = "Information";
+        }
 
         $body = "<p>" . $message . "</p>";
         $body .= "<p>" . $emailsignData . "</p>";
         $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
-        $subject = "Information";
+        //$subject = "Information";
 
         $to = $data['data']['vEmailAddress'];
         

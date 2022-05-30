@@ -548,15 +548,25 @@ app.directive('select2InvoiceStatus', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            var invoiceStatuses = [
-                {
-                    'id': 'Complete',
-                    'text': 'Complete' 
-                },{
-                    'id': 'Part Paid',
-                    'text': 'Part Paid'
-                }
-            ];
+            // var invoiceStatuses = [
+            //     {
+            //         'id': 'Part Paid',
+            //         'text': 'Part Paid'
+            //     },
+            //     {
+            //         'id': 'Complete',
+            //         'text': 'Complete' 
+            //     }
+            // ];
+            var data = ['Open','Approved','Part Paid','Paid','Complete','Overdue'];
+            var invoiceStatuses = [];
+            $.each(data, function(key, value) {
+                var obj = {
+                    'id': value,
+                    'text': value
+                };
+                invoiceStatuses.push(obj);
+            });
             
             $timeout(function() {
                 element.select2({
@@ -1697,14 +1707,13 @@ app.directive('googleplace', function($log,rest) {
         require: 'ngModel',
         scope: {
             ngModel: '=',
-            details: '=?'
+            //details: '=?'
         },
         link: function(scope, element, attrs, model) {
             var options = {
                 types: ['geocode'],
                 /*componentRestrictions: {}*/
             };
-
             var addr_json = [];
             var forMatchArray = [];
 
@@ -1718,7 +1727,6 @@ app.directive('googleplace', function($log,rest) {
             };
 
             scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
-            console.log('scope.gPlace', scope.gPlace)
             google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
                 var geoComponents = scope.gPlace.getPlace();
                 var latitude = geoComponents.geometry.location.lat();
@@ -1767,7 +1775,7 @@ app.directive('googleplace', function($log,rest) {
                             
                             //update element  ng-model variable value
                             ele.trigger('input');
-                            //update element  ng-model variable value
+                            //update element ng-model variable value
 
                             forMatchArray.push(addressType);
 
