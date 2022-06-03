@@ -541,6 +541,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'statementController',
             activetab: 'statement',
             role: ['1','2']
+        }).when('/client-statement', {
+            templateUrl: modulesPath + 'client-statement.html',
+            controller: 'statementClientController',
+            activetab: 'statement',
+            role: ['1','2']
         }).when('/reported-images', {
             templateUrl: modulesPath + 'reported-images.html',
             controller: 'reportedImagesController',

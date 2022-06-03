@@ -29,49 +29,66 @@
                             <div class="wrapper-md ng-scope">
                                 <div>
                                     <!-- <i class="fa fa-twitter fa fa-3x"></i> -->
-                                    <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="80"
-                                        height="80" style="border-radius: 100px;">
+
                                     <div class="row">
                                         <div class="col-xs-6">
+                                        </div>
+                                        <div class="col-xs-6 text-right">
+                                            <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <p>
+                                                <strong ng-bind="invoiceDetail.clientCompanyName"></strong></br> 
+                                                <span ng-bind="invoiceDetail.companyAddress"></span></br>
+                                                <span ng-bind="invoiceDetail.companyAddressDtl"></span></br>
+                                                <span ng-bind="postalcodeAddr"></span>
+                                                <br/>
+                                                Vat Number: <span ng-bind="invoiceDetail.clientVatinfo"></span>
+                                                <br />
+                                                Phone: <span ng-bind="invoiceDetail.companyPhone"></span>
+                                            </p>
+                                            <!-- <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="70"
+                                            height="70" style="border-radius: 100px;">
                                             <h4 ng-bind="invoiceDetail.freelanceName"></h4>
                                             <p ng-bind="invoiceDetail.freelanceAddress"></p>
                                             <p>
                                                 Telephone: <span ng-bind="invoiceDetail.freelancePhone"></span>
-                                            </p>
+                                            </p> -->
                                         </div>
                                         <div class="col-xs-6 text-right">
-                                            <p class="h4" ng-bind="invoiceDetail.invoice_number"></p>
+                                            <p class="h4"> <strong>#{{ invoiceDetail.invoice_number }}</strong></p>
                                             <h5>
                                                 <span>Invoice date : </span><span ng-bind="invoiceDetail.invoice_date | 
                           globalDtFormat"></span></br></br>
                                                 <!-- <span>Value date : </span><span ng-bind="invoiceDetail.value_date | dateFormat"></span></br></br> -->
-                                                <span>Payment due date : </span><span
-                                                    ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span>
+                                                <span>Payment due date : </span>
+                                                <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br/>
                                             </h5>
+                                            <p style="color:#b6b0b0">BeConnected AS &#183; Sandakerveien 138 &#183; 0484 Oslo &#183; Norway</p>
+                                            
                                         </div>
                                     </div>
-                                    <div class="well">
+                                    <div class="well none">
                                         <div class="row">
                                             <div class="col-xs-6">
-                                                <!-- <p class="m-t m-b">
-                                                    <span>Project Number : </span><strong
-                                                    ng-bind="invoiceDetail.orderNumber"></strong></br>
-                                                </p> -->
-                                                <strong>Company:</strong>
+                                                <!-- <strong>Company:</strong>
                                                 <h4 ng-bind="invoiceDetail.clientCompanyName"></h4>
                                                 <p>
                                                     Phone: <span ng-bind="invoiceDetail.companyPhone"></span>
                                                     <br> Vat Number: <span ng-bind="invoiceDetail.clientVatinfo"></span>
-                                                    <!-- <br> Email: <span ng-bind="invoiceDetail.companyEmail"></span> -->
-                                                </p>
+                                                     <br> Email: <span ng-bind="invoiceDetail.companyEmail"></span>
+                                                </p> -->
+                                                
                                             </div>
                                             <div class="col-xs-6">
-                                                <p><strong>Address</strong></p>
+                                                <!-- <p><strong>Address</strong></p>
                                                 <p>
                                                     <span ng-bind="invoiceDetail.companyAddress"></span></br>
                                                     <span ng-bind="invoiceDetail.companyAddressDtl"></span></br>
                                                     <span ng-bind="postalcodeAddr"></span>
-                                                </p>                                                    
+                                                </p>                                                     -->
                                             </div>
                                         </div>
                                     </div>

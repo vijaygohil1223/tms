@@ -1710,7 +1710,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (comment_id > 0 && comment_id > 0) {
                     cmtcolor = '#d30c39';
                 }
-                if (is_comment == 0 && comment_id > 0) {
+                if (is_comment > 0) {
                     cmtcolor = '#67bb0a';
                 }
                 val.comment = cmtcolor;
@@ -12957,17 +12957,38 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
-}).controller('invoiceInternalController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal) {
+}).controller('invoiceInternalController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, invoiceDuePeriodDays) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.getData = function() {
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function(data) {
+            //console.log(invoiceDuePeriodDays);
             $scope.invoiceList = data;
             console.log("$scope.invoiceList", $scope.invoiceList);
             $scope.invoiceStatus = [];
             for (var i = 0; i < data.length; i++) {
                 $scope.invoiceStatus[i] = true;
+                //console.log('data[i]',data[i].created_date)
+                const invoice_duedate = TodayAfterNumberOfDays(data[i].created_date, invoiceDuePeriodDays);
+                //console.log('invoice_duedate', invoice_duedate)
+                var ckey = $scope.invoiceList.length;
+                if(ckey>0)
+                $scope.invoiceList[i].invoice_duedate = invoice_duedate;
+            
             }
+        
+            // if (val.invoice_status == 'Complete') {
+            //     $scope.invoiceCompleted.push(val);
+            //     var ckey = $scope.invoiceUnpaid.length;
+            //     if(ckey>0)
+            //     $scope.invoiceUnpaid[ckey-1].invoice_duedate = invoice_duedate;
+            // } else {
+            //     $scope.invoiceUnpaid.push(val);
+            //     var ukey = $scope.invoiceUnpaid.length;
+            //     if(ukey>0)
+            //     $scope.invoiceUnpaid[ukey-1].invoice_duedate = invoice_duedate;
+            // }
+
         }).error(errorCallback);
     }
 
@@ -13030,14 +13051,106 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         } else {
             $scope.invoice = {};
             $scope.invoice.invoice_status = status;
+            console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
             $scope.invoice.paid_amount = " ";
             $routeParams.id = statusId;
+
+            console.log('$scope.invoice', $scope.invoice)
             rest.path = "invoiceStatusChange";
             rest.put($scope.invoice).success(function(data) {
                 $route.reload();
             });
         }
     }
+
+    //Invoice export to excel
+    $scope.exportData = function() {
+        var count = 0;
+        for (var i = 0; i <= angular.element('[id^=exportable] > tr').length; i++) {
+            //if ($("#orderCheck" + i).prop('checked') == true) {
+                count++;
+            //}
+        }
+        if (count == 0) {
+            notification('Please select record to export', 'information');
+        }
+        if (count > 0) {
+            for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                if ($("#orderCheck" + i).prop('checked') == true) {
+                    $("#Export_" + i).show()
+                } else {
+                    $("#Export_" + i).hide()
+                }
+            }
+            var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            });
+            saveAs(blob, "Linguist-invoice-report.xls");
+            //$scope.jobstatusReportsearch();
+        }
+    };
+
+    //search data action
+    $scope.statusAction = function(action) {
+        console.log('action', action)
+        var invoiceStatus = angular.element('#invoiceStatusdata').val();
+        console.log('invoiceStatus', invoiceStatus)
+
+        console.log('checkData-length', angular.element('[id^=invoiceCheckData]').length)
+        var j=0;
+        for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
+            var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
+            const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
+            //console.log('invoiceCheckLength-1', invoiceCheckLength-1)
+            console.log('invoiceselect', invoiceselect)
+            //console.log('i', i)
+            if (invoiceselect == 'true') {
+                var invoiceId = angular.element('#invoiceCheckData' + i).val();
+                console.log('invoiceId', invoiceId)
+                
+                $scope.invoice = {};
+                const inStatus = invoiceStatus.split(',')
+                $scope.invoice.invoice_status = (inStatus.length>0) ? inStatus[1] : invoiceStatus;
+                $scope.invoice.paid_amount = " ";
+                $scope.invoice.is_update = 'is_update';
+                
+                var obj = {
+                    "Invoice_cost": $scope.invoiceList[i].Invoice_cost,
+                    "paid_amount": $scope.invoiceList[i].paid_amount,
+                    "statusId": invoiceId
+                };
+                if($scope.invoice.invoice_status == 'Paid' || $scope.invoice.invoice_status == 'Part Paid' || $scope.invoice.invoice_status == 'Completed'){
+                    var modalInstance = $uibModal.open({
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'tpl/invoiceAmount.html',
+                        controller: 'invoiceAmountController',
+                        size: '',
+                        resolve: {
+                            items: function() {
+                                return obj;
+                            }
+                        }
+                    });
+                    modalInstance.result.then(function(selectedItem) {
+                        $route.reload();
+                    });
+                }else{
+                    console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
+                    
+                    $routeParams.id = invoiceId;
+                    rest.path = "invoiceStatusChange";
+                    rest.put($scope.invoice).success(function(data) {
+                        if(i == invoiceCheckLength){
+                            console.log('invoiceCheckLength-1-inside', invoiceCheckLength-1)
+                            $route.reload();
+                        }
+                    });
+                }    
+            }
+            j++;
+        }
+    }
+
 }).controller('clientInvoiceShowController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;    
@@ -13712,6 +13825,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.paidCount = 0;
     $scope.remiderPayCount = 0;
 
+    const loc = $location.absUrl().split('/');
+    $scope.statementType = function(type) {
+        console.log(`${type} cliecked`);
+    }
+
     if ($scope.userRight == '2') {
         var id = $scope.userId;
         rest.path = "getFreelanceStatement/" + id;
@@ -13795,7 +13913,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if (id != undefined) {
                 rest.path = "getFreelanceStatement/" + id;
                 rest.get().success(function(data) {
-                    console.log("data", data);
                     $scope.stamementList = data;
                     Array.prototype.sum = function(prop) {
                         var total = 0
@@ -13895,6 +14012,208 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         }
     }
 
+}).controller('statementClientController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.userId = $window.localStorage.getItem("session_iUserId");
+    $scope.dueAmount = 0;
+    $scope.search = {}
+    var statmntPaid = [];
+    var statmntPartPaid = [];
+    var statmntUnPaid = [];
+    var statmntReminderPaid = [];
+    $scope.allCount = 0;
+    $scope.partPaidCount = 0;
+    $scope.unPaidCount = 0;
+    $scope.paidCount = 0;
+    $scope.remiderPayCount = 0;
+
+    const loc = $location.absUrl().split('/');
+    console.log('$location.absUrl()=', $location.absUrl())
+    $scope.statementType = function(type) {
+        console.log(`${type} =cliecked`);
+    }
+
+    if ($scope.userRight == '2') {
+        var id = $scope.userId;
+        rest.path = "getClientStatement/" + id;
+        rest.get().success(function(data) {
+            $scope.stamementList = data;
+            angular.forEach($scope.stamementList, function(val, i){
+                if(val.is_approved == 1){
+                    if(val.paid_amount != 0 && val.paid_amount < val.Amount){
+                        statmntPartPaid.push(val);            
+                    }
+                    if(val.paid_amount == 0){
+                        statmntUnPaid.push(val);            
+                    }
+                    if(val.invoice_status == 'Complete' || (val.is_approved == 1 && val.paid_amount > 0)){
+                        statmntPaid.push(val);   
+                    }
+                    if(val.invoice_status == 'Open' && val.is_approved == 1 &&  val.reminder_sent==1){
+                        statmntReminderPaid.push(val);   
+                    }       
+                    
+                }    
+            });
+            $scope.allCount = $scope.stamementList.length ;
+            $scope.partPaidCount = statmntPartPaid.length ;
+            $scope.unPaidCount = statmntUnPaid.length ;
+            $scope.paidCount = statmntPaid.length ;
+            $scope.remiderPayCount = statmntReminderPaid.length ;
+
+            // angular.forEach($scope.stamementList, function(val, i) {
+            //     $scope.stamementList[i].paymentDueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod.number_of_days);
+            // })
+            Array.prototype.sum = function(prop) {
+                var total = 0
+                for (var i = 0, _len = this.length; i < _len; i++) {
+                    total += this[i][prop]
+                }
+                return total
+            }
+            var tolaAmount = $scope.stamementList.sum('Amount');
+            var paidAmount = $scope.stamementList.sum('paid_amount');
+
+            $scope.dueAmount = tolaAmount - paidAmount;
+
+        });
+
+        $scope.highlightSearch = "All";
+        $scope.sortStatement = function(action, eID) {
+            switch (action) {
+                case "All":
+                    $scope.highlightSearch = "All";
+                    $route.reload();
+                    break;
+                case "Complete":
+                    $scope.stRow = "Complete";
+                    $scope.highlightSearch = "Complete";
+                    $scope.stamementList = statmntPaid;
+                    break;
+                case "partPaid":
+                    $scope.jobRow = "partPaid";
+                    $scope.highlightSearch = "partPaid";
+                    $scope.stamementList = statmntPartPaid;
+                    break;
+                case "unPaid":
+                    $scope.jobRow = "unPaid";
+                    $scope.highlightSearch = "unPaid";
+                    $scope.stamementList = statmntUnPaid;
+                    break;
+                case "reminderPaid":
+                    $scope.jobRow = "reminderPaid";
+                    $scope.highlightSearch = "reminderPaid";
+                    $scope.stamementList = statmntReminderPaid;
+                    break;
+                                                
+            }
+            //scrollToId(eID);
+        }
+
+    } else {
+
+        $scope.getFreelance = function(id) {
+            if (id != undefined) {
+                rest.path = "getClientStatement/" + id;
+                rest.get().success(function(data) {
+                    $scope.stamementList = data;
+                    Array.prototype.sum = function(prop) {
+                        var total = 0
+                        for (var i = 0, _len = this.length; i < _len; i++) {
+                            total += this[i][prop]
+                        }
+                        return total
+                    }
+                    var tolaAmount = $scope.stamementList.sum('Amount');
+                    var paidAmount = $scope.stamementList.sum('paid_amount');
+
+                    $scope.dueAmount = tolaAmount - paidAmount;
+                });
+            }
+        }
+    }
+
+    $scope.getInvoicePeriod = function(id) {
+        rest.path = "getOneInvoicePeriod/" + 1;
+        rest.get().success(function(data) {
+            $scope.invoicePeriod = data;
+        }).error(errorCallback);
+    }
+    $scope.getInvoicePeriod();
+    $scope.openFilter = function() {
+        $('#filterRows').slideToggle();
+    }
+
+    $scope.totalAmountAdmin = 0;
+    $scope.totalPendingAmountAdmin = 0;
+    $scope.filterClientStatement = function(frmId) {
+        if (jQuery.isEmptyObject($scope.search)) {
+            notification('Please select option to filter statement.', 'warning');
+            return false;
+        } else {
+            if (!$scope.search.dueDateFrom && !$scope.search.dueDateTo) {
+
+            } else if ($scope.search.dueDateFrom && !$scope.search.dueDateTo) {
+                notification('You have to select both dates.', 'warning');
+                return false;
+            } else if (!$scope.search.dueDateFrom && $scope.search.dueDateTo) {
+                notification('You have to select both dates.', 'warning');
+                return false;
+            }
+            if ($scope.search.dueDateFrom) {
+                $scope.search.dueDateFrom = originalDateFormatNew($scope.search.dueDateFrom);
+                $scope.search.dueDateFrom = moment($scope.search.dueDateFrom).subtract($scope.invoicePeriod.number_of_days, 'd').format('YYYY-MM-DD');
+            }
+
+            if ($scope.search.dueDateTo) {
+                $scope.search.dueDateTo = originalDateFormatNew($scope.search.dueDateTo);
+                $scope.search.dueDateTo = moment($scope.search.dueDateTo).subtract($scope.invoicePeriod.number_of_days, 'd').format('YYYY-MM-DD');
+            }
+
+            rest.path = 'filterClientStatement';
+            rest.post($scope.search).success(function(data) {
+                if (data) {
+                    $scope.stamementList = data;
+                    if ($scope.stamementList.length == 0) {
+                        notification('No record found', 'warning');
+                        document.getElementById("filterForm").reset();
+                        $("#resource").select2("val", "");
+                        $("#comapanyCode").select2("val", "");
+                        $("#invoiceStatus").select2("val", "");
+                        $("#invoiceNumber").select2("val", "");
+                        $('#filterRows').slideUp();
+                        $scope.search = {};
+                    } else {
+                        angular.forEach($scope.stamementList, function(val, i) {
+                            $scope.stamementList[i].paymentDueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod.number_of_days);
+                        })
+
+                        Array.prototype.sum = function(prop) {
+                            var total = 0
+                            for (var i = 0, _len = this.length; i < _len; i++) {
+                                total += this[i][prop]
+                            }
+                            return total
+                        }
+
+                        $scope.totalAmountAdmin = $scope.stamementList.sum('Amount');
+                        $scope.paidAmountAdmin = $scope.stamementList.sum('paid_amount');
+                        $scope.totalPendingAmountAdmin = $scope.totalAmountAdmin - $scope.paidAmountAdmin;
+
+                        document.getElementById("filterForm").reset();
+                        $("#resource").select2("val", "");
+                        $("#comapanyCode").select2("val", "");
+                        $("#invoiceStatus").select2("val", "");
+                        $("#invoiceNumber").select2("val", "");
+                        $('#filterRows').slideUp();
+                        $scope.search = {};
+                    }
+                } else {
+
+                }
+            }).error(errorCallback);
+        }
+    }
 
 }).controller('orderController', function($scope, $log, $location, $route, rest, $window, $rootScope, $timeout, $interval) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -22832,6 +23151,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.searchPonumber = items[0].searchPonumber;
 
     $scope.addInvoice = function(data) {
+        console.log('addInvoice-data', data)
         var company = "";
         var flag = 0;
         var array = [];
@@ -22976,6 +23296,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.getAllInvoice = function() {
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function(invoices) {
+            $scope.getAllInvoice = invoices;
             console.log('invoices', invoices)
             //get of invoice due period
             $scope.invoiceUnpaid = [];
@@ -23025,6 +23346,33 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
         }).error(errorCallback);
          
+    };
+
+    //Invoice export to excel
+    $scope.exportData = function() {
+        var count = 0;
+        for (var i = 0; i <= angular.element('[id^=exportable] > tr').length; i++) {
+            //if ($("#orderCheck" + i).prop('checked') == true) {
+                count++;
+            //}
+        }
+        if (count == 0) {
+            notification('Please select record to export', 'information');
+        }
+        if (count > 0) {
+            for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                if ($("#orderCheck" + i).prop('checked') == true) {
+                    $("#Export_" + i).show()
+                } else {
+                    $("#Export_" + i).hide()
+                }
+            }
+            var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            });
+            saveAs(blob, "Linguist-invoice-report.xls");
+            //$scope.jobstatusReportsearch();
+        }
     };
 
 }).controller('clientInvoiceCreatePopupCtrl', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {

@@ -222,3 +222,12 @@ app.factory('allLanguages', function($http, $location, $routeParams,rest) {
     //console.log('all lang', allLanguages);
     return allLanguages;
 });
+// 
+app.factory('invoiceDuePeriodDays', function($http, $location, $routeParams,rest) {
+    var duePeriodDays = 30;
+    rest.path = "getOneInvoicePeriod/" + 1;
+    rest.get().success(function(data) {
+        duePeriodDays = data.number_of_days ? data.number_of_days : 30;
+    }).error(function(data, error, status) {});
+    return duePeriodDays;
+});

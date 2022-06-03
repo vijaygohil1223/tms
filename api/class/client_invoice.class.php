@@ -309,6 +309,41 @@ class Client_invoice {
         return $data;
     }
 
+    // Client statement page
+    public function getClientStatement($id){
+        $data = $this->_db->rawQuery("SELECT tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date FROM tms_users AS tu INNER JOIN tms_invoice_client AS tmInvoice ON tu.iUserId = tmInvoice.freelance_id WHERE tu.iUserId = $id");
+        return $data;
+    }
+    // Client statement page
+    public function filterClientStatement($filterParams){
+        //echo '<pre>'; print_r($filterParams); echo '</pre>';
+        $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','INNER');
+        $this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id','LEFT');
+        if(isset($filterParams['dueDateFrom']) && isset($filterParams['dueDateTo'])){
+
+            $Frm = $filterParams['dueDateFrom'].' '.'00:00:00';
+            $To = $filterParams['dueDateTo'].' '.'00:00:00';
+            $this->_db->where('tmInvoice.created_date', Array ($Frm,$To),'BETWEEN');
+        }
+        
+        if(isset($filterParams['comapanyCode'])){
+            $cCode = $filterParams['comapanyCode'];
+            $this->_db->where('tmInvoice.invoice_number','%'.$cCode.'%', 'like');
+        }
+
+        if(isset($filterParams['resource'])){
+            $this->_db->where('tmInvoice.freelance_id', $filterParams['resource']);
+        }
+        if(isset($filterParams['invoiceStatus'])){
+            $this->_db->where('tmInvoice.invoice_status', $filterParams['invoiceStatus']);
+        }
+        if(isset($filterParams['invoiceNumber'])){
+            $this->_db->where('tmInvoice.invoice_number', $filterParams['invoiceNumber']);
+        }
+        
+        $data = $this->_db->get('tms_invoice_client tmInvoice', null,' tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date,tc.vUserName as companyName,tc.vCodeRights');
+        return $data;
+    }
     /* Get All save invoice BY FreelancerId/UserId */
     public function getAllInvoiceByUserId($type,$userId) {
         //echo $userId;exit;

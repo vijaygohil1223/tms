@@ -50,11 +50,11 @@ class dashboard {
             // $qry1 = "SELECT itemId,order_id, source_lang,target_lang FROM tms_items where order_id = ".$value['orderId']  ;
             // $itemsdata = $this->_db->rawQuery($qry1);
             // $data[$key]['items'] = $itemsdata;
-            $qry3 = "SELECT count(id) as comment_id FROM tms_discussion where order_id = ".$value['orderId']  ;
+            $qry3 = "SELECT count(id) as comment_id FROM tms_discussion where order_id = ".$value['orderId'];
             $comments = $this->_db->rawQuery($qry3);
             $data[$key]['comment_id'] = $comments;
 
-            $qry2 = "SELECT count(id) as comment_status FROM tms_discussion where order_id = ".$value['orderId']. " AND NOT FIND_IN_SET(".$id.",read_id)"  ;
+            $qry2 = "SELECT count(id) as comment_status FROM tms_discussion where order_id = ".$value['orderId']. " AND NOT FIND_IN_SET(".$id.",read_id)" ;
             $commentdata = $this->_db->rawQuery($qry2);
             $data[$key]['comment'] = $commentdata;
             

@@ -558,7 +558,7 @@ app.directive('select2InvoiceStatus', function($http, rest, $timeout) {
             //         'text': 'Complete' 
             //     }
             // ];
-            var data = ['Open','Approved','Part Paid','Paid','Complete','Overdue'];
+            var data = ['Open','Approved','Part Paid','Paid','Complete','Overdue','Cancel'];
             var invoiceStatuses = [];
             $.each(data, function(key, value) {
                 var obj = {

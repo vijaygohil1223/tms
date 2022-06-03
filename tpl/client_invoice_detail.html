@@ -30,8 +30,9 @@
                                                 <span><button class="btn btn-sm btn-info" ng-click="search(searchOrderNumber)">ok</button></span>
                                             </div>
                                             <div style="margin-top:23px !important;" class="pull-right">
-                                                <button class="btn btn-info btn-rightside" ng-click="viewInvoice('draft')">View Draft Invoice</button>
-                                                <button class="btn btn-info btn-rightside" ng-click="viewInvoice('save')" style="margin-right: 10px;">View Save Invoice</button>
+                                                <button class="btn btn-info btn-rightside" ng-click="viewInvoice('draft')"><i class="fa fa-eye"></i> Draft Invoice</button>
+                                                <button class="btn btn-info btn-rightside" ng-click="viewInvoice('save')" style="margin-right: 10px;"><i class="fa fa-eye"></i> Save Invoice</button>
+                                                <button class="btn btn-info" ng-click="exportData()">Excel &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
                                     </form>
@@ -109,15 +110,15 @@
                                 <td ng-bind="$index + 1"></td>
                                 <td ng-bind="invoiceL.invoice_number"></td>
                                 <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
-                                <td> {{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                                 <td> {{ invoiceL.Invoice_cost | customNumber }}</td>
+                                <td> {{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                                 <!-- <td ng-bind="invoiceL.companyName"></td> -->
                                 <td>
                                     {{invoiceL.clientCompanyName}}
                                     <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)" title="Comment" class="trActionIcon"> &nbsp;<i class="fa fa-envelope-o" style="font-size:18px;"></i></a>
                                 </td>
-                                <td> {{ invoiceL.created_date | globalDtFormat }}</td>
-                                <td >
+                                <td> {{ invoiceL.created_date | globalDtFormat }} </td>
+                                <td>
                                     <span ng-bind="invoiceL.invoice_status"></span>
                                 </td>
                                 <td>
@@ -131,6 +132,41 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Invoice for export to excel -->
+                <div class="table-responsive" id="exportable" style="display:none">
+                    <table class="table m-b-none default footable-loaded footable">
+                        <thead>
+                        <th>#</th>
+                        <th>Invoice number</th>
+                        <!-- <th>Freelancer name</th> -->
+                        <th>Price</th>
+                        <th>Due Date</th>
+                        <th>Company name</th>
+                        <th>Creation Date</th>
+                        <th>Invoice status</th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="invoiceL in invoiceCompleted">
+                                <td ng-bind="$index + 1"></td>
+                                <td ng-bind="invoiceL.invoice_number"></td>
+                                <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
+                                <td> {{ invoiceL.Invoice_cost | customNumber }}</td>
+                                <td> {{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                                <!-- <td ng-bind="invoiceL.companyName"></td> -->
+                                <td>
+                                    {{invoiceL.clientCompanyName}}
+                                    <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)" title="Comment" class="trActionIcon"> &nbsp;<i class="fa fa-envelope-o" style="font-size:18px;"></i></a>
+                                </td>
+                                <td> {{ invoiceL.created_date | globalDtFormat }} </td>
+                                <td>
+                                    <span ng-bind="invoiceL.invoice_status"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>        
+
             </div>
 
         </div>

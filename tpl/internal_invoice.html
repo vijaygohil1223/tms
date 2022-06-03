@@ -1,3 +1,9 @@
+<style>
+  /* th{
+    white-space: nowrap;
+  } */
+</style>
+
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
   data-ng-include=" 'tpl/material.header.html' ">
 </div>
@@ -10,44 +16,99 @@
     <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
     <div class="md-content page_content_wrapper">
 
-      <div class="content_head bg-light lter b-b wrapper-md ng-scope">
+      <div class="content_head bg-light lter b-b wrapper-md ng-scope d-flex" style="justify-content:space-between;">
         <h1 class="m-n font-thin h3">Invoice List</h1>
+        <button class="btn btn-info" ng-click="exportData()">Excel &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i></button>
       </div>
       <div class="wrapper-md ng-scope">
         <div class="panel panel-default">
           <div class="panel-body">
-            <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList">
-              <thead>
-                <th>#</th>
-                <th>Invoice number</th>
-                <th>Freelancer name</th>
-                <th>Company name</th>
-                <th>Invoice status</th>
-                <th>Action</th>
-              </thead>
-              <tbody>
-                <tr ng-repeat="invoiceL in invoiceList">
-                  <td ng-bind="$index + 1"></td>
-                  <td ng-bind="invoiceL.invoice_number"></td>
-                  <td ng-bind="invoiceL.freelanceName"></td>
-                  <td ng-bind="invoiceL.companyName"></td>
-                  <!-- <td ng-hide="invoiceStatus[{{$index}}]">
-                                    <input type="text" select2-invoice id="comapanyBranch" class="form-control" name="vResourceType" ng-model="invoiceL.invoice_status" ng-change="invoiceStatusChange(invoiceL.invoice_status, $index, invoiceL.invoice_id)"required />
-                                </td> -->
-                  <td ng-show="invoiceStatus[{{$index}}]">
-                    <span ng-bind="invoiceL.invoice_status"></span>
-                  </td>
-                  <td>
-                    <div class="trActiontitle">
-                      <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
-                          class="fa fa-eye"></i></a>
-                      <!-- </br>
-                                        <strong>View</strong> -->
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="row wraper">
+
+                <div class="col-sm-3 d-flex" style="white-space:nowrap;">
+                    <label style="margin-top:5px;">Select Status &nbsp;&nbsp;</label>
+                    <input type="text" select2-invoice-status
+                      id="invoiceStatusdata" class="input-sm form-control w-sm inline v-middle"
+                      ng-model="invoiceStatus" placeholder="please select"/>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-sm btn-info"
+                      ng-click="statusAction(action,projectStatus)"><i
+                          class="glyphicon glyphicon-ok"></i></button>
+                </div>
+            </div>
+            <div class="row wraper">
+              <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList">
+                <thead>
+                  <th>#</th>
+                  <th>Invoice number</th>
+                  <th>Price</th>
+                  <th>Due Date</th>
+                  <th>Freelancer name</th>
+                  <th>Creation Date</th>
+                  <th>Company name</th>
+                  <th>Invoice status</th>
+                  <th>Action</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="invoiceL in invoiceList">
+                    <td>
+                      <input type="checkbox" id="invoiceCheck{{$index}}"
+                      name="invoiceCheck{{$index}}" ng-model="checkor"
+                      ng-checked="checkdata=='invoicecheck'">
+                      <input type="text" id="invoiceCheckData{{$index}}"
+                        name="invoiceCheckData{{$index}}" style="display: none;"
+                        ng-model="invoiceL.invoice_id">
+                    </td>
+                    <td ng-bind="invoiceL.invoice_number"></td>
+                    <td ng-bind="invoiceL.Invoice_cost"></td>
+                    <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                    <td ng-bind="invoiceL.freelanceName"></td>
+                    <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                    <td ng-bind="invoiceL.companyName"></td>
+                    <td ng-show="invoiceStatus[{{$index}}]">
+                      <span ng-bind="invoiceL.invoice_status"></span>
+                    </td>
+                    <td>
+                      <div class="trActiontitle">
+                        <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                            class="fa fa-eye"></i></a>
+                      </div>
+                    </td>  
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Invoice for export to excel -->
+            <div class="table-responsive" id="exportable" style="display:none">
+              <table class="table m-b-none default footable-loaded footable">
+                <thead>
+                  <th>#</th>
+                  <th>Invoice number</th>
+                  <th>Price</th>
+                  <th>Due Date</th>
+                  <th>Freelancer name</th>
+                  <th>Creation Date</th>
+                  <th>Company name</th>
+                  <th>Invoice status</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="invoiceL in getAllInvoice">
+                    <td ng-bind="$index + 1"></td>
+                    <td ng-bind="invoiceL.invoice_number"></td>
+                    <td ng-bind="invoiceL.Invoice_cost"></td>
+                    <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                    <td ng-bind="invoiceL.freelanceName"></td>
+                    <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                    <td ng-bind="invoiceL.companyName"></td>
+                    <td ng-show="invoiceStatus[{{$index}}]">
+                      <span ng-bind="invoiceL.invoice_status"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>    
+            </div>
+
           </div>
         </div>
       </div>

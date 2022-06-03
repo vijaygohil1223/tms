@@ -16,7 +16,7 @@
     <div class="md-content page_content_wrapper" id="top">
 
       <div class="content_head bg-light lter b-b wrapper-md ng-scope">
-        <h1 class="m-n font-thin h3">Statement</h1>
+        <h1 class="m-n font-thin h3">Linguist statement</h1>
       </div>
       <div class="wrapper-md ng-scope">
         <div class="panel panel-default" ng-if="userRight==1">
@@ -94,23 +94,23 @@
           <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
             <thead>
               <th>#</th>
+              <th>Invoice No</th>
               <th>Resource Name</th>
               <th>Invoice date</th>
               <th>Due date</th>
               <th>Project No</th>
-              <th>Invoice No</th>
               <th>Total amount</th>
               <th>Pending amount</th>
             </thead>
             <tbody>
               <tr ng-repeat="s in stamementList track by $index">
                 <td ng-bind="$index + 1"></td>
+                <td>{{s.InvoiceNo}}</td>
                 <td>{{s.vUserName}}</td>
                 <td ng-if="s.created_date == '0000-00-00 00:00:00'">-</td>
                 <td ng-if="s.created_date != '0000-00-00 00:00:00'">{{s.created_date | globalDtFormat}}</td>
                 <td>{{s.paymentDueDate | globalDtFormat}}</td>
                 <td>{{s.InvoiceNo.split('_')[0]}}</td>
-                <td>{{s.InvoiceNo}}</td>
                 <td>{{s.Amount | customNumber}}</td>
                 <td>{{s.Amount - s.paid_amount |customNumber}}</td>
               </tr>

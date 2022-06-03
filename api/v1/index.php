@@ -3236,6 +3236,17 @@ $app->put('/invoiceStatusIrrecoverable/:id','authenticate', function ($id) use($
     $result = $invoice->invoiceStatusIrrecoverable($data, $id);
     echoResponse(200, $result);
 });
+$app->get('/getClientStatement/:id', 'authenticate',function($id) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getFreelanceStatement($id);
+    echoResponse(200, $result);
+});
+$app->post('/filterClientStatement', function () use($app) {
+    $stmt = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $stmt->filterClientStatement($data);
+    echoResponse(200, $result);
+});
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {
     $userposition = new userposition ();
