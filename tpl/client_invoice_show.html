@@ -28,7 +28,47 @@
                 <div class="panel panel-default" id="exportable">
                     <div class="panel-body">
                         <div class="col-sm-12">
-                            <div class="col-xs-12">
+                              <div class="row">
+                                <div class="col-xs-6">
+                                </div>
+                                <div class="col-xs-6 text-right">
+                                  <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;">
+                                </div>
+                             </div>
+                             <div class="row">
+                              <div class="col-xs-6">
+                                  <p>
+                                      <strong ng-bind="invoiceDetail.clientCompanyName"></strong></br> 
+                                      <span ng-bind="invoiceDetail.companyAddress"></span></br>
+                                      <span ng-bind="invoiceDetail.companyAddressDtl"></span></br>
+                                      <span ng-bind="postalcodeAddr"></span>
+                                      <br/>
+                                      Vat Number: <span ng-bind="invoiceDetail.clientVatinfo"></span>
+                                      <br />
+                                      Phone: <span ng-bind="invoiceDetail.companyPhone"></span>
+                                  </p>
+                                  <!-- <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="70"
+                                  height="70" style="border-radius: 100px;">
+                                  <h4 ng-bind="invoiceDetail.freelanceName"></h4>
+                                  <p ng-bind="invoiceDetail.freelanceAddress"></p>
+                                  <p>
+                                      Telephone: <span ng-bind="invoiceDetail.freelancePhone"></span>
+                                  </p> -->
+                              </div>
+                              <div class="col-xs-6 text-right">
+                                  <p class="h4"> <strong>#{{ invoiceDetail.invoice_number }}</strong></p>
+                                  <h5>
+                                      <span>Invoice date : </span><span ng-bind="invoiceDetail.invoice_date | 
+                globalDtFormat"></span></br></br>
+                                      <!-- <span>Value date : </span><span ng-bind="invoiceDetail.value_date | dateFormat"></span></br></br> -->
+                                      <span>Payment due date : </span>
+                                      <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br/>
+                                  </h5>
+                                  <p style="color:#b6b0b0">BeConnected AS &#183; Sandakerveien 138 &#183; 0484 Oslo &#183; Norway</p>
+                                  
+                              </div>
+                          </div>
+                            <!-- <div class="col-xs-12">
                                 <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="80" height="80" style="border-radius: 100px;">
                             </div>
                             <div class="col-xs-6">
@@ -41,8 +81,8 @@
                                 <span>Invoice date : </span>
                                 <span ng-bind="invoiceDetail.invoice_date"></span></br>
                                 <span>Payment due date : </span><span ng-bind="invoiceDetail.paymentDueDate"></span>
-                            </div>
-                            <div class="col-xs-12 well">
+                            </div> -->
+                            <div class="col-xs-12 well none">
                                 <div class="col-xs-6">
                                     <!-- <p class="m-t m-b">
                                         <span>Project Number : </span><strong
@@ -126,7 +166,21 @@
                                                                       <input type="radio" id="Paypal" name="paymentType" ng-model="invoiceDetail.payment" ng-value='"Paypal"' disabled> Paypal
                                                                     </span>
                                             </p> -->
+                                             
                               </div>
+                                <div class="col-sm-12" style="margin-bottom:10px;padding-left:0;">
+                                  <div class="col-sm-2">
+                                    <p><strong>Contact</strong></p>
+                                    {{invoiceDetail.freelanceName}}
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <p><strong>Telephone</strong></p>{{invoiceDetail.freelancePhone}}
+                                  </div>
+                                  <div class="col-sm-2">
+                                    <p><strong>Email</strong></p> {{invoiceDetail.freelanceEmail}} 
+                                  </div>
+                                </div>
+                                <div class="line"></div> 
                             <!-- <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
                                   class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index"
                                   id="InvoiceTbl"> -->
@@ -199,7 +253,7 @@
                                 </tbody>
                               </table>
                             <div id="toAddEleAfterDwonload"></div>
-                            <button id="btnPaid" ng-show="userRight==1" class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
+                            <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft'" class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
                             <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'" class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as cancel</button>
                             <button id="btnSave" ng-show="invoiceDetail.invoice_type!='save' || invoiceDetail.is_invoice_sent!=1 && invoiceDetail.invoice_status!='Complete'" class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp; To be sent</button>
                             <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="save('invoice-form', 'draft');"> Draft</button>

@@ -203,8 +203,6 @@ class Client_invoice {
 
     public function invoiceStatusChange($data, $id) {
         /* Insert Part paid invoice payment detail in database START */
-
-        
         if(isset($data['partPaid'])){
             $partPaidAmount = array();
             $partPaidAmount['invoice_id']                   = $id;
@@ -215,8 +213,11 @@ class Client_invoice {
         }    
         /* Insert Part paid invoice payment detail in database END */
 
-
         unset($data['partPaid']);
+        if(isset($data['is_update'])){
+            $partPaymentInsert = 1;
+            unset($data['is_update']);
+        }
         $data['modified_date'] = date('Y-m-d');
     	$this->_db->where('invoice_id', $id);
     	$idd = $this->_db->update('tms_invoice_client', $data);

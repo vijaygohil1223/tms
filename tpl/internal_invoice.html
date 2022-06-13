@@ -24,20 +24,21 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="row wraper">
-
-                <div class="col-sm-3 d-flex" style="white-space:nowrap;">
-                    <label style="margin-top:5px;">Select Status &nbsp;&nbsp;</label>
-                    <input type="text" select2-invoice-status
-                      id="invoiceStatusdata" class="input-sm form-control w-sm inline v-middle"
-                      ng-model="invoiceStatus" placeholder="please select"/>
+              <div class="bg-light lter b-b wrapper-md d-flex" style="justify-content:end;margin-top:-15px;">
+                <div class="col-sm-4">
+                  <div class="col-sm-10 d-flex" style="white-space:nowrap;">
+                      <label style="margin-top:5px;">Select Status &nbsp;&nbsp;</label>
+                      <input type="text" select2-invoice-status
+                          id="invoiceStatusdata" class="input-sm form-control w-sm inline v-middle"
+                          ng-model="invoiceStatus" placeholder="please select Status"/>
+                  </div>
+                  <div class="col-sm-2">
+                      <button class="btn btn-sm btn-info"
+                          ng-click="statusAction(action,projectStatus)" style="padding:5px 25px;"><i
+                              class="glyphicon glyphicon-ok"></i></button>
+                  </div>
                 </div>
-                <div class="col-sm-1">
-                    <button class="btn btn-sm btn-info"
-                      ng-click="statusAction(action,projectStatus)"><i
-                          class="glyphicon glyphicon-ok"></i></button>
-                </div>
-            </div>
-            <div class="row wraper">
+              </div>
               <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList">
                 <thead>
                   <th>#</th>

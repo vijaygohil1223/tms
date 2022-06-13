@@ -573,6 +573,33 @@ app.directive('select2InvoiceStatus', function($http, rest, $timeout) {
                     allowClear: true,
                     data: invoiceStatuses,
                     multiple:true,
+                    placeholder:'working',
+                    maximumSelectionSize:1
+                });
+            }, 200);
+            
+        }
+    }
+});
+app.directive('select2ClientInvoiceStatus', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            var data = ['Open','Part Paid','Paid','Complete','Overdue','Cancel','Irrecoverable'];
+            var invoiceStatuses = [];
+            $.each(data, function(key, value) {
+                var obj = {
+                    'id': value,
+                    'text': value
+                };
+                invoiceStatuses.push(obj);
+            });
+            $timeout(function() {
+                element.select2({
+                    allowClear: true,
+                    data: invoiceStatuses,
+                    multiple:true,
                     maximumSelectionSize:1
                 });
             }, 200);
