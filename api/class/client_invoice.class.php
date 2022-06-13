@@ -155,7 +155,7 @@ class Client_invoice {
                 $this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
                 $this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
                 $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
-                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tcc.vEmail as companycontactEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo');
+                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tcc.vEmail as companycontactEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, ti.po_number');
                 
                 //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
     
@@ -461,10 +461,13 @@ class Client_invoice {
 			$this->_db->join('tms_general gen', 'gen.order_id=ti.order_id', 'LEFT');
 			$this->_db->join('tms_customer tcu','tcu.order_id = ti.order_id', 'INNER');
 			$this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
+            $this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
+            $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
 			//$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tg.company_code, tsv.job_code AS jobCode');
-			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone');
+			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS companyAddressDtl, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, ti.po_number');
 
-            //echo $this->_db->getLastQuery();
+            // echo $this->_db->getLastQuery();
+            // exit;
             //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
 
 			//$data['companyName'] = 'test';

@@ -24,58 +24,121 @@
                 </div> -->
               <div class="wrapper-md ng-scope">
                 <div>
-                  <!-- <i class="fa fa-twitter fa fa-3x"></i> -->
-                  <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="80" height="80"
-                    style="border-radius: 100px;">
+                    <div class="row">
+                      <div class="col-xs-6">
+                      </div>
+                      <div class="col-xs-6 text-right">
+                        <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;">
+                      </div>
+                    </div>  
 
                   <div class="row">
                     <div class="col-xs-6">
-                      <h4 ng-bind="invoiceDetail.freelanceName"></h4>
-                      <p ng-bind="invoiceDetail.freelanceAddress"></p>
-                      <p>
-                        Telephone: <span ng-bind="invoiceDetail.freelancePhone"></span>
-                      </p>
-                      <p>
-                        Web: <span>www.beconnected.no</span>
-                      </p>
+                        <p>
+                          <strong ng-bind="invoiceDetail.clientCompanyName"></strong></br> 
+                        </p>
+                        <p>
+                          {{invoiceDetail.companyAddress}} </br>
+                          {{clientZipcode}}  <span ng-if="clientCity"> , {{clientCity}}</span> </br>
+                          {{clientCountry}} </br>
+                          Vat Number : {{invoiceDetail.clientVatinfo}} </br>
+                          Phone: <span ng-bind="invoiceDetail.companyPhone"></span>
+                        </p>
                     </div>
                     <div class="col-xs-6 text-right">
-                      <p class="h4" ng-bind="invoiceDetail.invoiceNumber"></p>
-                      <h5>
-                        <span>Invoice date : </span><span
-                          ng-bind="invoiceDetail.invoiceDate | globalDtFormat"></span></br></br>
-                        <!-- <span>Value date : </span><span ng-bind="invoiceDetail.invoiceDate | dateFormat"></span></br></br> -->
-                        <span>Payment due date : </span><span
-                          ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span>
-                      </h5>
+                        <p class="h4"> <strong>#{{ invoiceDetail.invoiceNumber }}</strong></p>
+                        <h5>
+                            <span>Invoice date : </span><span ng-bind="invoiceDetail.invoice_date | 
+      globalDtFormat"></span></br></br>
+                            <!-- <span>Value date : </span><span ng-bind="invoiceDetail.value_date | dateFormat"></span></br></br> -->
+                            <span>Payment due date : </span>
+                            <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br/>
+                        </h5>
+                        <p style="color:#b6b0b0">BeConnected AS &#183; Sandakerveien 138 &#183; 0484 Oslo &#183; Norway</p>
+                        <p style="color:#b6b0b0"> Email: info@beconnected.no</p>
                     </div>
                   </div>
-
-                  <div class="well">
-                    <div class="row">
-                      <div class="col-xs-6">
-                        <!-- <p class="m-t m-b">Order date: <strong>26th Mar 2013</strong><br>
-                              Order status: <span class="label bg-success">Shipped</span><br>
-                              Order ID: <strong>#9399034</strong>
-                          </p> -->
-                        <p class="m-t m-b">
-                          <span>Project Number : </span><strong
-                            ng-bind="invoiceDetail.orderNumber"></strong></br>
-                        </p>
-                      </div>
-                      <div class="col-xs-6">
-                        <strong>Company:</strong>
-                        <h4 ng-bind="invoiceDetail.clientCompanyName"></h4>
-                        <p>
-                          <span ng-bind="invoiceDetail.companyAddress"></span></br>
-                          Phone: <span ng-bind="invoiceDetail.companyPhone"></span><br>
-                          <!--  Email: <span ng-bind="invoiceDetail.companyEmail"></span><br> -->
-                        </p>
-                      </div>
+                  
+                  <div class="line"></div>
+                  <div class="col-sm-12" style="padding-left:0;">
+                    <div class="col-sm-2">
+                        <p><strong>Contact</strong></p>
+                        {{invoiceDetail.freelanceName}}
                     </div>
-                  </div>
+                    <div class="col-sm-2">
+                        <p><strong>Telephone</strong></p>{{invoiceDetail.freelancePhone}}</div>
+                    <div class="col-sm-2">
+                        <p><strong>Email</strong></p> {{invoiceDetail.freelanceEmail}} </div>
+                    </div>
+                  <div class="line"></div>
+                  <!-- <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+                    class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index"
+                    id="InvoiceTbl"> -->
+                  <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+                    class="table table-striped bg-white b-a"
+                    id="InvoiceTbl">  
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Project</th>
+                        <th>Po Number</th>
+                        <th>Total</th>
+                      </tr>
+                      <!-- <tr>
+                        <th style="width: 60px">({{$index + 1}})</th>
+                        <th>Project Number A: {{invL.orderNumber}}</th>
+                        <th style="width: 230px">Scoop No : {{ invL.item_number | numberFixedLen:3 }}</th>
+                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
+                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
+                      </tr> -->
 
-                  <div class="col-sm-12" style="padding:0;bottom:10px;top:3px">
+                    </thead>
+                    <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+                    class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index"
+                    >
+                      <tr class="thfont">
+                        <th style="width: 60px">({{$index + 1}})</th>
+                        <th style="width: 230px">{{ invL.item_number | numberFixedLen:3 }}</th>
+                        <th style="width: 90px">{{invL.po_number }}</th>
+                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
+                      </tr>
+
+                      <tr class="none" ng-repeat="item in invL.item track by $index">
+                        <td ng-bind="$index+1"></td>
+                        <td ng-bind="item.pricelist"></td>
+                        <td ng-bind="item.quantity"></td>
+                        <td ng-bind="item.itemPrice | customNumber"></td>
+                        <td ng-bind="item.itemTotal | customNumber"></td>
+                        <td class="none" ng-init="invL.item.subTotal = invL.item.subTotal + item.itemTotal"></td>
+                      </tr>
+                      <tr ng-if="$index == invoiceLength">
+                        <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
+                        <td style="width:9%;">
+                          {{currencyType}}
+                          {{grandTotal | customNumber}}
+                          <!-- <span ng-if="!invoiceLength">{{invL.item.subTotal | customNumber}}</span>
+                                <span ng-if="invoiceLength">{{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> </td> -->
+                      </tr>
+                      <!-- <tr ng-if="$index == invoiceLength">
+                        <td colspan="3" class="text-right no-border"><strong>Tax</strong></td>
+                        <td>{{currencyType}}0.00</td>
+                      </tr> -->
+                      <tr ng-if="$index == invoiceLength">
+                        <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
+                        <td>{{currencyType}}0.00</td>
+                      </tr>
+                      <tr ng-if="$index == invoiceLength">
+                        <td colspan="3" class="text-right no-border"><strong>Total</strong></td>
+                        <td><strong>{{currencyType}}
+                            {{grandTotal | customNumber}}
+                            <!-- <span ng-if="!invoiceLength" id="invoiceTotal"> {{invL.item.subTotal | customNumber}}</span> -->
+                            <!-- <span ng-if="invoiceLength" id="invoiceTotal"> {{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> -->
+                          </strong></td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="col-sm-12" style="padding:0;bottom:10px;">
                     <p class="m-t m-b" style="font-weight:600;background: #edf1f2;
     padding: 11px;">Payment Information:</p>
                     <div class="col-sm-6" ng-if="currencyPaymentMethod == 'Bank Transfer'">
@@ -85,10 +148,10 @@
                               <th><span class="TblSpan">Payment Method</span></th>
                               <td><span ng-bind="vBankInfo.payment_method" class="ng-binding"></span></td>
                           </tr>
-                          <tr>
+                          <!-- <tr>
                               <th><span class="TblSpan">Bank Address</span></th>
                               <td><span ng-bind="vBankInfo.address" class="ng-binding"></span></td>
-                          </tr>
+                          </tr> -->
                           <tr>
                               <th><span class="TblSpan">Account Holder</span></th>
                               <td><span  ng-bind="vBankInfo.holder_name" class="ng-binding"></span></td>
@@ -111,10 +174,10 @@
                               <th><span class="TblSpan">SWIFT/BIC</span></th>
                               <td><span ng-bind="vBankInfo.swift_bic" class="ng-binding"></span></td>
                           </tr>
-                          <tr>
+                          <!-- <tr>
                               <th><span class="TblSpan">Routing Number</span></th>
                               <td><span  ng-bind="vBankInfo.bank_code" class="ng-binding"></span></td>
-                          </tr>
+                          </tr> -->
                         </tbody>
                       </table>
                     </div>
@@ -138,75 +201,7 @@
                                                         </span>
                                 </p> -->
                   </div>
-                  <div class="line"></div>
-                  <!-- <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
-                    class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index"
-                    id="InvoiceTbl"> -->
-                  <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
-                    class="table table-striped bg-white b-a"
-                    id="InvoiceTbl">  
-                    <thead>
-                      <tr>
-                        <th style="width: 60px">#</th>
-                        <th style="width: 230px">PROJECT</th>
-                        <th>SCOOP</th>
-                        <th style="width: 140px">PRICE</th>
-                        <th style="width: 90px">TOTAL</th>
-                      </tr>
-                      <!-- <tr>
-                        <th style="width: 60px">({{$index + 1}})</th>
-                        <th>Project Number A: {{invL.orderNumber}}</th>
-                        <th style="width: 230px">Scoop No : {{ invL.item_number | numberFixedLen:3 }}</th>
-                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
-                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
-                      </tr> -->
 
-                    </thead>
-                    <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
-                    class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index"
-                    >
-                      <tr class="thfont">
-                        <th style="width: 60px">({{$index + 1}})</th>
-                        <th>Project Number: {{invL.orderNumber}}</th>
-                        <th style="width: 230px">Scoop No : {{ invL.item_number | numberFixedLen:3 }}</th>
-                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
-                        <th style="width: 90px">{{invL.item.subTotal | customNumber }}</th>
-                      </tr>
-
-                      <tr class="none" ng-repeat="item in invL.item track by $index">
-                        <td ng-bind="$index+1"></td>
-                        <td ng-bind="item.pricelist"></td>
-                        <td ng-bind="item.quantity"></td>
-                        <td ng-bind="item.itemPrice | customNumber"></td>
-                        <td ng-bind="item.itemTotal | customNumber"></td>
-                        <td class="none" ng-init="invL.item.subTotal = invL.item.subTotal + item.itemTotal"></td>
-                      </tr>
-                      <tr ng-if="$index == invoiceLength">
-                        <td colspan="4" class="text-right"><strong>Subtotal</strong></td>
-                        <td style="width:9%;">
-                          {{currencyType}}
-                          {{grandTotal | customNumber}}
-                          <!-- <span ng-if="!invoiceLength">{{invL.item.subTotal | customNumber}}</span>
-                                <span ng-if="invoiceLength">{{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> </td> -->
-                      </tr>
-                      <tr ng-if="$index == invoiceLength">
-                        <td colspan="4" class="text-right no-border"><strong>Tax</strong></td>
-                        <td>{{currencyType}}0.00</td>
-                      </tr>
-                      <tr ng-if="$index == invoiceLength">
-                        <td colspan="4" class="text-right no-border"><strong>VAT Included in Total</strong></td>
-                        <td>{{currencyType}}0.00</td>
-                      </tr>
-                      <tr ng-if="$index == invoiceLength">
-                        <td colspan="4" class="text-right no-border"><strong>Total</strong></td>
-                        <td><strong>{{currencyType}}
-                            {{grandTotal | customNumber}}
-                            <!-- <span ng-if="!invoiceLength" id="invoiceTotal"> {{invL.item.subTotal | customNumber}}</span> -->
-                            <!-- <span ng-if="invoiceLength" id="invoiceTotal"> {{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> -->
-                          </strong></td>
-                      </tr>
-                    </tbody>
-                  </table>
                 </div>
               </div>
               <button class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o"

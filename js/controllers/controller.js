@@ -13185,16 +13185,24 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
             }
+            $scope.vatNo = '';
+            $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
             if($scope.invoiceDetail.companyAddressDtl){
-                const companyAddressDtl = JSON.parse($scope.invoiceDetail.companyAddressDtl);
-                $scope.postalcodeAddr = '';
-                if(companyAddressDtl.length > 4){
-                    const cityAddr = (companyAddressDtl[1].value) ? companyAddressDtl[1].value + ', ' : ''; 
-                    const stateAddr = (companyAddressDtl[2].value) ? companyAddressDtl[2].value + ', ' : ''; 
-                    const countryAddr = (companyAddressDtl[3].value) ? companyAddressDtl[3].value : ''; 
-                    $scope.postalcodeAddr = (companyAddressDtl[4].value) ? companyAddressDtl[4].value : ''; 
-                    $scope.invoiceDetail.companyAddressDtl = cityAddr + stateAddr + countryAddr;
-                }
+                let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                angular.forEach(clientAddDetail, function(clientAddress, i) {
+                    if(clientAddress.id == 'address1_locality'){
+                        $scope.clientCity = clientAddress.value;
+                    }
+                    if(clientAddress.id == 'address1_administrative_area_level_1'){
+                        $scope.clientState = clientAddress.value;
+                    }
+                    if(clientAddress.id == 'address1_country'){
+                        $scope.clientCountry = clientAddress.value;
+                    }
+                    if(clientAddress.id == 'address1_postal_code'){
+                        $scope.clientZipcode = clientAddress.value;
+                    }
+                })
             }
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             console.log('$scope.invoiceDetail',$scope.invoiceDetail)
@@ -13605,7 +13613,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
 }).controller('invoiceShowController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
-
+    $scope.isDisabledApprvd = false;
     $scope.invoicePaid = function(frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -13771,7 +13779,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
         }).error(errorCallback);
     }
-
     $scope.invoiceCancel = function(frmId) {
         var obj = {
             "invoice_status": "Cancel"
@@ -13804,10 +13811,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $location.path('/invoice-detail');
         });
     }
-
+    $scope.isPdfdownload = false;
     $scope.printIt = function(number) {
-        console.log("number", number);
-
         var btnPaid = angular.element('#btnPaid');
         var btnMarkAsCancel = angular.element('#btnMarkAsCancel');
         var btnSave = angular.element('#btnSave');
@@ -13821,6 +13826,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         angular.element('#btnDraft').hide();
         angular.element('#btnCancel').hide();
         angular.element('#btnApproved').hide();
+        $scope.isPdfdownload = true;
 
         kendo.drawing.drawDOM($("#exportable")).then(function(group) {
             group.options.set("font", "8px DejaVu Sans");
@@ -13842,13 +13848,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.element('#btnDraft').show();
             angular.element('#btnCancel').show();
             angular.element('#btnApproved').show();
+            $scope.isPdfdownload = false;
+    
             /*
             $("#toAddEleAfterDwonload").before(btnPaid);
             $("#toAddEleAfterDwonload").before(btnMarkAsCancel);
             $("#toAddEleAfterDwonload").before(btnSave);
             $("#toAddEleAfterDwonload").before(btnDraft);
             $("#toAddEleAfterDwonload").before(btnCancel);*/
-        }, 200);
+        }, 500);
         // angular.element('#btnPaid').show();
         // angular.element('#btnMarkAsCancel').show();
         // angular.element('#btnSave').show();
@@ -25051,6 +25059,30 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         rest.post($scope.invoiceLt).success(function(data) {
             console.log('$scope.invoiceLt', $scope.invoiceLt)
             $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            if($scope.invoiceDetail.clientVatinfo){
+                const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
+                $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
+            }
+            $scope.clientZipcode = $scope.clientCountry = $scope.clientCity = '';
+            if($scope.invoiceDetail.companyAddressDtl){
+                let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                angular.forEach(clientAddDetail, function(clientAddress, i) {
+                    if(clientAddress.id == 'address1_locality'){
+                        $scope.clientCity = clientAddress.value;
+                    }
+                    if(clientAddress.id == 'address1_administrative_area_level_1'){
+                        $scope.clientState = clientAddress.value;
+                    }
+                    if(clientAddress.id == 'address1_country'){
+                        $scope.clientCountry = clientAddress.value;
+                    }
+                    if(clientAddress.id == 'address1_postal_code'){
+                        $scope.clientZipcode = clientAddress.value;
+                    }
+                })
+
+            }
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function(dataUser) {
                 $scope.userPaymentData = dataUser.userPaymentData;
@@ -25257,6 +25289,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.printIt = function(number) {
         kendo.drawing.drawDOM($("#exportable")).then(function(group) {
             group.options.set("font", "12px DejaVu Sans");
+            group.options.set("paperSize", "A4");
             group.options.set("pdf", {
                 margin: {
                     left: "40mm",
