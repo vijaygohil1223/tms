@@ -65,7 +65,7 @@ class Freelance_invoice {
                 }
 			}
 			$infoD[$k] = $data;
-		}
+        }
         return $infoD;
 	}
 	

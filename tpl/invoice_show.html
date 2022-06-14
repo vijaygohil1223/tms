@@ -61,6 +61,13 @@
 
                                 </p>
                             </div>
+                            <div class="col-xs-12 well" ng-if="invoiceDetail.custom_invoice_no!='' && invoiceDetail.custom_invoice_no != invoiceDetail.invoice_number" style="padding:10px;margin:auto;">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <strong>Linguist Invoice No</strong> : {{invoiceDetail.custom_invoice_no}}
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-xs-12 well none">
                                 <div class="col-xs-6">
                                     <p class="m-t m-b">

@@ -28,7 +28,7 @@
                     <div class="col-sm-12">
                       <div class="col text-right">
                         <!-- <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;"> -->
-                        <img ng-src="uploads/logo/1614684985.jpg"  style="height: 100px;max-width:250px;">
+                        <img ng-src="uploads/logo/{{invoiceDetail.clientLogo}}" style="height: 100px;max-width:250px;">
                       </div>
                     </div>  
                     <div class="col-xs-6">
@@ -74,7 +74,14 @@
                     </p>
                     </div>
                   </div>
-
+                  <div class="well">
+                    <div class="row">
+                      <div class="col-xs-4 d-flex">
+                        <label style="white-space: nowrap; margin-top: 10px;">Invoice No <i class="glyphicon glyphicon-pencil"></i> &nbsp;&nbsp;</label>
+                        <input type="text" id="custom_invoice_no" name="custom_invoice_no" ng-model="invoiceDetail.custom_invoice_no" class="form-control">
+                      </div>
+                    </div>
+                  </div>      
                   <div class="well none">
                     <div class="row">
                       <div class="col-xs-6">

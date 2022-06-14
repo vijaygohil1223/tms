@@ -24981,6 +24981,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             var date = new Date();
             $scope.invoiceDetail.invoiceNumber = data[0].poNumber.split('_')[0] + '_' + data[0].jobCode + '_' + pad(data[0].invoiceCount + 1, 3);
+            $scope.invoiceDetail.custom_invoice_no = $scope.invoiceDetail.invoiceNumber;
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.job_id = obj;
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, data[0].number_of_days);
@@ -25019,8 +25020,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $scope.invoiceData.job_id = JSON.stringify(obj);
         $scope.invoiceData.payment_type = $scope.invoiceDetail.payment;
         $scope.invoiceData.invoice_number = $scope.invoiceDetail.invoiceNumber;
-
-
+        $scope.invoiceData.custom_invoice_no = $scope.invoiceDetail.custom_invoice_no;
 
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
 
