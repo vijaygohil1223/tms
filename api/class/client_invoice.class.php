@@ -1,6 +1,8 @@
 <?php
 require_once 'users.class.php';
 require_once 'client.class.php';
+require_once 'mailjet/class.mailjet_v3.php';
+
 class Client_invoice {
 
 	public function __construct() {
@@ -372,6 +374,66 @@ class Client_invoice {
     }
 
     public function sendInvoiceMail($data) {
+        $mj = new Mailjet( EMAIL_API_KEY, EMAIL_SECRETE_KEY );
+
+        $pdf_content = explode("base64,",$data['pdfData']);
+        $bin = base64_decode($pdf_content[1], true);
+        $pdfFileName = $data['invoiceno'].'.pdf';
+
+        $body = "<p> Hello ".$data['clientCompanyName']." </p>";
+        $body .= "<p>Please see the attached invoice : <b>" .$data['invoiceno']. "</b> </p>";
+        $body .= "<p> From :TMS </p>";
+        $body .= "Email: " .$data['freelanceEmail']. "</p>";
+        
+        $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
+
+        $to = $data['companycontactEmail'];
+        //$to = 'anils7016@gmail.com';
+        $fromName = 'TMS';
+        $fromEmail = 'anil.kanhasoft@gmail.com';
+        $mailParams = array(
+            "method" => "POST",
+            "FromEmail" => $fromEmail,
+            "FromName" => $fromName,
+            "Subject" => $subject,
+            //"Text-part" => "Dear TMS!",
+            "Html-part" => $body,
+            "Recipients" => json_decode('[{"Email":"'.$to.'"}]', true),
+        );
+        //if(file_put_contents($pdfFile, $bin)){
+        if($data['pdfData']){
+                if ($pdf_content != '') {
+                $pdfFileContent = ''; 
+                if(is_array($pdf_content)){
+                    $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
+                }
+                // pdf Attachment
+                $mailParams['Attachments'] = json_decode('[{"Content-type":"application/pdf","Filename":"'.$pdfFileName.'","content":"'.$pdfFileContent.'"}]', true);
+            } 
+            if ($mj->send($mailParams)) { //output success or failure messages
+                //$mj->_response_code;
+                if(isset($data['outstanding_reminder'])){
+                    if($data['outstanding_reminder']==1)
+                    $upData['reminder_sent'] = 1;
+                }
+                $upData['modified_date'] = date('Y-m-d');
+                $upData['is_invoice_sent'] = 1;
+                $this->_db->where('invoice_id', $data['invoice_id']);
+                $this->_db->update('tms_invoice_client',$upData);
+
+                $result['status'] = 200;
+                $result['msg'] = 'Thank you for your email';
+                return $result;
+            } else {
+                $result['status'] = 422;
+                $result['msg'] = 'Could not send mail!';
+                return $result;
+            }
+        }else{
+            return $result['status'] = 422;
+        }
+    }
+    public function sendInvoiceMail_smtp($data) {
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
         // if (strpos($bin, '%PDF') !== 0) {

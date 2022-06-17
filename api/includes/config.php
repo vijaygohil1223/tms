@@ -1,6 +1,6 @@
 <?php
-define('SITE_URL', "http://" . $_SERVER['SERVER_NAME'] . "/");
-define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . "/");
+define('SITE_URL', "http://" . $_SERVER['SERVER_NAME'] . "890/tms/");
+define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . "/tms/");
 define('UPLOADS_ROOT', DOCUMENT_ROOT . "uploads/");
 
 //db constants
@@ -9,9 +9,12 @@ define('DB_USERNAME', 'root'); // please enter mysql user name
 define('DB_PASSWORD', 'kWb24pEBdUj4uKOA'); // please enter mysql user password
 define('DB_DATABASE', 'kanhawhp_tms'); // please enter your database name
 
-define('SMTP_EMAIL_USER', 'tms.kanhasoft@gmail.com');
-define('SMTP_EMAIL_PASSWORD', 'anil@567');
-
+// smtp mail
+define('SMTP_EMAIL_USER', 'chrisgilesitworks@gmail.com');
+define('SMTP_EMAIL_PASSWORD', 'kanha@tmschris');
+//tms.kanhasoft@gmail.com = tms@anil567kanha
+define('EMAIL_API_KEY', '3efaa57c4b8abc7e48828126b802720f');
+define('EMAIL_SECRETE_KEY', '7a593f51ca6285bc96d548223414144b');
 
 define('DB_PREFIX', 'tms_');
 define('LOGOUT_TIME', 1800);
