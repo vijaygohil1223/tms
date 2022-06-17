@@ -1,5 +1,5 @@
 <?php
-
+echo "gfgdfg";
 phpinfo();
 
 exit;
