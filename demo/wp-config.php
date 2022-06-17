@@ -26,7 +26,7 @@ define( 'DB_NAME', 'kanhawhp_tmsdemo' );
 define( 'DB_USER', 'root' );
 
 /** Database password */
-define( 'DB_PASSWORD', 'password_here' );
+define( 'DB_PASSWORD', 'kWb24pEBdUj4uKOA' );
 
 /** Database hostname */
 define( 'DB_HOST', 'localhost' );
