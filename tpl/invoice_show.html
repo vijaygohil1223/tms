@@ -120,7 +120,7 @@
                                             {{grandJobTotal | customNumber}}
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="tdborder">
                                         <td colspan="3" class="text-right no-border"><strong>Tax</strong></td>
                                         <td>{{currencyType}} 0.00</td>
                                     </tr>
@@ -128,18 +128,18 @@
                                         <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
                                         <td>{{currencyType}} 0.00</td>
                                     </tr> -->
-                                    <tr>
+                                    <tr class="tdborder">
                                         <td colspan="3" class="text-right no-border"><strong>Total </strong></td>
                                         <td style="white-space: nowrap;">{{currencyType}}
                                             {{grandJobTotal | customNumber}}
                                         </td>
                                     </tr>
-                                    <tr ng-if="invL.paid_amount > 0">
+                                    <tr ng-if="invL.paid_amount > 0"  class="tdborder">
                                         <td colspan="3" class="text-right no-border"><strong>Paid
                                                 </strong></td>
                                         <td style="width:10%;">{{currencyType}} {{invL.paid_amount | customNumber}}</td>
                                     </tr>
-                                    <tr ng-if="invL.paid_amount > 0">
+                                    <tr ng-if="invL.paid_amount > 0"  class="tdborder">
                                         <td colspan="3" class="text-right no-border"><strong>Total Due Amount</strong></td>
                                         <td style="white-space: nowrap;">{{currencyType}} {{invL.Invoice_cost - invL.paid_amount | customNumber}}</td>
                                     </tr>

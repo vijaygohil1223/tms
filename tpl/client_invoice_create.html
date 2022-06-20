@@ -110,7 +110,7 @@
                         <td ng-bind="item.itemTotal | customNumber"></td>
                         <td class="none" ng-init="invL.item.subTotal = invL.item.subTotal + item.itemTotal"></td>
                       </tr>
-                      <tr ng-if="$index == invoiceLength">
+                      <tr ng-if="$index == invoiceLength"  class="tdborder">
                         <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
                         <td style="width:9%;">
                           {{currencyType}}
@@ -122,11 +122,11 @@
                         <td colspan="3" class="text-right no-border"><strong>Tax</strong></td>
                         <td>{{currencyType}}0.00</td>
                       </tr> -->
-                      <tr ng-if="$index == invoiceLength">
+                      <tr ng-if="$index == invoiceLength" class="tdborder">
                         <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
                         <td>{{currencyType}}0.00</td>
                       </tr>
-                      <tr ng-if="$index == invoiceLength">
+                      <tr ng-if="$index == invoiceLength" class="tdborder">
                         <td colspan="3" class="text-right no-border"><strong>Total</strong></td>
                         <td><strong>{{currencyType}}
                             {{grandTotal | customNumber}}

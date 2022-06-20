@@ -1093,3 +1093,6 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
   background-color: #502dc4;
   border-color: #502dc4;
 }
+.tdborder td {
+  border-top: none !important;
+}

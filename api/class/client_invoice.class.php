@@ -388,7 +388,7 @@ class Client_invoice {
         $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
 
         $to = $data['companycontactEmail'];
-        //$to = 'anils7016@gmail.com';
+        //$to = 'anil.kanhasoft@gmail.com';
         $fromName = 'TMS';
         $fromEmail = 'anil.kanhasoft@gmail.com';
         $mailParams = array(
