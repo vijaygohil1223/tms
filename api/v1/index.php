@@ -2691,6 +2691,12 @@ $app->get('/statusorderReportFind', 'authenticate',function () use($app) {
     $result = $statusOrder->statusorderReportFind();
     echoResponse(200, $result);
 });
+$app->post('/statusorderReportFilter', function () use($app) {
+    $statusOrder = new orderstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusOrder->statusorderReportFilter($data);
+    echoResponse(200, $result);
+});
 $app->get('/ordersearchProjectStatusUpdate/:id/:status', 'authenticate',function ($id, $status) {
     $statusOrder = new orderstatussearch ();
     $result = $statusOrder->ordersearchProjectStatusUpdate($id, $status);

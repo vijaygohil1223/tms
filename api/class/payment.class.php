@@ -72,7 +72,7 @@ class payment {
         $country1 = $countryCode;
         $vatnum1 = $vat;
         if($country1 == 'NO'){     
-            // API Key registered with ( tms.kanhasoft@gmail.com / anil@567 )   
+            // API Key registered with ( tms.kanhasoft@gmail.com / kanha@tmschris )   
             $apikey = '782c8b15b60cf92ddb97f9e5585c4878';
             $endpoint = 'https://api.vatsense.com/1.0/validate?vat_number='.$country1.$vatnum1;
             // init curl

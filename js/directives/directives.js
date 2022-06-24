@@ -1369,13 +1369,15 @@ app.directive('select2OrderLanguagesData', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'activelanguageGet';
+            //rest.path = 'activelanguageGet';
+            rest.path = 'allLanguages';
             rest.get().success(function(data) {
                 var users = [];
                 $.each(data, function(key, value) {
+                    //value.lang_name
                     var obj = {
-                        'id': value.lang_name,
-                        'text': value.lang_name
+                        'id': value.title,
+                        'text': value.title
                     };
                     users.push(obj);
                 });

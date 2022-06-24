@@ -6448,9 +6448,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if (item){
             const jobTotalPrice = item.jobTotalPrice ? item.jobTotalPrice : 0 ;
             const itemtotalAmount = item.totalAmount ? item.totalAmount : 0 ;
-            console.log('jobTotalPrice', jobTotalPrice);
+            //console.log('jobTotalPrice', jobTotalPrice);
             $scope.clReportTotal += itemtotalAmount - jobTotalPrice;
-            console.log('item.totalAmount', item.totalAmount)
+            //console.log('item.totalAmount', item.totalAmount)
         }
     }
 
@@ -6459,12 +6459,31 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if ($scope.orderReport == undefined || $scope.orderReport == null || $scope.orderReport == "") {
             notification('Please Select option', 'information');
         } else {
-
-            rest.path = 'statusorderReportFind';
-            rest.get().success(function(data) {
+            if ($scope.orderReport.startCreateDate) {
+                $scope.orderReport.createDateFrom = originalDateFormatNew($scope.orderReport.startCreateDate);
+            }
+            if ($scope.orderReport.endCreateDate) {
+                $scope.orderReport.createDateTo = originalDateFormatNew($scope.orderReport.endCreateDate);
+            }
+            if ($scope.orderReport.startDeliveryDate) {
+                $scope.orderReport.deliveryDateFrom = originalDateFormatNew($scope.orderReport.startDeliveryDate);
+            }
+            if ($scope.orderReport.endDeliveryDate) {
+                $scope.orderReport.deliveryDateTo = originalDateFormatNew($scope.orderReport.endDeliveryDate);
+            }
+            if ($scope.orderReport.itemDuedate) {
+                $scope.orderReport.itemDuedateStart = originalDateFormatNew($scope.orderReport.itemDuedate);
+            }
+            if ($scope.orderReport.endItemDuedate) {
+                $scope.orderReport.itemDuedateEnd = originalDateFormatNew($scope.orderReport.endItemDuedate);
+            }
+            // rest.path = 'statusorderReportFind';
+            // rest.get().success(function(data) {
+            rest.path = 'statusorderReportFilter';
+            rest.post($scope.orderReport).success(function(data) {    
+                console.log('data', data)
                     $scope.statusResult = data['data'];
                     console.log('$scope.statusResult', $scope.statusResult)
-
                     $scope.Dateobject = Dateobject;
                     $scope.statusInfo = data['info'];
                     $scope.statusProjectType = data['Typeinfo'];
@@ -8994,6 +9013,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         var city = id.split(',')[0];
         rest.path = "cityTimeZoneget/" + city;
         rest.get().success(function(data) {
+            console.log('data', data)
             if (data != false) {
 
                 if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
@@ -11917,6 +11937,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $routeParams.id = $window.localStorage.iUserId;
     }
 
+
     if ($routeParams.id != '' && $routeParams.id != undefined) {
         $window.localStorage.iUserId = $routeParams.id;
         rest.path = 'client';
@@ -12094,6 +12115,38 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         telInput.on("keyup change", reset);
     }, 200);
     /* Mobile Validation END */
+
+    $scope.cityTimezone = function(id) {
+        var city = $('#address1_locality').val();
+        rest.path = "cityTimeZoneget/" + city;
+        rest.get().success(function(data) {
+            console.log('data', data)
+            if (data != false) {
+                // if ($scope.info == undefined || $scope.info == null || $scope.info == "") {
+                //     $scope.info = {};
+                // }
+                //$scope.add1.timezone = data.timeZone;
+                angular.element('#address1_vTimezone').val(data.timeZone)
+            }
+        });
+    }
+    // Auto fill data - Not much accurate
+    $scope.getLocationdetail = function(id) {
+        // fetch('https://api.geoapify.com/v1/geocode/search?text='+ id +'&format=json&apiKey=52e8e340f8af4936bfb46512c9dbc3b5', { 
+        // method: 'GET'
+        // })
+        // .then(function(response) { 
+        //     return response.json(); })
+        // .then(function(data) {
+        //     console.log('data', data)
+        //     if(data.results && data.results.length > 0){
+        //         $scope.vCity1 = data.results[0].city;
+        //         $scope.vState1 = data.results[0].state;
+        //         $scope.vCountry1 = data.results[0].country;
+        //         $scope.vZipcode1 = data.results[0].postcode;
+        //     }
+        // });
+    }
 
     $scope.saveClientProfile = function(formId) {
 

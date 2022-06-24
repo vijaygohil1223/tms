@@ -524,3 +524,4 @@ app.filter('Textcharacter', function($filter) {
         }
     }
 });
+

@@ -25,17 +25,18 @@
                               <div class="">
                                  <div class="col-sm-6 form-group">
                                     <div class="row">
-                                    <div class="col-sm-11">
-                                       <label>Company code (rights)</label>
-                                       <input type="text" select2-center-client data-typeid="2" id="companyCode1"
-                                          class="form-control" name="companyCode" ng-model="orderReport.companyCode" />
-                                    </div>
-                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                       <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','companyCode')"
-                                          ng-if="orderReport.companyCode"><i class="iconDelete glyph-icon fa-times"
-                                             aria-hidden="true"></i></a>
-                                    </div>
+                                       <div class="col-sm-11">
+                                          <label>Company code (rights)</label>
+                                          <input type="text" select2-center-client data-typeid="2" id="companyCode1"
+                                             class="form-control" name="companyCode"
+                                             ng-model="orderReport.companyCode" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','companyCode')"
+                                             ng-if="orderReport.companyCode"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
@@ -44,9 +45,8 @@
                                           <label>
                                              Project Manager
                                           </label>
-                                          <input type="text" select2-manager id="pm_name"
-                                             class="form-control" name="pm_name" ng-model="orderReport.pm_name"
-                                             />
+                                          <input type="text" select2-manager id="pm_name" class="form-control"
+                                             name="pm_name" ng-model="orderReport.pm_name" />
                                        </div>
                                        <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                           <a href="javascript:void(0)"
@@ -62,9 +62,8 @@
                                           <label>
                                              Email Subject
                                           </label>
-                                          <input type="text" id="emailSubject"
-                                             class="form-control" name="emailSubject" ng-model="orderReport.emailSubject"
-                                             />
+                                          <input type="text" id="emailSubject" class="form-control" name="emailSubject"
+                                             ng-model="orderReport.emailSubject" />
                                        </div>
                                        <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                           <a href="javascript:void(0)"
@@ -80,8 +79,8 @@
                                           <label>
                                              PO number
                                           </label>
-                                          <input type="text" id="itemPonumber"
-                                             class="form-control" name="itemPonumber" ng-model="orderReport.itemPonumber"/>
+                                          <input type="text" id="itemPonumber" class="form-control" name="itemPonumber"
+                                             ng-model="orderReport.itemPonumber" />
                                        </div>
                                        <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                           <a href="javascript:void(0)"
@@ -91,121 +90,208 @@
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="col-sm-6 form-group">
-                                    <div class="row">
-                                    <div class="col-sm-11">
-                                       <label>
-                                          <!-- Customers -->Client
-                                       </label>
-                                       <input type="text" select2-client data-typeid="2" id="customer1"
-                                          class="form-control" name="customer" ng-model="orderReport.customer"
-                                          ng-change="getContact(orderReport.customer, 'conatct-person')" />
+                                 <div class="col-sm-6 form-group mb-0 pl-0">
+                                    <div class="col-sm-6 form-group mb-0">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>
+                                                <!-- Customers -->Client
+                                             </label>
+                                             <input type="text" select2-client data-typeid="2" id="customer1"
+                                                class="form-control" name="customer" ng-model="orderReport.customer"
+                                                ng-change="getContact(orderReport.customer, 'conatct-person')" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','customer')"
+                                                ng-if="orderReport.customer"><i class="iconDelete glyph-icon fa-times"
+                                                   aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
                                     </div>
-                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                       <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','customer')"
-                                          ng-if="orderReport.customer"><i class="iconDelete glyph-icon fa-times"
-                                             aria-hidden="true"></i></a>
-                                    </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-6 form-group">
-                                    <div class="row">
-                                    <div class="col-sm-11">
-                                       <label>
-                                          Account
-                                       </label>
-                                       <input type="text" select2-indirect id="indirect_customer1"
-                                          class="form-control" name="indirect_customer" ng-model="orderReport.indirect_customer"
-                                          />
-                                    </div>
-                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                       <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','indirect_customer')"
-                                          ng-if="orderReport.indirect_customer"><i class="iconDelete glyph-icon fa-times"
-                                             aria-hidden="true"></i></a>
-                                    </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-6 form-group">
-                                    <div class="row">
-                                    <div class="col-sm-11">
-                                       <label>Contact Person(Client)</label>
-                                       <input type="text" ng-select2-usertype data-typeid="2" id="conatct-person"
-                                          class="form-control" name="contactPerson" ng-model="orderReport.contactPerson"
-                                          ng-disabled="!orderReport.customer" />
-                                    </div>
-                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                       <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','contactPerson')"
-                                          ng-if="orderReport.contactPerson"><i class="iconDelete glyph-icon fa-times"
-                                             aria-hidden="true"></i></a>
-                                    </div>
+                                    <div class="col-sm-6 form-group mb-0">
+                                          <div class="row">
+                                             <div class="col-sm-11">
+                                                <label>Contact Person(Client)</label>
+                                                <input type="text" ng-select2-usertype data-typeid="2" id="conatct-person"
+                                                   class="form-control" name="contactPerson"
+                                                   ng-model="orderReport.contactPerson" ng-disabled="!orderReport.customer" />
+                                             </div>
+                                             <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                <a href="javascript:void(0)"
+                                                   ng-click="clearCode('order-status-report','contactPerson')"
+                                                   ng-if="orderReport.contactPerson"><i class="iconDelete glyph-icon fa-times"
+                                                      aria-hidden="true"></i></a>
+                                             </div>
+                                          </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
                                     <div class="row">
-                                    <div class="col-sm-11">
-                                       <label>Scoop Status</label>
-                                       <input type="text" select2-job-detailitm-status data-typeid="2" id="itemStatus"
-                                          class="form-control" name="itemStatus" ng-model="orderReport.itemStatus" />
-                                    </div>
-                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                       <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','itemStatus')"
-                                          ng-if="orderReport.itemStatus"><i class="iconDelete glyph-icon fa-times"
-                                             aria-hidden="true"></i></a>
-                                    </div>
-                                    </div>
-                                 </div>
-                                 <div class="col-sm-6 form-group">
-                                    <div class="row">
-                                    <div class="col-sm-11">
-                                       <label>Project Status</label>
-                                       <input type="text" select2-proj-jobs data-typeid="2" id="projectStatus"
-                                          class="form-control" name="projectStatus"
-                                          ng-model="orderReport.projectStatus" />
-                                    </div>
-                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                       <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','projectStatus')"
-                                          ng-if="orderReport.projectStatus"><i class="iconDelete glyph-icon fa-times"
-                                             aria-hidden="true"></i></a>
-                                    </div>
+                                       <div class="col-sm-11">
+                                          <label>
+                                             Account
+                                          </label>
+                                          <input type="text" select2-indirect id="indirect_customer1"
+                                             class="form-control" name="indirect_customer"
+                                             ng-model="orderReport.indirect_customer" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','indirect_customer')"
+                                             ng-if="orderReport.indirect_customer"><i
+                                                class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
                                     <div class="row">
-                                    <div class="col-sm-11">
-                                       <label>Project Types</label>
-                                       <input type="text" select2-proj-type data-typeid="2" id="projectType"
-                                          class="form-control" name="projectType" ng-model="orderReport.projectType" />
+                                       <div class="col-sm-11">
+                                          <label>Scoop Status</label>
+                                          <input type="text" select2-job-detailitm-status data-typeid="2"
+                                             id="itemStatus" class="form-control" name="itemStatus"
+                                             ng-model="orderReport.itemStatus" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','itemStatus')"
+                                             ng-if="orderReport.itemStatus"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
                                     </div>
-                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                       <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','projectType')"
-                                          ng-if="orderReport.projectType"><i class="iconDelete glyph-icon fa-times"
-                                             aria-hidden="true"></i></a>
-                                    </div>
-                                 </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
                                     <div class="row">
-                                    <div class="col-sm-11">
-                                       <label>Source Language</label>
-                                       <input type="text" select2-order-languages-data data-typeid="2"
-                                          id="sourceLanguage" class="form-control" name="sourceLanguage"
-                                          ng-model="orderReport.sourceLanguage" />
-                                    </div>
-                                    <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                       <a href="javascript:void(0)"
-                                          ng-click="clearCode('order-status-report','sourceLanguage')"
-                                          ng-if="orderReport.sourceLanguage"><i class="iconDelete glyph-icon fa-times"
-                                             aria-hidden="true"></i></a>
-                                    </div>
+                                       <div class="col-sm-11">
+                                          <label>Project Status</label>
+                                          <input type="text" select2-proj-jobs data-typeid="2" id="projectStatus"
+                                             class="form-control" name="projectStatus"
+                                             ng-model="orderReport.projectStatus" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','projectStatus')"
+                                             ng-if="orderReport.projectStatus"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="col-sm-6 form-group">
+                                    <div class="row">
+                                       <div class="col-sm-11">
+                                          <label>Project Types</label>
+                                          <input type="text" select2-proj-type data-typeid="2" id="projectType"
+                                             class="form-control" name="projectType"
+                                             ng-model="orderReport.projectType" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','projectType')"
+                                             ng-if="orderReport.projectType"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group pl-0">
+                                    <div class="col-sm-6 form-group">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>Source Language</label>
+                                             <input type="text" select2-order-languages-data data-typeid="2"
+                                                id="sourceLanguage" class="form-control" name="sourceLanguage"
+                                                ng-model="orderReport.sourceLanguage" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','sourceLanguage')"
+                                                ng-if="orderReport.sourceLanguage"><i
+                                                   class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>Target Language</label>
+                                             <input type="text" select2-order-languages-data data-typeid="2"
+                                                id="targetLanguage" class="form-control" name="targetLanguage"
+                                                ng-model="orderReport.targetLanguage" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','targetLanguage')"
+                                                ng-if="orderReport.targetLanguage"><i
+                                                   class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group pl-0">
+                                    <div class="col-sm-6 form-group">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>Start-Create Date</label>
+                                             <input type="text" ng-datepicker2 id="startCreateDate" class="form-control"
+                                                name="startCreateDate" ng-model="orderReport.startCreateDate" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','startCreateDate')"
+                                                ng-if="orderReport.startCreateDate"><i class="iconDelete glyph-icon fa-times"
+                                                   aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>End-Create Date</label>
+                                             <input type="text" ng-datepicker2 id="endCreateDate" class="form-control"
+                                                name="endCreateDate" ng-model="orderReport.endCreateDate" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','endCreateDate')"
+                                                ng-if="orderReport.endCreateDate"><i class="iconDelete glyph-icon fa-times"
+                                                   aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group pl-0">
+                                    <div class="col-sm-6 form-group">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>Start-Delivery</label>
+                                             <input type="text" ng-datepicker2 id="startDeliveryDate" class="form-control"
+                                                name="startDeliveryDate" ng-model="orderReport.startDeliveryDate" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','startDeliveryDate')"
+                                                ng-if="orderReport.startDeliveryDate"><i class="iconDelete glyph-icon fa-times"
+                                                   aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>End-Delivery</label>
+                                             <input type="text" ng-datepicker2 id="endDeliveryDate" class="form-control"
+                                                name="endDeliveryDate" ng-model="orderReport.endDeliveryDate" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','endDeliveryDate')"
+                                                ng-if="orderReport.endDeliveryDate"><i class="iconDelete glyph-icon fa-times"
+                                                   aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <!-- <div class="col-sm-6 form-group">
                                        <div class="row">
                                        <div class="col-sm-11">
                                           <label>Target Language</label>
@@ -220,20 +306,51 @@
                                                 aria-hidden="true"></i></a>
                                        </div>
                                     </div>
-                                 </div>
-                                 <div class="col-sm-6 form-group">
-                                    <div class="row">
+                                 </div> -->
+                              <!-- <div class="col-sm-6 form-group">
+                                 <div class="row">
                                     <div class="col-sm-11">
                                        <label>Due Date</label>
-                                       <input type="text" ng-datepicker2
-                                          id="itemDuedate" class="form-control" name="itemDuedate"
-                                          ng-model="orderReport.itemDuedate"/>
+                                       <input type="text" ng-datepicker2 id="itemDuedate" class="form-control"
+                                          name="itemDuedate" ng-model="orderReport.itemDuedate" />
                                     </div>
                                     <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                        <a href="javascript:void(0)"
                                           ng-click="clearCode('order-status-report','itemDuedate')"
                                           ng-if="orderReport.itemDuedate"><i class="iconDelete glyph-icon fa-times"
                                              aria-hidden="true"></i></a>
+                                    </div>
+                                 </div> -->
+                              </div>
+                              <div class="col-sm-6 form-group pl-0">
+                                 <div class="col-sm-6 form-group">
+                                    <div class="row">
+                                       <div class="col-sm-11">
+                                          <label>Start - Due Date</label>
+                                          <input type="text" ng-datepicker2 id="itemDuedate" class="form-control"
+                                             name="itemDuedate" ng-model="orderReport.itemDuedate" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','itemDuedate')"
+                                             ng-if="orderReport.itemDuedate"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group">
+                                    <div class="row">
+                                       <div class="col-sm-11">
+                                          <label>End - Due Date</label>
+                                          <input type="text" ng-datepicker2 id="enditemDuedate" class="form-control"
+                                             name="endItemDuedate" ng-model="orderReport.endItemDuedate" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','endItemDuedate')"
+                                             ng-if="orderReport.endItemDuedate"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
@@ -308,8 +425,12 @@
                                        <!-- <th>Price in selected currency</th> -->
                                     </thead>
                                     <tbody>
-                                       <tr ng-repeat="result in staturRes=(statusResult | filter : orderReport)"
-                                          class="orderRClass" ng-init="setTotals(result)" ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice">
+                                       <tr ng-repeat="result in staturRes=(statusResult)"
+                                          class="orderRClass" ng-init="setTotals(result)"
+                                          ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice">
+                                       <!-- <tr ng-repeat="result in staturRes=(statusResult | filter : orderReport)"
+                                          class="orderRClass" ng-init="setTotals(result)"
+                                          ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice">  -->
                                           <td>
                                              <input type="checkbox" id="orderCheck{{$index}}"
                                                 name="orderCheck{{$index}}" ng-model="checkor"
@@ -319,7 +440,8 @@
                                                 ng-model="result.orderId">
                                           </td>
                                           <td><a href="#/viewProject/{{result.orderId}}"
-                                                class="summeryColor">{{result.orderNumber}}</a><span>-{{ result.item_number | numberFixedLen:3 }}</span></td>
+                                                class="summeryColor">{{result.orderNumber}}</a><span>-{{
+                                                result.item_number | numberFixedLen:3 }}</span></td>
                                           <td>{{ result.projectName }}</td>
                                           <td>{{ result.emailSubject }}</td>
                                           <!-- <td ng-bind="result.orderDate | globalDtFormat"></td> -->
