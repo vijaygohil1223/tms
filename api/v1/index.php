@@ -2725,6 +2725,12 @@ $app->get('/jobsearchStatusUpdate/:id/:status','authenticate', function ($id, $s
     $result = $statusJob->jobsearchStatusUpdate($id, $status);
     echoResponse(200, $result);
 });
+$app->post('/statusJobReportFilter', function () use($app) {
+    $statusJob = new jobstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusJob->statusJobReportFilter($data);
+    echoResponse(200, $result);
+});
 $app->delete('/jobsearchStatusDelete/:id','authenticate', function ($id) use($app) {
     $statusJob = new jobstatussearch ();
     $result = $statusJob->jobsearchStatusDelete($id);
@@ -3223,6 +3229,18 @@ $app->put('/clientInvoiceStatusChange/:id','authenticate', function ($id) use($a
     $invoice = new Client_invoice ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $invoice->invoiceStatusChange($data, $id);
+    echoResponse(200, $result);
+});
+$app->put('/saveEditedInvoice/:id','authenticate', function ($id) use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result1 = $invoice->saveEditedInvoice($data, $id);
+    echoResponse(200, $result1);
+});
+$app->post('/saveEditedInvoice_test', 'authenticate',function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->saveEditedInvoice_test($data);
     echoResponse(200, $result);
 });
 $app->get('/clientInvoiceUpdate/:id','authenticate', function($id) {

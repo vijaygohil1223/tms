@@ -159,7 +159,7 @@ class Client_invoice {
                 $this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
                 $this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
                 $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
-                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tcc.vEmail as companycontactEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, ti.po_number');
+                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tcc.vEmail as companycontactEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, ti.po_number');
                 
                 //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
     
@@ -197,12 +197,40 @@ class Client_invoice {
     }
 
     //update invoice
-    public function invoiceUpdate($id) {
-    	$data['value_date'] = date('Y-m-d H:i');
+    public function invoiceUpdate($id,$data) {
+        $data['value_date'] = date('Y-m-d H:i');
     	$data['invoice_type'] = "save";
     	$this->_db->where('invoice_id', $id);
     	$id = $this->_db->update('tms_invoice_client',$data);
     	return $id;
+    }
+    public function saveEditedInvoice($data,$id) {
+        $updata['value_date'] = date('Y-m-d H:i');
+        $updata['Invoice_cost'] = $data['Invoice_cost'];
+        $updata['item_total'] = $data['item_total'];
+        $updata['vat'] = $data['vat'];
+        if($id){
+            $this->_db->where('invoice_id', $id);
+    	    $up_id = $this->_db->update('tms_invoice_client',$updata);
+            if($up_id){
+                foreach($data['item'] as $item){
+                    $scpData['updated_date'] = date('Y-m-d H:i:s');
+                    $scpData['total_amount'] = $item['value'];
+                    $scpData['total_price'] = $item['value'];
+                    $this->_db->where('itemId', $item['id']);
+                    $scpstsId = $this->_db->update('tms_items', $scpData);
+                }
+            }
+        }
+        if($id) {
+    		$res['status'] = 200;
+    		$res['msg'] = "Successfully updated";
+    	} else {
+    		$res['status'] = 401;
+    		$res['msg'] = "Not updated";
+    	}
+
+    	return $res;
     }
 
     public function invoiceStatusChange($data, $id) {
@@ -551,7 +579,7 @@ class Client_invoice {
             $this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
             $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
 			//$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tg.company_code, tsv.job_code AS jobCode');
-			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS companyAddressDtl, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, ti.po_number');
+			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId,ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS companyAddressDtl, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, ti.po_number');
 
             // echo $this->_db->getLastQuery();
             // exit;
@@ -587,12 +615,11 @@ class Client_invoice {
         return $infoD;
 	}
 
-    //invoice and draft save
+    //invoice save and draft invoice save
     public function saveclientInvoice($data) {
         $invoiceAlreadyAdded = false;
         if($data['scoop_id']){
             $invoiceRecords = $this->_db->get('tms_invoice_client');
-
             foreach ($invoiceRecords as $k => $v) {
                 foreach (json_decode($v['scoop_id'],true) as $ke => $val) {
                     $existedJobId = $val['id'];
@@ -605,15 +632,29 @@ class Client_invoice {
                 }
             }
         }
-        
+        $scoopData = array();
+        if(isset($data['item'])){
+            $scoopData = $data['item'];
+            unset($data['item']);
+        }
         if(!$invoiceAlreadyAdded){
             $data['created_date'] = date('Y-m-d');
             $data['modified_date'] = date('Y-m-d');
             $data['value_date'] = date('Y-m-d');
             $data['invoice_date'] = date('Y-m-d');
             $id = $this->_db->insert('tms_invoice_client', $data);
+            if($id && $scoopData){
+                foreach($scoopData as $item){
+                    $scpData['updated_date'] = date('Y-m-d H:i:s');
+                    $scpData['total_amount'] = $item['value'];
+                    $scpData['total_price'] = $item['value'];
+                    $this->_db->where('itemId', $item['id']);
+                    $scpstsId = $this->_db->update('tms_items', $scpData);
+                }
+            }
             if($id) {
                 $result['status'] = 200;
+                $result['inserted_id'] = $id;
                 $result['msg'] = "Successfully saved";
             } else {
                 $result['status'] = 401;

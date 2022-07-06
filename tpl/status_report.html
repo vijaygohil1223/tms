@@ -90,42 +90,6 @@
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="col-sm-6 form-group mb-0 pl-0">
-                                    <div class="col-sm-6 form-group mb-0">
-                                       <div class="row">
-                                          <div class="col-sm-11">
-                                             <label>
-                                                <!-- Customers -->Client
-                                             </label>
-                                             <input type="text" select2-client data-typeid="2" id="customer1"
-                                                class="form-control" name="customer" ng-model="orderReport.customer"
-                                                ng-change="getContact(orderReport.customer, 'conatct-person')" />
-                                          </div>
-                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                             <a href="javascript:void(0)"
-                                                ng-click="clearCode('order-status-report','customer')"
-                                                ng-if="orderReport.customer"><i class="iconDelete glyph-icon fa-times"
-                                                   aria-hidden="true"></i></a>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-sm-6 form-group mb-0">
-                                          <div class="row">
-                                             <div class="col-sm-11">
-                                                <label>Contact Person(Client)</label>
-                                                <input type="text" ng-select2-usertype data-typeid="2" id="conatct-person"
-                                                   class="form-control" name="contactPerson"
-                                                   ng-model="orderReport.contactPerson" ng-disabled="!orderReport.customer" />
-                                             </div>
-                                             <div class="col-sm-1" style="margin:33px 0 0 -14px;">
-                                                <a href="javascript:void(0)"
-                                                   ng-click="clearCode('order-status-report','contactPerson')"
-                                                   ng-if="orderReport.contactPerson"><i class="iconDelete glyph-icon fa-times"
-                                                      aria-hidden="true"></i></a>
-                                             </div>
-                                          </div>
-                                    </div>
-                                 </div>
                                  <div class="col-sm-6 form-group">
                                     <div class="row">
                                        <div class="col-sm-11">
@@ -192,6 +156,58 @@
                                        </div>
                                     </div>
                                  </div>
+                                 <div class="col-sm-6 form-group mb-0 pl-0">
+                                    <div class="col-sm-6 form-group mb-0">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>
+                                                <!-- Customers -->Client
+                                             </label>
+                                             <input type="text" select2-client data-typeid="2" id="customer1"
+                                                class="form-control" name="customer" ng-model="orderReport.customer"
+                                                ng-change="getContact(orderReport.customer, 'conatct-person')" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','customer')"
+                                                ng-if="orderReport.customer"><i class="iconDelete glyph-icon fa-times"
+                                                   aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6 form-group mb-0">
+                                          <div class="row">
+                                             <div class="col-sm-11">
+                                                <label>Contact Person(Client)</label>
+                                                <input type="text" ng-select2-usertype data-typeid="2" id="conatct-person"
+                                                   class="form-control" name="contactPerson"
+                                                   ng-model="orderReport.contactPerson" ng-disabled="!orderReport.customer" />
+                                             </div>
+                                             <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                <a href="javascript:void(0)"
+                                                   ng-click="clearCode('order-status-report','contactPerson')"
+                                                   ng-if="orderReport.contactPerson"><i class="iconDelete glyph-icon fa-times"
+                                                      aria-hidden="true"></i></a>
+                                             </div>
+                                          </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6 form-group">
+                                    <div class="row">
+                                       <div class="col-sm-11">
+                                          <label>Currency</label>
+                                          <input type="text" select2-currency data-typeid="2" id="currency"
+                                             class="form-control" name="currency"
+                                             ng-model="orderReport.currency" />
+                                       </div>
+                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                          <a href="javascript:void(0)"
+                                             ng-click="clearCode('order-status-report','currency')"
+                                             ng-if="orderReport.currency"><i class="iconDelete glyph-icon fa-times"
+                                                aria-hidden="true"></i></a>
+                                       </div>
+                                    </div>
+                                 </div>
                                  <div class="col-sm-6 form-group pl-0">
                                     <div class="col-sm-6 form-group">
                                        <div class="row">
@@ -230,7 +246,7 @@
                                     <div class="col-sm-6 form-group">
                                        <div class="row">
                                           <div class="col-sm-11">
-                                             <label>Start-Create Date</label>
+                                             <label>Create Date Start</label>
                                              <input type="text" ng-datepicker2 id="startCreateDate" class="form-control"
                                                 name="startCreateDate" ng-model="orderReport.startCreateDate" />
                                           </div>
@@ -245,7 +261,7 @@
                                     <div class="col-sm-6 form-group">
                                        <div class="row">
                                           <div class="col-sm-11">
-                                             <label>End-Create Date</label>
+                                             <label>Create Date End</label>
                                              <input type="text" ng-datepicker2 id="endCreateDate" class="form-control"
                                                 name="endCreateDate" ng-model="orderReport.endCreateDate" />
                                           </div>
@@ -258,11 +274,11 @@
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="col-sm-6 form-group pl-0">
+                                 <!-- <div class="col-sm-6 form-group pl-0">
                                     <div class="col-sm-6 form-group">
                                        <div class="row">
                                           <div class="col-sm-11">
-                                             <label>Start-Delivery</label>
+                                             <label>Delivery Date Start</label>
                                              <input type="text" ng-datepicker2 id="startDeliveryDate" class="form-control"
                                                 name="startDeliveryDate" ng-model="orderReport.startDeliveryDate" />
                                           </div>
@@ -277,7 +293,7 @@
                                     <div class="col-sm-6 form-group">
                                        <div class="row">
                                           <div class="col-sm-11">
-                                             <label>End-Delivery</label>
+                                             <label>Delivery Date End</label>
                                              <input type="text" ng-datepicker2 id="endDeliveryDate" class="form-control"
                                                 name="endDeliveryDate" ng-model="orderReport.endDeliveryDate" />
                                           </div>
@@ -289,7 +305,7 @@
                                           </div>
                                        </div>
                                     </div>
-                                 </div>
+                                 </div> -->
                               </div>
                               <!-- <div class="col-sm-6 form-group">
                                        <div class="row">
@@ -326,7 +342,7 @@
                                  <div class="col-sm-6 form-group">
                                     <div class="row">
                                        <div class="col-sm-11">
-                                          <label>Start - Due Date</label>
+                                          <label>Due Date Start</label>
                                           <input type="text" ng-datepicker2 id="itemDuedate" class="form-control"
                                              name="itemDuedate" ng-model="orderReport.itemDuedate" />
                                        </div>
@@ -341,7 +357,7 @@
                                  <div class="col-sm-6 form-group">
                                     <div class="row">
                                        <div class="col-sm-11">
-                                          <label>End - Due Date</label>
+                                          <label>Due Date End</label>
                                           <input type="text" ng-datepicker2 id="enditemDuedate" class="form-control"
                                              name="endItemDuedate" ng-model="orderReport.endItemDuedate" />
                                        </div>
@@ -385,7 +401,7 @@
                                           <option>Change project status</option>
                                           <option>Change item status</option>
                                           <option>Export to excel</option>
-                                          <!-- <option>Remove selection</option> -->
+                                          <option>Remove selection</option>
                                           <option>Select all</option>
                                        </select>
                                     </div>
@@ -469,23 +485,28 @@
                                     <thead>
                                        <th>#</th>
                                        <th>Orders Number</th>
-                                       <th>Order Date</th>
-                                       <th>Customers</th>
-                                       <!-- <th>Project name</th> -->
+                                       <!-- <th>Order Date</th> -->
+                                       <th>Project name</th>
+                                       <th>Email Subject</th>
+                                       <th>
+                                       <!-- Customers -->Client
+                                       </th>
                                        <th>Status</th>
                                        <th>Prices</th>
-                                       <th>Price in selected currency</th>
+
                                     </thead>
                                     <tbody>
-                                       <tr ng-repeat="result in statusResult | filter : orderReport">
+                                       <tr ng-repeat="result in statusResult">
                                           <td>{{$index + 1}}</td>
-                                          <td ng-bind="result.orderNumber"></td>
-                                          <td ng-bind="result.orderDate"></td>
-                                          <td ng-bind="result.contactName"></td>
+                                          <td><span>{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3 }}</span></td>
+                                          <td>{{ result.projectName }}</td>
+                                          <td>{{ result.emailSubject }}</td>
+                                          <td><span>{{result.contactName}}</span></td>
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td ng-bind="result.clientStatus"></td>
-                                          <td ng-bind="result.totalAmount | customNumber"></td>
-                                          <td>--</td>
+                                          <td ng-bind="result.totalAmount | customNumber">--</td>
+
+
                                        </tr>
                                     </tbody>
                                  </table>

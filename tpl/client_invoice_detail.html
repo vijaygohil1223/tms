@@ -1,22 +1,11 @@
-<div
-  ng-init="app.settings.container = false;"
-  class="md-navbar navbar blue md-whiteframe-z1"
-  data-ng-include=" 'tpl/material.header.html' "
-></div>
+<div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
+  data-ng-include=" 'tpl/material.header.html' "></div>
 <div layout="row">
-  <div
-    flex
-    class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs"
-    data-ng-include=" 'tpl/material.aside.html' "
-  ></div>
+  <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs"
+    data-ng-include=" 'tpl/material.aside.html' "></div>
   <div flex layout="column">
     <div ui-butterbar></div>
-    <a
-      href
-      class="off-screen-toggle hide"
-      ui-toggle-class="off-screen"
-      data-target=".md-aside"
-    ></a>
+    <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
     <div class="md-content page_content_wrapper">
       <div class="content_head bg-light lter b-b wrapper-md ng-scope">
         <h1 class="m-n font-thin h3">Invoice List</h1>
@@ -34,46 +23,23 @@
                           <div class="col-lg-4">
                             <span>Enter Project No. : </span>
                             <!-- <span><input  type="text" id="invoices" class="form-control" name="iGender"  ng-model="searchPonumber.poNumber" placeholder="Search PO Number" autocomplete="off"/></span> -->
-                            <tags-input
-                              ng-model="searchOrderNumber"
-                              placeholder="Search Project No."
-                            ></tags-input>
+                            <tags-input ng-model="searchOrderNumber" placeholder="Search Project No."></tags-input>
                           </div>
                           <div class="col-lg-1" style="margin-top: 24px">
-                            <span
-                              ><button
-                                class="btn btn-sm btn-info"
-                                ng-click="search(searchOrderNumber)"
-                              >
+                            <span><button class="btn btn-sm btn-info" ng-click="search(searchOrderNumber)">
                                 ok
-                              </button></span
-                            >
+                              </button></span>
                           </div>
-                          <div
-                            style="margin-top: 23px !important"
-                            class="pull-right"
-                          >
-                            <button
-                              class="btn btn-info btn-rightside"
-                              ng-click="viewInvoice('draft')"
-                            >
+                          <div style="margin-top: 23px !important" class="pull-right">
+                            <button class="btn btn-info btn-rightside" ng-click="viewInvoice('draft')">
                               <i class="fa fa-eye"></i> Draft Invoice
                             </button>
-                            <button
-                              class="btn btn-info btn-rightside"
-                              ng-click="viewInvoice('save')"
-                              style="margin-right: 10px"
-                            >
+                            <button class="btn btn-info btn-rightside" ng-click="viewInvoice('save')"
+                              style="margin-right: 10px">
                               <i class="fa fa-eye"></i> Save Invoice
                             </button>
-                            <button
-                              class="btn btn-info"
-                              ng-click="exportData()"
-                            >
-                              Excel &nbsp;<i
-                                class="glyphicon glyphicon-download-alt"
-                                aria-hidden="true"
-                              ></i>
+                            <button class="btn btn-info" ng-click="exportData()">
+                              Excel &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
                             </button>
                           </div>
                         </div>
@@ -92,22 +58,18 @@
               <h4 class="m-n font-thin col-sm-8">Unpaid/Partially Paid Invoices</h4>
               <div class="col-sm-4">
                 <div class="col-sm-10 d-flex" style="white-space:nowrap;">
-                    <label style="margin-top:5px;">Select Status &nbsp;&nbsp;</label>
-                    <input type="text" select2-client-invoice-status
-                        id="invoiceStatusdata" class="input-sm form-control w-sm inline v-middle"
-                        ng-model="invoiceStatus" placeholder="please select Status"/>
+                  <label style="margin-top:5px;">Select Status &nbsp;&nbsp;</label>
+                  <input type="text" select2-client-invoice-status id="invoiceStatusdata"
+                    class="input-sm form-control w-sm inline v-middle" ng-model="invoiceStatus"
+                    placeholder="please select Status" />
                 </div>
                 <div class="col-sm-2">
-                    <button class="btn btn-sm btn-info"
-                        ng-click="statusAction(action,projectStatus)" style="padding:5px 25px;"><i
-                            class="glyphicon glyphicon-ok"></i></button>
+                  <button class="btn btn-sm btn-info" ng-click="statusAction(action,projectStatus)"
+                    style="padding:5px 25px;"><i class="glyphicon glyphicon-ok"></i></button>
                 </div>
               </div>
             </div>
-            <table
-              class="table table-striped b-t b-b table-bordered"
-              datatable="ng"
-            >
+            <table class="table table-striped b-t b-b table-bordered" datatable="ng">
               <thead>
                 <th>#</th>
                 <th>Invoice number</th>
@@ -122,20 +84,10 @@
               <tbody>
                 <tr ng-repeat="invoiceL in invoiceUnpaid">
                   <td>
-                    <input
-                    type="checkbox"
-                    id="invoiceCheck{{$index}}"
-                    name="invoiceCheck{{$index}}"
-                    ng-model="checkor"
-                    ng-checked="checkdata=='invoicecheck'"
-                  />
-                  <input
-                    type="text"
-                    id="invoiceCheckData{{$index}}"
-                    name="invoiceCheckData{{$index}}"
-                    style="display: none"
-                    ng-model="invoiceL.invoice_id"
-                  />
+                    <input type="checkbox" id="invoiceCheck{{$index}}" name="invoiceCheck{{$index}}" ng-model="checkor"
+                      ng-checked="checkdata=='invoicecheck'" />
+                    <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
+                      style="display: none" ng-model="invoiceL.invoice_id" />
                   </td>
                   <td ng-bind="invoiceL.invoice_number"></td>
                   <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
@@ -143,17 +95,9 @@
                   <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                   <td>
                     {{ invoiceL.clientCompanyName }}
-                    <a
-                      href="javascript:void(0)"
-                      ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
-                      title="Comment"
-                      class="trActionIcon"
-                    >
-                      &nbsp;<i
-                        class="fa fa-envelope-o"
-                        style="font-size: 18px"
-                      ></i
-                    ></a>
+                    <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
+                      title="Comment" class="trActionIcon">
+                      &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
                   </td>
                   <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                   <td>
@@ -161,12 +105,8 @@
                   </td>
                   <td>
                     <div class="trActiontitle">
-                      <a
-                        href="#/client-invoice-view/{{invoiceL.invoice_id}}"
-                        title="View"
-                        class="trActionIcon"
-                        ><i class="fa fa-eye"></i
-                      ></a>
+                      <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                          class="fa fa-eye"></i></a>
                       <!-- </br>
                                         <strong>View Payments</strong> -->
                     </div>
@@ -182,10 +122,7 @@
             <div class="bg-light lter b-b wrapper-md">
               <h4 class="m-n font-thin">Paid Invoices</h4>
             </div>
-            <table
-              class="table table-striped b-t b-b table-bordered"
-              datatable="ng"
-            >
+            <table class="table table-striped b-t b-b table-bordered" datatable="ng">
               <thead>
                 <th>#</th>
                 <th>Invoice number</th>
@@ -200,20 +137,10 @@
               <tbody>
                 <tr ng-repeat="invoiceL in invoiceCompleted">
                   <td>
-                    <input
-                      type="checkbox"
-                      id="invoiceCheck{{$index}}"
-                      name="invoiceCheck{{$index}}"
-                      ng-model="checkor"
-                      ng-checked="checkdata=='invoicecheck'"
-                    />
-                    <input
-                      type="text"
-                      id="invoiceCheckData{{$index}}"
-                      name="invoiceCheckData{{$index}}"
-                      style="display: none"
-                      ng-model="invoiceL.invoice_id"
-                    />
+                    <input type="checkbox" id="invoiceCheck{{$index}}" name="invoiceCheck{{$index}}" ng-model="checkor"
+                      ng-checked="checkdata=='invoicecheck'" />
+                    <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
+                      style="display: none" ng-model="invoiceL.invoice_id" />
                   </td>
                   <td ng-bind="invoiceL.invoice_number"></td>
                   <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
@@ -222,17 +149,9 @@
                   <!-- <td ng-bind="invoiceL.companyName"></td> -->
                   <td>
                     {{invoiceL.clientCompanyName}}
-                    <a
-                      href="javascript:void(0)"
-                      ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
-                      title="Comment"
-                      class="trActionIcon"
-                    >
-                      &nbsp;<i
-                        class="fa fa-envelope-o"
-                        style="font-size: 18px"
-                      ></i
-                    ></a>
+                    <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
+                      title="Comment" class="trActionIcon">
+                      &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
                   </td>
                   <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                   <td>
@@ -240,12 +159,8 @@
                   </td>
                   <td>
                     <div class="trActiontitle">
-                      <a
-                        href="#/client-invoice-view/{{invoiceL.invoice_id}}"
-                        title="View"
-                        class="trActionIcon"
-                        ><i class="fa fa-eye"></i
-                      ></a>
+                      <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                          class="fa fa-eye"></i></a>
                       <!-- </br>
                                         <strong>View Payments</strong> -->
                     </div>
