@@ -407,7 +407,6 @@ class Client_invoice {
         //$mj = new Mailjet( EMAIL_API_KEY, EMAIL_SECRETE_KEY );
         $mj = new \Mailjet\Client('3efaa57c4b8abc7e48828126b802720f','7a593f51ca6285bc96d548223414144b',true,['version' => 'v3.1']);
 
-
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
         $pdfFileName = $data['invoiceno'].'.pdf';
@@ -418,9 +417,9 @@ class Client_invoice {
         $body .= "Email: " .$data['freelanceEmail']. "</p>";
         
         $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
-
         $to_name = 'TMS';
-        $to = 'tms.kanhasoft@gmail.com';
+        $to = 'anil.kanhasoft@yopmail.com';
+        
         //$to = $data['companycontactEmail'];
         $fromName = 'TMS';
         $fromEmail = 'anil.kanhasoft@gmail.com';

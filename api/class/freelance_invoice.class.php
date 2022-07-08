@@ -74,7 +74,6 @@ class Freelance_invoice {
         $invoiceAlreadyAdded = false;
         if($data['job_id']){
             $invoiceRecords = $this->_db->get('tms_invoice');
-
             foreach ($invoiceRecords as $k => $v) {
                 foreach (json_decode($v['job_id'],true) as $ke => $val) {
                     $existedJobId = $val['id'];
@@ -87,15 +86,27 @@ class Freelance_invoice {
                 }
             }
         }
-        
+        if(isset($data['job'])){
+            $jobData = $data['job'];
+            unset($data['job']);
+        }
         if(!$invoiceAlreadyAdded){
             $data['created_date'] = date('Y-m-d');
         	$data['modified_date'] = date('Y-m-d');
         	$data['value_date'] = date('Y-m-d');
         	$data['invoice_date'] = date('Y-m-d');
         	$id = $this->_db->insert('tms_invoice', $data);
+            if($id && $jobData){
+                foreach($jobData as $item){
+                    $jbupData['updated_date'] = date('Y-m-d H:i:s');
+                    $jbupData['total_price'] = $item['value'];
+                    $this->_db->where('job_summmeryId', $item['id']);
+                    $scpstsId = $this->_db->update('tms_summmery_view', $jbupData);
+                }
+            }
         	if($id) {
         		$result['status'] = 200;
+        		$result['inserted_id'] = $id;
         		$result['msg'] = "Successfully saved";
         	} else {
         		$result['status'] = 401;
@@ -424,6 +435,36 @@ class Freelance_invoice {
         }
 
 
+    }
+
+    // Save edited invoice
+    public function saveEditedInvoice($data,$id) {
+        $updata['value_date'] = date('Y-m-d H:i');
+        $updata['Invoice_cost'] = $data['Invoice_cost'];
+        $updata['job_total'] = $data['item_total'];
+        $updata['invoice_type'] = 'save';
+        $updata['vat'] = $data['vat'];
+        if($id){
+            $this->_db->where('invoice_id', $id);
+    	    $up_id = $this->_db->update('tms_invoice',$updata);
+            if($up_id){
+                foreach($data['item'] as $item){
+                    $jobData['updated_date'] = date('Y-m-d H:i:s');
+                    $jobData['total_price'] = $item['value'];
+                    $this->_db->where('job_summmeryId', $item['id']);
+                    $scpstsId = $this->_db->update('tms_summmery_view', $jobData);
+                }
+            }
+        }
+        if($id) {
+    		$res['status'] = 200;
+    		$res['msg'] = "Successfully updated";
+    	} else {
+    		$res['status'] = 401;
+    		$res['msg'] = "Not updated";
+    	}
+
+    	return $res;
     }
 
 }

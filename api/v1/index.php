@@ -3171,6 +3171,12 @@ $app->put('/updateJobSummeryItemStatus/:id','authenticate', function ($id) use($
     $result = $invoice->updateJobSummeryItemStatus($data, $id);
     echoResponse(200, $result);
 });
+$app->put('/saveEditedInvoiceLinguist/:id','authenticate', function ($id) use($app) {
+    $invoice = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result1 = $invoice->saveEditedInvoice($data, $id);
+    echoResponse(200, $result1);
+});
 $app->get('/getFreelanceStatement/:id','authenticate', function($id) {
     $stmt = new Freelance_invoice ();
     $result = $stmt->getFreelanceStatement($id);

@@ -104,7 +104,7 @@
                           <!-- {{invL.item.subTotal | customNumber }}  -->
                           <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
                           <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal"
-                          id="invSubTotal{{$index}}"
+                            id="invSubTotal{{$index}}"
                             ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" />
                         </th>
                       </tr>
@@ -116,7 +116,7 @@
                         <td ng-bind="item.itemTotal | customNumber"></td>
                         <td class="none" ng-init="invL.item.subTotal = invL.item.subTotal + item.itemTotal"></td>
                       </tr> -->
-                      <tr ng-if="$index == invoiceLength" class="tdborder">
+                      <tr ng-if="$index == invoiceLength" class="">
                         <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
                         <td style="width:9%;">
                           <!-- {{grandTotal | customNumber}} -->

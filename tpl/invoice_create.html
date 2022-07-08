@@ -30,10 +30,11 @@
                         <!-- <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;"> -->
                         <img ng-src="uploads/logo/{{invoiceDetail.clientLogo}}" style="height: 100px;max-width:250px;">
                       </div>
-                    </div>  
+                    </div>
                     <div class="col-xs-6">
                       <p>
-                        <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="70" height="70" style="border-radius: 100px;">
+                        <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="70" height="70"
+                          style="border-radius: 100px;">
                       </p>
                       <h4 ng-bind="invoiceDetail.freelanceName"></h4>
                       <!-- <p ng-bind="invoiceDetail.freelanceAddress"></p>
@@ -43,11 +44,11 @@
                       <p>
                         {{invoiceDetail.freelanceAddress}} </br>
                         {{freelanceZipcode}} , {{freelanceCity}} </br>
-                        {{freelanceCountry}} 
+                        {{freelanceCountry}}
                       </p>
                       <p>
-                          Vat Number : <span>{{vatNo}}</span> </br>
-                          Email : {{invoiceDetail.freelanceEmail}}
+                        Vat Number : <span>{{vatNo}}</span> </br>
+                        Email : {{invoiceDetail.freelanceEmail}}
                       </p>
                     </div>
                     <div class="col-xs-6 text-right">
@@ -56,8 +57,8 @@
                         <span>Invoice date : </span>
                         <span ng-bind="invoiceDetail.invoiceDate | globalDtFormat"></span>
                       </p>
-                      <p> 
-                          Payment due date : <span ng-bind="invoiceDetail.paymentDueDate"></span>
+                      <p>
+                        Payment due date : <span ng-bind="invoiceDetail.paymentDueDate"></span>
                       </p>
                       <!-- <h5>
                         <span>Invoice date : </span><span
@@ -66,22 +67,24 @@
                           ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span>
                       </h5> -->
                       <p>
-                        {{invoiceDetail.companyName}} </br>    
+                        {{invoiceDetail.companyName}} </br>
                         {{invoiceDetail.companyAddress}} </br>
                         {{clientZipcode}} <span ng-if="clientCity"> , {{clientCity}}</span> </br>
                         {{clientCountry}} </br>
                         Vat Number : {{invoiceDetail.clientVatinfo}} </br>
-                    </p>
+                      </p>
                     </div>
                   </div>
                   <div class="well">
                     <div class="row">
                       <div class="col-xs-4 d-flex">
-                        <label style="white-space: nowrap; margin-top: 10px;">Invoice No <i class="glyphicon glyphicon-pencil"></i> &nbsp;&nbsp;</label>
-                        <input type="text" id="custom_invoice_no" name="custom_invoice_no" ng-model="invoiceDetail.custom_invoice_no" class="form-control">
+                        <label style="white-space: nowrap; margin-top: 10px;">Invoice No <i
+                            class="glyphicon glyphicon-pencil"></i> &nbsp;&nbsp;</label>
+                        <input type="text" id="custom_invoice_no" name="custom_invoice_no"
+                          ng-model="invoiceDetail.custom_invoice_no" class="form-control">
                       </div>
                     </div>
-                  </div>      
+                  </div>
                   <div class="well none">
                     <div class="row">
                       <div class="col-xs-6">
@@ -91,9 +94,10 @@
                           </p> -->
                         <p class="m-t m-b">
                           <span>Job
-                          <!-- Number -->:
+                            <!-- Number -->:
                           </span><strong ng-bind="invoiceDetail.poNumber.split('_')[1]"></strong></br>
-                          <span>Project Number : </span><strong ng-bind="invoiceDetail.poNumber.split('_')[0]"></strong></br>
+                          <span>Project Number : </span><strong
+                            ng-bind="invoiceDetail.poNumber.split('_')[0]"></strong></br>
                         </p>
                       </div>
 
@@ -120,20 +124,19 @@
                         <th style="width: 140px">Job Description</th>
                         <th style="width: 90px">Amount</th>
                       </tr>
-                      <!-- <tr>
-                        <th style="width: 60px">({{$index + 1}})</th>
-                        <th>{{invL.poNumber}}</th>
-                        <th style="width: 230px">Job : {{invL.poNumber.split('_')[1]}}</th>
-                        <th style="width: 90px"></th>
-                      </tr> -->
-
                     </thead>
                     <tbody>
-                      <tr  ng-repeat="invL in invoiceList track by $index">
+                      <tr ng-repeat="invL in invoiceList track by $index">
                         <td style="width: 60px">{{$index + 1}}</td>
                         <td>{{invL.poNumber}}</td>
                         <td style="width: 230px">{{invL.poNumber.split('_')[1]}}</td>
-                        <td style="width: 90px">{{invL.price_per_job | customNumber}}</td>
+                        <td style="width: 90px">
+                          <!-- {{invL.price_per_job | customNumber}} -->
+                          <input class="invoiceCal form-control" type="text" ng-model="invL.price_per_job"
+                            id="invSubTotal{{$index}}"
+                            ng-change="changeInvoiceField($index,$parent.$index,invL.price_per_job,'itemPrice')"
+                            name="itemVal_{{invL.jobId}}" />
+                        </td>
                       </tr>
                       <!-- <tr ng-repeat="item in invL.item track by $index">
                         <td ng-bind="$index+1"></td>
@@ -145,22 +148,24 @@
                       <tr>
                         <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
                         <td style="width:9%;">
-                          {{currencyType}}
-                          {{grandTotal | customNumber}}
+                          <!-- {{grandTotal | customNumber}} -->
+                          <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="invoiceTotal"
+                            ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
+                            id="invSubtotal" />
                           <!-- <span ng-if="!invoiceLength">{{invL.item.subTotal | customNumber}}</span>
                                 <span ng-if="invoiceLength">{{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> </td> -->
                       </tr>
                       <tr class="tdborder">
                         <td colspan="3" class="text-right no-border"><strong>Tax</strong></td>
-                        <td>{{currencyType}} 0.00</td>
+                        <td>
+                          <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="vat"
+                            ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
+                        </td>
                       </tr>
-                      <!-- <tr>
-                        <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
-                        <td>{{currencyType}} 0.00</td>
-                      </tr> -->
                       <tr class="tdborder">
                         <td colspan="3" class="text-right no-border"><strong>Total</strong></td>
-                        <td style="white-space:nowrap;"><strong>{{currencyType}}
+                        <td style="white-space:nowrap;"><strong>
+                            <!-- {{currencyType}} -->
                             {{grandTotal | customNumber}}
                             <!-- <span ng-if="!invoiceLength" id="invoiceTotal"> {{invL.item.subTotal | customNumber}}</span> -->
                             <!-- <span ng-if="invoiceLength" id="invoiceTotal"> {{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> -->
@@ -169,7 +174,8 @@
                     </tbody>
                   </table>
                   <div class="col-sm-12" style="padding:0;bottom:10px;top:3px">
-                    <p class="m-t m-b" style="font-weight:600;background: #edf1f2; padding: 11px;">Payment Information:</p>
+                    <p class="m-t m-b" style="font-weight:600;background: #edf1f2; padding: 11px;">Payment Information:
+                    </p>
                     <div class="col-sm-6" ng-if="currencyPaymentMethod == 'Bank Transfer'">
                       <table class="table table-striped b-t b-b table-bordered">
                         <tbody>

@@ -10,6 +10,8 @@
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
         <div class="md-content page_content_wrapper">
             <div class="content_head bg-light lter b-b wrapper-md ng-scope">
+                <a id="editInvoiceSave" class="btn btn-info pull-right invcBtn btnSave"
+                    ng-click="editInvoiceLinguist(invoiceDetail.invoice_number)"><i class="fa fa-pencil"></i> Save </a>
                 <a href="" class="btn btn-sm btn-info pull-right"
                     ng-click="printIt(invoiceDetail.invoice_number)">Download</a>
                 <a ng-show="userRight==1" href="javascript:history.back()" class="btn btn-sm btn-info pull-right"
@@ -19,7 +21,7 @@
                 <h1 class="m-n font-thin h3">Invoice</h1>
             </div>
             <div class="wrapper-md ng-scope">
-                <div class="panel panel-default" id="exportable">
+                <div class="panel panel-default invoiceInput" id="exportable">
                     <div class="panel-body">
                         <div class="col-sm-12">
                             <!-- <div class="col-xs-12">
@@ -135,7 +137,7 @@
                                     <tr>
                                         <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
                                         <td style="width:10%;">
-                                            {{invoiceTotal | customNumber}}
+                                            <!-- {{invoiceTotal | customNumber}} -->
                                             <input class="form-control" ng-show="editInvoiceField" type="text"
                                                 ng-model="invoiceTotal"
                                                 ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
@@ -143,10 +145,11 @@
                                         </td>
                                     </tr>
                                     <tr class="tdborder">
-                                        <td colspan="3" class="text-right no-border"><strong>Tax</strong></td>
+                                        <td colspan="3" class="text-right no-border"><strong>Vat Tax</strong></td>
                                         <td>
-                                            <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="vat"
-                        ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
+                                            <input class="form-control" ng-show="editInvoiceField" type="text"
+                                                ng-model="vat"
+                                                ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
                                         </td>
                                     </tr>
                                     <!-- <tr>
@@ -247,9 +250,9 @@
                             <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
                                 class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as
                                 cancel</button>
-                            <button id="btnSave" ng-show="invoiceDetail.invoice_type!='save'"
+                            <!-- <button id="btnSave" ng-show="invoiceDetail.invoice_type!='save'"
                                 class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i
-                                    class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
+                                    class="fa fa-floppy-o" aria-hidden="true"></i> Save</button> -->
                             <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
                                 ng-click="save('invoice-form', 'draft');"> Draft</button>
                             <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
@@ -261,6 +264,9 @@
                                 ng-show="invoiceDetail.is_approved==0 && !isPdfdownload"
                                 ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd"
                                 style="color: #454f59 !important;"> UnApproved</button>
+                            <button id="editInvoiceSave2" class="btn btn-info btnSave"
+                                ng-click="editInvoiceLinguist(invoiceDetail.invoice_number)"><i
+                                    class="fa fa-pencil"></i> Save </button>
                         </div>
                     </div>
                 </div>
