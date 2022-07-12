@@ -1618,6 +1618,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectsAssigned = [];
     $scope.projectsQaready = [];
     $scope.projectsToBeDelivered = [];
+    $scope.projectsDelivered = [];
     $scope.projectsCompletedByLng = [];
     $scope.projectsToDisplay = [];
 
@@ -1626,6 +1627,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectsDueTodayCount = 0;
     $scope.projectsDueTomorrowCount = 0;
     $scope.projectsToBeDeliveredCount = 0;
+    $scope.projectsDeliveredCount = 0;
     $scope.projectsQaReadyCount = 0;
     $scope.projectsAssignedCount = 0;
     // -- new status for scoop item count based on status -- //
@@ -1760,6 +1762,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.projectsToBeDelivered.push(val);
                     $scope.projectsToBeDeliveredCount++;
                 }
+                if (val.itemStatus == "Delivered") {
+                    val.progrss_precentage = 100;
+                    val.projectstatus_class = 'projectstatus_tobedelivered';
+                    val.projectstatus_color = '#c6d732';
+                    $scope.projectsDelivered.push(val);
+                    $scope.projectsDeliveredCount++;
+                }                
                 if (val.itemStatus == "Delivered") {
                     $scope.projectDileveredCount++;
                     val.projectstatus_class = 'projectstatus_delivered';
@@ -13617,6 +13626,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if (data) {
                 notification('Invoice Updated successfully.', 'success');
                 $location.path("/client-invoice-show/" + $routeParams.id);
+                $route.reload();
             }
         });
     }
@@ -13625,7 +13635,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if ($scope.invoiceD == undefined || $scope.invoiceD == null || $scope.invoiceD == "") {
             $scope.invoiceData = {};
         }
-
         console.log('$scope.invoiceD=',$scope.invoiceD )
         rest.path = "clientInvoiceUpdate/" + $routeParams.id;
         rest.get().success(function(updatedata) {
@@ -13666,9 +13675,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             console.log('sendClientInvoiceMail=data', data)
                             if(data.status == 200){
                                 notification('Invoice has been sent successfully', 'success');
-                                setTimeout(() => {
+                                //setTimeout(() => {
                                     $location.path('/client-invoice-show/'+$routeParams.id); 
-                                }, 200);
+                                //}, 200);
                                 angular.element('#btnPaid').show();
                                 angular.element('#btnMarkAsCancel').show();
                                 //angular.element('#btnSave').show();
@@ -13689,7 +13698,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.printIt = function(number) {
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
-
+        
         var btnPaid = angular.element('#btnPaid');
         var btnMarkAsCancel = angular.element('#btnMarkAsCancel');
         var btnSave = angular.element('#btnSave');
@@ -14120,7 +14129,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }).error(errorCallback);
 
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList', $scope.invoiceList)
+            console.log('$scope.invoiceList-paid-amount', $scope.invoiceList[0].paid_amount)
 
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
 
@@ -14199,6 +14208,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if (data) {
                 notification('Invoice Updated successfully.', 'success');
                 $location.path("/invoice-show/" + $routeParams.id);
+                $route.reload();
             }
         });
     }

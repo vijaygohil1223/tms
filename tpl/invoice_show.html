@@ -162,16 +162,16 @@
                                             {{grandJobTotal | customNumber}}
                                         </td>
                                     </tr>
-                                    <tr ng-if="invL.paid_amount > 0" class="tdborder">
+                                    <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
                                         <td colspan="3" class="text-right no-border"><strong>Paid
                                             </strong></td>
-                                        <td style="width:10%;">{{invL.paid_amount | customNumber}}</td>
+                                        <td style="width:10%;">{{invoiceDetail.paid_amount | customNumber}}</td>
                                     </tr>
-                                    <tr ng-if="invL.paid_amount > 0" class="tdborder">
+                                    <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
                                         <td colspan="3" class="text-right no-border"><strong>Total Due Amount</strong>
                                         </td>
-                                        <td style="white-space: nowrap;">{{invL.Invoice_cost -
-                                            invL.paid_amount | customNumber}}</td>
+                                        <td style="white-space: nowrap;">{{grandJobTotal -
+                                            invoiceDetail.paid_amount | customNumber}}</td>
                                     </tr>
                                 </tbody>
                             </table>

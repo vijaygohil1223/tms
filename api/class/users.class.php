@@ -4,7 +4,8 @@ require_once 'functions.class.php';
 require_once 'mail_format.class.php';
 require_once 'userstatus.class.php';
 require_once 'jobs_detail.class.php';
-
+require 'mailjet/vendor/autoload.php';
+use \Mailjet\Resources;
 class users {    
     protected $_db;
     protected $_useremail;
@@ -237,9 +238,36 @@ class users {
                 
                 $html = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
 
-                $jobDetail = new jobs_detail();
-                $jobDetail->sendEmail($userEmail,$emailTemplateRegistration['template_subject'],$html);
+                //$jobDetail = new jobs_detail();
+                //$jobDetail->sendEmail($userEmail,$emailTemplateRegistration['template_subject'],$html);
+                // new Mail
+                $to_name = $user['vFirstName'].$user['vLastName'];
+                $fromName = 'TMS';
+                $fromEmail = 'anil.kanhasoft@gmail.com';
 
+                $mailParams = [
+                    'Messages' => [
+                        [
+                        'From' => [
+                                'Email' => $fromEmail,
+                                'Name' => $fromName
+                            ],
+                        'To' => [
+                                [
+                                    'Email' => $userEmail,
+                                    'Name' => $to_name
+                                ]
+                            ],
+                        'Subject' => $emailTemplateRegistration['template_subject'],
+                        'HTMLPart' => $html
+                        ]
+                    ]
+                ];
+        
+                //$mj = new Mailjet( EMAIL_API_KEY, EMAIL_SECRETE_KEY );
+                $mj = new \Mailjet\Client('3efaa57c4b8abc7e48828126b802720f','7a593f51ca6285bc96d548223414144b',true,['version' => 'v3.1']);
+                $response = $mj->post(Resources::$Email, ['body' => $mailParams]);
+                // End new mail
 
 
                 $return['status'] = 200;
