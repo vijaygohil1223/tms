@@ -1028,66 +1028,66 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             // var jobWithoutInvoicedCount = 0;
             // var jobCancelledCount = 0;
 
-            angular.forEach($scope.dashboardJobList, function(val, i) {
-                val.item_id = pad(val.item_id, 3);
+            // angular.forEach($scope.dashboardJobList, function(val, i) {
+            //     val.item_id = pad(val.item_id, 3);
 
-                if (val.ItemLanguage) {
-                    val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
-                }
-                if (val.po_number.length < 1) {
-                    pendingPo.push(val);
-                }
+            //     if (val.ItemLanguage) {
+            //         val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
+            //     }
+            //     if (val.po_number.length < 1) {
+            //         pendingPo.push(val);
+            //     }
 
-                if (val.item_status == 'New') {
-                    NewJob.push(val);
-                } else if (val.item_status == 'Requested') {
-                    Requested.push(val);
-                    jobRequestesCount++;
-                } else if (val.item_status == 'In-progress') {
-                    inProgerss.push(val);
-                    jobInProgressCount++;
-                } else if (val.item_status == 'Ready to be Delivered') {
-                    readyToBeDelivered.push(val);
-                    jobTobeDileveredCount++;
-                }
-                // else if (val.item_status == 'In preparation') {
-                //     jobTobeAssigned.push(val);
-                //     jobTobeAssignedCount++;
-                // }
-                // else if (val.item_status == 'Delivered') {
-                //     delivered.push(val);
-                //     jobDileveredCount++;
-                // }
-                // else if (val.item_status == 'Approved') {
-                //     jobApproved.push(val);
-                //     jobApprovedCount++;
-                // } else if (val.item_status == 'Invoice Accepted') {
-                //     jobInvoiced.push(val);
-                //     jobInvoicedCount++;
-                // } else if (val.item_status == 'Paid') {
-                //     jobPaid.push(val);
-                //     jobPaidCount++;
-                // } else if (val.item_status == 'Without invoice') {
-                //     jobWithoutInvoiced.push(val);
-                //     jobWithoutInvoicedCount++;
-                // }
-                 else if (val.item_status == 'Completed') {
-                    completed.push(val);
-                }
+            //     if (val.item_status == 'New') {
+            //         NewJob.push(val);
+            //     } else if (val.item_status == 'Requested') {
+            //         Requested.push(val);
+            //         jobRequestesCount++;
+            //     } else if (val.item_status == 'In-progress') {
+            //         inProgerss.push(val);
+            //         jobInProgressCount++;
+            //     } else if (val.item_status == 'Ready to be Delivered') {
+            //         readyToBeDelivered.push(val);
+            //         jobTobeDileveredCount++;
+            //     }
+            //     // else if (val.item_status == 'In preparation') {
+            //     //     jobTobeAssigned.push(val);
+            //     //     jobTobeAssignedCount++;
+            //     // }
+            //     // else if (val.item_status == 'Delivered') {
+            //     //     delivered.push(val);
+            //     //     jobDileveredCount++;
+            //     // }
+            //     // else if (val.item_status == 'Approved') {
+            //     //     jobApproved.push(val);
+            //     //     jobApprovedCount++;
+            //     // } else if (val.item_status == 'Invoice Accepted') {
+            //     //     jobInvoiced.push(val);
+            //     //     jobInvoicedCount++;
+            //     // } else if (val.item_status == 'Paid') {
+            //     //     jobPaid.push(val);
+            //     //     jobPaidCount++;
+            //     // } else if (val.item_status == 'Without invoice') {
+            //     //     jobWithoutInvoiced.push(val);
+            //     //     jobWithoutInvoicedCount++;
+            //     // }
+            //      else if (val.item_status == 'Completed') {
+            //         completed.push(val);
+            //     }
 
 
-                //Due date counts for jobs
-                if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
-                    jobDueTodayCount++;
-                }
-                if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
-                    jobDueTomorrowCount++;
-                }
-                if (val.due_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
-                    jobOverDueCount++;
-                }
+            //     //Due date counts for jobs
+            //     if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
+            //         jobDueTodayCount++;
+            //     }
+            //     if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+            //         jobDueTomorrowCount++;
+            //     }
+            //     if (val.due_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
+            //         jobOverDueCount++;
+            //     }
 
-            });
+            // });
             $timeout(function() {
                 $scope.inProgerss = inProgerss;
                 $scope.jobNew = NewJob;
@@ -1698,6 +1698,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $scope.jobLinguist = [];    
                     });
                 }
+                console.log('val.jobLinguist',val.jobLinguist)
 
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;

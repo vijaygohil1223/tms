@@ -1,9 +1,10 @@
 <?php
 require_once 'users.class.php';
 require_once 'client.class.php';
-//require_once 'mailjet/class.mailjet_v3.php';
-require 'mailjet/vendor/autoload.php';
-use \Mailjet\Resources;
+
+require_once 'functions.class.php';
+// require 'mailjet/vendor/autoload.php';
+// use \Mailjet\Resources;
 
 class Client_invoice {
 
@@ -404,8 +405,6 @@ class Client_invoice {
     }
 
     public function sendInvoiceMail($data) {
-        //$mj = new Mailjet( EMAIL_API_KEY, EMAIL_SECRETE_KEY );
-        $mj = new \Mailjet\Client('3efaa57c4b8abc7e48828126b802720f','7a593f51ca6285bc96d548223414144b',true,['version' => 'v3.1']);
 
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
@@ -414,56 +413,33 @@ class Client_invoice {
         $body = "<p> Hello ".$data['clientCompanyName']." </p>";
         $body .= "<p>Please see the attached invoice : <b>" .$data['invoiceno']. "</b> </p>";
         $body .= "<p> From :TMS </p>";
+        //$body .= "welcome to <img src=\"cid:id1\"></br>";
         $body .= "Email: " .$data['freelanceEmail']. "</p>";
         
+        $attachments = '';
         $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
         $to_name = 'TMS';
-        $to = 'anil.kanhasoft@yopmail.com';
-        
-        //$to = $data['companycontactEmail'];
-        $fromName = 'TMS';
-        $fromEmail = 'anil.kanhasoft@gmail.com';
+        //$to = 'anil.kanhasoft@yopmail.com';
+        $to = $data['companycontactEmail'];
 
-        $mailParams = [
-            'Messages' => [
-                [
-                'From' => [
-                        'Email' => $fromEmail,
-                        'Name' => $fromName
-                    ],
-                'To' => [
-                        [
-                            'Email' => $to,
-                            'Name' => $to_name
-                        ]
-                    ],
-                'Subject' => $subject,
-                'HTMLPart' => $body
-                ]
-            ]
-        ];
-
-        //if(file_put_contents($pdfFile, $bin)){
         if($data['pdfData']){
             if ($pdf_content != '') {
-                
                 $pdfFileContent = ''; 
                 if(is_array($pdf_content)){
                     $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
+                    // pdf file
+                    $attachments =  [[
+                        'ContentType' => 'application/pdf',
+                        'Filename' => $pdfFileName,
+                        'Base64Content' => $pdfFileContent
+                    ]]; 
                 }
-                // pdf Attachment
-                //$mailParams['Attachments'] = json_decode('[{"Content-type":"application/pdf","Filename":"'.$pdfFileName.'","content":"'.$pdfFileContent.'"}]', true);
-                $mailParams['Messages'][0]['Attachments'] =  [[
-                                                    'ContentType' => 'application/pdf',
-                                                    'Filename' => $pdfFileName,
-                                                    'Base64Content' => $pdfFileContent
-                                               ]];
-            }
-
-            $response = $mj->post(Resources::$Email, ['body' => $mailParams]);
-            if ($response->success()) { //output success or failure messages
-            //if ($mj->send($mailParams)) { //output success or failure messages
-                //$mj->_response_code;
+            }    
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
+        //if ($response->success()) { //output success or failure messages
                 if(isset($data['outstanding_reminder'])){
                     if($data['outstanding_reminder']==1)
                     $upData['reminder_sent'] = 1;

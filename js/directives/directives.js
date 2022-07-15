@@ -4518,6 +4518,9 @@ app.directive('loading',   ['$http' ,function ($http)
                                 if(url.includes("#/discussion/")){
                                     elm.hide();
                                 }
+                                // if(url.includes("#/dashboard1")){
+                                //     elm.hide();
+                                // }
                             }else{
                                 elm.show();        
                             }

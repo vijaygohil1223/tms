@@ -3,7 +3,6 @@
 require_once 'functions.class.php';
 require_once 'sendmail/class.phpmailer.php';
 
-
 class contactPerMsg {
 
     public function __construct() {
@@ -279,6 +278,111 @@ class contactPerMsg {
     }
 
     public function sendgeneralMsg($data){
+        if (isset($data['data']['messageData'])) {
+            $this->_db->where('is_active', 1);
+            $emailSign = $this->_db->getone('tms_email_sign');   
+            $emailsignData = $emailSign['sign_detail'];
+            $emailImage = $emailSign['sign_image']; 
+            $emailImageData = $this->uploadimage($emailImage);
+        } else {
+            $emailsignData = " ";
+            $emailImageData = " ";
+        }
+        
+        if(isset($data['file'])) {
+            $encoded_content = $this->uploadimage($data['file']);
+        } else {
+            $encoded_content = " ";
+        }
+
+        if (isset($data['data']['cc'])) {
+            $cc = $data['data']['cc'];
+        } else {
+            $cc = "";
+        }
+        if (isset($data['data']['bcc'])) {
+            $bcc = $data['data']['bcc'];
+        } else {
+            $bcc = "";
+        }
+        if (isset($data['data']['messageData'])) {
+            $str = $data['data']['messageData'];
+            $message = str_replace($emailsignData,"",$str);
+        } else {
+            $message = " ";
+        }
+        if(isset($data['data']['msgEmailSubject'])) {
+            $subject = 'Invoice comment-' .$data['data']['msgEmailSubject'];
+            $emailsignData = '';
+        } else {
+            $subject = "Information";
+        }
+
+        $body = "<p>" . $message . "</p>";
+        $body .= "<p>" . $emailsignData . "</p>";
+        $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
+
+        $to = $data['data']['vEmailAddress'];
+
+        // $this->_mailer->From = "Kanhasoft.com";
+        // $this->_mailer->FromName = "TMS";
+
+        if ($cc != "") {
+            $cCAddresses = explode(',',$cc);
+            foreach ($cCAddresses as $cCAddress) {
+                $this->_mailer->AddCC(trim($cCAddress));
+            }
+        }
+
+        if ($bcc != "") {
+            $bcCAddresses = explode(',',$bcc);
+            foreach ($bcCAddresses as $bcCAddress) {
+                $this->_mailer->AddBCC(trim($bcCAddress));
+            }
+        }
+
+        if ($encoded_content != '') {
+            //$this->_mailer->AddAttachment($encoded_content);
+        }
+        // mailjet function
+        $send_fn = new functions();
+        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $message, $encoded_content);
+        
+        if ($response && $response['status']==200) { //output success or failure messages
+            $result['status'] = 200;
+            $result['msg'] = 'Thank you for your email';
+        } else {
+            $result['status'] = 200;
+            $result['msg'] = 'Could not send mail!';
+        }
+        if(isset($result['status'])) {
+            if(isset($emailImageData)) {
+                $img = explode("/",$emailImageData);
+                $image = end($img);
+                if($img[0] != " ") {
+                    $path = "../../uploads/attatchment/";
+                    $images = glob($path.$image);
+                    if($images){
+                        unlink($path.$image);
+                    }    
+                }    
+            }
+            if(isset($encoded_content)) {
+                $img = explode("/",$encoded_content);
+                $image = end($img);
+                if($img[0] != " ") {
+                    $path = "../../uploads/attatchment/";
+                    $images = glob($path.$image);
+                    if($images){
+                        unlink($path.$image);
+                    }    
+                }       
+            }
+        }
+        return $result;
+    }
+
+    public function sendgeneralMsg_gmailsmtp($data){
         if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
