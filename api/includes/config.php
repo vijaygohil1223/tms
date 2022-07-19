@@ -34,5 +34,4 @@ define('FORMATS', "pdf,docx,doc");
 define('IMG_FORMATS', "jpg,jpeg,gif,png");
 define('DEFAULT_COUNTRY_ID', 'IN');
 date_default_timezone_set('Asia/Kolkata');
-define('FILE_UPLOAD_URL', "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
 ?>
