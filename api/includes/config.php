@@ -9,7 +9,6 @@ define('DB_SERVER', 'localhost'); //please enter mysql server name
 define('DB_USERNAME', 'root'); // please enter mysql user name
 define('DB_PASSWORD', 'kWb24pEBdUj4uKOA'); // please enter mysql user password
 define('DB_DATABASE', 'kanhawhp_tms'); // please enter your database name
-
 // smtp mail
 define('SMTP_EMAIL_USER', 'chrisgilesitworks@gmail.com');
 define('SMTP_EMAIL_PASSWORD', 'kanha@tmschris');
