@@ -15,7 +15,6 @@ define('SMTP_EMAIL_PASSWORD', 'kanha@tmschris');
 //tms.kanhasoft@gmail.com = tms@anil567kanha
 define('EMAIL_API_KEY', '3efaa57c4b8abc7e48828126b802720f');
 define('EMAIL_SECRETE_KEY', '7a593f51ca6285bc96d548223414144b');
-
 // mailJET
 define('EMAIL_API_KEY', '3efaa57c4b8abc7e48828126b802720f');
 define('EMAIL_SECRETE_KEY', '7a593f51ca6285bc96d548223414144b');
