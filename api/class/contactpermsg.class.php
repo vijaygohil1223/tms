@@ -323,7 +323,7 @@ class contactPerMsg {
         $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
 
         $to = $data['data']['vEmailAddress'];
-
+        
         // $this->_mailer->From = "Kanhasoft.com";
         // $this->_mailer->FromName = "TMS";
 

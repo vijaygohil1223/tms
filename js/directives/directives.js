@@ -5053,3 +5053,33 @@ app.directive('select2CommonDropdwn', function($http, rest, $timeout,$window) {
         }
     }
 });
+
+/* Branch  */
+app.directive('select2Projectbranch', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+
+            var users1 = [];
+            $.each(['Norway','Bulgaria'], function(key, value) {
+                var obj = {
+                    'id': value,
+                    'text': value
+                };
+                users1.push(obj);
+            });
+
+            $timeout(function() {
+                element.select2({
+                    allowClear: true,
+                    data: users1,
+                    multiple:true,
+                    maximumSelectionSize:1,
+                   placeholder:'Select Branch'
+                });
+            }, 200);
+
+        }
+    }
+});

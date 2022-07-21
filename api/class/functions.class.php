@@ -333,46 +333,45 @@ class functions {
 
     // SMTP send mail
     public function send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '') {
-        $b64image = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/assets/img/BeConnected_Logo.gif'));
+        //$b64image = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/assets/img/BeConnected_Logo.gif'));
 
-        $dom = new DOMDocument;
-        @$dom->loadHTML($content);
-        $imgs = $dom->getElementsByTagName('img');
-        // Store the list of image urls in an array - this will come in handy later
-        $imgURLs = [];
-        foreach($imgs as $img) {
-            if (!$img->hasAttribute('src')) {
-                continue;
-            }
-            $imgURLs[] = $img->getAttribute('src');
-            //$img->setAttribute('src', $var);
-        }
-        //$htmlString = $dom->saveHTML();
-        $i=0;
-        $urlsrc = $urlsrc =  [];
-        $inlineAttachment=[]; 
-        foreach($imgURLs as $imgURL) {
-            //$cid[] = addslashes('src="cid:id'.$i.'"');
-            $cid[] = 'src="cid:id'.$i.'"';
-            $urlsrc[] = 'src="'. $imgURL . '"' ;
-            //if (str_contains($imgURL1, 'base64,')) {
-            if(strpos($imgURL, 'base64,') !== false){     
-                $img = explode( 'base64,', $imgURL );
-                $imgURL = $img[1];
-            }else{
-                $imgURL = base64_encode(file_get_contents('http://localhost:890/'.$imgURL));
-            }
-            $inlineAttachment[] = array(
-                'ContentType' => "image/gif",
-                'Filename' => "e59d1954aef9b3ed1a5e3c4c8e43a7f081cfa9e9.gif",
-                'ContentID' => "id".$i,
-                'Base64Content' => $imgURL
-            );
+        // $dom = new DOMDocument;
+        // @$dom->loadHTML($content);
+        // $imgs = $dom->getElementsByTagName('img');
+        // // Store the list of image urls in an array - this will come in handy later
+        // $imgURLs = [];
+        // foreach($imgs as $img) {
+        //     if (!$img->hasAttribute('src')) {
+        //         continue;
+        //     }
+        //     $imgURLs[] = $img->getAttribute('src');
+        //     //$img->setAttribute('src', $var);
+        // }
+        // //$htmlString = $dom->saveHTML();
+        // $i=0;
+        // $urlsrc = $urlsrc =  [];
+        // $inlinedAttachments=[]; 
+        // foreach($imgURLs as $imgURL) {
+        //     //$cid[] = addslashes('src="cid:id'.$i.'"');
+        //     $cid[] = 'src="cid:id'.$i.'"';
+        //     $urlsrc[] = 'src="'. $imgURL . '"' ;
+        //     //if (str_contains($imgURL1, 'base64,')) {
+        //     if(strpos($imgURL, 'base64,') !== false){     
+        //         $img = explode( 'base64,', $imgURL );
+        //         $imgURL = $img[1];
+        //     }else{
+        //         $imgURL = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/'.$imgURL));
+        //     }
+        //     $inlinedAttachments[] = array(
+        //         'ContentType' => "image/gif",
+        //         'Filename' => "e59d1954aef9b3ed1a5e3c4c8e43a7f081cfa9e9.gif",
+        //         'ContentID' => "id".$i,
+        //         'Base64Content' => $imgURL
+        //     );
 
-            $i++;
-        }
-        $htmlString = str_replace($urlsrc, $cid , $content);
-        //print_r($inlineAttachment);
+        //     $i++;
+        // }
+        // $htmlString = str_replace($urlsrc, $cid , $content);
         
         $mailParams = [
             'Messages' => [
@@ -389,30 +388,12 @@ class functions {
                         ],
                     'Subject' => $subject,
                     //'HTMLPart' => $htmlString,
-                    'HTMLPart' => addslashes($htmlString),
-                    // 'InlinedAttachments' => [
-                    //     [
-                    //         'ContentType' => "image/png",
-                    //         'Filename' => "logo.png",
-                    //         'ContentID' => "id0",
-                    //         'Base64Content' => "iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH4wIIChcxurq5eQAAAAd0RVh0QXV0aG9yAKmuzEgAAAAMdEVYdERlc2NyaXB0aW9uABMJISMAAAAKdEVYdENvcHlyaWdodACsD8w6AAAADnRFWHRDcmVhdGlvbiB0aW1lADX3DwkAAAAJdEVYdFNvZnR3YXJlAF1w/zoAAAALdEVYdERpc2NsYWltZXIAt8C0jwAAAAh0RVh0V2FybmluZwDAG+aHAAAAB3RFWHRTb3VyY2UA9f+D6wAAAAh0RVh0Q29tbWVudAD2zJa/AAAABnRFWHRUaXRsZQCo7tInAAABV0lEQVQokaXSPWtTYRTA8d9N7k1zm6a+RG2x+FItgpu66uDQxbFurrr5OQQHR9FZnARB3PwSFqooddAStCBoqmLtS9omx+ESUXuDon94tnP+5+1JYm057GyQjZFP+l+S6G2FzlNe3WHtHc2TNI8zOlUUGLxsD1kDyR+EEQE2P/L8Jm/uk6RUc6oZaYM0JxtnpEX9AGPTtM6w7yzVEb61EaSNn4QD3j5m4QabH6hkVFLSUeqHyCeot0ib6BdNVGscPM/hWWr7S4Tw9TUvbpFUitHTnF6XrS+sL7O6VBSausT0FZonSkb+nZUFFm+z8Z5up5Btr1Lby7E5Zq4yPrMrLR263ZV52g+LvfW3iy6PXubUNVrnhqYNF3bmiZ1i1MmLnL7OxIWh4T+IMpYeRNyrRzyZjWg/ioh+aVgZu4WfXxaixbsRve5fiwb8epTo8+kZjSPFf/sHvgNC0/mbjJbxPAAAAABJRU5ErkJggg=="
-                    //     ],
-                    //     [
-                    //         'ContentType' => "image/png",
-                    //         'Filename' => "logo.png",
-                    //         'ContentID' => "id1",
-                    //         'Base64Content' => "iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAB3RJTUUH4wIIChcxurq5eQAAAAd0RVh0QXV0aG9yAKmuzEgAAAAMdEVYdERlc2NyaXB0aW9uABMJISMAAAAKdEVYdENvcHlyaWdodACsD8w6AAAADnRFWHRDcmVhdGlvbiB0aW1lADX3DwkAAAAJdEVYdFNvZnR3YXJlAF1w/zoAAAALdEVYdERpc2NsYWltZXIAt8C0jwAAAAh0RVh0V2FybmluZwDAG+aHAAAAB3RFWHRTb3VyY2UA9f+D6wAAAAh0RVh0Q29tbWVudAD2zJa/AAAABnRFWHRUaXRsZQCo7tInAAABV0lEQVQokaXSPWtTYRTA8d9N7k1zm6a+RG2x+FItgpu66uDQxbFurrr5OQQHR9FZnARB3PwSFqooddAStCBoqmLtS9omx+ESUXuDon94tnP+5+1JYm057GyQjZFP+l+S6G2FzlNe3WHtHc2TNI8zOlUUGLxsD1kDyR+EEQE2P/L8Jm/uk6RUc6oZaYM0JxtnpEX9AGPTtM6w7yzVEb61EaSNn4QD3j5m4QabH6hkVFLSUeqHyCeot0ib6BdNVGscPM/hWWr7S4Tw9TUvbpFUitHTnF6XrS+sL7O6VBSausT0FZonSkb+nZUFFm+z8Z5up5Btr1Lby7E5Zq4yPrMrLR263ZV52g+LvfW3iy6PXubUNVrnhqYNF3bmiZ1i1MmLnL7OxIWh4T+IMpYeRNyrRzyZjWg/ioh+aVgZu4WfXxaixbsRve5fiwb8epTo8+kZjSPFf/sHvgNC0/mbjJbxPAAAAABJRU5ErkJggg=="
-                    //     ]
-                    // ]
-                    
+                    'HTMLPart' => $content,
                 ]    
             ]
         ];
         
-  $mailParams['Messages'][0]['InlinedAttachments'] =  $inlineAttachment;
-        
-        // print_r($mailParams);
-        // exit;
+        //$mailParams['Messages'][0]['InlinedAttachments'] =  $inlinedAttachments;
         // parameter array of array
         if (is_array($cc)) {
             $mailParams['Messages'][0]['Cc'] =  $cc;
@@ -432,8 +413,6 @@ class functions {
         }
         $response = $this->_mailjet->post(Resources::$Email, ['body' => $mailParams]);
 
-        print_r($mailParams);
-        
         if ($response->success()) {            
             $result['status'] = 200;
             $result['msg'] = 'Succes!';

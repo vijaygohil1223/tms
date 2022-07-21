@@ -984,8 +984,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.jobstatusName = " ";
     $window.localStorage.countSt = " ";
-
+    $window.localStorage.setItem("projectBranch", " ");
+    
     $scope.proejctsToDisplay = [];
+
 
     //Getting Jobs from getJobsFromTmsSummeryView
     $scope.getJobList = function() {
@@ -1610,6 +1612,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     }    
 
+    $scope.projBranchChange = false;
     // Tab view Project List
     $scope.projectsAll = [];
     $scope.projectsInProgress = [];
@@ -1640,43 +1643,79 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectCancelledCount = 0;
     $scope.projectOverdueCount = 0;
 
+
     $scope.allProjectListing = function() {
-        //$routeParams.id = 5;
+
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
-            angular.forEach(data, function(val, i) {
+            //if($window.localStorage.projectBranch != ' '){
+            if($scope.projBranchChange){
+                $scope.projectsAll = [];
+                $scope.projectsInProgress = [];
+                $scope.projectsDueToday = [];
+                $scope.projectsDueTomorrow = [];
+                $scope.projectsAssigned = [];
+                $scope.projectsQaready = [];
+                $scope.projectsToBeDelivered = [];
+                $scope.projectsDelivered = [];
+                $scope.projectsCompletedByLng = [];
+                $scope.projectsToDisplay = [];
+            
+                $scope.projectsAllCount = 0;
+                $scope.projectsInprogressCount = 0;
+                $scope.projectsDueTodayCount = 0;
+                $scope.projectsDueTomorrowCount = 0;
+                $scope.projectsToBeDeliveredCount = 0;
+                $scope.projectsDeliveredCount = 0;
+                $scope.projectsQaReadyCount = 0;
+                $scope.projectsAssignedCount = 0;
+                // -- new status for scoop item count based on status -- //
+                $scope.projectLinguistCount = 0;
+                $scope.projectDileveredCount = 0;
+                $scope.projectApprovedCount = 0;
+                $scope.projectInvoicedCount = 0;
+                $scope.projectPaidCount = 0;
+                $scope.projectWithoutInvoicedCount = 0;
+                $scope.projectCancelledCount = 0;
+                $scope.projectOverdueCount = 0;
+                // filter data based on branch
+                $scope.projectData = data.filter(pd => pd.project_branch == $window.localStorage.projectBranch )
+            }else{
+                $scope.projectData = data;
+            }    
+            angular.forEach($scope.projectData, function(val, i) {
                 val.progrss_precentage = -1;
-                $scope.projectsAll = data;
-                //console.log('$scope.projectsAll',$scope.projectsAll);
+                $scope.projectsAll = $scope.projectData;
+                //console.log('$scope.projectsAll==',$scope.projectsAll);
                 var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 if (val.itemsSourceLang) {
-                    data[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
-                    var sourceLangName = data[i].itemsSourceLang.sourceLang;
+                    $scope.projectData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
+                    var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
                     if(sourceLangName){
                         if($scope.langsListAll){
                             var sourceLang = $scope.langsListAll.find(obj => {
                                 return obj.name === sourceLangName;
                             })
                             if(sourceLang)
-                            data[i].itemsSourceLang.sourceLang = sourceLang.title;
+                            $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.title;
                         }
                     }
                 } else {
-                    data[i].itemsSourceLang = newLangData;
+                    $scope.projectData[i].itemsSourceLang = newLangData;
                 }
                 if (val.itemsTargetLang) {
-                    data[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
-                    var targetLangName = data[i].itemsTargetLang.sourceLang;
+                    $scope.projectData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
+                    var targetLangName = $scope.projectData[i].itemsTargetLang.sourceLang;
                     if(targetLangName){
                         var targetLang = $scope.langsListAll.find(obj => {
                             return obj.name == targetLangName
                         })
                         if(targetLang){
-                            data[i].itemsTargetLang.sourceLang = targetLang.title;
+                            $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.title;
                         }
                     }
                 } else {
-                    data[i].itemsTargetLang = newLangData;
+                    $scope.projectData[i].itemsTargetLang = newLangData;
                 }
                 //  ----linguist List----- / 
                 $scope.jobLinguist = [];
@@ -1698,18 +1737,18 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         $scope.jobLinguist = [];    
                     });
                 }
-                console.log('val.jobLinguist',val.jobLinguist)
+                //console.log('val.jobLinguist',val.jobLinguist)
 
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;
                 var comment_id = 0;
                 if (val.comment.length > 0) {
-                    var is_comment = data[i].comment[0].comment_status;
+                    var is_comment = $scope.projectData[i].comment[0].comment_status;
                 }
                 if (val.comment_id.length > 0) {
-                    var comment_id = data[i].comment_id[0].comment_id;
+                    var comment_id = $scope.projectData[i].comment_id[0].comment_id;
                 }
-                //var comment_id = data[i].comment_id[0].comment_id;
+                //var comment_id = $scope.projectData[i].comment_id[0].comment_id;
                 if (comment_id > 0 && comment_id > 0) {
                     cmtcolor = '#d30c39';
                 }
@@ -1771,6 +1810,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.projectsDeliveredCount++;
                 }                
                 if (val.itemStatus == "Delivered") {
+                    val.progrss_precentage = 100;
                     $scope.projectDileveredCount++;
                     val.projectstatus_class = 'projectstatus_delivered';
                     val.projectstatus_color = '#80bb41';
@@ -1781,11 +1821,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     val.projectstatus_color = '#4caf52';
                 }
                 if (val.itemStatus == "Invoiced") {
+                    val.progrss_precentage = 100;
                     $scope.projectInvoicedCount++;
                     val.projectstatus_class = 'projectstatus_invoiced';
                     val.projectstatus_color = '#ea1e63';
                 }
                 if (val.itemStatus == "Paid") {
+                    val.progrss_precentage = 100;
                     $scope.projectPaidCount++;
                     val.projectstatus_class = 'projectstatus_paid';
                     val.projectstatus_color = '#00bcd5';
@@ -1825,9 +1867,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         });
     };
     $scope.allProjectListing();
-
-
-
+    // Branch change (Norway-Bulgaria) call function again
+    $scope.projectBranchchange = function(id) {
+        $scope.projBranchChange = true;
+        $scope.projectBranch = angular.element('#projectBranch').select2('data');
+        var projBranchVal = $scope.projectBranch.length >0 ? $scope.projectBranch[0].text : '';
+        $window.localStorage.projectBranch = projBranchVal;
+        if(projBranchVal){
+            //$route.reload();
+            $scope.allProjectListing();
+        }
+    }
+    $scope.branchRefresh = function(){
+        console.log('branchRefresh')
+        $route.reload();
+    }
     /* overview display */
     $scope.isoverviewProject = false;
     //Getting Jobs from getJobsFromTmsSummeryView
@@ -1847,7 +1901,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.dashboardJobList = data;
             //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
             var allscoopJobsData = [];
-
             // --------- Scoop status data --------//
             var scoopAssigned = [];
             var scoopProgress = [];
@@ -2710,7 +2763,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $timeout(function() {
         //jQuery.fn.init('.projecttable input[type="search"]').attr( {"placeholder" : " Search", "id":"new-serach", "class":"form-control input-sm rounded"} );
-
         $(".projecttable #DataTables_Table_0_filter input[type='search']").keyup(function() {
             if ($(this).val().length) {
                 $('.projecttable #DataTables_Table_0_filter .searchicn').addClass("sicon1")
@@ -2760,7 +2812,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $('.projecttable #DataTables_Table_6_filter .searchicn').removeClass("sicon7")
             }
         });
-
     }, 500);
 
     /*$scope.dtOptions = {
@@ -14843,8 +14894,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     //   }
     // };
 
-
-
     rest.path = 'proStatusgetOne';
     rest.get().success(function(dataStatus) {
         $scope.proStatusData = dataStatus;
@@ -14945,6 +14994,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 rest.path = 'general/' + $routeParams.id + '/' + $scope.customer.client;
                 rest.get().success(function(data) {
                     $scope.general = data;
+                    console.log('$scope.general--', $scope.general)
                     $scope.projectOrderName = data.order_no;
                     $window.localStorage.setItem('projectOrderName', data.order_no);
                     angular.element('#order_number_id').val(data.order_no);
@@ -14982,6 +15032,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                         angular.element('#indirect_customer').select($scope.customer.indirect_customer);
                         angular.element('#indirect_customer').trigger('change');
+
+                        angular.element('#projectBranch').select($scope.general.project_branch);
+                        angular.element('#projectBranch').trigger('change');
 
                     }, 100);
 
