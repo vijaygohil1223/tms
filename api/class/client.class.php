@@ -28,7 +28,6 @@ class client {
         $user = new users();
         $userData = $user->getUserUsingId($results['created_id']);
         $results['created_id'] = $userData['vUserName'];
-        
         return $results;
     }
 

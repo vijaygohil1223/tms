@@ -1,6 +1,8 @@
 <?php
 require_once 'users.class.php';
 require_once 'client.class.php';
+require_once 'functions.class.php';
+
 class Freelance_invoice {
 
 	public function __construct() {
@@ -363,6 +365,7 @@ class Freelance_invoice {
     public function sendInvoiceMail($data) {
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
+        $pdfFileName = $data['invoiceno'].'.pdf';
         // if (strpos($bin, '%PDF') !== 0) {
         //     throw new Exception('Missing the PDF file ');
         // }
@@ -382,56 +385,52 @@ class Freelance_invoice {
 
         $to = $data['emailRemind1'];
         //$from = $data['data']['vEmailAddress'];
-        $this->_mailer = new PHPMailer();
-        //        $this->_mailer = 'ISO-8859-1';
-        $this->_mailer->IsSMTP();
-        $this->_mailer->Host = "ssl://smtp.gmail.com";
-        $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Port = "465";
-        $this->_mailer->Username = SMTP_EMAIL_USER;
-        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
-
-        $this->_mailer->From = "Tms Admin";
-        $this->_mailer->SetFrom = 'tmsadmin@tms.com';
-        $this->_mailer->FromName = $data['freelanceName'];
+        $cc = '';    
         if($data['emailRemind2']){
-            $this->_mailer->AddCC(trim($data['emailRemind2']));
+            $cc = [[ 'email' => $data['emailRemind2'] ]];
         }
             
-        $this->_mailer->Subject = $subject;
-
-        $this->_mailer->Body = $body;
-        $this->_mailer->WordWrap = 100;
-        $this->_mailer->AddAddress($to);
-        //$this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
-        $this->_mailer->IsHTML(true);
-        // End email config
-        # Write the PDF contents to a local file
-        if(file_put_contents($pdfFile, $bin)){
-            if ($pdfFile != '') {
-                $this->_mailer->AddAttachment($pdfFile);
-            }
-            if ($this->_mailer->Send()) { //output success or failure messages
-                $upData['modified_date'] = date('Y-m-d');
-                $upData['reminder_sent'] = 1;
-                $this->_db->where('invoice_id', $data['invoice_id']);
-                $this->_db->update('tms_invoice',$upData);
-
-                $result['status'] = 200;
-                $result['msg'] = 'Thank you for your email';
-                $path = "../../uploads/attatchment/";
-                $pdfFiles = glob($pdfFile);
-                if($pdfFiles){
-                    unlink($pdfFile);
+        $attachments = '';
+        $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
+        $to_name = 'TMS';
+        //$to = 'anil.kanhasoft@yopmail.com';
+        
+        if($data['pdfData']){
+            if ($pdf_content != '') {
+                $pdfFileContent = ''; 
+                if(is_array($pdf_content)){
+                    $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
+                    // pdf file
+                    $attachments =  [[
+                        'ContentType' => 'application/pdf',
+                        'Filename' => $pdfFileName,
+                        'Base64Content' => $pdfFileContent
+                    ]]; 
                 }
-                return $result;
-            } else {
-                $result['status'] = 422;
-                $result['msg'] = 'Could not send mail!';
-                return $result;
             }
+        }        
+
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
+            $upData['modified_date'] = date('Y-m-d');
+            $upData['reminder_sent'] = 1;
+            $this->_db->where('invoice_id', $data['invoice_id']);
+            $this->_db->update('tms_invoice',$upData);
+
+            $result['status'] = 200;
+            $result['msg'] = 'Thank you for your email';
+            $path = "../../uploads/attatchment/";
+            $pdfFiles = glob($pdfFile);
+            if($pdfFiles){
+                unlink($pdfFile);
+            }
+            return $result;
         }else{
-            return $result['status'] = 422;
+            $result['status'] = 422;
+            $result['msg'] = 'Could not send mail!';
+            return $result;
         }
 
 

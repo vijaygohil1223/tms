@@ -53,42 +53,62 @@ class message {
         $Username = $data['data']['vUserName'];
         $to = $data['data']['vEmailAddress'];
         $from = $data['data']['vEmailAddress'];
-        $this->_mailer = new PHPMailer();
-        
-        $this->_mailer->IsSMTP();
-        $this->_mailer->Host = "ssl://smtp.gmail.com";
-        $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Port = "465";
-        $this->_mailer->Username = SMTP_EMAIL_USER;
-        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
 
-        $this->_mailer->From = "Kanhasoft.com";
-        $this->_mailer->FromName = "Kanhasoft";
-        $this->_mailer->Subject = $subject;
-        $this->_mailer->Body = $body;
-        $this->_mailer->WordWrap = 50;
-        $this->_mailer->AddAddress($to);
+        // $this->_mailer = new PHPMailer();
+        // $this->_mailer->IsSMTP();
+        // $this->_mailer->Host = "ssl://smtp.gmail.com";
+        // $this->_mailer->SMTPAuth = "true";
+        // $this->_mailer->Port = "465";
+        // $this->_mailer->Username = SMTP_EMAIL_USER;
+        // $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
+        // $this->_mailer->From = "Kanhasoft.com";
+        // $this->_mailer->FromName = "Kanhasoft";
+        // $this->_mailer->Subject = $subject;
+        // $this->_mailer->Body = $body;
+        // $this->_mailer->WordWrap = 50;
+        // $this->_mailer->AddAddress($to);
         //$this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
-        $this->_mailer->IsHTML(true);
+        //$this->_mailer->IsHTML(true);
         //
         if ($cc != "") {
             $cCAddresses = explode(',',$cc);
+            $ccArr = [];
             foreach ($cCAddresses as $cCAddress) {
-                $this->_mailer->AddCC(trim($cCAddress));
+                //$this->_mailer->AddCC(trim($cCAddress));
+                array_push($ccArr,trim($cCAddress));
             }
+            $cc = $ccArr;
         }
 
         if ($bcc != "") {
             $bcCAddresses = explode(',',$bcc);
+            $bccArr = [];
             foreach ($bcCAddresses as $bcCAddress) {
-                $this->_mailer->AddBCC(trim($bcCAddress));
+                //$this->_mailer->AddBCC(trim($bcCAddress));
+                array_push($ccArr,trim($cCAddress));
             }
+            $bcc = $bccArr;
         }
 
+        $attachments = '';
+        $to_name = ' ';
+        
         if ($encoded_content != '') {
-            $this->_mailer->AddAttachment($encoded_content);
-        }
-        if ($this->_mailer->Send()) { //output success or failure messages
+            $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
+            $fileNm = explode(',', $data['file']);
+            $getFileType = explode(';',explode(':',$fileNm[0])[1]);
+            $finalstring = base64_decode($fileNm[1]);
+            $mimetype = self::getImageMimeType($finalstring,$getFileType[0]);
+            $attachments =  [[
+                'ContentType' => $getFileType[0],
+                'Filename' => 'attachment.'.$type,
+                'Base64Content' => $fileNm[1]
+            ]];
+        }    
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
             $result['status'] = 200;
             $result['msg'] = 'Thank you for your email';
         } else {
@@ -159,45 +179,62 @@ class message {
 
         $to = $data['data']['vEmailAddress'];
         //$from = $data['data']['vEmailAddress']
-        $this->_mailer = new PHPMailer();
+
+        //$this->_mailer = new PHPMailer();
         //        $this->_mailer = 'ISO-8859-1';
-        $this->_mailer->IsSMTP();
-        $this->_mailer->Host = "ssl://smtp.gmail.com";
-        $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Port = "465";
-        $this->_mailer->Username = SMTP_EMAIL_USER;
-        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
-
-        $this->_mailer->From = "Kanhasoft.com";
-        $this->_mailer->FromName = "Kanhasoft";
-
-        $this->_mailer->Subject = $subject;
-
-        $this->_mailer->Body = $body . $this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
-        $this->_mailer->WordWrap = 50;
-        $this->_mailer->AddAddress($to);
-
-        $this->_mailer->IsHTML(true);
+        // $this->_mailer->IsSMTP();
+        // $this->_mailer->Host = "ssl://smtp.gmail.com";
+        // $this->_mailer->SMTPAuth = "true";
+        // $this->_mailer->Port = "465";
+        // $this->_mailer->Username = SMTP_EMAIL_USER;
+        // $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
+        // $this->_mailer->From = "Kanhasoft.com";
+        // $this->_mailer->FromName = "Kanhasoft";
+        // $this->_mailer->Subject = $subject;
+        // $this->_mailer->Body = $body . $this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
+        // $this->_mailer->WordWrap = 50;
+        // $this->_mailer->AddAddress($to);
+        // $this->_mailer->IsHTML(true);
         
         if ($cc != "") {
             $cCAddresses = explode(',',$cc);
+            $ccArr = [];
             foreach ($cCAddresses as $cCAddress) {
-                $this->_mailer->AddCC(trim($cCAddress));
+                array_push($ccArr,trim($cCAddress));
             }
+            $cc = $ccArr;
         }
 
         if ($bcc != "") {
             $bcCAddresses = explode(',',$bcc);
+            $bccArr = [];
             foreach ($bcCAddresses as $bcCAddress) {
-                $this->_mailer->AddBCC(trim($bcCAddress));
+                array_push($ccArr,trim($cCAddress));
             }
+            $bcc = $bccArr;
         }
 
+        $attachments = '';
+        $to_name = ' ';
+        
         if ($encoded_content != '') {
-            $this->_mailer->AddAttachment($encoded_content);
-        }
-        ;
-        if ($this->_mailer->Send()) { //output success or failure messages
+            $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
+            $fileNm = explode(',', $data['file']);
+            $getFileType = explode(';',explode(':',$fileNm[0])[1]);
+            $finalstring = base64_decode($fileNm[1]);
+            $mimetype = self::getImageMimeType($finalstring,$getFileType[0]);
+            $attachments =  [[
+                'ContentType' => $getFileType[0],
+                'Filename' => 'attachment.'.$type,
+                'Base64Content' => $fileNm[1]
+            ]];
+        }  
+
+        // mailjet function  
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
             $result['status'] = 200;
             $result['msg'] = 'Thank you for your email';
         } else {

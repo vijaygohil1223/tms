@@ -70,7 +70,7 @@
                                                             <label class="control-label">Client number</label><br> 
                                                             <!-- <input type="text" class="form-control" readonly
                                                             name="iResourceNumber" ng-model="info.vClientNumber | numberFixedLen : 3"> -->
-                                                            <strong name="iResourceNumber" ng-model="info.vClientNumber | numberFixedLen : 3">{{info.vClientNumber | numberFixedLen : 3}}</strong>
+                                                            <strong name="iResourceNumber" ng-model="info.vClientNumber">{{info.vClientNumber | numberFixedLen : 3}}</strong>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
@@ -85,7 +85,6 @@
                                                             <label class="control-label">Creator name</label>
                                                             <!-- <input type="text" class="form-control" name="dtCreationDate" ng-model="info.dtCreationDate" readonly> -->
                                                             <br>
-
                                                             <strong ng-if="!isNewClient" name="creator" ng-model="info.created_id">{{info.created_id}}</strong>
                                                             <strong ng-if="isNewClient" name="creator" ng-model="info.created_id">{{displayCreatorName}}</strong>
                                                         </div>
@@ -159,7 +158,7 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label>Status</label>
-                                                            <!--                                                    <select class="form-control m-b" name="eUserStatus" ng-model="info.vStatus" required ng-options="statusObj.name as statusObj.name group by statusObj.gr for statusObj in clientStatus">
+                                                            <!--<select class="form-control m-b" name="eUserStatus" ng-model="info.vStatus" required ng-options="statusObj.name as statusObj.name group by statusObj.gr for statusObj in clientStatus">
                                                                 <option value="">Select status</option>
                                                             </select>                    -->
                                                             <input class="form-control" name="eUserStatus" id="eUserStatus" select2-client-status ng-model="info.vStatus" required />
@@ -167,25 +166,34 @@
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <div class="col-sm-4">
-                                                                <div class="thumb-info mb-md">
-                                                                    <img id="new_profile_pic" ng-show="imgshow"
-                                                                        ng-if="info.vLogo != undefined"
-                                                                        ng-src="uploads/logo/{{info.vLogo}}"
-                                                                        class="img-thumbnail" alt="Add a logo"> 
+                                                            <label>Branch</label>
+                                                            <input type="text" select2-projectbranch id="projectBranch" class="form-control" name="projectBranch" ng-model="info.project_branch"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <div class="col-sm-4">
+                                                                    <div class="thumb-info mb-md">
                                                                         <img id="new_profile_pic" ng-show="imgshow"
-                                                                        ng-if="info.vLogo == undefined" ng-src="assets/img/blank.png" class="img-thumbnail"
-                                                                        alt="Add a logo"> <img id="new_profile_pic" ng-show="!imgshow" ng-src="{{imageSrc ? imageSrc : 'assets/img/blank.png'}}"
-                                                                        class="img-thumbnail" alt="Add a logo">
+                                                                            ng-if="info.vLogo != undefined"
+                                                                            ng-src="uploads/logo/{{info.vLogo}}"
+                                                                            class="img-thumbnail" alt="Add a logo"> 
+                                                                            <img id="new_profile_pic" ng-show="imgshow"
+                                                                            ng-if="info.vLogo == undefined" ng-src="assets/img/blank.png" class="img-thumbnail"
+                                                                            alt="Add a logo"> <img id="new_profile_pic" ng-show="!imgshow" ng-src="{{imageSrc ? imageSrc : 'assets/img/blank.png'}}"
+                                                                            class="img-thumbnail" alt="Add a logo">
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-sm-8">
-                                                                <label>Select Logo</label> <input type="file"
-                                                                    ng-model="info.vLogo"
-                                                                    ng-file-select="onFileSelect($files)" ng-required='!imageSrc && !info.vLogo'>
+                                                                <div class="col-sm-8">
+                                                                    <label>Select Logo</label> <input type="file"
+                                                                        ng-model="info.vLogo"
+                                                                        ng-file-select="onFileSelect($files)" ng-required='!imageSrc && !info.vLogo'>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    
                                                     <!-- <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label class="control-label">Responsible Sales

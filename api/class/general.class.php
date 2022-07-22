@@ -83,7 +83,6 @@ class general {
         else
             $itemStatus = "";
 
-
         $body = "<p>Hello</p>";
         $body .= "<p>Following Job has been created and assigned to you.</p>";
         $body .= "<p>Job No. : " . $jobNo . ",</p>";
@@ -92,26 +91,15 @@ class general {
         $body .= "<p>Due Date : " . $dueDate . ",</p>";
         $body .= "<p>Item Status : " . $itemStatus . ".</p>";
         $subject = "Job Information";
-        $this->_mailer = new PHPMailer();
-        //$this->_mailer = 'ISO-8859-1';
-        $this->_mailer->IsSMTP();
-        $this->_mailer->Host = "ssl://smtp.gmail.com";
-        $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Port = "465";
-        $this->_mailer->Username = SMTP_EMAIL_USER;
-        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
+        
+        $to_name = '';
+        $attachments = '';
 
-        $this->_mailer->From = "Kanhasoft.com";
-        $this->_mailer->FromName = "TMS";
-
-        $this->_mailer->Subject = "Job Detail's";
-
-        $this->_mailer->Body = $body;
-        $this->_mailer->WordWrap = 50;
-        $this->_mailer->AddAddress($to);
-        $this->_mailer->IsHTML(true);
-
-        if ($this->_mailer->Send()) { //output success or failure messages
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
+        //if ($this->_mailer->Send()) { //output success or failure messages
             $result['status'] = 200;
             $result['msg'] = 'Thank you for your email';
         } else {

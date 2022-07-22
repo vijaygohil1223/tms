@@ -70,6 +70,116 @@ class contactPerMsg {
         $Username = $data['data']['vUserName'];
 
         $to = $data['data']['vEmail'];
+        
+        if ($cc != "") {
+            $cCAddresses = explode(',',$cc);
+            foreach ($cCAddresses as $cCAddress) {
+                $this->_mailer->AddCC(trim($cCAddress));
+            }
+        }
+
+        if ($bcc != "") {
+            $bcCAddresses = explode(',',$bcc);
+            foreach ($bcCAddresses as $bcCAddress) {
+                $this->_mailer->AddBCC(trim($bcCAddress));
+            }
+        }
+
+        $attachments = '';
+        $to_name = 'TMS';
+        
+        if ($encoded_content != '') {
+            $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
+            $fileNm = explode(',', $data['file']);
+            $getFileType = explode(';',explode(':',$fileNm[0])[1]);
+            $finalstring = base64_decode($fileNm[1]);
+            $mimetype = self::getImageMimeType($finalstring,$getFileType[0]);
+            $attachments =  [[
+                'ContentType' => $getFileType[0],
+                'Filename' => 'attachment.'.$type,
+                'Base64Content' => $fileNm[1]
+            ]];
+        }    
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
+            $result['status'] = 200;
+            $result['msg'] = 'Thank you for your email';
+        } else {
+            $result['status'] = 200;
+            $result['msg'] = 'Could not send mail!';
+        }
+        if(isset($result['status'])) {
+            if(isset($emailImageData)) {
+                $img = explode("/",$emailImageData);
+                $image = end($img);
+                if($img[0] != " ") {
+                    $path = "../../uploads/attatchment/";
+                    $images = glob($path.$image);
+                    if($images){
+                        unlink($path.$image);
+                    }    
+                }    
+            }
+            if(isset($encoded_content)) {
+                $img = explode("/",$encoded_content);
+                $image = end($img);
+                if($img[0] != " ") {
+                    $path = "../../uploads/attatchment/";
+                    $images = glob($path.$image);
+                    if($images){
+                        unlink($path.$image);
+                    }    
+                }       
+            }
+        }
+        return $result;
+    }
+
+    public function sendcontactPerMsg_gmailsmtp2($data){
+
+        if (isset($data['data']['messageData'])) {
+            $this->_db->where('is_active', 1);
+            $emailSign = $this->_db->getone('tms_email_sign');   
+            $emailsignData = $emailSign['sign_detail'];
+            $emailImage = $emailSign['sign_image']; 
+            $emailImageData = $this->uploadimage($emailImage);
+        } else {
+            $emailsignData = " ";
+            $emailImageData = " ";
+        }
+        if(isset($data['file'])) {
+            $encoded_content = $this->uploadimage($data['file']);    
+        } else {
+            $encoded_content = " "; 
+        }
+        
+        if (isset($data['data']['cc'])) {
+            $cc = $data['data']['cc'];
+        } else {
+            $cc = "";
+        }
+        if (isset($data['data']['bcc'])) {
+            $bcc = $data['data']['bcc'];
+        } else {
+            $bcc = "";
+        }
+        if (isset($data['data']['messageData'])) {
+            $str = $data['data']['messageData'];
+            $message = str_replace($emailsignData,"",$str);
+            
+        } else {
+            $message = " ";
+        }
+
+        $body = "<p>" . $message . "</p>";
+        $body .= "<p>" . $emailsignData . "</p>";
+        $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
+        $subject = "Information";
+        $Username = $data['data']['vUserName'];
+
+        $to = $data['data']['vEmail'];
         //$from = $data['data']['vEmailAddress']
         $this->_mailer = new PHPMailer();
         //        $this->_mailer = 'ISO-8859-1';
@@ -199,26 +309,6 @@ class contactPerMsg {
         $Username = $data['data']['vUserName'];
 
         $to = $data['data']['vEmailAddress'];
-        
-        $this->_mailer = new PHPMailer();
-        
-        $this->_mailer->IsSMTP();
-        $this->_mailer->Host = "ssl://smtp.gmail.com";
-        $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Port = "465";
-        $this->_mailer->Username = SMTP_EMAIL_USER;
-        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
-
-        $this->_mailer->From = "Kanhasoft.com";
-        $this->_mailer->FromName = "TMS";
-
-        $this->_mailer->Subject = $subject;
-
-        $this->_mailer->Body = $body;
-        $this->_mailer->WordWrap = 50;
-        $this->_mailer->AddAddress($to);
-        $this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
-        $this->_mailer->IsHTML(true);
 
         if ($cc != "") {
             $cCAddresses = explode(',',$cc);
@@ -234,10 +324,26 @@ class contactPerMsg {
             }
         }
 
+        $to_name = '';
+        $attachments = '';
+        
         if ($encoded_content != '') {
-            $this->_mailer->AddAttachment($encoded_content);
-        }
-        if ($this->_mailer->Send()) { //output success or failure messages
+            $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
+            $fileNm = explode(',', $data['file']);
+            $getFileType = explode(';',explode(':',$fileNm[0])[1]);
+            $finalstring = base64_decode($fileNm[1]);
+            $mimetype = self::getImageMimeType($finalstring,$getFileType[0]);
+            $attachments =  [[
+                'ContentType' => $getFileType[0],
+                'Filename' => 'attachment.'.$type,
+                'Base64Content' => $fileNm[1]
+            ]];
+        }    
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
+        //if ($this->_mailer->Send()) { //output success or failure messages
             $result['status'] = 200;
             $result['msg'] = 'Thank you for your email';
         } else {
@@ -556,26 +662,6 @@ class contactPerMsg {
         $Username = $data['data']['vUserName'];
         $to = $data['data']['vEmailAddress'];
         
-        $this->_mailer = new PHPMailer();
-        
-        $this->_mailer->IsSMTP();
-        $this->_mailer->Host = "ssl://smtp.gmail.com";
-        $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Port = "465";
-        $this->_mailer->Username = SMTP_EMAIL_USER;
-        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
-
-        $this->_mailer->From = "Kanhasoft.com";
-        $this->_mailer->FromName = "TMS";
-
-        $this->_mailer->Subject = $subject;
-
-        $this->_mailer->Body = $body;
-        $this->_mailer->WordWrap = 50;
-        $this->_mailer->AddAddress($to);
-        $this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
-        $this->_mailer->IsHTML(true);
-
         if ($cc != "") {
             $cCAddresses = explode(',',$cc);
             foreach ($cCAddresses as $cCAddress) {
@@ -590,10 +676,26 @@ class contactPerMsg {
             }
         }
 
+        $to_name = '';
+        $attachments = '';
+        
         if ($encoded_content != '') {
-            $this->_mailer->AddAttachment($encoded_content);
-        }
-        if ($this->_mailer->Send()) { //output success or failure messages
+            $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
+            $fileNm = explode(',', $data['file']);
+            $getFileType = explode(';',explode(':',$fileNm[0])[1]);
+            $finalstring = base64_decode($fileNm[1]);
+            $mimetype = self::getImageMimeType($finalstring,$getFileType[0]);
+            $attachments =  [[
+                'ContentType' => $getFileType[0],
+                'Filename' => 'attachment.'.$type,
+                'Base64Content' => $fileNm[1]
+            ]];
+        }    
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
+        //if ($this->_mailer->Send()) { //output success or failure messages
             $result['status'] = 200;
             $result['msg'] = 'Thank you for your email';
         } else {

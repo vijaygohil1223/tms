@@ -575,23 +575,32 @@ array(
                 $message = str_replace($search_array, $replace_array, $emailTemplate['template_content']);
 
                 
-                $this->_mailer = new PHPMailer();
-                $this->_mailer->IsSMTP();
-                $this->_mailer->Host = "ssl://smtp.gmail.com";
-                $this->_mailer->SMTPAuth = "true";
-                $this->_mailer->Port = "465";
-                $this->_mailer->Username = SMTP_EMAIL_USER;
-                $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
+                // $this->_mailer = new PHPMailer();
+                // $this->_mailer->IsSMTP();
+                // $this->_mailer->Host = "ssl://smtp.gmail.com";
+                // $this->_mailer->SMTPAuth = "true";
+                // $this->_mailer->Port = "465";
+                // $this->_mailer->Username = SMTP_EMAIL_USER;
+                // $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
+                // $this->_mailer->From = "Kanhasoft.com";
+                // $this->_mailer->FromName = "TMS Admin";
+                // $this->_mailer->Subject = $emailTemplate['template_subject'];
+                // $this->_mailer->Body = $message;
+                // $this->_mailer->WordWrap = 50;
+                // $this->_mailer->AddAddress($results['vEmailAddress']);
+                // $this->_mailer->IsHTML(true);
 
-                $this->_mailer->From = "Kanhasoft.com";
-                $this->_mailer->FromName = "TMS Admin";
-                $this->_mailer->Subject = $emailTemplate['template_subject'];
-                $this->_mailer->Body = $message;
-                $this->_mailer->WordWrap = 50;
-                $this->_mailer->AddAddress($results['vEmailAddress']);
-                $this->_mailer->IsHTML(true);
-
-                if ($this->_mailer->Send()) { //output success or failure messages
+                $to = $results['vEmailAddress'];
+                $body = $message;
+                $subject = $emailTemplate['template_subject'];
+                $attachments = '';
+                $to_name = ' ';
+                
+                // mailjet function  
+                $send_fn = new functions();
+                $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+                    
+                if($mailResponse['status'] == 200) {
                     $this->_db->where("iUserId", $results['iUserId']);
                     $found = $this->_db->getOne('tms_passwordreset_tbl');
 
@@ -1061,7 +1070,7 @@ array(
         
         $html = str_replace($search_array, $replace_array, $emailTemplate['template_content']);
 
-        $this->_mailer = new PHPMailer();
+        // $this->_mailer = new PHPMailer();
         //        $this->_mailer = 'ISO-8859-1';
         $this->_mailer->IsSMTP();
         $this->_mailer->Host = "ssl://smtp.gmail.com";

@@ -331,7 +331,7 @@ class functions {
         return $string;
     }
 
-    // SMTP send mail
+    // SMTP send mail (Using mailjet library)
     public function send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '') {
         //$b64image = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/assets/img/BeConnected_Logo.gif'));
 
@@ -411,6 +411,7 @@ class functions {
             //                                 ]];
             $mailParams['Messages'][0]['Attachments'] =  $attachments;
         }
+
         $response = $this->_mailjet->post(Resources::$Email, ['body' => $mailParams]);
 
         if ($response->success()) {            

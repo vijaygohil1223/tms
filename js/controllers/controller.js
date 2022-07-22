@@ -988,7 +988,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     
     $scope.proejctsToDisplay = [];
 
-
     //Getting Jobs from getJobsFromTmsSummeryView
     $scope.getJobList = function() {
         rest.path = 'getJobsFromTmsSummeryView';
@@ -12162,6 +12161,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.imgshow = true;
             $scope.isNewClient = false;
             $scope.info = data;
+            console.log('$scope.info', $scope.info)
 
             $window.localStorage.clientnamec = $scope.info.vUserName;
             $window.localStorage.clientnotice = $scope.info.tMemo;
@@ -12171,9 +12171,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.element('#vQASpecialist').select2('data', { id: $scope.info.vQASpecialist });
             angular.element('#currencyCode').select2('data', { text: $scope.info.client_currency.split(',')[0] });
 
-
-
-            console.log("data", data);
+            angular.element('#projectBranch').select2('data', { id: $scope.info.project_branch });
             var flagTitle = JSON.parse(data.vPhone).countryTitle;
             var flagClass = JSON.parse(data.vPhone).countryFlagClass;
             var Ccode = flagClass.split(' ')[1];
@@ -14238,6 +14236,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if($scope.userRight!=1)
                 $scope.isDisabledApprvd = true;
 
+            var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
+            if(($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Cancel' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.is_approved == 1)){
+                if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                    $scope.reminderBtnHideShow = true;
+                }
+            }    
+
         }).error(errorCallback);
     }
     $scope.upInvoiceData = {};
@@ -14368,6 +14373,53 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         // });
     }
 
+    $scope.sendRemiderinvoice = function(number){
+        angular.element('#btnPaid').hide();
+        angular.element('#btnMarkAsCancel').hide();
+        angular.element('#btnSave').hide();
+        angular.element('#btnDraft').hide();
+        angular.element('#btnCancel').hide();
+        angular.element('#btnApproved').hide();
+        angular.element('#editInvoiceSave').hide();
+        angular.element('#editInvoiceSave2').hide();
+
+        kendo.drawing.drawDOM($("#exportable"))
+        .then(function (group) {
+        // Render the result as a PDF file
+            return kendo.drawing.exportPDF(group, {
+                //paperSize: "auto",
+            });
+        })
+        .done(function (data) {
+            $scope.invoicemailDetail = {'pdfData': data,
+                                        'invoiceno':number,
+                                        'invoice_id':$routeParams.id,
+                                        'freelanceEmail':$scope.invoiceDetail.freelanceEmail,
+                                        'freelanceName':$scope.invoiceDetail.freelanceName,
+                                        'emailRemind1':$scope.invoiceDetail.emailRemind1,
+                                        'emailRemind2':$scope.invoiceDetail.emailRemind2,
+                                        'outstanding_reminder':1,
+                                        };
+            rest.path = 'sendInvoiceMail';
+            rest.post($scope.invoicemailDetail).success(function(data) {
+                if(data.status==200){
+                    notification('Reminder mail has been sent successfully', 'success');
+                }
+            }).error(errorCallback);
+
+            angular.element('#btnPaid').show();
+            angular.element('#btnMarkAsCancel').show();
+            angular.element('#btnSave').show();
+            angular.element('#btnDraft').show();
+            angular.element('#btnCancel').show();
+            angular.element('#btnApproved').show();
+            angular.element('#editInvoiceSave').show();
+            angular.element('#editInvoiceSave2').show();
+    
+
+        });
+    }
+    
 }).controller('statementController', function($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userId = $window.localStorage.getItem("session_iUserId");
