@@ -12180,6 +12180,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var FinalMobileNum = CcodeNum + JSON.parse(data.vPhone).mobileNumber;
 
             $timeout(function() {
+                angular.element('#projectBranch').select2('data', { id: $scope.info.project_branch });
+
                 $('#userphone').intlTelInput("setNumber", FinalMobileNum);
                 $scope.isValidMobileNumber = true;
             }, 100);
