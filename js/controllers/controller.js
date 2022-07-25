@@ -12153,7 +12153,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         $routeParams.id = $window.localStorage.iUserId;
     }
 
-
     if ($routeParams.id != '' && $routeParams.id != undefined) {
         $window.localStorage.iUserId = $routeParams.id;
         rest.path = 'client';
@@ -12171,9 +12170,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.element('#vQASpecialist').select2('data', { id: $scope.info.vQASpecialist });
             angular.element('#currencyCode').select2('data', { text: $scope.info.client_currency.split(',')[0] });
 
-            //angular.element('#projectBranch').select2('data', { id: $scope.info.project_branch });
-            angular.element('#projectBranch').select($scope.info.project_branch);
-            angular.element('#projectBranch').trigger('change');
+            // angular.element('#projectBranch').select($scope.info.project_branch);
+            // angular.element('#projectBranch').trigger('change');
 
             var flagTitle = JSON.parse(data.vPhone).countryTitle;
             var flagClass = JSON.parse(data.vPhone).countryFlagClass;
@@ -12181,7 +12179,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var CcodeNum = flagTitle.split(':')[1].trim();
             console.log("CcodeNum", CcodeNum);
             var FinalMobileNum = CcodeNum + JSON.parse(data.vPhone).mobileNumber;
-
 
             $timeout(function() {
                 $('#userphone').intlTelInput("setNumber", FinalMobileNum);
