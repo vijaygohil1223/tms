@@ -36,11 +36,12 @@ class orderstatussearch {
 
 		public function statusorderReportFilter($filterParams){
 			//print_r($filterParams);
+			// if(isset($filterParams['companyCode'])){
+			// 	$this->_db->where('its.companyCode', $filterParams['companyCode']);
+			// }
 			if(isset($filterParams['companyCode'])){
-				$this->_db->where('its.companyCode', $filterParams['companyCode']);
-			}
-			if(isset($filterParams['companyCode'])){
-				$this->_db->where('gen.company_code', $filterParams['companyCode']);
+				//$this->_db->where('gen.company_code', $filterParams['companyCode']);
+				$this->_db->where('gen.order_no', ''.$filterParams['companyCode'].'%', 'LIKE');
 			}
 			if(isset($filterParams['pm_name'])){
 				$this->_db->where('tu.iUserId', $filterParams['pm_name']);
@@ -102,7 +103,7 @@ class orderstatussearch {
 			$this->_db->join('tms_client_indirect inc', 'inc.iClientId = cust.indirect_customer','LEFT');
 			$this->_db->join('tms_users tu', 'tu.iUserId = cust.project_manager','LEFT');
 			$this->_db->join('tms_project_status ps', 'ps.pr_status_id = gen.project_status','LEFT');
-			$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate,its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, gen.project_type AS projectType, plang.source_lang AS sourceLanguage, plang.target_lang AS targetLanguage, its.total_amount AS totalAmount, tu.vUserName AS pm_name, (SELECT SUM(sv.total_price) FROM `tms_summmery_view` as sv WHERE sv.order_id = its.order_id AND sv.item_id = its.item_number) as jobTotalPrice');
+			$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate,its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, gen.project_type AS projectType, plang.source_lang AS sourceLanguage, plang.target_lang AS targetLanguage, its.total_amount AS totalAmount, tu.vUserName AS pm_name');
 
 			$qry = "SELECT gen.order_no AS orderNumber,gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer,gen.project_name AS projectName, c.vUserName AS contactName,stus.status_name AS clientStatus,gen.company_code AS companyCode,cust.contact AS contactPerson,its.item_status AS itemStatus,gen.project_status AS projectStatus,gen.project_type AS projectType,its.source_lang AS sourceLanguage,its.target_lang AS targetLanguage, its.q_date AS QuentityDate ,SUM(its.total_amount) As TotalAmount FROM tms_general AS gen LEFT JOIN tms_customer AS cust ON gen.order_id=cust.order_id LEFT JOIN tms_items AS its ON gen.order_id=its.order_id  LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id group by its.q_date";
 			$info = $this->_db->rawQuery($qry);

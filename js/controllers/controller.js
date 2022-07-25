@@ -6536,11 +6536,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             if ($scope.orderReport.endItemDuedate) {
                 $scope.orderReport.itemDuedateEnd = originalDateFormatNew($scope.orderReport.endItemDuedate);
             }
+
             // rest.path = 'statusorderReportFind';
             // rest.get().success(function(data) {
             rest.path = 'statusorderReportFilter';
             rest.post($scope.orderReport).success(function(data) {    
-                console.log('data', data)
+                    console.log('data', data)
                     $scope.statusResult = data['data'];
                     angular.forEach($scope.statusResult, function(val, i) {
                         console.log('val', val.sourc)
