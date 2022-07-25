@@ -12173,7 +12173,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
             //angular.element('#projectBranch').select2('data', { id: $scope.info.project_branch });
             angular.element('#projectBranch').select($scope.info.project_branch);
-            //angular.element('#projectBranch').trigger('change');
+            angular.element('#projectBranch').trigger('change');
 
             var flagTitle = JSON.parse(data.vPhone).countryTitle;
             var flagClass = JSON.parse(data.vPhone).countryFlagClass;
