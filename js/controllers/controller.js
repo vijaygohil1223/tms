@@ -12171,7 +12171,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.element('#vQASpecialist').select2('data', { id: $scope.info.vQASpecialist });
             angular.element('#currencyCode').select2('data', { text: $scope.info.client_currency.split(',')[0] });
 
-            angular.element('#projectBranch').select2('data', { id: $scope.info.project_branch });
+            //angular.element('#projectBranch').select2('data', { id: $scope.info.project_branch });
+            angular.element('#projectBranch').select($scope.info.project_branch);
+            //angular.element('#projectBranch').trigger('change');
+
             var flagTitle = JSON.parse(data.vPhone).countryTitle;
             var flagClass = JSON.parse(data.vPhone).countryFlagClass;
             var Ccode = flagClass.split(' ')[1];
@@ -12179,9 +12182,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             console.log("CcodeNum", CcodeNum);
             var FinalMobileNum = CcodeNum + JSON.parse(data.vPhone).mobileNumber;
 
-            $timeout(function() {
-                angular.element('#projectBranch').select2('data', { id: $scope.info.project_branch });
 
+            $timeout(function() {
                 $('#userphone').intlTelInput("setNumber", FinalMobileNum);
                 $scope.isValidMobileNumber = true;
             }, 100);
