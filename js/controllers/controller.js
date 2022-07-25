@@ -12170,8 +12170,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             angular.element('#vQASpecialist').select2('data', { id: $scope.info.vQASpecialist });
             angular.element('#currencyCode').select2('data', { text: $scope.info.client_currency.split(',')[0] });
 
-            // angular.element('#projectBranch').select($scope.info.project_branch);
-            // angular.element('#projectBranch').trigger('change');
+            angular.element('#projectBranch').select($scope.info.project_branch);
+            setTimeout(() => {
+                angular.element('#projectBranch').trigger('change');
+            }, 2000);
 
             var flagTitle = JSON.parse(data.vPhone).countryTitle;
             var flagClass = JSON.parse(data.vPhone).countryFlagClass;
