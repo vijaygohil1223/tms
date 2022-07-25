@@ -45,9 +45,6 @@ class jobstatussearch {
 			// INNER JOIN tms_users AS tmu ON tmv.contact_person = tmu.iUserId 
 			// group by tmv.job_summmeryId";
 	    	//$data = $this->_db->rawQuery($qry);
-			if(isset($filterParams['companyCode'])){
-				$this->_db->where('tc.vCodeRights', $filterParams['companyCode']);
-			}
 			if(isset($filterParams['contactPerson'])){
 				$this->_db->where('tmu.iUserId', $filterParams['contactPerson']);
 			}
@@ -68,6 +65,10 @@ class jobstatussearch {
 			}
 			if(isset($filterParams['orderTypes'])){
 				$this->_db->where('tu.iFkUserTypeId', $filterParams['orderTypes']);
+			}
+			if(isset($filterParams['companyCode'])){
+				//$this->_db->where('tc.vCodeRights', $filterParams['companyCode']);
+				$this->_db->where('tg.order_no', ''.$filterParams['companyCode'].'%', 'LIKE');
 			}			
 			if(isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])){
 				$Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
@@ -87,10 +88,9 @@ class jobstatussearch {
 			$this->_db->join('tms_users tmu', 'tmv.contact_person = tmu.iUserId','INNER');
 			$this->_db->groupBy("tmv.job_summmeryId");
 			$data = $this->_db->get('tms_items ti', null,' tmv.ItemLanguage,tmv.job_no AS jobNo,tmv.job_code AS jobCode,tmu.iUserId AS contactPerson,tmu.vUserName AS contactPersonName, tmv.resource AS resource, tu.vUserName As resourceName,tc.vUserName AS customerName,tmv.company_code AS companyCode,tcu.client AS customer,tu.vResourceType AS serviceGroup,tg.project_type AS projectType,tmv.item_status AS jobStatus,ti.item_status AS itemStatus,tu.iFkUserTypeId AS orderTypes,tg.order_no AS orderNum,tmv.job_summmeryId AS jobId,tu.iFkUserTypeId AS ifkuserId, tmv.po_number AS poNumber, tmv.total_price as jobPrice');
-//			echo $this->_db->getLastQuery();
+			// echo $this->_db->getLastQuery();
 
 	    	return $data;
-		
 		}
 
 	    public function jobsearchStatusUpdate($id,$status){

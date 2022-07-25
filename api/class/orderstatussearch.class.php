@@ -39,10 +39,6 @@ class orderstatussearch {
 			// if(isset($filterParams['companyCode'])){
 			// 	$this->_db->where('its.companyCode', $filterParams['companyCode']);
 			// }
-			if(isset($filterParams['companyCode'])){
-				//$this->_db->where('gen.company_code', $filterParams['companyCode']);
-				$this->_db->where('gen.order_no', ''.$filterParams['companyCode'].'%', 'LIKE');
-			}
 			if(isset($filterParams['pm_name'])){
 				$this->_db->where('tu.iUserId', $filterParams['pm_name']);
 			}
@@ -76,7 +72,10 @@ class orderstatussearch {
 			if(isset($filterParams['targetLanguage'])){
 				$this->_db->where('its.target_lang','%"sourceLang":"'.$filterParams['targetLanguage'].'"%', 'like');
 			} 
-			
+			if(isset($filterParams['companyCode'])){
+				//$this->_db->where('c.vCodeRights', $filterParams['companyCode']);
+				$this->_db->where('gen.order_no', ''.$filterParams['companyCode'].'%', 'LIKE');
+			}
 			if(isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])){
 				$Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
 				$To = $filterParams['endItemDuedate'].' '.'00:00:00';
