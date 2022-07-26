@@ -488,8 +488,9 @@ class contactPerMsg {
         return $result;
     }
 
+    //public function sendgeneralMsg($data){
     public function sendgeneralMsg_gmailsmtp($data){
-        if (isset($data['data']['messageData'])) {
+            if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
             $emailsignData = $emailSign['sign_detail'];
@@ -539,13 +540,14 @@ class contactPerMsg {
         $this->_mailer = new PHPMailer();
         
         $this->_mailer->IsSMTP();
-        $this->_mailer->Host = "ssl://smtp.gmail.com";
+        $this->_mailer->Host = "smtp.gmail.com";
         $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Username = SMTP_EMAIL_USER;
-        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
-        $this->_mailer->Port = "465";
+        $this->_mailer->Username = 'tms.kanhasoft@gmail.com';
+        $this->_mailer->Password = 'yizzlgrzyojjghmy';
+        $this->_mailer->SMTPSecure = "tls";  
+        $this->_mailer->Port = "25";
 
-        $this->_mailer->From = "Kanhasoft.com";
+        $this->_mailer->From = "tms.kanhasoft@gmail.com";
         $this->_mailer->FromName = "TMS";
 
         $this->_mailer->Subject = $subject;

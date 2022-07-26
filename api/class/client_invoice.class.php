@@ -3,8 +3,7 @@ require_once 'users.class.php';
 require_once 'client.class.php';
 
 require_once 'functions.class.php';
-// require 'mailjet/vendor/autoload.php';
-// use \Mailjet\Resources;
+
 
 class Client_invoice {
 
