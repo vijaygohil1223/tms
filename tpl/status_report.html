@@ -496,7 +496,7 @@
 
                                     </thead>
                                     <tbody>
-                                       <tr ng-repeat="result in statusResult">
+                                       <tr id="Export_{{$index}}" ng-repeat="result in statusResult">
                                           <td>{{$index + 1}}</td>
                                           <td><span>{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3 }}</span></td>
                                           <td>{{ result.projectName }}</td>

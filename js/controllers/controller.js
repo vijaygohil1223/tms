@@ -6890,6 +6890,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 break;
             case "Export to excel":
+                for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                    if ($("#orderCheck" + i).prop('checked') == true) {
+                        $("#Export_" + i).show()
+                    } else {
+                        $("#Export_" + i).hide();
+                        $("#Export_" + i).remove();
+                    }
+                }
                 var blob = new Blob([document.getElementById('exportable').innerHTML], {
                     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                 });
@@ -13005,9 +13013,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 break;
         }
     }
-
     //search data action
     $scope.statusAction = function(action) {
+        console.log('action', action)
         switch (action) {
             case "Change status to":
                 var jobStatus = angular.element('#jobStatusdata').val();
@@ -13058,18 +13066,20 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if (count == 0) {
                     notification('Please select record to export', 'information');
                 }
+
                 if (count > 0) {
                     for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
                         if ($("#orderCheck" + i).prop('checked') == true) {
                             $("#Export_" + i).show()
                         } else {
-                            $("#Export_" + i).hide()
+                            $("#Export_" + i).hide();
+                            $("#Export_" + i).remove();
                         }
                     }
                     var blob = new Blob([document.getElementById('exportable').innerHTML], {
                         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                     });
-                    saveAs(blob, "Jobs-status-report.xls");
+                    saveAs(blob, "Jobs-status-report11.xls");
                     $scope.jobstatusReportsearch();
                 }
                 break;
