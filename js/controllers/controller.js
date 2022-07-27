@@ -1689,30 +1689,30 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 if (val.itemsSourceLang) {
                     $scope.projectData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
-                    var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
-                    if(sourceLangName){
-                        if($scope.langsListAll){
-                            var sourceLang = $scope.langsListAll.find(obj => {
-                                return obj.name === sourceLangName;
-                            })
-                            if(sourceLang)
-                            $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.title;
-                        }
-                    }
+                    // var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
+                    // if(sourceLangName){
+                    //     if($scope.langsListAll){
+                    //         var sourceLang = $scope.langsListAll.find(obj => {
+                    //             return obj.name === sourceLangName;
+                    //         })
+                    //         if(sourceLang)
+                    //         $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.title;
+                    //     }
+                    // }
                 } else {
                     $scope.projectData[i].itemsSourceLang = newLangData;
                 }
                 if (val.itemsTargetLang) {
                     $scope.projectData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
-                    var targetLangName = $scope.projectData[i].itemsTargetLang.sourceLang;
-                    if(targetLangName){
-                        var targetLang = $scope.langsListAll.find(obj => {
-                            return obj.name == targetLangName
-                        })
-                        if(targetLang){
-                            $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.title;
-                        }
-                    }
+                    // var targetLangName = $scope.projectData[i].itemsTargetLang.sourceLang;
+                    // if(targetLangName){
+                    //     var targetLang = $scope.langsListAll.find(obj => {
+                    //         return obj.name == targetLangName
+                    //     })
+                    //     if(targetLang){
+                    //         $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.title;
+                    //     }
+                    // }
                 } else {
                     $scope.projectData[i].itemsTargetLang = newLangData;
                 }
@@ -1729,10 +1729,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 }
                             }
                         });    
+
                         $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
                         val.jobLinguist = $scope.jobLinguist;
-                        //console.log('$scope.jobLinguist',$scope.jobLinguist);
-                        //console.log('val.orderId',val.orderId);
                         $scope.jobLinguist = [];    
                     });
                 }
@@ -13225,6 +13224,70 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     }
                 }
                 break;
+                case "itemDuedate":
+                    if ($scope.jobReport != undefined) {
+                        $scope.jobReport.itemDuedate = '';
+                        angular.element('#itemDuedate').text;
+                        angular.forEach($scope.jobReport, function(value, key) {
+                            if (value === "" || value === null) {
+                                delete $scope.jobReport[key];
+                            }
+                        });
+                        if (jQuery.isEmptyObject($scope.jobReport)) {
+                            $scope.statusResult = '';
+                            $scope.jobReport = undefined;
+                            $scope.checkOrderItem = undefined;
+                        }
+                    }
+                    break;
+                case "endItemDuedate":
+                    if ($scope.jobReport != undefined) {
+                        $scope.jobReport.endItemDuedate = '';
+                        angular.element('#endItemDuedate').text;
+                        angular.forEach($scope.jobReport, function(value, key) {
+                            if (value === "" || value === null) {
+                                delete $scope.jobReport[key];
+                            }
+                        });
+                        if (jQuery.isEmptyObject($scope.jobReport)) {
+                            $scope.statusResult = '';
+                            $scope.jobReport = undefined;
+                            $scope.checkOrderItem = undefined;
+                        }
+                    }
+                    break;    
+                case "startCreateDate":
+                    if ($scope.jobReport != undefined) {
+                        $scope.jobReport.startCreateDate = '';
+                        angular.element('#startCreateDate').text;
+                        angular.forEach($scope.jobReport, function(value, key) {
+                            if (value === "" || value === null) {
+                                delete $scope.jobReport[key];
+                            }
+                        });
+                        if (jQuery.isEmptyObject($scope.jobReport)) {
+                            $scope.statusResult = '';
+                            $scope.jobReport = undefined;
+                            $scope.checkOrderItem = undefined;
+                        }
+                    }
+                    break;
+                case "endCreateDate":
+                    if ($scope.jobReport != undefined) {
+                        $scope.jobReport.endCreateDate = '';
+                        angular.element('#endCreateDate').text;
+                        angular.forEach($scope.jobReport, function(value, key) {
+                            if (value === "" || value === null) {
+                                delete $scope.jobReport[key];
+                            }
+                        });
+                        if (jQuery.isEmptyObject($scope.jobReport)) {
+                            $scope.statusResult = '';
+                            $scope.jobReport = undefined;
+                            $scope.checkOrderItem = undefined;
+                        }
+                    }
+                    break;    
             case "sourceLanguage":
                 if ($scope.jobReport != undefined) {
                     $scope.jobReport.sourceLanguage = '';
