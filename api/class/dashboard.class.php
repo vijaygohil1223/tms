@@ -54,10 +54,13 @@ class dashboard {
             $comments = $this->_db->rawQuery($qry3);
             $data[$key]['comment_id'] = $comments;
 
-            $qry2 = "SELECT count(id) as comment_status FROM tms_discussion where order_id = ".$value['orderId']. " AND NOT FIND_IN_SET(".$id.",read_id)" ;
+            $qry2 = "SELECT count(id) as comment_status FROM tms_discussion where order_id = ".$value['orderId']. " AND NOT FIND_IN_SET(".$id.",read_id)";
             $commentdata = $this->_db->rawQuery($qry2);
             $data[$key]['comment'] = $commentdata;
-            
+
+            $qry3 = "SELECT tu.iUserId as resources, tu.vUserName FROM tms_summmery_view as tsv LEFT JOIN tms_users as tu ON tu.iUserId = tsv.resource where tsv.order_id = ".$value['orderId']. " AND  tsv.item_id = ".$value['item_number'];
+            $lngst = $this->_db->rawQuery($qry3);
+            $data[$key]['linguist'] = $lngst;
         }
         return $data;
     }

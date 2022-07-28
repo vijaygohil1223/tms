@@ -1647,6 +1647,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
+            console.log('data', data)
             //if($window.localStorage.projectBranch != ' '){
             if($scope.projBranchChange){
                 $scope.projectsAll = [];
@@ -1717,25 +1718,28 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     $scope.projectData[i].itemsTargetLang = newLangData;
                 }
                 //  ----linguist List----- / 
-                $scope.jobLinguist = [];
-                if($cookieStore.get('session_iUserId') != undefined){
-                    rest.path = 'jobsummeryGet/' + val.orderId;
-                    rest.get().success(function(data) {
-                        //$scope.jobLinguist = data;
-                        angular.forEach(data, function(val2, i2) {
-                            if(val2 && val2.resource){
-                                if(val.orderId == val2.order_id && val.item_number == val2.item_id){
-                                    $scope.jobLinguist.push(val2);
-                                }
-                            }
-                        });    
+                //$scope.jobLinguist = [];
+                // if($cookieStore.get('session_iUserId') != undefined){
+                //     rest.path = 'jobsummeryGet/' + val.orderId;
+                //     rest.get().success(function(data) {
+                //         //$scope.jobLinguist = data;
+                //         angular.forEach(data, function(val2, i2) {
+                //             if(val2 && val2.resource){
+                //                 if(val.orderId == val2.order_id && val.item_number == val2.item_id){
+                //                     $scope.jobLinguist.push(val2);
+                //                 }
+                //             }
+                //         });    
 
-                        $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
-                        val.jobLinguist = $scope.jobLinguist;
-                        $scope.jobLinguist = [];    
-                    });
+                //         $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
+                //         val.jobLinguist = $scope.jobLinguist;
+                //         $scope.jobLinguist = [];    
+                //     });
+                // }
+                val.jobLinguist = [];
+                if(val.linguist.length > 0){
+                    val.jobLinguist = UniqueArraybyId(val.linguist, 'resources');
                 }
-                //console.log('val.jobLinguist',val.jobLinguist)
 
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;
