@@ -4518,9 +4518,9 @@ app.directive('loading',   ['$http' ,function ($http)
                                 if(url.includes("#/discussion/")){
                                     elm.hide();
                                 }
-                                // if(url.includes("#/dashboard1")){
-                                //     elm.hide();
-                                // }
+                                if(url.includes("#/dashboard1")){
+                                    elm.hide();
+                                }
                             }else{
                                 elm.show();        
                             }
@@ -4534,7 +4534,22 @@ app.directive('loading',   ['$http' ,function ($http)
         };
 
     }]);
-
+app.directive('loadingWidget', function() {
+    return {
+        restrict: 'A',
+        scope: {
+            field: '=',
+            attributes: '=',
+            editMode: '='
+        },
+        link: function (scope, element, attrs) {
+            //console.log("elm: ", element[0]);
+            var sp = new Spinner().spin(element[0]);
+            sp.el.innerHTML='<div class="uil-ring-css dataloading"> <div> </div> </div>';
+            console.log('spiner', sp)
+        }
+    };
+});
 app.directive('allowDecimalNumbers', function () {  
     return {  
         restrict: 'A',  

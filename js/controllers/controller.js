@@ -985,7 +985,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $window.localStorage.jobstatusName = " ";
     $window.localStorage.countSt = " ";
     $window.localStorage.setItem("projectBranch", " ");
-    
+    $scope.showDataLoader = true;
     $scope.proejctsToDisplay = [];
 
     //Getting Jobs from getJobsFromTmsSummeryView
@@ -1644,7 +1644,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
 
     $scope.allProjectListing = function() {
-
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
             console.log('data', data)
@@ -1863,6 +1862,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 val.itemDuedate_new = val.itemDuedate ? val.itemDuedate : '';
                 
+                $scope.showDataLoader = false; 
             });
             //console.log("allproj", $scope.projectsAll);
 
@@ -1979,45 +1979,48 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             $scope.scoopAlljobsCount = $scope.dashboardJobList.length;
                 
             $timeout(function() {
-
                 // scoop Array //
-                
                 $scope.scoopAlljobsCount = $scope.dashboardJobList.length;
-                if($scope.scoopjobStatusFilter == 'all'){
-                    $scope.scoopjobsListAll = allscoopJobsData;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopAssigned'){
-                    $scope.scoopjobsListAll = scoopAssigned;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopProgress'){
-                    $scope.scoopjobsListAll = scoopProgress;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopLinguist'){
-                    $scope.scoopjobsListAll = scoopLinguist;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopQaReady'){
-                    $scope.scoopjobsListAll = scoopQaReady;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopTobedelivered'){
-                    $scope.scoopjobsListAll = scoopTobedelivered;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopDelivered'){
-                    $scope.scoopjobsListAll = scoopDelivered;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopApproved'){
-                    $scope.scoopjobsListAll = scoopApproved;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopInvoiced'){
-                    $scope.scoopjobsListAll = scoopInvoiced;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopPaid'){
-                    $scope.scoopjobsListAll = scoopPaid;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopWithoutInvoice'){
-                    $scope.scoopjobsListAll = scoopWithoutInvoice;
-                }
-                if($scope.scoopjobStatusFilter == 'scoopCancelled'){
-                    $scope.scoopjobsListAll = scoopCancelled;
+
+                switch ($scope.scoopjobStatusFilter) {
+                    case 'all':
+                        $scope.scoopjobsListAll = allscoopJobsData;
+                        break;
+                    case 'scoopAssigned':
+                        $scope.scoopjobsListAll = scoopAssigned;
+                        break;
+                    case 'scoopProgress':
+                        $scope.scoopjobsListAll = scoopProgress;
+                        break;
+                    case 'scoopLinguist':
+                        $scope.scoopjobsListAll = scoopLinguist;
+                        break;
+                    case 'scoopQaReady':
+                        $scope.scoopjobsListAll = scoopQaReady;
+                        break;
+                    case 'scoopTobedelivered':
+                        $scope.scoopjobsListAll = scoopTobedelivered;
+                        break;
+                    case 'scoopDelivered':
+                        $scope.scoopjobsListAll = scoopDelivered;
+                        break;
+                    case 'scoopApproved':
+                        $scope.scoopjobsListAll = scoopApproved;
+                        break;
+                    case 'scoopInvoiced':
+                        $scope.scoopjobsListAll = scoopInvoiced;
+                        break;
+                    case 'scoopPaid':
+                        $scope.scoopjobsListAll = scoopPaid;
+                        break;
+                    case 'scoopWithoutInvoice':
+                        $scope.scoopjobsListAll = scoopWithoutInvoice;
+                        break;
+                    case 'scoopCancelled':
+                        $scope.scoopjobsListAll = scoopCancelled;
+                        break;                        
+                    // default:
+                    //     break;
                 }
                 
                 console.log('scoop = jobsListAll',$scope.scoopjobsListAll);
@@ -2027,6 +2030,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     };
 
     $scope.scoopjobstatusRecord('scoop','');    
+    
     $scope.alljobsWidget = [];
     $scope.isoverviewJobs = false;
     $scope.jobstatusRecord = function(statusType,jobStatus) {

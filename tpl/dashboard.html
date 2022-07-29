@@ -403,6 +403,10 @@ td { font-size: 11px; } */
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
+                            <!-- <tr ng-if="projectsAll.length==0">
+                              <td colspan="11" loading-widget> 
+                              </td>
+                            </tr> -->
                             <tr ng-repeat="order in projectsDueToday">
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
@@ -543,6 +547,15 @@ td { font-size: 11px; } */
                               </td>
                             </tr>
                           </tbody>
+                          <div loading-widget ng-show="showDataLoader"> 
+                          </div>
+                          <!-- <div ng-if="showDataLoader"> 
+                            <div class="uil-ring-css dataloading">
+                              <div>
+                              </div>
+                            </div>
+                          </div> -->
+                          
                         </table>
                       </div>
                     </tab>
