@@ -4546,7 +4546,7 @@ app.directive('loadingWidget', function() {
             //console.log("elm: ", element[0]);
             var sp = new Spinner().spin(element[0]);
             sp.el.innerHTML='<div class="uil-ring-css dataloading"> <div> </div> </div>';
-            console.log('spiner', sp)
+            //console.log('spiner', sp)
         }
     };
 });

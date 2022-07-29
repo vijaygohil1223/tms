@@ -986,6 +986,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $window.localStorage.countSt = " ";
     $window.localStorage.setItem("projectBranch", " ");
     $scope.showDataLoader = true;
+    $scope.showDataLoaderJob = true;
     $scope.proejctsToDisplay = [];
 
     //Getting Jobs from getJobsFromTmsSummeryView
@@ -2231,6 +2232,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 if($scope.vResourcePosition == 4){
                     $scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
                 }
+                $scope.showDataLoaderJob = false;
                 /* End */
                 
 

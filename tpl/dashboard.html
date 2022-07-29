@@ -547,15 +547,6 @@ td { font-size: 11px; } */
                               </td>
                             </tr>
                           </tbody>
-                          <div loading-widget ng-show="showDataLoader"> 
-                          </div>
-                          <!-- <div ng-if="showDataLoader"> 
-                            <div class="uil-ring-css dataloading">
-                              <div>
-                              </div>
-                            </div>
-                          </div> -->
-                          
                         </table>
                       </div>
                     </tab>
@@ -1723,9 +1714,10 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    
+                    <!-- DataLoader -->
+                    <div loading-widget ng-show="showDataLoader"> 
+                    </div>
                   </tabset>
-                  
                 </div>
               </div>
             </div>
@@ -2047,7 +2039,10 @@ td { font-size: 11px; } */
                         </tr>
                       </tbody>
                     </table>
+                    <!-- DataLoader -->
                   </div>
+                </div>
+                <div loading-widget ng-show="showDataLoaderJob"> 
                 </div>
                 <!-- Job List For Status New END -->
                   </div>
