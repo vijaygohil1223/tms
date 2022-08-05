@@ -178,6 +178,7 @@ class jobs_detail
 
             $info['updated_date'] = date('Y-m-d H:i:s');
 
+            if(isset($info['contact_person']) && $info['contact_person'] == '')
             unset($info['contact_person']);
 
             $id = $this->_db->insert('tms_summmery_view', $info);

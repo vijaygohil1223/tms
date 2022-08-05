@@ -988,7 +988,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.showDataLoader = true;
     $scope.showDataLoaderJob = true;
     $scope.proejctsToDisplay = [];
-
+    
     //Getting Jobs from getJobsFromTmsSummeryView
     $scope.getJobList = function() {
         rest.path = 'getJobsFromTmsSummeryView';
@@ -1593,7 +1593,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             });
 
         }
-
     }
     $scope.langsListAll = [];
     if($cookieStore.get('session_iUserId') != undefined){
@@ -1643,11 +1642,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.projectCancelledCount = 0;
     $scope.projectOverdueCount = 0;
 
-
     $scope.allProjectListing = function() {
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function(data) {
             console.log('data', data)
+        
             //if($window.localStorage.projectBranch != ' '){
             if($scope.projBranchChange){
                 $scope.projectsAll = [];
@@ -1741,6 +1740,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     val.jobLinguist = UniqueArraybyId(val.linguist, 'resources');
                 }
 
+                // Comment read unRead
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;
                 var comment_id = 0;
@@ -1751,10 +1751,11 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     var comment_id = $scope.projectData[i].comment_id[0].comment_id;
                 }
                 //var comment_id = $scope.projectData[i].comment_id[0].comment_id;
-                if (comment_id > 0 && comment_id > 0) {
+                //if (comment_id > 0 && is_comment > 0) {
+                if (is_comment > 0 ) {
                     cmtcolor = '#d30c39';
                 }
-                if (is_comment > 0) {
+                if (is_comment == 0) {
                     cmtcolor = '#67bb0a';
                 }
                 val.comment = cmtcolor;
@@ -1863,10 +1864,10 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 }
                 val.itemDuedate_new = val.itemDuedate ? val.itemDuedate : '';
                 
-                $scope.showDataLoader = false; 
+                $scope.showDataLoader = false;
             });
             //console.log("allproj", $scope.projectsAll);
-
+            
         });
     };
     $scope.allProjectListing();
@@ -13853,14 +13854,15 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
         kendo.drawing.drawDOM($("#exportable")).then(function(group) {
             group.options.set("font", "8px DejaVu Sans");
-            /*group.options.set("pdf", {
-                margin: {
-                    left   : "40mm",
-                    top    : "0mm",
-                    right  : "40mm",
-                    bottom : "0mm"
-                }
-            });*/
+                // group.options.set("pdf", {
+                //     margin: {
+                //         left   : "40mm",
+                //         top    : "0mm",
+                //         right  : "40mm",
+                //         bottom : "0mm"
+                //     },
+                //     paperSize: "A4",
+                // });
             kendo.drawing.pdf.saveAs(group, number + ".pdf");
         });
         $timeout(function() {
@@ -16486,6 +16488,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                             rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $window.localStorage.orderID;
                                             rest.get().success(function(data) {
                                                 $scope.iData = data;
+                                                console.log('$scope.iData- item-jobs-', $scope.iData)
                                                 var contact_person = [];
                                                 var job_id = [];
                                                 var order_id = [];
@@ -16499,7 +16502,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                                 $scope.master_job_id = $scope.itemdata.job_id;
 
                                                 if ($scope.iData != null) {
-                                                    $scope.contact_person = $scope.iData.contact_person;
+                                                    //$scope.contact_person = $scope.iData.contact_person;
+                                                    $scope.contact_person = $scope.iData.manager;
                                                     $scope.due_date = $scope.iData.due_date;
                                                     $scope.item_status = $scope.iData.item_status;
                                                 } else {

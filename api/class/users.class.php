@@ -1070,14 +1070,19 @@ array(
         
         $html = str_replace($search_array, $replace_array, $emailTemplate['template_content']);
 
-        // $this->_mailer = new PHPMailer();
+        $this->_mailer = new PHPMailer();
         //        $this->_mailer = 'ISO-8859-1';
         $this->_mailer->IsSMTP();
-        $this->_mailer->Host = "ssl://smtp.gmail.com";
+        
         $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Port = "465";
-        $this->_mailer->Username = "info@worldee.co.uk";
-        $this->_mailer->Password = "1nfoW0rld33P@$$w0rd";
+        $this->_mailer->SMTPSecure = 'tls';
+        $this->_mailer->Host = "smtp.gmail.com";
+        $this->_mailer->Port = "587";
+
+        // $this->_mailer->Username = "info@worldee.co.uk";
+        // $this->_mailer->Password = "1nfoW0rld33P@$$w0rd";
+        $this->_mailer->Username = SMTP_EMAIL_USER;
+        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
 
         $this->_mailer->From = "Kanhasoft.com";
         $this->_mailer->FromName = "TMS Admin";
