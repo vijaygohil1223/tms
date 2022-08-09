@@ -23898,7 +23898,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.get().success(function(data) {
                 //$scope.InvoiceResult = data;
                 $scope.InvoiceResult = data.filter(function (el) {
-                    return el.itemStatus == 'Approved' || el.itemStatus == 'Completed by linguist';
+                    return el.itemStatus == 'Approved';
                 });
                 console.log('$scope.InvoiceResult', $scope.InvoiceResult)
                 $scope.searchOrderNumber = search;
@@ -23996,7 +23996,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     }
     $scope.getInvoicePeriod();
 
-
+    $scope.scoopId = [];
     $scope.getAllInvoice = function() {
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function(invoices) {

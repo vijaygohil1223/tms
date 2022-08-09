@@ -263,9 +263,21 @@ class Freelance_invoice {
     public function invoiceStatusApproved($data, $id) {
         $data['modified_date'] = date('Y-m-d');
     	$this->_db->where('invoice_id', $id);
-    	$idd = $this->_db->update('tms_invoice', $data);
-    	
-        if($idd) {
+    	$insId = $this->_db->update('tms_invoice', $data);
+    	if($insId && isset($data['is_approved'])){
+            $this->_db->where('invoice_id', $id);
+            $invoiceRecords = $this->_db->get('tms_invoice');
+            $status = $data['is_approved'] == 1 ? 'Invoice Accepted' : 'Approved';
+            if($invoiceRecords){    
+                foreach (json_decode($invoiceRecords[0]['job_id']) as $field => $val) {
+                    $jbData['updated_date'] = date('Y-m-d H:i:s');
+                    $jbData['item_status']  = $status;
+                    $this->_db->where('job_summmeryId', $val->id);
+                    $jbStsId = $this->_db->update('tms_summmery_view', $jbData);
+                }
+            }    
+        }
+        if($insId) {
     		$request['status'] = 200;
     		$request['msg'] = "Successfully updated";
     	} else {

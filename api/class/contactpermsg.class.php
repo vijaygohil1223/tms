@@ -28,7 +28,6 @@ class contactPerMsg {
     }
 
     public function sendcontactPerMsg($data){
-
         if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
@@ -636,7 +635,7 @@ class contactPerMsg {
         if(isset($data['file'])) {
             $encoded_content = $this->uploadimage($data['file']);
         } else {
-            $encoded_content = " ";
+            $encoded_content = "";
         }
 
         if (isset($data['data']['cc'])) {
@@ -717,7 +716,7 @@ class contactPerMsg {
                     }    
                 }    
             }
-            if(isset($encoded_content)) {
+            if(isset($encoded_content) && $encoded_content!='') {
                 $img = explode("/",$encoded_content);
                 $image = end($img);
                 if($img[0] != " ") {

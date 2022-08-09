@@ -1061,7 +1061,7 @@ array(
         return $return;
     }
     public function mailTest($data) {
-        $this->_db->where('template_id',2);
+        $this->_db->where('template_id',8);
         $emailTemplate = $this->_db->getOne('tms_email_templates');
         //echo '<pre>'; print_r($emailTemplate); echo '</pre>';exit;
         
@@ -1071,13 +1071,13 @@ array(
         $html = str_replace($search_array, $replace_array, $emailTemplate['template_content']);
 
         $this->_mailer = new PHPMailer();
-        //        $this->_mailer = 'ISO-8859-1';
+        //$this->_mailer = 'ISO-8859-1';
         $this->_mailer->IsSMTP();
         
         $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->SMTPSecure = 'tls';
-        $this->_mailer->Host = "smtp.gmail.com";
-        $this->_mailer->Port = "587";
+        //$this->_mailer->SMTPSecure = 'tls';
+        $this->_mailer->Host = "ssl://smtp.gmail.com";
+        $this->_mailer->Port = "465";
 
         // $this->_mailer->Username = "info@worldee.co.uk";
         // $this->_mailer->Password = "1nfoW0rld33P@$$w0rd";
@@ -1086,10 +1086,11 @@ array(
 
         $this->_mailer->From = "Kanhasoft.com";
         $this->_mailer->FromName = "TMS Admin";
-        $this->_mailer->Subject = $emailTemplate['template_subject'];
-        $this->_mailer->Body = $html;
+        //$this->_mailer->Subject = $emailTemplate['template_subject'];
+        $this->_mailer->Subject = 'Tesing Email SMTP';
+        $this->_mailer->Body = 'Just testing Email';
         $this->_mailer->WordWrap = 50;
-        $this->_mailer->AddAddress('vijayg.kanhasoft@gmail.com');
+        $this->_mailer->AddAddress('anil.kanhasoft@gmail.com');
         $this->_mailer->IsHTML(true);
         if ($this->_mailer->Send()) { //output success or failure messages
             $return['status'] = 200;
