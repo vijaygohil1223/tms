@@ -2039,7 +2039,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         if(jobStatus){
             $scope.jobstatusFilter = jobStatus;
             $scope.isoverviewJobs = true;
-            console.log('jobs detail');
+            $scope.jobsListAll = [];
+            $scope.showDataLoaderJob = true;
         }else{
             //$scope.jobstatusFilter = 'all';
             $scope.jobstatusFilter = '';
@@ -2061,16 +2062,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var jobDueToday = [];
             var jobDueTomorrow = [];
             var jobOverDue = [];
-            
-            // ---- new added status ----- //
-            // var jobTobeAssigned = [];
-            // var jobCompletedbyLinguist = [];
-            // var jobQaReady = [];
-            // var jobApproved = [];
-            // var jobInvoiced = [];
-            // var jobPaid = [];
-            // var jobWithoutInvoiced = [];
-            // var jobCancelled = [];
 
             // -- Job count -- //
             var jobRequestesCount = 0;
@@ -2078,16 +2069,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             var jobDueTodayCount = 0;
             var jobDueTomorrowCount = 0;
             var jobOverDueCount = 0;
-            // ----  New status job count  ---- //
-            // var jobTobeAssignedCount = 0;
-            // var jobLinguistCount = 0;
             var jobTobeDileveredCount = 0;
-            // var jobDileveredCount = 0;
-            // var jobApprovedCount = 0;
-            // var jobInvoicedCount = 0;
-            // var jobPaidCount = 0;
-            // var jobWithoutInvoicedCount = 0;
-            // var jobCancelledCount = 0;
+
             angular.forEach($scope.dashboardJobList, function(val, i) {
                 val.item_id = pad(val.item_id, 3);
                 if (val.ItemLanguage) {
@@ -2121,29 +2104,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 } else if (val.item_status == 'Ready to be Delivered') {
                     readyToBeDelivered.push(val);
                     jobTobeDileveredCount++;
-                }
-                // else if (val.item_status == 'In preparation') {
-                //     jobTobeAssigned.push(val);
-                //     jobTobeAssignedCount++;
-                // }
-                // else if (val.item_status == 'Delivered') {
-                //     delivered.push(val);
-                //     jobDileveredCount++;
-                // }
-                // else if (val.item_status == 'Approved') {
-                //     jobApproved.push(val);
-                //     jobApprovedCount++;
-                // } else if (val.item_status == 'Invoice Accepted') {
-                //     jobInvoiced.push(val);
-                //     jobInvoicedCount++;
-                // } else if (val.item_status == 'Paid') {
-                //     jobPaid.push(val);
-                //     jobPaidCount++;
-                // } else if (val.item_status == 'Without invoice') {
-                //     jobWithoutInvoiced.push(val);
-                //     jobWithoutInvoicedCount++;
-                // }
-                    else if (val.item_status == 'Completed') {
+                } else if (val.item_status == 'Completed') {
                     completed.push(val);
                 }
 
@@ -2175,15 +2136,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                 $scope.jobDueTodayCount = jobDueTodayCount;
                 $scope.jobDueTomorrowCount = jobDueTomorrowCount;
                 $scope.jobOverDueCount = jobOverDueCount;
-
-                // $scope.jobTobeAssignedCount = jobTobeAssignedCount;
-                // $scope.jobTobeDileveredCount = jobTobeDileveredCount;
-                // $scope.jobDileveredCount = jobDileveredCount;
-                // $scope.jobApprovedCount = jobApprovedCount;
-                // $scope.jobInvoicedCount = jobInvoicedCount;
-                // $scope.jobPaidCount = jobPaidCount;
-                // $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
-                //$scope.jobsListAll = allJobsData;
                 
                 /* All jobs list for widget */ 
                 $scope.alljobsWidget = allJobsData;

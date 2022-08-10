@@ -1099,3 +1099,6 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .invoiceInputborder{
   border: none;
 }
+.spinner > div > div{
+  background: #4e2fc4 !important;
+} 
