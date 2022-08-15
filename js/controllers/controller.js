@@ -19121,10 +19121,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
                             if (dateSeprt != dateSeprt2) {
-                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                if ($('li[new-id=' + dataId + ']').length === 0)
+                                    $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
                             }
                         } else {
-                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                            if ($('li[new-id=' + dataId + ']').length === 0)
+                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                            //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
                         }
 
                         
@@ -19363,14 +19367,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                 jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                                 $('#comment-list').find(' > li[data-id^=c]').hide();
                                 // to remove same li date div
-                                var seen = {};
-                                $('.seperatordate').each(function() {
-                                    var txt = $(this).text();
-                                    if (seen[txt])
-                                        $(this).remove();
-                                    else
-                                        seen[txt] = true;
-                                });
+                                // var seen = {};
+                                // $('.seperatordate').each(function() {
+                                //     var txt = $(this).text();
+                                //     if (seen[txt])
+                                //         $(this).remove();
+                                //     else
+                                //         seen[txt] = true;
+                                // });
                                 // end script
                                 usercommentsArr=[];
                             }
@@ -24872,8 +24876,8 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
                                 }
                             } else {
-                                //if($('#comment-list').find(' > li[new-id=' + dataId + ']').length ==0)
-                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                                if ($('li[new-id=' + dataId + ']').length === 0)
+                                    $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
                             }
 
                             
@@ -25100,14 +25104,14 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                         $('#comment-list').find(' > li[data-id^=c]').hide();
                                         usercommentsArr=[];
                                         // to remove same date li div
-                                        var seen = {};
-                                        $('.seperatordate').each(function() {
-                                            var txt = $(this).text();
-                                            if (seen[txt])
-                                                $(this).remove();
-                                            else
-                                                seen[txt] = true;
-                                        });
+                                        // var seen = {};
+                                        // $('.seperatordate').each(function() {
+                                        //     var txt = $(this).text();
+                                        //     if (seen[txt])
+                                        //         $(this).remove();
+                                        //     else
+                                        //         seen[txt] = true;
+                                        // });
                                         // end script
                                     }
                                 });
@@ -27747,8 +27751,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                         let totalAttachment = 0;
                         totalAttachment = $('#attachment-list').find('li .attachment').length;
                         //$('.att_count').text(totalAttachment);
-
-
+                        
                         if (i > 0) {
                             var ndt1 = new Date(data[i - 1].created);
                             // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
@@ -27758,12 +27761,13 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                             var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
                             if (dateSeprt != dateSeprt2) {
-                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                if ($('li[new-id=' + dataId + ']').length === 0)
+                                    $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
                             }
                         } else {
-                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                            if ($('li[new-id=' + dataId + ']').length === 0)
+                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
                         }
-
                         
                         var msgRead_id = val.read_id;
                         
@@ -27936,7 +27940,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
         jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
     }, 3000);
-
     $timeout(function() {
 
         var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
@@ -27948,10 +27951,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             enableHashtags: true,
             textareaPlaceholderText: 'Type message here...',
             getComments: function(success, error) {
-                
                 $timeout(function() {
                     if($routeParams.id){
-                        setInterval(() => {
+                        $scope.stopTime = setInterval(() => {
                             rest.path = "discussionOrder/" + $routeParams.id;
                             rest.get().success(function(data) {
                                 var NewcommentsArray = data;
@@ -27987,7 +27989,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     });    
                                 }
                                 //if( (NewcommentsArray.length > commentsArray.length && ) )
-
                                 
                                 var arrayNotload = $('#comment-list').find(' > li').length;
                                 if(newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)){
@@ -28002,19 +28003,21 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     //console.log('we are working');
                                     $scope.commentsArrayAll();  
                                     success(NewcommentsArray);  
+
                                     $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                    if($('#comment-list').find(' > li').length)
                                     jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                                     $('#comment-list').find(' > li[data-id^=c]').hide();
                                     usercommentsArr=[];
                                     // to remove same li date div
-                                    var seen = {};
-                                    $('.seperatordate').each(function() {
-                                        var txt = $(this).text();
-                                        if (seen[txt])
-                                            $(this).remove();
-                                        else
-                                            seen[txt] = true;
-                                    });
+                                    // var seen = {};
+                                    // $('.seperatordate').each(function() {
+                                    //     var txt = $(this).text();
+                                    //     if (seen[txt])
+                                    //         $(this).remove();
+                                    //     else
+                                    //         seen[txt] = true;
+                                    // });
                                     // end script
                                 }
                             });
@@ -28183,7 +28186,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
-
+        clearInterval($scope.stopTime);
     };
 
 }).controller('workInstructionsController', function($scope, $log, $location, $route, rest, $routeParams, $window) {
