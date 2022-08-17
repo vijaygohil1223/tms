@@ -382,7 +382,7 @@ class contactPerMsg {
         return $info;
     }
 
-    public function sendgeneralMsg($data){
+    public function sendgeneralMsg__($data){
         if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
@@ -488,7 +488,7 @@ class contactPerMsg {
     }
 
     //public function sendgeneralMsg($data){
-    public function sendgeneralMsg_gmailsmtp($data){
+    public function sendgeneralMsg($data){
             if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
@@ -532,8 +532,7 @@ class contactPerMsg {
         $body = "<p>" . $message . "</p>";
         $body .= "<p>" . $emailsignData . "</p>";
         $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
-        //$subject = "Information";
-
+        
         $to = $data['data']['vEmailAddress'];
         
         $this->_mailer = new PHPMailer();
@@ -541,12 +540,12 @@ class contactPerMsg {
         $this->_mailer->IsSMTP();
         $this->_mailer->Host = "smtp.gmail.com";
         $this->_mailer->SMTPAuth = "true";
-        $this->_mailer->Username = 'tms.kanhasoft@gmail.com';
-        $this->_mailer->Password = 'yizzlgrzyojjghmy';
+        $this->_mailer->Username = SMTP_EMAIL_USER;
+        $this->_mailer->Password = SMTP_EMAIL_PASSWORD;
         $this->_mailer->SMTPSecure = "tls";  
         $this->_mailer->Port = "25";
 
-        $this->_mailer->From = "tms.kanhasoft@gmail.com";
+        //$this->_mailer->From = "anil.kanhasoft@gmail.com";
         $this->_mailer->FromName = "TMS";
 
         $this->_mailer->Subject = $subject;
@@ -563,7 +562,6 @@ class contactPerMsg {
                 $this->_mailer->AddCC(trim($cCAddress));
             }
         }
-
         if ($bcc != "") {
             $bcCAddresses = explode(',',$bcc);
             foreach ($bcCAddresses as $bcCAddress) {
@@ -572,7 +570,7 @@ class contactPerMsg {
         }
 
         if ($encoded_content != '') {
-            //$this->_mailer->AddAttachment($encoded_content);
+            $this->_mailer->AddAttachment($encoded_content);
         }
         if ($this->_mailer->Send()) { //output success or failure messages
             $result['status'] = 200;

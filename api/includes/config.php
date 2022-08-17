@@ -9,11 +9,10 @@ define('DB_USERNAME', 'root'); // please enter mysql user name
 define('DB_PASSWORD', 'kWb24pEBdUj4uKOA'); // please enter mysql user password
 define('DB_DATABASE', 'kanhawhp_tms'); // please enter your database name
 // smtp mail
-define('SMTP_EMAIL_USER', 'chrisgilesitworks@gmail.com');
-define('SMTP_EMAIL_PASSWORD', 'kanha@tmschris');
-//tms.kanhasoft@gmail.com = tms@anil567kanha
-//define('EMAIL_API_KEY', '3efaa57c4b8abc7e48828126b802720f');
-//define('EMAIL_SECRETE_KEY', '7a593f51ca6285bc96d548223414144b');
+//define('SMTP_EMAIL_USER', 'chrisgilesitworks@gmail.com');
+//define('SMTP_EMAIL_PASSWORD', 'kanha@tmschris');
+define('SMTP_EMAIL_USER', 'tms.kanhasoft@gmail.com');
+define('SMTP_EMAIL_PASSWORD', 'yizzlgrzyojjghmy'); // tms@anil567kanha
 // mailJET
 define('EMAIL_API_KEY', '4d5ded6fff23e16a88fc58f0f6d9667c');
 define('EMAIL_SECRETE_KEY', 'b1168bedb467db13e3973f27567b7259');
