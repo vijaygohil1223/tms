@@ -15791,9 +15791,6 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
     $scope.EditedBy = $window.localStorage.getItem('sessionProjectEditedBy');
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
     $scope.itemList = [];
-    $timeout(function() {
-        $scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
-    }, 200);
 
     $scope.jobDiscussion = function() {
         //$location.path('discussion/' + $window.localStorage.projectJobChainOrderId);
@@ -15802,7 +15799,9 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
     $timeout(function() {
         $scope.projectOrderName = $window.localStorage.getItem('projectOrderName');
-    }, 100);
+        $scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
+        console.log('$scope.indirectCustomerName', $scope.indirectCustomerName)
+    }, 500);
 
     if ($window.localStorage.clientproCustomerName) {
         var clinet_id;
@@ -24873,7 +24872,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
 
                                 if (dateSeprt != dateSeprt2) {
                                     if($('#comment-list').find(' > li[new-id=' + dataId + ']').length ==0)
-                                    $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
                                 }
                             } else {
                                 if ($('li[new-id=' + dataId + ']').length === 0)

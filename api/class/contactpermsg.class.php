@@ -382,7 +382,8 @@ class contactPerMsg {
         return $info;
     }
 
-    public function sendgeneralMsg__($data){
+    public function sendgeneralMsg($data){
+
         if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
@@ -433,17 +434,11 @@ class contactPerMsg {
         // $this->_mailer->FromName = "TMS";
 
         if ($cc != "") {
-            $cCAddresses = explode(',',$cc);
-            foreach ($cCAddresses as $cCAddress) {
-                $this->_mailer->AddCC(trim($cCAddress));
-            }
+             $cc = [[ 'email' => $cc ]];
         }
 
         if ($bcc != "") {
-            $bcCAddresses = explode(',',$bcc);
-            foreach ($bcCAddresses as $bcCAddress) {
-                $this->_mailer->AddBCC(trim($bcCAddress));
-            }
+            $bcc = [[ 'email' => $bcc ]];
         }
 
         if ($encoded_content != '') {
@@ -488,7 +483,7 @@ class contactPerMsg {
     }
 
     //public function sendgeneralMsg($data){
-    public function sendgeneralMsg($data){
+    public function sendgeneralMsg_gmailSMTP($data){
             if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
