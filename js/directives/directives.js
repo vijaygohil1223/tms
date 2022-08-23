@@ -4544,10 +4544,9 @@ app.directive('loadingWidget', function() {
             editMode: '='
         },
         link: function (scope, element, attrs) {
-            console.log('scope', scope)
             //console.log("elm: ", element[0]);
             var sp = new Spinner().spin(element[0]);
-            //sp.el.innerHTML='<div class="uil-ring-css dataloading"> <div style="opacity:1 !importaant;"> </div> </div>';
+            sp.el.innerHTML='<div class="uil-ring-css dataloading"> <div style="opacity:1 !importaant;"> </div> </div>';
             //console.log('spiner', sp)
         }
     };

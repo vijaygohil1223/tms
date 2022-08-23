@@ -2,7 +2,6 @@
 //date format for db
 //moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
-
 //Error Callbacj for Api.
 var errorCallback = function(data) {
     notification(data['msg'], 'error');
