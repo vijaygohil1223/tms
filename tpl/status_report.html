@@ -567,9 +567,10 @@
                                  <th>%Share</th>
                               </thead>
                               <tbody>
-                                 <tr ng-repeat="s in statusInfo | filter : orderReport" class="itemData">
-                                    <td id="masterQDate{{$index}}">{{s.QuentityDate}}</td>
-                                    <td id="masterQAmount{{$index}}">{{s.TotalAmount | customNumber}}</td>
+                                 <!-- <tr ng-repeat="s in statusInfo | filter : orderReport" class="itemData"> -->
+                                 <tr ng-repeat="s in statusInfo" class="itemData">
+                                       <td id="masterQDate{{$index}}">{{s.QuentityDate}}</td>
+                                    <td id="masterQAmount{{$index}}">{{s.totalAmount | customNumber}}</td>
                                  </tr>
                               </tbody>
                            </table>
@@ -596,8 +597,10 @@
                                     </thead>
                                     <tbody>
                                        <!-- (key, value) in players | groupBy: 'team' -->
-                                       <tr ng-repeat="result in statusProjectType | filter : orderReport"
-                                          class="orderRClass">
+                                       <!-- <tr ng-repeat="result in statusProjectType | filter : orderReport"
+                                          class="orderRClass"> -->
+                                       <tr ng-repeat="result in statusProjectType"
+                                          class="orderRClass">   
                                           <td id="projectTypeName{{$index}}" ng-bind="result.projectTypeName"></td>
                                           <td id="projectTypeAmount{{$index}}" ng-bind="result.TotalAmount"></td>
                                           <td id="projectTypeShare{{$index}}"></td>
@@ -645,8 +648,10 @@
                                        <th>%Share</th>
                                     </thead>
                                     <tbody>
-                                       <tr ng-repeat="cust in statusCustomerType | filter : orderReport"
-                                          class="orderRClass">
+                                       <!-- <tr ng-repeat="cust in statusCustomerType | filter : orderReport"
+                                          class="orderRClass"> -->
+                                       <tr ng-repeat="cust in statusCustomerType"
+                                          class="orderRClass">   
                                           <td id="CustomersName{{$index}}" ng-bind="cust.contactName"></td>
                                           <td id="CustomersAmount{{$index}}" ng-bind="cust.TotalAmount"></td>
                                           <td id="customersShare{{$index}}"></td>

@@ -6504,19 +6504,49 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             rest.post($scope.orderReport).success(function(data) {    
                     console.log('data', data)
                     $scope.statusResult = data['data'];
-                    angular.forEach($scope.statusResult, function(val, i) {
-                        console.log('val', val.sourc)
-                        
-                    })
-                    console.log('$scope.statusResult', $scope.statusResult)
+                    
                     $scope.Dateobject = Dateobject;
-                    $scope.statusInfo = data['info'];
+                    //$scope.statusInfo = data['info'];
                     console.log('$scope.statusInfo', $scope.statusInfo)
                     $scope.statusProjectType = data['Typeinfo'];
                     $scope.statusCustomerType = data['customerType'];
                     $scope.totalItemAmout = 0;
-                    var result = [];
+                    
+                    
+                    // function groupByObj(collection, property) {
+                    //     var i = 0, val, index,
+                    //         values = [], result = [];
+                    //     for (; i < collection.length; i++) {
+                    //         val = collection[i][property];
+                    //         index = values.indexOf(val);
+                    //         if (index > -1){
+                    //             console.log(collection[i]['totalAmount'])    
+                    //             result.push(collection[i]);
+                    //         }
+                    //         else {
+                    //             values.push(val);
+                    //             result.push([collection[i]]);
+                    //         }
+                    //     }
+                    //     return result;
+                    // }
 
+                    let newStatusResult = $scope.statusResult;
+                    var newResult = [];
+                    newStatusResult.reduce(function(res, dvalue) {
+                        if (!res[dvalue.QuentityDate]) {
+                            res[dvalue.QuentityDate] = { item_number: dvalue.item_number, QuentityDate: dvalue.QuentityDate, totalAmount: 0 };
+                            //res[dvalue.QuentityDate] = newVal.dvalue;
+                            newResult.push(res[dvalue.QuentityDate])
+                        }
+                        res[dvalue.QuentityDate].totalAmount += dvalue.totalAmount;
+                        return res;
+                    }, {});
+
+                    //let statusInfo = groupByObj($scope.statusResult, "QuentityDate");
+                    $scope.statusInfo = newResult;
+             
+                    //set
                     //Month Chart start
                     angular.forEach($scope.Dateobject, function(val, i) {
                         angular.forEach($scope.statusInfo, function(value, j) {
@@ -6527,13 +6557,12 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                                     obj.push(QuentityDate);
                                     if (value.QuentityDate == QuentityDate) {
                                         if (val.id == value.QuentityDate) {
-                                            $scope.totalItemAmout += value.TotalAmount;
-                                            console.log('$scope.totalItemAmout', $scope.totalItemAmout)
+                                            $scope.totalItemAmout += value.totalAmount;
+                                            //$scope.dtItemAmout += value.totalAmount;
                                             var prn = $scope.totalItemAmout * 12 / 100;
                                             $scope.totalItemAvg = prn;
-                                            angular.element('#itemAmount' + i).text(value.TotalAmount);
-                                        } else {
-
+                                            angular.element('#itemAmount' + i).text(value.totalAmount);
+                                            //angular.element('#itemAmount' + i).text(value.TotalAmount);
                                         }
                                     }
                                 }
