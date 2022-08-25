@@ -6493,6 +6493,7 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
             }
             if ($scope.orderReport.itemDuedate) {
                 $scope.orderReport.itemDuedateStart = originalDateFormatNew($scope.orderReport.itemDuedate);
+                console.log('$scope.orderReport.itemDuedateStart', $scope.orderReport.itemDuedateStart)
             }
             if ($scope.orderReport.endItemDuedate) {
                 $scope.orderReport.itemDuedateEnd = originalDateFormatNew($scope.orderReport.endItemDuedate);
@@ -6507,45 +6508,55 @@ app.controller('loginController', function($scope, $log, rest, $window, $locatio
                     
                     $scope.Dateobject = Dateobject;
                     //$scope.statusInfo = data['info'];
-                    console.log('$scope.statusInfo', $scope.statusInfo)
-                    $scope.statusProjectType = data['Typeinfo'];
-                    $scope.statusCustomerType = data['customerType'];
+                    //$scope.statusProjectType = data['Typeinfo'];
+                    //$scope.statusCustomerType = data['customerType'];
                     $scope.totalItemAmout = 0;
-                    
-                    
-                    // function groupByObj(collection, property) {
-                    //     var i = 0, val, index,
-                    //         values = [], result = [];
-                    //     for (; i < collection.length; i++) {
-                    //         val = collection[i][property];
-                    //         index = values.indexOf(val);
-                    //         if (index > -1){
-                    //             console.log(collection[i]['totalAmount'])    
-                    //             result.push(collection[i]);
-                    //         }
-                    //         else {
-                    //             values.push(val);
-                    //             result.push([collection[i]]);
-                    //         }
-                    //     }
-                    //     return result;
-                    // }
 
                     let newStatusResult = $scope.statusResult;
                     var newResult = [];
-                    newStatusResult.reduce(function(res, dvalue) {
-                        if (!res[dvalue.QuentityDate]) {
-                            res[dvalue.QuentityDate] = { item_number: dvalue.item_number, QuentityDate: dvalue.QuentityDate, totalAmount: 0 };
-                            //res[dvalue.QuentityDate] = newVal.dvalue;
-                            newResult.push(res[dvalue.QuentityDate])
-                        }
-                        res[dvalue.QuentityDate].totalAmount += dvalue.totalAmount;
-                        return res;
-                    }, {});
-
-                    //let statusInfo = groupByObj($scope.statusResult, "QuentityDate");
+                    function groupByData(dataArray,property){
+                        return dataArray.reduce(function(res, dvalue) {
+                            if (!res[dvalue[property]]) {
+                                res[dvalue[property]] = { item_number: dvalue.item_number, projectType:dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0 };
+                                newResult.push(res[dvalue[property]])
+                            }
+                            res[dvalue[property]].totalAmount += dvalue.totalAmount;
+                            return res;
+                        }, []);
+                    }
+                    let statusInfo = groupByData(newStatusResult, 'QuentityDate');
                     $scope.statusInfo = newResult;
-             
+                    
+                    // Project type
+                    var resultProjectType = [];
+                    function groupByDataProjType(dataArray,property){
+                        return dataArray.reduce(function(res, dvalue) {
+                            if (!res[dvalue[property]]) {
+                                res[dvalue[property]] = { item_number: dvalue.item_number, projectType:dvalue.projectType, projectTypeName:dvalue.projectTypeName, contactName:dvalue.contactName, QuentityDate: dvalue.QuentityDate, TotalAmount: 0 };
+                                resultProjectType.push(res[dvalue[property]])
+                            }
+                            res[dvalue[property]].TotalAmount += dvalue.totalAmount;
+                            return res;
+                        }, []);
+                    }
+                    let statusProjectType = groupByDataProjType(newStatusResult, 'projectType');
+                    $scope.statusProjectType = resultProjectType;
+                    
+                    // customer type
+                    var resultCustomerType = [];
+                    function groupByDataCustomer(dataArray,property){
+                        return dataArray.reduce(function(res, dvalue) {
+                            if (!res[dvalue[property]]) {
+                                res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, contactName: dvalue.contactName, QuentityDate: dvalue.QuentityDate, TotalAmount: 0 };
+                                resultCustomerType.push(res[dvalue[property]])
+                            }
+                            res[dvalue[property]].TotalAmount += dvalue.totalAmount;
+                            return res;
+                        }, []);
+                    }
+                    let statusCustomerType = groupByDataCustomer(newStatusResult, 'iClientId');
+                    $scope.statusCustomerType = resultCustomerType;
+
                     //set
                     //Month Chart start
                     angular.forEach($scope.Dateobject, function(val, i) {
