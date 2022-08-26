@@ -5099,3 +5099,16 @@ app.directive('select2Projectbranch', function($http, rest, $timeout) {
         }
     }
 });
+app.directive('ngSidebarHideshow', function () {
+    return {
+        restrict: 'EA', //Default in 1.3+
+        template: '<a ng-click="hideshowSidebar()" class="btn no-shadow navbar-btn addactive"><i class="fa fa-dedent fa-fw text"></i> <i class="fa fa-indent fa-fw text-active"></i> </a>',
+        controller: function ($scope) {
+            $scope.hideshowSidebar = function () {
+                $(".page_content_wrapper").toggleClass("viewfullContent");
+                $(".addactive").toggleClass("active");
+            };
+        }
+
+    };
+});

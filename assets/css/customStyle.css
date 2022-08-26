@@ -898,6 +898,12 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 @media only screen and (min-width: 1800px) {
   .boxgtr{ margin: 15px 130px;}
 }
+@media (min-width: 768px){
+  .app-aside, .navbar-header {
+      width: 220px !important;
+  }
+}  
+
 .projectjobdv2{
     display: flex;
     padding: 10px 9px 1px 13px;
@@ -1098,6 +1104,13 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 }
 .invoiceInputborder{
   border: none;
+}
+.menuIcon{
+  position: relative;
+  float: right;
+}
+.addactive{
+  padding-right: 0px;
 }
 /* .spinner > div > div{
   background: #4e2fc4 !important;

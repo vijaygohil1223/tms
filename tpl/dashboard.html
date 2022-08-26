@@ -12,7 +12,6 @@ td { font-size: 11px; } */
     /* 0 width - change this with JavaScript */
     position: fixed;
     /* Stay in place */
-
     top: 0;
     /* Stay at the top */
     right: 0;
@@ -304,6 +303,9 @@ td { font-size: 11px; } */
     right: 160px;
     margin-top: 58px;
   }
+  div#dynamicAddAnchore tr td:first-child {
+    white-space: nowrap;
+  }
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
     .sidenav {
@@ -410,23 +412,18 @@ td { font-size: 11px; } */
                             <tr ng-repeat="order in projectsDueToday">
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
-                                  {{order.orderNumber}}
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
-                                <small class="block m-t-sm">
+                                <!-- <small class="block m-t-sm">
                                   <span class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3}}</span>
-                                </small>
+                                </small> -->
                               </td>
                               <td>
                                 <article class="media">
                                   <span class="customerthumb pull-left thumb-sm"
                                     ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
                                       ng-src="uploads/logo/{{order.clientlogo}}" alt="..." class="img-circle" /></span>
-                                  <span class="
-                                      customerthumb
-                                      pull-left
-                                      thumb-sm
-                                      fa-stack fa-lg
-                                    " ng-if="order.clientlogo == '' ">
+                                  <span class="customerthumb pull-left thumb-sm fa-stack fa-lg" ng-if="order.clientlogo == '' ">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-user fa-stack-1x text-white"></i>
                                   </span>
@@ -510,7 +507,7 @@ td { font-size: 11px; } */
                                   percent: '{{order.progrss_precentage}}',
                                   lineWidth: 3,
                                   trackColor: '#e8eff0',
-                                 barColor: '#67bb0a',
+                                  barColor: '#67bb0a',
                                   scaleColor: false,
                                   color: '#fff',
                                   size: 50,
@@ -578,12 +575,12 @@ td { font-size: 11px; } */
                             <tr ng-repeat="order in projectsAssigned">
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
-                                  {{order.orderNumber}}
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
-                                <small class="block m-t-sm">
+                                <!-- <small class="block m-t-sm">
                                   <span
                                     class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
-                                </small>
+                                </small> -->
                               </td>
                               <td>
                                 <article class="media">
@@ -747,12 +744,12 @@ td { font-size: 11px; } */
                             <tr ng-repeat="order in projectsInProgress">
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
-                                  {{order.orderNumber}}
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
-                                <small class="block m-t-sm">
+                                <!-- <small class="block m-t-sm">
                                   <span
                                     class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
-                                </small>
+                                </small> -->
                               </td>
                               <td>
                                 <article class="media">
@@ -912,12 +909,12 @@ td { font-size: 11px; } */
                             <tr ng-repeat="order in projectsQaready">
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
-                                  {{order.orderNumber}}
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
-                                <small class="block m-t-sm">
+                                <!-- <small class="block m-t-sm">
                                   <span
                                     class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
-                                </small>
+                                </small> -->
                               </td>
                               <td>
                                 <article class="media">
@@ -1077,12 +1074,12 @@ td { font-size: 11px; } */
                             <tr ng-repeat="order in projectsToBeDelivered">
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
-                                  {{order.orderNumber}}
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
-                                <small class="block m-t-sm">
+                                <!-- <small class="block m-t-sm">
                                   <span
                                     class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
-                                </small>
+                                </small> -->
                               </td>
                               <td>
                                 <article class="media">
@@ -1243,12 +1240,12 @@ td { font-size: 11px; } */
                             <tr ng-repeat="order in projectsDueTomorrow">
                               <td>
                                 <a ng-click="goToProjectViewdetail(order.orderId)">
-                                  {{order.orderNumber}}
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
-                                <small class="block m-t-sm">
+                                <!-- <small class="block m-t-sm">
                                   <span
                                     class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
-                                </small>
+                                </small> -->
                               </td>
                               <td>
                                 <article class="media">
@@ -1408,12 +1405,12 @@ td { font-size: 11px; } */
                             <tr ng-repeat="order in projectsDelivered">
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
-                                  {{order.orderNumber}}
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
-                                <small class="block m-t-sm">
+                                <!-- <small class="block m-t-sm">
                                   <span
                                     class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
-                                </small>
+                                </small> -->
                               </td>
                               <td>
                                 <article class="media">
@@ -1575,7 +1572,7 @@ td { font-size: 11px; } */
                             <tr ng-repeat="order in projectsAll">
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
-                                  {{order.orderNumber}}
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <small class="block m-t-sm">
                                   <span class="label bg-light">Scoop - {{order.item_number | numberFixedLen:3 }}</span>
