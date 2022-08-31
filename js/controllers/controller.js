@@ -689,13 +689,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.clear();
         $location.path('/');
     }
-    if($('.sidebar_wrapper').hasClass('app-aside-hide') === true){
-        console.log('fsdfsfsdsfdsf')
-        $(".page_content_wrapper").addClass("fullview");
-      }
-    $scope.changeClass = function(){
-        console.log('is it working')
-    }  
 
     $scope.logout = function () {
         angular.forEach(["session_iUserId", "auth", "session_iFkUserTypeId", "session_vEmailAddress", "session_password", "internalUserEdit", "internalUserAdd", "jobRecentEdit", "jobRecentAdd", "session_holidayCountry", "generalEdit", "editInternalUser"], function (key) {
@@ -1010,92 +1003,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var completed = [];
             var pendingPo = [];
             // ---- new added status ----- //
-            // var jobTobeAssigned = [];
-            // var jobCompletedbyLinguist = [];
-            // var jobQaReady = [];
-            // var jobApproved = [];
-            // var jobInvoiced = [];
-            // var jobPaid = [];
-            // var jobWithoutInvoiced = [];
-            // var jobCancelled = [];
-
+            
             // -- Job count -- //
             var jobRequestesCount = 0;
             var jobInProgressCount = 0;
             var jobDueTodayCount = 0;
             var jobDueTomorrowCount = 0;
             var jobOverDueCount = 0;
-            // ----  New status job count  ---- //
-            // var jobTobeAssignedCount = 0;
-            // var jobLinguistCount = 0;
-            // var jobTobeDileveredCount = 0;
-            // var jobDileveredCount = 0;
-            // var jobApprovedCount = 0;
-            // var jobInvoicedCount = 0;
-            // var jobPaidCount = 0;
-            // var jobWithoutInvoicedCount = 0;
-            // var jobCancelledCount = 0;
 
-            // angular.forEach($scope.dashboardJobList, function(val, i) {
-            //     val.item_id = pad(val.item_id, 3);
-
-            //     if (val.ItemLanguage) {
-            //         val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
-            //     }
-            //     if (val.po_number.length < 1) {
-            //         pendingPo.push(val);
-            //     }
-
-            //     if (val.item_status == 'New') {
-            //         NewJob.push(val);
-            //     } else if (val.item_status == 'Requested') {
-            //         Requested.push(val);
-            //         jobRequestesCount++;
-            //     } else if (val.item_status == 'In-progress') {
-            //         inProgerss.push(val);
-            //         jobInProgressCount++;
-            //     } else if (val.item_status == 'Ready to be Delivered') {
-            //         readyToBeDelivered.push(val);
-            //         jobTobeDileveredCount++;
-            //     }
-            //     // else if (val.item_status == 'In preparation') {
-            //     //     jobTobeAssigned.push(val);
-            //     //     jobTobeAssignedCount++;
-            //     // }
-            //     // else if (val.item_status == 'Delivered') {
-            //     //     delivered.push(val);
-            //     //     jobDileveredCount++;
-            //     // }
-            //     // else if (val.item_status == 'Approved') {
-            //     //     jobApproved.push(val);
-            //     //     jobApprovedCount++;
-            //     // } else if (val.item_status == 'Invoice Accepted') {
-            //     //     jobInvoiced.push(val);
-            //     //     jobInvoicedCount++;
-            //     // } else if (val.item_status == 'Paid') {
-            //     //     jobPaid.push(val);
-            //     //     jobPaidCount++;
-            //     // } else if (val.item_status == 'Without invoice') {
-            //     //     jobWithoutInvoiced.push(val);
-            //     //     jobWithoutInvoicedCount++;
-            //     // }
-            //      else if (val.item_status == 'Completed') {
-            //         completed.push(val);
-            //     }
-
-
-            //     //Due date counts for jobs
-            //     if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
-            //         jobDueTodayCount++;
-            //     }
-            //     if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
-            //         jobDueTomorrowCount++;
-            //     }
-            //     if (val.due_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
-            //         jobOverDueCount++;
-            //     }
-
-            // });
             $timeout(function () {
                 $scope.inProgerss = inProgerss;
                 $scope.jobNew = NewJob;
@@ -1565,6 +1480,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.goToProjectViewdetail = function (viewType) {
+        console.log('viewType', viewType)
         if (viewType) {
             var modalInstance = $uibModal.open({
                 //animation: $scope.animationsEnabled,
@@ -1579,9 +1495,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             });
         }
-
     };
 
+    $scope.goToScoopViewdetail = function (viewType, orderId) {
+        if (viewType && orderId) {
+            var modalInstance = $uibModal.open({
+                //animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/scoopViewdetailPopup.html',
+                controller: 'viewScoopPopupController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return {scoop_id: viewType,order_id:orderId};
+                    }
+                }
+            });
+        }
+    };
 
     $scope.goTocommentChat = function (viewType) {
 
@@ -4276,7 +4206,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
         //rest.path = 'filefolderGet/' + id + '/' + $routeParams.id;
         rest.get().success(function (data) {
-            // $scope.displayfolder = data;
+            $scope.displayfolder = data;
+            console.log('$scope.displayfolder', $scope.displayfolder)
             // $scope.headerfilename(id);
             $timeout(function () {
                 $scope.displayfolder = data;
@@ -16373,8 +16304,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 1000);
         }).error(errorCallback);
 
-
-
     }
 
     $scope.ItemNext = function (formId, id) {
@@ -16403,6 +16332,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (angular.element('#item-form' + formId).valid()) {
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
+                    console.log('itemId = first', $scope.itemList[formIndex].itemId)
+
                     var itemPriceUnit = [];
                     itemPriceUnit = $scope.itemPriceUni[formId];
                     if (itemPriceUnit) {
@@ -16682,6 +16613,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         notification('Item successfully updated.', 'success');
                     });
                 } else {
+                    console.log('second');
                     //if source and target language not selected
                     var source = angular.element('#source_lang').text();
                     var target = angular.element('#target_lang').text();
@@ -17487,6 +17419,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var count;
             rest.path = 'filefolderGet/' + id1 + '/' + type1 + '/' + externalResourceUserId1;
             rest.get().success(function (data) {
+                console.log('data -folder', data)
                 count = data.length;
                 if (!count) {
                     count = 0;
@@ -17809,8 +17742,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }).error(errorCallback);
     }
-
-
 
     var allitCheked = [];
     $scope.itemAll = [];
@@ -26487,6 +26418,1366 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     };
 
+}).controller('viewScoopPopupController', function (allLanguages, $scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance, $cookieStore, $interval, DTOptionsBuilder, $filter) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $routeParams.id = items ? items.order_id : 0;
+    $scope.order_id = items ? items.order_id : 0;
+    $scope.scoop_id = items ? items.scoop_id : 0;
+    $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
+
+    if ($scope.order_id) {
+        //getting ProjectOrderName and indirect clint name
+        rest.path = 'getClientIndirectClient/' + $scope.order_id;
+        rest.get().success(function (data) {
+            if (data.order_number) {
+                $scope.projectOrderData = data;
+                var projectOrderName = $scope.projectOrderData.abbrivation + pad($scope.projectOrderData.order_number, 4);
+                $window.localStorage.setItem("projectOrderName", projectOrderName);
+                $window.localStorage.setItem("indirectCustomerName", $scope.projectOrderData.indirect_customer);
+                $scope.projectOrderName = $window.localStorage.getItem('projectOrderName'); 
+            }
+        }).error(errorCallback);
+
+        //get single order Detail
+        rest.path = 'getOrderSingle/' + $scope.order_id;
+        rest.get().success(function (data) {
+            $scope.orderData = data;
+        }).error(errorCallback);
+
+        rest.path = 'usertaskodueDategate/' + $scope.order_id;
+        rest.get().success(function (data) {
+            $scope.dueDateItem = data;
+        }).error(errorCallback);
+
+        rest.path = 'masterPriceitemget/' + $scope.order_id;
+        rest.get().success(function (data) {
+            $scope.masterPrice = data;
+        }).error(errorCallback);
+
+        rest.path = 'childPriceitemget';
+        rest.get().success(function (data) {
+            $scope.childPrice = data;
+        }).error(errorCallback);
+
+        //currency update
+        rest.path = 'orderCurrencyMatch/' + $scope.order_id;
+        rest.get().success(function (data) {
+            if (data.currency) {
+                var cur = JSON.parse(data.currency);
+
+                angular.element('#currencyCh').select2('val', cur[0].currency);
+                angular.element('#crntCur').text(cur[0].currency);
+                angular.element('#defCur').text(data.defCurrency);
+                angular.element('#curRate').text(cur[0].curRate);
+
+            }
+        }).error(errorCallback);
+
+        //check itemfile manager and delete
+        rest.path = "itemFilemanager/" + $scope.order_id;
+        rest.delete().success(function (data) {
+            if (data != 'No Item') {
+                $route.reload();
+            }
+        }).error(errorCallback);
+    }
+
+    $scope.itemfolderOpen = function (id) {
+        closeWindows();
+        localStorage['scoopfolderId'] = id;
+        $window.localStorage.ItemClient = '';
+        $window.localStorage.ItemFolderid = id;
+        // start to get downloaded folder name with client name
+        rest.path = 'customer/' + $scope.order_id;
+        rest.get().success(function (res) {
+            $scope.customer = res;
+            if (res) {
+                rest.path = 'client/' + $scope.customer.client;
+                rest.get().success(function (cData) {
+                    $scope.directClientData = cData
+                    $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                }).error(function (data, error, status) { });
+            }
+        })
+        // end
+        var ItemcodeNumber = angular.element('.itemCode' + id).text();
+        //var ItemClient = angular.element('.itemClient'+id).text();
+        $window.localStorage.ItemcodeNumber = ItemcodeNumber;
+        var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
+        itemPopup.addEventListener("beforeunload", function () {
+            localStorage['parentId'] = ' ';
+            var id1 = $window.localStorage.getItem("scoopFolderRoot");
+
+            // files count 
+            rest.path = 'getFilestotal/' + id;
+            rest.get().success(function (data) {
+                if (data) {
+                    $scope.Filestotal = data[0].totalfile;
+                }
+                //angular.element('#filescount' + id).text($scope.Filestotal);
+                $('#filescount' + id).text($scope.Filestotal);
+            }).error(errorCallback);
+            // files couunt end
+            console.log('filecount', $scope.Filestotal);
+
+            return false;
+        }, false);
+
+        openWindows.push(itemPopup);
+
+        var pollTimer = window.setInterval(function () {
+            if (itemPopup.closed !== false) { // !== is required for compatibility with Opera
+                window.clearInterval(pollTimer);
+                // files count //
+                rest.path = 'getFilestotal/' + id;
+                rest.get().success(function (data) {
+                    if (data) {
+                        $scope.Filestotal = data[0].totalfile;
+                    }
+                    angular.element('#filescount' + id).text($scope.Filestotal);
+                }).error(errorCallback);
+                // files couunt end //
+            }
+        }, 200);
+    }
+    var getCountScoopFolder = function () {
+        var count = $window.localStorage.getItem("scoopFolderCount");
+        if (!count) {
+            count = 0;
+        }
+        var id = $window.localStorage.getItem("scoopfolderId");
+        //console.log('scoopid',id);
+        //console.log('scoop-foldercount',count);
+        //$('#sourceCount-'+id).text(count);
+        //$('#filescount'+id).text(count);
+    }
+    $interval(getCountScoopFolder, 1000);
+
+    $scope.closeItem = function (frmId) {
+        $route.reload();
+    }
+
+    $scope.itemAmountChilprice = function (id) {
+        rest.path = 'childPriceitemAmountget/' + id;
+        rest.get().success(function (data) {
+            $scope.itemAmount = data.rate;
+        })
+    }
+
+    $scope.$on('pls.onLanguageChanged', function (evt, lang) {
+        lang.id = lang.id.replace(/[0-9]/g, '');
+        var eleId = evt.targetScope.id.replace(/\D/g, '');
+        if (lang.id == 'plsSourceLang') {
+            angular.element('#source_lang' + eleId).text(lang.lang.name.trim());
+            var sourceField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
+            var sourceImg = sourceField.children('img');
+            angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
+            sourceField.append(sourceImg);
+            var sourceImg = sourceField.children('img').after(lang.lang.name);
+        } else if (lang.id == 'plsTargetLang') {
+            angular.element('#target_lang' + eleId).text(lang.lang.name.trim());
+            var targetField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
+            var targetImg = targetField.children('img');
+            angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
+            targetField.append(targetImg);
+            var targetImg = targetField.children('img').after(lang.lang.name);
+        }
+        var itemIndex = parseInt(angular.element("#indexItemSource" + eleId).text());
+
+        var source = angular.element('#source_lang' + eleId).text();
+        var target = angular.element('#target_lang' + eleId).text();
+        console.log("evt.targetScope.id", evt.targetScope.id);
+        if ($scope.itemList[itemIndex].item_number) {
+            var item_number = pad($scope.itemList[itemIndex].item_number, 3);
+        } else {
+            var item_number = angular.element('#item_number' + eleId).text();
+        }
+        if ($scope.item == undefined || $scope.item == null || $scope.item == "") {
+            $scope.item = {};
+        }
+        if (target == undefined || target == null || target == "") {
+            target = '';
+        }
+        if (source == undefined || source == null || source == "") {
+            source = '';
+        }
+
+        var indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
+        if (source && !target) {
+            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - English (US)';
+        } else if (!source && target) {
+            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | English (US) - ' + target;
+        } else {
+            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + '-' + target;
+        }
+
+    });
+
+    $scope.plsModel = {
+        languages40: allLanguages,
+    };
+    //console.log('$scope.plsModel',$scope.plsModel.languages40);
+    $timeout(function () {
+        if ($scope.plsModel) {
+            angular.forEach($scope.plsModel.languages40, function (val, i) {
+                //console.log('title',val.title);
+                if (val.is_favourite == 1) {
+                    $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
+                    $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
+                }
+            });
+        }
+
+    }, 2000);
+    
+    $scope.itemQuentityDelete = function (id, index, parentIndex) {
+
+        var totalPrice1 = $scope.itemList[parentIndex].total_price;
+        var totalPrice = totalPrice1.toFixed(2);
+
+        var price1 = $scope.itemPriceUni[id][index].itemTotal;
+
+        var price = numberFormatCommaToPoint(price1);
+
+        if (totalPrice == price) {
+            $scope.itemList[parentIndex].total_price = 0;
+        } else {
+            var total = totalPrice - price;
+            $scope.itemList[parentIndex].total_price = total;
+        }
+
+        $scope.itemPriceUni[id].splice(index, 1);
+    }
+
+    $scope.itemPriceUni = [];
+    //change item price module
+    $scope.changeItemField = function (id, index, parentIndex, itemChng = 0) {
+        var quantity = $scope.itemPriceUni[id][index].quantity;
+        var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
+        var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
+        var itemAmt = $scope.itemPriceUni[id][index].amtSum;
+        if (!quantity || !itemPrice) {
+            quantity = 0;
+            itemPrice = 0;
+        }
+        if (!itemTtl) {
+            itemTtl = 0;
+        }
+        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
+        itemPrice = numberFormatCommaToPoint(itemPrice);
+        if (itemPrice == '') {
+            itemPrice = 0;
+        }
+        var price = quantity * parseFloat(itemPrice);
+        var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
+        if (!oldPrice1) {
+            var oldPrice = 0;
+        } else {
+            var oldPrice = numberFormatCommaToPoint(oldPrice1);
+            /*
+            if(oldPrice1.toString().includes(',')==true){
+                var oldPrice = numberFormatCommaToPoint(oldPrice1);
+            }else{
+                var oldPrice = oldPrice1;
+            }
+            */
+        }
+
+        if (itemChng > 0) {
+            price = numberFormatCommaToPoint(itemTtl);
+            if (!price) {
+                price = 0;
+            }
+            //oldPrice = amtTotal;    
+            if (typeof itemAmt !== 'undefined') {
+                var oldPrice = $scope.itemPriceUni[id][index].amtSum;
+            }
+            if (typeof itemAmt === 'undefined') {
+                var oldPrice = quantity * parseFloat(itemPrice);
+            }
+        }
+        if (!oldPrice) {
+            oldPrice = 0;
+        }
+        var total = $scope.itemList[parentIndex].total_price;
+
+        var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
+        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
+        if (itemChng > 0) {
+            $scope.itemPriceUni[id][index].itemTotal = itemTtl;
+        } else {
+            //$scope.itemPriceUni[id][index].itemTotal = price;
+            $scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price);
+        }
+        $scope.itemPriceUni[id][index].amtSum = price;
+        $scope.itemList[parentIndex].total_price = totalPrice;
+    }
+
+    $scope.joboption = [];
+    rest.path = 'Jobsummeryget';
+    rest.get().success(function (data) {
+        $scope.joboption = data;
+    }).error(errorCallback)
+    
+    $scope.jobchainoption = [];
+    //Pass OrderId to get Client ID To Display jobchain assign to client
+    rest.path = 'masterJobchainget/' + $scope.order_id;
+    rest.get().success(function (data) {
+        $scope.jobchainoption = data;
+        console.log('$scope.jobchainoption', $scope.jobchainoption)
+    }).error(errorCallback)
+
+    //*****------- Update project scoop start-------****//
+    $scope.jobi = {};
+    $scope.saveitems = function (formId, formIndex) {
+        if (angular.element('#item-form' + formId).valid()) {
+            if ($scope.order_id) {
+                if ($scope.itemList[formIndex].itemId) {
+                    console.log('itemId = first', $scope.itemList[formIndex].itemId)
+
+                    var itemPriceUnit = [];
+                    itemPriceUnit = $scope.itemPriceUni[formId];
+                    if (itemPriceUnit) {
+                        for (var j = 0; j < itemPriceUnit.length; j++) {
+                            itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                        }
+                    }
+                    $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
+                    delete $scope.itemList[formIndex]['itemPrice'];
+                    delete $scope.itemList[formIndex]['quantity'];
+
+                    if ($scope.itemList[formIndex].item_number != undefined) {
+                        $scope.itemList[formIndex].item_number;
+
+                    } else {
+                        $scope.itemList[formIndex].item_number = angular.element('#item_number').text();
+                        $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
+                    }
+
+                    $scope.itemList[formIndex].order_id = $scope.order_id;
+                    $scope.itemList[formIndex].total_amount = $scope.total_amount;
+
+                    var sourceField = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale");
+                    var targetField = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale");
+
+                    var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
+                    var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
+                    var sourceObj = {
+                        sourceLang: srcLang,
+                        dataNgSrc: sourceField.children().attr('data-ng-src'),
+                        alt: sourceField.children().attr('alt')
+                    }
+
+                    var targetObj = {
+                        sourceLang: trgLang,
+                        dataNgSrc: targetField.children().attr('data-ng-src'),
+                        alt: targetField.children().attr('alt')
+                    }
+
+                    $scope.itemList[formIndex].source_lang = JSON.stringify(sourceObj);
+                    $scope.itemList[formIndex].target_lang = JSON.stringify(targetObj);
+
+                    $scope.itemList[formIndex].total_amount = $scope.itemList[formIndex].total_price;
+
+                    /*if(!$scope.itemList[formIndex].total_amount || $scope.itemList[formIndex].price ==undefined){
+                        $scope.itemList[formIndex].total_amount = 0
+                        $scope.itemList[formIndex].total_price = 0
+                        //$scope.itemList[formIndex].price = ''
+                    }*/
+
+                    if ($scope.itemList[formIndex].attached_workflow) {
+                        if ($('#jobchainName' + formId).val() !== 'select') {
+                            var jobchainval = $('#jobchainName' + formId).val();
+                            var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
+                            var scoopitemData = $scope.TblItemList;
+                            var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
+                            if (chainworkflow.length == 0) {
+                                notification('workflow already attached', 'warning');
+                            }
+                            // notification('workflow already attached', 'warning');
+                        }
+                    } else {
+                        if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
+                            notification('Please select workflow.', 'warning');
+                            //setting total amount to 0 in table listing
+                            $scope.TblItemList[formIndex].total_amount = 0;
+                            return false;
+                        } else {
+                            if ($scope.jobi.jobSummery) {
+                                // gettingName of selected workflow job chain
+                                $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formId).find(':selected').text();
+
+                                $scope.jobitem = {};
+                                var dd = $scope.jobi.jobSummery;
+                                $scope.jobi.jobSummery = dd.substr(1);
+                                $scope.matchjob = dd.slice(0, 1);
+                                if ($scope.matchjob == 'j') {
+                                    rest.path = 'jobpertjobGet/' + $scope.jobi.jobSummery + '/' + $scope.order_id;
+                                    rest.get().success(function (data) {
+                                        $scope.itemdata = data;
+                                        $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+                                        if ($scope.jobitem.item_id) {
+                                            rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.order_id;
+                                            rest.get().success(function (data) {
+                                                $scope.iData = data;
+                                                console.log('$scope.iData- item-jobs-', $scope.iData)
+                                                var contact_person = [];
+                                                var job_id = [];
+                                                var order_id = [];
+                                                var job_no = [];
+                                                var due_date = [];
+                                                var item_status = [];
+                                                $scope.job_id = $scope.jobi.jobSummery;
+                                                $scope.job_code = $scope.itemdata.job_code;
+                                                $scope.order_id = $scope.order_id;
+                                                $scope.job_no = $scope.itemdata.job_no;
+                                                $scope.master_job_id = $scope.itemdata.job_id;
+
+                                                if ($scope.iData != null) {
+                                                    //$scope.contact_person = $scope.iData.contact_person;
+                                                    $scope.contact_person = $scope.iData.manager;
+                                                    $scope.due_date = $scope.iData.due_date;
+                                                    $scope.item_status = $scope.iData.item_status;
+                                                } else {
+                                                    $scope.contact_person = "";
+                                                    $scope.due_date = "";
+                                                    $scope.item_status = "";
+                                                }
+
+                                                $scope.jobitem.job_no = $scope.job_no;
+                                                $scope.jobitem.job_id = $scope.job_id;
+                                                $scope.jobitem.job_code = $scope.job_code;
+                                                $scope.jobitem.contact_person = $scope.contact_person;
+                                                $scope.jobitem.order_id = $scope.order_id;
+                                                $scope.jobitem.due_date = $scope.due_date;
+                                                $scope.jobitem.master_job_id = $scope.master_job_id;
+                                                if ($scope.job_no == undefined) {
+                                                    $scope.job_no = 1;
+                                                }
+                                                if ($scope.iData) {
+                                                    $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
+                                                    $scope.jobitem.tmp_po_number = $scope.po_number;
+                                                }
+
+                                                /* Job Status To New When Creating New Job*/
+                                                $scope.jobitem.item_status = 'New';
+
+                                                // Remove if Display Assign PO Link
+                                                //$scope.jobitem.po_number = '';
+                                                $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
+                                                $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
+                                                $scope.jobitem.price = '';
+                                                $scope.jobitem.total_price = parseFloat(0.00);
+                                                rest.path = 'jobSummarySave';
+                                                rest.post($scope.jobitem).success(function (data) {
+                                                    if (data) {
+                                                        var obj = [];
+                                                        if ($cookieStore.get('jobRecentAdd') != undefined) {
+                                                            angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
+                                                                obj.push(val);
+                                                            });
+                                                        }
+                                                        obj.push(data['order_id']);
+                                                        $cookieStore.put('jobRecentAdd', obj);
+                                                        //$route.reload();
+                                                    } else {
+                                                        notification('Job already exists in this scoop.', 'error');
+                                                    }
+                                                })
+                                            })
+                                        }
+                                    }).error(errorCallback);
+                                } else {
+                                    var chainId = $scope.itemList[formIndex].item_number;
+
+                                    // gettingName of selected workflow job chain
+                                    $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
+                                    if (chainId != undefined) {
+                                        rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.order_id + '/' + chainId;
+                                        rest.get().success(function (data) {
+                                            $scope.jobnumchain = data.job_no += 1;
+                                            $scope.ijNum = 1;
+                                            if (data.newJob == "") {
+                                                notification('No job in jobchain', 'warning');
+                                            } else {
+                                                angular.forEach(data.newJob, function (val, i) {
+                                                    if (chainId) {
+                                                        rest.path = 'jobitemsidget/' + chainId + '/' + $scope.order_id;
+                                                        rest.get().success(function (data) {
+                                                            $scope.iData = data;
+                                                            var contact_person = [];
+                                                            var job_id = [];
+                                                            var order_id = [];
+                                                            var job_no = [];
+                                                            var due_date = [];
+                                                            var item_status = [];
+                                                            $scope.job_id = $scope.jobi.jobSummery;
+                                                            $scope.job_code = val.job_code;
+                                                            $scope.order_id = $scope.order_id;
+                                                            $scope.master_job_id = val.job_id;
+                                                            $scope.job_no = $scope.jobnumchain++;
+                                                            if (!$scope.job_no) {
+                                                                $scope.job_no = $scope.ijNum++;
+                                                            }
+
+                                                            if ($scope.iData != null) {
+                                                                $scope.contact_person = $scope.iData.contact_person;
+                                                                $scope.due_date = $scope.iData.due_date;
+                                                                $scope.item_status = $scope.iData.item_status;
+                                                            } else {
+                                                                $scope.contact_person = "";
+                                                                $scope.due_date = "";
+                                                                $scope.item_status = "";
+                                                            }
+                                                            if ($scope.jobitem == undefined || $scope.jobitem == "" || $scope.jobitem == null) {
+                                                                $scope.jobitem = {};
+                                                            }
+
+                                                            $scope.jobitem.job_no = $scope.job_no;
+                                                            $scope.jobitem.master_job_id = $scope.master_job_id;
+                                                            $scope.jobitem.job_id = $scope.master_job_id;
+                                                            // $scope.jobitem.job_id = $scope.job_id;
+                                                            $scope.jobitem.job_code = $scope.job_code;
+                                                            $scope.jobitem.contact_person = $scope.contact_person;
+                                                            $scope.jobitem.order_id = $scope.order_id;
+                                                            $scope.jobitem.due_date = $scope.due_date;
+                                                            if ($scope.job_no == undefined) {
+                                                                $scope.job_no = 1;
+                                                            }
+                                                            if ($scope.iData) {
+                                                                $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
+                                                                $scope.jobitem.tmp_po_number = $scope.po_number;
+                                                            }
+
+                                                            $scope.jobitem.item_status = 'New';
+                                                            $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
+                                                            $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
+
+                                                            $scope.jobitem.job_chain_id = $scope.jobi.jobSummery;
+                                                            $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+
+                                                            rest.path = 'jobSummarySave';
+                                                            rest.post($scope.jobitem).success(function (data) {
+                                                                var obj = [];
+                                                                if ($cookieStore.get('jobRecentAdd') != undefined) {
+                                                                    angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
+                                                                        obj.push(val);
+                                                                    });
+                                                                }
+                                                                obj.push(data['order_id']);
+                                                                $cookieStore.put('jobRecentAdd', obj);
+                                                                //$route.reload();
+                                                            })
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        });
+                                    } else {
+                                        notification('Please select item', 'warning');
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
+                    $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
+                    var due_timevl1 = angular.element('#due_time' + formIndex).val();
+                    $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
+                    //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
+                    //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
+                    $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
+                    $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
+                    $routeParams.id = $scope.itemList[formIndex].itemId
+                    rest.path = 'ItemUpdate';
+                    rest.put($scope.itemList[formIndex]).success(function () {
+                        $('#jobchainName' + formId).val('select');
+                        //Updating current updated row data(item)
+                        $scope.getItems();
+
+                        //After update change to global date format dates
+                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
+                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
+
+                        //log file start
+                        $scope.logMaster = {};
+                        $scope.logMaster.log_title = $scope.projectOrderName;
+                        $scope.logMaster.log_type_id = $scope.itemList[formIndex].order_id;
+                        $scope.logMaster.log_type = "update";
+                        $scope.logMaster.log_status = "project";
+                        $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                        rest.path = "saveLog";
+                        rest.post($scope.logMaster).success(function (data) { });
+                        //log file end
+                        //$route.reload();
+                        notification('Item successfully updated.', 'success');
+                    });
+                } else {
+
+                }
+            } else {
+                //notification('Please Create project First', 'information');
+            }
+        }
+    }
+    //------- End Update scoop -------//
+
+    $scope.getItems = function () {
+        var popitemList = [];
+        rest.path = 'itemsGet/' + $scope.order_id;
+        rest.get().success(function (data) {
+            var data = data.filter(itemData => itemData.itemId == $scope.scoop_id);
+            $scope.itemList = data;
+            $scope.TblItemList = data;  
+            $scope.projectItemEmpty = jQuery.isEmptyObject(data);
+            $scope.totalPrice = 0;
+            var cont = [];
+            angular.forEach(data, function (val, i) {
+                $scope.item_number = val.item_number;
+                //getClient By OrderId while edit item
+                rest.path = 'customer/' + val.order_id;
+                rest.get().success(function (data) {
+                    console.log('custom-data', data)
+                    angular.element('#manager' + val.itemId).select2('val', data.project_manager);
+                    angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
+
+                    //console.log('$scope.joboption',$scope.joboption);
+                    var jobChainoption = $scope.jobchainoption;
+                    console.log('$scope.jobchainoption', $scope.jobchainoption)
+
+                    var chaintext = val.attached_workflow.split('jobChain -');
+                    //console.log('jobtext', jobtext[1])
+                    var chainworkflow = jobChainoption.filter(x => x.job_name == chaintext[1]).map(x => x.job_chain_id);
+                    //console.log('workflow', workflow);
+                    if (chainworkflow.length > 0)
+                        $('#jobchainName' + val.itemId).val('c' + chainworkflow);
+
+                    var joboption = $scope.joboption;
+                    console.log('$scope.joboption', $scope.joboption)
+                    console.log('joboption', joboption)
+                    var jobtext = val.attached_workflow.split('SingleJob -');
+                    //console.log('jobtext', jobtext[1])
+                    var jobworkflow = joboption.filter(x => x.service_name + ' (' + x.job_code + ')' == jobtext[1]).map(x => x.job_id);
+                    //console.log('workflow', workflow);
+                    if (jobworkflow.length > 0)
+                        $('#jobchainName' + val.itemId).val('j' + jobworkflow);
+
+                    if ($('#jobchainName' + val.itemId).val() !== 'select') {
+                        //$('#jobchainName' + val.itemId).attr('disabled',true);
+                    }
+
+                    $scope.itemList[i].manager = data.project_manager;
+                    $scope.itemList[i].coordinator = data.project_coordinator;
+                    if (val.price) {
+
+                        $scope.itemPriceUni[val.itemId] = JSON.parse(val.price);
+                        for (var j = 0; j < $scope.itemPriceUni[val.itemId].length; j++) {
+                            $scope.itemPriceUni[val.itemId][j].itemTotal = numberFormatComma($scope.itemPriceUni[val.itemId][j].itemTotal);
+                        }
+                    }
+                    //console.log('dttt=',$scope.itemPriceUni[val.itemId][0].itemTotal);
+                    //console.log('length=',$scope.itemPriceUni[val.itemId].length);
+
+                    $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    
+                    if ($scope.itemList[i].due_date) {
+                        var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                        //console.log('vt=',new_due_date.split(" ")[0]);
+                        //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
+                        var due_timevl = new_due_date.split(" ")[1];
+                        $scope.itemList[i].due_date = moment($scope.itemList[i].due_date).format($window.localStorage.getItem('global_dateFormat'));
+                        angular.element('#due_time' + i).val(due_timevl);
+                    }
+
+                    if ($scope.itemList[i].source_lang && $scope.itemList[i].target_lang) {
+                        var sourceData = JSON.parse($scope.itemList[i].source_lang);
+                        var targetData = JSON.parse($scope.itemList[i].target_lang);
+                        angular.element('#source_lang' + val.itemId).text(sourceData.sourceLang);
+                        angular.element('#target_lang').text(targetData.sourceLang);
+                    } else {
+                        angular.element('#source_lang' + val.itemId).text('English (US)');
+                        angular.element('#target_lang' + val.itemId).text('English (US)');
+                    }
+
+                    var sourceField = angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale");
+
+                    var targetField = angular.element("#plsTargetLang" + val.itemId).children("a.pls-selected-locale");
+                    var sourceImg = sourceField.children('img');
+                    var targetImg = targetField.children('img');
+
+                    angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale").text('');
+                    angular.element("#plsTargetLang" + val.itemId).children("a.pls-selected-locale").text('');
+
+                    sourceField.append(sourceImg);
+                    targetField.append(targetImg);
+
+                    if ($scope.itemList[i].source_lang.length == 0 && $scope.itemList[i].target_lang.length == 0) {
+                        sourceField.children().attr('data-ng-src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
+                        sourceField.children().attr('src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
+                        sourceField.children().attr('alt', 'United States');
+
+                        targetField.children().attr('data-ng-src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
+                        targetField.children().attr('src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
+                        targetField.children().attr('alt', 'United States');
+
+                        var sourceImg = sourceField.children('img').after('English (US)');
+                        var targetImg = targetField.children('img').after('English (US)');
+                    } else {
+                        sourceField.children().attr('data-ng-src', sourceData.dataNgSrc);
+                        sourceField.children().attr('src', sourceData.dataNgSrc);
+                        sourceField.children().attr('alt', sourceData.alt);
+
+                        targetField.children().attr('data-ng-src', targetData.dataNgSrc);
+                        targetField.children().attr('src', targetData.dataNgSrc);
+                        targetField.children().attr('alt', targetData.alt);
+                        var sourceImg = sourceField.children('img').after(sourceData.sourceLang);
+                        var targetImg = targetField.children('img').after(targetData.sourceLang);
+                    }
+                }).error(errorCallback);
+
+                /*if($scope.TblItemList[i].due_date){
+                    $timeout(function() {
+                        $scope.TblItemList[i].due_date = $scope.TblItemList[i].due_date.split(' ')[0]+' | ' +$scope.TblItemList[i].due_date.split(' ')[1];
+                    },200);
+                }else{
+
+                }*/
+                $scope.totalPrice += val.total_amount;
+                if (val.itemId) {
+                    $routeParams.id = val.itemId;
+                    rest.path = 'itemsjobStatusGet/' + $routeParams.id + '/' + val.order_id;
+                    rest.get().success(function (data) {
+                        if (!data) {
+                            $('#noJobNew' + val.itemId).text('false');
+                        } else {
+                            $('#noJobNew' + val.itemId).text('true');
+                        }
+                        $scope.jobitemStatus = data;
+                        var appr = [];
+                        var other = [];
+                        angular.forEach(data, function (val, i) {
+                            $scope.scoop_number = val.item_id;
+                            if (val.item_status == 'Approved') {
+                                appr.push(val.item_status);
+                            }
+                            if (val.item_status != 'Approved') {
+                                other.push(val.item_status);
+                            }
+                        });
+                        $scope.it = {};
+                        $scope.total = appr.length + other.length;
+                        $scope.divis = 100 / $scope.total;
+                        $scope.percent = Math.ceil($scope.divis * appr.length);
+                        angular.element('#itemPer' + i).html($scope.percent);
+                        angular.element('.itemPer' + i).val($scope.percent);
+                        if ($scope.percent == 100) {
+                            angular.element('#sumimg' + i).append('<img src="assets/img/wf_4.png" alt=""/> Completed /');
+                        } else if ($scope.percent < 100 && $scope.percent != 0) {
+                            angular.element('#sumimg' + i).append('<img src="assets/img/wf_3.png" alt=""/> Started /');
+                        } else if ($scope.percent == 0) {
+                            angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
+                        } else {
+                            $('#noJob' + i).append('No jobs');
+                            angular.element('#progress' + i).remove();
+                            angular.element('#sumimg' + i).remove();
+                        }
+                    }).error(errorCallback);
+                }
+                rest.path = 'jobItemIconsetdata/' + val.item_number + '/' + val.order_id;
+                rest.get().success(function (data) {
+                    $scope.dueDate = data;
+                }).error(errorCallback);
+
+                $scope.Filestotal = 0;
+                rest.path = 'getFilestotal/' + val.itemId;
+                rest.get().success(function (data) {
+                    if (data) {
+                        $scope.Filestotal = data[0].totalfile;
+                    }
+                    angular.element('#filescount' + val.itemId).text($scope.Filestotal);
+                }).error(errorCallback);
+
+
+
+            })
+        });
+    }
+    $scope.getItems();
+
+
+    // Project Detail ---  ---   
+    if ($routeParams.id) {
+        console.log('$routeParams.id', items)
+        $routeParams.id;
+        rest.path = 'viewProjectCustomerDetail';
+        rest.model().success(function (data) {
+            $scope.customer = data;
+            $window.localStorage.clientproCustomerName = $scope.customer.client;
+            $window.localStorage.ContactPerson = $scope.customer.contact;
+            $routeParams.ClientIdd = data['client'];
+            $window.localStorage.ClientName = $routeParams.ClientIdd;
+            if ($scope.customer.memo) {
+                $scope.warn = true;
+                $timeout(function () {
+                    $scope.warn = false;
+                }, 10000);
+            }
+        }).error(errorCallback);
+        // })
+    }
+
+    $scope.addProjectInvoice = function (data) {
+        var client = "";
+        var flag = 0;
+        var array = [];
+
+        angular.forEach(data, function (val, i) {
+            if (val.SELECTED == 1) {
+                if (!client) {
+                    client = val.contactName;
+                }
+                if (val.contactName != client) {
+                    flag = 1;
+                } else {
+                    array.push(val.itemId);
+                }
+            }
+        });
+        if (flag != 1 && array.length) {
+            $scope.cancel();
+            $cookieStore.put('invoiceScoopId', array);
+            $location.path('/client-invoice-create');
+        } else {
+            if (flag != 1) {
+                notification("Pelase select Project Scoop", "warning");
+            }
+        }
+    }
+
+    $scope.generalEmail = function (id) {
+        if (id != undefined && id != " " && id != null) {
+            $window.localStorage.generalMsg = id;
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'html/generalmsg.html',
+                controller: 'generalmsgController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return $scope.data;
+                    }
+                }
+            });
+        } else {
+            notification('Please Add Email', 'warning');
+        }
+    };
+
+    $scope.editProjectDetail = function (id) {
+        if (id) {
+            rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function (data) {
+                if (data.userName != null) {
+                    $scope.orderdata = data;
+
+                    $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
+                    $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
+                    $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
+
+                    $window.localStorage.orderNo = $scope.orderdata.order_number;
+                    $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+                    $window.localStorage.orderID = id;
+                    $window.localStorage.iUserId = id;
+                    $window.localStorage.userType = 3;
+                    $window.localStorage.currentUserName = data.vClientName;
+                    $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject", "false");
+
+                    $location.path('/general');
+                    $window.localStorage.orderBlock = 1;
+                    $timeout(function () {
+                        $scope.cancel();
+                    }, 500);
+                } else {
+                    notification('Information not available', 'warning');
+                }
+            }).error(errorCallback);
+        }
+
+    };
+
+    //*****------- Jobs listing --------*****//
+    //set status auto update
+    $timeout(function () {
+        var temp = [];
+        var autoUpdateS = [];
+        var autoUpdateR = [];
+        var Autocheck = [];
+        angular.element(".jStatus").each(function (i) {
+            angular.element(this).addClass('StatusData' + i);
+            angular.element('.StatusData' + i + ' .joStatus').addClass('jobStatusData' + i);
+            angular.element('.StatusData' + i + ' .jAuto').addClass('jStatusAuto' + i);
+            angular.element('.StatusData' + i + ' .jsumeryIdAuto').addClass('jsumId' + i);
+            angular.element('.StatusData' + i + ' .jjobnum').addClass('jjobnum' + i);
+            angular.element('.StatusData' + i + ' .jduedate').addClass('jduedate' + i);
+            angular.element('.StatusData' + i + ' .jobEmail').addClass('jobEmail' + i);
+            angular.element('.StatusData' + i + ' .jobResource').addClass('jobResource' + i);
+            angular.element('.StatusData' + i + ' .jobstatApp').addClass('jobstatsApp' + i);
+            var status = angular.element('.jobStatusData' + i).text();
+            var auto = angular.element('.jStatusAuto' + i).text();
+            var summeryId = angular.element('.jsumId' + i).text();
+            var jobnumber = angular.element('.jjobnum' + i).text();
+            var jduedate = angular.element('.jduedate' + i).text();
+            var jobEmail = angular.element('.jobEmail' + i).text();
+            var jobResource = $('.jobResource' + i).text();
+            if (auto == 'Auto' && status != 'Approved' && i == 0 && status != 'Requested') {
+                if ($scope.jobdetail == undefined || $scope.jobdetail == null || $scope.jobdetail != '') {
+                    $scope.jobdetail = {};
+                }
+                Autocheck.push(i);
+                if (status == 'In preparation' && jobResource) {
+                    $scope.item_status = "Requested";
+                    $scope.jobdetail.jobnumber = jobnumber;
+                    $scope.jobdetail.jduedate = jduedate;
+                    $scope.jobdetail.jobEmail = jobEmail;
+                    $scope.jobdetail.item_status = $scope.item_status;
+                    $routeParams.id = summeryId;
+                    rest.path = 'jobSummeryDetailsUpdate';
+                    rest.put($scope.jobdetail).success(function (data) {
+                        $route.reload();
+                    }).error(errorCallback);
+                }
+            } else if (auto == 'Auto' && status == 'Approved') {
+                temp.push(i + 1);
+            } else if (auto == 'Auto' && status != 'Requested' && status != 'Approved') {
+                autoUpdateS.push(i);
+            } else if (auto == 'Auto' && status == 'Requested') {
+                autoUpdateR.push(i);
+            }
+        });
+
+        if (autoUpdateR == "") {
+            var statusfirst = autoUpdateS[0];
+        }
+
+        var statusLast = temp.slice(-1).pop();
+        var acheck = Autocheck[0];
+        if (statusLast && acheck == undefined || statusfirst != undefined && acheck == undefined) {
+            if (statusLast) {
+                var status = angular.element('.jobStatusData' + statusLast).text();
+                var auto = angular.element('.jStatusAuto' + statusLast).text();
+                var summeryId = angular.element('.jsumId' + statusLast).text();
+                var jobnumber = angular.element('.jjobnum' + statusLast).text();
+                var jduedate = angular.element('.jduedate' + statusLast).text();
+                var jobEmail = angular.element('.jobEmail' + statusLast).text();
+                var jobResource = angular.element('.jobResource' + statusLast).text();
+            } else {
+                var status = angular.element('.jobStatusData' + statusfirst).text();
+                var auto = angular.element('.jStatusAuto' + statusfirst).text();
+                var summeryId = angular.element('.jsumId' + statusfirst).text();
+                var jobnumber = angular.element('.jjobnum' + statusfirst).text();
+                var jduedate = angular.element('.jduedate' + statusfirst).text();
+                var jobEmail = angular.element('.jobEmail' + statusfirst).text();
+                var jobResource = angular.element('.jobResource' + statusfirst).text();
+            }
+
+            if (auto == 'Auto' && status != 'Requested') {
+                if ($scope.jobdetail == undefined || $scope.jobdetail == null || $scope.jobdetail != '') {
+                    $scope.jobdetail = {};
+                }
+                if (status == 'In preparation' && jobResource) {
+                    $scope.item_status = "Requested";
+                    $scope.jobdetail.jobnumber = jobnumber;
+                    $scope.jobdetail.jduedate = jduedate;
+                    $scope.jobdetail.jobEmail = jobEmail;
+                    $scope.jobdetail.item_status = $scope.item_status;
+                    $routeParams.id = summeryId;
+                    rest.path = 'jobSummeryDetailsUpdate';
+                    rest.put($scope.jobdetail).success(function (data) {
+                        $route.reload();
+                    }).error(errorCallback);
+                }
+            }
+        }
+    }, 1000);
+
+    //approved file data send to requested item
+    $timeout(function () {
+        var findApproved = [];
+        for (var i = 0; i < angular.element('[class^=joStatus]').length; i++) {
+            var status = angular.element('.jobStatusData' + i).text();
+            var autoUpdate = angular.element('.jStatusAuto' + i).text();
+            if (status === 'Approved' && autoUpdate != undefined) {
+                findApproved.push(parseInt(i));
+            }
+        }
+
+        var obj = [];
+        for (var i = 0; i < angular.element('[class^=joStatus]').length; i++) {
+            var lastApproved = $(findApproved).get(-1);
+            if (lastApproved == 0 || lastApproved != "" && lastApproved != undefined) {
+                var getStatus = lastApproved + 1;
+                var status = angular.element('.jobStatusData' + getStatus).text();
+                var approveStatus = angular.element('.jobStatusData' + lastApproved).text()
+                var approveId = angular.element('.jsumId' + lastApproved).text();
+                var requestId = angular.element('.jsumId' + getStatus).text();
+                var appstat = angular.element('.jobstatsApp' + lastApproved).text();
+                if (appstat == 0) {
+                    if (approveId != "" && requestId != "") {
+                        obj.push({
+                            approveId: approveId,
+                            requestId: requestId,
+                            appSt: appstat
+                        });
+                    }
+                }
+            }
+        }
+
+        var last = obj.slice(-1)[0];
+        if (last != undefined) {
+            if (last.approveId != undefined && last.requestId != undefined && last.appSt == 0) {
+                rest.path = "filemanagerApproveSend/" + last.approveId + '/' + last.requestId;
+                rest.get().success(function (data) {
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        }
+
+    }, 1000);
+
+    $scope.resouceEdit1 = function (id, item, resource) {
+        angular.element('input#resources' + id + item).select2('val', resource);
+        $scope.resourceStatus = id + "" + item;
+    }
+    $scope.resouceEdit = function (id, item, resource) {
+        angular.element('input#resources' + id + item).select2('val', resource);
+        $scope.resourceStatus = id + "" + item;
+    }
+
+    $scope.resourceSave = function (sumId, resourceId) {
+        if ($scope.jobd == "" || $scope.jobd == undefined || $scope.jobd == null) {
+            $scope.jobd = {};
+        }
+
+        $scope.resource = resourceId;
+        $scope.jobd.resource = $scope.resource;
+        $routeParams.id = sumId;
+        console.log('$scope.jobd', $scope.jobd)
+
+        rest.path = 'jobSummeryJobDetailsUpdate';
+        rest.put($scope.jobd).success(function (data) {
+            $route.reload();
+        }).error(errorCallback);
+    }
+
+    $scope.hoverIn = function () {
+        this.hoverEdit = true;
+    };
+
+    $scope.hoverOut = function () {
+        this.hoverEdit = false;
+    };
+
+    // DataTables configurable options
+    $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('scrollY', '100%').withOption('scrollX', '100%').withOption('scrollCollapse', true).withOption('paging', false).withOption('paging', false).withOption('paging', false);
+
+    if ($routeParams.id) {
+        $scope.item = $routeParams.id;
+        rest.path = 'jobitemsGet/' + $routeParams.id;
+        rest.get().success(function (data) {
+            console.log('data-multi', data)
+            
+            $scope.itemjobList = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.item_number);
+            console.log('$scope.itemjobList', $scope.itemjobList);
+        }).error(errorCallback);
+        rest.path = 'jobDetailLanguageGet/' + $routeParams.id;
+        rest.get().success(function (data) {
+            $scope.language = data;
+        }).error(errorCallback);
+
+        //getting ProjectOrderName and indirect clint name
+        // rest.path = 'getClientIndirectClient/' + $routeParams
+        rest.path = 'getClientIndirectClient/' + $routeParams.id;
+        rest.get().success(function (data) {
+            if (data.order_number) {
+                $scope.projectOrderData = data;
+                var projectOrderName = $scope.projectOrderData.abbrivation + pad($scope.projectOrderData.order_number, 4);
+                $window.localStorage.setItem("projectOrderName", projectOrderName);
+                $window.localStorage.setItem("indirectCustomerName", $scope.projectOrderData.indirect_customer);
+            }
+        }).error(errorCallback);
+    }
+
+
+    var allitCheked = [];
+    $scope.itemAll = [];
+    if ($routeParams.id) {
+        rest.path = 'itemsGet/' + $routeParams.id;
+        rest.get().success(function (data1) {
+            console.log('data1', data1)
+            $scope.itemLength = data1.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.item_number);
+            //$scope.itemLength = data1;
+            console.log('$scope.itemLength', $scope.itemLength);
+            rest.path = 'jobsummeryGet/' + $routeParams.id;
+            rest.get().success(function (data) {
+
+                $scope.itemListFinal = [];
+                rest.path = "getsaveSortedJobsData/" + $scope.order_id;
+                rest.get().success(function (d) {
+                    $scope.availableSortedJobs = d;
+
+                    if ($scope.availableSortedJobs.length > 0) {
+                        $scope.itemListJob = d;
+                    } else {
+                        $scope.itemListJob = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_id == $scope.item_number);
+                        console.log('$scope.itemListJob==2', $scope.itemListJob)
+                        //$scope.itemListJob = data;
+                    }
+
+                    angular.forEach($scope.itemLength, function (e, i) {
+                        $scope.itemListFinal.push($scope.itemListJob.filter(function (e1, i1) {
+                            return e1.item_id == e.item_number;
+                        }));
+                    });
+
+                    angular.forEach($scope.itemListJob, function (val, i) {
+                        if (val.job_summmeryId) {
+                            rest.path = 'jobSummeryDetailsGet/' + val.job_summmeryId;
+                            rest.get().success(function (data) {
+                                $timeout(function () {
+                                    //count file
+                                    if (data) {
+                                        rest.path = 'filefolderstget/' + data[0].fmanager_id + '/' + $routeParams.id;
+                                        rest.get().success(function (data) {
+                                            var sourceFile = [];
+                                            var targetFile = [];
+                                            angular.element('.sourceC' + val.job_summmeryId).text(data.source);
+                                            angular.element('.targteC' + val.job_summmeryId).text(data.target);
+                                        }).error(errorCallback);
+                                    }
+                                }, 100);
+                            }).error(errorCallback);
+                        }
+                    })
+
+                    $timeout(function () {
+                        $('#tblDataLoading').css('display', 'none');
+                    }, 300);
+
+                    // calcualtion for profit margin
+                    angular.forEach($scope.itemjobList, function (val, i) {
+                        var scoopItem = val.item_number;
+                        var totalJobAmount = 0;
+                        angular.forEach($scope.itemListJob, function (value, j) {
+                            //$timeout(function() {
+                            if (val.item_number == value.item_id && val.order_id == value.order_id) {
+                                var tPrice = (value.total_price) ? value.total_price : parseInt(0);
+                                if (tPrice) {
+                                    totalJobAmount += parseFloat(tPrice);
+                                }
+                            }
+                            //}, 100);
+                        })
+                        if (totalJobAmount == undefined) {
+                            totalJobAmount = 0.00;
+                        }
+                        var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
+                        var jobAmount = parseFloat(totalJobAmount);
+                        var profit = scoopAmount - jobAmount;
+                        if (scoopAmount) {
+                            var marginloss = 0;
+                            var profitMargin = ((scoopAmount - jobAmount) * 100) / parseFloat(scoopAmount);
+                        } else {
+                            var marginloss = 1;
+                            if (jobAmount > 0) {
+                                profitMargin = -100;
+                            } else {
+                                profitMargin = 0;
+                            }
+                        }
+                        var grossProfit = scoopAmount - jobAmount;
+                        var grossProfit = grossProfit ? grossProfit : 0.00;
+                        if (profitMargin) {
+                            profitMargin = profitMargin.toFixed(2);
+                            var isNegetive = Math.sign(profitMargin);
+                            if (isNegetive == -1 || isNegetive == -0) {
+                                var marginloss = 1;
+                            }
+                            profitMargin = $filter('NumbersCommaformat')(profitMargin) + "%";
+                        } else {
+                            profitMargin = '0,00' + "%";
+                            var marginloss = 1;
+                        }
+                        //console.log('jobAmount',jobAmount);
+
+                        angular.element('#profitMargin' + $scope.itemjobList[i].item_number).text(profitMargin);
+                        if (marginloss) {
+                            $('#profitMargin' + $scope.itemjobList[i].item_number).css("color", "red");
+                        }
+                        if (val.due_date != null) {
+                            var sales = val.total_amount
+                            sales = $filter('NumbersCommaformat')(sales);
+                            var sales = sales ? sales : '0,00';
+                            var expense = $filter('NumbersCommaformat')(jobAmount);
+                            var expense = expense ? expense : '0,00';
+                            var grossProfit = $filter('NumbersCommaformat')(grossProfit);
+                            var grossProfit = grossProfit ? grossProfit : '0,00';
+                            var html = "<table><tr><td>Sales : </td><td>" + sales + "</td></tr><tr><td>Expense I (Prices) : </td><td> " + expense + " <td></tr><tr><td>Gross profit : </td><td> " + grossProfit + "</td></tr><tr><td>Profit margin : </td><td> " + profitMargin + "</td></tr></table>";
+                            $timeout(function () {
+                                angular.element("#myPopover" + i).popover({
+                                    title: '',
+                                    content: html,
+                                    html: true,
+                                });
+
+                            }, 3000);
+                        }
+                    })
+
+                    if (!$scope.itemListJob.length || $scope.itemListJob == "" || $scope.itemListJob == "") {
+                        $scope.displayNodata = true;
+                    }
+                }).error(errorCallback);
+
+                $scope.itemjobDataId = [];
+                angular.forEach(data, function (val, i) {
+                    if (val.item_id != 0) {
+                        $scope.itemjobDataId = 1;
+                    }
+                })
+
+            }).error(errorCallback);
+
+        })
+
+        $scope.manual = false;
+        $scope.auto = true;
+    }
+
+        $scope.countAction = function (id, name) {
+        closeWindows();
+        localStorage['jobfolderId'] = id;
+        localStorage['typeOfJobFolder'] = name;
+        $window.localStorage.ItemClient = '';
+        var ItemcodeNumber = angular.element('#itemCode').text();
+        // start to get downloaded folder name with client name
+        rest.path = 'customer/' + $window.localStorage.orderID;
+        rest.get().success(function (res) {
+            $scope.customer = res;
+            if (res) {
+                rest.path = 'client/' + $scope.customer.client;
+                rest.get().success(function (cData) {
+                    $scope.directClientData = cData
+                    $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                }).error(function (data, error, status) { });
+            }
+        })
+        // end
+        $window.localStorage.ItemcodeNumber = ItemcodeNumber;
+
+        var JobFolders = window.open('#/filemanager/' + name, "popup", "width=1000,height=750");
+        JobFolders.addEventListener("beforeunload", function () {
+            var id1 = $window.localStorage.getItem("jobFolderRoot");
+            var type1 = $window.localStorage.getItem("jobFoldertype");
+            var externalResourceUserId1 = null;
+            var count;
+            rest.path = 'filefolderGet/' + id1 + '/' + type1 + '/' + externalResourceUserId1;
+            rest.get().success(function (data) {
+                count = data.length;
+                if (!count) {
+                    count = 0;
+                }
+                if (type1) {
+                    if (type1 == 'source') {
+                        $('#sourceCount-' + id).text(count);
+                    }
+                    if (type1 == 'target') {
+                        $('#targetCount-' + id).text(count);
+                    }
+                }
+            }).error(errorCallback);
+
+            localStorage['parentId'] = ' ';
+            $window.localStorage.setItem("jobFoldertype", '');
+            return false;
+        }, false);
+        openWindows.push(JobFolders);
+    }
+
+    var getCountJobFolder = function () {
+        var count = $window.localStorage.getItem("sourceFolderCount");
+        if (!count) {
+            count = 0;
+        }
+        var type = $window.localStorage.getItem("jobFoldertype");
+        var id = $window.localStorage.getItem("jobfolderId");
+        //console.log('testid',id);
+        if (type) {
+            if (type == 'source') {
+                $('#sourceCount-' + id).text(count);
+            }
+            if (type == 'target') {
+                $('#targetCount-' + id).text(count);
+            }
+        }
+    }
+    $interval(getCountJobFolder, 1000);
+
+    $scope.edit = function (jobId) {
+        scrollBodyToTop();
+        //$location.path('/job-summery-details/' + id);
+        $routeParams.id = jobId;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/jobEditPopup.html',
+            controller: 'jobSummeryDetailsController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            }
+        });
+
+        $uibModalInstance.close();
+    }
+
+    $scope.deletejobsDetails = function (id, orderId, taskName) {
+        bootbox.confirm("Are you sure you want to delete this row?", function (result) {
+            if (result == true) {
+                rest.path = 'jobitemDelete/' + id;
+                rest.delete().success(function (res) {
+                    if (res.status) {
+                        notification('You can not delete invoice created job.', 'error');
+                    } else {
+                        //log file start 
+                        $scope.logMaster = {};
+                        $scope.logMaster.log_type_id = orderId;
+                        $scope.logMaster.task_id = id;
+                        $scope.logMaster.log_title = taskName;
+                        $scope.logMaster.log_type = "delete";
+                        $scope.logMaster.log_status = "task";
+                        $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                        rest.path = "saveLog";
+                        rest.post($scope.logMaster).success(function (data) { });
+                        //log file end
+                    }
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        });
+
+        $uibModalInstance.close();
+    }
+
+    $scope.cancel = function () {
+        $uibModalInstance.close();
+    }
+
 }).controller('resourceAdvanceSearchController', function ($timeout, $scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.clientnamec = "";
@@ -28342,7 +29633,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         );
 
-
     $scope.csvDataInsrt = [];
     var percent = 0;
     $scope.csvFieds = []
@@ -28618,5 +29908,4 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     /*Recent Activity Code End*/
-
 });

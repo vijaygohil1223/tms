@@ -3275,12 +3275,36 @@ app.directive('select2SpecializationProject', function($http, rest, $timeout) {
                     type.push(obj);
                 });
                 $timeout(function() {
+                    // element.select2({
+                    //     allowClear: true,
+                    //     data: type,
+                    //     //multiple: true,
+                    //     closeOnSelect:false,
+                    //     maximumSelectionSize:2,
+                        
+                    // });
                     element.select2({
                         allowClear: true,
                         data: type,
                         multiple: true,
-                        closeOnSelect:false
+                        closeOnSelect:false,
+                        //maximumSelectionSize:2,
+                    }).on("change", function (e) {
+                        console.log('e', e.added.text)
+                        //if($('#s2id_specialization').find('.select2-search-choice-close').length)
+                        //$('#s2id_specialization').find('.select2-search-choice-close').click()
+                        var selected = []; // create an array to hold all currently wrote by user
+                        // loop through each option
+                        $('#specialization option').each(function() {
+                            // if it's selected, add it to the array above
+                            // if (this.selected) {
+                            //     selected.push(this.value);
+                            // }
+                        });
+                        // store the array of selected options
+                        // sessionStorage.setItem('category', JSON.stringify(selected));
                     });
+
                 }, 500);
             }).error(function(data,error,status){});
 
@@ -5099,9 +5123,10 @@ app.directive('select2Projectbranch', function($http, rest, $timeout) {
         }
     }
 });
+// sidebar show hide
 app.directive('ngSidebarHideshow', function () {
     return {
-        restrict: 'EA', //Default in 1.3+
+        restrict: 'EA', // Default in 1.3+
         template: '<a ng-click="hideshowSidebar()" class="btn no-shadow navbar-btn addactive"><i class="fa fa-dedent fa-fw text"></i> <i class="fa fa-indent fa-fw text-active"></i> </a>',
         controller: function ($scope) {
             $scope.hideshowSidebar = function () {

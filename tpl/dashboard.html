@@ -396,6 +396,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
+                            <th>Heads Up</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -411,7 +412,7 @@ td { font-size: 11px; } */
                             </tr> -->
                             <tr ng-repeat="order in projectsDueToday">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -471,6 +472,10 @@ td { font-size: 11px; } */
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1">Heads Up</span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -563,6 +568,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
+                            <th>Heads up</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -574,7 +580,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsAssigned">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -637,6 +643,10 @@ td { font-size: 11px; } */
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1"> Heads up </span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -732,6 +742,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
+                            <th>Heads up</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -743,7 +754,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsInProgress">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -806,6 +817,10 @@ td { font-size: 11px; } */
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1"> Heads up </span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -897,6 +912,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
+                            <th>Heads up</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -908,7 +924,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsQaready">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -971,6 +987,10 @@ td { font-size: 11px; } */
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1"> Heads up </span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -1062,6 +1082,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
+                            <th>Heads up</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -1073,7 +1094,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsToBeDelivered">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -1136,6 +1157,10 @@ td { font-size: 11px; } */
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1"> Heads up </span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -1228,6 +1253,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
+                            <th>Heads up</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -1239,7 +1265,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsDueTomorrow">
                               <td>
-                                <a ng-click="goToProjectViewdetail(order.orderId)">
+                                <a ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -1302,6 +1328,10 @@ td { font-size: 11px; } */
                               <td>{{order.pm_name}}</td>
                               <td><span ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </span>
                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1"> Heads up </span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -1393,6 +1423,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
+                            <th>Heads up</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -1404,7 +1435,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsDelivered">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -1467,6 +1498,10 @@ td { font-size: 11px; } */
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1"> Heads up </span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -1561,6 +1596,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
+                            <th>Heads Up</th>
                             <th>Deadline</th>
                             <th>Progress</th>
                             <th>Status</th>
@@ -1571,12 +1607,12 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsAll">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToProjectViewdetail(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
-                                <small class="block m-t-sm">
+                                <!-- <small class="block m-t-sm">
                                   <span class="label bg-light">Scoop - {{order.item_number | numberFixedLen:3 }}</span>
-                                </small>
+                                </small> -->
                               </td>
                               <td>
                                 <article class="media">
@@ -1636,6 +1672,10 @@ td { font-size: 11px; } */
                               <td>{{order.pm_name}}</td>
                               <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1"> Heads up </span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
