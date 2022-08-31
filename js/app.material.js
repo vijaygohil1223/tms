@@ -416,6 +416,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'overviewReportController',
             activetab: 'overview-report',
             role: '1'
+        }).when('/internal-statistics', {
+            templateUrl: modulesPath + 'project_statistics.html',
+            controller: 'projectStatisticsController',
+            activetab: 'overview-report',
+            role: '1'            
         }).when('/project-job-detail/:id', {
             templateUrl: modulesPath + 'project_job_detail.html',
             controller: 'projectjobDetailController',

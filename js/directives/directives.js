@@ -822,12 +822,32 @@ app.directive('select2ProjType', function($http, rest, $timeout) {
                     prType.push(obj);
                 });
                 $timeout(function() {
+                    // element.select2({
+                    //     allowClear: true,
+                    //     data: prType,
+                    //     multiple:true,
+                    //     maximumSelectionSize:1
+                    // });
                     element.select2({
                         allowClear: true,
                         data: prType,
-                        multiple:true,
-                        maximumSelectionSize:1
+                        multiple: true,
+                        closeOnSelect:false,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
+
                 }, 200);
 
             }).error(function(data, error, status) {});
@@ -3275,36 +3295,13 @@ app.directive('select2SpecializationProject', function($http, rest, $timeout) {
                     type.push(obj);
                 });
                 $timeout(function() {
-                    // element.select2({
-                    //     allowClear: true,
-                    //     data: type,
-                    //     //multiple: true,
-                    //     closeOnSelect:false,
-                    //     maximumSelectionSize:2,
-                        
-                    // });
                     element.select2({
                         allowClear: true,
                         data: type,
                         multiple: true,
                         closeOnSelect:false,
-                        //maximumSelectionSize:2,
-                    }).on("change", function (e) {
-                        console.log('e', e.added.text)
-                        //if($('#s2id_specialization').find('.select2-search-choice-close').length)
-                        //$('#s2id_specialization').find('.select2-search-choice-close').click()
-                        var selected = []; // create an array to hold all currently wrote by user
-                        // loop through each option
-                        $('#specialization option').each(function() {
-                            // if it's selected, add it to the array above
-                            // if (this.selected) {
-                            //     selected.push(this.value);
-                            // }
-                        });
-                        // store the array of selected options
-                        // sessionStorage.setItem('category', JSON.stringify(selected));
                     });
-
+                    
                 }, 500);
             }).error(function(data,error,status){});
 

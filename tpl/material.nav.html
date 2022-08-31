@@ -46,11 +46,7 @@
 
 
 <ul class="nav sidebar_new" ng-controller="headerController">
-  <li
-    ng-class="{}"
-    ng-if="userRight==1"
-    style="margin-bottom: 10px; border-bottom: 1px solid #e6e6e6"
-  >
+  <li ng-class="{}" ng-if="userRight==1" style="margin-bottom: 10px; border-bottom: 1px solid #e6e6e6">
     <a href class="auto" md-ink-ripple>
       <i class="glyphicon glyphicon glyphicon-star" style="color: #ffbb33"></i>
 
@@ -58,21 +54,14 @@
     </a>
 
     <ul class="nav nav-sub dk">
-      <li
-        ng-repeat="menu in menus track by $index"
-        ng-mouseover="menuHoverIn('fvmenu'+$index);"
-        ng-mouseleave="menuHoverOut('fvmenu'+$index)"
-      >
+      <li ng-repeat="menu in menus track by $index" ng-mouseover="menuHoverIn('fvmenu'+$index);"
+        ng-mouseleave="menuHoverOut('fvmenu'+$index)">
         <a href="{{menu.fvMenuUrl}}" md-ink-ripple>
           <span class="font-bol"> {{menu.fvMenuName}} </span>
         </a>
 
-        <i
-          class="glyphicon glyphicon-remove-sign removeFavourite fvIconHide"
-          ng-click="removeFromFavouriteMenu($event);"
-          id="fvmenu{{$index}}"
-          title="Remove from favourite"
-        ></i>
+        <i class="glyphicon glyphicon-remove-sign removeFavourite fvIconHide"
+          ng-click="removeFromFavouriteMenu($event);" id="fvmenu{{$index}}" title="Remove from favourite"></i>
       </li>
 
       <!--  <li ng-if="!menus.length">
@@ -91,23 +80,15 @@
     </ul>
   </li>
 
-  <li
-    ng-mouseover="menuHoverIn('dashboardMenu');"
-    ng-mouseleave="menuHoverOut('dashboardMenu')"
-  >
+  <li ng-mouseover="menuHoverIn('dashboardMenu');" ng-mouseleave="menuHoverOut('dashboardMenu')">
     <a href="#/dashboard1" md-ink-ripple>
       <i class="glyphicon glyphicon-home icon" style="color: #ff4444"></i>
 
       <span class="font-bold">Dashboard</span>
     </a>
 
-    <i
-      ng-if="userRight==1"
-      class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-      ng-click="addToFavouriteMenu($event);"
-      id="dashboardMenu"
-      title="Add to Favourite"
-    ></i>
+    <i ng-if="userRight==1" class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+      ng-click="addToFavouriteMenu($event);" id="dashboardMenu" title="Add to Favourite"></i>
   </li>
 
   <li ng-if="adminRole==1" class="sidebarArrow">
@@ -118,37 +99,22 @@
     </a>
 
     <ul class="nav nav-sub dk newmySub">
-      <li
-        ng-mouseover="menuHoverIn('internalMenu');"
-        ng-mouseleave="menuHoverOut('internalMenu')"
-        class="sidebarSub"
-      >
+      <li ng-mouseover="menuHoverIn('internalMenu');" ng-mouseleave="menuHoverOut('internalMenu')" class="sidebarSub">
         <a href="#/user/1" md-ink-ripple>
           <span class="font-bol">Internal Resource</span>
         </a>
 
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="internalMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="internalMenu" title="Add to Favourite"></i>
       </li>
 
-      <li
-        ng-mouseover="menuHoverIn('externalMenu');"
-        ng-mouseleave="menuHoverOut('externalMenu')"
-      >
+      <li ng-mouseover="menuHoverIn('externalMenu');" ng-mouseleave="menuHoverOut('externalMenu')">
         <a href="#/user/2" md-ink-ripple>
           <span class="font-bol">External Resource</span>
         </a>
 
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="externalMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="externalMenu" title="Add to Favourite"></i>
       </li>
     </ul>
   </li>
@@ -167,10 +133,7 @@
 
   <li ng-if="adminRole==1" class="sidebarArrow">
     <a href class="auto" md-ink-ripple>
-      <i
-        class="glyphicon glyphicon-th glyphicon-lock"
-        style="color: #2bbbad"
-      ></i>
+      <i class="glyphicon glyphicon-th glyphicon-lock" style="color: #2bbbad"></i>
 
       <span class="font-bold">Clients</span>
     </a>
@@ -181,12 +144,8 @@
           <span class="font-bol">Clients</span>
         </a>
 
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="clientMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="clientMenu" title="Add to Favourite"></i>
       </li>
 
       <li ng-mouseleave="menuHoverOut('accountsMenu')">
@@ -194,12 +153,8 @@
           <span class="font-bol">Accounts</span>
         </a>
 
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="accountsMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="accountsMenu" title="Add to Favourite"></i>
       </li>
     </ul>
   </li>
@@ -223,47 +178,36 @@
                                     </a>
 
                                 </li> -->
-      <li
-        ng-mouseover="menuHoverIn('srjMenu');"
-        ng-mouseleave="menuHoverOut('srjMenu')"
-      >
+      <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
         <a href="#/overview-report" md-ink-ripple>
           <span class="font-bol">Overview Reports</span>
         </a>
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="srjMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="srjMenu" title="Add to Favourite"></i>
+      </li>
+      <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
+        <a href="#/internal-statistics" md-ink-ripple>
+          <span class="font-bol">Internal Statistics</span>
+        </a>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="srjMenu" title="Add to Favourite"></i>
       </li>
       <li ng-mouseleave="menuHoverOut('sroMenu')">
         <a href="#/Order-status-report" md-ink-ripple>
           <span class="font-bol">Status Report - Orders</span>
         </a>
 
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="sroMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="sroMenu" title="Add to Favourite"></i>
       </li>
 
-      <li
-        ng-mouseover="menuHoverIn('srjMenu');"
-        ng-mouseleave="menuHoverOut('srjMenu')"
-      >
+      <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
         <a href="#/Jobs-status-report" md-ink-ripple>
           <span class="font-bol">Status Report - Jobs</span>
         </a>
 
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="srjMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="srjMenu" title="Add to Favourite"></i>
       </li>
     </ul>
   </li>
@@ -290,10 +234,7 @@
 
   <li ng-if="adminRole==1" class="sidebarArrow">
     <a href class="auto" md-ink-ripple>
-      <i
-        class="glyphicon glyphicon-credit-card icon"
-        style="color: #aa66cc"
-      ></i>
+      <i class="glyphicon glyphicon-credit-card icon" style="color: #aa66cc"></i>
       <span class="font-bold">Invoice</span>
     </a>
     <ul class="nav nav-sub dk">
@@ -301,23 +242,15 @@
         <a href="#/invoice-client" md-ink-ripple>
           <span class="font-bol">Client Invoice</span>
         </a>
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="accountsMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="accountsMenu" title="Add to Favourite"></i>
       </li>
       <li ng-mouseleave="menuHoverOut('clientMenu')">
         <a href="#/invoice-data" md-ink-ripple>
           <span class="font-bol">Linguist Invoice</span>
         </a>
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="clientMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="clientMenu" title="Add to Favourite"></i>
       </li>
     </ul>
   </li>
@@ -346,61 +279,45 @@
       id="statementMenu"
       title="Add to Favourite" ></i>
   </li> -->
-    <li ng-if="adminRole==1" class="sidebarArrow">
-        <a href class="auto" md-ink-ripple>
-          <i class="glyphicon glyphicon-send icon" style="color: #e91e63"></i>
-          <span class="font-bold">Statement</span>
+  <li ng-if="adminRole==1" class="sidebarArrow">
+    <a href class="auto" md-ink-ripple>
+      <i class="glyphicon glyphicon-send icon" style="color: #e91e63"></i>
+      <span class="font-bold">Statement</span>
+    </a>
+    <ul class="nav nav-sub dk">
+      <li ng-mouseleave="menuHoverOut('statementMenu')">
+        <a href="#/client-statement" md-ink-ripple ng-click="statementType('client');">
+          <span class="font-bol">Client Statement</span>
         </a>
-        <ul class="nav nav-sub dk">
-          <li ng-mouseleave="menuHoverOut('statementMenu')">
-            <a href="#/client-statement" md-ink-ripple ng-click="statementType('client');">
-              <span class="font-bol">Client Statement</span>
-            </a>
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="statementMenu"
-              title="Add to Favourite"
-            ></i>
-          </li>
-          <li ng-mouseleave="menuHoverOut('clientMenu')">
-            <a href="#/statement" md-ink-ripple ng-click="statementType('linguist');">
-              <span class="font-bol">Linguist Statement</span>
-            </a>
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="clientMenu"
-              title="Add to Favourite"
-            ></i>
-          </li>
-        </ul>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="statementMenu" title="Add to Favourite"></i>
       </li>
+      <li ng-mouseleave="menuHoverOut('clientMenu')">
+        <a href="#/statement" md-ink-ripple ng-click="statementType('linguist');">
+          <span class="font-bol">Linguist Statement</span>
+        </a>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="clientMenu" title="Add to Favourite"></i>
+      </li>
+    </ul>
+  </li>
 
 
-<li ng-if="userRight==1"
-    ng-mouseover="menuHoverIn('knowledgeBaseMenu');"
-    ng-mouseleave="menuHoverOut('knowledgeBaseMenu')"
-  >
+  <li ng-if="userRight==1" ng-mouseover="menuHoverIn('knowledgeBaseMenu');"
+    ng-mouseleave="menuHoverOut('knowledgeBaseMenu')">
     <a href="knowledge/#/" md-ink-ripple>
       <i class="glyphicon glyphicon-paperclip icon" style="color: #7283a7"></i>
 
       <span class="font-bold">Knowledge Base</span>
     </a>
 
-    <i
-      class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-      ng-click="addToFavouriteMenu($event);"
-      id="knowledgeBaseMenu"
-      title="Add to Favourite"
-    ></i>
+    <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);"
+      id="knowledgeBaseMenu" title="Add to Favourite"></i>
   </li>
 
   <li
     ng-class="{active: activetab == '/resourcetype' || activetab == '/resourcestatus' || activetab == '/currency' || activetab == '/to-do-lists' || activetab == '/property' || activetab == '/language'  || activetab == '/languages' || activetab == '/project-type' || activetab == '/customer-status' || activetab == '/tax-status' || activetab == '/item-status' || activetab == '/jobs' || activetab == '/services' || activetab == '/price1' || activetab == '/price2' || activetab == '/master-price' || activetab == '/child-price' || activetab == '/customer-types' || activetab == '/newjob' || activetab == '/business-units' || activetab == '/sign' || activetab == '/project-status' || activetab == '/knowledge_category' || activetab == '/knowledge_article' || activetab == '/customer-price-list' || activetab == '/resource-price-list' || activetab == '/rounding-price' || activetab == '/knowledge_news' || activetab == '/calendar-event-add' || activetab == '/funny-picture' || activetab == '/national-holiday' || activetab == '/invoice-due-period'  || activetab == '/work-instruction' || activetab == '/job-chain' || activetab == '/resource-position' || activetab == '/reported-images'|| activetab == '/resources' || activetab == '/dateformat' || activetab == '/decimal-separator'}"
-    ng-if="adminRole==1"
-    class="sidebarArrow"
-  >
+    ng-if="adminRole==1" class="sidebarArrow">
     <a href class="auto" md-ink-ripple>
       <i class="glyphicon glyphicon-th-large icon" style="color: #880e4f"></i>
 
@@ -408,21 +325,14 @@
     </a>
 
     <ul class="nav nav-sub dk">
-      <li
-        ng-class="{'active menuBg': activetab == '/resources'}"
-        ng-mouseover="menuHoverIn('adminResourceMenu');"
-        ng-mouseleave="menuHoverOut('adminResourceMenu')"
-      >
+      <li ng-class="{'active menuBg': activetab == '/resources'}" ng-mouseover="menuHoverIn('adminResourceMenu');"
+        ng-mouseleave="menuHoverOut('adminResourceMenu')">
         <a href="#/resources" md-ink-ripple>
           <span class="font-bol">Resources</span>
         </a>
 
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="adminResourceMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="adminResourceMenu" title="Add to Favourite"></i>
       </li>
 
       <!-- <li ng-class="{active: activetab == '/resourcetype' || activetab == '/resourcestatus' || activetab == '/resource-position'}" class="sidebarArrow">
@@ -469,30 +379,20 @@
 
             </li> -->
 
-      <li
-        ng-class="{active: activetab == '/customer-status' || activetab == '/customer-types'}"
-        class="sidebarArrow"
-      >
+      <li ng-class="{active: activetab == '/customer-status' || activetab == '/customer-types'}" class="sidebarArrow">
         <a href="javascript:void(0)" md-ink-ripple>
           <span class="font-bol">Client</span>
         </a>
 
         <ul class="nav nav-sub dk">
-          <li
-            ng-class="{'active menuBg': activetab == '/customer-status'}"
-            ng-mouseover="menuHoverIn('clientStatusMenu');"
-            ng-mouseleave="menuHoverOut('clientStatusMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/customer-status'}"
+            ng-mouseover="menuHoverIn('clientStatusMenu');" ng-mouseleave="menuHoverOut('clientStatusMenu')">
             <a href="#/customer-status" md-ink-ripple>
               <span class="font-bol underSubmenu">Client Status</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="clientStatusMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="clientStatusMenu" title="Add to Favourite"></i>
           </li>
 
           <!-- <li ng-class="{active: activetab == '/customer-types'}">
@@ -509,28 +409,20 @@
 
       <li
         ng-class="{active: activetab == '/currency' || activetab == '/property' || activetab == '/language'  || activetab == '/languages' || activetab == '/business-units' || activetab == '/sign' || activetab == '/to-do-lists' || activetab == '/national-holiday' || activetab == '/dateformat' || activetab == '/decimal-separator'}"
-        class="sidebarArrow"
-      >
+        class="sidebarArrow">
         <a href="javascript:void(0)" md-ink-ripple>
           <span class="font-bol">System</span>
         </a>
 
         <ul class="nav nav-sub dk">
-          <li
-            ng-class="{'active menuBg': activetab == '/currency'}"
-            ng-mouseover="menuHoverIn('currencyMenu');"
-            ng-mouseleave="menuHoverOut('currencyMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/currency'}" ng-mouseover="menuHoverIn('currencyMenu');"
+            ng-mouseleave="menuHoverOut('currencyMenu')">
             <a href="#/currency" md-ink-ripple>
               <span class="font-bol underSubmenu">Currency</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="currencyMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="currencyMenu" title="Add to Favourite"></i>
           </li>
 
           <!--  <li ng-class="{'active menuBg':  activetab == '/national-holiday'}" ng-mouseover="menuHoverIn('nationalHolidayMenu');" ng-mouseleave="menuHoverOut('nationalHolidayMenu')">
@@ -545,122 +437,73 @@
 
                    </li> -->
 
-          <li
-            ng-class="{'active menuBg': activetab == '/property'}"
-            ng-mouseover="menuHoverIn('propertiesMenu');"
-            ng-mouseleave="menuHoverOut('propertiesMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/property'}" ng-mouseover="menuHoverIn('propertiesMenu');"
+            ng-mouseleave="menuHoverOut('propertiesMenu')">
             <a href="#/property" md-ink-ripple>
               <span class="font-bol underSubmenu">Properties</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="propertiesMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="propertiesMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/language'}"
-            ng-mouseover="menuHoverIn('languagesMenu');"
-            ng-mouseleave="menuHoverOut('languagesMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/language'}" ng-mouseover="menuHoverIn('languagesMenu');"
+            ng-mouseleave="menuHoverOut('languagesMenu')">
             <a href="#/language" md-ink-ripple>
               <span class="font-bol underSubmenu">Languages</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="languagesMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="languagesMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/languages'}"
-            ng-mouseover="menuHoverIn('languagestransMenu');"
-            ng-mouseleave="menuHoverOut('languagestransMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/languages'}" ng-mouseover="menuHoverIn('languagestransMenu');"
+            ng-mouseleave="menuHoverOut('languagestransMenu')">
             <a href="#/languages" md-ink-ripple>
               <span class="font-bol underSubmenu">Languages (Translate)</span>
             </a>
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="languagestransMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="languagestransMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/business-units'}"
-            ng-mouseover="menuHoverIn('businessUnitsMenu');"
-            ng-mouseleave="menuHoverOut('businessUnitsMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/business-units'}"
+            ng-mouseover="menuHoverIn('businessUnitsMenu');" ng-mouseleave="menuHoverOut('businessUnitsMenu')">
             <a href="#/business-units" md-ink-ripple>
               <span class="font-bol underSubmenu">Business Units</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="businessUnitsMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="businessUnitsMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/sign'}"
-            ng-mouseover="menuHoverIn('templatesMenu');"
-            ng-mouseleave="menuHoverOut('templatesMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/sign'}" ng-mouseover="menuHoverIn('templatesMenu');"
+            ng-mouseleave="menuHoverOut('templatesMenu')">
             <a href="#/sign" md-ink-ripple>
               <span class="font-bol underSubmenu">Templates</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="templatesMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="templatesMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/dateformat'}"
-            ng-mouseover="menuHoverIn('dateFormatMenu');"
-            ng-mouseleave="menuHoverOut('dateFormatMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/dateformat'}" ng-mouseover="menuHoverIn('dateFormatMenu');"
+            ng-mouseleave="menuHoverOut('dateFormatMenu')">
             <a href="#/dateformat" md-ink-ripple>
               <span class="font-bol underSubmenu">Date format</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="dateFormatMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="dateFormatMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/decimal-separator'}"
-            ng-mouseover="menuHoverIn('decimalSeparatorMenu');"
-            ng-mouseleave="menuHoverOut('decimalSeparatorMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/decimal-separator'}"
+            ng-mouseover="menuHoverIn('decimalSeparatorMenu');" ng-mouseleave="menuHoverOut('decimalSeparatorMenu')">
             <a href="#/decimal-separator" md-ink-ripple>
               <span class="font-bol underSubmenu">Decimal separator</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="decimalSeparatorMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="decimalSeparatorMenu" title="Add to Favourite"></i>
           </li>
 
           <!-- <li ng-class="{active: activetab == '/to-do-lists'}">
@@ -677,79 +520,50 @@
 
       <li
         ng-class="{active: activetab == '/project-type' || activetab == '/project-status' || activetab == '/jobs' || activetab == '/newjob' || activetab == '/job-chain' || activetab == '/services' || activetab == '/master-price' || activetab == '/child-price' || activetab == '/customer-price-list' || activetab == '/resource-price-list' || activetab == '/rounding-price' || activetab == '/invoice-due-period' || activetab == '/work-instruction'}"
-        class="sidebarArrow"
-      >
+        class="sidebarArrow">
         <a href="javascript:void(0)" md-ink-ripple>
           <span class="font-bol">Projects</span>
         </a>
 
         <ul class="nav nav-sub dk">
-          <li
-            ng-class="{'active menuBg': activetab == '/project-type'}"
-            ng-mouseover="menuHoverIn('projectTypesMenu');"
-            ng-mouseleave="menuHoverOut('projectTypesMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/project-type'}" ng-mouseover="menuHoverIn('projectTypesMenu');"
+            ng-mouseleave="menuHoverOut('projectTypesMenu')">
             <a href="#/project-type" md-ink-ripple>
               <span class="font-bol underSubmenu">Project Types</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="projectTypesMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="projectTypesMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/project-status'}"
-            ng-mouseover="menuHoverIn('projectStatuMenu');"
-            ng-mouseleave="menuHoverOut('projectStatuMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/project-status'}"
+            ng-mouseover="menuHoverIn('projectStatuMenu');" ng-mouseleave="menuHoverOut('projectStatuMenu')">
             <a href="#/project-status" md-ink-ripple>
               <span class="font-bol underSubmenu">Project Status</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="projectStatuMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="projectStatuMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/jobs'}"
-            ng-mouseover="menuHoverIn('jobsMenu');"
-            ng-mouseleave="menuHoverOut('jobsMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/jobs'}" ng-mouseover="menuHoverIn('jobsMenu');"
+            ng-mouseleave="menuHoverOut('jobsMenu')">
             <a href="#/jobs" md-ink-ripple>
               <span class="font-bol underSubmenu">Jobs</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="jobsMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="jobsMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/newjob' || activetab == '/job-chain'}"
-            ng-mouseover="menuHoverIn('jobChainMenu');"
-            ng-mouseleave="menuHoverOut('jobChainMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/newjob' || activetab == '/job-chain'}"
+            ng-mouseover="menuHoverIn('jobChainMenu');" ng-mouseleave="menuHoverOut('jobChainMenu')">
             <a href="#/newjob" md-ink-ripple>
               <span class="font-bol underSubmenu">Job Chain</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="jobChainMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="jobChainMenu" title="Add to Favourite"></i>
           </li>
 
           <!-- <li ng-class="{'active menuBg': activetab == '/services'}" ng-mouseover="menuHoverIn('servicesMenu');" ng-mouseleave="menuHoverOut('servicesMenu')">
@@ -766,19 +580,13 @@
 
           <li
             ng-class="{'active menuBg': activetab == '/master-price' || activetab == '/child-price' || activetab == '/rounding-price'}"
-            ng-mouseover="menuHoverIn('priceUnitsMenu');"
-            ng-mouseleave="menuHoverOut('priceUnitsMenu')"
-          >
+            ng-mouseover="menuHoverIn('priceUnitsMenu');" ng-mouseleave="menuHoverOut('priceUnitsMenu')">
             <a href="#/master-price" md-ink-ripple>
               <span class="font-bol underSubmenu">Price Units</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="priceUnitsMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="priceUnitsMenu" title="Add to Favourite"></i>
           </li>
 
           <!-- <li ng-class="{active: activetab == '/customer-price-list' || activetab == '/resource-price-list'}">
@@ -791,37 +599,23 @@
 
                     </li> -->
 
-          <li
-            ng-class="{'active menuBg': activetab == '/invoice-due-period'}"
-            ng-mouseover="menuHoverIn('invoiceDueMenu');"
-            ng-mouseleave="menuHoverOut('invoiceDueMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/invoice-due-period'}"
+            ng-mouseover="menuHoverIn('invoiceDueMenu');" ng-mouseleave="menuHoverOut('invoiceDueMenu')">
             <a href="#/invoice-due-period" md-ink-ripple>
               <span class="font-bol underSubmenu">Invoice Due</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="invoiceDueMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="invoiceDueMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/banking-details'}"
-            ng-mouseover="menuHoverIn('bankingDetailsMenu');"
-            ng-mouseleave="menuHoverOut('bankingDetailsMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/banking-details'}"
+            ng-mouseover="menuHoverIn('bankingDetailsMenu');" ng-mouseleave="menuHoverOut('bankingDetailsMenu')">
             <a href="#/banking-details" md-ink-ripple>
               <span class="font-bol underSubmenu">Banking Info</span>
             </a>
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="bankingDetailsMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="bankingDetailsMenu" title="Add to Favourite"></i>
           </li>
 
           <!-- <li ng-class="{'active menuBg': activetab == '/work-instruction'}" ng-mouseover="menuHoverIn('workInstructionsMenu');" ng-mouseleave="menuHoverOut('workInstructionsMenu')">
@@ -838,131 +632,81 @@
         </ul>
       </li>
 
-      <li
-        ng-class="{'active menuBg': activetab == '/tax-status'}"
-        ng-mouseover="menuHoverIn('taxationMenu');"
-        ng-mouseleave="menuHoverOut('taxationMenu')"
-      >
+      <li ng-class="{'active menuBg': activetab == '/tax-status'}" ng-mouseover="menuHoverIn('taxationMenu');"
+        ng-mouseleave="menuHoverOut('taxationMenu')">
         <a href="#/tax-status" md-ink-ripple>
           <span class="font-bol">Taxation</span>
         </a>
-        <i
-          class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-          ng-click="addToFavouriteMenu($event);"
-          id="taxationMenu"
-          title="Add to Favourite"
-        ></i>
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="taxationMenu" title="Add to Favourite"></i>
       </li>
 
       <li
         ng-class="{active: activetab == '/knowledge_category' || activetab == '/knowledge_article' || activetab == '/knowledge_news' || activetab == '/calendar-event-add' || activetab == '/funny-picture' || activetab == '/reported-images'}"
-        class="sidebarArrow"
-      >
+        class="sidebarArrow">
         <a href="javascript:void(0)">
           <span class="font-bol">Knowledge Base</span>
         </a>
 
         <ul class="nav nav-sub dk">
-          <li
-            ng-class="{'active menuBg': activetab == '/knowledge_category'}"
-            ng-mouseover="menuHoverIn('knowledgeCategoryMenu');"
-            ng-mouseleave="menuHoverOut('knowledgeCategoryMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/knowledge_category'}"
+            ng-mouseover="menuHoverIn('knowledgeCategoryMenu');" ng-mouseleave="menuHoverOut('knowledgeCategoryMenu')">
             <a href="#/knowledge_category" md-ink-ripple>
               <span class="font-bol underSubmenu">Category</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="knowledgeCategoryMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="knowledgeCategoryMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/knowledge_article'}"
-            ng-mouseover="menuHoverIn('articlesMenu');"
-            ng-mouseleave="menuHoverOut('articlesMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/knowledge_article'}"
+            ng-mouseover="menuHoverIn('articlesMenu');" ng-mouseleave="menuHoverOut('articlesMenu')">
             <a href="#/knowledge_article" md-ink-ripple>
               <span class="font-bol underSubmenu">Articles</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="articlesMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="articlesMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/knowledge_news'}"
-            ng-mouseover="menuHoverIn('newsMenu');"
-            ng-mouseleave="menuHoverOut('newsMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/knowledge_news'}" ng-mouseover="menuHoverIn('newsMenu');"
+            ng-mouseleave="menuHoverOut('newsMenu')">
             <a href="#/knowledge_news" md-ink-ripple>
               <span class="font-bol underSubmenu">News</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="newsMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="newsMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/calendar-event-add'}"
-            ng-mouseover="menuHoverIn('calendarMenu');"
-            ng-mouseleave="menuHoverOut('calendarMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/calendar-event-add'}"
+            ng-mouseover="menuHoverIn('calendarMenu');" ng-mouseleave="menuHoverOut('calendarMenu')">
             <a href="#/calendar-event-add" md-ink-ripple>
               <span class="font-bol underSubmenu">Calendar Event</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="calendarMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="calendarMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/funny-picture'}"
-            ng-mouseover="menuHoverIn('funnyPictureMenu');"
-            ng-mouseleave="menuHoverOut('funnyPictureMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/funny-picture'}"
+            ng-mouseover="menuHoverIn('funnyPictureMenu');" ng-mouseleave="menuHoverOut('funnyPictureMenu')">
             <a href="#/funny-picture" md-ink-ripple>
               <span class="font-bol underSubmenu">Funny Picture</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="funnyPictureMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="funnyPictureMenu" title="Add to Favourite"></i>
           </li>
 
-          <li
-            ng-class="{'active menuBg': activetab == '/reported-images'}"
-            ng-mouseover="menuHoverIn('reportedImagesMenu');"
-            ng-mouseleave="menuHoverOut('reportedImagesMenu')"
-          >
+          <li ng-class="{'active menuBg': activetab == '/reported-images'}"
+            ng-mouseover="menuHoverIn('reportedImagesMenu');" ng-mouseleave="menuHoverOut('reportedImagesMenu')">
             <a href="#/reported-images" md-ink-ripple>
               <span class="font-bol underSubmenu">Reported Images</span>
             </a>
 
-            <i
-              class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);"
-              id="reportedImagesMenu"
-              title="Add to Favourite"
-            ></i>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="reportedImagesMenu" title="Add to Favourite"></i>
           </li>
         </ul>
       </li>
@@ -999,11 +743,7 @@
     </ul>
   </li>
 
-  <li
-    ng-class="{active: activetab == '/project-job-satatus'}"
-    ng-if="userRight==2"
-    class="sidebarArrow"
-  >
+  <li ng-class="{active: activetab == '/project-job-satatus'}" ng-if="userRight==2" class="sidebarArrow">
     <a id="project" md-ink-ripple>
       <i class="glyphicon glyphicon-duplicate icon" style="color: #4285f4"></i>
 
@@ -1021,10 +761,7 @@
 
   <li ng-class="{active: activetab == '/invoice-detail'}" ng-if="userRight==2">
     <a href="#/invoice-detail" md-ink-ripple>
-      <i
-        class="glyphicon glyphicon-credit-card icon"
-        style="color: #aa66cc"
-      ></i>
+      <i class="glyphicon glyphicon-credit-card icon" style="color: #aa66cc"></i>
 
       <span class="font-bold">Invoices</span>
     </a>
