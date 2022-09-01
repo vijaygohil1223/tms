@@ -166,4 +166,21 @@ class orderstatussearch {
 	    	$data = $this->_db->update('tms_items',$data);
 	    	return $data;
 	    }
+
+		// Project statistics internal
+		public function projectStatistics(){
+			$qry = "SELECT gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,cust.project_manager as pm_id, cust.indirect_customer,cust.project_coordinator as cordinator_id, cust.indirect_customer, cust.QA_specialist as qa_id, gen.project_status AS projectStatus, gen.project_type AS projectType, tu.vUserName AS pm_name FROM tms_general AS gen LEFT JOIN tms_customer AS cust ON gen.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager";
+			$data = $this->_db->rawQuery($qry);
+		
+			$data['data'] = $data;
+			return $data;
+		}
+		public function projectStatisticsLinguist($filterParams){
+			$qry = "SELECT gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer, cust.project_manager AS pm_id, cust.indirect_customer, cust.project_coordinator AS cordinator_id, cust.indirect_customer, cust.QA_specialist AS qa_id, gen.project_status AS projectStatus, gen.project_type AS projectType, tu.vUserName AS pm_name, tsv.resource as resource_id, tci.vUserName as accountName , CONCAT(tcc.vFirstName, ' ', tcc.vLastName) as contact_person FROM tms_general AS gen LEFT JOIN tms_customer AS cust ON gen.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_summmery_view AS tsv ON tsv.order_id = gen.order_id LEFT JOIN tms_client_indirect AS tci ON tci.iClientId = cust.indirect_customer  LEFT JOIN tms_client_contact AS tcc ON tcc.iContactId = cust.contact where tsv.resource =". $filterParams['resource_id'] ." GROUP BY gen.order_id";
+			$data = $this->_db->rawQuery($qry);
+
+			$data['data'] = $data;
+			return $data;
+		}
+		
 }

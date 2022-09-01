@@ -2707,6 +2707,19 @@ $app->get('/ordersearchItemStatusUpdate/:id/:status', 'authenticate',function ($
     $result = $statusOrder->ordersearchItemStatusUpdate($id, $status);
     echoResponse(200, $result);
 });
+//------  Internal project statistics (Report)
+$app->post('/projectStatistics', function () use($app) {
+    $statusOrder = new orderstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusOrder->projectStatistics($data);
+    echoResponse(200, $result);
+});
+$app->post('/projectStatisticsLinguist', function () use($app) {
+    $statusOrder = new orderstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusOrder->projectStatisticsLinguist($data);
+    echoResponse(200, $result);
+});
 
 //----------------Job status search---------------------//
 $app->get('/statusJobReportFind','authenticate', function () use($app) {

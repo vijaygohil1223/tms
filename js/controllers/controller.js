@@ -7149,24 +7149,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
                 saveAs(blob, "Order-status-report.xls");
                 break;
-            case "month":
-                var blob = new Blob([document.getElementById('itemExport').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-month-status-report.xls");
-                break;
-            case "projectType":
-                var blob = new Blob([document.getElementById('ProjectTypeexport').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-Project-Type-status-report.xls");
-                break;
-            case "customers":
-                var blob = new Blob([document.getElementById('customersExports').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-customers-status-report.xls");
-                break;
         }
     };
 
@@ -7209,109 +7191,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please Select option', 'information');
         } else {
             $scope.clReportTotal = 0;
-            if ($scope.orderReport.startCreateDate) {
-                $scope.orderReport.createDateFrom = originalDateFormatNew($scope.orderReport.startCreateDate);
-            }
-            if ($scope.orderReport.endCreateDate) {
-                $scope.orderReport.createDateTo = originalDateFormatNew($scope.orderReport.endCreateDate);
-            }
-            if ($scope.orderReport.startDeliveryDate) {
-                $scope.orderReport.deliveryDateFrom = originalDateFormatNew($scope.orderReport.startDeliveryDate);
-            }
-            if ($scope.orderReport.endDeliveryDate) {
-                $scope.orderReport.deliveryDateTo = originalDateFormatNew($scope.orderReport.endDeliveryDate);
-            }
-            if ($scope.orderReport.itemDuedate) {
-                $scope.orderReport.itemDuedateStart = originalDateFormatNew($scope.orderReport.itemDuedate);
-                console.log('$scope.orderReport.itemDuedateStart', $scope.orderReport.itemDuedateStart)
-            }
-            if ($scope.orderReport.endItemDuedate) {
-                $scope.orderReport.itemDuedateEnd = originalDateFormatNew($scope.orderReport.endItemDuedate);
-            }
-
+            
+            console.log('$scope.orderReport', $scope.orderReport)
             // rest.path = 'statusorderReportFind';
             // rest.get().success(function(data) {
-            rest.path = 'statusorderReportFilter';
+            rest.path = 'projectStatistics';
             rest.post($scope.orderReport).success(function (data) {
                 console.log('data', data)
                 $scope.statusResult = data['data'];
-
                 $scope.Dateobject = Dateobject;
-                //$scope.statusInfo = data['info'];
-                //$scope.statusProjectType = data['Typeinfo'];
-                //$scope.statusCustomerType = data['customerType'];
-                $scope.totalItemAmout = 0;
-
-                let newStatusResult = $scope.statusResult;
-                var newResult = [];
-                function groupByData(dataArray, property) {
-                    return dataArray.reduce(function (res, dvalue) {
-                        if (!res[dvalue[property]]) {
-                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0 };
-                            newResult.push(res[dvalue[property]])
-                        }
-                        res[dvalue[property]].totalAmount += dvalue.totalAmount;
-                        return res;
-                    }, []);
-                }
-                let statusInfo = groupByData(newStatusResult, 'QuentityDate');
-                $scope.statusInfo = newResult;
-
-                // Project type
-                var resultProjectType = [];
-                function groupByDataProjType(dataArray, property) {
-                    return dataArray.reduce(function (res, dvalue) {
-                        if (!res[dvalue[property]]) {
-                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, projectTypeName: dvalue.projectTypeName, contactName: dvalue.contactName, QuentityDate: dvalue.QuentityDate, TotalAmount: 0 };
-                            resultProjectType.push(res[dvalue[property]])
-                        }
-                        res[dvalue[property]].TotalAmount += dvalue.totalAmount;
-                        return res;
-                    }, []);
-                }
-                let statusProjectType = groupByDataProjType(newStatusResult, 'projectType');
-                $scope.statusProjectType = resultProjectType;
-
-                // customer type
-                var resultCustomerType = [];
-                function groupByDataCustomer(dataArray, property) {
-                    return dataArray.reduce(function (res, dvalue) {
-                        if (!res[dvalue[property]]) {
-                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, contactName: dvalue.contactName, QuentityDate: dvalue.QuentityDate, TotalAmount: 0 };
-                            resultCustomerType.push(res[dvalue[property]])
-                        }
-                        res[dvalue[property]].TotalAmount += dvalue.totalAmount;
-                        return res;
-                    }, []);
-                }
-                let statusCustomerType = groupByDataCustomer(newStatusResult, 'iClientId');
-                $scope.statusCustomerType = resultCustomerType;
-
-                //set
-                //Month Chart start
-                angular.forEach($scope.Dateobject, function (val, i) {
-                    angular.forEach($scope.statusInfo, function (value, j) {
-                        $timeout(function () {
-                            for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
-                                var QuentityDate = angular.element('#masterQDate' + k).text();
-                                var obj = [];
-                                obj.push(QuentityDate);
-                                if (value.QuentityDate == QuentityDate) {
-                                    if (val.id == value.QuentityDate) {
-                                        $scope.totalItemAmout += value.totalAmount;
-                                        //$scope.dtItemAmout += value.totalAmount;
-                                        var prn = $scope.totalItemAmout * 12 / 100;
-                                        $scope.totalItemAvg = prn;
-                                        angular.element('#itemAmount' + i).text(value.totalAmount);
-                                        //angular.element('#itemAmount' + i).text(value.TotalAmount);
-                                    }
-                                }
-                            }
-                        }, 100);
-                    })
-                })
-
-                var obj = [];
+                
 
             })
             //scrollToId(eID);
@@ -7321,6 +7210,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //Display serach remove
     $scope.reseteSearch = function () {
+        $route.reload();
+    }
+    //Display serach remove
+    $scope.linguistReseteSearch = function () {
         $route.reload();
     }
 
@@ -7343,14 +7236,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //serch data action
     $scope.statucOrderAction = function (action) {
         switch (action) {
-            case "Change project status":
-                $scope.projectStatus = true;
-                $scope.itemStatus = false;
-                break;
-            case "Change item status":
-                $scope.itemStatus = true;
-                $scope.projectStatus = false;
-                break;
             case "Export to excel":
                 $scope.projectStatus = false;
                 $scope.itemStatus = false;
@@ -7370,44 +7255,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //search data action
     $scope.statusAction = function (action) {
         switch (action) {
-            case "Change project status":
-                var projectStatus = angular.element('#projectStatusdata').val();
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    if (orderselect == 'true') {
-                        var orderId = angular.element('#orderCheckData' + i).val();
-                        $routeParams.id = orderId;
-                        rest.path = 'ordersearchProjectStatusUpdate/' + $routeParams.id + '/' + projectStatus;
-                        rest.get().success(function (data) {
-                            $route.reload();
-                        }).error(errorCallback);
-                    }
-                }
-                break;
-            case "Change item status":
-                var itemStatus = angular.element('#itemStatusdata').val();
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    if (orderselect == 'true') {
-                        var orderId = angular.element('#orderCheckData' + i).val();
-                        $routeParams.id = orderId;
-                        rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
-                        rest.get().success(function (data) {
-                            $route.reload();
-                        }).error(errorCallback);
-                    }
-                }
-                break;
-            case "Remove selection":
-                $scope.checkdata = false;
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var itemselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    if (itemselect == 'true') {
-                        var jobId = angular.element('#orderCheckData' + i).val();
-                        $("#orderCheck" + i).prop("checked", false);
-                    }
-                }
-                break;
             case "Export to excel":
                 for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
                     if ($("#orderCheck" + i).prop('checked') == true) {
@@ -7432,10 +7279,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //select field clear
     $scope.clearCode = function (frmId, action) {
         switch (action) {
-            case "companyCode":
+            case "projectManager":
                 if ($scope.orderReport != undefined) {
-                    $scope.orderReport.companyCode = '';
-                    angular.element('#companyCode1').select2('val', '');
+                    $scope.orderReport.pm_id = '';
+                    angular.element('#projectManager').select2('val', '');
                     angular.forEach($scope.orderReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.orderReport[key];
@@ -7448,10 +7295,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 break;
-            case "pm_name":
+            case "projectCoordinator":
                 if ($scope.orderReport != undefined) {
-                    $scope.orderReport.pm_name = '';
-                    angular.element('#pm_name').select2('val', '');
+                    $scope.orderReport.cordinator_id = '';
+                    angular.element('#projectCoordinator').select2('val', '');
                     angular.forEach($scope.orderReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.orderReport[key];
@@ -7464,10 +7311,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 break;
-            case "customer":
+            case "qaSpecialist":
                 if ($scope.orderReport != undefined) {
-                    $scope.orderReport.customer = '';
-                    angular.element('#customer1').select2('val', '');
+                    $scope.orderReport.qa_id = '';
+                    angular.element('#qaSpecialist').select2('val', '');
                     angular.forEach($scope.orderReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.orderReport[key];
@@ -7479,51 +7326,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.checkOrderItem = undefined;
                     }
                 }
-                break;
-            case "contactPerson":
-                if ($scope.orderReport != undefined) {
-                    $scope.orderReport.contactPerson = '';
-                    angular.element('#conatct-person').select2('val', '');
-                    angular.forEach($scope.orderReport, function (value, key) {
+                break;                
+
+        }
+    }
+
+    //Linguist report find
+    $scope.linguistReportsearch = function (frmId, eID) {
+        console.log('frmId', frmId)
+        if ($scope.linguistReport == undefined || $scope.linguistReport == null || $scope.linguistReport == "") {
+            notification('Please Select option', 'information');
+        } else {
+            $scope.clReportTotal = 0;
+            console.log('$scope.linguistReport', $scope.linguistReport)
+            rest.path = 'projectStatisticsLinguist';
+            rest.post($scope.linguistReport).success(function (data) {
+                $scope.linguistResult = data['data'];
+                console.log('$scope.linguistResult', $scope.linguistResult)
+            })
+            //scrollToId(eID)
+        }
+    }
+
+    //select field clear
+    $scope.clearCodeLinguist = function (frmId, action) {
+        switch (action) {
+            case "externalresource":
+                if ($scope.linguistReport != undefined) {
+                    $scope.linguistReport.resource_id = '';
+                    angular.element('#externalresource').select2('val', '');
+                    angular.forEach($scope.linguistReport, function (value, key) {
                         if (value === "" || value === null) {
-                            delete $scope.orderReport[key];
+                            delete $scope.linguistReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.orderReport)) {
-                        $scope.statusResult = '';
-                        $scope.orderReport = undefined;
-                        $scope.checkOrderItem = undefined;
-                    }
-                }
-                break;
-            case "indirect_customer":
-                if ($scope.orderReport != undefined) {
-                    $scope.orderReport.indirect_customer = '';
-                    angular.element('#indirect_customer1').select2('val', '');
-                    angular.forEach($scope.orderReport, function (value, key) {
-                        if (value === "" || value === null) {
-                            delete $scope.orderReport[key];
-                        }
-                    });
-                    if (jQuery.isEmptyObject($scope.orderReport)) {
-                        $scope.statusResult = '';
-                        $scope.orderReport = undefined;
-                        $scope.checkOrderItem = undefined;
-                    }
-                }
-                break;
-            case "projectType":
-                if ($scope.orderReport != undefined) {
-                    $scope.orderReport.projectType = '';
-                    angular.element('#projectType').select2('val', '');
-                    angular.forEach($scope.orderReport, function (value, key) {
-                        if (value === "" || value === null) {
-                            delete $scope.orderReport[key];
-                        }
-                    });
-                    if (jQuery.isEmptyObject($scope.orderReport)) {
-                        $scope.statusResult = '';
-                        $scope.orderReport = undefined;
+                    if (jQuery.isEmptyObject($scope.linguistReport)) {
+                        $scope.linguistResult = '';
+                        $scope.linguistReport = undefined;
                         $scope.checkOrderItem = undefined;
                     }
                 }
