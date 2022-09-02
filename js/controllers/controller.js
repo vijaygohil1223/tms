@@ -1538,12 +1538,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
+    // Tabs permission array
+    //$scope.tabPermission = { "due_today": true, "to_be_assigned": true, "in_progress": true, "qa_ready": true, "to_be_delivered": true, "due_tomorrow": true, "delivered": true, "my_projects": true };
+    $scope.tabPermission = {};
     // User data with postion for widget box
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
+            console.log('userrr-data', data)
             console.log('jobdeliver-user', data.vResourcePosition)
             $scope.vResourcePosition = data.vResourcePosition;
+            //-- Permission to show tabs --//
+            if(data.tabPermission)
+            $scope.tabPermission = JSON.parse(data.tabPermission) 
         });
     }
 
@@ -1986,7 +1993,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function (data) {
             $scope.dashboardJobList = data;
-            console.log("$scope.dashboardJobList", $scope.dashboardJobList);
             var allJobsData = [];
             var Requested = [];
             var NewJob = [];
@@ -9520,6 +9526,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $timeout(function () {
                 $('#iMobile').intlTelInput("setNumber", FinalMobileNum);
+
+                const tabPermission = Object.keys(JSON.parse(data.tabPermission))
+                angular.element('#tabPermission').val(tabPermission).trigger('change');
             }, 100);
 
 
@@ -9551,6 +9560,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#' + val.id).val(val.value);
                 });
             }
+            
 
             $cookieStore.put('editInternalUser', $scope.userprofiledata);
             rest.path = 'getProfile/' + data.created_by;
@@ -9893,6 +9903,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.saveUserProfileInternal = function (formId, redirectWithSave) {
         if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             if ($scope.userprofiledata.iUserId) {
+                console.log('$scope.userprofiledata.iUserId', $scope.userprofiledata.iUserId)
 
                 // ---------------address only -----------------//
                 $scope.userprofiledata.image = $scope.imageSrc;
@@ -9923,7 +9934,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $scope.userprofiledata.vPhoneNumber = phone;
 
-
+                var tabInput = angular.element('#tabPermission').select2('data');
+                let tabArr = {};
+                $.each(tabInput, function(key, value) {
+                    tabArr[value.id] = true;
+                });
+                $scope.userprofiledata.tabPermission = JSON.stringify(tabArr);
                 //user start recent activity store in cookieStore
                 if ($cookieStore.get('editInternalUser') != undefined) {
                     var arr1 = $.map($scope.userprofiledata, function (el) {
@@ -10013,6 +10029,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $scope.userprofiledata.iMobile = JSON.stringify(countryObj);
                 $scope.userprofiledata.vPhoneNumber = phone;
+
+                // dashboard tabs pemission object
+                var tabInput = angular.element('#tabPermission').select2('data');
+                let tabArr = {};
+                $.each(tabInput, function(key, value) {
+                    tabArr[value.id] = true;
+                });
+                $scope.userprofiledata.tabPermission = JSON.stringify(tabArr);
 
                 $scope.userprofiledata.dtBirthDate = angular.element('#dtBirthDate').val();
                 $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);

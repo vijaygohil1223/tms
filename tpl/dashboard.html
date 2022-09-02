@@ -380,7 +380,7 @@ td { font-size: 11px; } */
                       class="fa fa-plus"></i>&nbsp; Create Project</a>
                    
                   <tabset id="dynamicAddAnchore" class="tab-container projecttable tab_dashboard" style="background-color: #f3f3fa;">
-                    <tab class="tab-due-today">
+                    <tab class="tab-due-today" ng-if="tabPermission.due_today">
                       <tab-heading>
                         <i class="glyphicon glyphicon-triangle-bottom"></i> Due
                         Today
@@ -552,7 +552,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab class="tab-assigned">
+                    <tab class="tab-assigned" ng-if="tabPermission.to_be_assigned">
                       <tab-heading>
                         <i class="glyphicon glyphicon-plus-sign"></i> To be
                         Assigned
@@ -726,7 +726,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab class="tab-in-progress">
+                    <tab class="tab-in-progress" ng-if="tabPermission.in_progress">
                       <tab-heading>
                         <i class="glyphicon glyphicon-tree-deciduous"></i> In
                         Progress
@@ -897,7 +897,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab class="tab-qa-ready">
+                    <tab class="tab-qa-ready" ng-if="tabPermission.qa_ready">
                       <tab-heading>
                         <i class="glyphicon glyphicon-ok-circle"></i> QA Ready
                         <span class="badge bg-info">{{projectsQaReadyCount}}</span>
@@ -1067,7 +1067,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab class="tab-to-be-delivered">
+                    <tab class="tab-to-be-delivered" ng-if="tabPermission.to_be_delivered">
                       <tab-heading>
                         <i class="glyphicon glyphicon-send"></i> To be Delivered
                         <span class="badge bg-info">{{projectsToBeDeliveredCount}}</span>
@@ -1237,7 +1237,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab class="tab-due-tomorrow">
+                    <tab class="tab-due-tomorrow" ng-if="tabPermission.due_tomorrow">
                       <tab-heading>
                         <i class="glyphicon glyphicon-ice-lolly"></i> Due
                         Tomorrow
@@ -1408,7 +1408,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab class="tab-assigned">
+                    <tab class="tab-assigned" ng-if="tabPermission.delivered">
                       <tab-heading>
                         <i class="glyphicon glyphicon-ok"></i> Delivered
                         <span class="badge bg-info">{{projectsDeliveredCount}}</span>
@@ -1581,7 +1581,7 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
-                    <tab class="tab-my-projects">
+                    <tab class="tab-my-projects" ng-if="tabPermission.my_projects">
                       <tab-heading>
                         <i class="glyphicon glyphicon-list"></i> My Projects
                         <span class="badge bg-info">{{projectsAllCount}}</span>

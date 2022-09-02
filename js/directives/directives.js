@@ -5120,6 +5120,34 @@ app.directive('select2Projectbranch', function($http, rest, $timeout) {
         }
     }
 });
+/* Tabs permission */
+app.directive('select2Tabpermission', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            var tabs = {"due_today":'Due Today',"to_be_assigned":'To Be Assigned',"in_progress":'In Progress',"qa_ready":'QA Ready',"to_be_delivered":'To be Delivered', "due_tomorrow":'Due Tomorrow',"delivered":'Delivered',"my_projects":'My Projects'};
+            var arr = [];
+            $.each(tabs, function(key, value) {
+                var obj = {
+                    'id': key,
+                    'text': value
+                };
+                arr.push(obj);
+            });
+            $timeout(function() {
+                element.select2({
+                    allowClear: true,
+                    data: arr,
+                    multiple: true,
+                    closeOnSelect:false,
+                });
+                
+            }, 500);
+        
+        }
+    }
+});
 // sidebar show hide
 app.directive('ngSidebarHideshow', function () {
     return {
