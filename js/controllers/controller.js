@@ -3406,6 +3406,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                 })
             }
+            $cookieStore.put('editJobact', data[0]);
         }).error(errorCallback);
     }
 
