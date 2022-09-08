@@ -2587,59 +2587,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'user/' + 2;
             rest.get().success(function (data) {
                 var absentLngstlist = data.data;
-                console.log('$scope.absentLngstlist', $scope.absentLngstlist)
                 let currentDatestr = new Date(); 
                 currentDatestr = currentDatestr.toISOString().split('T')[0];
-                console.log('currentDate', currentDatestr)
-                // let abscentArr = is_available.map(function(item) {
-                //     return moment(item).format($scope.dateFormatGlobal);
-                // });
                 var absentLngstFilter = absentLngstlist.filter(x => {
                     if(x.is_available){
                         let isAailable = JSON.parse(x.is_available);
                         x.is_available = JSON.parse(x.is_available);
-                        console.log('isAailable', isAailable)
                         if(isAailable.length)
                         return isAailable.includes(currentDatestr);
                     }
-                    //x.is_available == 0
                 });
-                //console.log('newLinguistData', absentLngstFilter.length)
                 $scope.absentLngstlist = absentLngstFilter;
-                console.log('$scope.absentLngstlist', $scope.absentLngstlist)
-
             }).error(errorCallback);
         }
     }
     $scope.absentLinguistlist();
 
     $scope.absentPopup = function(id){
-        // let abscentArr = is_available.map(function(item) {
-                //     return moment(item).format($scope.dateFormatGlobal);
-                // });
-                const absentDate = $scope.absentLngstlist.filter(x => {
-                    if(x.iUserId == id){
-
-                        let child_p_elem = document.createElement("p")
-                        
-                    return child_p_elem
-
-                    }
-                    //x.is_available == 0
-                });
-                console.log('absentDate-popup',absentDate)
-                const div = '<p>Linguist Absescent</p>'
+        const absentRec = $scope.absentLngstlist.filter(x => {
+            if(x.iUserId == id){
+                return x.is_available
+            }
+        });
+        const absentDateArr = absentRec[0].is_available;
+        let element = '';
+        let div = document.createElement('ul');
+        for (let index = 0; index < absentDateArr.length; index++) {
+            var date = moment(absentDateArr[index]).format('DD-MM-YYYY');
+            element = div.innerHTML += "<li> <i class='fa fa-calendar'></i> &nbsp;&nbsp;"+ date +"</li>";
+        }
         var dialog = bootbox.dialog({
-            title: 'Absent Linguists ' + div,
-            message: "<p>This dialog has buttons.</p>",
-            size: 'large',
+            title: 'Absent Linguist : '+ absentRec[0].vUserName,
+            message: "<div id='absent'>Absent On Date.</div> <br/>" + element,
+            size: 'medium',
             buttons: {
                 ok: {
                     label: "close",
                     className: 'btn-info',
-                    callback: function(){
-                        console.log('Custom OK clicked');
-                    }
                 }
             }
         });
@@ -3536,6 +3520,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // end job price
 
     $scope.savejobDetail = function (formId) {
+        console.log('$cookieStore.get',$cookieStore.get('editJobact'))
         if ($routeParams.id) {
             $scope.jobdetail.due_date = angular.element('#duedate').val();
 
@@ -3585,7 +3570,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 notification('Please select project manager', 'warning');
                 return false;
             }
-
 
             if ($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == '0000-00-00') {
                 notification('Please select due date', 'warning');

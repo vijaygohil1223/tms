@@ -198,11 +198,24 @@ app.directive("ngDatepicker2", function($window) {
         },
         link: function(scope, element, attrs, ngModelCtrl) {
             var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
-            element.kendoCalendar({
-                selectable: "multiple",
-                weekNumber: true,
-                disableDates: ["we", "sa"]
-            });
+            // element.kendoCalendar({
+            //     selectable: "multiple",
+            //     weekNumber: true,
+            //     disableDates: ["we", "sa"]
+            // });
+            element.datetimepicker({
+                widgetPositioning:{
+                    horizontal: 'auto',
+                    vertical: 'bottom'
+                },
+                // minDate: moment().subtract(1,'d'),
+                //minDate:new Date(),
+                //useCurrent:false,
+                format:globalDateFormat
+            }).on('dp.change', function(ev) {
+                ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
+                element.blur();
+            })
         }
     };
 });
@@ -222,7 +235,6 @@ app.directive("timepicker1", function($window) {
                 // minDate: moment().subtract(1,'d'),
                 //minDate:new Date(),
                 format:'HH:mm',
-                multidate:true
             }).on('dp.change', function(ev) {
                 ngModelCtrl.$setViewValue(ev.date);
                 scope.$apply();
@@ -806,16 +818,15 @@ app.directive('select2ProjType', function($http, rest, $timeout) {
         link: function(scope, element) {
             rest.path = 'prtypeactive';
             rest.get().success(function(data) {
-                var prType = [project_name => 'Translation', project_name => 'Translation'];
+                let prType = []; 
                 $.each(data, function(key, value) {
                     var obj = {
                         id: value.pr_type_id,
                         text: value.project_name
                     };
-                    //prType.push(obj);
+                    prType.push(obj);
                 });
                 $timeout(function() {
-                    console.log('prType',prType)
                     // element.select2({
                     //     allowClear: true,
                     //     data: prType,
