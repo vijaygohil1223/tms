@@ -27805,6 +27805,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // DataTables configurable options
     $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('scrollY', '100%').withOption('scrollX', '100%').withOption('scrollCollapse', true).withOption('paging', false).withOption('paging', false).withOption('paging', false);
 
+    console.log('$routeParams.id==>',$routeParams.id)
     if ($routeParams.id) {
         $scope.item = $routeParams.id;
         rest.path = 'jobitemsGet/' + $routeParams.id;
@@ -27836,20 +27837,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var allitCheked = [];
     $scope.itemAll = [];
     if ($routeParams.id) {
+        $routeParams.id = $scope.order_id;
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function (data1) {
-            console.log('data1', data1)
             $scope.itemLength = data1.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.item_number);
             //$scope.itemLength = data1;
-            console.log('$scope.itemLength', $scope.itemLength);
+            $routeParams.id = $scope.order_id;
             rest.path = 'jobsummeryGet/' + $routeParams.id;
             rest.get().success(function (data) {
-
                 $scope.itemListFinal = [];
                 rest.path = "getsaveSortedJobsData/" + $scope.order_id;
                 rest.get().success(function (d) {
                     $scope.availableSortedJobs = d;
-
                     if ($scope.availableSortedJobs.length > 0) {
                         $scope.itemListJob = d;
                     } else {
@@ -27863,6 +27862,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             return e1.item_id == e.item_number;
                         }));
                     });
+
+                    console.log('$scope.itemListFinal',$scope.itemListFinal)
 
                     angular.forEach($scope.itemListJob, function (val, i) {
                         if (val.job_summmeryId) {
