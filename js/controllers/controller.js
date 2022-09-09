@@ -9394,7 +9394,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     angular.element('.help-block').css('display', 'none');
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
     $scope.isValidMobileNumber = false;
-
+    $scope.multipleDateArr = [];
+            
     /* Mobile Validation START */
     var telInput = $("#iMobile"),
         errorMsg = $("#error-msg"),
@@ -9585,13 +9586,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.dtLast_job = '';
             
                 
-
             if($scope.userprofiledata.is_available){    
                 let is_available =  JSON.parse($scope.userprofiledata.is_available);
-                let abscentArr = is_available.map(function(item) {
-                    return moment(item).format($scope.dateFormatGlobal);
-                });
-                $scope.userprofiledata.is_available = abscentArr.toString();    
+                $scope.multipleDateArr = is_available;
+                console.log('is_available', is_available)
+                if(is_available.length){
+                    let abscentArr = is_available.map(function(item) {
+                        return moment(item).format($scope.dateFormatGlobal);
+                    });
+                    $scope.userprofiledata.is_available = abscentArr.toString();    
+                }    
             }
 
             if (data.address1Detail) {

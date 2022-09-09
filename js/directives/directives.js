@@ -5165,12 +5165,23 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
             var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
             var nowDate = new Date();
             var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
+            setTimeout(() => {
+                var date = scope.$parent.multipleDateArr;
+                if(date.length){
+                    let dateArr = date.map( function(item) {
+                        const dt1 = new Date(item);
+                        return dt1.setDate(dt1.getDate());
+                    })
+                    $('#multidatePick').multiDatesPicker('addDates', dateArr);
+                }    
+            }, 200);
             element.multiDatesPicker({
                 dateFormat:'dd.mm.yy',
                 //minDate: today,
-                //autoclose: false
+                //autoclose: false,
+                //onSelect: $('#multidatePick').datepicker('show')
             });
-            $('#multidatePick').click( function() {
+            $('#multidatePick, .ui-state-default').click( function() {
                 $('#multidatePick').datepicker('show');
             })
         }
