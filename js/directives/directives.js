@@ -5179,9 +5179,18 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
                 dateFormat:'dd.mm.yy',
                 //minDate: today,
                 //autoclose: false,
-                //onSelect: $('#multidatePick').datepicker('show')
+                // onSelect: function(selectedDate) {
+                //     $("#multidatePick").datepicker('show');
+                // },
+                beforeShow: function(input) {
+                    //$(input).after($(input).datepicker('widget'));
+                },
             });
-            $('#multidatePick, .ui-state-default').click( function() {
+            $('#multidatePick').click( function() {
+                $('#multidatePick').datepicker('show');
+            })
+            $('td > ui-state-default').click( function() {
+                console.log('ffsdfsdfsfsd' )
                 $('#multidatePick').datepicker('show');
             })
         }

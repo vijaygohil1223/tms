@@ -8,26 +8,7 @@
     color: red;
     margin-top: -1.5%;
 }
-/* jQuery UI Datepicker moving pixels fix */
-table.ui-datepicker-calendar {border-collapse: separate;}
-.ui-datepicker-calendar td {border: 1px solid transparent;}
 
-/* jQuery UI Datepicker hide datepicker helper */
-#ui-datepicker-div {display:none;}
-
-/* jQuery UI Datepicker emphasis on selected dates */
-.ui-datepicker .ui-datepicker-calendar .ui-state-highlight a {
-	background: #743620 none;
-	color: white;
-}
-.ui-state-highlight {
-      border: 0 !important;
-    }
- 
-    .ui-state-highlight a {
-      background: #363636 !important;
-      color: #fff !important;
-    }
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' ">
 </div>
@@ -215,7 +196,7 @@ table.ui-datepicker-calendar {border-collapse: separate;}
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Linguist Absent</label>
-                                                                <input type="text" class="form-control" id="multidatePick" ng-multidate name="multidatePick" ng-model="userprofiledata.is_available" onkeydown="return false">
+                                                                <input type="text" class="form-control" class="hasDatepicker" id="multidatePick" ng-multidate name="multidatePick" ng-model="userprofiledata.is_available" onkeydown="return false">
                                                             </div>
                                                             <!-- <div class="form-group" >
                                                                 <div class="redio">
