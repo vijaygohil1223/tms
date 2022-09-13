@@ -424,7 +424,20 @@ app.directive('select2Manager', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        closeOnSelect:false,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -453,7 +466,20 @@ app.directive('select2Coordinator', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        closeOnSelect:false,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -633,7 +659,20 @@ app.directive('select2Qaspa', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        closeOnSelect:false,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -776,7 +815,20 @@ app.directive('select2Indirect', function($http, rest, $timeout) {
                         allowClear: true,
                         data: indirect,
                         multiple:true,
-                        maximumSelectionSize:1
+                        closeOnSelect:false,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
