@@ -26748,7 +26748,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.order_id = items ? items.order_id : 0;
     $scope.scoop_id = items ? items.scoop_id : 0;
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
-
+    $window.localStorage.projectJobChainOrderId = $scope.order_id;
+    
     if ($scope.order_id) {
         //getting ProjectOrderName and indirect clint name
         rest.path = 'getClientIndirectClient/' + $scope.order_id;
