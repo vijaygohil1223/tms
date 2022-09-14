@@ -424,7 +424,7 @@ app.directive('select2Manager', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        closeOnSelect:false,
+                        closeOnSelect:true,
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){
@@ -466,7 +466,7 @@ app.directive('select2Coordinator', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        closeOnSelect:false,
+                        closeOnSelect:true,
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){
@@ -659,7 +659,7 @@ app.directive('select2Qaspa', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        closeOnSelect:false,
+                        closeOnSelect:true,
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){
@@ -815,7 +815,7 @@ app.directive('select2Indirect', function($http, rest, $timeout) {
                         allowClear: true,
                         data: indirect,
                         multiple:true,
-                        closeOnSelect:false,
+                        closeOnSelect:true,
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){
@@ -889,7 +889,7 @@ app.directive('select2ProjType', function($http, rest, $timeout) {
                         allowClear: true,
                         data: prType,
                         multiple: true,
-                        closeOnSelect:false,
+                        closeOnSelect:true,
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){
@@ -2618,7 +2618,21 @@ app.directive('select2Contactsummery', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -2700,7 +2714,21 @@ app.directive('select2JobDetailitmStatus', function($http, rest, $timeout) {
                         allowClear: true,
                         data: indirect,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -2800,7 +2828,21 @@ app.directive('select2JobDetailResource', function($http, rest, $timeout) {
                         allowClear: true,
                         data: indirect,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -2829,7 +2871,21 @@ app.directive('select2ItemsCoordinator', function($http, rest, $timeout) {
                         allowClear: true,
                         data: cont,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -2888,7 +2944,21 @@ app.directive('select2Service', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = childDiv[0].innerText;
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -4396,7 +4466,7 @@ app.directive('select2ContactPerson', function($http, rest, $timeout, $log,$wind
                         data: status,
                         multiple:true,
                         //maximumSelectionSize:1,
-                        closeOnSelect:false
+                        closeOnSelect:true
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){

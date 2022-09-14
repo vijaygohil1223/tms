@@ -729,8 +729,9 @@ class filemanager {
     }
 
     public function filefolderstget($id,$root) {
-        $data = $this->_db->rawQuery("SELECT * FROM tms_filemanager AS t1 WHERE t1.parent_id = '".$id."'");
+        $data = $this->_db->rawQuery("SELECT * FROM tms_filemanager AS t1 WHERE t1.parent_id = '".$id."' ");
         if($data) {
+            $source = []; $target = [];
             foreach ($data as $key => $value) {
                 if($value['name'] == '_in') {
                     $source = self::filegetByparentId($value['fmanager_id']);
