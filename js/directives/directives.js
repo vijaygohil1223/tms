@@ -395,7 +395,21 @@ app.directive('select2User', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -430,7 +444,7 @@ app.directive('select2Manager', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -472,7 +486,7 @@ app.directive('select2Coordinator', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -510,7 +524,21 @@ app.directive('select2CustomerGroup', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -539,7 +567,21 @@ app.directive('select2Qa', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -566,7 +608,21 @@ app.directive('select2InvoiceNumber', function($http, rest, $timeout) {
                         allowClear: true,
                         data: invoiceNumber,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -605,7 +661,21 @@ app.directive('select2InvoiceStatus', function($http, rest, $timeout) {
                     data: invoiceStatuses,
                     multiple:true,
                     placeholder:'working',
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 200);
             
@@ -631,7 +701,21 @@ app.directive('select2ClientInvoiceStatus', function($http, rest, $timeout) {
                     allowClear: true,
                     data: invoiceStatuses,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 200);
             
@@ -665,7 +749,7 @@ app.directive('select2Qaspa', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -702,7 +786,21 @@ app.directive('select2Taxation', function($http, rest, $timeout) {
                         allowClear: true,
                         data: taxList,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -735,8 +833,21 @@ app.directive('select2Property', function($http, rest, $timeout, $window) {
                         allowClear: true,
                         data: property,
                         multiple:true,
-                        maximumSelectionSize:1
-
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -759,7 +870,21 @@ app.directive('select2Gender', function($http, rest, $timeout) {
                         allowClear: true,
                         data: data,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             });
@@ -787,7 +912,21 @@ app.directive('select2Client', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -821,7 +960,7 @@ app.directive('select2Indirect', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -855,7 +994,21 @@ app.directive('select2Itemstatus', function($http, rest, $timeout) {
                         allowClear: true,
                         data: indirect,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(function(data, error, status) {});
@@ -895,7 +1048,7 @@ app.directive('select2ProjType', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -932,7 +1085,21 @@ app.directive('select2ProjJobs', function($http, rest, $timeout) {
                         allowClear: true,
                         data: prType,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -960,7 +1127,21 @@ app.directive('select2JobCode', function($http, rest, $timeout, $log) {
                         allowClear: true,
                         data: prType,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -989,7 +1170,21 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
                         allowClear: true,
                         data: prType,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1018,7 +1213,21 @@ app.directive('select2Currency', function($http, rest, $timeout) {
                         allowClear: true,
                         data: currency,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -1061,7 +1270,21 @@ app.directive('select2Userstatus', function($http, rest, $timeout) {
                         allowClear: true,
                         data: status,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -1089,8 +1312,21 @@ app.directive('select2ClientStatus', function($http, rest, $timeout) {
                         allowClear: true,
                         data: status,
                         multiple:true,
-                        maximumSelectionSize:1
-
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1119,7 +1355,21 @@ app.directive('select2Tasktype', function($http, rest, $timeout) {
                         allowClear: true,
                         data: type,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -1142,7 +1392,21 @@ app.directive('select2Sourcetype', function($http, rest, $timeout) {
                         allowClear: true,
                         data: data,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200)
 
@@ -1175,7 +1439,21 @@ app.directive('ngSelect2Usertype', function(rest, $timeout) {
                         allowClear: true,
                         data: type,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -1205,7 +1483,21 @@ app.directive('ngSelect2Userposition', function(rest, $timeout) {
                         allowClear: true,
                         data: type,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -1234,7 +1526,21 @@ app.directive('ngSelect2Currency', function(rest, $timeout) {
                         allowClear: true,
                         data: type,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1265,7 +1571,21 @@ app.directive('select2masterPrice', function($http, rest, $timeout) {
                         allowClear: true,
                         data: prType,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
 
@@ -1319,7 +1639,21 @@ app.directive('select2Tax', function($http, rest, $timeout) {
                         allowClear: true,
                         data: prType,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1407,7 +1741,21 @@ app.directive('select2LanguagesData', function($http, rest, $timeout) {
                     allowClear: true,
                     data: users,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }).error(function(data, error, status) {});
         }
@@ -1462,7 +1810,21 @@ app.directive('select2OrderLanguagesData', function($http, rest, $timeout) {
                     allowClear: true,
                     data: users,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }).error(function(data, error, status) {});
         }
@@ -1491,7 +1853,21 @@ app.directive('select2ChildUnit', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1520,7 +1896,21 @@ app.directive('select2JobChainStatus', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1579,7 +1969,21 @@ app.directive('select2JobChainJobs', function($http, rest, $timeout) {
                             allowClear: true,
                             data: lang,
                             multiple:true,
-                            maximumSelectionSize:1
+                            //maximumSelectionSize:1,
+                            closeOnSelect:true,
+                        }).on("change", function (e) {
+                            const inputIdS2 = '#s2id_'+$(this).attr('id');
+                            if(e.added){
+                                $(inputIdS2+' li').each(function() {
+                                    const childDiv = $(this).children();
+                                    let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                    if(eleText){
+                                        if(eleText !== e.added.text){
+                                            $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                        }    
+                                    }
+                                });
+                            }    
                         });
                     }, 500);
 
@@ -1608,7 +2012,21 @@ app.directive('select2MasterUnit', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1638,7 +2056,21 @@ app.directive('select2JobPresentation', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1668,7 +2100,21 @@ app.directive('select2Properties', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1698,7 +2144,21 @@ app.directive('select2ChildPrice', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1727,7 +2187,21 @@ app.directive('select2JobchainName', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -1762,7 +2236,21 @@ app.directive('select2CenterClient', function($http, rest, $timeout, $log) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {
@@ -1797,7 +2285,21 @@ app.directive('select2CompanyCode', function($http, rest, $timeout, $log) {
                         allowClear: true,
                         data: companyCodeArray,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {
@@ -2341,7 +2843,21 @@ app.directive('ngSelect2Addresstype', function(rest, $timeout) {
                         allowClear: true,
                         data: type,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {
@@ -2475,7 +2991,21 @@ app.directive('select2Emailsign', function($http, rest, $timeout) {
                         allowClear: true,
                         data: users,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -2503,7 +3033,21 @@ app.directive('select2JobItem', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -2533,7 +3077,21 @@ app.directive('select2Jobsummery', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -2563,7 +3121,21 @@ app.directive('select2ProJobChainJobs', function($http, rest, $timeout) {
                             allowClear: true,
                             data: lang,
                             multiple:true,
-                            maximumSelectionSize:1
+                            //maximumSelectionSize:1,
+                            closeOnSelect:true,
+                        }).on("change", function (e) {
+                            const inputIdS2 = '#s2id_'+$(this).attr('id');
+                            if(e.added){
+                                $(inputIdS2+' li').each(function() {
+                                    const childDiv = $(this).children();
+                                    let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                    if(eleText){
+                                        if(eleText !== e.added.text){
+                                            $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                        }    
+                                    }
+                                });
+                            }    
                         });
                     }, 500);
                 }).error(function(data, error, status) {});
@@ -2591,7 +3163,21 @@ app.directive('select2Resourcesummery', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -2625,7 +3211,7 @@ app.directive('select2Contactsummery', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -2659,7 +3245,21 @@ app.directive('select2ItemStatussummery', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -2721,7 +3321,7 @@ app.directive('select2JobDetailitmStatus', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -2764,7 +3364,7 @@ app.directive('select2ScoopDetailitmStatus', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -2800,7 +3400,21 @@ app.directive('select2JobdetailItem', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -2835,7 +3449,7 @@ app.directive('select2JobDetailResource', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -2878,7 +3492,7 @@ app.directive('select2ItemsCoordinator', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -2951,7 +3565,7 @@ app.directive('select2Service', function($http, rest, $timeout) {
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -3130,7 +3744,21 @@ app.directive('select2ItemLanguage', function($http, rest, $timeout) {
                         allowClear: true,
                         data: prType,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 200);
             }).error(errorCallback);
@@ -3314,7 +3942,21 @@ app.directive('select2CurrencyConvert', function($http, rest, $timeout) {
                     allowClear: true,
                     data: users,
                     // multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 200);
         }
@@ -3379,7 +4021,21 @@ app.directive('select2InternalResource', function($http, rest, $timeout) {
                         allowClear: true,
                         data: type,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -3497,7 +4153,21 @@ app.directive('select2ItemTax', function($http, rest, $timeout, $log) {
                         allowClear: true,
                         data: type,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -3701,7 +4371,21 @@ app.directive('select2ItemTax', function($http, rest, $timeout, $log) {
                         allowClear: true,
                         data: type,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});
@@ -3730,7 +4414,21 @@ app.directive('select2KnowledgeCategory', function($http, rest, $timeout) {
                         allowClear: true,
                         data: lang,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
 
@@ -3756,7 +4454,21 @@ app.directive('select2CalculationBasis', function($http, rest, $timeout) {
                 allowClear: true,
                 data: basis,
                 multiple:true,
-                maximumSelectionSize:1
+                //maximumSelectionSize:1,
+                closeOnSelect:true,
+            }).on("change", function (e) {
+                const inputIdS2 = '#s2id_'+$(this).attr('id');
+                if(e.added){
+                    $(inputIdS2+' li').each(function() {
+                        const childDiv = $(this).children();
+                        let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                        if(eleText){
+                            if(eleText !== e.added.text){
+                                $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                            }    
+                        }
+                    });
+                }    
             });
         }
     }
@@ -3780,7 +4492,21 @@ app.directive('select2Rounding', function($http, rest, $timeout) {
                 allowClear: true,
                 data: obj,
                 multiple:true,
-                maximumSelectionSize:1
+                //maximumSelectionSize:1,
+                closeOnSelect:true,
+            }).on("change", function (e) {
+                const inputIdS2 = '#s2id_'+$(this).attr('id');
+                if(e.added){
+                    $(inputIdS2+' li').each(function() {
+                        const childDiv = $(this).children();
+                        let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                        if(eleText){
+                            if(eleText !== e.added.text){
+                                $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                            }    
+                        }
+                    });
+                }    
             });
         }
     }
@@ -4046,7 +4772,21 @@ app.directive('select2PriceList', function($http, rest, $timeout) {
                 allowClear: true,
                 data: obj,
                 multiple:true,
-                maximumSelectionSize:1
+                //maximumSelectionSize:1,
+                closeOnSelect:true,
+            }).on("change", function (e) {
+                const inputIdS2 = '#s2id_'+$(this).attr('id');
+                if(e.added){
+                    $(inputIdS2+' li').each(function() {
+                        const childDiv = $(this).children();
+                        let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                        if(eleText){
+                            if(eleText !== e.added.text){
+                                $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                            }    
+                        }
+                    });
+                }    
             });
         }
     }
@@ -4072,7 +4812,21 @@ app.directive('select2HolidayCountry', function(rest, $timeout, $log) {
                     allowClear: true,
                     data: type,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 500);
         }
@@ -4185,7 +4939,21 @@ app.directive('select2Country', function($http, rest, $timeout, $log) {
                     allowClear: true,
                     data: country,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 500);
             // }).error(function (data, error, status) {
@@ -4213,7 +4981,21 @@ app.directive('select2Projects', function($http, rest, $timeout, $log) {
                         allowClear: true,
                         data: status,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             })
@@ -4253,7 +5035,21 @@ app.directive('select2AllUser', function($http, rest, $timeout, $log) {
                     allowClear: true,
                     data: obj,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             });
         }
@@ -4297,7 +5093,21 @@ app.directive('select2Invoice', function($http, rest, $timeout, $log) {
                     allowClear: true,
                     data: users,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 500);
         }
@@ -4322,7 +5132,21 @@ app.directive('select2InvoicePayment', function($http, rest, $timeout, $log) {
                     allowClear: true,
                     data: users,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 500);
         }
@@ -4376,8 +5200,22 @@ app.directive('select2FreelanceUser', function($http, rest, $timeout, $log) {
                        allowClear: true,
                        data: users,
                        multiple:true,
-                       maximumSelectionSize:1
-                   });
+                       //maximumSelectionSize:1,
+                       closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
+                    });
                }, 500);
            });
        }
@@ -4472,7 +5310,7 @@ app.directive('select2ContactPerson', function($http, rest, $timeout, $log,$wind
                         if(e.added){
                             $(inputIdS2+' li').each(function() {
                                 const childDiv = $(this).children();
-                                let eleText = childDiv[0].innerText;
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
                                 if(eleText){
                                     if(eleText !== e.added.text){
                                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
@@ -4560,7 +5398,21 @@ app.directive('select2EmailTplCat', function($http, rest, $timeout, $log) {
                     allowClear: true,
                     data: tplCat,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 500);
             
@@ -4585,7 +5437,21 @@ app.directive('select2EmailTplType', function($http, rest, $timeout, $log) {
                     allowClear: true,
                     data: tplCat,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 500);
             
@@ -4617,7 +5483,21 @@ app.directive('select2DateFormat', function($http, rest, $timeout) {
                     allowClear: true,
                     data: DateFormats,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 200);
         }
@@ -4645,7 +5525,21 @@ app.directive('select2DateSeparator', function($http, rest, $timeout) {
                     data: dateSeparator,
                     multiple:true,
                     //separators: ';',
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 200);
         }
@@ -4669,7 +5563,21 @@ app.directive('select2DecimalSeparator', function($http, rest, $timeout) {
                     allowClear: true,
                     data: Separator,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 200);
         }
@@ -5170,7 +6078,21 @@ app.directive('ngSelect2CreateScooptest', function($http, rest, $timeout) {
                     allowClear: true,
                     data: scoopData,
                     multiple:true,
-                    maximumSelectionSize:1
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 200);
             
@@ -5210,7 +6132,21 @@ app.directive('select2CreateScoop', function($http, rest, $timeout) {
                         allowClear: true,
                         data: scoopData,
                         multiple:true,
-                        maximumSelectionSize:1
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                     $('.scoopText input').attr("placeholder", "Create Scoop");
                 }, 200);
@@ -5266,9 +6202,23 @@ app.directive('select2Projectbranch', function($http, rest, $timeout) {
                 element.select2({
                     allowClear: true,
                     data: users1,
+                    placeholder:'Select Branch',
                     multiple:true,
-                    maximumSelectionSize:1,
-                   placeholder:'Select Branch'
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }, 200);
 
@@ -5289,6 +6239,7 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
             var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
             setTimeout(() => {
                 var date = scope.$parent.multipleDateArr;
+                console.log('date-multi', date)
                 if(date.length){
                     let dateArr = date.map( function(item) {
                         const dt1 = new Date(item);
@@ -5296,7 +6247,7 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
                     })
                     $('#multidatePick').multiDatesPicker('addDates', dateArr);
                 }    
-            }, 200);
+            }, 500);
             element.multiDatesPicker({
                 dateFormat:'dd.mm.yy',
                 //minDate: today,

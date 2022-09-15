@@ -1863,10 +1863,8 @@ td { font-size: 11px; } */
                             >Absent Linguists</span></a>
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
-                        <li class="list-group-item " ng-repeat="absentList in absentLngstlist">
-                          <!-- <span class="pull-right label bg-primary inline m-t-sm" ng-bind="upcome.holidayStatus"></span>
-                           -->
-                          <span ng-bind="absentList.vUserName" ng-click="absentPopup(absentList.iUserId)"></span>
+                        <li class="list-group-item " ng-repeat="absentList in absentLngstlist" ng-click="absentPopup(absentList.iUserId)" style="cursor: pointer;">
+                          <span ng-bind="absentList.vUserName" ></span>
                         </li>
                         <li class="list-group-item" ng-if="!absentLngstlist.length">No absences linguist</li>
                       </ul>

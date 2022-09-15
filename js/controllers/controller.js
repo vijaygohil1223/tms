@@ -2582,6 +2582,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.holidayStatus("Upcoming");
 
     // widget Absent Linguist
+    /* function selectWeek(date) {
+        return Array(7).fill(new Date(date)).map((el, idx) => 
+            new Date(el.setDate(el.getDate() - el.getDay() + idx)).toISOString().split('T')[0] )
+    } */
+    const up7Days = [...Array(7).keys()].map(index => {
+        const date = new Date();
+        date.setDate(date.getDate() + index);
+        return date.toISOString().split('T')[0];
+    });
+
     $scope.absentLinguistlist = function () {
         if ($cookieStore.get('session_iUserId') != undefined) {
             rest.path = 'user/' + 2;
@@ -2592,9 +2602,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var absentLngstFilter = absentLngstlist.filter(x => {
                     if(x.is_available){
                         let isAailable = JSON.parse(x.is_available);
-                        x.is_available = JSON.parse(x.is_available);
-                        if(isAailable.length)
-                        return isAailable.includes(currentDatestr);
+                        console.log('isAailable', isAailable)
+                        if(isAailable.length){
+                            const isFound = up7Days.some(r => isAailable.indexOf(r) >= 0)
+                            console.log('found', isFound)
+                            x.is_available = JSON.parse(x.is_available);
+                            if(isFound)
+                            return isAailable;
+                            //return isAailable.includes(currentDatestr);
+                        }
+                        
                     }
                 });
                 $scope.absentLngstlist = absentLngstFilter;
