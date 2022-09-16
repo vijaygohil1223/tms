@@ -228,6 +228,8 @@
   }
   .viewfullContent {
     margin: auto;
+    width: 100%;
+    height: auto;
   }
 </style>
 
@@ -273,9 +275,13 @@
   <!-- / brand -->
   <!-- Sidebar hida show -->
   <div class="menuIcon" ui-toggle-class="app-aside-hide" target=".sidebar_wrapper" ng-sidebar-hideshow>
-    <!-- <i class="fa fa-dedent fa-fw text"></i>
-    <i class="fa fa-indent fa-fw text-active"></i> -->
+    <i class="fa fa-dedent fa-fw text"></i>
+    <i class="fa fa-indent fa-fw text-active"></i>
   </div>
+  <!-- <a href="#" class="btn no-shadow navbar-btn" ui-toggle-class="app-aside-folded" target=".app">
+    <i class="fa fa-dedent fa-fw text"></i>
+    <i class="fa fa-indent fa-fw text-active"></i>
+  </a> -->
 </div>
 <!-- / navbar header -->
 <!-- navbar collapse -->
@@ -390,6 +396,11 @@
 
   <!-- nabar right -->
   <ul class="nav navbar-nav navbar-right userProfile_box">
+    <li class="dropdown" dropdown>
+      <a href="javascript:void(0);" class="dropdown" onclick="openNav()" style="padding-left: 5px;padding-right: 5px;">
+        <i class="icon-question fa-fw" style="color: #4e2fc4;"></i>
+      </a>
+    </li>
     <li class="dropdown" dropdown>
       <a href class="dropdown-toggle clear" dropdown-toggle>
         <span class="thumb-sm avatar pull-right m-t-n-sm m-b-n-sm m-l-sm">
