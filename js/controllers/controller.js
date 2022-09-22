@@ -3010,7 +3010,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("parentId", " ");
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
+    console.log('$scope.DetailId', $scope.DetailId)
+
+    console.log('$window.localStorage.orderID',$window.localStorage.orderID )
     $window.localStorage.jobfolderId = $routeParams.id;
+    console.log('$routeParams.id', $routeParams.id)
     $window.localStorage.pId = " ";
     $window.localStorage.jobstatusName = " ";
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
@@ -3689,7 +3693,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //var ItemClient = angular.element('.itemClient').text();
             $window.localStorage.ItemcodeNumber = ItemcodeNumber;
             // start to get downloaded folder name with client name
-            rest.path = 'customer/' + $window.localStorage.orderID;
+            //rest.path = 'customer/' + $window.localStorage.orderID ;
+            rest.path = 'customer/' + $scope.DetailId ;
             rest.get().success(function (res) {
                 $scope.customer = res;
                 if (res) {
@@ -15278,13 +15283,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         notification('Please create project.', 'warning');
         return false;
     }
+    $scope.routeOrderID = '';
+    $scope.orderUrlID = '';
+    if ($window.localStorage.orderID) {
+        $scope.routeOrderID = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
+        $scope.orderUrlID = '/'+$scope.routeOrderID;
+    }    
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.generalMsg = " ";
     $window.localStorage.contactMsgId;
     $window.localStorage.projectTeamMsg;
     $window.localStorage.orderBlock;
     $scope.EditedBy = $window.localStorage.getItem('sessionProjectEditedBy');
-    $scope.EditedById = $window.localStorage.getItem('sessionProjectEditedId');
+    $scope.EditedById = ($routeParams.id) ? $routeParams.id : $window.localStorage.getItem('sessionProjectEditedId');
     if ($scope.general == undefined) {
         $window.localStorage.setItem('projectOrderName', '');
     }
@@ -15294,7 +15305,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.jobDiscussion = function () {
         if ($window.localStorage.orderID) {
-            $location.path('discussion/' + $window.localStorage.orderID);
+            $location.path('discussion/' + $scope.routeOrderID);
         }
     }
 
@@ -15317,7 +15328,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }).error(errorCallback);
 
     //Setting Project Status when Create new END
-
 
     rest.path = 'getUserById/' + $window.localStorage.getItem('session_iUserId');
     rest.get().success(function (data) {
@@ -15358,14 +15368,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }];
 
     if ($window.localStorage.orderID) {
-        rest.path = 'generalfolder/' + $window.localStorage.orderID;
+        rest.path = 'generalfolder/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             $scope.generalFolderCount = data.length;
         }).error(errorCallback);
     }
 
     if ($window.localStorage.orderID && !$window.localStorage.genfC) {
-        rest.path = 'generalfolder/' + $window.localStorage.orderID;
+        rest.path = 'generalfolder/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             $window.localStorage.genfC = 1;
         }).error(errorCallback);
@@ -15391,12 +15401,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //customer
     if ($window.localStorage.orderID) {
-        $routeParams.id = $window.localStorage.orderID;
-        rest.path = 'customer/' + $window.localStorage.orderID;
+        $routeParams.id = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
+        //rest.path = 'customer/' + $window.localStorage.orderID;
+        rest.path = 'customer/' + $routeParams.id;
         rest.get().success(function (res) {
+            console.log('res', res)
             $scope.customer = res;
             if (res) {
-
                 rest.path = 'client/' + $scope.customer.client;
                 rest.get().success(function (cData) {
                     $scope.directClientData = cData
@@ -15454,7 +15465,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     $timeout(function () {
                         $scope.indirectCustomerName = $('#s2id_indirect_customer').find('.select2-chosen').text();
-
                         $window.localStorage.setItem('indirectCustomerName', $scope.indirectCustomerName);
                     }, 500);
 
@@ -15519,9 +15529,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.getContact = function (id, element) {
-        console.log('element', element)
-        console.log('client-id', id)
-        console.log('we are here')
         $window.localStorage.setItem('directClientIdStore', id);
         $routeParams.id = id;
         rest.path = 'contact';
@@ -15575,7 +15582,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         switch (action) {
             case 'customer':
                 $routeParams.id = id;
-                rest.path = 'clientContactEmail/' + $routeParams.id + '/' + $window.localStorage.orderID;
+                rest.path = 'clientContactEmail/' + $routeParams.id + '/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
                     notification('Mail send successfully', 'success');
                     $route.reload();
@@ -15638,7 +15645,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var proStartStatus = {
                 "project_start_status": 1
             }
-            $routeParams.id = $window.localStorage.orderID;
+            $routeParams.id = $scope.routeOrderID;
             rest.path = 'projectStartStatus';
             rest.put(proStartStatus).success(function (data) {
                 if (data) {
@@ -15649,7 +15656,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-
+    $scope.tmpOrderId = 0;
     $scope.saveGeneral = function (formId) {
         if ($window.localStorage.orderID) {
             if (angular.element("#" + formId).valid()) {
@@ -15700,7 +15707,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     obj.push(val);
                                 });
                             }
-                            obj.push($window.localStorage.orderID);
+                            obj.push($scope.routeOrderID);
                             $cookieStore.put('projectRecentEdit', obj);
                             $cookieStore.remove('generalEdit');
                         }
@@ -15735,7 +15742,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (data.indirectData) {
                                 $timeout(function () {
                                     $window.localStorage.setItem('indirectCustomerName', data.indirectData.vUserName)
-                                    $location.path('/items');
+                                    //$location.path('/items');
+                                    $location.path('/items/'+$scope.general.order_id);
                                 }, 500);
                             }
 
@@ -15781,13 +15789,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
 
                     $window.localStorage.orderNumber = $scope.general.order_no;
-                    $scope.general.order_id = $window.localStorage.orderID;
+                    $scope.general.order_id = $scope.routeOrderID;
                     $scope.general.project_status = $scope.proStatusData.pr_status_id;
                     $scope.general.project_createdBy = $window.localStorage.getItem('session_iUserId');
 
                     rest.path = 'general';
                     rest.post($scope.general).success(function (data) {
                         $window.localStorage.setItem('tmpOrderId', data.order_data.order_id);
+                        $scope.tmpOrderId = data.order_data.order_id;
                         //log file start 
                         $scope.logMaster = {};
                         $scope.logMaster.log_type_id = $scope.general.order_id;
@@ -15799,8 +15808,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.post($scope.logMaster).success(function (data) { });
                         //log file end
 
-                        $cookieStore.put('projectRecentEdit', $window.localStorage.orderID);
+                        $cookieStore.put('projectRecentEdit', $scope.routeOrderID);
                         //$location.path('/items');
+                        // if($scope.tmpOrderId)
+                        //     $location.path('/items/'+$scope.tmpOrderId);
+                        
                     }).error(errorCallback);
 
                     //customer
@@ -15824,7 +15836,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.customer.project_coordinator = $scope.project_coordinator;
                             $scope.customer.project_manager = $scope.project_manager;
                             $scope.customer.QA_specialist = $scope.QA_specialist;
-                            $scope.customer.order_id = $window.localStorage.orderID;
+                            $scope.customer.order_id = $scope.routeOrderID;
                             rest.path = 'customer';
                             rest.post($scope.customer).success(function (data) {
 
@@ -15836,7 +15848,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.or.order_number = $scope.order_number.slice(-4);
                             //$scope.or.abbrivation = $scope.abbrivation;
                             $scope.or.abbrivation = $scope.CompanyCodeVal;
-                            $routeParams.id = $window.localStorage.orderID;
+                            $routeParams.id = $scope.routeOrderID;
                             rest.path = 'order';
                             rest.put($scope.or).success(function (data) {
                                 $window.localStorage.iUserId = data.order_id;
@@ -15872,10 +15884,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // }
 
                     $timeout(function () {
-                        $location.path('/items');
+                        console.log('$scope.tmpOrderId', $scope.tmpOrderId)
+                        if($scope.tmpOrderId)
+                            $location.path('/items/'+$scope.tmpOrderId);
+                        else
+                            $location.path('/items');
                         //set isNewProject to false
                         $window.localStorage.setItem("isNewProject", "false");
-                    }, 100);
+                    }, 200);
 
                     /*Add Number Of Items in item Section defined in general section END*/
                 }
@@ -15904,7 +15920,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.general.order_date = angular.element("[id^=order_date]").val();
             $scope.general.due_date = angular.element('#end_date').val();
             $window.localStorage.orderNumber = $scope.general.order_no;
-            $scope.general.order_id = $window.localStorage.orderID;
+            $scope.general.order_id = $scope.routeOrderID;
 
             rest.path = 'general';
             rest.post($scope.general).success(function (data) {
@@ -15935,7 +15951,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     /* Redirect To Project Jobs Section */
     $scope.goTojobDetail = function () {
-        $location.path('/jobs-detail/' + $window.localStorage.orderID);
+        $location.path('/jobs-detail/' + $scope.routeOrderID);
     }
 
     $scope.openProfile = function (directClientId) {
@@ -16107,7 +16123,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         notification('Please create project.', 'warning');
         return false;
     }
-    $scope.orderID = $window.localStorage.orderID;
+    $scope.routeOrderID = $routeParams.id ? $routeParams.id : $window.localStorage.orderID;
+    $scope.orderUrlID = '';
+    if($scope.routeOrderID)
+    $scope.orderUrlID = '/'+$scope.routeOrderID;
+    console.log('$scope.routeOrderID', $scope.routeOrderID)
+    console.log('localStorage.orderID=', $window.localStorage.orderID)
+    
     $window.localStorage.jobitStatus = " ";
     $scope.EditedBy = $window.localStorage.getItem('sessionProjectEditedBy');
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
@@ -16115,14 +16137,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.jobDiscussion = function () {
         //$location.path('discussion/' + $window.localStorage.projectJobChainOrderId);
-        $location.path('discussion/' + $scope.orderID);
+        $location.path('discussion/' + $scope.routeOrderID);
     }
 
     $timeout(function () {
         $scope.projectOrderName = $window.localStorage.getItem('projectOrderName');
+        console.log('$scope.projectOrderName', $scope.projectOrderName)
         $scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
-        console.log('$scope.indirectCustomerName', $scope.indirectCustomerName)
     }, 500);
+    
+    $scope.customer = {};
+    rest.path = 'customer/' + $scope.routeOrderID;
+    rest.get().success(function (res) {
+        $scope.customer = res;
+    })
 
     if ($window.localStorage.clientproCustomerName) {
         var clinet_id;
@@ -16142,9 +16170,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     if ($window.localStorage.orderID) {
-
         //getting ProjectOrderName and indirect clint name
-        rest.path = 'getClientIndirectClient/' + $window.localStorage.orderID;
+        rest.path = 'getClientIndirectClient/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             if (data.order_number) {
                 $scope.projectOrderData = data;
@@ -16156,17 +16183,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
         //get single order Detail
-        rest.path = 'getOrderSingle/' + $window.localStorage.orderID;
+        rest.path = 'getOrderSingle/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             $scope.orderData = data;
         }).error(errorCallback);
 
-        rest.path = 'usertaskodueDategate/' + $window.localStorage.orderID;
+        rest.path = 'usertaskodueDategate/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             $scope.dueDateItem = data;
         }).error(errorCallback);
 
-        rest.path = 'masterPriceitemget/' + $window.localStorage.orderID;
+        rest.path = 'masterPriceitemget/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             $scope.masterPrice = data;
         }).error(errorCallback);
@@ -16177,21 +16204,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
 
         //currency update
-        rest.path = 'orderCurrencyMatch/' + $window.localStorage.orderID;
+        rest.path = 'orderCurrencyMatch/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             if (data.currency) {
                 var cur = JSON.parse(data.currency);
-
                 angular.element('#currencyCh').select2('val', cur[0].currency);
                 angular.element('#crntCur').text(cur[0].currency);
                 angular.element('#defCur').text(data.defCurrency);
                 angular.element('#curRate').text(cur[0].curRate);
-
             }
         }).error(errorCallback);
 
         //check itemfile manager and delete
-        rest.path = "itemFilemanager/" + $window.localStorage.orderID;
+        rest.path = "itemFilemanager/" + $scope.routeOrderID;
         rest.delete().success(function (data) {
             if (data != 'No Item') {
                 $route.reload();
@@ -16205,10 +16230,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.ItemClient = '';
         $window.localStorage.ItemFolderid = id;
         // start to get downloaded folder name with client name
-        rest.path = 'customer/' + $window.localStorage.orderID;
+        rest.path = 'customer/' + $scope.routeOrderID;
         rest.get().success(function (res) {
             $scope.customer = res;
-            if (res) {
+            if ($scope.customer) {
                 rest.path = 'client/' + $scope.customer.client;
                 rest.get().success(function (cData) {
                     $scope.directClientData = cData
@@ -16436,52 +16461,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //create item
     //$scope.createItems = function() {
     $scope.createItems = function (newscoop) {
-        $scope.order_idddd = $window.localStorage.orderID;
-        //Creating Number of items based on input start
-        // var dialog = bootbox.dialog({
-        //     title: "Add scoop",
-        //     message: '<div class="row">' +
-        //         '<script>function myFunction() {$("#numOfItems").next().css("display","none");$("#numOfItems").parent().parent().removeClass("has-error")}</script>' +
-        //         '<div class="col-md-12"> ' +
-        //         '<div> ' +
-        //         '<div class="form-group"> ' +
-        //         '<label class="col-md-4 control-label" for="name">Enter No of scoop : </label> ' +
-        //         '<div class="col-md-4"> ' +
-        //         '<input id="numOfItems" name="numOfItems" onchange="myFunction()" type="number" min="1" max="10" class="form-control input-md" required> ' +
-        //         '<span for="Name" class="help-block" style="display: none;">This field is required.</span>' +
-        //         '</div> </div>  </div>',
-        //     buttons: {
-        //         success: {
-        //             label: "Save",
-        //             onEscape: true,
-        //             className: "btn-info",
-        //             callback: function() {
-        //                 var noItemVal = $('#numOfItems').val();
-        //                 if (!noItemVal) {
-        //                     $('#numOfItems').parent().parent().addClass('has-error');
-        //                     $('#numOfItems').next().css('display', 'block');
-        //                     return false;
-        //                 } else {
-        //                     if (noItemVal > 0 && noItemVal <= 10) {
-        //                         $scope.ItemData = {}
-        //                         $scope.ItemData.no_of_items = noItemVal;
-        //                         $scope.ItemData.order_id = $window.localStorage.getItem('orderID');
-        //                         rest.path = 'AddNumberOfItems';
-        //                         rest.post($scope.ItemData).success(function(data) {
-        //                             notification('Items created successfully.', 'success');
-        //                             $timeout(function() {
-        //                                 $route.reload();
-        //                             }, 100);
-        //                         }).error(errorCallback);
-        //                     } else {
-        //                         notification('Enter positive number and max value upto 10.', 'warning');
-        //                         return false;
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // });
+        $scope.order_idddd = $scope.routeOrderID;
 
         if (newscoop) {
             $scope.numOfScoopItems = newscoop.split(',')[1];
@@ -16497,7 +16477,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (noItemVal > 0 && noItemVal <= 5) {
                 $scope.ItemData = {}
                 $scope.ItemData.no_of_items = noItemVal;
-                $scope.ItemData.order_id = $window.localStorage.getItem('orderID');
+                $scope.ItemData.order_id = $scope.routeOrderID ? $scope.routeOrderID : $window.localStorage.getItem('orderID');
                 rest.path = 'AddNumberOfItems';
                 rest.post($scope.ItemData).success(function (data) {
                     notification('Items created successfully.', 'success');
@@ -16525,21 +16505,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 currentdate.getFullYear() + " " +
                 currentdate.getHours() + ":" +
                 currentdate.getMinutes()
-
             angular.element("#itemstatus").select2('val', 'In preparation');
             $scope.disabledStatus = true;
         }).error(errorCallback);*/
 
         //getClient By OrderId
-        rest.path = 'customer/' + $window.localStorage.orderID;
+        rest.path = 'customer/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             rest.path = 'getIndirectClient/' + data.indirect_customer;
             rest.get().success(function (data) {
+                console.log('data', data)
                 $scope.indirectCustomer = data.vUserName;
 
-                if ($scope.item == undefined) {
+                if($scope.item == undefined)
                     $scope.item = {};
-                }
                 $timeout(function () {
                     $scope.item.item_name = $scope.indirectCustomer + ' | English (US) - English (US)';
 
@@ -16554,7 +16533,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
 
         //currency
-        rest.path = 'orderCurrencyMatch/' + $window.localStorage.orderID;
+        rest.path = 'orderCurrencyMatch/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             if (data.currency) {
                 var cur = JSON.parse(data.currency);
@@ -16566,7 +16545,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#curRate').text(cur[0].curRate);
             }
         }).error(errorCallback);
-
 
         $routeParams.id = $window.localStorage.getItem('directClientIdStore');
         rest.path = 'contact';
@@ -16622,7 +16600,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
-    $scope.order_id = $window.localStorage.orderID;
+    $scope.order_id = $scope.routeOrderID;
     if ($scope.order_id != " ") {
         $routeParams.id = $scope.order_id;
         rest.path = 'contactPerson';
@@ -16649,7 +16627,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.ItemNext = function (formId, id) {
 
-        $location.path('/jobs-detail/' + $window.localStorage.orderID);
+        $location.path('/jobs-detail/' + $scope.routeOrderID);
     }
 
 
@@ -16694,7 +16672,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
                     }
 
-                    $scope.itemList[formIndex].order_id = $window.localStorage.orderID;
+                    $scope.itemList[formIndex].order_id = $scope.routeOrderID;
                     $scope.itemList[formIndex].total_amount = $scope.total_amount;
 
                     var sourceField = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale");
@@ -16752,12 +16730,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $scope.jobi.jobSummery = dd.substr(1);
                                 $scope.matchjob = dd.slice(0, 1);
                                 if ($scope.matchjob == 'j') {
-                                    rest.path = 'jobpertjobGet/' + $scope.jobi.jobSummery + '/' + $window.localStorage.orderID;
+                                    rest.path = 'jobpertjobGet/' + $scope.jobi.jobSummery + '/' + $scope.routeOrderID;
                                     rest.get().success(function (data) {
                                         $scope.itemdata = data;
                                         $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
                                         if ($scope.jobitem.item_id) {
-                                            rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $window.localStorage.orderID;
+                                            rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.routeOrderID;
                                             rest.get().success(function (data) {
                                                 $scope.iData = data;
                                                 console.log('$scope.iData- item-jobs-', $scope.iData)
@@ -16769,7 +16747,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 var item_status = [];
                                                 $scope.job_id = $scope.jobi.jobSummery;
                                                 $scope.job_code = $scope.itemdata.job_code;
-                                                $scope.order_id = $window.localStorage.orderID;
+                                                $scope.order_id = $scope.routeOrderID;
                                                 $scope.job_no = $scope.itemdata.job_no;
                                                 $scope.master_job_id = $scope.itemdata.job_id;
 
@@ -16788,7 +16766,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 $scope.jobitem.job_id = $scope.job_id;
                                                 $scope.jobitem.job_code = $scope.job_code;
                                                 $scope.jobitem.contact_person = $scope.contact_person;
-                                                $scope.jobitem.order_id = $window.localStorage.orderID;
+                                                $scope.jobitem.order_id = $scope.routeOrderID;
                                                 $scope.jobitem.due_date = $scope.due_date;
                                                 $scope.jobitem.master_job_id = $scope.master_job_id;
                                                 if ($scope.job_no == undefined) {
@@ -16833,7 +16811,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     // gettingName of selected workflow job chain
                                     $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
                                     if (chainId != undefined) {
-                                        rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $window.localStorage.orderID + '/' + chainId;
+                                        rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.routeOrderID + '/' + chainId;
                                         rest.get().success(function (data) {
                                             $scope.jobnumchain = data.job_no += 1;
                                             $scope.ijNum = 1;
@@ -16842,7 +16820,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             } else {
                                                 angular.forEach(data.newJob, function (val, i) {
                                                     if (chainId) {
-                                                        rest.path = 'jobitemsidget/' + chainId + '/' + $window.localStorage.orderID;
+                                                        rest.path = 'jobitemsidget/' + chainId + '/' + $scope.routeOrderID;
                                                         rest.get().success(function (data) {
                                                             $scope.iData = data;
                                                             var contact_person = [];
@@ -16853,7 +16831,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                             var item_status = [];
                                                             $scope.job_id = $scope.jobi.jobSummery;
                                                             $scope.job_code = val.job_code;
-                                                            $scope.order_id = $window.localStorage.orderID;
+                                                            $scope.order_id = $scope.routeOrderID;
                                                             $scope.master_job_id = val.job_id;
                                                             $scope.job_no = $scope.jobnumchain++;
                                                             if (!$scope.job_no) {
@@ -16879,7 +16857,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                             // $scope.jobitem.job_id = $scope.job_id;
                                                             $scope.jobitem.job_code = $scope.job_code;
                                                             $scope.jobitem.contact_person = $scope.contact_person;
-                                                            $scope.jobitem.order_id = $window.localStorage.orderID;
+                                                            $scope.jobitem.order_id = $scope.routeOrderID;
                                                             $scope.jobitem.due_date = $scope.due_date;
                                                             if ($scope.job_no == undefined) {
                                                                 $scope.job_no = 1;
@@ -16997,7 +16975,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.item.total_price = $scope.total_price;
                     $scope.item.item_name = $scope.item_name;
                     $scope.item.total_amount = $scope.total_amount;
-                    $scope.item.order_id = $window.localStorage.orderID;
+                    $scope.item.order_id = $scope.routeOrderID;
                     rest.path = 'ItemSave';
                     rest.post($scope.item).success(function (data) {
                         //log file start 
@@ -17024,10 +17002,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.getItems = function () {
         var popitemList = [];
-        $scope.order_idd = $window.localStorage.orderID;
+        $scope.order_idd = $scope.routeOrderID;
         rest.path = 'itemsGet/' + $scope.order_idd;
         rest.get().success(function (data) {
             $scope.itemList = data;
+            console.log('$scope.itemList', $scope.itemList)
             $scope.TblItemList = data;
             $scope.projectItemEmpty = jQuery.isEmptyObject(data);
             $scope.totalPrice = 0;
@@ -17035,10 +17014,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach(data, function (val, i) {
                 console.log("val", val.contact_person);
                 //getClient By OrderId while edit item
-                rest.path = 'customer/' + $window.localStorage.orderID;
+                rest.path = 'customer/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
+                    //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
 
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
@@ -17143,7 +17123,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.totalPrice += val.total_amount;
                 if (val.itemId) {
                     $routeParams.id = val.itemId;
-                    rest.path = 'itemsjobStatusGet/' + $routeParams.id + '/' + $window.localStorage.orderID;
+                    rest.path = 'itemsjobStatusGet/' + $routeParams.id + '/' + $scope.routeOrderID;
                     rest.get().success(function (data) {
                         console.log("data", data);
                         if (!data) {
@@ -17181,7 +17161,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }).error(errorCallback);
                 }
-                rest.path = 'jobItemIconsetdata/' + val.item_number + '/' + $window.localStorage.orderID;
+                rest.path = 'jobItemIconsetdata/' + val.item_number + '/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
                     $scope.dueDate = data;
                 }).error(errorCallback);
@@ -17232,7 +17212,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }).error(errorCallback);
                 }).error(errorCallback);
                 angular.element("#contactPerson").select2('val', data.contact_person);
-
+                
                 angular.element("#priceunit").select2('val', data.price);
                 angular.element("#itemstatus").select2('val', data.item_status);
                 angular.element('#source_lang').select2('val', data.source_lang);
@@ -17254,7 +17234,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.item.start_date = moment($scope.item.start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
 
             //getClient By OrderId while edit item
-            rest.path = 'customer/' + $window.localStorage.orderID;
+            rest.path = 'customer/' + $scope.routeOrderID;
             rest.get().success(function (data) {
                 angular.element('#manager').select2('val', data.project_manager);
                 angular.element('#coordinator').select2('val', data.project_coordinator);
@@ -17322,7 +17302,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $cookieStore.put('projectItem', $scope.item);
             //currency
-            rest.path = 'orderCurrencyMatch/' + $window.localStorage.orderID;
+            rest.path = 'orderCurrencyMatch/' + $scope.routeOrderID;
             rest.get().success(function (data) {
                 angular.element('#defCur').text(data.defCurrency);
                 if (data.currency) {
@@ -17341,7 +17321,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         bootbox.confirm("Are you sure you want to delete this scoop?", function (result) {
             if (result == true) {
-                rest.path = 'itemDelete/' + itemId + '/' + $window.localStorage.orderID;
+                rest.path = 'itemDelete/' + itemId + '/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
                     if (data.status == 422) {
                         notification(data.msg, 'error');
@@ -17398,7 +17378,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     /* Redirect To Project Jobs Section */
     $scope.goTojobDetail = function () {
-        $location.path('/jobs-detail/' + $window.localStorage.orderID);
+        $location.path('/jobs-detail/' + $scope.routeOrderID);
     }
 
     rest.path = 'Jobsummeryget';
@@ -17407,7 +17387,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }).error(errorCallback)
 
     //Pass OrderId to get Client ID To Display jobchain assign to client
-    rest.path = 'masterJobchainget/' + $window.localStorage.orderID;
+    rest.path = 'masterJobchainget/' + $scope.routeOrderID;
     rest.get().success(function (data) {
         $scope.jobchainoption = data;
     }).error(errorCallback)
@@ -17468,7 +17448,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('jobDetailController', function ($interval, $filter, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $route, $rootScope, $routeParams, $location, DTOptionsBuilder, $cookieStore, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.EditedBy = $window.localStorage.getItem('sessionProjectEditedBy');
-    $scope.projectOrderName = $window.localStorage.getItem('projectOrderName');
+    //$scope.projectOrderName = projectOrderName ? projectOrderName : $window.localStorage.getItem('projectOrderName');
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
     if ($scope.isNewProject === 'true') {
         $location.path('/dashboard1');
@@ -17494,7 +17474,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.countSt = " ";
     $window.localStorage.projectJobChainSummeryItemNum = " ";
 
-    $scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
+    $scope.indirectCustomerName,$scope.projectOrderName = '';
+    if ($routeParams.id) {
+        rest.path = 'getClientIndirectClient/' + $routeParams.id;
+        rest.get().success(function (data) {
+            console.log('data-indirecrtData', data)
+            if (data.order_number) {
+                $scope.indirectCustomerName = data.indirect_customer ? data.indirect_customer : $window.localStorage.getItem('indirectCustomerName');
+                $scope.projectOrderData = data;
+                var projectOrderName = $scope.projectOrderData.abbrivation + pad($scope.projectOrderData.order_number, 4);
+                $scope.projectOrderName = projectOrderName ? projectOrderName : $window.localStorage.getItem('projectOrderName');
+                $window.localStorage.setItem("projectOrderName", projectOrderName);
+                $window.localStorage.setItem("indirectCustomerName", $scope.projectOrderData.indirect_customer);
+                
+            }
+        }).error(errorCallback);
+    }
+    //$scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
+        
     //check itemfile manager and delete
     if ($routeParams.id) {
         rest.path = "itemFilemanager/" + $routeParams.id;
@@ -18796,6 +18793,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.edit = function (jobId) {
+        console.log('jobId', jobId)
         scrollBodyToTop();
         //$location.path('/job-summery-details/' + id);
         $routeParams.id = jobId;
@@ -27621,6 +27619,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 if (data.userName != null) {
                     $scope.orderdata = data;
+                    console.log('$scope.orderdata', $scope.orderdata)
 
                     $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
                     $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
@@ -27637,7 +27636,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //set isNewProject to false
                     $window.localStorage.setItem("isNewProject", "false");
 
-                    $location.path('/general');
+                    //$location.path('/general');
+                    $location.path('/general/'+id);
                     $window.localStorage.orderBlock = 1;
                     $timeout(function () {
                         $scope.cancel();

@@ -5287,7 +5287,8 @@ app.directive('select2ContactPerson', function($http, rest, $timeout, $log,$wind
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element) {
-            $routeParams.id = $window.localStorage.orderID;//getting clientContact from order id
+            $routeParams.id = scope.$parent.routeOrderID ? scope.$parent.routeOrderID : $window.localStorage.orderID; //getting clientContact from order id
+            //$routeParams.id = $window.localStorage.orderID; //getting clientContact from order id
             rest.path = 'checkContactClientId';
             rest.model().success(function(data) {
                 var status = [];

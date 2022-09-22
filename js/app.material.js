@@ -192,6 +192,12 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             activetab: 'general',
             role: '1'
         })
+        .when('/general/:id', {
+            templateUrl: modulesPath + 'general.html',
+            controller: 'generalController',
+            activetab: 'general',
+            role: '1'
+        })
         // --------------admin masters ----------------//
         .when('/to-do-lists', {
             templateUrl: modulesPath + 'task-type.html',
@@ -277,6 +283,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             activetab: 'price2',
             role: '1'
         }).when('/items', {
+            templateUrl: modulesPath + 'items.html',
+            controller: 'itemsController',
+            activetab: 'items',
+            role: '1'
+        }).when('/items/:id', {
             templateUrl: modulesPath + 'items.html',
             controller: 'itemsController',
             activetab: 'items',
