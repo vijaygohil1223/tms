@@ -412,7 +412,7 @@ td { font-size: 11px; } */
                             </tr> -->
                             <tr ng-repeat="order in projectsDueToday">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -580,7 +580,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsAssigned">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -754,7 +754,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsInProgress">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -924,7 +924,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsQaready">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -1094,7 +1094,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsToBeDelivered">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -1265,7 +1265,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsDueTomorrow">
                               <td>
-                                <a ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
+                                <a ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -1435,7 +1435,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsDelivered">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
@@ -1607,7 +1607,7 @@ td { font-size: 11px; } */
                           <tbody>
                             <tr ng-repeat="order in projectsAll">
                               <td>
-                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
                                 <!-- <small class="block m-t-sm">
