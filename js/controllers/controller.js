@@ -15284,11 +15284,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return false;
     }
     $scope.routeOrderID = '';
-    $scope.orderUrlID = '';
-    if ($window.localStorage.orderID) {
+    if ($window.localStorage.orderID)
         $scope.routeOrderID = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
-        $scope.orderUrlID = '/'+$scope.routeOrderID;
-    }    
+    $scope.orderUrlID = $scope.routeOrderID ? '/'+$scope.routeOrderID : '';
+
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.generalMsg = " ";
     $window.localStorage.contactMsgId;
@@ -16124,9 +16123,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return false;
     }
     $scope.routeOrderID = $routeParams.id ? $routeParams.id : $window.localStorage.orderID;
-    $scope.orderUrlID = '';
-    if($scope.routeOrderID)
-    $scope.orderUrlID = '/'+$scope.routeOrderID;
+    $scope.orderUrlID = $scope.routeOrderID ? '/'+$scope.routeOrderID : '';
+    
+    
     console.log('$scope.routeOrderID', $scope.routeOrderID)
     console.log('localStorage.orderID=', $window.localStorage.orderID)
     
@@ -17474,6 +17473,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.countSt = " ";
     $window.localStorage.projectJobChainSummeryItemNum = " ";
 
+    $scope.orderUrlID = $routeParams.id ? '/'+$routeParams.id : '';
     $scope.indirectCustomerName,$scope.projectOrderName = '';
     if ($routeParams.id) {
         rest.path = 'getClientIndirectClient/' + $routeParams.id;
