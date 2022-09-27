@@ -2733,6 +2733,11 @@ $app->get('/advanceSearchResource','authenticate', function () use($app) {
     $result = $statusJob->advanceSearchResource();
     echoResponse(200, $result);
 });
+$app->get('/searchExternalResource','authenticate', function () use($app) {
+    $statusJob = new jobstatussearch ();
+    $result = $statusJob->searchExternalResource();
+    echoResponse(200, $result);
+});
 $app->get('/jobsearchStatusUpdate/:id/:status','authenticate', function ($id, $status) use($app) {
     $statusJob = new jobstatussearch ();
     $result = $statusJob->jobsearchStatusUpdate($id, $status);

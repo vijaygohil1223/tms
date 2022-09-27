@@ -1112,6 +1112,10 @@ table tbody tr td .label.bg-success{color: #d8f0bd; background-color: #67bb0a;}
 .addactive{
   padding-right: 0px;
 }
+table.customerPriceTable tbody [id^=priceLanguageID] tr.priceLPrice.rowactivate > td{
+  background-color: #b5e0e0 !important;
+}
+ /* Spinner Div loader  */
 /* .spinner > div > div{
   background: #4e2fc4 !important;
 }  */
