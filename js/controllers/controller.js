@@ -28345,11 +28345,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         obj = JSON.parse(val.userCountry);
                         val.userCountry = obj[3].value;
                     }
+                    if (!jQuery.isEmptyObject(val.price_basis)) {
+                        let priceObj = JSON.parse(val.price_basis);
+                        const priceRate = $scope.jobReport.priceRate ? numberFormatCommaToPoint($scope.jobReport.priceRate) : ''; 
+                        let priceUnit = priceObj.filter( (prc) => { 
+                            if(prc.childPriceId == $scope.jobReport.priceUnit) 
+                                return prc.childPriceId 
+                        });
+                        let priceRateObj = priceObj.filter( (prc) => { 
+                            if(prc.basePrice == priceRate) 
+                                return prc.childPriceId 
+                        });
+                        if(priceUnit.length)
+                            val.priceUnit = $scope.jobReport.priceUnit
+                        if(priceRateObj.length)
+                            val.priceRate = $scope.jobReport.priceRate    
+                    }
                     if(val.specialization != $scope.jobReport.specialization)
                         val.specialization = '';
                     if (!jQuery.isEmptyObject(val.price_language)) {
                         let langObj = JSON.parse(val.price_language);
-                        console.log('obj', langObj)
                         let srcLang = langObj.filter( (lng) => { 
                             if(lng.languagePrice.split(' > ')[0] == $scope.jobReport.source_lang) 
                                 return lng.languagePrice 
@@ -28358,20 +28373,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if(lng.languagePrice.split(' > ')[1] == $scope.jobReport.target_lang) 
                                 return lng.languagePrice 
                         });
-                        console.log('trgtLang', trgtLang)
-                            
                         if(srcLang.length)
                             val.source_lang = $scope.jobReport.source_lang
                         if(trgtLang.length)
                             val.target_lang = $scope.jobReport.target_lang
-                        // if($scope.jobReport.source_lang && $scope.jobReport.target_lang){
-                        //     if(!srcLang.length || !trgtLang.length){
-                        //         console.log('trgtLang.length', trgtLang.length)
-                        //         val.source_lang = ''
-                        //         val.target_lang = ''
-                        //     }    
-                        // }    
-                    //val.userCountry = obj[3].value;
                     }
                     if (val.price_currency) {
                         if(val.price_currency.includes(','))
@@ -28380,6 +28385,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // if (val.JobDueDate) {
                     //     val.JobDueDate = val.JobDueDate.split(' ')[0].split('-').reverse().join('.');
                     // }
+                    
                 });
                 $scope.statusResult = data;
                 console.log('$scope.statusResult', $scope.statusResult)
@@ -28404,6 +28410,89 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             scrollToId(eID);
         }
     }
+
+    // Price multiple selection
+    rest.path = 'masterPriceitemgetFromPriceList';
+    rest.get().success(function (data) {
+        $scope.masterPrice = data;
+        console.log("$scope.masterPrice", $scope.masterPrice);
+    }).error(errorCallback);
+
+    rest.path = 'childPriceitemget';
+    rest.get().success(function (data) {
+        $scope.childPrice = data;
+        console.log('$scope.childPrice', $scope.childPrice)
+    }).error(errorCallback);
+    $scope.masterChildDropDown = function() {
+        $scope.pricesArray = [];
+        $timeout(function () {
+            angular.forEach($scope.masterPrice, function (val, i) {
+                var obj1 = {
+                    id: '',
+                    text: val.name,
+                    children: []
+                }
+                $scope.pricesArray.push(obj1);
+            })
+            angular.forEach($scope.masterPrice, function (v, i) {
+                angular.forEach($scope.childPrice, function (val1, i1) {
+                    //console.log('$scope.childPrice', $scope.childPrice)
+                    if (v.master_price_id == val1.master_price_id) {
+                        var obj2 = {
+                            id: val1.child_price_id,
+                            text: val1.name
+                        }
+                        $scope.pricesArray[i].children.push(obj2);
+                    }
+                })
+            })
+        }, 2000);
+
+        $('#priceUnit').select2({
+            multiple: true,
+            allowClear: true,
+            placeholder: "Select price..",
+            data: $scope.pricesArray,
+            query: function (options) {
+                var selectedIds = options.element.select2('val');
+                console.log("selectedIds", selectedIds);
+                var selectableGroups = $.map(this.data, function (group) {
+                    var areChildrenAllSelected = true;
+                    $.each(group.children, function (i, child) {
+                        if (selectedIds.indexOf(child.id) < 0) {
+                            areChildrenAllSelected = false;
+                            return false; // Short-circuit $.each()
+                        }
+                    });
+                    return !areChildrenAllSelected ? group : null;
+                });
+                options.callback({ results: selectableGroups });
+            }
+        }).on('select2-selecting', function (e) {
+            var $select = $(this);
+            if (e.val == '') {
+                e.preventDefault();
+                $select.select2('data', $select.select2('data').concat(e.object.children));
+                $select.select2('close');
+            }
+            //* Single selection replace selected option *//
+            const inputIdS2 = '#s2id_'+$(this).attr('id');
+            if(e.object){
+                $(inputIdS2+' li').each(function() {
+                    const childDiv = $(this).children();
+                    let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                    if(eleText){
+                        if(eleText !== e.object.text){
+                            $(inputIdS2+' li').find("div:contains("+ eleText +")").next().click();
+                        }    
+                    }
+                });
+            }
+        });
+    }
+    $timeout(function () {
+        $scope.masterChildDropDown();
+    }, 200);
 
     $scope.reseteSearch = function (frmId) {
         $route.reload();
@@ -28507,6 +28596,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 break;
+            case "priceUnit":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.priceUnit = '';
+                    angular.element('#priceUnit').select2('val', '');
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;    
+            case "priceRate":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.priceRate = '';
+                    angular.element('#priceRate').val();
+                    angular.forEach($scope.jobReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.jobReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;                
             case "source_lang":
                 if ($scope.jobReport != undefined) {
                     $scope.jobReport.source_lang = '';

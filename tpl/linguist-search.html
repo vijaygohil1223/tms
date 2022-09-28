@@ -76,6 +76,35 @@
                                         </div>
                                         <div class="col-sm-6 form-group">
                                             <div class="col-sm-11">
+                                                <label>Price Unit</label>
+                                                <input type="text" id="priceUnit" class="form-control" name="priceUnit"
+                                                    ng-model="jobReport.priceUnit" />
+                                            </div>
+                                            <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                <a href="javascript:void(0)"
+                                                    ng-click="clearCode('job-status-report','priceUnit')"
+                                                    ng-if="jobReport.priceUnit"><i
+                                                        class="iconDelete glyph-icon fa-times"
+                                                        aria-hidden="true"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 form-group">
+                                            <div class="col-sm-11">
+                                                <label>Price Rate</label>
+                                                <input type="text" id="priceRate" class="form-control" allow-decimal-comma-number name="priceRate"
+                                                    ng-model="jobReport.priceRate" />
+                                            </div>
+                                            <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                <a href="javascript:void(0)"
+                                                    ng-click="clearCode('job-status-report','priceRate')"
+                                                    ng-if="jobReport.priceRate"><i
+                                                        class="iconDelete glyph-icon fa-times"
+                                                        aria-hidden="true"></i></a>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-sm-6 form-group">
+                                            <div class="col-sm-11">
                                                 <label>Specialization</label>
                                                 <input type="text" select2-specialization-single data-typeid="1"
                                                     id="specialization" class="form-control" name="specialization"
