@@ -1781,7 +1781,21 @@ app.directive('select2MultipleLanguagesData', function($http, rest, $timeout) {
                 element.select2({
                     allowClear: true,
                     data: users,
-                    multiple: true
+                    multiple: true,
+                    closeOnSelect:true
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
                 });
             }).error(function(data, error, status) {});
         }
@@ -4127,6 +4141,48 @@ app.directive('select2SpecializationRecord', function($http, rest, $timeout) {
                         data: type,
                         multiple: true,
                         closeOnSelect:false
+                    });
+                }, 500);
+            }).error(function(data, error, status) {});
+        }
+    }
+});
+/* Specalization for Single selection */
+app.directive('select2SpecializationSingle', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            rest.path = 'getAllSpecialization';
+            rest.get().success(function(data) {
+                var type = [];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        'id': value.id,
+                        'text': value.name
+                    };
+                    type.push(obj);
+                });
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: type,
+                        multiple: true,
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }, 500);
             }).error(function(data, error, status) {});

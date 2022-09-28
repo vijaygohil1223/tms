@@ -9,7 +9,6 @@
         <div ui-butterbar></div>
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
         <div class="md-content page_content_wrapper" id="top">
-
             <!-- <div class="bg-light lter b-b wrapper-md ng-scope">
           <h1 class="m-n font-thin h3">Advance Resource Search</h1>
         </div> -->
@@ -20,7 +19,8 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading font-bold content_head">External Resource (Linguist) Search</div>
+                                    <div class="panel-heading font-bold content_head">External Resource (Linguist)
+                                        Search</div>
                                     <div class="panel-body">
                                         <div class="col-sm-6 form-group">
                                             <div class="col-sm-11">
@@ -77,7 +77,7 @@
                                         <div class="col-sm-6 form-group">
                                             <div class="col-sm-11">
                                                 <label>Specialization</label>
-                                                <input type="text" select2-specialization data-typeid="1"
+                                                <input type="text" select2-specialization-single data-typeid="1"
                                                     id="specialization" class="form-control" name="specialization"
                                                     ng-model="jobReport.specialization" />
                                             </div>
@@ -89,13 +89,12 @@
                                                         aria-hidden="true"></i></a>
                                             </div>
                                         </div>
-
                                         <div class="col-md-6" style="padding-left:0;">
                                             <div class="col-sm-6">
                                                 <div class="col-sm-11">
                                                     <label>Source</label>
-                                                    <input select2-multiple-languages-data id="sourceLanguage" type="text"
-                                                        name="sourcelang" ng-model="jobReport.source_lang"
+                                                    <input select2-multiple-languages-data id="sourceLanguage"
+                                                        type="text" name="sourcelang" ng-model="jobReport.source_lang"
                                                         class="form-control sourcelanguages" />
                                                 </div>
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
@@ -116,7 +115,8 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','target_lang')"
-                                                        ng-if="jobReport.target_lang"><i class="iconDelete glyph-icon fa-times"
+                                                        ng-if="jobReport.target_lang"><i
+                                                            class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
                                                 </div>
                                             </div>
@@ -165,7 +165,6 @@
                         </div>
                         <!--   TAB1 -->
                         <div class="panel-footer">
-
                         </div>
                     </form>
                 </div>
@@ -199,7 +198,6 @@
                                             <td>{{result.freelancerType}}</td>
                                             <td>{{result.currency}}</td>
                                             <td>{{result.userCountry}}</td>
-
                                         </tr>
                                         <tr ng-show="!statusRes.length">
                                             <td colspan="8" ng-bind="dataNotFound"></td>
@@ -212,8 +210,6 @@
                 </div>
                 <!-- footer copy right -->
                 <div data-ng-include="'tpl/copyRight.html'"></div>
-
             </div>
-
         </div>
     </div>

@@ -11288,6 +11288,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $select.select2('data', $select.select2('data').concat(e.object.children));
                 $select.select2('close');
             }
+            const inputIdS2 = '#s2id_'+$(this).attr('id');
+            if(e.object){
+                $(inputIdS2+' li').each(function() {
+                    const childDiv = $(this).children();
+                    let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                    if(eleText){
+                        if(eleText !== e.object.text){
+                            $(inputIdS2+' li').find("div:contains("+ eleText +")").next().click();
+                        }    
+                    }
+                });
+            }
         });
     }
 
