@@ -1562,11 +1562,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }
     }
+    $scope.childPrice = [];
     $scope.langsListAll = [];
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'languagesGet';
         rest.get().success(function (data) {
             $scope.langsListAll = data;
+        }).error(errorCallback);
+
+        //* child Price list *//
+        rest.path = 'childPriceitemget';
+        rest.get().success(function (data) {
+            $scope.childPrice = data;
+            console.log("$scope.childPrice", $scope.childPrice);
         }).error(errorCallback);
     }
 
@@ -1691,6 +1699,55 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 } else {
                     $scope.projectData[i].itemsTargetLang = newLangData;
                 }
+                var scoopWords = 0;
+                var scoopHours = 0;
+                val.scoop_projectColor = '#3B9C9C';
+                if(val.scoop_price){ 
+                    $scope.projectData[i].scoop_price = JSON.parse(val.scoop_price);
+                    //console.log('$scope.childPrice', $scope.childPrice)
+                    if($scope.childPrice.length){
+                        angular.forEach(val.scoop_price, function(pval, i) {
+                            //console.log('pval', pval)
+                                const isFound = $scope.childPrice.filter(element => {
+                                    if (element.name == pval.pricelist) {
+                                        return element.unit;
+                                    }
+                                    return false;
+                                });
+                                if(isFound.length){
+                                    if(isFound[0].unit == 'Words') 
+                                        scoopWords += parseInt(pval.quantity)
+                                    if(isFound[0].unit == 'Hours') 
+                                        scoopHours += parseInt(pval.quantity)
+                                }
+                                      
+                        });
+                        //console.log('scoopWords='+val.itemId, parseInt(scoopWords))
+                        if( scoopWords > 0){
+                            if(scoopWords > 0 && scoopWords < 2000)
+                                val.scoop_projectColor =  'green';
+                            if(scoopWords > 2000 && scoopWords < 4000)
+                                val.scoop_projectColor =  'blue';
+                            if(scoopWords > 4000 && scoopWords < 9999)
+                                val.scoop_projectColor =  'orange';
+                            if(scoopWords > 10000)
+                                val.scoop_projectColor =  'red';
+                        }
+                        if(scoopWords == 0 && scoopHours > 0){
+                            if(scoopWords > 0 && scoopWords <= 2)
+                                val.scoop_projectColor =  'green';
+                            if(scoopWords > 2 && scoopWords <= 4)
+                                val.scoop_projectColor =  'blue';
+                            if(scoopWords > 4 && scoopWords <= 10)
+                                val.scoop_projectColor =  'orange';
+                            if(scoopWords > 10)
+                                val.scoop_projectColor =  'red';
+                        }    
+                    }    
+                    scoopWords = 0; 
+                    scoopHours = 0;
+                }    
+                    
                 //  ----linguist List----- / 
                 //$scope.jobLinguist = [];
                 // if($cookieStore.get('session_iUserId') != undefined){
@@ -2634,10 +2691,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var absentLngstFilter = absentLngstlist.filter(x => {
                     if(x.is_available){
                         let isAailable = JSON.parse(x.is_available);
-                        console.log('isAailable', isAailable)
+                        //console.log('isAailable', isAailable)
                         if(isAailable.length){
                             const isFound = up7Days.some(r => isAailable.indexOf(r) >= 0)
-                            console.log('found', isFound)
+                            //console.log('found', isFound)
                             x.is_available = JSON.parse(x.is_available);
                             if(isFound)
                             return isAailable;
@@ -28385,27 +28442,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // if (val.JobDueDate) {
                     //     val.JobDueDate = val.JobDueDate.split(' ')[0].split('-').reverse().join('.');
                     // }
-                    
                 });
                 $scope.statusResult = data;
-                console.log('$scope.statusResult', $scope.statusResult)
-                // if (job.userRateLow != NaN && job.userRateHigh != NaN) {
-                //     var low = job.userRateLow;
-                //     var high = job.userRateHigh;
-                //     $scope.rateFilterData = $filter('ratingRange')(data, low, high);
-                //     if ($scope.rateFilterData != '') {
-                //         $scope.statusResult = $scope.rateFilterData;
-                //     }
-                // }
-                // if ($scope.jobDate.FrmDate != undefined && $scope.jobDate.ToDate != undefined) {
-                //     var frmDate = Date.parse($scope.jobDate.FrmDate.split('.').reverse().join('-'));
-                //     var toDate = Date.parse($scope.jobDate.ToDate.split('.').reverse().join('-'));
-                //     $scope.filterData = $filter('dateRange')(data, frmDate, toDate);
-                //     if ($scope.filterData != '') {
-                //         $scope.statusResult = $scope.filterData;
-                //     }
-
-                // }
+                //console.log('$scope.statusResult', $scope.statusResult)
             })
             scrollToId(eID);
         }
