@@ -11346,17 +11346,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $select.select2('close');
             }
             const inputIdS2 = '#s2id_'+$(this).attr('id');
-            if(e.object){
-                $(inputIdS2+' li').each(function() {
-                    const childDiv = $(this).children();
-                    let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
-                    if(eleText){
-                        if(eleText !== e.object.text){
-                            $(inputIdS2+' li').find("div:contains("+ eleText +")").next().click();
-                        }    
-                    }
-                });
-            }
+            // if(e.object){
+            //     $(inputIdS2+' li').each(function() {
+            //         const childDiv = $(this).children();
+            //         let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+            //         if(eleText){
+            //             if(eleText !== e.object.text){
+            //                 $(inputIdS2+' li').find("div:contains("+ eleText +")").next().click();
+            //             }    
+            //         }
+            //     });
+            // }
         });
     }
 
@@ -15401,6 +15401,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.projectOrderName = $window.localStorage.getItem('projectOrderName');
     $scope.dtSeparator = $window.localStorage.getItem('dtSeparator');
+
+    if(!$scope.routeOrderID){
+        $('.checksub').css('display', 'none');
+    }
     $scope.date = new Date();
 
     $scope.jobDiscussion = function () {
@@ -15505,8 +15509,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //rest.path = 'customer/' + $window.localStorage.orderID;
         rest.path = 'customer/' + $routeParams.id;
         rest.get().success(function (res) {
-            console.log('res', res)
             $scope.customer = res;
+            console.log('$scope.customer', $scope.customer)
             if (res) {
                 rest.path = 'client/' + $scope.customer.client;
                 rest.get().success(function (cData) {
@@ -15557,6 +15561,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                         angular.element('#indirect_customer').select($scope.customer.indirect_customer);
                         angular.element('#indirect_customer').trigger('change');
+                        if($scope.customer.sub_pm)
+                            $scope.checksub_pm = 1;
+                        if($scope.customer.sub_pc)
+                            $scope.checksub_pc = 1;
+                        if($scope.customer.sub_qa)
+                            $scope.checksub_qa = 1;
 
                         angular.element('#projectBranch').select($scope.general.project_branch);
                         angular.element('#projectBranch').trigger('change');
@@ -15835,10 +15845,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //set isNewProject to false
                         $window.localStorage.setItem("isNewProject", "false");
 
+                        const subPm = angular.element('#subProjectManager').val();
+                        if(subPm)
+                            $scope.customer.sub_pm = subPm.includes(',') ? subPm.split(',')[1] : subPm; 
+                        else
+                            $scope.customer.sub_pm = 0;
+
+                        const subPc = angular.element('#subProjectCoordinator').val();
+                        if(subPc)
+                            $scope.customer.sub_pc = subPc.includes(',') ? subPc.split(',')[1] : subPc; 
+                        else
+                            $scope.customer.sub_pc = 0;    
+                        
+                        const subQA = angular.element('#subQA').val();
+                        if(subQA)
+                            $scope.customer.sub_qa = subQA.includes(',') ? subQA.split(',')[1] : subQA; 
+                        else
+                            $scope.customer.sub_qa = 0;    
+                        
                         //Update $scope.customer object data
                         $routeParams.id = $scope.customer.c_id;
                         rest.path = 'customer';
                         rest.put($scope.customer).success(function (data) {
+                            console.log('data', data)
                             if (data.indirectData) {
                                 $timeout(function () {
                                     $window.localStorage.setItem('indirectCustomerName', data.indirectData.vUserName)
