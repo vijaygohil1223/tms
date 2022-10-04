@@ -3229,7 +3229,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                 });
                 var lngPriceList = $scope.lngPriceList;
-                console.log('$scope.lngPriceList', $scope.lngPriceList)
+                console.log('$scope.lngPriceList=job=', $scope.lngPriceList)
 
                 // import CSV
                 $scope.csvData = [];
@@ -10892,6 +10892,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.sendPriceLanguage = function (id) {
         var specialization = angular.element('#specialization').select2('data');
+        console.log('specialization', specialization)
         if (!specialization) {
             notification('Please select specialization.', 'warning');
             return;
@@ -10904,7 +10905,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var fromLangugageChar = language.split('>')[0].trim().substr(0, 3).toUpperCase();
             var toLangugageChar = language.split('>')[1].trim().substr(0, 3).toUpperCase();
             var newLanguage = fromLangugageChar + '>' + toLangugageChar;
-
+            const specializationTxt = specialization.length>0 ? specialization[0].text : specialization.text
             $scope.customerPrice.price_name = $scope.customerPrice.price_name + newLanguage + ' | ' + specialization.text;
         } else {
             var customerPriceName = angular.element('#customerPriceName').val();
@@ -10913,7 +10914,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var toLangugageChar = language.split('>')[1].trim().substr(0, 3).toUpperCase();
             var newLanguage = fromLangugageChar + '>' + toLangugageChar;
             var specialization = angular.element('#specialization').select2('data');
-            $scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage + ' | ' + specialization.text;
+            const specializationTxt = specialization.length > 0 ? specialization[0].text : specialization.text
+            $scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
         }
     }
 
@@ -11457,12 +11459,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             childPriceId: data.child_price_id,
                             masterPriceId: data.master_price_id
                         };
-                        $scope.baseTtl = []; // To solve type error undefined
+                        if(typeof $scope.baseTtl == 'undefined')
+                            $scope.baseTtl = []; // To solve type error undefined
                         $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                         $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
                         $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate;
                         $scope.priceBasiList.push(newPriceObj);
-                        //console.log('$scope.priceBasiList==added', $scope.priceBasiList)
                         //$('#priceUnit').val('');
                         $("#priceUnit").select2("val", "");
                     } else {
