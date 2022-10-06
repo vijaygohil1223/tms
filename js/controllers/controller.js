@@ -1708,10 +1708,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.scoop_projectColor = '#3B9C9C';
                 if(val.scoop_price){ 
                     $scope.projectData[i].scoop_price = JSON.parse(val.scoop_price);
-                    //console.log('$scope.childPrice', $scope.childPrice)
                     if($scope.childPrice.length){
                         angular.forEach(val.scoop_price, function(pval, i) {
-                            //console.log('pval', pval)
                                 const isFound = $scope.childPrice.filter(element => {
                                     if (element.name == pval.pricelist) {
                                         return element.unit;
@@ -1724,9 +1722,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     if(isFound[0].unit == 'Hours') 
                                         scoopHours += parseInt(pval.quantity)
                                 }
-                                      
                         });
-                        //console.log('scoopWords='+val.itemId, parseInt(scoopWords))
                         if( scoopWords > 0){
                             if(scoopWords > 0 && scoopWords < 2000)
                                 val.scoop_projectColor =  'green';
@@ -1738,13 +1734,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 val.scoop_projectColor =  'red';
                         }
                         if(scoopWords == 0 && scoopHours > 0){
-                            if(scoopWords > 0 && scoopWords <= 2)
+                            if(scoopHours > 0 && scoopHours <= 2)
                                 val.scoop_projectColor =  'green';
-                            if(scoopWords > 2 && scoopWords <= 4)
+                            if(scoopHours > 2 && scoopHours <= 4)
                                 val.scoop_projectColor =  'blue';
-                            if(scoopWords > 4 && scoopWords <= 10)
+                            if(scoopHours > 4 && scoopHours <= 10)
                                 val.scoop_projectColor =  'orange';
-                            if(scoopWords > 10)
+                            if(scoopHours > 10)
                                 val.scoop_projectColor =  'red';
                         }    
                     }    
