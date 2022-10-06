@@ -556,6 +556,10 @@ function commentDatetimeToText(ndate, dtseperator = '-') {
     }
     return cmtDateText;
 }
+// Compare two array and get common element
+function findCommonArrEle(arr1, arr2) {
+    return arr1.some(item => arr2.includes(item))
+}
 
 app.controller('loginController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope) {
     /*-------Check for login--------*/
@@ -3113,6 +3117,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'customerpriceAll/' + 2;  //2 for external userID
         rest.get().success(function (data) {
             $scope.priceList = data;
+            console.log('$scope.priceList', $scope.priceList)
         });
     }
     $scope.csvProgress = true;
@@ -3172,12 +3177,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (resID) {
                     resource_id_csv = resID;
                     $scope.isResourceChange = 1;
-
-                    var priceList = $scope.priceList;
-                    //var newPriceList = priceList.filter(function(priceList) { return priceList.resource_id == resource_id_csv; });
+                    //var priceList = $scope.priceList;
+                    var priceList = $scope.priceList.filter(function (priceList) { return priceList.resource_id == resource_id_csv; });
                     //var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
                     var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
-                    var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); console.log('isSpclzExist', isSpclzExist); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
+                    //var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
+                    var newPriceList = priceList.filter(function (priceList) { 
+                        if(!priceList.specialization)
+                            return false;
+                        var priceSpc = priceList.specialization.toString().split(',');
+                        return findCommonArrEle(projSpecialization, priceSpc)
+                    });   
                     //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
 
                     $scope.lngPriceList = [];
@@ -3204,16 +3214,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             setTimeout(() => {
                 // function csvResorce() {
-                var priceList = $scope.priceList;
-                console.log('$scope.priceList', $scope.priceList)
+                //var priceList = $scope.priceList;
+                var priceList = $scope.priceList.filter(function (priceList) { return priceList.resource_id == resource_id_csv; });
                 //var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
                 var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
-                console.log('$scope.jobdetail.proj_specialization', $scope.jobdetail.proj_specialization)
-                var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
+                console.log('projSpecialization', projSpecialization)
+                //var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
+                var newPriceList = priceList.filter(function (priceList) { 
+                        if(!priceList.specialization)
+                            return false;
+                        var priceSpc = priceList.specialization.toString().split(',');
+                        return findCommonArrEle(projSpecialization, priceSpc)
+                    });
                 //var projSpecialization = $scope.jobdetail.proj_specialization.toString();
                 //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
-
-                console.log('newPriceList', newPriceList)
+                console.log('newPriceList-in', newPriceList)
                 //$scope.lngPriceList = [];
                 angular.forEach(newPriceList, function (val, i) {
                     var langList = JSON.parse(val.price_language);
