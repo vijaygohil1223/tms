@@ -141,7 +141,7 @@
                                                         <label class="i-checks i-checks-sm checksub" style="margin-left: 10px;">
                                                             <input type="checkbox" name="checksub_pm" ng-true-value="1" ng-false-value="0" ng-model="checksub_pm" ng-checked="customer.sub_pm != 0" class="ng-pristine ng-untouched ng-valid">
                                                             <i></i>
-                                                        </label><label class="no-wrap m-0" ng-if="customer">Substitute Project Manager</label>
+                                                        </label><label class="no-wrap m-0 checksub">Substitute Project Manager</label>
                                                         <input type="text" id="projectManager" class="form-control" id="projectManager" name="vProjectManager" select2-manager ng-model="customer.project_manager" required/>
                                                     </div>
                                                 </div>
@@ -157,7 +157,7 @@
                                                         <label class="i-checks i-checks-sm checksub" style="margin-left: 10px;">
                                                             <input type="checkbox" name="checksub_pc" ng-true-value="1" ng-false-value="0" ng-model="checksub_pc" ng-checked="customer.sub_pc != 0" class="ng-pristine ng-untouched ng-valid">
                                                             <i></i>
-                                                        </label><label class="no-wrap m-0" ng-if="customer">Substitute Project Coordinator</label>
+                                                        </label><label class="no-wrap m-0 checksub">Substitute Project Coordinator</label>
                                                         <input type="text" class="form-control" id="projectCoordinator" name="vProjectCoordinator" select2-coordinator ng-model="customer.project_coordinator" required/>
                                                     </div>
                                                 </div>
@@ -173,7 +173,7 @@
                                                         <label class="i-checks i-checks-sm checksub" style="margin-left: 10px;">
                                                             <input type="checkbox" name="checksub_qa" ng-true-value="1" ng-false-value="0" ng-model="checksub_qa" ng-checked="customer.sub_qa != 0" class="ng-pristine ng-untouched ng-valid">
                                                             <i></i>
-                                                        </label><label class="no-wrap m-0" ng-if="customer">Substitute QA</label>
+                                                        </label><label class="no-wrap m-0 checksub">Substitute QA</label>
                                                         <input type="text" select2-qaspa id="qaSpecialist" class="form-control" name="vProjectSpecialist" ng-model="customer.QA_specialist"/>
                                                     </div>
                                                 </div>

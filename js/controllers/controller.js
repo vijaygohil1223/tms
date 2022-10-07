@@ -1589,12 +1589,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            console.log('userrr-data', data)
-            console.log('jobdeliver-user', data.vResourcePosition)
             $scope.vResourcePosition = data.vResourcePosition;
             //-- Permission to show tabs --//
             if(data.tabPermission)
-            $scope.tabPermission = JSON.parse(data.tabPermission) 
+                $scope.tabPermission = JSON.parse(data.tabPermission) 
+            else
+                $('.btn_create-project').css('top','15px')
+
+                console.log('$scope.tabPermission',$scope.tabPermission)
         });
     }
 
@@ -15398,10 +15400,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return false;
     }
     $scope.routeOrderID = '';
-    if ($window.localStorage.orderID)
-        $scope.routeOrderID = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
+    //if ($window.localStorage.orderID)
+        //$scope.routeOrderID = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
+    $scope.routeOrderID = ($routeParams.id) ? $routeParams.id : '';
     $scope.orderUrlID = $scope.routeOrderID ? '/'+$scope.routeOrderID : '';
-
+    
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.generalMsg = " ";
     $window.localStorage.contactMsgId;
@@ -15418,6 +15421,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if(!$scope.routeOrderID){
         $('.checksub').css('display', 'none');
     }
+        
     $scope.date = new Date();
 
     $scope.jobDiscussion = function () {
@@ -15484,7 +15488,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         value: 'Archived'
     }];
 
-    if ($window.localStorage.orderID) {
+    if ($scope.routeOrderID) {
         rest.path = 'generalfolder/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             $scope.generalFolderCount = data.length;
