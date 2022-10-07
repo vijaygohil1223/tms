@@ -9710,7 +9710,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.dtLast_job = '';
             
                 
-            if($scope.userprofiledata.is_available){    
+            if($scope.userprofiledata.is_available && $scope.userprofiledata.is_available == '["Invalid date"]'){    
                 let is_available =  JSON.parse($scope.userprofiledata.is_available);
                 $scope.multipleDateArr = is_available;
                 console.log('is_available', is_available)
@@ -9888,11 +9888,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveUserProfileExternal = function (formId, ContactPersonId) {
         const multidatePick = $('#multidatePick').val();
-        var abscentArr = multidatePick.split(",").map(function(item) {
-            var dt = originalDateFormatNew(item.trim());
-            return moment(dt).format('YYYY-MM-DD');
-          });
-          $scope.userprofiledata.is_available = JSON.stringify(abscentArr);
+        console.log('multidatePick', multidatePick)
+        var abscentArr = '';
+        if(multidatePick != '' && multidatePick != 1){
+            var abscentArr = multidatePick.split(",").map(function(item) {
+                var dt = originalDateFormatNew(item.trim());
+                return moment(dt).format('YYYY-MM-DD');
+            });
+        }    
+        $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
           
         if (ContactPersonId == 'translation') {
             $window.localStorage.setItem("contactPersonId", 'translation');
@@ -30653,12 +30657,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveLinguistData = function (formId) {
         //if (angular.element("#" + formId).valid()) {
-        rest.path = 'savelinguistCsvProfile';
-        rest.post($scope.csvDataInsrt).success(function (data) {
-            console.log('data', data)
-            notification('Record inserted successfully.', 'success');
-            $route.reload();
-        }).error(errorCallback);
+        if($scope.csvFieds.length > 30){
+            if($scope.csvFieds[0] == 'Plunet Number' && $scope.csvFieds[2] == 'State' && $scope.csvFieds[3] == 'Website' && $scope.csvFieds[4] == 'Country' && $scope.csvFieds[5] == 'City' && $scope.csvFieds[6] == 'ZIP Code'){
+                rest.path = 'savelinguistCsvProfile';
+                rest.post($scope.csvDataInsrt).success(function (data) {
+                    console.log('data', data)
+                    notification('Record inserted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }else{
+                notification('Necessary fields are missing. or Format is not proper.', 'warning');
+            }
+        }else{
+            notification('Csv Format is not proper', 'warning');
+        }    
         //}
     };
 

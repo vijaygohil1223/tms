@@ -3447,7 +3447,7 @@ app.directive('select2JobDetailResource', function($http, rest, $timeout) {
                 $.each(data, function(key, value) {
                     var obj = {
                         'id': value.iUserId,
-                        'text': value.vUserName
+                        'text': value.vFirstName + ' ' + value.vLastName
                     };
                     indirect.push(obj);
                 });
@@ -6297,7 +6297,8 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
             setTimeout(() => {
                 var date = scope.$parent.multipleDateArr;
                 console.log('date-multi', date)
-                if(date.length){
+                //$('#multidatePick').val('');
+                if(date.length && date!=1){
                     let dateArr = date.map( function(item) {
                         const dt1 = new Date(item);
                         return dt1.setDate(dt1.getDate());
