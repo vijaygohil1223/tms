@@ -68,20 +68,6 @@ class contactPerMsg {
         $Username = $data['data']['vUserName'];
 
         $to = $data['data']['vEmail'];
-        
-        if ($cc != "") {
-            // $cCAddresses = explode(',',$cc);
-            // foreach ($cCAddresses as $cCAddress) {
-            //     $this->_mailer->AddCC(trim($cCAddress));
-            // }
-        }
-
-        if ($bcc != "") {
-            // $bcCAddresses = explode(',',$bcc);
-            // foreach ($bcCAddresses as $bcCAddress) {
-            //     $this->_mailer->AddBCC(trim($bcCAddress));
-            // }
-        }
 
         $attachments = '';
         $to_name = 'TMS';
@@ -97,8 +83,10 @@ class contactPerMsg {
                 'Base64Content' => $fileNm[1]
             ]];
         }
+        phpinfo();
+        exit;
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc='', $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
         
         if($mailResponse['status'] == 200) {
             $result['status'] = 200;
