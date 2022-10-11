@@ -83,8 +83,7 @@ class contactPerMsg {
                 'Base64Content' => $fileNm[1]
             ]];
         }
-        phpinfo();
-        exit;
+
         $send_fn = new functions();
         $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
         
