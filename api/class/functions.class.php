@@ -395,13 +395,29 @@ class functions {
         
         //$mailParams['Messages'][0]['InlinedAttachments'] =  $inlinedAttachments;
         // parameter array of array
-        if (is_array($cc)) {
-            $mailParams['Messages'][0]['Cc'] =  $cc;
+        if ($cc) {
+            $arrCC = [];
+            $var = explode(',',$cc);
+            foreach ($var as $ccAddress) {
+                $arrE = [
+                        'Email' => $ccAddress,
+                    ];
+                    array_push($arrCC, $arrE);
+                }
+            $mailParams['Messages'][0]['Cc'] = $arrCC;
         }
-        if (is_array($bcc)) {
-            $mailParams['Messages'][0]['Bcc'] =  $bcc;
+        if ($bcc) {
+            $arrBcc = [];
+            $varA = explode(',',$bcc);
+            foreach ($varA as $bccAddress) {
+                $arrE = [
+                        'Email' => $bccAddress,
+                    ];
+                    array_push($arrCC, $arrE);
+                }
+            $mailParams['Messages'][0]['Bcc'] = $arrBcc;
         }
-
+        
         if (is_array($attachments)) {
             // Attachment parameter
             // $mailParams['Messages'][0]['Attachments'] =  [[
@@ -413,7 +429,6 @@ class functions {
         }
 
         $response = $this->_mailjet->post(Resources::$Email, ['body' => $mailParams]);
-
         if ($response->success()) {            
             $result['status'] = 200;
             $result['msg'] = 'Succes!';

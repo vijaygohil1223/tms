@@ -277,18 +277,19 @@ class users {
         } else if ($this->getUser_Email()) {
             $return['status'] = 422;
             $return['msg'] = 'Email address already exists.';
-        } else if($user['vEmailAddress'] == $user['vSecondaryEmailAddress']){
+        } else if(isset($user['vSecondaryEmailAddress']) && ($user['vEmailAddress'] == $user['vSecondaryEmailAddress'])){
             $return['status'] = 422;
             $return['msg'] = 'Secondary Email Address should be different.';
         }else {
             $user['iFkUserTypeId'] = '2';
             $user['vPassword'] = md5($user['vPassword']);
-            $user['vProfilePic'] = $this->uploadimage($user);
+            $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : 'user-icon.png';
             $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
             $user['dtCreationDate'] = date('Y-m-d H:i:s')/*$user['dtCreationDate']*/;
             $user['dtCreatedDate'] = date('Y-m-d H:i:s');
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
-            unset($user['image']);
+            if(isset($user['image']))    
+                unset($user['image']);
             $id = $this->_db->insert(TBL_USERS, $user);
             if ($id) {
                 $data['created_date'] = date('Y-m-d H:i:s');

@@ -55,6 +55,7 @@
               <thead>
                                         <th>#</th>
                                         <th>Name</th>
+                                        <th>Code</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                         </thead>
@@ -62,6 +63,7 @@
                                             <tr ng-repeat="mp in masterList" ng-class="(mp.master_price_id == master.master_price_id) ? 'rowactivate' : ''">
                                                 <td ng-bind="$index + 1"></td>
                                                 <td ng-bind="mp.name"></td>
+                                                <td ng-bind="mp.code"></td>
                                                 <td ng-if="mp.is_active == '1'">
                                                   <span class="label bg-success" title="active">Active</span>
                                                 </td>

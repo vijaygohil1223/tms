@@ -57,13 +57,12 @@ class contactPerMsg {
         if (isset($data['data']['messageData'])) {
             $str = $data['data']['messageData'];
             $message = str_replace($emailsignData,"",$str);
-            
         } else {
             $message = " ";
         }
 
         $body = "<p>" . $message . "</p>";
-        $body .= "<p>" . $emailsignData . "</p>";
+        //$body .= "<p>" . $emailsignData . "</p>";
         $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
@@ -71,23 +70,22 @@ class contactPerMsg {
         $to = $data['data']['vEmail'];
         
         if ($cc != "") {
-            $cCAddresses = explode(',',$cc);
-            foreach ($cCAddresses as $cCAddress) {
-                $this->_mailer->AddCC(trim($cCAddress));
-            }
+            // $cCAddresses = explode(',',$cc);
+            // foreach ($cCAddresses as $cCAddress) {
+            //     $this->_mailer->AddCC(trim($cCAddress));
+            // }
         }
 
         if ($bcc != "") {
-            $bcCAddresses = explode(',',$bcc);
-            foreach ($bcCAddresses as $bcCAddress) {
-                $this->_mailer->AddBCC(trim($bcCAddress));
-            }
+            // $bcCAddresses = explode(',',$bcc);
+            // foreach ($bcCAddresses as $bcCAddress) {
+            //     $this->_mailer->AddBCC(trim($bcCAddress));
+            // }
         }
 
         $attachments = '';
         $to_name = 'TMS';
-        
-        if ($encoded_content != '') {
+        if ($encoded_content != ' ') {
             $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
             $fileNm = explode(',', $data['file']);
             $getFileType = explode(';',explode(':',$fileNm[0])[1]);
@@ -98,10 +96,10 @@ class contactPerMsg {
                 'Filename' => 'attachment.'.$type,
                 'Base64Content' => $fileNm[1]
             ]];
-        }    
+        }
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
-            
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc='', $subject, $body, $attachments);
+        
         if($mailResponse['status'] == 200) {
             $result['status'] = 200;
             $result['msg'] = 'Thank you for your email';

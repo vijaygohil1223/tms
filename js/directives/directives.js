@@ -6296,7 +6296,7 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
             var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
             setTimeout(() => {
                 var date = scope.$parent.multipleDateArr;
-                console.log('date-multi', date)
+                //console.log('date-multi', date)
                 //$('#multidatePick').val('');
                 if(date.length && date!=1){
                     let dateArr = date.map( function(item) {

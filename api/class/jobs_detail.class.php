@@ -2022,7 +2022,6 @@ class jobs_detail
         $send_fn = new functions();
         $mailResponse = $send_fn->send_email_smtp($to, $to_name = '', $cc = '', $bcc = '', $subject, $html, $attachments = '');
 
-
         // $this->_mailer = new PHPMailer();
         // $this->_mailer->IsSMTP();
         // $this->_mailer->Host = "ssl://smtp.gmail.com";

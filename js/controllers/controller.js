@@ -9225,7 +9225,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             if (data) {
                 $scope.payment = JSON.parse(data.vPaymentInfo);
-                $scope.bank = JSON.parse(data.vBankInfo);
+                $scope.bank = (data.vBankInfo) ? JSON.parse(data.vBankInfo) : '';
             }
 
         }).error(errorCallback);
@@ -9708,12 +9708,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.userprofiledata.dtLast_job = moment($scope.userprofiledata.dtLast_job).format($scope.dateFormatGlobal);
             if ($scope.userprofiledata.dtLast_job == 'Invalid date')
                 $scope.userprofiledata.dtLast_job = '';
-            
                 
-            if($scope.userprofiledata.is_available && $scope.userprofiledata.is_available == '["Invalid date"]'){    
+            if($scope.userprofiledata.is_available && $scope.userprofiledata.is_available != '["Invalid date"]'){    
                 let is_available =  JSON.parse($scope.userprofiledata.is_available);
                 $scope.multipleDateArr = is_available;
-                console.log('is_available', is_available)
+                //console.log('is_available', is_available)
                 if(is_available.length){
                     let abscentArr = is_available.map(function(item) {
                         return moment(item).format($scope.dateFormatGlobal);
@@ -9888,7 +9887,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveUserProfileExternal = function (formId, ContactPersonId) {
         const multidatePick = $('#multidatePick').val();
-        console.log('multidatePick', multidatePick)
         var abscentArr = '';
         if(multidatePick != '' && multidatePick != 1){
             var abscentArr = multidatePick.split(",").map(function(item) {
