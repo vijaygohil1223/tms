@@ -399,7 +399,8 @@ class Freelance_invoice {
         //$from = $data['data']['vEmailAddress'];
         $cc = '';    
         if($data['emailRemind2']){
-            $cc = [[ 'email' => $data['emailRemind2'] ]];
+            //$cc = [[ 'email' => $data['emailRemind2'] ]];
+            $cc = $data['emailRemind2'];
         }
             
         $attachments = '';

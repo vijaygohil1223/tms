@@ -1484,7 +1484,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.goToProjectViewdetail = function (viewType) {
-        console.log('viewType', viewType)
+        //console.log('viewType', viewType)
         if (viewType) {
             var modalInstance = $uibModal.open({
                 //animation: $scope.animationsEnabled,
@@ -1502,8 +1502,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.goToScoopViewdetail = function (viewType, orderId, event) {
-        console.log('orderId', orderId)
-        console.log('$event',event)
+        //console.log('orderId', orderId)
+        //console.log('$event',event)
         if(event.ctrlKey && orderId){
             rest.path = 'order/' + orderId + '/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
@@ -1578,7 +1578,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'childPriceitemget';
         rest.get().success(function (data) {
             $scope.childPrice = data;
-            console.log("$scope.childPrice", $scope.childPrice);
+            //console.log("$scope.childPrice", $scope.childPrice);
         }).error(errorCallback);
     }
 
@@ -1595,8 +1595,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.tabPermission = JSON.parse(data.tabPermission) 
             else
                 $('.btn_create-project').css('top','15px')
-
-                console.log('$scope.tabPermission',$scope.tabPermission)
+            console.log('$scope.tabPermission',$scope.tabPermission)
         });
     }
 
@@ -1917,7 +1916,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     $scope.branchRefresh = function () {
-        console.log('branchRefresh')
+        //console.log('branchRefresh')
         $route.reload();
     }
     /* overview display */
@@ -2059,7 +2058,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //     break;
                 }
 
-                console.log('scoop = jobsListAll', $scope.scoopjobsListAll);
+                //console.log('scoop = jobsListAll', $scope.scoopjobsListAll);
             }, 200);
 
         }).error(errorCallback);
@@ -2381,7 +2380,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // freelance job wise data get
     if ($cookieStore.get('session_iUserId') && $window.localStorage.session_iUserId && $scope.userRight == 2) {
-        console.log('freelanceJob call before login', $cookieStore.get('session_iUserId'));
+        //console.log('freelanceJob call before login', $cookieStore.get('session_iUserId'));
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
             $scope.jobList = data;
@@ -2431,7 +2430,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.pageChanged = function () {
                 var startPos = ($scope.page - 1) * 10;
                 //$scope.displayItems = $scope.totalItems.slice(startPos, startPos + 3);
-                console.log($scope.page);
+                //console.log($scope.page);
             };
 
         }).error(errorCallback);
@@ -2895,7 +2894,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.modalOpen = false;
     // After Linguist login
     $scope.projectJobdetail = function (jobId) {
-        console.log('popid-jobId', jobId)
+        //console.log('popid-jobId', jobId)
         scrollBodyToTop();
         //$location.path('/job-summery-details/' + id);
         $routeParams.id = jobId;
@@ -2920,10 +2919,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         modalInstance.result.finally(function (selectedItem) {
             $scope.modalOpen = false;
         });
-        console.log('$scope.modalOpen', $scope.modalOpen)
+        //console.log('$scope.modalOpen', $scope.modalOpen)
 
     }
-    console.log('$scope.modalOpen', $scope.modalOpen);
+    //console.log('$scope.modalOpen', $scope.modalOpen);
 
 
 }).controller('usertypeController', function ($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
@@ -2985,7 +2984,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             start = moment(start).format('YYYY-MM-DD');
             end = moment(end).format('YYYY-MM-DD');
             if (end < start) {
-                console.log('true');
+                //console.log('true');
                 $scope.calendar.event_enddate = "";
                 notification('Lowest date not allowed', "warning");
                 angular.element('#endDate').val('');
@@ -3406,7 +3405,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.orderID = $scope.DetailId;
         //set isNewProject to false
         $window.localStorage.setItem("isNewProject", "false");
-        $location.path('/items');
+        const prevUrl = $scope.DetailId ? '/'+$scope.DetailId : '';
+        $location.path('/items'+prevUrl);
         $scope.cancel();
     }
     /*$scope.cancel = function() {
@@ -9751,6 +9751,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'userProfileNumber/' + $window.localStorage.getItem("useriResourceType");
         rest.get().success(function (data) {
             $scope.userprofiledata.iResourceNumber = pad(data, 4);
+            console.log('$scope.userprofiledata.iResourceNumber', $scope.userprofiledata.iResourceNumber)
         });
 
         //$scope.userprofiledata.vPassword = makeid();
@@ -10907,7 +10908,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.sendPriceLanguage = function (id) {
         var specialization = angular.element('#specialization').select2('data');
-        console.log('specialization', specialization)
         if (!specialization) {
             notification('Please select specialization.', 'warning');
             return;
@@ -10920,8 +10920,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var fromLangugageChar = language.split('>')[0].trim().substr(0, 3).toUpperCase();
             var toLangugageChar = language.split('>')[1].trim().substr(0, 3).toUpperCase();
             var newLanguage = fromLangugageChar + '>' + toLangugageChar;
-            const specializationTxt = specialization.length>0 ? specialization[0].text : specialization.text
-            $scope.customerPrice.price_name = $scope.customerPrice.price_name + newLanguage + ' | ' + specialization.text;
+            let specializationTxt = specialization.length>0 ? specialization[0].text : specialization.text
+            if(!specializationTxt)
+                specializationTxt = '';
+            $scope.customerPrice.price_name = $scope.customerPrice.price_name + newLanguage + ' | ' + specializationTxt;
         } else {
             var customerPriceName = angular.element('#customerPriceName').val();
             var oldName = customerPriceName.split('|');
@@ -10929,7 +10931,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var toLangugageChar = language.split('>')[1].trim().substr(0, 3).toUpperCase();
             var newLanguage = fromLangugageChar + '>' + toLangugageChar;
             var specialization = angular.element('#specialization').select2('data');
-            const specializationTxt = specialization.length > 0 ? specialization[0].text : specialization.text
+            let specializationTxt = specialization.length > 0 ? specialization[0].text : specialization.text
+            if(!specializationTxt)
+                specializationTxt = '';
             $scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
         }
     }
@@ -18047,7 +18051,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.orderID = $routeParams.id;
         //set isNewProject to false
         $window.localStorage.setItem("isNewProject", "false");
-        $location.path('/items');
+        const prevUrl = $routeParams.id ? '/'+$routeParams.id : '';
+        $location.path('/items'+prevUrl);
     }
 
     $scope.newJobAdd = function (job, set) {
@@ -18299,6 +18304,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if (totalJobAmount == undefined) {
                             totalJobAmount = 0.00;
                         }
+                        if(val.source_lang)
+                            val.source_lang = JSON.parse(val.source_lang);
+                        if(val.target_lang)
+                            val.target_lang = JSON.parse(val.target_lang);
+                        val.stLang = (val.source_lang && val.target_lang ) ? val.source_lang.sourceLang + ' > ' + val.target_lang.sourceLang : '';
                         var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
                         var jobAmount = parseFloat(totalJobAmount);
                         var profit = scoopAmount - jobAmount;
@@ -19273,6 +19283,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
         $scope.jobchainoption = data;
     }).error(errorCallback)
+
+    // Comapre - cheapest linguist
+    $scope.findLinguist = function (order_id,item_number,stLanguage) {
+        const obj = {
+            'order_id' : order_id,
+            'item_number' : item_number,
+            'stLanguage' : stLanguage,
+        }
+        if(order_id != '' && item_number !=''){
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/findLinguistPopup.html',
+                controller: 'findLinguistController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return obj;
+                    }
+                }
+            });
+        }    
+    }  
 
 }).controller('commentController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $compile) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -27200,6 +27232,89 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.itemPriceUni[id][index].amtSum = price;
         $scope.itemList[parentIndex].total_price = totalPrice;
     }
+        // Demo calculation...
+        $scope.changeItemField_demo = function (id, index, parentIndex, itemChng = 0) {
+            console.log('itemChng', itemChng)
+            var quantity = $scope.itemPriceUni[id][index].quantity;
+            var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
+            console.log('itemPrice', typeof itemPrice)
+            var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
+            var itemAmt = $scope.itemPriceUni[id][index].amtSum;
+            
+            console.log('quantity', quantity)
+            console.log('itemTtl', itemTtl)
+            var sumAll = 0;
+            var quantity = (!quantity || quantity != '') ? 0 : quantity; 
+            //var itemPrice = (itemPrice!=0 || itemPrice!='')  ? parseFloat(numberFormatCommaToPoint(itemPrice)) : 0;
+            var itemPrice = (itemPrice && (itemPrice!=0 || itemPrice!='') )  ? parseFloat(numberFormatCommaToPoint(itemPrice)) : 0;
+            console.log('itemPrice', itemPrice)
+            var Qprice = quantity * itemPrice;
+            console.log('Qprice', Qprice)
+            $scope.itemPriceUni[id].forEach(element => {
+                var stval = parseFloat(numberFormatCommaToPoint(element.itemTotal));
+                if(itemTtl != element.itemTotal){
+                    sumAll += isNaN(stval) ? 0 : stval;
+                    console.log('element-in',sumAll )
+                }
+                console.log('sumAll', sumAll)
+            });
+            var totalValue = itemChng > 0 ? parseFloat(numberFormatCommaToPoint(itemTtl))+parseFloat(sumAll) : parseFloat(Qprice+sumAll).toFixed(2);
+            console.log('sumAll', typeof sumAll)
+            console.log('numberFormatCommaToPoint(itemTtl)', typeof numberFormatCommaToPoint(itemTtl))
+            console.log('Qprice=FInal',totalValue  )
+    
+            if (!quantity || !itemPrice) {
+                quantity = 0;
+                itemPrice = 0;
+            }
+            if (!itemTtl) {
+                itemTtl = 0;
+            }
+            //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
+            //itemPrice = numberFormatCommaToPoint(itemPrice);
+            if (itemPrice == '') {
+                itemPrice = 0;
+            }
+            var price = quantity * parseFloat(itemPrice);
+            var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
+            if (!oldPrice1) {
+                var oldPrice = 0;
+            } else {
+                var oldPrice = numberFormatCommaToPoint(oldPrice1);
+            }
+    
+            if (itemChng > 0) {
+                price = numberFormatCommaToPoint(itemTtl);
+                if (!price) {
+                    price = 0;
+                }
+                //oldPrice = amtTotal;    
+                if (typeof itemAmt !== 'undefined') {
+                    var oldPrice = $scope.itemPriceUni[id][index].amtSum;
+                }
+                if (typeof itemAmt === 'undefined') {
+                    var oldPrice = quantity * parseFloat(itemPrice);
+                }
+            }
+            if (!oldPrice) {
+                oldPrice = 0;
+            }
+            var total = $scope.itemList[parentIndex].total_price;
+    
+            var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
+            //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
+            if (itemChng > 0) {
+                $scope.itemPriceUni[id][index].itemTotal = itemTtl;
+            } else {
+                //$scope.itemPriceUni[id][index].itemTotal = price;
+                $scope.itemPriceUni[id][index].itemTotal = price > 0 ? numberFormatComma(price) : 0;
+            }
+            $scope.itemPriceUni[id][index].amtSum = price;
+            //$scope.itemList[parentIndex].total_price = totalPrice;
+            $scope.itemList[parentIndex].total_price = totalValue;
+        }
+        // End demo
+    
 
     $scope.joboption = [];
     rest.path = 'Jobsummeryget';
@@ -30678,7 +30793,89 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('pageLength', 50).
         withOption('scrollCollapse', true);
 
+}).controller('findLinguistController', function ($scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $uibModalInstance, items) {
 
+    $scope.userRight = $window.sessionStorage.getItem("session_iFkUserTypeId");
+    $scope.itemQuantity = 0;
+    $scope.itemList = [];
+    $scope.linguistPriceList = [];
+    rest.path = 'linguistpriceAll' ;
+    rest.get().success(function (data) {
+        angular.forEach(data, function (val,i) {
+            let langPair = JSON.parse(val.price_language);
+            const isLang = langPair.filter(pd => pd.languagePrice == items.stLanguage)
+            if(isLang.length > 0){
+                val.price_basis = JSON.parse(val.price_basis);
+                val.price_language = JSON.parse(val.price_language);
+                $scope.linguistPriceList.push(val);
+            }
+        })
+        //$scope.linguistPriceList = data;
+        console.log('$scope.linguistPriceList', $scope.linguistPriceList)
+    }) 
+    var scoopPrice = '';   
+    if(items){
+        console.log('items', items)
+        rest.path = 'itemsGet/' + items.order_id;
+        rest.get().success(function (data) {
+            angular.forEach(data, function (val, i) {
+                if(val.item_number == items.item_number){
+                    var scoopPrice = JSON.parse(val.price); 
+                    console.log('scoopprice', scoopPrice)
+                    if(scoopPrice.length){
+                        angular.forEach(scoopPrice, function (v) {
+                            if(v.quantity)
+                                $scope.itemQuantity += parseInt(v.quantity) 
+                        })
+                    }       
+                    console.log('price', scoopPrice)
+                    let sl = JSON.parse(val.source_lang);        
+                    let tl = JSON.parse(val.target_lang);        
+                    let objData = {
+                        'scoopPrice' : scoopPrice,
+                        'language' : sl.sourceLang +' > '+ tl.sourceLang 
+                    }
+                    //$scope.itemList.push(objData); 
+                    $scope.itemList = JSON.parse(val.price); 
+                }
+            })
+            console.log('$scope.itemList', $scope.itemList)
+            
+            angular.forEach($scope.itemList, function (val, i) {
+                console.log('val', val)
+                const isFound = $scope.linguistPriceList.filter(element => {
+                    console.log('element', element)
+                    // if (element.name == pval.pricelist) {
+                    //     return element.unit;
+                    // }
+                    return true;
+                });
+            })
+
+        });
+    }    
+
+    // jobReject
+    $scope.ok = function (frmId, data) {
+        if (angular.element("#" + frmId).valid()) {
+            $('#rejectLoder').css('display', 'block');
+            $routeParams.id;
+            rest.path = 'rejectJobStatus';
+            rest.put(data).success(function (data) {
+                if (data.status == 200 && data.emailSend == 'true') {
+                    notification('job is rejected successfully and email sent to project manager.', 'success');
+                    $('#rejectLoder').css('display', 'none');
+                }
+                $uibModalInstance.dismiss('cancel');
+                $route.reload();
+            }).error(errorCallback);
+        }
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+    
 }).controller('activitydetailController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 

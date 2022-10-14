@@ -1658,6 +1658,11 @@ $app->get('/customerpriceListCopy/:id','authenticate', function($id) {
     $result = $cusPrice->customerpriceListCopy($id);
     echoResponse(200, $result);
 });
+$app->get('/linguistpriceAll','authenticate', function() {
+    $cusPrice = new Customerpricelist ();
+    $result = $cusPrice->linguistpriceAll();
+    echoResponse(200, $result);
+});
 // -------------------sevices status --------------------------//
 
 $app->post('/serviceSave','authenticate', function () use($app) {

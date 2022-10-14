@@ -1,0 +1,59 @@
+<style type="text/css">
+    .modal-dialog {
+        width: 70%;
+    }
+</style>
+<div class="modal-header" style="min-height:60px;">
+    <div class="modal-title">
+        <h4>Find Linguist</h4>
+        <button class="btn btn-info" ng-click="cancel()"> <i class="fa fa-close"></i> </button>
+    </div>
+</div>
+<div class="modal-body ng-scope">
+    <div class="row">
+        <form id="findLinguist">
+            <div class="col-sm-12">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <!-- <label class="control-label"><strong>Quantity :</strong></label> -->
+                        <input type="text" numbers-only class="form-control" name="itemQuantity" id="itemQuantity"
+                            ng-model="itemQuantity" min="0" placeholder="Quantity" />
+                            
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <button class="btn btn-info pull-right" style="margin-right:5px;"
+                        ng-click="findResource(item)">Search</button>
+                    </div>
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            
+        </div>
+        <div class="col-lg-12">
+            <table class="table m-b-none default footable-loaded footable">
+                <thead>
+                    <th>#</th>
+                    <th>Name</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="it in itemList">
+                        <td>
+                            <span> {{$index+1}} </span>
+                        </td>
+                        <td>
+                            <span> {{$index+1}} </span>
+                        </td>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-info" ng-click="cancel()">Cancel</button>
+    <!-- <button class="btn btn-primary" ng-click="ok()">OK</button> -->
+</div>

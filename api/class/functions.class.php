@@ -395,7 +395,7 @@ class functions {
         
         //$mailParams['Messages'][0]['InlinedAttachments'] =  $inlinedAttachments;
         // parameter array of array
-        if ($cc) {
+        if ($cc != '') {
             $arrCC = [];
             $var = explode(',',$cc);
             foreach ($var as $ccAddress) {
