@@ -15501,7 +15501,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
-    if ($window.localStorage.orderID && !$window.localStorage.genfC) {
+    if ($scope.routeOrderID && !$window.localStorage.genfC) {
         rest.path = 'generalfolder/' + $scope.routeOrderID;
         rest.get().success(function (data) {
             $window.localStorage.genfC = 1;
