@@ -1,4 +1,12 @@
 RewriteEngine On
+
+RewriteCond %{REQUEST_METHOD} !^GET$
+RewriteRule ^upload.php$ - [NC,R=404,L]
+RewriteRule ^filemanager-upload.php$ - [NC,R=404,L]
+RewriteRule ^upload.php$ - [NC,R=404,L]
+RewriteRule ^country-phonecode.json$ - [NC,R=404,L]
+RewriteRule ^gender.json$ - [NC,R=404,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ / [L]
