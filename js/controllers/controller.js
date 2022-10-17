@@ -30799,7 +30799,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.itemQuantity = 0;
     $scope.itemList = [];
     $scope.linguistPriceList = [];
-    //rest.path = 'linguistpriceAll' ;
+    //rest.path = 'linguistpriceAll' ; // new changes
     rest.path = 'customerpriceAll/' + 2;  //2 for external userID
     rest.get().success(function (data) {
         angular.forEach(data, function (val,i) {
