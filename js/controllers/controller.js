@@ -30799,7 +30799,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.itemQuantity = 0;
     $scope.itemList = [];
     $scope.linguistPriceList = [];
-    //rest.path = 'linguistpriceAll' ; // new changes
+    //rest.path = 'linguistpriceAll' ;
     rest.path = 'customerpriceAll/' + 2;  //2 for external userID
     rest.get().success(function (data) {
         angular.forEach(data, function (val,i) {
@@ -30823,18 +30823,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(val.item_number == items.item_number){
                     var scoopPrice = JSON.parse(val.price); 
                     console.log('scoopprice', scoopPrice)
+                    //console.log('val', val)
                     if(scoopPrice.length){
                         angular.forEach(scoopPrice, function (v) {
                             if(v.quantity)
                                 $scope.itemQuantity += parseInt(v.quantity) 
                         })
                     }       
-                    console.log('price', scoopPrice)
+                    //console.log('price', scoopPrice)
                     let sl = JSON.parse(val.source_lang);        
                     let tl = JSON.parse(val.target_lang);        
                     let objData = {
                         'scoopPrice' : scoopPrice,
-                        'language' : sl.sourceLang +' > '+ tl.sourceLang 
+                        'total_price' : val.total_price,
+                        'quantity' : $scope.itemQuantity,
+                        'language' : sl.sourceLang + ' > ' + tl.sourceLang 
                     }
                     //$scope.itemList.push(objData); 
                     $scope.itemList = JSON.parse(val.price); 
@@ -30842,10 +30845,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
             console.log('$scope.itemList', $scope.itemList)
             
-            angular.forEach($scope.itemList, function (val, i) {
-                console.log('val', val)
-                const isFound = $scope.linguistPriceList.filter(element => {
-                    console.log('element', element)
+            angular.forEach($scope.linguistPriceList, function (val, i) {
+                //console.log('val', val)
+                var qPrice = 0;
+                $scope.qTotPrice = 0;
+                const isPrice = val.price_basis.filter(lElem => {
+                    //console.log('element', element)
+                    const isFound = $scope.itemList.filter(el => {
+                        //console.log('inn=elll', el)
+                        if (el.pricelist == lElem.pricelist) {
+                            var qPrice = parseFloat(lElem.basePrice) / lElem.baseQuentity
+                            $scope.qTotPrice += parseInt(qPrice)
+                            console.log('$scope.qTotPrice', $scope.qTotPrice)
+                
+                            $scope.itemQuantity += parseInt(v.quantity)
+                            return element.unit;
+                        }
+                        return true;
+                    });
                     // if (element.name == pval.pricelist) {
                     //     return element.unit;
                     // }

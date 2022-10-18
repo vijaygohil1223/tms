@@ -22,7 +22,6 @@ function formatSizeUnits($bytes)
 
     return $bytes;
 }
-
 //If directory doesnot exists create it.
 $output_dir = "uploads/fileupload/";
 
