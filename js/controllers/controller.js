@@ -15405,10 +15405,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         notification('Please create project.', 'warning');
         return false;
     }
+    console.log('$scope.routeOrderID', $scope.routeOrderID)
     $scope.routeOrderID = '';
     //if ($window.localStorage.orderID)
         //$scope.routeOrderID = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
     $scope.routeOrderID = ($routeParams.id) ? $routeParams.id : '';
+    console.log('$scope.routeOrderID', $scope.routeOrderID)
     $scope.orderUrlID = $scope.routeOrderID ? '/'+$scope.routeOrderID : '';
     
     $window.localStorage.setItem("parentId", " ");
@@ -15528,8 +15530,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //customer
     if ($window.localStorage.orderID) {
-        $routeParams.id = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
+        console.log('$window.localStorage.orderID', $window.localStorage.orderID)
         //rest.path = 'customer/' + $window.localStorage.orderID;
+        $routeParams.id = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
+        console.log('$routeParams.id', $routeParams.id)
+
         rest.path = 'customer/' + $routeParams.id;
         rest.get().success(function (res) {
             $scope.customer = res;
@@ -15655,7 +15660,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.post($scope.order).success(function (data) {
             $window.localStorage.iUserId = data.order_id;
             $window.localStorage.orderID = data.order_id;
+            $scope.routeOrderID = data.order_id;
+            console.log('$scope.routeOrderID', $scope.routeOrderID)
             $window.localStorage.userType = 3;
+            // $window.localStorage.setItem('orderCreateId_0',data.order_id)
+            // for (i = 0; i < localStorage.length; i++) {
+            //     var storageVal = localStorage.key(i);
+            //     console.log('storageVal', storageVal)
+            // }
             $route.reload();
         }).error(errorCallback);
     }
@@ -15941,12 +15953,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
 
                     $window.localStorage.orderNumber = $scope.general.order_no;
+                    $scope.routeOrderID = $scope.routeOrderID ? $scope.routeOrderID : $window.localStorage.orderID;
+                    console.log('$scope.routeOrderID', $scope.routeOrderID)
                     $scope.general.order_id = $scope.routeOrderID;
+                    
                     $scope.general.project_status = $scope.proStatusData.pr_status_id;
                     $scope.general.project_createdBy = $window.localStorage.getItem('session_iUserId');
-
+                    console.log('$scope.general-bfotrrre', $scope.general)
+                        
                     rest.path = 'general';
                     rest.post($scope.general).success(function (data) {
+                        console.log('$scope.general-inn', data)
                         $window.localStorage.setItem('tmpOrderId', data.order_data.order_id);
                         $scope.tmpOrderId = data.order_data.order_id;
                         //log file start 
