@@ -15529,7 +15529,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }, 100);
 
     //customer
-    if ($window.localStorage.orderID) {
+    //if ($window.localStorage.orderID) {
+    if($scope.routeOrderID){        
+        console.log('EDIT offfff')
+
         console.log('$window.localStorage.orderID', $window.localStorage.orderID)
         //rest.path = 'customer/' + $window.localStorage.orderID;
         $routeParams.id = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
@@ -15651,6 +15654,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }).error(errorCallback);
     } else {
+        console.log('EDIT eleee')
         $scope.order = [];
         if ($scope.order == "" || $scope.order == null || $scope.order == undefined) {
             $scope.order = {};
@@ -15663,12 +15667,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.routeOrderID = data.order_id;
             console.log('$scope.routeOrderID', $scope.routeOrderID)
             $window.localStorage.userType = 3;
-            // $window.localStorage.setItem('orderCreateId_0',data.order_id)
-            // for (i = 0; i < localStorage.length; i++) {
-            //     var storageVal = localStorage.key(i);
-            //     console.log('storageVal', storageVal)
-            // }
-            $route.reload();
+            //$route.reload(); //hide to create project multitab in browser 
         }).error(errorCallback);
     }
 

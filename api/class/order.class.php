@@ -27,6 +27,7 @@ class order {
         $this->_db->where('abbrivation',1);
         $this->_db->where('edited_by',0);
         $this->_db->where('edited_id',0);
+        $this->_db->where('created_date < now() - interval 30 minute');
         $this->_db->delete('tms_order');
 
         $info['created_date'] = date('Y-m-d H:i:s');
