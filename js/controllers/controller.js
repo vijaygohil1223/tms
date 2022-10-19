@@ -15987,6 +15987,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $timeout(function () {
 
                         if ($scope.customer.c_id) {
+                            console.log('$scope.customer.c_id-iff', $scope.customer.c_id)
                             $window.localStorage.ContactPerson = $scope.customer.contact;
                             $window.localStorage.clientproCustomerName = $scope.customer.client;
                             $routeParams.id = $scope.customer.c_id;
@@ -15995,7 +15996,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                             }).error(errorCallback);
                         } else {
-
+                            console.log('$scope.customer.contact--else')
                             $window.localStorage.ContactPerson = $scope.customer.contact;
                             $window.localStorage.clientproCustomerName = $scope.customer.client;
                             $scope.project_coordinator = angular.element('#projectCoordinator').val();
@@ -16019,6 +16020,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $routeParams.id = $scope.routeOrderID;
                             rest.path = 'order';
                             rest.put($scope.or).success(function (data) {
+                                console.log('$scope.or', $scope.or)
                                 $window.localStorage.iUserId = data.order_id;
                                 $window.localStorage.userType = 3;
                             }).error(errorCallback);
@@ -16059,7 +16061,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $location.path('/items');
                         //set isNewProject to false
                         $window.localStorage.setItem("isNewProject", "false");
-                    }, 200);
+                    }, 1000);
 
                     /*Add Number Of Items in item Section defined in general section END*/
                 }
