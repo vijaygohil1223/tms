@@ -660,6 +660,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
     };
+
+    console.log('close popupp' )
+    // close any open modal
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -3409,9 +3412,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/items'+prevUrl);
         $scope.cancel();
     }
-    /*$scope.cancel = function() {
-        $uibModalInstance.close();
-    }*/
 
     $scope.backtojobSummery = function () {
         $location.path('jobs-detail/' + $scope.DetailId);
@@ -15901,7 +15901,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $routeParams.id = $scope.customer.c_id;
                         rest.path = 'customer';
                         rest.put($scope.customer).success(function (data) {
-                            console.log('data', data)
+                            //console.log('data', data)
                             if (data.indirectData) {
                                 $timeout(function () {
                                     $window.localStorage.setItem('indirectCustomerName', data.indirectData.vUserName)
@@ -15958,11 +15958,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $scope.general.project_status = $scope.proStatusData.pr_status_id;
                     $scope.general.project_createdBy = $window.localStorage.getItem('session_iUserId');
-                    console.log('$scope.general-bfotrrre', $scope.general)
+                    //console.log('$scope.general-bfotrrre', $scope.general)
                         
                     rest.path = 'general';
                     rest.post($scope.general).success(function (data) {
-                        console.log('$scope.general-inn', data)
+                        //console.log('$scope.general-inn', data)
                         $window.localStorage.setItem('tmpOrderId', data.order_data.order_id);
                         $scope.tmpOrderId = data.order_data.order_id;
                         //log file start 
@@ -15987,7 +15987,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $timeout(function () {
 
                         if ($scope.customer.c_id) {
-                            console.log('$scope.customer.c_id-iff', $scope.customer.c_id)
+                            //console.log('$scope.customer.c_id-iff', $scope.customer.c_id)
                             $window.localStorage.ContactPerson = $scope.customer.contact;
                             $window.localStorage.clientproCustomerName = $scope.customer.client;
                             $routeParams.id = $scope.customer.c_id;
@@ -15996,7 +15996,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                             }).error(errorCallback);
                         } else {
-                            console.log('$scope.customer.contact--else')
+                            //console.log('$scope.customer.contact--else')
                             $window.localStorage.ContactPerson = $scope.customer.contact;
                             $window.localStorage.clientproCustomerName = $scope.customer.client;
                             $scope.project_coordinator = angular.element('#projectCoordinator').val();
@@ -16020,7 +16020,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $routeParams.id = $scope.routeOrderID;
                             rest.path = 'order';
                             rest.put($scope.or).success(function (data) {
-                                console.log('$scope.or', $scope.or)
+                                //console.log('$scope.or', $scope.or)
                                 $window.localStorage.iUserId = data.order_id;
                                 $window.localStorage.userType = 3;
                             }).error(errorCallback);
@@ -16054,7 +16054,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // }
 
                     $timeout(function () {
-                        console.log('$scope.tmpOrderId', $scope.tmpOrderId)
+                        //console.log('$scope.tmpOrderId', $scope.tmpOrderId)
                         if($scope.tmpOrderId)
                             $location.path('/items/'+$scope.tmpOrderId);
                         else
@@ -30833,22 +30833,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('$scope.linguistPriceList', $scope.linguistPriceList)
     }) 
     var scoopPrice = '';   
+    $scope.scoopQtyPrice = 0 // price per quatity
     if(items){
-        console.log('items', items)
+        //console.log('items', items)
         rest.path = 'itemsGet/' + items.order_id;
         rest.get().success(function (data) {
             angular.forEach(data, function (val, i) {
                 if(val.item_number == items.item_number){
-                    var scoopPrice = JSON.parse(val.price); 
+                    if(val.price)
+                        var scoopPrice = JSON.parse(val.price); 
                     console.log('scoopprice', scoopPrice)
-                    //console.log('val', val)
                     if(scoopPrice.length){
                         angular.forEach(scoopPrice, function (v) {
                             if(v.quantity)
                                 $scope.itemQuantity += parseInt(v.quantity) 
                         })
                     }       
-                    //console.log('price', scoopPrice)
                     let sl = JSON.parse(val.source_lang);        
                     let tl = JSON.parse(val.target_lang);        
                     let objData = {
@@ -30857,35 +30857,48 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         'quantity' : $scope.itemQuantity,
                         'language' : sl.sourceLang + ' > ' + tl.sourceLang 
                     }
+                    $scope.scoopQtyPrice = parseFloat(val.total_price) / $scope.itemQuantity;
+                    console.log('scoopQtyPrice', $scope.scoopQtyPrice)
                     //$scope.itemList.push(objData); 
                     $scope.itemList = JSON.parse(val.price); 
                 }
             })
             console.log('$scope.itemList', $scope.itemList)
             
+            $scope.subLinguist = [];
             angular.forEach($scope.linguistPriceList, function (val, i) {
                 //console.log('val', val)
                 var qPrice = 0;
                 $scope.qTotPrice = 0;
                 const isPrice = val.price_basis.filter(lElem => {
-                    //console.log('element', element)
+                    //console.log('element', lElem)
                     const isFound = $scope.itemList.filter(el => {
                         //console.log('inn=elll', el)
-                        if (el.pricelist == lElem.pricelist) {
+                        if (el.pricelist == lElem.basePriceUnit) {
+                            console.log('mache' ,el.pricelist)
                             var qPrice = parseFloat(lElem.basePrice) / lElem.baseQuentity
-                            $scope.qTotPrice += parseInt(qPrice)
+                            $scope.qTotPrice += parseFloat(qPrice)
                             console.log('$scope.qTotPrice', $scope.qTotPrice)
-                
-                            $scope.itemQuantity += parseInt(v.quantity)
-                            return element.unit;
+                            console.log('scoopQtyPrice-inn', $scope.scoopQtyPrice)            
+                            return el;
                         }
-                        return true;
+                        return false;
                     });
-                    // if (element.name == pval.pricelist) {
-                    //     return element.unit;
-                    // }
                     return true;
                 });
+                
+                console.log('scoopQtyPrice', $scope.scoopQtyPrice)
+                if( $scope.scoopQtyPrice != 0 && ($scope.qTotPrice < $scope.scoopQtyPrice) ){
+                    //console.log('inn')
+                    const pObj = {
+                        price_id : val.price_id,
+                        resource_id : val.resource_id,
+                        price : $scope.qTotPrice
+                    }
+                    $scope.subLinguist.push(pObj); 
+                }
+                console.log('$scope.subLinguist', $scope.subLinguist)
+
             })
 
         });
