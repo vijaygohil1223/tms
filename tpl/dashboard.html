@@ -1785,10 +1785,11 @@ td { font-size: 11px; } */
                       </div>
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
                         <li class="list-group-item" ng-repeat="upcomProj in upProjDeliveries">
-                          <!-- <span >{{ upcomProj.orderNumber }}</span> -->
-                          <a href="javascript:void(0)" class="text-eclipse" ng-click="goToProjectViewdetail(upcomProj.orderId)">
-                            {{upcomProj.orderNumber}}
+                          <!-- <span >{{ upcomProj.orderNumber }}</span>  -->
+                          <a href="javascript:void(0)" class="text-eclipse" ng-click="goToScoopViewdetail(upcomProj.itemId, upcomProj.orderId, $event)">
+                            {{upcomProj.orderNumber}}-{{upcomProj.item_number | numberFixedLen:3}}
                           </a>
+                          <!-- goToProjectViewdetail(upcomProj.orderId) -->
                           <span class="pull-right label bg-primary inline m-t-sm" ng-bind="upcomProj.ponumber"></span>
                           <!-- <span ng-bind="upcomProj.ponumber"></span> -->
                         </li>

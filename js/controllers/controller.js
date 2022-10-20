@@ -662,7 +662,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     console.log('close popupp' )
-    // close any open modal
+    $('#modal').modal('toggle');
+    $window.close();
+
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -1553,7 +1555,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.goTocommentChat = function (viewType) {
-
         if (viewType) {
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
@@ -1566,7 +1567,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
             });
-
         }
     }
     $scope.childPrice = [];
@@ -2743,6 +2743,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
         const currentDatestr = new Date();
         const currentDate = currentDatestr.toISOString().split('T')[0];
+        console.log('currentDate', currentDate)
         if ($scope.vResourcePosition == 2) {
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId"));
             //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
@@ -2755,6 +2756,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId"));
             //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
         }
+        //console.log('$scope.upProjDeliveries', $scope.projectsAll)
 
     }, 1500);
 
@@ -30832,94 +30834,162 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.linguistPriceList = data;
         console.log('$scope.linguistPriceList', $scope.linguistPriceList)
     }) 
-    var scoopPrice = '';   
-    $scope.scoopQtyPrice = 0 // price per quatity
-    if(items){
-        //console.log('items', items)
-        rest.path = 'itemsGet/' + items.order_id;
-        rest.get().success(function (data) {
-            angular.forEach(data, function (val, i) {
-                if(val.item_number == items.item_number){
-                    if(val.price)
-                        var scoopPrice = JSON.parse(val.price); 
-                    console.log('scoopprice', scoopPrice)
-                    if(scoopPrice.length){
-                        angular.forEach(scoopPrice, function (v) {
-                            if(v.quantity)
-                                $scope.itemQuantity += parseInt(v.quantity) 
-                        })
-                    }       
-                    let sl = JSON.parse(val.source_lang);        
-                    let tl = JSON.parse(val.target_lang);        
-                    let objData = {
-                        'scoopPrice' : scoopPrice,
-                        'total_price' : val.total_price,
-                        'quantity' : $scope.itemQuantity,
-                        'language' : sl.sourceLang + ' > ' + tl.sourceLang 
-                    }
-                    $scope.scoopQtyPrice = parseFloat(val.total_price) / $scope.itemQuantity;
-                    console.log('scoopQtyPrice', $scope.scoopQtyPrice)
-                    //$scope.itemList.push(objData); 
-                    $scope.itemList = JSON.parse(val.price); 
-                }
-            })
-            console.log('$scope.itemList', $scope.itemList)
-            
-            $scope.subLinguist = [];
-            angular.forEach($scope.linguistPriceList, function (val, i) {
-                //console.log('val', val)
-                var qPrice = 0;
-                $scope.qTotPrice = 0;
-                const isPrice = val.price_basis.filter(lElem => {
-                    //console.log('element', lElem)
-                    const isFound = $scope.itemList.filter(el => {
-                        //console.log('inn=elll', el)
-                        if (el.pricelist == lElem.basePriceUnit) {
-                            console.log('mache' ,el.pricelist)
-                            var qPrice = parseFloat(lElem.basePrice) / lElem.baseQuentity
-                            $scope.qTotPrice += parseFloat(qPrice)
-                            console.log('$scope.qTotPrice', $scope.qTotPrice)
-                            console.log('scoopQtyPrice-inn', $scope.scoopQtyPrice)            
-                            return el;
+    rest.path = 'user/' + 2;
+    rest.get().success(function (data) {
+        $scope.userlist = data.data;
+        console.log('$scope.userlist', $scope.userlist)
+    }).error(errorCallback);
+
+
+    $scope.filterLinguist = function (qty) {
+        var scoopPrice = '';   
+        $scope.scoopQtyPrice = 0 // price per quatity
+        $scope.itemQuantity = 0;
+        console.log('qty', qty)
+        if(items){
+            //console.log('items', items)
+            rest.path = 'itemsGet/' + items.order_id;
+            rest.get().success(function (data) {
+                angular.forEach(data, function (val, i) {
+                    if(val.item_number == items.item_number){
+                        if(val.price)
+                            var scoopPrice = JSON.parse(val.price); 
+                        console.log('scoopprice', scoopPrice)
+                        if(scoopPrice.length){
+                            angular.forEach(scoopPrice, function (v) {
+                                if(v.quantity)
+                                    $scope.itemQuantity += parseInt(v.quantity) 
+                            })
+                        }       
+                        let sl = JSON.parse(val.source_lang);        
+                        let tl = JSON.parse(val.target_lang);        
+                        let objData = {
+                            'scoopPrice' : scoopPrice,
+                            'total_price' : val.total_price,
+                            'quantity' : $scope.itemQuantity,
+                            'language' : sl.sourceLang + ' > ' + tl.sourceLang 
                         }
+                        $scope.scoopQtyPrice = parseFloat(val.total_price) / $scope.itemQuantity;
+                        console.log('scoopQtyPrice', $scope.scoopQtyPrice)
+                        //$scope.itemList.push(objData); 
+                        $scope.itemList = JSON.parse(val.price); 
+                    }
+                })
+                $scope.itemQuantity = qty ? qty : $scope.itemQuantity; 
+                console.log('$scope.itemList', $scope.itemList)
+                
+                $scope.subLinguist = [];
+                $scope.exArr = [];
+                $scope.userIdArr = [];
+                angular.forEach($scope.linguistPriceList, function (val, i) {
+                    console.log('val', val)
+                    var qPrice = 0;
+                    $scope.qTotPrice = 0;
+                    const isPrice = val.price_basis.filter(lngEl => {
+                        console.log('element', lngEl)
+                        const isFound = $scope.itemList.filter(el => {
+                            console.log('inn=elll', el)
+                            if (el.pricelist == lngEl.basePriceUnit) {
+                                console.log('mache' ,el.pricelist)
+                                var qPrice = parseFloat(lngEl.basePrice) / lngEl.baseQuentity
+                                $scope.qTotPrice += parseFloat(qPrice)
+                                //console.log('$scope.qTotPrice', $scope.qTotPrice)
+                                const tObj = {
+                                    'priceName': el.pricelist,
+                                    'scoop_qty': el.quantity,
+                                    'scoop_price': el.itemTotal,
+                                    'resource_id': val.resource_id,
+                                    'res_price': $scope.qTotPrice,
+                                }
+                                $scope.exArr.push(tObj) 
+                                
+                                return el;
+                            }
+                            //return false;
+                        });
                         return false;
                     });
-                    return true;
-                });
-                
-                console.log('scoopQtyPrice', $scope.scoopQtyPrice)
-                if( $scope.scoopQtyPrice != 0 && ($scope.qTotPrice < $scope.scoopQtyPrice) ){
-                    //console.log('inn')
-                    const pObj = {
-                        price_id : val.price_id,
-                        resource_id : val.resource_id,
-                        price : $scope.qTotPrice
+                    
+                    console.log('scoopQtyPrice', $scope.scoopQtyPrice)
+                    if( $scope.scoopQtyPrice != 0 && ($scope.qTotPrice < $scope.scoopQtyPrice) ){
+                        //console.log('inn')
+                        const pObj = {
+                            resource_id : val.resource_id,
+                            price : $scope.qTotPrice
+                        }
+                        $scope.subLinguist.push(pObj); 
                     }
-                    $scope.subLinguist.push(pObj); 
-                }
-                console.log('$scope.subLinguist', $scope.subLinguist)
+                    console.log('$scope.subLinguist', $scope.subLinguist)
+                })
 
-            })
+                console.log('$scope.exArr', $scope.exArr)
+                var notExist = $scope.exArr.reduce((c, { resource_id: key }) => (c[key] = (c[key] || 0) + 1, c), {});
 
-        });
-    }    
+                console.log('counts',notExist);
+                angular.forEach(notExist, function (countItem, resID) {
+                    console.log('resID = count', resID + '=' + countItem)
+                    angular.forEach($scope.itemList, function (val, i) {
+                        //console.log('$scope.itemList=lemn', $scope.itemList.length)
+                        //console.log('val', val)
+                        if(countItem < $scope.itemList.length){
+                            $scope.exArr.filter(b1 => {
+                                if((b1.resource_id==resID) && (val.pricelist !== b1.priceName)){
+                                    //console.log('val.pricelist', val.pricelist)
+                                    //console.log('b1', b1)
+                                    console.log('valll-inn', val)
+                                    var vPrice = parseFloat(val.itemTotal) / parseInt(val.quantity)
+                                
+                                    $scope.subLinguist = $scope.subLinguist.map(objE => {
+                                        console.log('objE=>', objE)
+                                        if (objE.resource_id == resID) {
+                                            console.log('objE.resource_id', objE.resource_id)
+                                            
+                                          return {...objE, price: objE.price + vPrice};
+                                        }
+                                      
+                                        return objE;
+                                      });
+                                      console.log('updated=newArr', $scope.subLinguist)
+                                        
 
-    // jobReject
-    $scope.ok = function (frmId, data) {
-        if (angular.element("#" + frmId).valid()) {
-            $('#rejectLoder').css('display', 'block');
-            $routeParams.id;
-            rest.path = 'rejectJobStatus';
-            rest.put(data).success(function (data) {
-                if (data.status == 200 && data.emailSend == 'true') {
-                    notification('job is rejected successfully and email sent to project manager.', 'success');
-                    $('#rejectLoder').css('display', 'none');
-                }
-                $uibModalInstance.dismiss('cancel');
-                $route.reload();
-            }).error(errorCallback);
+                                    return b1;
+                                }
+                                return false;
+                            })    
+                        }    
+                    // var notInList = $scope.itemList.filter(a1 => { 
+                    //     $scope.exArr.filter(b1 => {
+                    //         if(a1.pricelist !== b1.priceName){
+                    //             console.log('b1', b1)
+                    //             //console.log('a1', a1)
+                    //             return b1;
+                    //         }
+                    //         return true;
+                    //     })
+                    // });
+                    })        
+                })    
+
+                const subLinguist = $scope.subLinguist;
+                const lngSort = (subLinguist = []) => {
+                    const sorter = (a, b) => {
+                        return +a.price - +b.price;
+                    };
+                    subLinguist.sort(sorter);
+                };
+                lngSort(subLinguist);
+                console.log('subLinguist', subLinguist)
+                //UniqueArraybyId(subLinguist,'resource_id');
+                console.log('$scope.userlist', $scope.userlist)
+                
+                if($scope.userlist.length > 0){
+                    $scope.cheapLinguist = $scope.userlist.filter(a => subLinguist.some(b => a.iUserId === b.resource_id));
+                    console.log('$scope.cheapLinguist', $scope.cheapLinguist)
+                }    
+            });
         }
-    };
+    };        
+    $scope.filterLinguist();
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
