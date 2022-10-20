@@ -30834,13 +30834,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.linguistPriceList = data;
         console.log('$scope.linguistPriceList', $scope.linguistPriceList)
     }) 
-    rest.path = 'user/' + 2;
-    rest.get().success(function (data) {
-        $scope.userlist = data.data;
-        console.log('$scope.userlist', $scope.userlist)
-    }).error(errorCallback);
-
-
+    
     $scope.filterLinguist = function (qty) {
         var scoopPrice = '';   
         $scope.scoopQtyPrice = 0 // price per quatity
@@ -30982,10 +30976,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //UniqueArraybyId(subLinguist,'resource_id');
                 console.log('$scope.userlist', $scope.userlist)
                 
-                if($scope.userlist.length > 0){
-                    $scope.cheapLinguist = $scope.userlist.filter(a => subLinguist.some(b => a.iUserId === b.resource_id));
-                    console.log('$scope.cheapLinguist', $scope.cheapLinguist)
-                }    
+                rest.path = 'user/' + 2;
+                rest.get().success(function (data) {
+                    $scope.userlist = data.data;
+                    console.log('$scope.userlist', $scope.userlist)
+                    if($scope.userlist){
+                        $scope.cheapLinguist = $scope.userlist.filter(a => subLinguist.some(b => a.iUserId === b.resource_id));
+                        console.log('$scope.cheapLinguist', $scope.cheapLinguist)
+                    }
+                }).error(errorCallback);
+                
             });
         }
     };        
