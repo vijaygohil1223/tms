@@ -333,45 +333,6 @@ class functions {
 
     // SMTP send mail (Using mailjet library)
     public function send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '') {
-        //$b64image = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/assets/img/BeConnected_Logo.gif'));
-
-        // $dom = new DOMDocument;
-        // @$dom->loadHTML($content);
-        // $imgs = $dom->getElementsByTagName('img');
-        // // Store the list of image urls in an array - this will come in handy later
-        // $imgURLs = [];
-        // foreach($imgs as $img) {
-        //     if (!$img->hasAttribute('src')) {
-        //         continue;
-        //     }
-        //     $imgURLs[] = $img->getAttribute('src');
-        //     //$img->setAttribute('src', $var);
-        // }
-        // //$htmlString = $dom->saveHTML();
-        // $i=0;
-        // $urlsrc = $urlsrc =  [];
-        // $inlinedAttachments=[]; 
-        // foreach($imgURLs as $imgURL) {
-        //     //$cid[] = addslashes('src="cid:id'.$i.'"');
-        //     $cid[] = 'src="cid:id'.$i.'"';
-        //     $urlsrc[] = 'src="'. $imgURL . '"' ;
-        //     //if (str_contains($imgURL1, 'base64,')) {
-        //     if(strpos($imgURL, 'base64,') !== false){     
-        //         $img = explode( 'base64,', $imgURL );
-        //         $imgURL = $img[1];
-        //     }else{
-        //         $imgURL = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/'.$imgURL));
-        //     }
-        //     $inlinedAttachments[] = array(
-        //         'ContentType' => "image/gif",
-        //         'Filename' => "e59d1954aef9b3ed1a5e3c4c8e43a7f081cfa9e9.gif",
-        //         'ContentID' => "id".$i,
-        //         'Base64Content' => $imgURL
-        //     );
-
-        //     $i++;
-        // }
-        // $htmlString = str_replace($urlsrc, $cid , $content);
         
         $mailParams = [
             'Messages' => [
@@ -380,28 +341,23 @@ class functions {
                             'Email' => SMTP_FROM_EMAIL,
                             'Name' => SMTP_FROM_NAME
                         ],
-                    'To' => [
-                            [
+                    'To' => [[
                                 'Email' => $to,
                                 'Name' => $to_name
-                            ]
-                        ],
+                            ]],
                     'Subject' => $subject,
                     //'HTMLPart' => $htmlString,
                     'HTMLPart' => $content,
                 ]    
             ]
         ];
-        
         //$mailParams['Messages'][0]['InlinedAttachments'] =  $inlinedAttachments;
         // parameter array of array
         if ($cc != '') {
             $arrCC = [];
             $var = explode(',',$cc);
             foreach ($var as $ccAddress) {
-                $arrE = [
-                        'Email' => $ccAddress,
-                    ];
+                $arrE = ['Email' => $ccAddress,];
                     array_push($arrCC, $arrE);
                 }
             $mailParams['Messages'][0]['Cc'] = $arrCC;
@@ -410,14 +366,11 @@ class functions {
             $arrBcc = [];
             $varA = explode(',',$bcc);
             foreach ($varA as $bccAddress) {
-                $arrE = [
-                        'Email' => $bccAddress,
-                    ];
-                    array_push($arrCC, $arrE);
+                $arrE2 = ['Email' => $bccAddress,];
+                    array_push($arrBcc, $arrE2);
                 }
             $mailParams['Messages'][0]['Bcc'] = $arrBcc;
         }
-        
         if (is_array($attachments)) {
             // Attachment parameter
             // $mailParams['Messages'][0]['Attachments'] =  [[
@@ -427,7 +380,6 @@ class functions {
             //                                 ]];
             $mailParams['Messages'][0]['Attachments'] =  $attachments;
         }
-
         $response = $this->_mailjet->post(Resources::$Email, ['body' => $mailParams]);
         if ($response->success()) {            
             $result['status'] = 200;
@@ -438,6 +390,49 @@ class functions {
             $result['msg'] = 'Could not send mail!';
             return $result;
         }
+    }
+
+    public function send_email_smtp__imgg($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '') {
+        $b64image = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/assets/img/BeConnected_Logo.gif'));
+
+        $dom = new DOMDocument;
+        @$dom->loadHTML($content);
+        $imgs = $dom->getElementsByTagName('img');
+        // Store the list of image urls in an array - this will come in handy later
+        $imgURLs = [];
+        foreach($imgs as $img) {
+            if (!$img->hasAttribute('src')) {
+                continue;
+            }
+            $imgURLs[] = $img->getAttribute('src');
+            //$img->setAttribute('src', $var);
+        }
+        //$htmlString = $dom->saveHTML();
+        $i=0;
+        $urlsrc = $urlsrc =  [];
+        $inlinedAttachments=[]; 
+        foreach($imgURLs as $imgURL) {
+            //$cid[] = addslashes('src="cid:id'.$i.'"');
+            $cid[] = 'src="cid:id'.$i.'"';
+            $urlsrc[] = 'src="'. $imgURL . '"' ;
+            //if (str_contains($imgURL1, 'base64,')) {
+            if(strpos($imgURL, 'base64,') !== false){     
+                $img = explode( 'base64,', $imgURL );
+                $imgURL = $img[1];
+            }else{
+                $imgURL = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/'.$imgURL));
+            }
+            $inlinedAttachments[] = array(
+                'ContentType' => "image/gif",
+                'Filename' => "e59d1954aef9b3ed1a5e3c4c8e43a7f081cfa9e9.gif",
+                'ContentID' => "id".$i,
+                'Base64Content' => $imgURL
+            );
+
+            $i++;
+        }
+        $htmlString = str_replace($urlsrc, $cid , $content);
+        
     }
 
 }

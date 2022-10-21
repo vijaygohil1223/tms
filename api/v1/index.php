@@ -1566,13 +1566,15 @@ $app->put('/sendMessage/:id','authenticate', function ($id) use($app) {
     echoResponse($result ['status'], $result);
 });
 $app->put('/sendClientMessage/:id','authenticate', function ($id) use($app) {
-    $mail = new messageClient ();
+    //$mail = new messageclient (); //old file
+    $mail = new messageclient ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $mail->sendClientMessage($id, $data);
     echoResponse($result ['status'], $result);
 });
 $app->put('/sendClientIndirectMessage/:id','authenticate', function ($id) use($app) {
-    $mail = new messageClient ();
+    //$mail = new messageclient (); //old file
+    $mail = new messageclient ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $mail->sendClientIndirectMessage($id, $data);
     echoResponse($result ['status'], $result);
@@ -1656,11 +1658,6 @@ $app->get('/customerpriceAll/:id','authenticate', function($id) {
 $app->get('/customerpriceListCopy/:id','authenticate', function($id) {
     $cusPrice = new Customerpricelist ();
     $result = $cusPrice->customerpriceListCopy($id);
-    echoResponse(200, $result);
-});
-$app->get('/linguistpriceAll','authenticate', function() {
-    $cusPrice = new Customerpricelist ();
-    $result = $cusPrice->linguistpriceAll();
     echoResponse(200, $result);
 });
 // -------------------sevices status --------------------------//
@@ -3274,7 +3271,7 @@ $app->post('/saveEditedInvoice_test', 'authenticate',function () use($app) {
 });
 $app->get('/clientInvoiceUpdate/:id','authenticate', function($id) {
     $invoice = new Client_invoice ();
-    $result = $invoice->invoiceUpdate($id);
+    $result = $invoice->invoiceUpdate($id,$data='');
     echoResponse(200, $result);
 });
 $app->post('/sendClientInvoiceMail', 'authenticate',function () use($app) {

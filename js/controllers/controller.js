@@ -8696,10 +8696,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
 
         $scope.ok = function (formid, message) {
+            console.log('message', message)
             var data = {
                 "file": $scope.attachementfile,
                 "data": message
             };
+            console.log('data-mail', data)
 
             if (angular.element("#" + formid).valid()) {
                 angular.element('.signimgdata').remove();
@@ -30871,7 +30873,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 })
                 $scope.itemQuantity = qty ? qty : $scope.itemQuantity; 
                 console.log('$scope.itemList', $scope.itemList)
-                
                 $scope.subLinguist = [];
                 $scope.exArr = [];
                 $scope.userIdArr = [];
@@ -30903,7 +30904,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         });
                         return false;
                     });
-                    
                     console.log('scoopQtyPrice', $scope.scoopQtyPrice)
                     if( $scope.scoopQtyPrice != 0 && ($scope.qTotPrice < $scope.scoopQtyPrice) ){
                         //console.log('inn')
@@ -30915,52 +30915,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     console.log('$scope.subLinguist', $scope.subLinguist)
                 })
-
                 console.log('$scope.exArr', $scope.exArr)
                 var notExist = $scope.exArr.reduce((c, { resource_id: key }) => (c[key] = (c[key] || 0) + 1, c), {});
-
                 console.log('counts',notExist);
                 angular.forEach(notExist, function (countItem, resID) {
                     console.log('resID = count', resID + '=' + countItem)
                     angular.forEach($scope.itemList, function (val, i) {
-                        //console.log('$scope.itemList=lemn', $scope.itemList.length)
-                        //console.log('val', val)
                         if(countItem < $scope.itemList.length){
                             $scope.exArr.filter(b1 => {
                                 if((b1.resource_id==resID) && (val.pricelist !== b1.priceName)){
-                                    //console.log('val.pricelist', val.pricelist)
-                                    //console.log('b1', b1)
                                     console.log('valll-inn', val)
                                     var vPrice = parseFloat(val.itemTotal) / parseInt(val.quantity)
-                                
                                     $scope.subLinguist = $scope.subLinguist.map(objE => {
                                         console.log('objE=>', objE)
                                         if (objE.resource_id == resID) {
-                                            console.log('objE.resource_id', objE.resource_id)
-                                            
                                           return {...objE, price: objE.price + vPrice};
                                         }
-                                      
                                         return objE;
                                       });
                                       console.log('updated=newArr', $scope.subLinguist)
-                                        
-
                                     return b1;
                                 }
                                 return false;
                             })    
                         }    
-                    // var notInList = $scope.itemList.filter(a1 => { 
-                    //     $scope.exArr.filter(b1 => {
-                    //         if(a1.pricelist !== b1.priceName){
-                    //             console.log('b1', b1)
-                    //             //console.log('a1', a1)
-                    //             return b1;
-                    //         }
-                    //         return true;
-                    //     })
-                    // });
                     })        
                 })    
 

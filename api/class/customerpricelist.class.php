@@ -66,10 +66,4 @@ class Customerpricelist {
         return self::customerpriceSave($data);
     }
 
-    public function linguistpriceAll() {
-        $this->_db->orderBy ("price_name", "asc");
-        $data = $this->_db->get('tms_customer_price_list');
-        return $data;
-    }
-
 }

@@ -1,7 +1,6 @@
 <?php
 require_once 'users.class.php';
 require_once 'client.class.php';
-
 require_once 'functions.class.php';
 
 
@@ -197,7 +196,7 @@ class Client_invoice {
     }
 
     //update invoice
-    public function invoiceUpdate($id,$data) {
+    public function invoiceUpdate($id) {
         $data['value_date'] = date('Y-m-d H:i');
     	$data['invoice_type'] = "save";
     	$this->_db->where('invoice_id', $id);

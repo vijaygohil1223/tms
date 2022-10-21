@@ -3,7 +3,7 @@
 require_once 'functions.class.php';
 require_once 'sendmail/class.phpmailer.php';
 
-class messageClient {
+class messageclient {
 
     public function __construct() {
         $this->_db = db::getInstance();
@@ -16,7 +16,6 @@ class messageClient {
             $emailSign = $this->_db->getone('tms_email_sign');   
             $emailsignData = $emailSign['sign_detail'];
             $emailImageData = UPLOADS_ROOT . "attatchment/" . $emailSign['sign_picture'];
-
         } else {
             $emailsignData = " ";
             $emailImageData = " ";
@@ -40,14 +39,13 @@ class messageClient {
         if (isset($data['data']['messageData'])) {
             $str = $data['data']['messageData'];
             $message = str_replace($emailsignData,"",$str);
-
         } else {
-            $message = " ";
+            $message = "";
         }
 
         $body = "<p>" . $message . "</p>";
-        $body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
+        //$body .= "<p>" . $emailsignData . "</p>";
+        //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
 
@@ -70,29 +68,9 @@ class messageClient {
         // $this->_mailer->AddAddress($to);
         //$this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
         // $this->_mailer->IsHTML(true);
-        //
-
-        if ($cc != "") {
-            $cCAddresses = explode(',',$cc);
-            $ccArr = [];
-            foreach ($cCAddresses as $cCAddress) {
-                array_push($ccArr,trim($cCAddress));
-            }
-            $cc = $ccArr;
-        }
-
-        if ($bcc != "") {
-            $bcCAddresses = explode(',',$bcc);
-            $bccArr = [];
-            foreach ($bcCAddresses as $bcCAddress) {
-                array_push($ccArr,trim($cCAddress));
-            }
-            $bcc = $bccArr;
-        }
 
         $attachments = '';
         $to_name = ' ';
-        
         if ($encoded_content != '') {
             $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
             $fileNm = explode(',', $data['file']);
@@ -105,10 +83,9 @@ class messageClient {
                 'Base64Content' => $fileNm[1]
             ]];
         }  
-
         // mailjet function  
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
             
         if($mailResponse['status'] == 200) {
             $result['status'] = 200;
@@ -135,7 +112,7 @@ class messageClient {
                 if($img[0] != " ") {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
-                    if($images){
+                    if($image){
                         unlink($path.$image);
                     }    
                 }       
@@ -175,7 +152,7 @@ class messageClient {
         }
 
         $body = "<p>" . $message . "</p>";
-        $body .= "<p>" . $emailsignData . "</br><img src='cid:logo_2u'></p>";
+        //$body .= "<p>" . $emailsignData . "</br><img src='cid:logo_2u'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
 
@@ -198,24 +175,6 @@ class messageClient {
         // $this->_mailer->AddAddress($to);
         // $this->_mailer->IsHTML(true);
         
-        if ($cc != "") {
-            $cCAddresses = explode(',',$cc);
-            $ccArr = [];
-            foreach ($cCAddresses as $cCAddress) {
-                array_push($ccArr,trim($cCAddress));
-            }
-            $cc = $ccArr;
-        }
-
-        if ($bcc != "") {
-            $bcCAddresses = explode(',',$bcc);
-            $bccArr = [];
-            foreach ($bcCAddresses as $bcCAddress) {
-                array_push($ccArr,trim($cCAddress));
-            }
-            $bcc = $bccArr;
-        }
-        
         $attachments = '';
         $to_name = ' ';
         
@@ -234,7 +193,7 @@ class messageClient {
 
         // mailjet function  
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
             
         if($mailResponse['status'] == 200) {
             $result['status'] = 200;
@@ -261,7 +220,7 @@ class messageClient {
                 if($image) {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
-                    if($images){
+                    if($image){
                         unlink($path.$image);
                     }    
                 }       

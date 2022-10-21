@@ -63,7 +63,7 @@ class contactPerMsg {
 
         $body = "<p>" . $message . "</p>";
         //$body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
+        //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
 
@@ -102,7 +102,7 @@ class contactPerMsg {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
                     if($images){
-                        unlink($path.$image);
+                        //unlink($path.$image);
                     }    
                 }    
             }
@@ -112,7 +112,7 @@ class contactPerMsg {
                 if($img[0] != " ") {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
-                    if($images){
+                    if($image){
                         unlink($path.$image);
                     }    
                 }       
@@ -287,8 +287,8 @@ class contactPerMsg {
         }
 
         $body = "<p>" . $message . "</p>";
-        $body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
+        //$body .= "<p>" . $emailsignData . "</p>";
+        //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
 
@@ -324,7 +324,7 @@ class contactPerMsg {
             ]];
         }    
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
             
         if($mailResponse['status'] == 200) {
         //if ($this->_mailer->Send()) { //output success or failure messages
@@ -341,8 +341,8 @@ class contactPerMsg {
                 if($img[0] != " ") {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
-                    if($images){
-                        unlink($path.$image);
+                    if($image){
+                        //unlink($path.$image);
                     }    
                 }    
             }
@@ -410,21 +410,12 @@ class contactPerMsg {
         }
 
         $body = "<p>" . $message . "</p>";
-        $body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
-
+        //$body .= "<p>" . $emailsignData . "</p>";
+        //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $to = $data['data']['vEmailAddress'];
         
         // $this->_mailer->From = "Kanhasoft.com";
         // $this->_mailer->FromName = "TMS";
-
-        if ($cc != "") {
-             $cc = [[ 'email' => $cc ]];
-        }
-
-        if ($bcc != "") {
-            $bcc = [[ 'email' => $bcc ]];
-        }
 
         if ($encoded_content != '') {
             //$this->_mailer->AddAttachment($encoded_content);
@@ -448,7 +439,7 @@ class contactPerMsg {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
                     if($images){
-                        unlink($path.$image);
+                        //unlink($path.$image);
                     }    
                 }    
             }
@@ -458,7 +449,7 @@ class contactPerMsg {
                 if($img[0] != " ") {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
-                    if($images){
+                    if($image){
                         unlink($path.$image);
                     }    
                 }       
@@ -635,26 +626,12 @@ class contactPerMsg {
         }
 
         $body = "<p>" . $message . "</p>";
-        $body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
+        //$body .= "<p>" . $emailsignData . "</p>";
+        //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
         $to = $data['data']['vEmailAddress'];
         
-        if ($cc != "") {
-            $cCAddresses = explode(',',$cc);
-            foreach ($cCAddresses as $cCAddress) {
-                $this->_mailer->AddCC(trim($cCAddress));
-            }
-        }
-
-        if ($bcc != "") {
-            $bcCAddresses = explode(',',$bcc);
-            foreach ($bcCAddresses as $bcCAddress) {
-                $this->_mailer->AddBCC(trim($bcCAddress));
-            }
-        }
-
         $to_name = '';
         $attachments = '';
         
@@ -671,7 +648,7 @@ class contactPerMsg {
             ]];
         }    
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
             
         if($mailResponse['status'] == 200) {
         //if ($this->_mailer->Send()) { //output success or failure messages
@@ -690,7 +667,7 @@ class contactPerMsg {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
                     if($images){
-                        unlink($path.$image);
+                        //unlink($path.$image);
                     }    
                 }    
             }
@@ -700,7 +677,7 @@ class contactPerMsg {
                 if($img[0] != " ") {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
-                    if($images){
+                    if($image){
                         unlink($path.$image);
                     }    
                 }       

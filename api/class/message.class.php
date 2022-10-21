@@ -21,13 +21,10 @@ class message {
             $emailImageData = " ";
         }
         if(isset($data['file'])) {
-            //echo 'a';exit;
             $encoded_content = $this->uploadimage($data['file']);    
         } else {
-            //echo 'b';exit;
             $encoded_content = '';    
         }
-        //exit;
         
         if (isset($data['data']['cc'])) {
             $cc = $data['data']['cc'];
@@ -47,8 +44,8 @@ class message {
         }
         
         $body = "<p>" . $message . "</p>";
-        $body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<p><img src='cid:logo_2u' width='80px'></p>";
+        //$body .= "<p>" . $emailsignData . "</p>";
+        //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
         $to = $data['data']['vEmailAddress'];
@@ -70,25 +67,6 @@ class message {
         //$this->_mailer->AddEmbeddedImage($emailImageData, 'logo_2u');
         //$this->_mailer->IsHTML(true);
         //
-        if ($cc != "") {
-            $cCAddresses = explode(',',$cc);
-            $ccArr = [];
-            foreach ($cCAddresses as $cCAddress) {
-                //$this->_mailer->AddCC(trim($cCAddress));
-                array_push($ccArr,trim($cCAddress));
-            }
-            $cc = $ccArr;
-        }
-
-        if ($bcc != "") {
-            $bcCAddresses = explode(',',$bcc);
-            $bccArr = [];
-            foreach ($bcCAddresses as $bcCAddress) {
-                //$this->_mailer->AddBCC(trim($bcCAddress));
-                array_push($ccArr,trim($cCAddress));
-            }
-            $bcc = $bccArr;
-        }
 
         $attachments = '';
         $to_name = ' ';
@@ -106,7 +84,7 @@ class message {
             ]];
         }    
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
             
         if($mailResponse['status'] == 200) {
             $result['status'] = 200;
@@ -173,7 +151,7 @@ class message {
         }
 
         $body = "<p>" . $message . "</p>";
-        $body .= "<p>" . $emailsignData . "</br><img src='cid:logo_2u'></p>";
+        //$body .= "<p>" . $emailsignData . "</br><img src='cid:logo_2u'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
 
@@ -196,24 +174,6 @@ class message {
         // $this->_mailer->AddAddress($to);
         // $this->_mailer->IsHTML(true);
         
-        if ($cc != "") {
-            $cCAddresses = explode(',',$cc);
-            $ccArr = [];
-            foreach ($cCAddresses as $cCAddress) {
-                array_push($ccArr,trim($cCAddress));
-            }
-            $cc = $ccArr;
-        }
-
-        if ($bcc != "") {
-            $bcCAddresses = explode(',',$bcc);
-            $bccArr = [];
-            foreach ($bcCAddresses as $bcCAddress) {
-                array_push($ccArr,trim($cCAddress));
-            }
-            $bcc = $bccArr;
-        }
-
         $attachments = '';
         $to_name = ' ';
         
@@ -232,7 +192,7 @@ class message {
 
         // mailjet function  
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
             
         if($mailResponse['status'] == 200) {
             $result['status'] = 200;
@@ -259,7 +219,7 @@ class message {
                 if($img[0] != " ") {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
-                    if($images){
+                    if($image){
                         unlink($path.$image);
                     }    
                 }       
