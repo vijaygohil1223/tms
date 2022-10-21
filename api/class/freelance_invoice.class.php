@@ -214,7 +214,7 @@ class Freelance_invoice {
     }
 
     public function invoiceStatusChange($data, $id) {
-        
+
         /* Insert Part paid invoice payment detail in database START */
         $partPaidAmount = array();
         if(isset($data['partPaid'])){
@@ -232,10 +232,12 @@ class Freelance_invoice {
             $partPaymentInsert = 1;
             unset($data['is_update']);
         }
+        if(isset($data['paid_amount']) && $data['paid_amount'] == ' '){
+            unset($data['paid_amount']);
+        }
         $data['modified_date'] = date('Y-m-d');
     	$this->_db->where('invoice_id', $id);
     	$idd = $this->_db->update('tms_invoice', $data);
-        
         // Update Job status When invoice status change to complete
         if($idd && isset($data['invoice_status'])){
             $this->_db->where('invoice_id', $id);
@@ -248,8 +250,16 @@ class Freelance_invoice {
                     $jbStsId = $this->_db->update('tms_summmery_view', $jbData);
                 }
             }    
+        }
+        // only For changes status linguist
+        if(!$idd){
+            $this->_db->where('invoice_id', $id);
+            $status = $this->_db->get('tms_invoice');
+            if(count($status)> 0 ){
+                if($status[0]['invoice_status'] == $data['invoice_status'])
+                    $idd = $id;
+            }    
         }    
-
         if($idd && isset($partPaymentInsert)) {
     		$request['status'] = 200;
     		$request['msg'] = "Successfully updated";
@@ -257,7 +267,6 @@ class Freelance_invoice {
     		$request['status'] = 401;
     		$request['msg'] = "Not updated";
     	}
-
     	return $request;
     }
     public function invoiceStatusApproved($data, $id) {

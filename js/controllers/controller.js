@@ -13937,11 +13937,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                 } else {
                     console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
-
                     $routeParams.id = invoiceId;
                     rest.path = "invoiceStatusChange";
                     rest.put($scope.invoice).success(function (data) {
+                        console.log('data', data)
                         if (i == invoiceCheckLength) {
+                            if(data.status ==200){
+                                notification('Status Updated successfully.', 'success');
+                            }
                             console.log('invoiceCheckLength-1-inside', invoiceCheckLength - 1)
                             $route.reload();
                         }
