@@ -13895,64 +13895,73 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statusAction = function (action) {
         console.log('action', action)
         var invoiceStatus = angular.element('#invoiceStatusdata').val();
-        console.log('invoiceStatus', invoiceStatus)
+        const inStatus = invoiceStatus.split(',')
 
-        console.log('checkData-length', angular.element('[id^=invoiceCheckData]').length)
-        var j = 0;
-        for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
-            var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
-            const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
-            //console.log('invoiceCheckLength-1', invoiceCheckLength-1)
-            console.log('invoiceselect', invoiceselect)
-            //console.log('i', i)
-            if (invoiceselect == 'true') {
-                var invoiceId = angular.element('#invoiceCheckData' + i).val();
-                console.log('invoiceId', invoiceId)
+        var i, j, totalChecked, successMsg;
+        i = j = totalChecked = successMsg = 0;
+        if(inStatus.length == 2){
+            for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
+                var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
+                const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
+                if (invoiceselect == 'true') {
+                    var invoiceId = angular.element('#invoiceCheckData' + i).val();
+                    console.log('invoiceId', invoiceId)
+                    totalChecked++;
+                    $scope.invoice = {};
+                    $scope.invoice.invoice_status = (inStatus.length > 0) ? inStatus[1] : invoiceStatus;
+                    $scope.invoice.paid_amount = " ";
+                    $scope.invoice.is_update = 'is_update';
 
-                $scope.invoice = {};
-                const inStatus = invoiceStatus.split(',')
-                $scope.invoice.invoice_status = (inStatus.length > 0) ? inStatus[1] : invoiceStatus;
-                $scope.invoice.paid_amount = " ";
-                $scope.invoice.is_update = 'is_update';
-
-                var obj = {
-                    "Invoice_cost": $scope.invoiceList[i].Invoice_cost,
-                    "paid_amount": $scope.invoiceList[i].paid_amount,
-                    "statusId": invoiceId
-                };
-                if ($scope.invoice.invoice_status == 'Paid' || $scope.invoice.invoice_status == 'Part Paid' || $scope.invoice.invoice_status == 'Completed') {
-                    var modalInstance = $uibModal.open({
-                        animation: $scope.animationsEnabled,
-                        templateUrl: 'tpl/invoiceAmount.html',
-                        controller: 'invoiceAmountController',
-                        size: '',
-                        resolve: {
-                            items: function () {
-                                return obj;
+                    var obj = {
+                        "Invoice_cost": $scope.invoiceList[i].Invoice_cost,
+                        "paid_amount": $scope.invoiceList[i].paid_amount,
+                        "statusId": invoiceId
+                    };
+                    if ($scope.invoice.invoice_status == 'Paid' || $scope.invoice.invoice_status == 'Part Paid' || $scope.invoice.invoice_status == 'Completed') {
+                        var modalInstance = $uibModal.open({
+                            animation: $scope.animationsEnabled,
+                            templateUrl: 'tpl/invoiceAmount.html',
+                            controller: 'invoiceAmountController',
+                            size: '',
+                            resolve: {
+                                items: function () {
+                                    return obj;
+                                }
                             }
-                        }
-                    });
-                    modalInstance.result.then(function (selectedItem) {
-                        $route.reload();
-                    });
-                } else {
-                    console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
-                    $routeParams.id = invoiceId;
-                    rest.path = "invoiceStatusChange";
-                    rest.put($scope.invoice).success(function (data) {
-                        console.log('data', data)
-                        if (i == invoiceCheckLength) {
-                            if(data.status ==200){
-                                notification('Status Updated successfully.', 'success');
-                            }
-                            console.log('invoiceCheckLength-1-inside', invoiceCheckLength - 1)
+                        });
+                        modalInstance.result.then(function (selectedItem) {
                             $route.reload();
-                        }
-                    });
+                        });
+                    } else {
+                        console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
+                        $routeParams.id = invoiceId;
+                        rest.path = "invoiceStatusChange";
+                        rest.put($scope.invoice).success(function (data) {
+                            console.log('data', data)
+                            if (i == invoiceCheckLength) {
+                                if(data.status ==200){
+                                    successMsg++;
+                                    //notification('Status Updated successfully.', 'success');
+                                }
+                                $route.reload();
+                            }
+                        });
+                    }
                 }
+                j++;
             }
-            j++;
-        }
+            if(i == j){
+                if(totalChecked == 0)
+                    notification('Please select invoice.', 'warning');
+                setTimeout(() => {
+                    if(successMsg>0){
+                        notification('Status Updated successfully.', 'success')
+                    }
+                }, 500);
+            }
+        }else{
+            notification('Please select status.', 'warning');
+        }    
     }
 
 }).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter) {
@@ -24465,7 +24474,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-
+    $scope.invoicePeriod = 30;
     $scope.getInvoicePeriod = function (id) {
         rest.path = "getOneInvoicePeriod/" + 1;
         rest.get().success(function (data) {
@@ -24566,58 +24575,75 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('invoiceStatus', invoiceStatus)
 
         console.log('checkData-length', angular.element('[id^=invoiceCheckData]').length)
-        var j = 0;
-        for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
-            var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
-            const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
-            //console.log('invoiceCheckLength-1', invoiceCheckLength-1)
-            console.log('invoiceselect', invoiceselect)
-            //console.log('i', i)
-            if (invoiceselect == 'true') {
-                var invoiceId = angular.element('#invoiceCheckData' + i).val();
-                console.log('invoiceId', invoiceId)
-                $scope.invoice = {};
-                //const inStatus = invoiceStatus.split(',')
-                $scope.invoice.invoice_status = invoiceStatus;
-                console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
-                //$scope.invoice.paid_amount = " ";
-                $scope.invoice.is_update = 'is_update';
-                const getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return getAllInvoice.invoice_id == invoiceId });
-                var obj = {
-                    "Invoice_cost": getAllInvoice.length > 0 ? getAllInvoice[0].Invoice_cost : 0,
-                    "paid_amount": getAllInvoice.length > 0 ? getAllInvoice[0].paid_amount : 0,
-                    "statusId": invoiceId
-                };
-                if ($scope.invoice.invoice_status == 'Paid' || $scope.invoice.invoice_status == 'Part Paid' || $scope.invoice.invoice_status == 'Completed') {
-                    var modalInstance = $uibModal.open({
-                        animation: $scope.animationsEnabled,
-                        templateUrl: 'tpl/clientInvoiceAmount.html',
-                        controller: 'clientInvoiceAmountController',
-                        size: '',
-                        resolve: {
-                            items: function () {
-                                return obj;
-                            }
-                        }
-                    });
-                    modalInstance.result.then(function (selectedItem) {
-                        $route.reload();
-                    });
-                } else {
+        var i, j, totalChecked, successMsg;
+        i = j = totalChecked = successMsg = 0;
+        if(invoiceStatus != ''){
+            for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
+                var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
+                const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
+                //console.log('invoiceCheckLength-1', invoiceCheckLength-1)
+                console.log('invoiceselect', invoiceselect)
+                //console.log('i', i)
+                if (invoiceselect == 'true') {
+                    var invoiceId = angular.element('#invoiceCheckData' + i).val();
+                    console.log('invoiceId', invoiceId)
+                    totalChecked++;
+                    $scope.invoice = {};
+                    //const inStatus = invoiceStatus.split(',')
+                    $scope.invoice.invoice_status = invoiceStatus;
                     console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
-
-                    $routeParams.id = invoiceId;
-                    rest.path = "clientInvoiceStatusChange";
-                    rest.put($scope.invoice).success(function (data) {
-                        if (i == invoiceCheckLength) {
-                            console.log('invoiceCheckLength-1-inside', invoiceCheckLength - 1)
+                    //$scope.invoice.paid_amount = " ";
+                    $scope.invoice.is_update = 'is_update';
+                    const getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return getAllInvoice.invoice_id == invoiceId });
+                    var obj = {
+                        "Invoice_cost": getAllInvoice.length > 0 ? getAllInvoice[0].Invoice_cost : 0,
+                        "paid_amount": getAllInvoice.length > 0 ? getAllInvoice[0].paid_amount : 0,
+                        "statusId": invoiceId
+                    };
+                    if ($scope.invoice.invoice_status == 'Paid' || $scope.invoice.invoice_status == 'Part Paid' || $scope.invoice.invoice_status == 'Completed') {
+                        var modalInstance = $uibModal.open({
+                            animation: $scope.animationsEnabled,
+                            templateUrl: 'tpl/clientInvoiceAmount.html',
+                            controller: 'clientInvoiceAmountController',
+                            size: '',
+                            resolve: {
+                                items: function () {
+                                    return obj;
+                                }
+                            }
+                        });
+                        modalInstance.result.then(function (selectedItem) {
                             $route.reload();
-                        }
-                    });
+                        });
+                    } else {
+                        console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
+
+                        $routeParams.id = invoiceId;
+                        rest.path = "clientInvoiceStatusChange";
+                        rest.put($scope.invoice).success(function (data) {
+                            if (i == invoiceCheckLength) {
+                                console.log('invoiceCheckLength-1-inside', invoiceCheckLength - 1)
+                                successMsg++;
+                                $route.reload();
+                            }
+                        });
+                    }
                 }
+                j++;
             }
-            j++;
-        }
+            if(i == j){
+                if(totalChecked == 0)
+                    notification('Please select invoice.', 'warning');
+                setTimeout(() => {
+                    if(successMsg>0){
+                        notification('Status Updated successfully.', 'success')
+                    }
+                }, 500);    
+            }
+        }else{
+            notification('Please select status.', 'warning');
+        }    
+
     }
 
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {

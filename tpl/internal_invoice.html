@@ -96,7 +96,7 @@
                   <th>Invoice status</th>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="invoiceL in getAllInvoice">
+                  <tr ng-repeat="invoiceL in invoiceList">
                     <td ng-bind="$index + 1"></td>
                     <td ng-bind="invoiceL.invoice_number"></td>
                     <td ng-bind="invoiceL.Invoice_cost"></td>
