@@ -67,8 +67,10 @@
                     <td ng-bind="invoiceL.freelanceName"></td>
                     <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                     <td ng-bind="invoiceL.companyName"></td>
-                    <td ng-show="invoiceStatus[{{$index}}]">
-                      <span ng-bind="invoiceL.invoice_status"></span>
+                    <!-- <td ng-show="invoiceStatus[{{$index}}]">
+                    </td>   -->
+                    <td>
+                        <span ng-bind="invoiceL.invoice_status"></span>
                     </td>
                     <td>
                       <div class="trActiontitle">
