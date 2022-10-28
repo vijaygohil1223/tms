@@ -13768,7 +13768,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.getData = function () {
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
-            console.log(invoiceDuePeriodDays);
+            //console.log(invoiceDuePeriodDays);
             $scope.invoiceList = data;
             //console.log("$scope.invoiceList", $scope.invoiceList);
             $scope.invoiceStatus = [];
@@ -24509,14 +24509,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function (val, i) {
                 var invoice_duedate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod);
-                if(invoice_duedate)
-                    val.invoice_duedate = invoice_duedate;
+                console.log('invoice_duedate', invoice_duedate)
+                //if(invoice_duedate)
+                    //val.invoice_duedate = invoice_duedate;
                 if (val.invoice_status == 'Complete') {
-                    console.log('invoice_duedate', invoice_duedate)
                     $scope.invoiceCompleted.push(val);
-                    var ckey = $scope.invoiceUnpaid.length;
+                    //var ckey = $scope.invoiceUnpaid.length;
+                    var ckey = $scope.invoiceCompleted.length;
                     if (ckey > 0)
-                        $scope.invoiceUnpaid[ckey - 1].invoice_duedate = invoice_duedate;
+                        $scope.invoiceCompleted[ckey - 1].invoice_duedate = invoice_duedate;
                 } else {
                     $scope.invoiceUnpaid.push(val);
                     var ukey = $scope.invoiceUnpaid.length;
