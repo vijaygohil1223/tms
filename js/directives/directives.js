@@ -6292,9 +6292,7 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
         },
         link: function(scope, element, attrs, ngModelCtrl) {
             var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
-            console.log('globalDateFormat', globalDateFormat)
             var dtSeparator = $window.localStorage.getItem("dtSeparator");
-            console.log('dtSeparator', dtSeparator)
             var nowDate = new Date();
             var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
             setTimeout(() => {

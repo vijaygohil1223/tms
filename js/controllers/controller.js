@@ -661,9 +661,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
-    console.log('close popupp' )
-    $('#modal').modal('toggle');
-    $window.close();
+    $window.close(); // to close windowpopup after logout
 
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -9665,6 +9663,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         }).error(errorCallback);
     }
+    $scope.clearAbsentDate = function () {
+        //$scope.userprofiledata.is_available = '';
+        $('#multidatePick').multiDatesPicker('resetDates', 'picked');
+    }
     if ($routeParams.id != undefined) {
         rest.path = 'getProfile';
         rest.model().success(function (data) {
@@ -9796,7 +9798,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     } else {
         $scope.iresource = true;
     }
-
+    
     $scope.checkusername = function () {
         rest.path = 'checkusername';
         rest.post($scope.userprofiledata.vUserName).success(function (data) { }).error(errorCallback);
@@ -10361,6 +10363,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
+    
 }).controller('contactController', function ($scope, $log, $location, $route, rest, $window, $routeParams, $uibModal, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.user_name = $window.localStorage.getItem("ShowuserName");

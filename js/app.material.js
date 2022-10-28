@@ -654,6 +654,8 @@ app.run(function($rootScope, $log, $location, $interval, $window, $cookieStore,$
             //All popup modal close after auto logout
             $timeout(function() {
                 $('button.close').click();
+                //$('.modal button.btn').click();
+                $('.modal').click();
             },100);
 
             closeWindows();
