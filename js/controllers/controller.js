@@ -13768,9 +13768,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.getData = function () {
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
-            //console.log(invoiceDuePeriodDays);
+            console.log(invoiceDuePeriodDays);
             $scope.invoiceList = data;
-            console.log("$scope.invoiceList", $scope.invoiceList);
+            //console.log("$scope.invoiceList", $scope.invoiceList);
             $scope.invoiceStatus = [];
             for (var i = 0; i < data.length; i++) {
                 $scope.invoiceStatus[i] = true;
@@ -24509,8 +24509,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function (val, i) {
                 var invoice_duedate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod);
-
+                if(invoice_duedate)
+                    val.invoice_duedate = invoice_duedate;
                 if (val.invoice_status == 'Complete') {
+                    console.log('invoice_duedate', invoice_duedate)
                     $scope.invoiceCompleted.push(val);
                     var ckey = $scope.invoiceUnpaid.length;
                     if (ckey > 0)
