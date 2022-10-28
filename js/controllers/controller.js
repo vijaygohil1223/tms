@@ -9718,8 +9718,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.multipleDateArr = is_available;
                 //console.log('is_available', is_available)
                 if(is_available.length){
-                    let abscentArr = is_available.map(function(item) {
-                        return moment(item).format($scope.dateFormatGlobal);
+                    let abscentArr = is_available.filter(function(item) {
+                        console.log('item-cont', item)
+                        if(item.split('-').length ==3)
+                            return moment(item).format($scope.dateFormatGlobal);
                     });
                     $scope.userprofiledata.is_available = abscentArr.toString();    
                 }    
@@ -13968,6 +13970,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;
     $scope.editInvoiceField = true;
+    $scope.editDisabled = false;
     $scope.invoicePaid = function (frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -14131,6 +14134,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#irrecoverable').addClass('btn-danger');
                 angular.element('#irrecoverable').removeClass('btn-info');
                 $scope.is_disabled = true;
+            }
+            if ( ['Complete','Paid','Part Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
+                $scope.editDisabled = true;
             }
             // 
             $scope.reminderBtnHideShow = false;
@@ -14527,6 +14533,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isDisabledApprvd = false;
     $scope.editInvoiceField = true;
+    $scope.editDisabled = false;
     $scope.invoicePaid = function (frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -14739,6 +14746,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             if ($scope.userRight != 1)
                 $scope.isDisabledApprvd = true;
+            if ( ['Complete','Paid','Part Paid','Cancel'].includes($scope.invoiceDetail.invoice_status)) {
+                $scope.editDisabled = true;
+            }    
 
             var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
             if (($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Cancel' && $scope.invoiceDetail.invoice_status != 'Complete' && $scope.invoiceDetail.is_approved == 1)) {

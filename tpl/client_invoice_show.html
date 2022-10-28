@@ -2,6 +2,9 @@
   .invcBtn {
     margin-right: 5px;
   }
+  .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    background-color: #f8f8f8;
+  }
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
   data-ng-include=" 'tpl/material.header.html' ">
@@ -25,7 +28,7 @@
               class="fa fa-arrow-left"></span> Back</a>
           <a href="" class="btn btn-sm btn-info invcBtn" ng-click="printIt(invoiceDetail.invoice_number)"
             ng-disabled="is_disabled">Download</a>
-          <a href="" class="btn btn-sm btn-info invcBtn" ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-hide="editDisabled" ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i
               class="fa fa-pencil"></i> Edit & Save</a>
           <a href="" class="btn btn-sm btn-info" ng-show="reminderBtnHideShow"
             ng-click="sendRemiderinvoice(invoiceDetail.invoice_number)" ng-disabled="is_disabled">Send Reminder</a>
@@ -154,7 +157,7 @@
                     <th style="width: 90px">
                       <!-- <span ng-hide="editInvoiceField">{{invL.scoop_value}}</span> -->
                       <input class="invoiceCal form-control itemVal_{{invL.itemId}}" ng-show="editInvoiceField"
-                        type="text" ng-model="invL.scoop_value" id="invSubTotal{{$index}}"
+                        type="text" ng-model="invL.scoop_value"  ng-disabled="editDisabled" id="invSubTotal{{$index}}"
                         ng-change="changeInvoiceField($index,$parent.$index,invL.scoop_value,'itemPrice')"
                         name="itemVal_{{invL.itemId}}" />
                     </th>
@@ -167,7 +170,7 @@
                     <td style="width:10%;">
                       <!-- <span ng-hide="editInvoiceField">{{currencyType}} {{ invoiceTotal}}</span> -->
                       <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="invoiceTotal"
-                        ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
+                      ng-disabled="editDisabled" ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
                         id="invSubtotal" />
                       <!-- <span ng-if="!invoiceLength">{{invL.item.subTotal | customNumber}}</span>
                                             <span ng-if="invoiceLength">{{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> </td> -->
@@ -178,7 +181,7 @@
                     <td>
                       <!-- <span ng-hide="editInvoiceField">{{currencyType}} {{vat}}</span> -->
                       <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="vat"
-                        ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
+                      ng-disabled="editDisabled" ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
                     </td>
                   </tr>
                   <tr ng-if="$index == invoiceLength" class="tdborder">
@@ -275,7 +278,7 @@
                 Cancel</button>
               <button id="irrecoverable" class="btn btn-info btnSave" ng-show="reminderBtnHideShow"
                 ng-click="isIrrecoverableInvoice();"> Irrecoverable </button>
-              <button id="editInvoiceSave" class="btn btn-info invcBtn btnSave"
+              <button id="editInvoiceSave" class="btn btn-info invcBtn btnSave" ng-hide="editDisabled"  
                 ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i class="fa fa-pencil"></i> Edit & Save </button>
             </div>
           </div>

@@ -660,7 +660,7 @@ app.directive('select2InvoiceStatus', function($http, rest, $timeout) {
                     allowClear: true,
                     data: invoiceStatuses,
                     multiple:true,
-                    placeholder:'working',
+                    placeholder:'Invoice Status',
                     //maximumSelectionSize:1,
                     closeOnSelect:true,
                 }).on("change", function (e) {
@@ -6292,14 +6292,21 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
         },
         link: function(scope, element, attrs, ngModelCtrl) {
             var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
+            console.log('globalDateFormat', globalDateFormat)
+            var dtSeparator = $window.localStorage.getItem("dtSeparator");
+            console.log('dtSeparator', dtSeparator)
             var nowDate = new Date();
             var today = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate(), 0, 0, 0, 0);
             setTimeout(() => {
                 var date = scope.$parent.multipleDateArr;
-                //console.log('date-multi', date)
                 //$('#multidatePick').val('');
                 if(date.length && date!=1){
-                    let dateArr = date.map( function(item) {
+                    let dateArrFtr = date.filter( function(item) {
+                        if(item.split('-').length ==3){
+                            return item;
+                        }
+                    })
+                    let dateArr = dateArrFtr.map( function(item) {
                         const dt1 = new Date(item);
                         return dt1.setDate(dt1.getDate());
                     })
@@ -6307,7 +6314,8 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
                 }    
             }, 500);
             element.multiDatesPicker({
-                dateFormat:'dd.mm.yy',
+                dateFormat:'dd'+dtSeparator+'mm'+dtSeparator+'yy',
+                //dateFormat: globalDateFormat.toLowerCase(),
                 //minDate: today,
                 //autoclose: false,
                 // onSelect: function(selectedDate) {
@@ -6321,7 +6329,6 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
                 $('#multidatePick').datepicker('show');
             })
             $('td > ui-state-default').click( function() {
-                console.log('ffsdfsdfsfsd' )
                 $('#multidatePick').datepicker('show');
             })
         }
