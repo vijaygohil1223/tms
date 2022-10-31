@@ -26,7 +26,7 @@
                         <!-- <th>Project Co-ordinator</th>
                         <th>Project Manager</th> -->
                         <th>Country</th>
-                        <!-- <th>Action</th> -->
+                        <th>Action</th>
                         </thead>
                         <tbody>
                             <tr ng-repeat="client in clientlist">
@@ -40,21 +40,17 @@
                                 <!-- <td>{{client.projectCoordinator}}</td>
                                 <td>{{client.projectManager}}</td> -->
                                 <td>{{client.clientCountry}}</td>
-                                <!-- <td>
+                                <td style="display:flex">
                                     <div class="trActiontitle">
-                                        <a href="#/edit-client/{{client.iClientId}}" class="trActionIcon"><i class="fa fa-edit" title="{{client.name}}"></i></a>
-                                        </br>
-                                        <strong>Edit</strong>
+                                        <a href="#/edit-client/{{client.iClientId}}" class="trActionIcon"><i class="glyph-icon fa-edit" title="{{client.name}}"></i></a>
                                     </div>
                                     <div class="trActiontitle">
                                         <a href="javascript:void(0)" class="trActionIcon" ng-click="deleteDirect(client.iClientId,client.vLogo)"><i class="iconDelete glyph-icon fa-times"></i></a>
-                                        </br>
-                                        <strong>Delete</strong>
                                     </div>
-                                    <div class="trActiontitle">
+                                    <!-- <div class="trActiontitle">
                                         <a href="javascript:void(0)" class="trActionIcon" ng-click="workingHour(client.iClientId,'direct')" style="margin-left:25px;" title="Message"><i class="fa fa-envelope-o" style="font-size:18px"></i></a>
-                                    </div>
-                                </td> -->
+                                    </div> -->
+                                </td>
                             </tr>
                         </tbody>
                 </table>

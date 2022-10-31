@@ -12028,6 +12028,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.deleteIndirect = function (id, clientName) {
+        console.log('id', id)
         bootbox.confirm("Are you sure you want to delete?", function (result) {
             if (result == true) {
                 rest.path = 'deleteClientindirect/' + id;
