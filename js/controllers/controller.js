@@ -1901,6 +1901,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.showDataLoader = false;
             });
             //console.log("allproj", $scope.projectsAll);
+            console.log('data.length', data.length)
+            if(data.length == 0)
+                $scope.showDataLoader = false;
 
         });
     };
