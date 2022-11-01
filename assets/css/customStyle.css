@@ -136,10 +136,10 @@ div.dataTables_length select{margin: 0 5px;}
 /* edit-icons */
 .glyph-icon.fa-edit,
 .glyph-icon.fa-times{display: inline-block;}
-.glyph-icon.fa-edit:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-edit.png') center no-repeat; background-size: cover; margin: 0 5px 0 0;}
-.fa-edit-white:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-edit-white.png') center no-repeat; background-size: cover;vertical-align: text-bottom;}
-.glyph-icon.iconDelete.fa-times:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-delete.png') center no-repeat; background-size: cover;}
-.fa-times-white:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-delete-white.png') center no-repeat; background-size: cover;vertical-align: text-bottom;}
+.glyph-icon.fa-edit:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-edit.png') center no-repeat; background-size: contain; margin: 0 5px 0 0;}
+.fa-edit-white:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-edit-white.png') center no-repeat; background-size: contain;vertical-align: text-bottom;}
+.glyph-icon.iconDelete.fa-times:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-delete.png') center no-repeat; background-size: contain;}
+.fa-times-white:before{content: ''; display: inline-block; height: 15px; width: 15px; background: url('../../assets/img/icon-delete-white.png') center no-repeat; background-size: contain;vertical-align: text-bottom;}
 .form-control:focus{border-color: #502dc4;}
 .select2-container-active .select2-choice,
  .select2-container-multi.select2-container-active .select2-choices{border-color: #502dc4; box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(80 45 196 / 60%);}

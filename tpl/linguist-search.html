@@ -207,23 +207,20 @@
                                 <table class="table m-b-none default footable-loaded footable">
                                     <thead>
                                         <th>#</th>
-                                        <!-- <th>Contact persons</th> -->
                                         <th>Resource</th>
-                                        <!-- <th>Customers</th> -->
                                         <th>Freelancer Type</th>
                                         <th>Currency</th>
                                         <th>Country</th>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="result in statusRes=(statusResult | filter : jobReport)">
+                                        <tr ng-repeat="result in statusResult">
+                                        <!-- <tr ng-repeat="result in statusRes=(statusResult | filter : jobReport)"> -->
                                             <td>
                                                 {{ $index + 1 }}
                                             </td>
-                                            <!-- <td><a href="#/viewinternal/{{result.contactPerson}}" class="summeryColor">{{result.contactPersonName}}</a></td> -->
                                             <td>
-                                                <!-- <a href="javascript:void(0)" ng-click="jobsumResource(result.resource,result.jobId)"><i class="fa fa-envelope summeryColor"></i></a>&nbsp; -->{{result.resourceName}}
+                                                {{result.resourceName}}
                                             </td>
-                                            <!-- <td><span ng-if="result.customerName"><a href="#/viewdirect/{{result.customer}}" class="summeryColor">{{result.customerName}}</a></span><span ng-if="!result.customerName">--</span></td> -->
                                             <td>{{result.freelancerType}}</td>
                                             <td>{{result.currency}}</td>
                                             <td>{{result.userCountry}}</td>

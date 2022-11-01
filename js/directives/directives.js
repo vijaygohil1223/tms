@@ -2251,6 +2251,7 @@ app.directive('select2CenterClient', function($http, rest, $timeout, $log) {
                         data: lang,
                         multiple:true,
                         //maximumSelectionSize:1,
+                        placeholder:'Business Unit',
                         closeOnSelect:true,
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');

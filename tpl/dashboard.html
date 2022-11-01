@@ -299,8 +299,7 @@ td { font-size: 11px; } */
     float: right;
     z-index: 1;
     position: absolute;
-    /* margin: 57px 157px 0 0; */
-    right: 160px;
+    right: 120px;
     margin-top: 58px;
   }
   div#dynamicAddAnchore tr td:first-child {
@@ -369,9 +368,9 @@ td { font-size: 11px; } */
             <div class="row">
               <div class="col-md-12">
                 <div class="white_box panel panel-default mynewtabs" style="margin-bottom: 0;">
-                  <div class="col-sm-2 projectbranch d-flex" ng-if="(tabPermission | json) != '{}'">
-                    <div style="width:145px;">
-                      <input type="text" select2-projectbranch id="projectBranch" class="form-control" ng-model="project_branch" name="projectBranch" ng-change="projectBranchchange(projectBranch)" />
+                  <div class="col-sm-3 projectbranch d-flex" ng-if="(tabPermission | json) != '{}'">
+                    <div style="width:190px;">
+                      <input type="text" select2-center-client id="projectBranch" class="form-control" ng-model="project_branch" name="projectBranch" ng-change="projectBranchchange(projectBranch)" />
                     </div>
                     <a class="glyphicon glyphicon-refresh" ng-click="branchRefresh()" style="margin: 10px 0 0 8px;"></a>
                   </div>  

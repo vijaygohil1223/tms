@@ -290,9 +290,7 @@ $('#priceUnit').css('display', 'block');
                                                 <div class="form-group">
 
                                                     <label>Minimum Charge</label>
-
-                                                    <input type="number" class="form-control" id="minimumCharge" placeholder="Enter Minimum Price" min="0" name="Minimum Charge" ng-model="customerPrice.min_price_item" is-number required>
-
+                                                    <input type="number" class="form-control" id="minimumCharge" placeholder="Enter Minimum Price" min="0" name="Minimum Charge" ng-model="customerPrice.min_price_item" is-number>
                                                 </div>    
 
                                             </div>
@@ -300,13 +298,9 @@ $('#priceUnit').css('display', 'block');
                                             <div class="col-sm-12">
 
                                                 <div class="form-group">
-
-                                                    <label>Specialization</label>
-
-                                                    <!-- <input type="checkbox" id="chkAll" >Select All -->
-
+                                                    <label>Specialization &nbsp;&nbsp;</label>
+                                                    <input type="checkbox" id="chkAll" > &nbsp;&nbsp;Select All
                                                     <input type="text" select2-specialization-project data-typeid="1" id="specialization" class="form-control" name="specialization"  ng-model="customerPrice.specialization" required/>
-
                                                 </div>    
 
                                             </div>
