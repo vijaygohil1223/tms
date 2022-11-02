@@ -1071,7 +1071,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }, 500);
     });
     console.log('objCenter', objCenter)
-    
+    var ctrObj = [];
+    fetch('https://restcountries.com/v3.1/region/europe', {
+            method: 'GET'
+        }).then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                console.log('data-eu', data)
+                data.forEach(function (val) {
+                    if(val.name){
+                        ctrObj.push(val.name.common)
+                    }
+                });
+                console.log('ctrObj',ctrObj)
+            });
     
 
     $scope.DtTblOption = {

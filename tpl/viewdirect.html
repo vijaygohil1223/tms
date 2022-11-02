@@ -39,18 +39,21 @@
                             <div class="col-sm-2" style="margin-right: 10px;">
                                 <img ng-src="uploads/logo/{{info.vLogo}}" style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
                             </div>
-                            <div class="col-sm-3">
-                                <span class="profileTitleh" ng-bind="info.vUserName"></span>
-                                <span class="profileTitle">I am a client</span>
-                            </div>
-                            <br>
-                            <br>
-                            <div class="col-sm-7">
-                                <a href="javascript:void(0)" class="btn btn-info" ng-click="emailSent(info.iClientId,'direct');" style="margin-left:0px;margin-top: 50px;" title="Email"><i class="fa fa-envelope-o" style="margin-right:5px"></i>Email</a>
-                                <a class="btn btn-info" href="#/edit-client/{{info.iClientId}}" title="edit" style="margin-left:0px;margin-top: 50px;"><i class="glyph-icon fa-edit-white" style="margin-right:5px"></i>Edit</a>
-                                <a href="javascript:void(0)" class="btn btn-info" ng-click="viewFileManager(info.iClientId)" title="File Manager" style="margin-left:0px;margin-top: 50px;"><i class="fa fa-folder-open" style="margin-right:5px"></i>File Manager</a>
-                                <button class="btn btn-info" ng-click="deleteDirect(info.iClientId,info.vLogo, info.vUserName)" title="Delete" style="margin-left:0px;margin-top: 50px;"><i class="glyph-icon fa-times-white"></i> Delete</button>
-                            </div>
+                            <div class="col-sm-8">
+                                <div>
+                                    <span class="profileTitleh">testing with kanhasoft testing with kanhasoft</span>
+                                </div>
+                                <div>
+                                    <span class="profileTitle">I am a client</span>
+                                </div>
+                                <br>
+                                <br>
+                                <div class="">
+                                    <a href="javascript:void(0)" class="btn btn-info" ng-click="emailSent(info.iClientId,'direct');" style="margin-left:0px;margin-top: 50px;" title="Email"><i class="fa fa-envelope-o" style="margin-right:5px"></i>Email</a>
+                                    <a class="btn btn-info" href="#/edit-client/{{info.iClientId}}" title="edit" style="margin-left:0px;margin-top: 50px;"><i class="glyph-icon fa-edit-white" style="margin-right:5px"></i>Edit</a>
+                                    <a href="javascript:void(0)" class="btn btn-info" ng-click="viewFileManager(info.iClientId)" title="File Manager" style="margin-left:0px;margin-top: 50px;"><i class="fa fa-folder-open" style="margin-right:5px"></i>File Manager</a>
+                                    <button class="btn btn-info" ng-click="deleteDirect(info.iClientId,info.vLogo, info.vUserName)" title="Delete" style="margin-left:0px;margin-top: 50px;"><i class="glyph-icon fa-times-white"></i> Delete</button>
+                                </div>
                         </div>
                     </div>
                 </div>
