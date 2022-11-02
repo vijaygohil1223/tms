@@ -1068,7 +1068,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 placeholder:'Business Unit',
                 multiple: false,
             });
-        }, 200);
+        }, 500);
     });
     console.log('objCenter', objCenter)
     
