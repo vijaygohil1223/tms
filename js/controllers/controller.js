@@ -1050,6 +1050,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //$scope.getJobList();
 
+    var objCenter = [];
+    rest.path = 'centerClientGet';
+    rest.get().success(function (data) {
+        angular.forEach(data, function (val, i) {
+            var orLen = JSON.parse(val.order_number)[0].value.length;
+            let curntYear = JSON.parse(val.order_number)[0].value.substr((orLen-5), 2);
+            objCenter.push({
+                'id': val.abbrivation + curntYear,
+                'text': val.name
+            });
+        });
+        $timeout(function () {
+            angular.element('#projectBranch').select2({
+                allowClear: true,
+                data: objCenter,
+                placeholder:'Business Unit',
+                multiple: false,
+            });
+        }, 200);
+    });
+    console.log('objCenter', objCenter)
+    
+    
+
     $scope.DtTblOption = {
         "dom": '<"pull-right"l><<t>p><"clear">'
     }
@@ -13266,11 +13290,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.contactLoginEmpty = jQuery.isEmptyObject(data);
             angular.forEach(data, function (val, i) {
                 var obj = '';
-
                 for (var j = 0; j < val.vPassword.toString().length; j++) {
                     obj += "*";
                 }
-
                 $timeout(function () {
                     angular.element('#passwordLength' + i).text(obj);
                 }, 100);
@@ -13287,8 +13309,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.deletelogindetail = function (id) {
-        bootbox.confirm("Are you sure you want to delete this user?<br/><strong>Please note that ALL Info. under this User will also be deleted</strong>", function (result) {
-            if (result == true) {
+        bootbox.confirm("Are you sure you want to delete this user?", function (result) {
+        //bootbox.confirm("Are you sure you want to delete this user?<br/><strong>Please note that ALL Info. under this User will also be deleted</strong>", function (result) {
+                if (result == true) {
                 rest.path = 'deleteClient/' + id;
                 rest.delete().success(function (data) {
                     $route.reload();
@@ -13299,7 +13322,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveLogin = function (formId) {
         if (angular.element("#" + formId).valid()) {
-            if ($scope.clientlist.iClientId) {
+            if ($scope.clientlist && $scope.clientlist.iClientId) {
                 $routeParams.id = $scope.clientlist.iClientId;
 
                 rest.path = 'update_directclientlogin';
@@ -13323,7 +13346,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
 
                 if ($routeParams.id) {
+                    
+                    if(!$scope.clientlist){
+                        $scope.clientlist = {'iUserId': $routeParams.id}
+                    }
                     $scope.clientlist.iUserId = $routeParams.id;
+                    
                     rest.path = 'directclientlogin';
                     rest.post($scope.clientlist).success(function (data) {
                         //log file start 
@@ -13339,6 +13367,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         notification('Created successfully.', 'success');
                         $route.reload();
                     }).error(errorCallback);
+                        
                 } else {
                     notification('Please create user.', 'warning');
                 }
@@ -28798,7 +28827,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
                 //$scope.statusResult = data;
                 console.log('data', data)
-                $scope.statusResult = Object.keys($scope.jobReport).length > 0 ? UniqueArraybyId(temp_data, 'resource_id') : {};
+                $scope.statusResult = Object.keys($scope.jobReport).length > 0 ? UniqueArraybyId(temp_data, 'iUserId') : {};
                 console.log('$scope.statusResult', $scope.statusResult)
             })
             scrollToId(eID);

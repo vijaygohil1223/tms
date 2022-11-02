@@ -370,7 +370,7 @@ td { font-size: 11px; } */
                 <div class="white_box panel panel-default mynewtabs" style="margin-bottom: 0;">
                   <div class="col-sm-3 projectbranch d-flex" ng-if="(tabPermission | json) != '{}'">
                     <div style="width:190px;">
-                      <input type="text" select2-center-client id="projectBranch" class="form-control" ng-model="project_branch" name="projectBranch" ng-change="projectBranchchange(projectBranch)" />
+                      <input type="text" id="projectBranch" class="form-control" ng-model="project_branch" name="projectBranch" ng-change="projectBranchchange(projectBranch)" placeholder="Business Unit"/>
                     </div>
                     <a class="glyphicon glyphicon-refresh" ng-click="branchRefresh()" style="margin: 10px 0 0 8px;"></a>
                   </div>  

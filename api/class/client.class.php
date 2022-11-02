@@ -268,12 +268,20 @@ class client {
     }
 
     public function saveClientdirectlogin($info) {
+        if(! isset($info ['vEmail'])){
+            $info ['vEmail'] = '-';
+        }
+        if(! isset($info ['vPassword'])){
+            $info ['vPassword'] = '-';
+        }
         $this->_clientemail = $info ['vEmail'];
 
-        if ($this->getClientEmail()) {
-            $return ['status'] = 422;
-            $return ['msg'] = 'Email address already exists.';
-        } else {
+        // Client remove mandatory field so blank entry inserted
+        // if ($this->getClientEmail()) {
+        //     $return ['status'] = 422;
+        //     $return ['msg'] = 'Email address already exists.';
+        // } else {
+        if($info){    
             $info ['vPassword'] = $info ['vPassword'];
             $info ['v_pass'] = md5($info ['vPassword']);
             $info ['dtCreatedDate'] = date('Y-m-d H:i:s');
@@ -281,10 +289,10 @@ class client {
             
             $this->_db->where('vEmail',$info ['vEmail']);
             $match = $this->_db->getOne('tms_directclientlogin');
-            if($match){
-                $return ['status'] = 422;
-                $return ['msg'] = 'User name already exists.';
-            }else{
+            // if($match){
+            //     $return ['status'] = 422;
+            //     $return ['msg'] = 'User name already exists.';
+            // }else{
                 $id = $this->_db->insert('tms_directclientlogin', $info);
                 if ($id) {
                     $return ['status'] = 200;
@@ -295,8 +303,7 @@ class client {
                     $return ['status'] = 422;
                     $return ['msg'] = 'Not inserted.';
                 }    
-            }
-            
+            //}
         }
         return $return;
     }
