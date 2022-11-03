@@ -1070,23 +1070,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }, 500);
     });
-    console.log('objCenter', objCenter)
-    var ctrObj = [];
-    fetch('https://restcountries.com/v3.1/region/europe', {
-            method: 'GET'
-        }).then(function (response) {
-                return response.json();
-            })
-            .then(function (data) {
-                console.log('data-eu', data)
-                data.forEach(function (val) {
-                    if(val.name){
-                        ctrObj.push(val.name.common)
-                    }
-                });
-                console.log('ctrObj',ctrObj)
-            });
-    
 
     $scope.DtTblOption = {
         "dom": '<"pull-right"l><<t>p><"clear">'
@@ -9628,6 +9611,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.cityTimezone = function (id) {
+        console.log('id', id)
         var city = id.split(',')[0];
         rest.path = "cityTimeZoneget/" + city;
         rest.get().success(function (data) {
@@ -12637,6 +12621,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $window.localStorage.iUserId;
     }
 
+    // Europe country form json file
+    // api - https://restcountries.com/v3.1/region/europe
+    $scope.europeCountry = [];
+    fetch('country-europe.json', { method: 'GET'}).then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+        $scope.europeCountry = data;
+        //console.log('$scope.europeCountry-TIME', $scope.europeCountry)
+    });
+    $scope.stateOptional = '';
+
+
     if ($routeParams.id != '' && $routeParams.id != undefined) {
         $window.localStorage.iUserId = $routeParams.id;
         rest.path = 'client';
@@ -12683,7 +12680,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             if (data.address1Detail) {
                 angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
+                    //console.log('add-1val', val)
                     angular.element('#' + val.id).val(val.value);
+                    if(val.id == "address1_country"){
+                        setTimeout(() => {
+                            let euCountryEdt = $scope.europeCountry.filter(e => e.name.toLowerCase() === val.value.toLowerCase()).length > 0 ? true :false;
+                            console.log('$scope.europeCountry', $scope.europeCountry)
+                            if(euCountryEdt){
+                                $scope.stateOptional = '(Optional)';
+                                $('#address1_administrative_area_level_1').removeAttr('required');
+                            } 
+                        }, 500);
+                    }    
                 });
             }
 
@@ -12819,18 +12827,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     /* Mobile Validation END */
 
     $scope.cityTimezone = function (id) {
-        var city = $('#address1_locality').val();
-        rest.path = "cityTimeZoneget/" + city;
-        rest.get().success(function (data) {
-            console.log('data', data)
-            if (data != false) {
-                // if ($scope.info == undefined || $scope.info == null || $scope.info == "") {
-                //     $scope.info = {};
-                // }
-                //$scope.add1.timezone = data.timeZone;
-                angular.element('#address1_vTimezone').val(data.timeZone)
-            }
-        });
+        if(id){
+            var city = $('#address1_locality').val();
+            rest.path = "cityTimeZoneget/" + city;
+            rest.get().success(function (data) {
+                console.log('data', data)
+                if (data != false) {
+                    // if ($scope.info == undefined || $scope.info == null || $scope.info == "") {
+                    //     $scope.info = {};
+                    // }
+                    //$scope.add1.timezone = data.timeZone;
+                    angular.element('#address1_vTimezone').val(data.timeZone)
+                }
+            });
+        }    
     }
     // Auto fill data - Not much accurate
     $scope.getLocationdetail = function (id) {
@@ -12849,6 +12859,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //     }
         // });
     }
+    $scope.countryChange = function (country) {
+        console.log('country', country)
+        let countryName =  angular.element("#address1_country").val()
+        let euCountry = $scope.europeCountry.filter(e => e.name.toLowerCase() === countryName.toLowerCase()).length > 0 ? true :false;
+        if(euCountry){
+            $scope.stateOptional = '(Optional)';
+            $('#address1_administrative_area_level_1').removeAttr('required');
+        }else{
+            $scope.stateOptional = '';
+            $('#address1_administrative_area_level_1').attr("required","required");
+        }        
+    }    
 
     $scope.saveClientProfile = function (formId) {
 

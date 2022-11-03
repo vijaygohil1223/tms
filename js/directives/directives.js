@@ -5018,6 +5018,49 @@ app.directive('select2Country', function($http, rest, $timeout, $log) {
         }
     }
 });
+//get country
+app.directive('select2Countryall', function($http, rest, $timeout, $log) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element) {
+            var country = [];
+            rest.path = 'getCountry';
+            rest.get().success(function (data) {
+                $.each(data, function (key, value) {
+                    var obj = {
+                        id: value.nicename,
+                        text: value.nicename
+                    };
+                    country.push(obj);
+                });
+            $timeout(function() {
+                element.select2({
+                    allowClear: true,
+                    data: country,
+                    multiple:true,
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
+                });
+            }, 500);
+            }).error(function (data, error, country) {
+            });
+        }
+    }
+});
 app.directive('select2Projects', function($http, rest, $timeout, $log) {
     return {
         restrict: 'EA',

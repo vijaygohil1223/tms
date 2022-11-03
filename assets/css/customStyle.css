@@ -1119,3 +1119,7 @@ table.customerPriceTable tbody [id^=priceLanguageID] tr.priceLPrice.rowactivate 
 /* .spinner > div > div{
   background: #4e2fc4 !important;
 }  */
+.intl-tel-input .country-list{
+  overflow-y: scroll;
+  max-height: 200px;
+}

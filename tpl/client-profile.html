@@ -371,28 +371,27 @@
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">City</label> <input
-                                                                type="text" class="form-control city"
-                                                                id="address1_locality" name="route" ng-model="vCity1" value="vCity1" ng-blur="cityTimezone(vCity1)"
-                                                                 required>
+                                                            <label class="control-label">Country</label> 
+                                                            <input type="text" select2-countryall class="form-control country" name="vCountry"
+                                                                id="address1_country" ng-model="add1.country" ng-change="countryChange(add1.country)" required>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">State</label> <input
+                                                            <label class="control-label">State {{stateOptional}}</label> <input
                                                                 type="text" class="form-control locality"
                                                                 id="address1_administrative_area_level_1" name="vState"
-                                                                ng-model="add1.state"  required>
+                                                                ng-model="add1.state" required>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
-                                                    
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">Country</label> <input
-                                                                type="text" class="form-control country" name="vCountry"
-                                                                id="address1_country" ng-model="add1.country"  required>
+                                                            <label class="control-label">City</label> <input
+                                                                type="text" class="form-control city"
+                                                                id="address1_locality" name="route" ng-model="vCity1" value="vCity1" ng-blur="cityTimezone(vCity1)"
+                                                                 required>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">

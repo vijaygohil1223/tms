@@ -34,21 +34,26 @@
               <!-- <div class="col-sm-2">
                        <img id="new_profile_pic" ng-src="uploads/profilePic/{{viewExternalCommunicational.vProfilePic}}" style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
                     </div> -->
-              <div class="col-sm-3">
-                <span class="profileTitleh" style="margin-left:0px;">{{info.vUserName}}</span>
-                <span class="profileTitle" style="margin-left:0px;">I am a customer</span>
-              </div><br><br><br>
-              <div class="col-sm-7">
-                <a class="btn btn-info" href="#/edit-indirect/{{info.iClientId}}" title="edit"
-                  style="margin-left:0px;margin-top:5px;"><i class="glyph-icon fa-edit-white"
-                    style="margin-right:5px"></i>Edit</a>
+              <div class="col-sm-9">
+                <div>  
+                  <span class="profileTitleh" style="margin-left:0px;">{{info.vUserName}}</span>
+                </div>
+                <div>
+                  <span class="profileTitle" style="margin-left:0px;">I am a customer</span>
+                </div>
+                <br><br><br>
+                <div style="margin-top:8px;">
+                  <a class="btn btn-info" href="#/edit-indirect/{{info.iClientId}}" title="edit"
+                    style="margin-left:0px;margin-top:5px;"><i class="glyph-icon fa-edit-white"
+                      style="margin-right:5px"></i>Edit</a>
 
-                <a href="javascript:void(0)" class="btn btn-info" ng-click="viewFileManager(info.iClientId)"
-                  title="File Manager" style="margin-left:0px;margin-top:5px;"><i class="fa fa-folder-open"
-                    style="margin-right:5px"></i>File Manager</a>
+                  <a href="javascript:void(0)" class="btn btn-info" ng-click="viewFileManager(info.iClientId)"
+                    title="File Manager" style="margin-left:0px;margin-top:5px;"><i class="fa fa-folder-open"
+                      style="margin-right:5px"></i>File Manager</a>
 
-                <button class="btn btn-info" ng-click="deleteIndirect(info.iClientId, info.vUserName)" title="Delete"
-                  style="margin-left:0px;margin-top:5px;"><i class="glyph-icon fa-times-white"></i> Delete</button>
+                  <button class="btn btn-info" ng-click="deleteIndirect(info.iClientId, info.vUserName)" title="Delete"
+                    style="margin-left:0px;margin-top:5px;"><i class="glyph-icon fa-times-white"></i> Delete</button>
+                </div>
               </div>
             </div>
           </div>
