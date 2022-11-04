@@ -293,7 +293,17 @@ class client {
             //     $return ['status'] = 422;
             //     $return ['msg'] = 'User name already exists.';
             // }else{
-                $id = $this->_db->insert('tms_directclientlogin', $info);
+                // If emty record exist then avoid to intert data
+                if(isset($info ['iUserId'])){
+                    $dataEmty = $this->_db->rawQuery("SELECT * FROM `tms_directclientlogin` WHERE iUserId=".$info['iUserId']." AND vEmail='".$info['vEmail']."' ");
+                    if(count($dataEmty) > 0){
+                        $return ['status'] = 200;
+                        $return ['msg'] = 'Inserted Successfully.';
+                        return $return;
+                    }else{
+                        $id = $this->_db->insert('tms_directclientlogin', $info);
+                    }
+                }
                 if ($id) {
                     $return ['status'] = 200;
                     $return ['msg'] = 'Inserted Successfully.';
@@ -309,7 +319,6 @@ class client {
     }
     
     public function updateClient($id, $info) {
-        //echo '<pre>'; print_r($info); echo '</pre>';exit;
         /*$email = $info['vEmailAddress'];
         $cId = $info['iClientId'];
         $emailExsists = $this->_db->rawQuery("SELECT * FROM tms_client WHERE vEmailAddress = '$email'  AND iClientId != $cId");

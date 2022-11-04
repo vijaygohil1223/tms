@@ -9694,6 +9694,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.userprofiledata.is_available = '';
         $('#multidatePick').multiDatesPicker('resetDates', 'picked');
     }
+
+        // Europe country form json file
+    // api - https://restcountries.com/v3.1/region/europe
+    $scope.europeCountry = [];
+    fetch('country-europe.json', { method: 'GET'}).then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+        $scope.europeCountry = data;
+        //console.log('$scope.europeCountry-TIME', $scope.europeCountry)
+    });
+    $scope.stateOptional = '';
+
     if ($routeParams.id != undefined) {
         rest.path = 'getProfile';
         rest.model().success(function (data) {
@@ -9756,12 +9769,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }    
             }
 
+            // if (data.address1Detail) {
+            //     angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
+            //         angular.element('#' + val.id).val(val.value);
+            //     });
+            // }
             if (data.address1Detail) {
                 angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
+                    //console.log('add-1val', val)
                     angular.element('#' + val.id).val(val.value);
+                    if(val.id == "address1_country"){
+                        setTimeout(() => {
+                            let euCountryEdt = $scope.europeCountry.filter(e => e.name.toLowerCase() === val.value.toLowerCase()).length > 0 ? true :false;
+                            console.log('$scope.europeCountry', $scope.europeCountry)
+                            if(euCountryEdt){
+                                $scope.stateOptional = '(Optional)';
+                                $('#address1_administrative_area_level_1').removeAttr('required');
+                            } 
+                        }, 500);
+                    }    
                 });
             }
-
             if (data.address2Detail) {
                 angular.forEach(JSON.parse(data.address2Detail), function (val, i) {
                     angular.element('#' + val.id).val(val.value);
@@ -10389,6 +10417,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     };
+
+    $scope.countryChange = function (country) {
+        console.log('country', country)
+        let countryName =  angular.element("#address1_country").val()
+        let euCountry = $scope.europeCountry.filter(e => e.name.toLowerCase() === countryName.toLowerCase()).length > 0 ? true :false;
+        if(euCountry){
+            $scope.stateOptional = '(Optional)';
+            $('#address1_administrative_area_level_1').removeAttr('required');
+        }else{
+            $scope.stateOptional = '';
+            $('#address1_administrative_area_level_1').attr("required","required");
+        }        
+    }
 
     
 }).controller('contactController', function ($scope, $log, $location, $route, rest, $window, $routeParams, $uibModal, $timeout) {
@@ -12656,26 +12697,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#projectBranch').trigger('change');
             }, 2000);
 
+            
             var flagTitle = JSON.parse(data.vPhone).countryTitle;
             var flagClass = JSON.parse(data.vPhone).countryFlagClass;
             var Ccode = flagClass.split(' ')[1];
             var CcodeNum = flagTitle.split(':')[1].trim();
-            console.log("CcodeNum", CcodeNum);
             var FinalMobileNum = CcodeNum + JSON.parse(data.vPhone).mobileNumber;
-
             $timeout(function () {
                 $('#userphone').intlTelInput("setNumber", FinalMobileNum);
+                $scope.info.vPhone = JSON.parse(data.vPhone).mobileNumber;
                 $scope.isValidMobileNumber = true;
-            }, 100);
-            /*var flagTitle = JSON.parse(data.vPhone).countryTitle;
-            var flagClass = JSON.parse(data.vPhone).countryFlagClass;
+            }, 300);
+            // /*var flagTitle = JSON.parse(data.vPhone).countryTitle;
+            // var flagClass = JSON.parse(data.vPhone).countryFlagClass;
 
-            $timeout(function() {
-                var countryCodeData = angular.element('#userphone').parent().find('.selected-flag').prop('title', flagTitle);
-                var countryClass = angular.element('#userphone').parent().find('.selected-flag').find('.iti-flag').prop('class', flagClass);
-            }, 500);
+            // $timeout(function() {
+            //     var countryCodeData = angular.element('#userphone').parent().find('.selected-flag').prop('title', flagTitle);
+            //     var countryClass = angular.element('#userphone').parent().find('.selected-flag').find('.iti-flag').prop('class', flagClass);
+            // }, 500);
 
-            $scope.info.vPhone = JSON.parse(data.vPhone).mobileNumber.trim();*/
+            // $scope.info.vPhone = JSON.parse(data.vPhone).mobileNumber.trim();*/
             $scope.currentUserName = $window.localStorage.currentUserName = data.vUserName;
 
             if (data.address1Detail) {
@@ -12936,7 +12977,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     "countryFlagClass": countryClass,
                     "mobileNumber": mobile
                 }
-
+                    
                 $scope.info.vPhone = JSON.stringify(countryObj);
 
                 $scope.modified_id = $cookieStore.get('session_iUserId');
@@ -12955,7 +12996,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.info.iEditedBy = 0;
                 }
 
-                $scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
+                //$scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
                 $scope.info.dtCreationDate = $filter('globalDtFormat')($scope.info.dtCreationDate);
                 $scope.info.dtCreationDate = originalDateFormatNew($scope.info.dtCreationDate);
                 $scope.info.dtCreationDate = moment($scope.info.dtCreationDate).format('YYYY-MM-DD HH:mm:ss');
@@ -13046,7 +13087,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.info.address2Detail = JSON.stringify(address2);
 
                 $scope.info.vCodeRights = $scope.info.vCodeRights;
-                $scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
+                //$scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
 
                 $scope.info.dtCreationDate = $filter('globalDtFormat')($scope.info.dtCreationDate);
                 $scope.info.dtCreationDate = originalDateFormatNew($scope.info.dtCreationDate);

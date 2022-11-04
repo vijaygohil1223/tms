@@ -322,13 +322,13 @@
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">City</label>
-                                                            <input type="text" class="form-control city"  id="address1_locality" name="route" ng-model="vCity1"  required>          
-                                                        </div>
+                                                            <label class="control-label">Country</label>
+                                                            <input type="text" class="form-control country" select2-countryall name="vCountry" id="address1_country" ng-model="vCountry1" ng-change="countryChange(vCountry1)" required> 
+                                                        </div>                       
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">State</label>
+                                                            <label class="control-label">State {{stateOptional}}</label>
                                                             <input type="text" class="form-control locality" id="address1_administrative_area_level_1"  name="vState" ng-model="vState1"  required>   
                                                         </div>
                                                     </div>
@@ -336,9 +336,9 @@
                                                 <div class="col-lg-12 pl-0">
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">Country</label>
-                                                            <input type="text" class="form-control country" name="vCountry" id="address1_country" ng-model="vCountry1"  required> 
-                                                        </div>                       
+                                                            <label class="control-label">City</label>
+                                                            <input type="text" class="form-control city"  id="address1_locality" name="route" ng-model="vCity1"  required>          
+                                                        </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">

@@ -6376,6 +6376,37 @@ app.directive("ngMultidate", function($http,rest,$timeout,$window,$rootScope) {
         }
     };
 });
+app.directive('ngDateformatdob', function () {  
+    return {  
+        restrict: 'A',  
+        link: function (scope, elm, attrs, ctrl) {  
+            elm.on('keyup', function (event) {  
+                var $input = $(this);  
+                var dateStr = $input.val();  
+                console.log('dateStr', dateStr)
+                // console.log('value', value)
+                // value = value.replace(/[^0-9\.]/g, '')  
+                const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+                if (dateStr.match(regex) === null) {
+                    return false;
+                }
+                const [day, month, year] = dateStr.split('.');
+                // 👇️ format Date string as `yyyy-mm-dd`
+                const isoFormattedStr = `${year}-${month}-${day}`;
+                const date = new Date(isoFormattedStr);
+                const timestamp = date.getTime();
+
+                if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+                    return false;
+                }
+                //$input.val(value);  
+                return date.toISOString().startsWith(isoFormattedStr);
+                
+                  
+            });  
+        }  
+    }  
+});
 /* Tabs permission */
 app.directive('select2Tabpermission', function($http, rest, $timeout) {
     return {
