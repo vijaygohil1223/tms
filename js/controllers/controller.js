@@ -1933,12 +1933,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Branch change (Norway-Bulgaria) call function again
     $scope.projectBranchchange = function (id) {
         $scope.projBranchChange = true;
+        $scope.projectBranch = {};
         $scope.projectBranch = angular.element('#projectBranch').select2('data');
         console.log('$scope.projectBranch', $scope.projectBranch)
-        var projBranchVal = $scope.projectBranch.length > 0 ? $scope.projectBranch[0].id : '';
+        //var projBranchVal = $scope.projectBranch.length > 0 ? $scope.projectBranch[0].id : 'RWS22';
+        var projBranchVal = $scope.projectBranch ? $scope.projectBranch.id : '';
+        console.log('projBranchVal', projBranchVal)
         $window.localStorage.projectBranch = projBranchVal;
         if (projBranchVal) {
             //$route.reload();
+            $scope.allProjectListing();
+        }else{
             $scope.allProjectListing();
         }
     }
