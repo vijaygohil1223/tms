@@ -92,7 +92,6 @@ class payment {
             //$return['data'] = json_decode($response);
             $return['From'] = 'norway';
             $return['data'] = json_decode($response);
-            
             return $return;
 
         }else{    
@@ -101,11 +100,14 @@ class payment {
             // $response2 = file_get_contents($url);
             // sol - 2
             // $api_key = 'ede39f93007b1269f52a8c36c7aa5a00';
-            // $url = "http://apilayer.net/api/validate?access_key=13b874bb136eff80a24f5c03888262c9&vat_number=SE800410683001&format=1";
-            // $data = file_get_contents($url);
-            // $data = json_decode($data);
+            //$url = "http://apilayer.net/api/validate?access_key=13b874bb136eff80a24f5c03888262c9&vat_number=".$country1.$vatnum1."&format=1";
+            $url = "http://apilayer.net/api/validate?access_key=13b874bb136eff80a24f5c03888262c9&vat_number=".$country1.$vatnum1."&format=1";
+
+            $data = file_get_contents($url);
+            $data = json_decode($data);
+            
             // sol -3
-            $timeout = 30;
+/*             $timeout = 30;
             $response = array ();
             $pattern = '/<(%s).*?>([\s\S]*)<\/\1/';
             $keys = array ( 'countryCode', 'vatNumber', 'requestDate', 'valid', 'name', 'address' );
@@ -134,9 +136,9 @@ class payment {
             if (preg_match ( sprintf ( $pattern, 'checkVatResponse' ), $result, $matches )) {
             foreach ( $keys as $key )
                 preg_match ( sprintf ( $pattern, $key ), $matches [2], $value ) && $response [$key] = $value [2];
-            }
+            } */
 
-            $return['data'] = $response;
+            $return['data'] = $data;
             $return['From'] = 'europa';
             return $return;
         }    

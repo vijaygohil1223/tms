@@ -141,14 +141,16 @@
                                                         <div class="col-sm-8 pl-0">
                                                             <div class="form-group">
                                                                 <label class="control-label">Time Zone</label>
-                                                                <input class="form-control" id="timeZone" ng-model="userprofiledata.vTimeZone" disabled/>
+                                                                <input class="form-control" id="timeZone" ng-model="userprofiledata.vTimeZone" />
                                                             </div>
                                                         </div>
                                                         
                                                         <div class="col-sm-12 pl-0">
                                                             <div class="form-group">
-                                                                <label>Date of Birth</label>
-                                                                <input type="text" class="form-control" id="dtBirthDate" ng-outgoing name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" onkeydown="return false">    
+                                                                <label>Date of Birth (Format {{dateFormatD}})</label>
+                                                                <input type="text" class="form-control" id="dtBirthDate" name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" ng-dateformatdob autocomplete="off">
+                                                                <label for="dtBirthDate" class="error"></label>
+                                                                <span id="error-msg-dob" class="hide" style="color:#a94442">Enter valid date</span>    
                                                             </div>
                                                             <!-- <div class="form-group">
                                                                 <label>Facebook Link</label>

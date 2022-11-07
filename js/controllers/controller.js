@@ -9550,6 +9550,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.setItem("contactUserId", $routeParams.id);
     angular.element('.help-block').css('display', 'none');
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
+    $scope.dtSeparator = $window.localStorage.getItem('dtSeparator');
+    $scope.dateFormatD = moment($scope.toDayDate).format($window.localStorage.getItem('global_dateFormat'));
+    
     $scope.isValidMobileNumber = false;
     $scope.multipleDateArr = [];
             
@@ -9585,6 +9588,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     telInput.on("keyup change", reset);
     /* Mobile Validation END */
+
+    // START Validation DOB
+    var dtDobInput = $("#dtBirthDate"),
+        errorMsgDOB = $("#error-msg-dob");
+    var resetDOB = function () {
+        dtDobInput.removeClass("error");
+        errorMsgDOB.addClass("hide");
+    };
+    $scope.isValidDob = true;
+    function dobIsValid(dateStr) {
+        //const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+        const dtSeparator = $scope.dtSeparator;
+        const regex = new RegExp("^\\d{2}\\" + dtSeparator + "\\d{2}\\" + dtSeparator + "\\d{4}$");
+        if (dateStr.match(regex) === null) {
+            return false;
+        }
+        const [day, month, year] = dateStr.split($scope.dtSeparator);
+        // 👇️ format Date string as `yyyy-mm-dd`
+        const isoFormattedStr = `${year}-${month}-${day}`;
+        const date = new Date(isoFormattedStr);
+        const timestamp = date.getTime();
+        if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+            return false;
+        }
+        return date.toISOString().startsWith(isoFormattedStr);
+    }
+    dtDobInput.blur(function () {
+        resetDOB();
+        //$scope.dobValid = function(dob){
+            const dobVal = $.trim(dtDobInput.val());
+            if(dobVal.length > 0){
+                var dobValid = dobIsValid(dobVal)
+                console.log('dobValid', dobValid)
+                if(dobValid){
+                    console.log('dobValid--in', dobValid)
+                    $('#error-msg-dob').addClass('hide');
+                }else{
+                    $('#error-msg-dob').removeClass('hide');
+                }
+            }    
+        //}
+    });    
+    dtDobInput.on("keyup change", reset);
+    // END Validation DOB
 
 
     $timeout(function () {
@@ -9716,6 +9763,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getProfile';
         rest.model().success(function (data) {
             $scope.userprofiledata = data;
+            console.log('$scope.userprofiledata', $scope.userprofiledata)
             $window.localStorage.iUserId = data.iUserId;
             $window.localStorage.setItem("externalPricelistId", data.iUserId);
             $window.localStorage.currentUserName = data.vFirstName + " " + data.vLastName;
@@ -9751,11 +9799,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.userprofiledata.freelancer == 'translation') {
                 $window.localStorage.setItem("contactPersonId", 'translation');
             }
-
-            $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
-            if ($scope.userprofiledata.dtBirthDate == 'Invalid date')
+            
+            if ($scope.userprofiledata.dtBirthDate == 'Invalid date' || $scope.userprofiledata.dtBirthDate == '1970-01-01 00:00:00')
                 $scope.userprofiledata.dtBirthDate = '';
-
+            else
+                $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
+            
             $scope.userprofiledata.dtLast_job = moment($scope.userprofiledata.dtLast_job).format($scope.dateFormatGlobal);
             if ($scope.userprofiledata.dtLast_job == 'Invalid date')
                 $scope.userprofiledata.dtLast_job = '';
@@ -9964,6 +10013,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }    
         $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
+        $scope.isDobValid = dobIsValid($.trim(dtDobInput.val()))
+        console.log('$scope.isDobValid', $scope.isDobValid)
+            
           
         if (ContactPersonId == 'translation') {
             $window.localStorage.setItem("contactPersonId", 'translation');
@@ -11894,26 +11946,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }
 
-                    if ($scope.vatList.valid == 'true') {
+                    console.log('$scope.vatList', $scope.vatList)
+
+                    if ($scope.vatList.valid == true) {
                         let response = '';
                         response += '<table class="table table-bordered table-striped">';
                         response += '<tbody>';
                         response += '<tr>';
                         response += '<th>Member State</th>';
-                        response += '<td>' + $scope.vatList.countryCode + '</td>';
+                        response += '<td>' + $scope.vatList.country_code + '</td>';
                         response += '</tr>';
                         response += '<tr>';
                         response += '<th>VAT Number</th>';
-                        response += '<td>' + $scope.vatList.countryCode + ' ' + $scope.vatList.vatNumber + '</td>';
+                        response += '<td>' + $scope.vatList.country_code + ' ' + $scope.vatList.vat_number + '</td>';
                         response += '</tr>';
                         response += '<tr>';
                         response += '<th>Name</th>';
-                        response += '<td>' + $scope.vatList.name + '</td>';
+                        response += '<td>' + $scope.vatList.company_name + '</td>';
                         response += '</tr>';
                         //response += '</tr>';
                         response += '<tr>';
                         response += '<th>Address</th>';
-                        response += '<td>' + $scope.vatList.address + '.</td>';
+                        response += '<td>' + $scope.vatList.company_address + '.</td>';
 
                         response += '</tr>';
                         response += '</tbody>';
