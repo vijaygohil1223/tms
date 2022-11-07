@@ -9763,7 +9763,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getProfile';
         rest.model().success(function (data) {
             $scope.userprofiledata = data;
-            console.log('$scope.userprofiledata', $scope.userprofiledata)
             $window.localStorage.iUserId = data.iUserId;
             $window.localStorage.setItem("externalPricelistId", data.iUserId);
             $window.localStorage.currentUserName = data.vFirstName + " " + data.vLastName;
@@ -11395,14 +11394,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     });
 
     $scope.basePriceOtyChnage = function (id) {
+        console.log('id', id)
         console.log('data', $scope.basePrice[id])
         var bsprice1 = $scope.basePrice[id];
         console.log('bsprice1', bsprice1)
         var basePrice1 = bsprice1.replace(/[.]/g, '');
         console.log('basePrice1', basePrice1)
         var basePrice = basePrice1.replace(/[,]/g, '.');
+        console.log('basePrice', basePrice)
         console.log('basePrice', parseFloat(basePrice))
         $scope.baseTotal[id] = $scope.baseQuentity[id] * parseFloat(basePrice);
+        console.log('$scope.baseTotal[id]', $scope.baseTotal[id])
         $scope.baseTtl[id] = $scope.baseTotal[id];
     }
 
@@ -11486,10 +11488,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }, 2000);
 
+
+        function matchStart(params, data) {
+            console.log('params', params)
+            // If there are no search terms, return all of the data
+            if ($.trim(params.term) === '') {
+              return data;
+            }
+            // Skip if there is no 'children' property
+            if (typeof data.children === 'undefined') {
+              return null;
+            }
+            // `data.children` contains the actual options that we are matching against
+            var filteredChildren = [];
+            $.each(data.children, function (idx, child) {
+              if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0) {
+                filteredChildren.push(child);
+              }
+            });
+            // If we matched any of the timezone group's children, then set the matched children on the group
+            // and return the group object
+            if (filteredChildren.length) {
+              var modifiedData = $.extend({}, data, true);
+              modifiedData.children = filteredChildren;
+              // You can return modified objects from here
+              // This includes matching the `children` how you want in nested data sets
+              return modifiedData;
+            }
+            // Return `null` if the term should not be displayed
+            return null;
+        }
+
         $('#priceUnit').select2({
             multiple: true,
             allowClear: true,
             placeholder: "Select price..",
+            matcher: matchStart,
             data: $scope.pricesArray,
             query: function (options) {
                 var selectedIds = options.element.select2('val');
