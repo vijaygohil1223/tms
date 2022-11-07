@@ -138,6 +138,7 @@
                             <th>User Name</th>
                             <th>Password</th>
                             <th>Website</th>
+                            <th>Description</th>
                             <th>Action</th>
                         </thead>
                         <tbody>
@@ -148,6 +149,8 @@
                                 <td id="passwordLength{{$index}}"></td>
                                 <!-- <td><a target="_blank" class="summeryColor" ng-href="http://{{client.vWebsite}}/" ng-bind="client.vWebsite"></a></td>  -->
                                 <td ng-bind="client.vWebsite"></td>
+                                <td ng-bind="client.vDescription"></td>
+                                
                                 <td><a href="javascript:void(0)" ng-click="getclientEdit(client.iClientId);"
                                         title="edit"><i class="glyph-icon fa-edit"></i></a> <a
                                         href="javascript:void(0)" ng-click="deletelogindetail(client.iClientId)"
