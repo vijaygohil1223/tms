@@ -11490,44 +11490,40 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
         function matchStart(params, data) {
-            console.log('params', params)
-            // If there are no search terms, return all of the data
             if ($.trim(params.term) === '') {
-              return data;
+                return data;
             }
-            // Skip if there is no 'children' property
             if (typeof data.children === 'undefined') {
-              return null;
+                console.log('data.children', data.children)
+              //return null;
             }
-            // `data.children` contains the actual options that we are matching against
             var filteredChildren = [];
-            $.each(data.children, function (idx, child) {
-              if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0) {
-                filteredChildren.push(child);
-              }
+            $.each(data, function (id, data2) {
+                $.each(data2.children, function (idx, child) {
+                    if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0) {
+                        console.log('child.text', child.text)
+                        filteredChildren.push(child);
+                        console.log('filteredChildren=loop', filteredChildren)
+                    }
+                });
             });
-            // If we matched any of the timezone group's children, then set the matched children on the group
-            // and return the group object
             if (filteredChildren.length) {
               var modifiedData = $.extend({}, data, true);
+            //   var result = Object.keys(modifiedData).map((key) => [Number(key), modifiedData[key]]);
+            //   console.log('result',result);
               modifiedData.children = filteredChildren;
-              // You can return modified objects from here
-              // This includes matching the `children` how you want in nested data sets
               return modifiedData;
             }
-            // Return `null` if the term should not be displayed
-            return null;
-        }
+            return data;
+          }
 
         $('#priceUnit').select2({
             multiple: true,
             allowClear: true,
             placeholder: "Select price..",
-            matcher: matchStart,
             data: $scope.pricesArray,
             query: function (options) {
                 var selectedIds = options.element.select2('val');
-                console.log("selectedIds", selectedIds);
                 var selectableGroups = $.map(this.data, function (group) {
                     var areChildrenAllSelected = true;
                     $.each(group.children, function (i, child) {
@@ -11538,6 +11534,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                     return !areChildrenAllSelected ? group : null;
                 });
+                //selectableGroups = matchStart({'term':'Words Proofreading 100%'},selectableGroups)
                 options.callback({ results: selectableGroups });
             }
         }).on('select2-selecting', function (e) {
@@ -11548,17 +11545,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $select.select2('close');
             }
             const inputIdS2 = '#s2id_'+$(this).attr('id');
-            // if(e.object){
-            //     $(inputIdS2+' li').each(function() {
-            //         const childDiv = $(this).children();
-            //         let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
-            //         if(eleText){
-            //             if(eleText !== e.object.text){
-            //                 $(inputIdS2+' li').find("div:contains("+ eleText +")").next().click();
-            //             }    
-            //         }
-            //     });
-            // }
         });
     }
 
