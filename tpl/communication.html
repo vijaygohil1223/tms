@@ -131,11 +131,10 @@
                                                             <input type="text" select2-gender class="form-control" name="iGender" id="iGender" ng-model="userprofiledata.iGender" required/>
                                                         </div>
                                                     </div>
-                                                        <div class="col-sm-4 pl-0">
+                                                        <!-- <div class="col-sm-4 pl-0">
                                                             <div class="form-group">
                                                                 <label class="control-label">City</label>
                                                                 <input class="form-control" id="timeZoneCity" ng-model="userprofiledata.vTimeZoneCity" ng-blur="cityTimezone(userprofiledata.vTimeZoneCity)" ng-model="userprofiledata.vTimeZoneCity" details="timeZone"/>
-                                                                <!-- <input class="form-control" id="timeZoneCity" ng-model="userprofiledata.vTimeZoneCity" ng-blur="cityTimezone(userprofiledata.vTimeZoneCity)" ng-model="userprofiledata.vTimeZoneCity" details="timeZone" google-city/> -->
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-8 pl-0">
@@ -144,11 +143,12 @@
                                                                 <input class="form-control" id="timeZone" ng-model="userprofiledata.vTimeZone" />
                                                             </div>
                                                         </div>
+                                                        -->
                                                         
                                                         <div class="col-sm-12 pl-0">
                                                             <div class="form-group">
-                                                                <label>Date of Birth (Format {{dateFormatGlobal}})</label>
-                                                                <input type="text" class="form-control" id="dtBirthDate" name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" ng-dateformatdob autocomplete="off">
+                                                                <label>Date of Birth</label>
+                                                                <input type="text" class="form-control" id="dtBirthDate" name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" ng-outgoing autocomplete="off">
                                                                 <label for="dtBirthDate" class="error"></label>
                                                                 <span id="error-msg-dob" class="hide" style="color:#a94442">Enter valid date</span>    
                                                             </div>
@@ -182,24 +182,24 @@
                                                                 <label>Resource Status</label>
                                                                 <input type="text" select2-userstatus class="form-control" id="eUserStatus" name="eUserStatus" ng-model="userprofiledata.eUserStatus" required />
                                                             </div>
-                                                            <div class="form-group" ng-show="!userprofiledata.iUserId">
+                                                            <!-- <div class="form-group" ng-show="!userprofiledata.iUserId">
                                                                 <label>Department</label>
                                                                 <input type="text" ng-select2-usertype data-typeid="2" id="vResourceType" class="form-control" name="vResourceType" ng-model="userprofiledata.vResourceType" required/>
                                                             </div>
                                                             <div class="form-group" ng-show="userprofiledata.iUserId">
                                                                 <label>Department</label>
                                                                 <input type="text" ng-select2-usertype data-typeid="2" id="vResourceType" class="form-control" name="vResourceType" ng-model="userprofiledata.vResourceType" required />
-                                                            </div>
+                                                            </div> -->
                                                             <div class="form-group">
                                                                 <label>Company Name</label>
                                                                 <input type="text"  class="form-control" name="companyName" ng-model="userprofiledata.companyName"/>
                                                             </div>
                                                             <div class="form-group">
-                                                                <label>Last Job</label>
-                                                                <input type="text" class="form-control" id="dtLast_job" ng-datepicker2 name="dtLast_job" ng-model="userprofiledata.dtLast_job" onkeydown="return false">
+                                                                <label>Last Job <a ng-click="clearJobDate()" title="Clear Field" style="margin-left:5px;">   <i class="glyphicon glyphicon-refresh"></i> </a></label>
+                                                                <input type="text" class="form-control" id="dtLast_job" ng-datepicker2 name="dtLast_job" ng-model="userprofiledata.dtLast_job" onkeydown="return false" autocomplete="off">
                                                             </div>
                                                             <div class="form-group">
-                                                                <label>Linguist Absent <a ng-if="userprofiledata.is_available" ng-click="clearAbsentDate()">: Clear Dates</a></label>
+                                                                <label>Linguist Absent <a ng-click="clearAbsentDate()"title="Clear Field" style="margin-left:5px;"> <i class="glyphicon glyphicon-refresh"></i> </a></label>
                                                                 <input type="text" class="form-control" class="hasDatepicker" id="multidatePick" ng-multidate name="multidatePick" ng-model="userprofiledata.is_available" onkeydown="return false" autocomplete="off">
                                                             </div>
                                                             <!-- <div class="form-group" >
@@ -339,7 +339,7 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label class="control-label">City</label>
-                                                            <input type="text" class="form-control city"  id="address1_locality" name="route" ng-model="vCity1"  required>          
+                                                            <input type="text" class="form-control city"  id="address1_locality" name="route" ng-model="vCity1" ng-blur="cityTimezone(vCity1)" required>          
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
@@ -347,6 +347,12 @@
                                                             <label class="control-label">Zip Code</label>
                                                             <input type="text" class="form-control postal_code" id="address1_postal_code" name="vZipcode" ng-model="vZipcode1"  required> 
                                                         </div>                       
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Time Zone</label>
+                                                            <input class="form-control" id="timeZone" ng-model="userprofiledata.vTimeZone" />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

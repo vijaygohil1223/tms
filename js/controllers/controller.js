@@ -9663,18 +9663,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.cityTimezone = function (id) {
-        console.log('id', id)
+        console.log('id-city', id)
         var city = id.split(',')[0];
         rest.path = "cityTimeZoneget/" + city;
         rest.get().success(function (data) {
             console.log('data', data)
             if (data != false) {
-
                 if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
                     $scope.userprofiledata = {};
                 }
-
-                $scope.userprofiledata.vTimeZoneCity = data.timeZoneCity;
+                //$scope.userprofiledata.vTimeZoneCity = data.timeZoneCity;
                 $scope.userprofiledata.vTimeZone = data.timeZone;
                 //    $timeout(function () {
                 //     $scope.$apply(function () {
@@ -9693,12 +9691,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return response.json();
             })
             .then(function (data) {
-                //console.log('data', data)
+                console.log('location-data', data)
                 if (data.results && data.results.length > 0) {
-                    $scope.vCity1 = data.results[0].city;
+                    /* $scope.vCity1 = data.results[0].city;
                     $scope.vState1 = data.results[0].state;
                     $scope.vCountry1 = data.results[0].country;
-                    $scope.vZipcode1 = data.results[0].postcode;
+                    $scope.vZipcode1 = data.results[0].postcode; */
                 }
             });
     }
@@ -9745,6 +9743,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.clearAbsentDate = function () {
         //$scope.userprofiledata.is_available = '';
         $('#multidatePick').multiDatesPicker('resetDates', 'picked');
+    }
+    $scope.clearJobDate = function () {
+    
+        $scope.userprofiledata.dtLast_job = '';
+        
     }
 
         // Europe country form json file
@@ -10054,6 +10057,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $scope.userprofiledata.address1Detail = JSON.stringify(address1);
                 $scope.userprofiledata.address2Detail = JSON.stringify(address2);
+                $scope.userprofiledata.vTimeZoneCity = angular.element('#address1_locality').val();
 
                 // ---------address over -----------------//
                 var countryCodeData = angular.element('#iMobile').parent().find('.selected-flag').attr('title');
@@ -10134,6 +10138,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
                 $scope.userprofiledata.address1Detail = JSON.stringify(address1);
                 $scope.userprofiledata.address2Detail = JSON.stringify(address2);
+
+                $scope.userprofiledata.vTimeZoneCity = angular.element('#address1_locality').val();
                 // ---------address over -----------------//
                 $scope.userprofiledata.image = $scope.imageSrc;
                 $scope.userprofiledata.created_by = $window.localStorage.session_iUserId;
@@ -10159,6 +10165,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.dtBirthDate = $('#dtBirthDate').val();
                 $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
+
+                console.log('$scope.userprofiledata=Add',$scope.userprofiledata )
 
                 rest.path = 'saveuserprofileexternelS';
                 rest.post($scope.userprofiledata).success(function (data) {
