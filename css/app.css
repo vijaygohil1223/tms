@@ -6250,10 +6250,11 @@ md-progress-linear .md-bar {
   color:red !important;
   padding: 15px;
 }
-.select2ClientStatus{
+/* Create ui issue in client add-edit */
+/* .select2ClientStatus{
     left: 619.656px !important;
     width: 309px !important;
-}
+} */
 
 /* .active > a:first-child {
     

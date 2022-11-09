@@ -8445,10 +8445,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $location.path('/internal');
         }
     }
-
     rest.path = 'user/' + $routeParams.id;
     rest.get().success(function (data) {
         $scope.userlist = data.data;
+        console.log('$scope.userlist', $scope.userlist)
     }).error(errorCallback);
 
     $window.localStorage.iUserId = "";
@@ -9913,8 +9913,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.checkemailaddress = function () {
-        rest.path = 'checkemailaddress';
-        rest.post($scope.userprofiledata.vEmailAddress).success(function (data) { }).error(errorCallback);
+        if(!$routeParams.id){
+            rest.path = 'checkemailaddress';
+            rest.post($scope.userprofiledata.vEmailAddress).success(function (data) { }).error(errorCallback);
+        }
     };
 
     $scope.userTypes = true;
