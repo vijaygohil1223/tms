@@ -9785,7 +9785,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $timeout(function () {
                 $('#iMobile').intlTelInput("setNumber", FinalMobileNum);
-
+                $scope.userprofiledata.iMobile = JSON.parse(data.iMobile).mobileNumber;
+                
                 if(data.tabPermission){
                     const tabPermission = Object.keys(JSON.parse(data.tabPermission))
                     angular.element('#tabPermission').val(tabPermission).trigger('change');
