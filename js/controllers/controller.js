@@ -9766,6 +9766,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getProfile';
         rest.model().success(function (data) {
             $scope.userprofiledata = data;
+            console.log('$scope.userprofiledata', $scope.userprofiledata)
             $window.localStorage.iUserId = data.iUserId;
             $window.localStorage.setItem("externalPricelistId", data.iUserId);
             $window.localStorage.currentUserName = data.vFirstName + " " + data.vLastName;
@@ -10494,7 +10495,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $('#address1_administrative_area_level_1').removeAttr('required');
         }else{
             $scope.stateOptional = '';
-            $('#address1_administrative_area_level_1').attr("required","required");
+            //$('#address1_administrative_area_level_1').attr("required","required");
         }        
     }
 
@@ -12999,7 +13000,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $('#address1_administrative_area_level_1').removeAttr('required');
         }else{
             $scope.stateOptional = '';
-            $('#address1_administrative_area_level_1').attr("required","required");
+            //$('#address1_administrative_area_level_1').attr("required","required");
         }        
     }    
 

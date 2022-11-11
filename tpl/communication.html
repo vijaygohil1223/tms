@@ -48,12 +48,12 @@
                             <a href="#/properties">3.Properties</a>
                             <div class="nav-arrow"></div>
                         </li>
-                        <li ng-if="userprofiledata.freelancer=='translation'">
+                        <li ng-if="userprofiledata.freelancer=='translation' && userprofiledata.iFkUserTypeId==1">
                             <div class="nav-wedge"></div>
                             <a href="#/price-list1">4.Price List</a>
                             <div class="nav-arrow"></div>
                         </li>
-                        <li ng-if="userprofiledata.freelancer!='translation'">
+                        <li ng-if="userprofiledata.freelancer!='translation' && userprofiledata.iFkUserTypeId==1">
                             <div class="nav-wedge"></div>
                             <a href="#/price-list1">3.Price List</a>
                             <div class="nav-arrow"></div>
@@ -330,8 +330,8 @@
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">State {{stateOptional}}</label>
-                                                            <input type="text" class="form-control locality" id="address1_administrative_area_level_1"  name="vState" ng-model="vState1"  required>   
+                                                            <label class="control-label">State</label>
+                                                            <input type="text" class="form-control locality" id="address1_administrative_area_level_1"  name="vState" ng-model="vState1" >   
                                                         </div>
                                                     </div>
                                                 </div>

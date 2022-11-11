@@ -43,8 +43,11 @@
                                 <div class="user-info">
                                     <span
                                         class="profileTitleh">{{viewExternalCommunicational.vFirstName}}&nbsp;{{viewExternalCommunicational.vLastName}}</span>
-                                    <span class="profileTitle">I am a <span
-                                            ng-bind="viewExternalCommunicational.vResourceType">.</span></span>
+                                        <span class="profileTitle">I am a 
+                                            <!-- <span ng-if="viewExternalCommunicational.vResourceType">.</span> -->
+                                            <span ng-if="viewExternalCommunicational.freelancer=='freelancer'"> Freelancer.</span>
+                                            <span ng-if="viewExternalCommunicational.freelancer=='translation'"> Translation Agency.</span>
+                                        </span>
                                     </span>
                                 </div>
                                 <div class="btn-group d-flex" ng-if="userRight==1">
@@ -132,7 +135,7 @@
                                         </tr>
                                         <tr>
                                             <td><span class="TblSpan">Resource Status</td>
-                                            <td><span ng-bind="viewExternalCommunicational.eUserStatus"></span></td>
+                                            <td><span ng-bind="viewExternalCommunicational.eUserStatusName"></span></td>
                                         </tr>
                                         <tr>
                                             <td><span class="TblSpan">Date of Birth</td>
@@ -358,7 +361,7 @@
                                 </table>
                             </div>
                         </tab>
-                        <tab index="8">
+                        <tab index="8" ng-if="userRight==1">
                             <tab-heading>
                                 <i class="fa fa-star"></i>
                                 <span>Review</span>

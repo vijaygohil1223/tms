@@ -144,7 +144,7 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
         templateUrl: modulesPath + 'price-list1.html',
         controller: 'pricelistController',
         activetab: 'client',
-        role: ['1','2']
+        role: ['1']
     }).when('/login-detail', {
         templateUrl: modulesPath + 'login-detail.html',
         controller: 'clientLoginController',
