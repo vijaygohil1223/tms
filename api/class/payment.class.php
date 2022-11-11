@@ -74,6 +74,7 @@ class payment {
         if($country1 == 'NO'){     
             // API Key registered with ( tms.kanhasoft@gmail.com / kanha@tmschris )   
             $apikey = '782c8b15b60cf92ddb97f9e5585c4878';
+            $apikey = 'b4853b8d084f1f57470df1aaad4a92e9';
             $endpoint = 'https://api.vatsense.com/1.0/validate?vat_number='.$country1.$vatnum1;
             // init curl
             $ch = curl_init();
@@ -93,7 +94,6 @@ class payment {
             $return['From'] = 'norway';
             $return['data'] = json_decode($response);
             return $return;
-
         }else{    
             // sol - 1
             // $url = 'http://ec.europa.eu/taxation_customs/vies/viesquer.do?ms='.$country1.'&iso='.$country1.'&vat='.$vatnum1.'&name=&companyType=&street1=&postcode=&city=&BtnSubmitVat=Verify';
