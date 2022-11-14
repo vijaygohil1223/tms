@@ -643,25 +643,22 @@ app.run(function($rootScope, $log, $location, $interval, $window, $cookieStore,$
         //console.log("lastDigestRun", lastDigestRun);
         var now = Date.now();
         //console.log("now", now);
-        if (now - lastDigestRun > 30 * 60 * 1000) {
-            //console.log('a');
+        if (now - lastDigestRun > 12 * 60 * 60 * 1000) {
             $window.sessionStorage.clear();
             $window.localStorage.clear();
             angular.forEach(["session_iUserId", "auth", "session_iFkUserTypeId", "session_vEmailAddress", "session_password", "internalUserEdit", "internalUserAdd", "jobRecentEdit", "jobRecentAdd", "session_holidayCountry","generalEdit","editInternalUser"], function(key) {
                 $cookieStore.remove(key);
             });
-
             //All popup modal close after auto logout
             $timeout(function() {
                 $('button.close').click();
                 //$('.modal button.btn').click();
                 $('.modal').click();
             },100);
-
             closeWindows();
             $location.path('/');
         }
-    }, 200);
+    }, 1000);
     
     $rootScope.adminRole = $cookieStore.get('session_iFkUserTypeId');
     $rootScope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

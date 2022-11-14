@@ -1907,7 +1907,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_color = '#f44237';
                 }
 
-                if (val.DueDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
+                if (val.DueDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-") && val.itemStatus != "Delivered") {
                     $scope.projectsDueToday.push(val);
                     $scope.projectsDueTodayCount++;
                 }
@@ -10532,7 +10532,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $('#error-msg').addClass('hide');
                     } else {
                         console.log('invalidNum');
-                        $scope.isValidMobileNumber = false;
+                        //$scope.isValidMobileNumber = false;
+                        $scope.isValidMobileNumber = true;
                         $('#error-msg').removeClass('hide');
                     }
                 }
@@ -10672,6 +10673,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'editcontact/' + id;
         rest.get().success(function (data) {
             $scope.contact = data;
+            console.log('contact-edittt-list', $scope.contact)
             var flagTitle = JSON.parse(data.vPhone).countryTitle;
             var flagClass = JSON.parse(data.vPhone).countryFlagClass;
             var Ccode = flagClass.split(' ')[1];
@@ -10680,14 +10682,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $timeout(function () {
                 $('#iphone').intlTelInput("setNumber", FinalMobileNum);
+                $scope.contact.vPhone = JSON.parse(data.vPhone).mobileNumber;
                 $scope.isValidMobileNumber = true;
-            }, 100);
+            }, 300);
             scrollToId('contact-form');
         }).error(errorCallback);
     };
 
     $scope.saveContact = function (formId, id) {
-        if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
+        console.log('id', id)
+        if (angular.element("#" + formId).valid()) {
+            //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             var countryCodeData = angular.element('#iphone').parent().find('.selected-flag').attr('title');
             var countryClass = angular.element('#iphone').parent().find('.selected-flag').find('.iti-flag').attr('class');
             var mobile = angular.element('#iphone').val();
@@ -10696,6 +10701,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 "countryFlagClass": countryClass,
                 "mobileNumber": mobile
             }
+            // [_site_admin_email]
             $scope.contact.vPhone = JSON.stringify(countryObj);
             if ($scope.contact.iContactId) {
                 rest.path = 'contactsave/' + $scope.contact.iContactId;
@@ -10718,6 +10724,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 if ($routeParams.id) {
                     $scope.contact.iClientId = $routeParams.id;
+                    console.log('$scope.contact=second', $scope.contact)
 
                     rest.path = 'contactsave';
                     rest.post($scope.contact).success(function (data) {
@@ -10741,10 +10748,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $route.reload();
                 }
             }
-        } else if (id == 2) {
+        } 
+        // else if (id == 2) {
 
-            $location.path('/price-list');
-        }
+        //     $location.path('/price-list');
+        // }
     };
 
     $scope.deleteContact = function (id) {
@@ -12292,6 +12300,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewdirectdataget/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.info = data;
+            console.log('$scope.info', $scope.info)
 
             // rest.path = 'getTaxName/' + $scope.info.vTextType;
             // rest.get().success(function(data) {
@@ -12941,13 +12950,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $timeout(function () {
                 if ($.trim(telInput.val())) {
                     if (telInput.intlTelInput("isValidNumber")) {
-                        console.log('validNum');
                         $scope.isValidMobileNumber = true;
                         validMsg.removeClass("hide");
                         $('#error-msg').addClass('hide');
                     } else {
-                        console.log('invalidNum');
-                        $scope.isValidMobileNumber = false;
+                        $scope.isValidMobileNumber = true;
+                        //$scope.isValidMobileNumber = false;
                         $('#error-msg').removeClass('hide');
                     }
                 }
@@ -13006,13 +13014,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveClientProfile = function (formId) {
 
-        if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
-            if ($scope.info.iClientId) {
+        if (angular.element("#" + formId).valid()) {
+            //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
+                if ($scope.info.iClientId) {
                 $scope.info.image = $scope.imageSrc;
-                if ($scope.info.vPhone == "" || $scope.info.vPhone == undefined || $scope.info.vPhone.length == 0) {
-                    notification('Please enter mobile number', 'warning');
-                    return false;
-                }
+                // if ($scope.info.vPhone == "" || $scope.info.vPhone == undefined || $scope.info.vPhone.length == 0) {
+                //     notification('Please enter mobile number', 'warning');
+                //     return false;
+                // }
                 var p = angular.element('#userphone').val();
                 $scope.info.vPhone = p;
                 // --------address only -----------------//
@@ -13110,10 +13119,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ($scope.imageSrc) {
                     $scope.info.image = $scope.imageSrc;
                 }
-                if ($scope.info.vPhone == "" || $scope.info.vPhone == undefined || $scope.info.vPhone.length == 0) {
-                    notification('Please enter mobile number', 'warning');
-                    return false;
-                }
+                // if ($scope.info.vPhone == "" || $scope.info.vPhone == undefined || $scope.info.vPhone.length == 0) {
+                //     notification('Please enter mobile number', 'warning');
+                //     return false;
+                // }
 
                 var p = angular.element('#userphone').val();
                 $scope.info.vPhone = p;
@@ -16616,6 +16625,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'childPriceitemget';
         rest.get().success(function (data) {
             $scope.childPrice = data;
+            console.log('$scope.childPrice', $scope.childPrice)
         }).error(errorCallback);
 
         //currency update
@@ -16785,7 +16795,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             });
         }
-
     }, 2000);
 
 

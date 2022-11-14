@@ -4363,23 +4363,18 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 }else{
                     scope.itemPriceUni[scope.it.itemId] = [];
                 }
-
                 if(exists){
                     var amount = temp[1];
                     var total = amount * quantity;
-
                     if(scope.it == undefined) {
                         scope.it = {};
                     }
-
                     if(scope.it.quantity==undefined || scope.it.itemPrice==undefined) {
                         scope.it.quantity = [];
                         scope.it.itemPrice = [];
                     }
-                    
                     scope.it.quantity[scope.counter] = quantity;
                     scope.it.itemPrice[scope.counter] = amount;
-
 
                     if (quantity && price != 0) {
                         var totalItemPrice = parseFloat(total) + parseFloat(totaPrice);

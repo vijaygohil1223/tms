@@ -106,10 +106,10 @@ class contact {
         $id = $this->_db->update('tms_client_contact', $info);
         if ($id) {
             $return['status'] = 200;
-            $return['msg'] = 'Inserted Successfully.';
+            $return['msg'] = 'Updated Successfully.';
         } else {
             $return['status'] = 422;
-            $return['msg'] = 'Not inserted.';
+            $return['msg'] = 'Not Update.';
         }
 
         return $return;

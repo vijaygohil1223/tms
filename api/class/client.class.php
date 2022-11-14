@@ -651,6 +651,7 @@ array(
     public function viewdirectdataget($id) {
         $user = new users();
         $id = self::getallclient('iClientId', $id);
+
         if (isset($id['vProjectCoordinator'])) {
             $coordinator = $user->getUserAllfile('iUserId', $id['vProjectCoordinator']);
             $id['vProjectCoordinator'] = $coordinator['vUserName'];
@@ -673,6 +674,15 @@ array(
             $this->_db->where('status_id', $id['vStatus']);
             $data = $this->_db->getone('tms_user_status');
             $id['vStatus'] = $data['status_name'];
+        }
+        if(isset($id['vCodeRights'])){
+            $substr = substr($id["vCodeRights"], 0, 3);
+            $business_unit	 = $this->_db->rawQuery("SELECT name FROM tms_centers WHERE abbrivation = '".$substr."'");
+            if(count($business_unit)){
+                $id['vCodeRights_name'] = $business_unit[0]['name'];
+            }else{
+                $id['vCodeRights_name'] = $id['vCodeRights'];
+            }
         }
         if (isset($id['created_id'])) {
             $created = $user->getUserAllfile('iUserId', $id['created_id']);
