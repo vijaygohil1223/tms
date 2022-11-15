@@ -43,6 +43,7 @@ function authenticate(\Slim\Route $route) {
     //By Pass /resetpassword request from authenticate function
     $req = $app->request;
     $req->getResourceUri();
+    
     if($req->getResourceUri() === '/resetpassword'){
 
     }else{
@@ -152,6 +153,12 @@ $app->post('/saveuserprofileexternelS','authenticate', function () use($app) {
     $user = new users ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $user->saveuserprofileexternelS($data);
+    echoResponse($result ['status'], $result);
+});
+$app->post('/saveuserProfileSignUp', function () use($app) {
+    $user = new users ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $user->saveuserProfileSignUp($data);
     echoResponse($result ['status'], $result);
 });
 $app->put('/saveuserprofileexternel/:id','authenticate', function ($id) use($app) {
@@ -299,7 +306,7 @@ $app->get('/projectTaskContactPer/:id','authenticate', function ($id) use($app) 
     echoResponse(200, $result);
 });
 // ------------------ user section -------------------------//
-$app->post('/checkusername','authenticate', function () use($app) {
+$app->post('/checkusername', function () use($app) {
     $user = new users ();
     $result = $user->checkusername($app->request->getBody());
     echoResponse($result ['status'], $result);
@@ -364,7 +371,7 @@ $app->get('/viewExternalget/:id','authenticate', function ($id) use($app) {
     $result = $user->viewExternalget($id);
     echoResponse(200, $result);
 });
-$app->get('/cityTimeZoneget/:id','authenticate', function ($id) use($app) {
+$app->get('/cityTimeZoneget/:id', function ($id) use($app) {
     $user = new users ();
     $result = $user->cityTimeZoneget($id);
     echoResponse(200, $result);
@@ -375,6 +382,12 @@ $app->post('/getTimeZoneByLatLong','authenticate', function () use($app) {
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $user->getTimeZoneByLatLong($data);
     echoResponse(200, $result);
+});
+$app->post('/sendAcountActivationlink', 'authenticate',function () use($app) {
+    $users = new users ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $users->sendAcountActivationlink($data);
+    echoResponse($result ['status'], $result);
 });
 // ------------------user type section ---------------------//
 $app->get('/usertype','authenticate', function () {
@@ -2801,7 +2814,7 @@ $app->get('/holidayGet/:id',function ($id) use ($app) {
     $result = $dashboard->holidayGet($id);
     echoResponse(200, $result);
 });
-$app->get('/getCountry','authenticate', function () use ($app) {
+$app->get('/getCountry', function () use ($app) {
     $dashboard = new dashboard ();
     $result = $dashboard->getCountry();
     echoResponse(200, $result);

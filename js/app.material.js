@@ -92,7 +92,12 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'usertaskController',
             //activetab: 'dashboard',
             role: '1'
-        })
+        }).when('/sign-up', {
+            templateUrl: modulesPath + 'sign-up.html',
+            controller: 'signupController',
+            //activetab: 'dashboard',
+            //role: '1'    
+        })    
 
     // ------------------- client profile ------------------------//
     .when('/client/:id', {

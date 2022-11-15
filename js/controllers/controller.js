@@ -663,6 +663,242 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $window.close(); // to close windowpopup after logout
 
+}).controller('signupController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope, fileReader) {
+    /*-------Check for login--------*/
+    if ($cookieStore.get('session_iUserId') != undefined) {
+        $location.path('/dashboard');
+    }
+
+    console.log('sign-iup');
+
+    $scope.isValidMobileNumber = false;
+            
+    /* Mobile Validation START */
+    var telInput = $("#iMobile"),
+        errorMsg = $("#error-msg"),
+        validMsg = $("#valid-msg");
+
+
+    var reset = function () {
+        telInput.removeClass("error");
+        errorMsg.addClass("hide");
+        validMsg.addClass("hide");
+    };
+
+    telInput.blur(function () {
+        reset();
+        $timeout(function () {
+            if ($.trim(telInput.val())) {
+                if (telInput.intlTelInput("isValidNumber")) {
+                    console.log('validNum');
+                    $scope.isValidMobileNumber = true;
+                    validMsg.removeClass("hide");
+                    $('#error-msg').addClass('hide');
+                } else {
+                    console.log('invalidNum');
+                    $scope.isValidMobileNumber = false;
+                    $('#error-msg').removeClass('hide');
+                }
+            }
+        }, 200);
+    });
+    telInput.on("keyup change", reset);
+    /* Mobile Validation END */
+
+    $scope.checkusername = function () {
+        rest.path = 'checkusername';
+        rest.post($scope.userprofiledata.vUserName).success(function (data) { }).error(errorCallback);
+    };
+
+    // $scope.checkemailaddress = function () {
+    //     rest.path = 'checkemailaddress';
+    //     rest.post($scope.userprofiledata.vEmailAddress).success(function (data) { }).error(errorCallback);
+    // };
+
+    $scope.setUsername = function (value) {
+        if ($scope.userprofiledata.vLastName) {
+            if (value != undefined) {
+                $scope.userprofiledata.vUserName = value + ' ' + $scope.userprofiledata.vLastName;
+            } else {
+                $scope.userprofiledata.vUserName = $scope.userprofiledata.vLastName;
+            }
+        } else {
+            $scope.userprofiledata.vUserName = value;
+        }
+    };
+
+    $scope.setUsername2 = function (value) {
+        if ($scope.userprofiledata.vFirstName) {
+            if (value != undefined) {
+                $scope.userprofiledata.vUserName = $scope.userprofiledata.vFirstName + ' ' + value;
+            } else {
+                $scope.userprofiledata.vUserName = $scope.userprofiledata.vFirstName;
+            }
+        } else {
+            $scope.userprofiledata.vUserName = value;
+        }
+    };
+    $scope.ConfirmPass = function (pwd1, pwd2) {
+        if (!pwd1) {
+            angular.element('#vPass').focus();
+            angular.element('#cPass').val('');
+        }
+        if (pwd1 != undefined && pwd2 != undefined) {
+            if (pwd2 != pwd1) {
+                angular.element('#passNotMatch').show();
+                angular.element('#passMatch').hide();
+            } else {
+                angular.element('#passMatch').show();
+                angular.element('#passNotMatch').hide();
+                $timeout(function () {
+                    angular.element('#passMatch').fadeOut(3000);
+                }, 500);
+            }
+        }
+    }
+
+    $scope.cityTimezone = function (id) {
+        console.log('id-city', id)
+        var city = id.split(',')[0];
+        rest.path = "cityTimeZoneget/" + city;
+        rest.get().success(function (data) {
+            console.log('cityTimeZoneget-data', data)
+            if (data != false) {
+                if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
+                    $scope.userprofiledata = {};
+                }
+                $scope.userprofiledata.vTimeZone = data.timeZone;
+            }
+        });
+    }
+
+    //RandomPassword Generate
+    $scope.getRandomPassword = function () {
+        $scope.userprofiledata.vPassword = randomPassword(10)
+    }
+
+    //Change Input Type
+    $scope.changeInputType = function () {
+        var type = angular.element('#vPassword').attr('type');
+        if (type == 'password') {
+            angular.element('#vPassword').attr('type', 'text');
+        } else {
+            angular.element('#vPassword').attr('type', 'password');
+        }
+    }
+
+    $scope.saveUserSignUp = function (formId, ContactPersonId) {
+        console.log('formId', formId)
+        if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
+            $scope.userprofiledata.iEditedBy = 0;
+            console.log('$scope.userprofiledata', $scope.userprofiledata)
+            $scope.userprofiledata.eUserStatus = 2; // New User signup
+            $scope.userprofiledata.is_available = '';
+            
+            if ($scope.userprofiledata){
+                // --------address only -----------------//
+                var address1 = [];
+                var address2 = [];
+                angular.element("[id^=address1_]").each(function (i, val) {
+                    address1.push({
+                        id: val.id,
+                        value: val.value
+                    });
+                });
+                angular.element("[id^=address2_]").each(function (i, val) {
+                    address2.push({
+                        id: val.id,
+                        value: val.value
+                    });
+                });
+                $scope.userprofiledata.address1Detail = JSON.stringify(address1);
+                $scope.userprofiledata.address2Detail = JSON.stringify(address2);
+
+                $scope.userprofiledata.vTimeZoneCity = angular.element('#address1_locality').val();
+                // ---------address over -----------------//
+                $scope.userprofiledata.image = $scope.imageSrc;
+                //$scope.userprofiledata.created_by = $window.localStorage.session_iUserId;
+                var countryCodeData = angular.element('#iMobile').parent().find('.selected-flag').attr('title');
+                var countryClass = angular.element('#iMobile').parent().find('.selected-flag').find('.iti-flag').attr('class');
+
+
+                var mobile = angular.element('#iMobile').val();
+                var phone = angular.element('#iphone').val();
+
+                var countryObj = {
+                    "countryTitle": countryCodeData,
+                    "countryFlagClass": countryClass,
+                    "mobileNumber": mobile
+                }
+
+                var mobile = angular.element('#iMobile').val();
+                var phone = angular.element('#iphone').val();
+                $scope.userprofiledata.iMobile = JSON.stringify(countryObj);
+                $scope.userprofiledata.vPhoneNumber = phone;
+                $scope.userprofiledata.org_pass = $scope.userprofiledata.vPassword;
+
+                $scope.userprofiledata.dtBirthDate = $('#dtBirthDate').val();
+                $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
+                $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
+
+                console.log('$scope.userprofiledata=Add',$scope.userprofiledata )
+
+                rest.path = 'saveuserProfileSignUp';
+                rest.post($scope.userprofiledata).success(function (data) {
+                    //$window.localStorage.iUserId = data.iUserId;
+                    if(data){
+                        if(data.status == 200){
+                            notification('Activation link has been sent to your email!', 'success');
+                            setTimeout(() => {
+                                $route.reload();
+                            }, 500);
+                        }else{
+                            notification('Something went wrong!', 'success');
+                        }
+                    }
+                    //log file start 
+                    $scope.logMaster = {};
+                    $scope.logMaster.log_type_id = data.iUserId;
+                    $scope.logMaster.log_title = $scope.userprofiledata.vUserName;
+                    $scope.logMaster.log_type = "add";
+                    $scope.logMaster.log_status = "external_res";
+                    $scope.logMaster.created_by = 0;
+
+
+
+                }).error(function (data) {
+                    var flagTitle = JSON.parse($scope.userprofiledata.iMobile).countryTitle;
+                    var flagClass = JSON.parse($scope.userprofiledata.iMobile).countryFlagClass;
+                    var Ccode = flagClass.split(' ')[1];
+                    var CcodeNum = flagTitle.split(':')[1].trim();
+
+                    var FinalMobileNum = CcodeNum + JSON.parse($scope.userprofiledata.iMobile).mobileNumber;
+
+                    $timeout(function () {
+                        $('#iMobile').intlTelInput("setNumber", FinalMobileNum);
+                    }, 100);
+                    notification(data['msg'], 'error');
+                });
+            }
+        }
+    };
+
+        $scope.getFile = function (file) {
+            fileReader.readAsDataUrl(file, $scope)
+                .then(function (result) {
+                    $scope.filesize = bytesToSize(file.size);
+                    $scope.filename = file.name;
+                    $scope.filetype = file.type;
+                    var t = $scope.filename.split('.');
+                    var type = t.pop();
+                    $scope.typefile = type;
+                    $scope.imgshow = false;
+                    $scope.imageSrc = result;
+                });
+        };
+     
+        $window.close(); // to close windowpopup after logout
+    
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -8873,7 +9109,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 }).controller('viewExternaldetailController', function ($cookieStore, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $route, $rootScope, $routeParams, $location) {
-    ;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.loginUserId = $window.localStorage.getItem("session_iUserId");
     $routeParams.userTypeId = 1;
@@ -9239,6 +9474,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })
     }
 
+    $scope.sendAcountActivationlink = function (id) {
+        if(id && $scope.viewExternalCommunicational){
+            if($scope.viewExternalCommunicational.vEmailAddress){
+                rest.path = 'sendAcountActivationlink'
+                rest.post($scope.viewExternalCommunicational).success(function (result) {
+                    console.log('result', result)
+                    if(result.status == 200){
+                        notification('Activation link sent has been successfully!','success')
+                    }else{
+                        notification('Activation link sent has not been sent!','warning')
+                    }
+                }).error(errorCallback);
+            }else{
+                notification('Email not available!','warning')
+            }    
+        }
+    }    
+
     if ($routeParams.id && $routeParams.userTypeId) {
         rest.path = 'getUserProperty/' + $routeParams.id + '/' + $routeParams.userTypeId;
         rest.get().success(function (data) {
@@ -9590,47 +9843,45 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     /* Mobile Validation END */
 
     // START Validation DOB
-    var dtDobInput = $("#dtBirthDate"),
-        errorMsgDOB = $("#error-msg-dob");
-    var resetDOB = function () {
-        dtDobInput.removeClass("error");
-        errorMsgDOB.addClass("hide");
-    };
+    // var dtDobInput = $("#dtBirthDate"),
+    //     errorMsgDOB = $("#error-msg-dob");
+    // var resetDOB = function () {
+    //     dtDobInput.removeClass("error");
+    //     errorMsgDOB.addClass("hide");
+    // };
     $scope.isValidDob = true;
-    function dobIsValid(dateStr) {
-        //const regex = /^\d{2}\/\d{2}\/\d{4}$/;
-        const dtSeparator = $scope.dtSeparator;
-        const regex = new RegExp("^\\d{2}\\" + dtSeparator + "\\d{2}\\" + dtSeparator + "\\d{4}$");
-        if (dateStr.match(regex) === null) {
-            return false;
-        }
-        const [day, month, year] = dateStr.split($scope.dtSeparator);
-        // 👇️ format Date string as `yyyy-mm-dd`
-        const isoFormattedStr = `${year}-${month}-${day}`;
-        const date = new Date(isoFormattedStr);
-        const timestamp = date.getTime();
-        if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
-            return false;
-        }
-        return date.toISOString().startsWith(isoFormattedStr);
-    }
-    dtDobInput.blur(function () {
-        resetDOB();
-        //$scope.dobValid = function(dob){
-            const dobVal = $.trim(dtDobInput.val());
-            if(dobVal.length > 0){
-                var dobValid = dobIsValid(dobVal)
-                console.log('dobValid', dobValid)
-                if(dobValid){
-                    console.log('dobValid--in', dobValid)
-                    $('#error-msg-dob').addClass('hide');
-                }else{
-                    $('#error-msg-dob').removeClass('hide');
-                }
-            }    
-        //}
-    });    
-    dtDobInput.on("keyup change", reset);
+    // function dobIsValid(dateStr) {
+    //     //const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+    //     const dtSeparator = $scope.dtSeparator;
+    //     const regex = new RegExp("^\\d{2}\\" + dtSeparator + "\\d{2}\\" + dtSeparator + "\\d{4}$");
+    //     if (dateStr.match(regex) === null) {
+    //         return false;
+    //     }
+    //     const [day, month, year] = dateStr.split($scope.dtSeparator);
+    //     // 👇️ format Date string as `yyyy-mm-dd`
+    //     const isoFormattedStr = `${year}-${month}-${day}`;
+    //     const date = new Date(isoFormattedStr);
+    //     const timestamp = date.getTime();
+    //     if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+    //         return false;
+    //     }
+    //     return date.toISOString().startsWith(isoFormattedStr);
+    // }
+    // dtDobInput.blur(function () {
+    //     resetDOB();
+    //         const dobVal = $.trim(dtDobInput.val());
+    //         if(dobVal.length > 0){
+    //             var dobValid = dobIsValid(dobVal)
+    //             console.log('dobValid', dobValid)
+    //             if(dobValid){
+    //                 console.log('dobValid--in', dobValid)
+    //                 $('#error-msg-dob').addClass('hide');
+    //             }else{
+    //                 $('#error-msg-dob').removeClass('hide');
+    //             }
+    //         }    
+    // });    
+    // dtDobInput.on("keyup change", reset);
     // END Validation DOB
 
 
@@ -10019,9 +10270,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }    
         $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
-        $scope.isDobValid = dobIsValid($.trim(dtDobInput.val()))
-        console.log('$scope.isDobValid', $scope.isDobValid)
-            
+        //$scope.isDobValid = dobIsValid($.trim(dtDobInput.val()))
           
         if (ContactPersonId == 'translation') {
             $window.localStorage.setItem("contactPersonId", 'translation');
@@ -10081,7 +10330,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.dtBirthDate = $('#dtBirthDate').val();
                 $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
-
 
                 $scope.userprofiledata.iMobile = JSON.stringify(countryObj);
                 $scope.userprofiledata.vPhoneNumber = phone;

@@ -1133,6 +1133,36 @@ array(
         return $results = $this->_db->get('tms_specialization');
     }
 
+    public function sendAcountActivationlink($user){
+        //Sending registation email to users email address
+        $userName = $user['vUserName'];
+        $registrationLink = SITE_URL.'#/activation/'.$user['activation_token'];
+        $userEmail = $user['vEmailAddress'];
+        $userPassword = $user['org_pass'];
+        $businessManagerLink = '';
+
+        $this->_db->where('template_id',8);
+        $emailTemplateRegistration = $this->_db->getOne('tms_email_templates');
+        $search_array = array("[USERNAME]", "[REGISTRATIONLINK]",'[USEREMAIL]','[USERPASSWORD]','[BUSINESSMANAGERLINK]');
+
+        $replace_array = array($userName,$registrationLink,$userEmail,$userPassword,$businessManagerLink);
+        
+        $html = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
+
+        $to_name = $user['vFirstName'].$user['vLastName'];
+        $send_fn = new functions();
+        $response = $send_fn->send_email_smtp($userEmail, $to_name, $cc='', $bcc='', $emailTemplateRegistration['template_subject'], $html, $attachments='');
+        // End mailjet
+        if($response && $response['status'] == 200){
+            $return['status'] = 200;
+            $return['msg'] = 'Email has been sent successfully!';
+        }else{
+            $return['status'] = 401;
+            $return['msg'] = 'Could not send mail!';
+        }
+        return $return;
+    }
+
     // Linguist Profile Import csv
     public function savelinguistCsvProfile($userData) {
 
@@ -1292,5 +1322,90 @@ array(
         }    
         return $return;    
     }
+
+    public function saveuserProfileSignUp($user) {
+        $activationToken = sha1(mt_rand(10000,99999).time());
+        $emailPassToSend =  $user['vPassword'];
+        $user['activation_token'] = $activationToken;
+
+        $this->_username = $user['vUserName'];
+        $this->_useremail = $user['vEmailAddress'];
+        if ($this->getUser_Username()) {
+            $return['status'] = 422;
+            $return['msg'] = 'User name already exists.';
+        } else if ($this->getUser_Email()) {
+            $return['status'] = 422;
+            $return['msg'] = 'Email address already exists.';
+        } else if(isset($user['vSecondaryEmailAddress']) && ($user['vEmailAddress'] == $user['vSecondaryEmailAddress'])){
+            $return['status'] = 422;
+            $return['msg'] = 'Secondary Email Address should be different.';
+        }else {
+            $resourceNumber = self::userProfileNumberGet(2);
+            $user['iResourceNumber'] = str_pad($resourceNumber, 4, '0',STR_PAD_LEFT);
+
+            $user['iFkUserTypeId'] = '2';
+            $user['vPassword'] = md5($user['vPassword']);
+            $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : 'user-icon.png';
+            $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
+            $user['dtCreationDate'] = date('Y-m-d H:i:s')/*$user['dtCreationDate']*/;
+            $user['dtCreatedDate'] = date('Y-m-d H:i:s');
+            $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
+            if(isset($user['image']))    
+                unset($user['image']);
+            $id = $this->_db->insert(TBL_USERS, $user);
+            if ($id) {
+                $data['created_date'] = date('Y-m-d H:i:s');
+                $data['updated_date'] = date('Y-m-d H:i:s');
+                $data['user_id'] = $id;
+                $data['name'] = 'external-'.$user['iResourceNumber'];
+                $exResourceFmanager = $this->_db->insert('tms_filemanager', $data);
+                
+                //Inserting Default Folders in External Resource File Manager
+                if($exResourceFmanager){
+                    $defaultFolderArray = array('Data','Projects','Invoice');
+                    foreach ($defaultFolderArray as $key => $value) {
+                        $info['name'] = $value;
+                        $info['is_default_folder'] = 1;
+                        if($value == 'Projects'){
+                            $info['is_ex_project_folder'] = 1;
+                        }else{
+                            $info['is_ex_project_folder'] =0;
+                        }
+                        $info['parent_id'] = $exResourceFmanager;
+                        $this->_db->insert('tms_filemanager',$info);
+                    }
+                }
+                
+                //Sending registation email to users email address
+                $userName = $user['vUserName'];
+                $registrationLink = SITE_URL.'#/activation/'.$activationToken;
+                $userEmail = $user['vEmailAddress'];
+                $userPassword = $emailPassToSend;
+                $businessManagerLink = '';
+
+                $this->_db->where('template_id',8);
+                $emailTemplateRegistration = $this->_db->getOne('tms_email_templates');
+                $search_array = array("[USERNAME]", "[REGISTRATIONLINK]",'[USEREMAIL]','[USERPASSWORD]','[BUSINESSMANAGERLINK]');
+
+                $replace_array = array($userName,$registrationLink,$userEmail,$userPassword,$businessManagerLink);
+                
+                $html = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
+
+                $jobDetail = new jobs_detail();
+                $jobDetail->sendEmail($userEmail,$emailTemplateRegistration['template_subject'],$html);
+                
+                $return['status'] = 200;
+                $return['msg'] = 'Inserted Successfully.';
+                $return['iUserId'] = $id;
+                $this->_userid = $id;
+                $return['userData'] = $this->getUser_Id();
+            } else {
+                $return['status'] = 422;
+                $return['msg'] = 'Not inserted.';
+            }
+        }
+        return $return;
+    }
+
 
 }
