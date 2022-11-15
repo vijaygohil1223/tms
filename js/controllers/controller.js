@@ -10261,15 +10261,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.saveUserProfileExternal = function (formId, ContactPersonId) {
-        const multidatePick = $('#multidatePick').val();
-        var abscentArr = '';
-        if(multidatePick != '' && multidatePick != 1){
-            var abscentArr = multidatePick.split(",").map(function(item) {
-                var dt = originalDateFormatNew(item.trim());
-                return moment(dt).format('YYYY-MM-DD');
-            });
-        }    
-        $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
         //$scope.isDobValid = dobIsValid($.trim(dtDobInput.val()))
           
         if (ContactPersonId == 'translation') {
@@ -10286,6 +10277,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 $scope.userprofiledata.iEditedBy = 0;
             }
+
+            const multidatePick = $('#multidatePick').val();
+            var abscentArr = '';
+            if(multidatePick != '' && multidatePick != 1){
+                var abscentArr = multidatePick.split(",").map(function(item) {
+                    var dt = originalDateFormatNew(item.trim());
+                    return moment(dt).format('YYYY-MM-DD');
+                });
+            }    
+            $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
+            
 
             if ($scope.userprofiledata.iUserId) {
                 // --------address only -----------------//
