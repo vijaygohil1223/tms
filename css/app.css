@@ -5250,9 +5250,9 @@ label.error {
  color: #a94442;
  /*/font-size: 0.9em;*/
 }
-.rowactivate {
+/* .rowactivate {
     background-color: #b5e0e0 !important;
-}
+} */
 .btnSave{
   margin-left:15px;
 }

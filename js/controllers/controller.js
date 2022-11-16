@@ -669,6 +669,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/dashboard');
     }
 
+    $scope.userprofiledata = {};
+    $scope.userprofiledata.freelancer = 'freelancer';
     console.log('sign-iup');
 
     $scope.isValidMobileNumber = false;
@@ -690,12 +692,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $timeout(function () {
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
-                    console.log('validNum');
                     $scope.isValidMobileNumber = true;
                     validMsg.removeClass("hide");
                     $('#error-msg').addClass('hide');
                 } else {
-                    console.log('invalidNum');
                     $scope.isValidMobileNumber = false;
                     $('#error-msg').removeClass('hide');
                 }
@@ -758,11 +758,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.cityTimezone = function (id) {
-        console.log('id-city', id)
         var city = id.split(',')[0];
         rest.path = "cityTimeZoneget/" + city;
         rest.get().success(function (data) {
-            console.log('cityTimeZoneget-data', data)
             if (data != false) {
                 if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
                     $scope.userprofiledata = {};
@@ -815,7 +813,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveUserSignUp = function (formId, ContactPersonId) {
         console.log('formId', formId)
-        if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
+                
+        if (angular.element("#" + formId).valid() ) {
             $scope.userprofiledata.iEditedBy = 0;
             console.log('$scope.userprofiledata', $scope.userprofiledata)
             $scope.userprofiledata.eUserStatus = 2; // New User signup
@@ -864,10 +863,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.org_pass = $scope.userprofiledata.vPassword;
 
                 $scope.userprofiledata.dtBirthDate = $('#dtBirthDate').val();
-                $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
-                $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
-
-                console.log('$scope.userprofiledata=Add',$scope.userprofiledata )
+                if($scope.userprofiledata.dtBirthDate != '' || $scope.userprofiledata.dtBirthDate != 'Invalid date'){
+                    $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
+                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
+                }else{
+                    $scope.userprofiledata.dtBirthDate = '0000-00-00';
+                }
 
                 rest.path = 'saveuserProfileSignUp';
                 rest.post($scope.userprofiledata).success(function (data) {
@@ -890,8 +891,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.logMaster.log_status = "external_res";
                     $scope.logMaster.created_by = 0;
 
-
-
                 }).error(function (data) {
                     var flagTitle = JSON.parse($scope.userprofiledata.iMobile).countryTitle;
                     var flagClass = JSON.parse($scope.userprofiledata.iMobile).countryFlagClass;
@@ -909,21 +908,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
-        $scope.getFile = function (file) {
-            fileReader.readAsDataUrl(file, $scope)
-                .then(function (result) {
-                    $scope.filesize = bytesToSize(file.size);
-                    $scope.filename = file.name;
-                    $scope.filetype = file.type;
-                    var t = $scope.filename.split('.');
-                    var type = t.pop();
-                    $scope.typefile = type;
-                    $scope.imgshow = false;
-                    $scope.imageSrc = result;
-                });
-        };
-     
-        $window.close(); // to close windowpopup after logout
+    $scope.getFile = function (file) {
+        fileReader.readAsDataUrl(file, $scope)
+            .then(function (result) {
+                $scope.filesize = bytesToSize(file.size);
+                $scope.filename = file.name;
+                $scope.filetype = file.type;
+                var t = $scope.filename.split('.');
+                var type = t.pop();
+                $scope.typefile = type;
+                $scope.imgshow = false;
+                $scope.imageSrc = result;
+            });
+    };
     
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -9507,9 +9504,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.post($scope.viewExternalCommunicational).success(function (result) {
                     console.log('result', result)
                     if(result.status == 200){
-                        notification('Activation link sent has been successfully!','success')
+                        notification('Activation link has been sent successfully!','success')
                     }else{
-                        notification('Activation link sent has not been sent!','warning')
+                        notification('Activation link has not been sent!','warning')
                     }
                 }).error(errorCallback);
             }else{
@@ -11400,58 +11397,61 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.customerChange = function (id) {
-        rest.path = 'customerpriceGetOne/' + id;
-        rest.get().success(function (data) {
-            $scope.customerPrice = data;
-            console.log('pricechange', data);
-            angular.element('#price_currency').select2('val', data.price_currency);
-            angular.element('#calculation_basis').select2('val', data.calculation_basis);
-            angular.element('#rounding_proc').select2('val', data.rounding_proc);
-            var check = false;
-            var getComma = /,/;
-            if (getComma.test(data.specialization) == true) {
-                check = true;
-            } else {
-                check = false;
-            }
-            angular.element('#specialization').select2('val', check ? data.specialization.split(',') : data.specialization);
-            $scope.priceBasiList = JSON.parse(data.price_basis);
-            $scope.priceLanguageList = JSON.parse(data.price_language);
-            $scope.baseQuentity = [];
-            $scope.basePrice = [];
-            $scope.baseTtl = [];
-            var quantity = 0;
-            var standard = 0;
-            var childPriceId = 0;
-            $scope.childPriceId = [];
-            var masterPriceId = 0;
-            $scope.masterPriceId = [];
-            angular.forEach(JSON.parse(data.price_basis), function (val, i) {
-                $scope.baseQuentity[i] = val.baseQuentity;
-                $scope.basePrice[i] = val.basePrice;
-                if (val.baseQuentity) {
-                    quantity += parseInt(val.baseQuentity);
+        console.log('id', id)
+        if(id){
+            rest.path = 'customerpriceGetOne/' + id;
+            rest.get().success(function (data) {
+                $scope.customerPrice = data;
+                console.log('pricechange', data);
+                angular.element('#price_currency').select2('val', data.price_currency);
+                angular.element('#calculation_basis').select2('val', data.calculation_basis);
+                angular.element('#rounding_proc').select2('val', data.rounding_proc);
+                var check = false;
+                var getComma = /,/;
+                if (getComma.test(data.specialization) == true) {
+                    check = true;
+                } else {
+                    check = false;
                 }
-                if (val.standardTime) {
-                    standard += parseInt(val.standardTime);
-                }
-                if (val.childPriceId) {
-                    childPriceId = val.childPriceId;
-                }
-                $scope.childPriceId[i] = childPriceId;
-                if (val.masterPriceId) {
-                    masterPriceId = val.masterPriceId;
-                }
-                $scope.masterPriceId[i] = masterPriceId;
+                angular.element('#specialization').select2('val', check ? data.specialization.split(',') : data.specialization);
+                $scope.priceBasiList = JSON.parse(data.price_basis);
+                $scope.priceLanguageList = JSON.parse(data.price_language);
+                $scope.baseQuentity = [];
+                $scope.basePrice = [];
+                $scope.baseTtl = [];
+                var quantity = 0;
+                var standard = 0;
+                var childPriceId = 0;
+                $scope.childPriceId = [];
+                var masterPriceId = 0;
+                $scope.masterPriceId = [];
+                angular.forEach(JSON.parse(data.price_basis), function (val, i) {
+                    $scope.baseQuentity[i] = val.baseQuentity;
+                    $scope.basePrice[i] = val.basePrice;
+                    if (val.baseQuentity) {
+                        quantity += parseInt(val.baseQuentity);
+                    }
+                    if (val.standardTime) {
+                        standard += parseInt(val.standardTime);
+                    }
+                    if (val.childPriceId) {
+                        childPriceId = val.childPriceId;
+                    }
+                    $scope.childPriceId[i] = childPriceId;
+                    if (val.masterPriceId) {
+                        masterPriceId = val.masterPriceId;
+                    }
+                    $scope.masterPriceId[i] = masterPriceId;
 
-                $scope.baseTtl[i] = $scope.baseQuentity[i] * $scope.basePrice[i];
-                $scope.basePrice[i] = $filter('customNumber')(val.basePrice);
+                    $scope.baseTtl[i] = $scope.baseQuentity[i] * $scope.basePrice[i];
+                    $scope.basePrice[i] = $filter('customNumber')(val.basePrice);
 
-            });
-            $scope.planedHourTotal = standard;
-            $scope.planedQuaTotal = quantity;
-        }).error(errorCallback);
-        $scope.customerPriceList = true;
+                });
+                $scope.planedHourTotal = standard;
+                $scope.planedQuaTotal = quantity;
+            }).error(errorCallback);
+            $scope.customerPriceList = true;
+        }    
     }
 
     $scope.removecustomerPriceId = function () {
@@ -11552,6 +11552,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // }
                 rest.path = "customerpriceUpdate";
                 rest.put($scope.customerPrice).success(function (data) {
+                    console.log('data', data)
                     notification('Price list successfully updated', 'success');
                     $timeout(function () {
                         angular.element("#customerPriceId").select2('data', { id: data.LastIsertedData.price_list_id, text: data.LastIsertedData.price_name });
@@ -11559,7 +11560,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var obj = [];
                     rest.path = 'customerpriceAll/' + data.LastIsertedData.price_id;
                     rest.get().success(function (data) {
-                        angular.forEach(data, function (val, i) {
+                        var newdata = data;
+                        newdata = data.filter( function (data) {
+                            return data.resource_id == $scope.ExternalPricelistId;  
+                        });
+                        angular.forEach(newdata, function (val, i) {
                             obj.push({
                                 'id': val.price_list_id,
                                 'text': val.price_name
@@ -11569,7 +11574,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#customerPriceId').select2({
                         allowClear: true,
                         data: obj,
-                        multiple: false
+                        multiple: true,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }).error(errorCallback);
             } else {
@@ -11661,6 +11680,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var obj = [];
                     rest.path = 'customerpriceAll/' + data.LastIsertedData.price_id;
                     rest.get().success(function (data) {
+                        var newdata = data;
+                        newdata = data.filter( function (data) {
+                            return data.resource_id == $scope.ExternalPricelistId;  
+                        });
                         angular.forEach(data, function (val, i) {
                             obj.push({
                                 'id': val.price_list_id,
@@ -11671,7 +11694,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#customerPriceId').select2({
                         allowClear: true,
                         data: obj,
-                        multiple: false
+                        multiple: true,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
                     });
                 }).error(errorCallback);
             }

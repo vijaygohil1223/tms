@@ -226,6 +226,7 @@ class users {
                 //Sending registation email to users email address
                 $userName = $user['vUserName'];
                 $registrationLink = SITE_URL.'#/activation/'.$activationToken;
+                $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 $userEmail = $user['vEmailAddress'];
                 $userPassword = $emailPassToSend;
                 $businessManagerLink = '';
@@ -318,6 +319,8 @@ class users {
                 //Sending registation email to users email address
                 $userName = $user['vUserName'];
                 $registrationLink = SITE_URL.'#/activation/'.$activationToken;
+                $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
+                
                 $userEmail = $user['vEmailAddress'];
                 $userPassword = $emailPassToSend;
                 $businessManagerLink = '';
@@ -1136,7 +1139,10 @@ array(
     public function sendAcountActivationlink($user){
         //Sending registation email to users email address
         $userName = $user['vUserName'];
+
         $registrationLink = SITE_URL.'#/activation/'.$user['activation_token'];
+        $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$user['activation_token'].'"> '.$registrationLink.' </a>';
+                
         $userEmail = $user['vEmailAddress'];
         $userPassword = $user['org_pass'];
         $businessManagerLink = '';
@@ -1327,7 +1333,6 @@ array(
         $activationToken = sha1(mt_rand(10000,99999).time());
         $emailPassToSend =  $user['vPassword'];
         $user['activation_token'] = $activationToken;
-
         $this->_username = $user['vUserName'];
         $this->_useremail = $user['vEmailAddress'];
         if ($this->getUser_Username()) {
@@ -1346,6 +1351,7 @@ array(
             $user['iFkUserTypeId'] = '2';
             $user['vPassword'] = md5($user['vPassword']);
             $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : 'user-icon.png';
+            $user['dtBirthDate'] = ($user['dtBirthDate'] == 'Invalid date' || $user['dtBirthDate'] == '') ? '0000-00-00' : $user['dtBirthDate'];
             $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
             $user['dtCreationDate'] = date('Y-m-d H:i:s')/*$user['dtCreationDate']*/;
             $user['dtCreatedDate'] = date('Y-m-d H:i:s');
@@ -1379,6 +1385,8 @@ array(
                 //Sending registation email to users email address
                 $userName = $user['vUserName'];
                 $registrationLink = SITE_URL.'#/activation/'.$activationToken;
+                $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
+                
                 $userEmail = $user['vEmailAddress'];
                 $userPassword = $emailPassToSend;
                 $businessManagerLink = '';
@@ -1388,7 +1396,6 @@ array(
                 $search_array = array("[USERNAME]", "[REGISTRATIONLINK]",'[USEREMAIL]','[USERPASSWORD]','[BUSINESSMANAGERLINK]');
 
                 $replace_array = array($userName,$registrationLink,$userEmail,$userPassword,$businessManagerLink);
-                
                 $html = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
 
                 $jobDetail = new jobs_detail();

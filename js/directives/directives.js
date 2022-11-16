@@ -4803,7 +4803,7 @@ app.directive('select2PriceList', function($http, rest, $timeout) {
             rest.get().success(function(data) {
                 var newdata = data;
                 if(scope.pricePageId == 1){
-                    console.log('pricelist = UserId',scope.UserId);
+                    //console.log('pricelist = UserId',scope.UserId);
                     newdata = data.filter( function (data) {
                         return data.resource_id == scope.UserId;  
                     });
