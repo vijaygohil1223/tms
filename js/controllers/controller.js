@@ -772,11 +772,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    //RandomPassword Generate
-    $scope.getRandomPassword = function () {
-        $scope.userprofiledata.vPassword = randomPassword(10)
-    }
-
     //Change Input Type
     $scope.changeInputType = function () {
         var type = angular.element('#vPassword').attr('type');
@@ -785,6 +780,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         } else {
             angular.element('#vPassword').attr('type', 'password');
         }
+    }
+
+    //getting global dateformat
+    rest.path = 'getdateFormatByIuserId/1';
+    rest.get().success(function (data) {
+        if (data) {
+            console.log('data', data)
+            if (data.dateSeparator == '/') {
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            } else if (data.dateSeparator == '.') {
+                data.dateformat = data.dateformat.replace(/\//g, data.dateSeparator);
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            } else {
+                data.dateformat = data.dateformat.replace(/\//g, data.dateSeparator);
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            }
+        } else {
+            $window.localStorage.setItem("global_dateFormat", 'DD/MM/YYYY');
+            $window.localStorage.setItem("dtSeparator", '/');
+        }
+    }).error(errorCallback);
+
+    //RandomPassword Generate
+    $scope.getRandomPassword = function () {
+        if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
+            $scope.userprofiledata = {};
+        }
+        $scope.userprofiledata.vPassword = randomPassword(10)
     }
 
     $scope.saveUserSignUp = function (formId, ContactPersonId) {
@@ -10277,12 +10303,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 $scope.userprofiledata.iEditedBy = 0;
             }
-
             const multidatePick = $('#multidatePick').val();
             var abscentArr = '';
             if(multidatePick != '' && multidatePick != 1){
                 var abscentArr = multidatePick.split(",").map(function(item) {
-                    var dt = originalDateFormatNew(item.trim());
+                    var dt = originalDateFormat(item.trim()); // dot format
                     return moment(dt).format('YYYY-MM-DD');
                 });
             }    

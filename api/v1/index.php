@@ -3490,7 +3490,7 @@ $app->delete('/deletedateFormat/:id','authenticate', function ($id) {
     $result = $dtFormat->delete($id);
     echoResponse($result ['status'], $result);
 });
-$app->get('/getdateFormatByIuserId/:id','authenticate', function ($id) use($app) {
+$app->get('/getdateFormatByIuserId/:id', function ($id) use($app) {
     $dtFormat = new dateformat ();
     $result = $dtFormat->getdateFormatByIuserId($id);
     echoResponse(200, $result);

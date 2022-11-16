@@ -16,7 +16,7 @@
     </a>
     <div class="m-b-lg">
         <div class="wrapper text-center">
-            <h4><strong>Sign Up</strong></h4>
+            <h3><strong>Sign Up</strong></h3>
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
@@ -33,7 +33,7 @@
                                         
                                         <div class="col-md-12 pl-0">
                                             <div class="col-md-6 pl-0">
-                                                <label class="control-label"><strong>Resource Number:</strong></label>
+                                                <!-- <label class="control-label"><strong>Resource Number:</strong></label> -->
                                                 <span
                                                     ng-bind="userprofiledata.iResourceNumber | numberFixedLen : 4"></span>
                                             </div>
@@ -100,6 +100,10 @@
 
                                         <div class="col-sm-12 pl-0">
                                             <div class="form-group">
+                                                <label>Date of Birth</label>
+                                                <input type="text" class="form-control" id="dtBirthDate" name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" ng-outgoing autocomplete="off">
+                                            </div>
+                                            <div class="form-group">
                                                 <label>Company Name</label>
                                                 <input type="text" class="form-control" name="companyName"
                                                     ng-model="userprofiledata.companyName" />
@@ -127,7 +131,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                          
                                         </div>
                                         <!-- <button type="submit" class="btn btn-sm btn-info">Submit</button> -->
                                     </div>
@@ -304,9 +307,9 @@
                     </div>
 
                     <!--   TAB1 ng-hide="!iresource"-->
-                    <div class="panel-footer">
-                        <a class="btn btn-info pull-right"
-                            ng-click="saveUserSignUp('userprofileform',userprofiledata.freelancer);"> Sign Up </a>
+                    <div class="panel-footer text-center">
+                        <a class="btn btn-info"
+                            ng-click="saveUserSignUp('userprofileform',userprofiledata.freelancer);" style="width:20%;"> Sign Up </a>
                     </div>
                 </form>
             </div>
