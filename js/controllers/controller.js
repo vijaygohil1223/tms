@@ -16881,6 +16881,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.EditedBy = $window.localStorage.getItem('sessionProjectEditedBy');
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
     $scope.itemList = [];
+    $scope.specialization = [];
 
     $scope.jobDiscussion = function () {
         //$location.path('discussion/' + $window.localStorage.projectJobChainOrderId);
@@ -16957,19 +16958,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 var newdata = data;
                 console.log('newdata', newdata)
+                
+                //console.log('$scope.specialization',$scope.specialization )
                 $scope.clientpriceList = data.filter( function (data) {
                     if(data.price_basis)
                         data.price_basis = JSON.parse(data.price_basis)
+                    if(data.specialization)
+                        data.specialization = (data.specialization.toString()).split(',');     
                     return data.resource_id == $scope.customer.client;  
                 });
-
                 angular.forEach($scope.childPrice, function (val, i) {
                     angular.forEach($scope.clientpriceList, function (val2, i2) {
                         val2.price_basis.find(x => {
                                 if(val.child_price_id == x.childPriceId){
-                                    $scope.childPrice[i].rate =  x.basePrice; 
+                                    const spclFound = $scope.specialization.some(r => (val2.specialization).indexOf(r) >= 0)
+                                    console.log('spclFound', spclFound)
+                                    if(val.child_price_id == x.childPriceId && spclFound){
+                                        //console.log('val2', val2)
+                                        $scope.childPrice[i].rate =  x.basePrice; 
+                                    }
+                                    //return val.child_price_id == x.childPriceId;
+                                    return x;
                                 }
-                                return val.child_price_id == x.childPriceId;
                             });    
                     });    
                     
@@ -17086,6 +17096,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.$on('pls.onLanguageChanged', function (evt, lang) {
+        console.log('lang', lang)
         lang.id = lang.id.replace(/[0-9]/g, '');
         var eleId = evt.targetScope.id.replace(/\D/g, '');
         if (lang.id == 'plsSourceLang') {
@@ -17107,6 +17118,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         var source = angular.element('#source_lang' + eleId).text();
         var target = angular.element('#target_lang' + eleId).text();
+        
         console.log("evt.targetScope.id", evt.targetScope.id);
         if ($scope.itemList[itemIndex].item_number) {
             var item_number = pad($scope.itemList[itemIndex].item_number, 3);
@@ -17132,6 +17144,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + '-' + target;
         }
 
+        $scope.stLangPair = source + ' > ' + target;
+        console.log('$scope.stLangPair', $scope.stLangPair)
     });
 
     $scope.plsModel = {
@@ -17152,7 +17166,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
-
         var totalPrice1 = $scope.itemList[parentIndex].total_price;
         var totalPrice = totalPrice1.toFixed(2);
 
@@ -17247,6 +17260,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.itemList[parentIndex].total_price = grandTotal.toFixed(4);
         }, 200);
     }
+    
     //create item
     //$scope.createItems = function() {
     $scope.createItems = function (newscoop) {
@@ -17801,7 +17815,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.totalPrice = 0;
             var cont = [];
             angular.forEach(data, function (val, i) {
-                console.log("val", val.contact_person);
+                //console.log("val",val );
+                if(val.specialization)
+                    $scope.specialization = (val.specialization.toString()).split(',');
                 //getClient By OrderId while edit item
                 rest.path = 'customer/' + $scope.routeOrderID;
                 rest.get().success(function (data) {

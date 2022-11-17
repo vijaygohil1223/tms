@@ -65,7 +65,7 @@ class item {
     }
 
     public function itemsGet($id) {
-        $data = $this->_db->rawQuery("SELECT ti.*,tg.project_name FROM `tms_items` As ti INNER JOIN tms_general As tg ON ti.order_id = tg.order_id WHERE ti.order_id = $id");
+        $data = $this->_db->rawQuery("SELECT ti.*,tg.project_name,tg.specialization  FROM `tms_items` As ti INNER JOIN tms_general As tg ON ti.order_id = tg.order_id WHERE ti.order_id = $id");
         return $data;
     }
 
