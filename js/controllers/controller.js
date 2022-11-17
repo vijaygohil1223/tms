@@ -923,6 +923,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.imageSrc = result;
             });
     };
+
+    $scope.backtoPage = function () {
+        $location.path('/');
+    }
     
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -10364,6 +10368,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'saveuserprofileexternel';
                 rest.put($scope.userprofiledata).success(function (data) {
                     $window.localStorage.currentUserName = data.userData.vFirstName + " " + data.userData.vLastName;
+
+                    if ($window.localStorage.session_iUserId == data.userData.iUserId) {
+                        $window.localStorage.session_vProfilePic = data.userData.vProfilePic;
+                        var picUrlAfterUpdate = 'uploads/profilePic/' + data.userData.vProfilePic;
+                        $('#profileImgLogin').attr('src', picUrlAfterUpdate);
+                    }
                     //log file start
                     $scope.logMaster = {};
                     $scope.logMaster.log_type_id = $routeParams.id;
@@ -16864,7 +16874,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.routeOrderID = $routeParams.id ? $routeParams.id : $window.localStorage.orderID;
     $scope.orderUrlID = $scope.routeOrderID ? '/'+$scope.routeOrderID : '';
     
-    
     console.log('$scope.routeOrderID', $scope.routeOrderID)
     console.log('localStorage.orderID=', $window.localStorage.orderID)
     
@@ -16883,11 +16892,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('$scope.projectOrderName', $scope.projectOrderName)
         $scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
     }, 500);
-    
+    $scope.clientpriceList = {};
     $scope.customer = {};
     rest.path = 'customer/' + $scope.routeOrderID;
     rest.get().success(function (res) {
         $scope.customer = res;
+        console.log('$scope.customer', $scope.customer)
     })
 
     if ($window.localStorage.clientproCustomerName) {
@@ -16920,6 +16930,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
 
 
+                
         //get single order Detail
         rest.path = 'getOrderSingle/' + $scope.routeOrderID;
         rest.get().success(function (data) {
@@ -16940,6 +16951,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.childPrice = data;
             console.log('$scope.childPrice', $scope.childPrice)
+
+            // Get PriceList for client
+            rest.path = 'customerpriceAll/' + 1;
+            rest.get().success(function (data) {
+                var newdata = data;
+                console.log('newdata', newdata)
+                $scope.clientpriceList = data.filter( function (data) {
+                    if(data.price_basis)
+                        data.price_basis = JSON.parse(data.price_basis)
+                    return data.resource_id == $scope.customer.client;  
+                });
+
+                angular.forEach($scope.childPrice, function (val, i) {
+                    angular.forEach($scope.clientpriceList, function (val2, i2) {
+                        val2.price_basis.find(x => {
+                                if(val.child_price_id == x.childPriceId){
+                                    $scope.childPrice[i].rate =  x.basePrice; 
+                                }
+                                return val.child_price_id == x.childPriceId;
+                            });    
+                    });    
+                    
+                });    
+                console.log('$scope.clientpriceList', $scope.clientpriceList)
+
+                console.log('$scope.childPrice==after',$scope.childPrice )
+            });
+            console.log('called before')
         }).error(errorCallback);
 
         //currency update
@@ -17140,31 +17179,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
         var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
         var itemAmt = $scope.itemPriceUni[id][index].amtSum;
-        if (!quantity || !itemPrice) {
+        if (!quantity) {
             quantity = 0;
-            itemPrice = 0;
+            $scope.itemPriceUni[id][index].quantity = 0;
         }
-        if (!itemTtl) {
+        if (!itemPrice) {
+            itemPrice = 0;
+            $scope.itemPriceUni[id][index].itemPrice = 0;
+        }
+        if (!itemTtl)
             itemTtl = 0;
-        }
         //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
-        itemPrice = numberFormatCommaToPoint(itemPrice);
-        if (itemPrice == '') {
+        quantity = numberFormatCommaToPoint(quantity);
+        if (quantity == '')
             itemPrice = 0;
-        }
+        
+        console.log('quantity-comma', quantity)
+        itemPrice = numberFormatCommaToPoint(itemPrice);
+        if (itemPrice == '')
+            itemPrice = 0;
+        
         var price = quantity * parseFloat(itemPrice);
         var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
         if (!oldPrice1) {
             var oldPrice = 0;
         } else {
             var oldPrice = numberFormatCommaToPoint(oldPrice1);
-            /*
-            if(oldPrice1.toString().includes(',')==true){
-                var oldPrice = numberFormatCommaToPoint(oldPrice1);
-            }else{
-                var oldPrice = oldPrice1;
-            }
-            */
         }
 
         if (itemChng > 0) {
@@ -17191,10 +17231,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.itemPriceUni[id][index].itemTotal = itemTtl;
         } else {
             //$scope.itemPriceUni[id][index].itemTotal = price;
-            $scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price);
+            $scope.itemPriceUni[id][index].itemTotal = price ? numberFormatComma(price) : 0;
         }
         $scope.itemPriceUni[id][index].amtSum = price;
         $scope.itemList[parentIndex].total_price = totalPrice;
+        setTimeout(() => {
+            var grandTotal = 0;
+            $(".itemTotal"+id).each(function () {
+                const val1 = ($(this).val() != 0 || $(this).val() =='') ? numberFormatCommaToPoint($(this).val()) : 0;
+                var sub_ttl = parseFloat(val1);
+                console.log('sub_ttl',sub_ttl)
+                grandTotal += isNaN(sub_ttl) ? 0 : sub_ttl;
+                //console.log('grandTotal--before', grandTotal += sub_ttl)
+            });
+            $scope.itemList[parentIndex].total_price = grandTotal.toFixed(4);
+        }, 200);
     }
     //create item
     //$scope.createItems = function() {

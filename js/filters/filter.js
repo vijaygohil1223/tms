@@ -382,7 +382,7 @@ app.filter('dateLessThenToday', function() {
 });
 app.filter('customNumber', function($filter,$window) {
     return function(input) {
-        console.log('input', input)
+        //console.log('input', input)
         var decimalSeparator = $window.localStorage.getItem('DecimalSeparator')
         const numStr = String(input);
         // String Contains Decimal
@@ -393,7 +393,7 @@ app.filter('customNumber', function($filter,$window) {
                 numFix = (dec > 4 ) ? 4 : parseInt(dec);   
         };
         var number = $filter('number')(input,numFix);
-        console.log('number-afterrr', number)
+        //console.log('number-afterrr', number)
         if(number){
             if(decimalSeparator){
                 if(decimalSeparator == '.'){
