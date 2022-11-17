@@ -669,6 +669,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/dashboard');
     }
 
+    $window.localStorage.setItem("global_dateFormat", 'DD.MM.YYYY'); // Default
+    $window.localStorage.setItem("dtSeparator", '.'); // Default
+
     $scope.userprofiledata = {};
     $scope.userprofiledata.freelancer = 'freelancer';
     console.log('sign-iup');
@@ -679,7 +682,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var telInput = $("#iMobile"),
         errorMsg = $("#error-msg"),
         validMsg = $("#valid-msg");
-
 
     var reset = function () {
         telInput.removeClass("error");
@@ -10285,7 +10287,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveUserProfileExternal = function (formId, ContactPersonId) {
         //$scope.isDobValid = dobIsValid($.trim(dtDobInput.val()))
-          
+              
         if (ContactPersonId == 'translation') {
             $window.localStorage.setItem("contactPersonId", 'translation');
         } else {
