@@ -16975,7 +16975,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     console.log('spclFound', spclFound)
                                     if(val.child_price_id == x.childPriceId && spclFound){
                                         //console.log('val2', val2)
-                                        $scope.childPrice[i].rate =  x.basePrice; 
+                                        $scope.childPrice[i].rate = x.basePrice; 
                                     }
                                     //return val.child_price_id == x.childPriceId;
                                     return x;
@@ -17702,6 +17702,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }
 
+                    const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
+                    if(hasKeySpclz)    
+                        delete $scope.itemList[formIndex].specialization;
+                    
                     $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
                     $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
                     var due_timevl1 = angular.element('#due_time' + formIndex).val();
@@ -17711,6 +17715,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
                     $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
                     $routeParams.id = $scope.itemList[formIndex].itemId
+                    
                     rest.path = 'ItemUpdate';
                     rest.put($scope.itemList[formIndex]).success(function () {
                         $('#jobchainName' + formId).val('select');
@@ -17779,6 +17784,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.item.item_name = $scope.item_name;
                     $scope.item.total_amount = $scope.total_amount;
                     $scope.item.order_id = $scope.routeOrderID;
+                    
+                    const hasKeySpclz = 'specialization' in $scope.item;
+                    if(hasKeySpclz)    
+                        delete $scope.item.specialization;
+                    
+
+                    
                     rest.path = 'ItemSave';
                     rest.post($scope.item).success(function (data) {
                         //log file start 
