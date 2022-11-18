@@ -11936,6 +11936,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             };
                             $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                             $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
+                            if ($scope.baseTtl == undefined) {
+                                $scope.baseTtl = [];
+                            }
+                            
                             $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate;
                             $scope.priceBasiList.push(newPriceObj);
                             console.log('$scope.priceBasiList==AA', $scope.priceBasiList)
