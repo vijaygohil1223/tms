@@ -127,18 +127,18 @@
                                                     
                                                 </div>
                                                 <div class="col-sm-12">
-                                                    <div class="col-sm-4">
+                                                    <!-- <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label>PO format</label> <input type="text"
                                                                 class="form-control" name="tPoInfo"
                                                                 ng-model="info.tPoInfo">
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label>Website</label>
                                                             <div class="input-group">
-                                                                <input type="text" class="form-control" name="website"  ng-model="info.vWebsite" required> 
+                                                                <input type="text" class="form-control" name="website"  ng-model="info.vWebsite" > 
                                                                     <span class="input-group-addon">
                                                                     <a target="_blank" href="http://{{info.vWebsite}}">
                                                                     <i class="fa fa-external-link"></i></a>
@@ -195,7 +195,8 @@
                                                                 <div class="col-sm-8">
                                                                     <label>Select Logo</label> <input type="file"
                                                                         ng-model="info.vLogo"
-                                                                        ng-file-select="onFileSelect($files)" ng-required='!imageSrc && !info.vLogo'>
+                                                                        ng-file-select="onFileSelect($files)">
+                                                                        <!--  ng-required='!imageSrc && !info.vLogo'  -->
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -380,7 +381,7 @@
                                                         <div class="form-group">
                                                             <label class="control-label">Country</label> 
                                                             <input type="text" select2-countryall class="form-control country" name="vCountry"
-                                                                id="address1_country" ng-model="add1.country" ng-change="countryChange(add1.country)" required>
+                                                                id="address1_country" ng-model="add1.country" ng-change="countryChange(add1.country)">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
@@ -398,7 +399,7 @@
                                                             <label class="control-label">City</label> <input
                                                                 type="text" class="form-control city"
                                                                 id="address1_locality" name="route" ng-model="vCity1" value="vCity1" ng-blur="cityTimezone(vCity1)"
-                                                                 required>
+                                                               >
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
@@ -406,7 +407,7 @@
                                                             <label class="control-label">Zipcode</label> <input
                                                                 type="text" class="form-control postal_code"
                                                                 id="address1_postal_code" name="vZipcode"
-                                                                ng-model="add1.zipcode"  required>
+                                                                ng-model="add1.zipcode">
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">

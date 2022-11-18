@@ -37,7 +37,8 @@
                     <div class="panel-body" style="background:#e4e7ea;">
                         <div class="col-sm-12">
                             <div class="col-sm-2" style="margin-right: 10px;">
-                                <img ng-src="uploads/logo/{{info.vLogo}}" style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
+                                <img ng-src="uploads/logo/{{info.vLogo}}" ng-if="info.vLogo" style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
+                                <img ng-src="assets/img/blank.png" ng-if="!info.vLogo" style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
                             </div>
                             <div class="col-sm-8">
                                 <div>

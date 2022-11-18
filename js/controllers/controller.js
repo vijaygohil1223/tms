@@ -12637,9 +12637,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
 
             angular.element('#iBussinessDeveloper').html(data.iBussinessDeveloper);
+            const mobileNumber = JSON.parse(data.vPhone).mobileNumber;
             var CountryCode = JSON.parse(data.vPhone).countryTitle;
-            var displayCode = '(+' + CountryCode.split('+')[1] + ')';
-            $scope.info.vPhone = displayCode + ' ' + JSON.parse(data.vPhone).mobileNumber;
+            var displayCode = mobileNumber ? '(+' + CountryCode.split('+')[1] + ')' : '';
+            $scope.info.vPhone = displayCode + ' ' + mobileNumber;
             if (data.Invoice.length > 0) {
                 angular.forEach(JSON.parse(data.Invoice), function (val, i) {
                     angular.element('#' + val.selectInvoice).text(val.invoice);
@@ -13511,7 +13512,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.info.address2Detail = JSON.stringify(address2);
 
                 $scope.info.vCodeRights = $scope.info.vCodeRights;
-                //$scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
+                $scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
+                console.log('$scope.info.tPoInfo', $scope.info.tPoInfo)
 
                 $scope.info.dtCreationDate = $filter('globalDtFormat')($scope.info.dtCreationDate);
                 $scope.info.dtCreationDate = originalDateFormatNew($scope.info.dtCreationDate);
