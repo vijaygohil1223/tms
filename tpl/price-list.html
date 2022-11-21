@@ -426,7 +426,7 @@ $('#priceUnit').css('display', 'block');
 
                                                 </tr>
 
-                                                <tr ng-repeat="priceBase in priceBasiList" class="basePriceMain{{$index}}">
+                                                <tr ng-repeat="priceBase in priceBasiList" class="basePriceMain{{$index}}" >
 
                                                     <td>
 
@@ -434,7 +434,10 @@ $('#priceUnit').css('display', 'block');
 
                                                             <div class="col-sm-2">
 
-                                                                <input type="text" id="basepriceQuantity{{$index}}" only-digits class="form-control" name="basepriceQuantity" ng-change="basePriceOtyChnage($index)" ng-model="baseQuentity[$index]" required>
+                                                                <!-- <input type="text" id="basepriceQuantity{{$index}}" only-digits class="form-control" name="basepriceQuantity" ng-change="basePriceOtyChnage($index)" ng-model="baseQuentity[$index]" required>
+                                                                 -->
+                                                                <input type="text" id="basepriceQuantity{{$index}}" only-digits class="form-control" name="basepriceQuantity" ng-change="basePriceOtyChnage($index)" ng-model="priceBase.baseQuentity" required>
+                                                                
 
                                                                 <input type="hidden" name="childPriceId" ng-model="childPriceId[$index]" id="childPriceId{{$index}}"
                                                                 value="{{priceBase.childPriceId}}" >
@@ -454,22 +457,18 @@ $('#priceUnit').css('display', 'block');
 
                                                             </div>
 
-                                                            <div class="col-sm-2">
-
-                                                                <input type="text" class="form-control" id="basePrice{{$index}}" only-digits2 name="basePrice" ng-model="basePrice[$index]" required ng-change="basePriceOtyChnage($index)">
-
+                                                            <div class="col-sm-2" >
+                                                                <!-- <input type="text" class="form-control" id="basePrice{{$index}}" only-digits2 name="basePrice" ng-model="basePrice[$index]" required ng-change="basePriceOtyChnage($index)"> -->
+                                                                <input type="text" class="form-control" id="basePrice{{$index}}" only-digits2 name="basePrice" ng-model="priceBase.basePrice" required ng-change="basePriceOtyChnage($index)">
                                                             </div>
 
-                                                             <div ng-if="!basePrice[$index] || !baseQuentity[$index]" class="col-sm-2" id="baseWaiting{{$index}}">
-
+                                                            <div ng-if="!basePrice[$index] || !baseQuentity[$index]" class="col-sm-2" id="baseWaiting{{$index}}">
                                                                 0
-
                                                             </div>
 
-                                                             <div ng-if="basePrice[$index] && baseQuentity[$index]" class="col-sm-2" id="baseWaiting{{$index}}">
-                                                                {{ baseTtl[$index] | customNumber}}
-                                                                <!-- {{basePrice[$index] * baseQuentity[$index] | number:2}} -->
-
+                                                            <div ng-if="basePrice[$index] && baseQuentity[$index]" class="col-sm-2" id="baseWaiting{{$index}}">
+                                                                <!-- {{ baseTtl[$index] | customNumber}} -->
+                                                                {{ priceBase.baseTtl | customNumber}}
                                                             </div>
 
                                                             <div class="col-sm-2">

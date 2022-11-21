@@ -11247,7 +11247,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.currentUserName = $window.localStorage.currentUserName;
     // console.log("$scope.currentUserName", $scope.UserId);
     $scope.user_Id = $window.localStorage.getItem("contactUserId");
-
+    $scope.priceBasiList = [];
     $scope.baseQuentity = [];
     $scope.basePrice = [];
     $scope.baseTotal = [];
@@ -11389,7 +11389,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.removeBasePrice = function (index) {
+        console.log('index', index)
+        $scope.priceBasiList
+        console.log('$scope.priceBasiList==before', $scope.priceBasiList)
         $scope.priceBasiList.splice(index, 1);
+        console.log('$scope.priceBasiList==after', $scope.priceBasiList)
+        
         // Also remove from price and total sum price
         $scope.basePrice.splice(index, 1);
         $scope.baseTtl.splice(index, 1);
@@ -11457,6 +11462,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     $scope.baseTtl[i] = $scope.baseQuentity[i] * $scope.basePrice[i];
                     $scope.basePrice[i] = $filter('customNumber')(val.basePrice);
+                    $scope.priceBasiList[i].basePrice = $filter('customNumber')(val.basePrice);
+                    $scope.priceBasiList[i].baseTtl = $scope.baseTtl[i];
 
                 });
                 $scope.planedHourTotal = standard;
@@ -11745,7 +11752,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var basePrice = basePrice1.replace(/[,]/g, '.');
         $scope.baseTotal[id] = $scope.baseQuentity[id] * parseFloat(basePrice);
         $scope.baseTtl[id] = $scope.baseTotal[id];
-    }
+
+        var qty = $scope.priceBasiList[id].baseQuentity;
+        var basePrice_p = $scope.priceBasiList[id].basePrice;
+        var basePrice_p1 = basePrice_p.replace(/[.]/g, '');
+        var basePrice_p2 = basePrice_p1.replace(/[,]/g, '.');
+        var subTotal_p = qty * parseFloat(basePrice_p2);
+        
+        $scope.priceBasiList[id].baseTtl = subTotal_p;
+
+
+     }
 
     /*Used For Dynamically added element STRAT*/
     $scope.basePriceChnage = function (id, data) {
@@ -11925,6 +11942,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 basePriceUnit: data.name,
                                 basePricecheck: 1,
                                 baseQuentity: "1",
+                                baseTtl: 1 * data.rate,
                                 standardTime: "",
                                 childPriceId: data.child_price_id,
                                 masterPriceId: data.master_price_id
@@ -11984,6 +12002,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             basePriceUnit: data.name,
                             basePricecheck: 1,
                             baseQuentity: "1",
+                            baseTtl: 1 * data.rate,
                             standardTime: "",
                             childPriceId: data.child_price_id,
                             masterPriceId: data.master_price_id
@@ -12028,6 +12047,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         },
         stop: function (e, ui) {
             console.log('priceBasiList-swaping-internal', $scope.priceBasiList)
+            $scope.priceBasiList = $scope.priceBasiList
         }
     };
 
