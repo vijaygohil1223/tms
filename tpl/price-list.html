@@ -364,17 +364,10 @@ $('#priceUnit').css('display', 'block');
                                                 </tr>
 
                                                 <tr class="priceLPrice" ng-repeat="langPrice in priceLanguageList" id="priceLanguageID{{$index}}" ng-click="sendPriceLanguage($index)" style="cursor:pointer;" title="Set Price Languages">
-
                                                     <td class="priceLanguage{{$index}}" ng-bind="langPrice.languagePrice">
-
-                                                        
-
                                                     </td>
-
                                                     <td>
-
                                                         <a><i class="iconDelete glyph-icon fa-times" ng-click="removePriceLanguage($index)"></i></a>
-
                                                     </td>
 
                                                     <!-- <td>
@@ -425,7 +418,7 @@ $('#priceUnit').css('display', 'block');
 
                                         <table  class="table m-b-none default footable-loaded footable customerPriceTable" style="width:62%; border-left:1px solid #ccc;" ng-hide="plannedTime">
 
-                                            <tbody>
+                                            <tbody ui-sortable="sortableOptions" ng-model="priceBasiList">
 
                                                 <tr>
 

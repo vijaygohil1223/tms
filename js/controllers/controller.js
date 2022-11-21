@@ -11521,7 +11521,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 var basePriceObj = [];
                 for (var i = 0; i < angular.element('[class^=basePriceMain]').length; i++) {
-                    var baseQuentity = angular.element('#basepriceQuantity' + i).val().trim();
+                        var baseQuentity = angular.element('#basepriceQuantity' + i).val().trim();
 
                     if (angular.element('#basePriceCheck' + i).attr('class').split(' ')[1] == 'fa-check') {
                         var basePricecheck = 1;
@@ -11530,6 +11530,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
 
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
+                    //console.log('basePriceUnit', $('#basePriceUnit' + i).text().trim())
                     var childPriceId = angular.element('#childPriceId' + i).val().trim();
                     var masterPriceId = angular.element('#masterPriceId' + i).val().trim();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
@@ -11739,16 +11740,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.basePriceOtyChnage = function (id) {
         console.log('id', id)
-        console.log('data', $scope.basePrice[id])
         var bsprice1 = $scope.basePrice[id];
-        console.log('bsprice1', bsprice1)
         var basePrice1 = bsprice1.replace(/[.]/g, '');
-        console.log('basePrice1', basePrice1)
         var basePrice = basePrice1.replace(/[,]/g, '.');
-        console.log('basePrice', basePrice)
-        console.log('basePrice', parseFloat(basePrice))
         $scope.baseTotal[id] = $scope.baseQuentity[id] * parseFloat(basePrice);
-        console.log('$scope.baseTotal[id]', $scope.baseTotal[id])
         $scope.baseTtl[id] = $scope.baseTotal[id];
     }
 
@@ -12012,6 +12007,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
     }
+
+    $scope.sortableOptions = {
+        axis: "y",
+        activate: function () { },
+        beforeStop: function () { },
+        change: function () { },
+        create: function (event, ui) {
+            //
+        },
+        deactivate: function () { },
+        out: function () { },
+        over: function () { },
+        receive: function () { },
+        remove: function () { },
+        sort: function () { },
+        start: function (event, ui) { },
+        update: function (e, ui) {
+            // /
+        },
+        stop: function (e, ui) {
+            console.log('priceBasiList-swaping-internal', $scope.priceBasiList)
+        }
+    };
+
+
 }).controller('paymentController', function ($scope, $log, $location, $route, fileReader, rest, $window, $routeParams, $timeout, $interval) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.ContactPersonName = $window.localStorage.getItem("contactPersonId");
@@ -19923,6 +19943,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.saveJobSorting = function () {
         rest.path = "saveSortedJobsData";
         rest.post($scope.itemListFinal).success(function (data) {
+            console.log('$scope.itemListFinal==orderchange', $scope.itemListFinal)
             //
             if (data.status == 200) {
                 notification(data.msg, 'success');
