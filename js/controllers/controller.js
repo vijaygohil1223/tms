@@ -2061,6 +2061,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.jobLinguist = UniqueArraybyId(val.linguist, 'resources');
                 }
 
+                if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
+                    val.pm_name = val.sub_pm_name
+                }
+
                 // Comment read unRead
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;
