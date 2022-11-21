@@ -11759,7 +11759,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         var qty = $scope.priceBasiList[id].baseQuentity;
         var basePrice_p = $scope.priceBasiList[id].basePrice;
-        var basePrice_p1 = basePrice_p.replace(/[.]/g, '');
+        console.log('basePrice_p', basePrice_p)
+        var basePrice_p1 = basePrice_p.toString().replace(/[.]/g, '');
         var basePrice_p2 = basePrice_p1.replace(/[,]/g, '.');
         var subTotal_p = qty * parseFloat(basePrice_p2);
         
@@ -11953,9 +11954,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             };
                             $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                             $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
+                            newPriceObj.basePrice = $filter('customNumber')(data.rate);
                             if ($scope.baseTtl == undefined) {
                                 $scope.baseTtl = [];
                             }
+                            console.log('newPriceObj=IF',newPriceObj)
                             
                             $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate;
                             $scope.priceBasiList.push(newPriceObj);
@@ -12013,9 +12016,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         };
                         if(typeof $scope.baseTtl == 'undefined')
                             $scope.baseTtl = []; // To solve type error undefined
+                        console.log('newPriceObj=ELESE',newPriceObj)
                         $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                         $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
                         $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate;
+                        newPriceObj.basePrice = $filter('customNumber')(data.rate);
                         $scope.priceBasiList.push(newPriceObj);
                         //$('#priceUnit').val('');
                         $("#priceUnit").select2("val", "");

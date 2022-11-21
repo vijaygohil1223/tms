@@ -286,13 +286,14 @@
                                                 <td>
                                                     <div class="col-sm-12">
                                                         <div class="col-sm-2">
-                                                            <input type="text" id="basepriceQuantity{{$index}}"
+                                                            <!-- <input type="text" id="basepriceQuantity{{$index}}"
                                                                 numbers-only class="form-control"
                                                                 name="basepriceQuantity"
                                                                 ng-change="basePriceOtyChnage($index)"
                                                                 ng-model="baseQuentity[$index]"
-                                                                value="{{priceBase.baseQuentity}}" required>
-                                                                
+                                                                value="{{priceBase.baseQuentity}}" required> -->
+                                                            <input type="text" id="basepriceQuantity{{$index}}" only-digits class="form-control" name="basepriceQuantity" ng-change="basePriceOtyChnage($index)" ng-model="priceBase.baseQuentity" required>
+
                                                                 <input type="hidden" name="childPriceId" ng-model="childPriceId[$index]" id="childPriceId{{$index}}"
                                                                 value="{{priceBase.childPriceId}}" >
                                                                 <input type="hidden" name="masterPriceId" ng-model="masterPriceId[$index]" id="masterPriceId{{$index}}"
@@ -307,19 +308,22 @@
                                                             {{priceBase.basePriceUnit}}
                                                         </div>
                                                         <div class="col-sm-2">
-                                                            <input type="text" class="form-control"
+                                                            <!-- <input type="text" class="form-control"
                                                                 id="basePrice{{$index}}" only-digits2 name="basePrice"
                                                                 ng-model="basePrice[$index]" required
                                                                 ng-change="basePriceOtyChnage($index)"
-                                                                value="{{priceBase.basePrice}}">
+                                                                value="{{priceBase.basePrice}}"> -->
+                                                            <input type="text" class="form-control" id="basePrice{{$index}}" only-digits2 name="basePrice" ng-model="priceBase.basePrice" required ng-change="basePriceOtyChnage($index)">
+                                                                
                                                         </div>
-                                                        <div ng-if="!basePrice[$index] || !baseQuentity[$index]"
+                                                        <div ng-if="!priceBase.basePrice || !priceBase.baseQuentity"
                                                             class="col-sm-2" id="baseWaiting{{$index}}">
                                                             0
                                                         </div>
-                                                        <div ng-if="basePrice[$index] && baseQuentity[$index]"
+                                                        <div ng-if="priceBase.basePrice && priceBase.baseQuentity"
                                                             class="col-sm-2" id="baseWaiting{{$index}}">
-                                                            {{ baseTtl[$index] | customNumber }}
+                                                            <!-- {{ baseTtl[$index] | customNumber }} -->
+                                                            {{ priceBase.baseTtl | customNumber}}
                                                             <!-- {{basePrice[$index] * baseQuentity[$index] | customNumber}} -->
                                                         </div>
                                                         <div class="col-sm-2">
