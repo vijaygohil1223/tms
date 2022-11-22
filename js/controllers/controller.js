@@ -1001,7 +1001,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     orders.push(jdata.po_number);
                 });
                 $scope.orderNames = orders;
-                console.log('$scope.orderNames', $scope.orderNames)
                 $scope.disableSearch = false;
             }, 100);
 
@@ -1019,12 +1018,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.selectedOrder = txtValue;
         }
 
-
         if ($scope.selectedOrder == undefined || $scope.selectedOrder.length == 0) {
             notification('Please enter project number Or Job Number.', 'warning');
             return false;
         } else {
-            if ($scope.selectedOrder.includes('_')) {
+            $scope.isJobSearch = false;
+            if( ($scope.selectedOrder).split('_').length > 1){
+                if(($scope.selectedOrder).split(/_(.*)/s)[1].toString().length > 4)
+                    $scope.isJobSearch = true;
+            }
+            if ($scope.isJobSearch) {
+            //if ($scope.selectedOrder.includes('_')) {    
                 var isMatch = true;
                 angular.forEach($rootScope.SearchJobList, function (jobsData) {
                     if (isMatch) {
