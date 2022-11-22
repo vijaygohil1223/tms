@@ -1011,6 +1011,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.searchProject = function (selectedValue) {
+        console.log('selectedValue', selectedValue)
         $scope.selectedOrder = selectedValue;
         var txtValue = angular.element('#selectedOrder').val()
 
@@ -1246,6 +1247,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('dashboardController', function ($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.userLoginID = $window.localStorage.getItem("session_iUserId");
     $window.localStorage.jobfolderId = " ";
     $window.localStorage.scoopfolderId = " ";
     $window.localStorage.pId = " ";
@@ -1259,14 +1261,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.showDataLoader = true;
     $scope.showDataLoaderJob = true;
     $scope.proejctsToDisplay = [];
-
+    $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
+                
     //Getting Jobs from getJobsFromTmsSummeryView
     $scope.getJobList = function () {
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function (data) {
             $scope.dashboardJobList = data;
             //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
-
             var Requested = [];
             var NewJob = [];
             var inProgerss = [];
@@ -1892,6 +1894,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectsInProgress = [];
     $scope.projectsDueToday = [];
     $scope.projectsDueTomorrow = [];
+    $scope.projectsOverdue = [];
     $scope.projectsAssigned = [];
     $scope.projectsQaready = [];
     $scope.projectsToBeDelivered = [];
@@ -1903,6 +1906,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectsInprogressCount = 0;
     $scope.projectsDueTodayCount = 0;
     $scope.projectsDueTomorrowCount = 0;
+    $scope.projectsOverdueCount = 0;
     $scope.projectsToBeDeliveredCount = 0;
     $scope.projectsDeliveredCount = 0;
     $scope.projectsQaReadyCount = 0;
@@ -1928,6 +1932,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsInProgress = [];
                 $scope.projectsDueToday = [];
                 $scope.projectsDueTomorrow = [];
+                $scope.projectsOverdue = [];
                 $scope.projectsAssigned = [];
                 $scope.projectsQaready = [];
                 $scope.projectsToBeDelivered = [];
@@ -1939,6 +1944,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsInprogressCount = 0;
                 $scope.projectsDueTodayCount = 0;
                 $scope.projectsDueTomorrowCount = 0;
+                $scope.projectsOverdueCount = 0;
                 $scope.projectsToBeDeliveredCount = 0;
                 $scope.projectsDeliveredCount = 0;
                 $scope.projectsQaReadyCount = 0;
@@ -1960,7 +1966,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             angular.forEach($scope.projectData, function (val, i) {
                 val.progrss_precentage = -1;
-                $scope.projectsAll = $scope.projectData;
+                //$scope.projectsAll = $scope.projectData;
                 //console.log('$scope.projectsAll==',$scope.projectsAll);
                 var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 if (val.itemsSourceLang) {
@@ -2085,9 +2091,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 val.comment = cmtcolor;
 
-                $scope.projectsAllCount++;
+                //$scope.projectsAllCount++;
                 val.projectstatus_class = 'projectstatus_common';
                 val.projectstatus_color = '#FFFF';
+                
+                // Projects All
+                if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID) {
+                    $scope.projectsAll.push(val);
+                    $scope.projectsAllCount++;
+                }
+                
                 //if (val.projectStatus == 12) {
                 if (val.itemStatus == "To be Assigned") {
                     //if (val.itemStatus == "In preparation") {
@@ -2183,6 +2196,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
                     $scope.projectsDueTomorrow.push(val);
                     $scope.projectsDueTomorrowCount++;
+                }
+                if (val.DueDate.split(' ')[0] > $scope.dateToday && val.itemStatus != "Delivered") {
+                    $scope.projectsOverdue.push(val);
+                    $scope.projectsOverdueCount++;
                 }
                 if (val.heads_up == 1) {
                     $scope.projectsToDisplay.push(val);
@@ -2450,7 +2467,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     jobDueTomorrow.push(val);
                     jobDueTomorrowCount++;
                 }
-                if (val.due_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
+                const dateToday = dateFormat(new Date()).split(".").reverse().join("-");
+                if (val.due_date.split(' ')[0] < dateToday && val.item_status != 'Completed' && val.item_status != 'Delivered') {
                     jobOverDue.push(val);
                     jobOverDueCount++;
                 }

@@ -1580,6 +1580,179 @@ td { font-size: 11px; } */
                         </table>
                       </div>
                     </tab>
+                    <tab class="tab-assigned" ng-if="tabPermission.delivered">
+                      <tab-heading>
+                        <i class="glyphicon glyphicon-forward"></i> Overdue
+                        <span class="badge bg-info">{{projectsOverdueCount}}</span>
+                      </tab-heading>
+                      <div class="table-responsive">
+                        <table class="table table-striped" datatable="ng" dt-options="dtOptions">
+                          <thead>
+                            <th>Project Number</th>
+                            <th>Customer</th>
+                            <!-- <th>Account</th> -->
+                            <th>Languages</th>
+                            <th>PO Number</th>
+                            <th style="white-space: nowrap">Project Manager</th>
+                            <th>Linguist</th>
+                            <th>Heads up</th>
+                            <th>Deadline</th>
+                            <th>Progress</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                            <!-- <th>PO Number</th> -->
+                            <th>Comment</th>
+                            <!-- <th>Action</th> -->
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="order in projectsOverdue">
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)" style="color:{{order.scoop_projectColor}}">
+                                  {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
+                                </a>
+                                <!-- <small class="block m-t-sm">
+                                  <span
+                                    class="label bg-light">Scoop-{{order.item_number | numberFixedLen:3 }}</span>
+                                </small> -->
+                              </td>
+                              <td>
+                                <article class="media">
+                                  <span class="customerthumb pull-left thumb-sm"
+                                    ng-if="order.clientlogo != undefined && order.clientlogo !='' "><img
+                                      ng-src="uploads/logo/{{order.clientlogo}}" alt="..." class="img-circle" /></span>
+                                  <span class="
+                                      customerthumb
+                                      pull-left
+                                      thumb-sm
+                                      fa-stack fa-lg
+                                    " ng-if="order.clientlogo == '' ">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-user fa-stack-1x text-white"></i>
+                                  </span>
+                                  <div class="media-body">
+                                    <a href="" class="h5">{{order.contactName}}</a>
+                                  </div>
+                                </article>
+                                <br />
+                                <article class="media acmt5">
+                                  <span class="customerthumb pull-left thumb-sm">
+                                    <i class="fa fa-address-card"></i>
+                                  </span>
+                                  <div class="media-body">
+                                    <a href="" class="h5">{{order.accountname}}</a>
+                                  </div>
+                                </article>
+                              </td>
+                              <td>
+                                <div class="langtd" ng-if="order.itemsSourceLang">
+                                  <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
+                                      alt="..." /></span>
+                                  <div class="media-body">
+                                    <span class="labeltitle">
+                                      {{ order.itemsSourceLang.sourceLang
+                                      }}
+                                    </span>
+                                  </div>
+                                  &nbsp;&nbsp;
+                                  <span class="label bg-light">
+                                    <i class="fa fa-angle-right"></i> </span>&nbsp;&nbsp;
+                                  <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
+                                      alt="..." /></span>
+                                  <div class="media-body">
+                                    <span class="labeltitle">
+                                      {{ order.itemsTargetLang.sourceLang
+                                      }}
+                                    </span>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>{{ order.itemPonumber }}</td>
+                              <td>{{order.pm_name}}</td>
+                              <td><div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">{{liguist.vUserName}} </div>
+                               <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.heads_up===1"> Heads up </span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td>
+                              <td>
+                                <span style="display: none;">{{ order.itemDuedate_new }}</span>
+                                <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
+                                  <div class="mytooltip_div">
+                                    <ul class="timeline">
+                                      <li class="tl-item">
+                                        <div class="tl-wrap b-info">
+                                          <span class="tl-date">Start Date</span>
+                                          <div class="tl-content" ng-if="order.itemStartdate">
+                                            {{ order.itemStartdate |
+                                            dateFormatDisplayFront }}
+                                          </div>
+                                        </div>
+                                      </li>
+                                      <li class="tl-item tl-left">
+                                        <div class="tl-wrap b-success">
+                                          <span class="tl-date">End Date</span>
+                                          <div class="tl-content" ng-if="order.itemDuedate">
+                                            {{ order.itemDuedate |
+                                            dateFormatDisplayFront }}
+                                          </div>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </span>
+                              </td>
+                              <td>
+                                <span ng-if="order.progrss_precentage < 0 ">-</span>
+                                <div class="inline" ng-if="order.progrss_precentage >= 0">
+                                  <div ui-jq="easyPieChart" ui-options="{
+                                    percent: '{{order.progrss_precentage}}',
+                                    lineWidth: 3,
+                                    trackColor: '#e8eff0',
+                                   barColor: '#67bb0a',
+                                    scaleColor: false,
+                                    color: '#fff',
+                                    size: 50,
+                                    lineCap: 'butt',
+                                    rotate: 90,
+                                    animate: 1000
+                                    }" class="easyPieChart" style="
+                                      width: 50px;
+                                      height: 50px;
+                                      line-height: 50px;
+                                    ">
+                                    <div>
+                                      <span class="step">{{order.progrss_precentage}}</span>%
+                                    </div>
+                                    <canvas width="50" height="50"></canvas>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <span class="projstatus m-t-sm {{order.projectstatus_class}}"><i
+                                    class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
+                                  {{order.itemStatus}}</span>
+                              </td>
+                              <td>
+                                <!-- <i class="fa fa-usd"></i> -->
+                                <span class="labeltitle">{{order.totalAmount |
+                                  CurrencyNumbersCommaformat}}</span>
+                              </td>
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x  cmtclr{{order.orderId}}"></i>
+                                </a>
+                              </td>
+                              <!-- <td>
+                                <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
+                              </td> -->
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </tab>
                     <tab class="tab-my-projects" ng-if="tabPermission.my_projects">
                       <tab-heading>
                         <i class="glyphicon glyphicon-list"></i> My Projects
