@@ -11958,11 +11958,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if ($scope.baseTtl == undefined) {
                                 $scope.baseTtl = [];
                             }
-                            console.log('newPriceObj=IF',newPriceObj)
                             
                             $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate;
                             $scope.priceBasiList.push(newPriceObj);
-                            console.log('$scope.priceBasiList==AA', $scope.priceBasiList)
                             //$('#priceUnit').val('');
                             $("#priceUnit").select2("val", "");
                         }
@@ -12016,7 +12014,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         };
                         if(typeof $scope.baseTtl == 'undefined')
                             $scope.baseTtl = []; // To solve type error undefined
-                        console.log('newPriceObj=ELESE',newPriceObj)
                         $scope.baseQuentity[$scope.priceBasiList.length] = 1;
                         $scope.basePrice[$scope.priceBasiList.length] = $filter('customNumber')(data.rate);
                         $scope.baseTtl[$scope.priceBasiList.length] = $scope.baseQuentity[$scope.priceBasiList.length] * data.rate;
@@ -28324,6 +28321,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                         }
                     }
+
+                    const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
+                    if(hasKeySpclz)    
+                        delete $scope.itemList[formIndex].specialization;
 
                     $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
                     $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
