@@ -1040,7 +1040,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 });
                 if ($scope.goTojobId == undefined) {
-                    notification('Nothing found..', 'error');
+                    notification('Nothing found..', 'warning');
                 } else {
                     if ($scope.goTojobId) {
 
@@ -1079,7 +1079,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 });
                 if ($scope.goToOrderId == undefined) {
-                    notification('Nothing found..', 'error');
+                    notification('Nothing found..', 'warning');
                 } else {
                     if ($scope.goToOrderId) {
                         rest.path = 'order/' + $scope.goToOrderId + '/' + $window.localStorage.getItem("session_iUserId");
@@ -1098,7 +1098,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $window.localStorage.currentUserName = data.vClientName;
                             $window.localStorage.genfC = 1;
 
-                            if ($location.path() == '/general') {
+                            if ($location.path() == '/general'+$scope.goToOrderId) {
                                 $route.reload();
                             } else {
                                 $location.path('/general/'+$scope.goToOrderId);
@@ -2099,11 +2099,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.projectstatus_color = '#FFFF';
                 
                 // Projects All
-                if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID) {
+                if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
                     $scope.projectsAll.push(val);
                     $scope.projectsAllCount++;
                 }
-                
                 //if (val.projectStatus == 12) {
                 if (val.itemStatus == "To be Assigned") {
                     //if (val.itemStatus == "In preparation") {
