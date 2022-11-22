@@ -1001,13 +1001,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     orders.push(jdata.po_number);
                 });
                 $scope.orderNames = orders;
+                console.log('$scope.orderNames', $scope.orderNames)
                 $scope.disableSearch = false;
             }, 100);
 
         });
     }).error(errorCallback);
-
-
 
 
     $scope.searchProject = function (selectedValue) {
@@ -1098,7 +1097,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if ($location.path() == '/general') {
                                 $route.reload();
                             } else {
-                                $location.path('/general');
+                                $location.path('/general/'+$scope.goToOrderId);
                             }
                             //set isNewProject to false
                             $window.localStorage.setItem("isNewProject", "false");
@@ -1277,7 +1276,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var completed = [];
             var pendingPo = [];
             // ---- new added status ----- //
-            
+
             // -- Job count -- //
             var jobRequestesCount = 0;
             var jobInProgressCount = 0;
@@ -2189,11 +2188,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_color = '#f44237';
                 }
 
-                if (val.DueDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-") && val.itemStatus != "Delivered") {
+                if (val.DueDate.split(' ')[0] == $scope.dateToday && val.itemStatus != "Delivered") {
                     $scope.projectsDueToday.push(val);
                     $scope.projectsDueTodayCount++;
                 }
-                if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1) && val.itemStatus != "Delivered") {
                     $scope.projectsDueTomorrow.push(val);
                     $scope.projectsDueTomorrowCount++;
                 }
