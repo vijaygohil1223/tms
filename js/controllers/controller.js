@@ -17667,7 +17667,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 if ($scope.iData != null) {
                                                     //$scope.contact_person = $scope.iData.contact_person;
                                                     $scope.contact_person = $scope.iData.manager;
-                                                    $scope.due_date = $scope.iData.due_date;
+                                                    //$scope.due_date = $scope.iData.due_date;
+                                                    $scope.due_date = '';
                                                     $scope.item_status = $scope.iData.item_status;
                                                 } else {
                                                     $scope.contact_person = "";
@@ -17678,6 +17679,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 $scope.jobitem.job_no = $scope.job_no;
                                                 $scope.jobitem.job_id = $scope.job_id;
                                                 $scope.jobitem.job_code = $scope.job_code;
+                                                //$scope.jobitem.contact_person = $scope.contact_person;
                                                 $scope.jobitem.contact_person = $scope.contact_person;
                                                 $scope.jobitem.order_id = $scope.routeOrderID;
                                                 $scope.jobitem.due_date = $scope.due_date;
@@ -17752,8 +17754,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                             }
 
                                                             if ($scope.iData != null) {
-                                                                $scope.contact_person = $scope.iData.contact_person;
-                                                                $scope.due_date = $scope.iData.due_date;
+                                                                $scope.contact_person = $scope.iData.manager;
+                                                                $scope.due_date = '';
                                                                 $scope.item_status = $scope.iData.item_status;
                                                             } else {
                                                                 $scope.contact_person = "";
