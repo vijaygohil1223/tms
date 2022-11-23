@@ -1880,7 +1880,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Jobs delivered status
     $scope.jobListDelivered = [];
     if ($cookieStore.get('session_iUserId') != undefined) {
-        rest.path = 'getJobsFromTmsSummeryView';
+        rest.path = 'getJobsAll';
         rest.get().success(function (data) {
             $scope.jobListDelivered = data;
             console.log('$scope.jobListDelivered', $scope.jobListDelivered)

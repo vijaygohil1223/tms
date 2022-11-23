@@ -2060,4 +2060,12 @@ class jobs_detail
         }
         return $request;
     }
+
+    public function getJobsAll()
+    {
+        $qry = "SELECT * FROM `tms_summmery_view` ";
+        $data = $this->_db->rawQuery($qry);
+        return $data;
+    }    
+
 }

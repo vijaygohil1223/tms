@@ -3389,7 +3389,11 @@ $app->get('/getJobsFromTmsSummeryView', function () {
     $result = $jobList->getJobsFromTmsSummeryView();
     echoResponse(200, $result);
 });
-
+$app->get('/getJobsAll', function () {
+    $jobList = new jobs_detail ();
+    $result = $jobList->getJobsAll();
+    echoResponse(200, $result);
+});
 /* Assign PO number to job*/
 $app->put('/assignPoToJob/:id', 'authenticate',function ($id) use($app) {
     $jobs_detail = new jobs_detail ();
