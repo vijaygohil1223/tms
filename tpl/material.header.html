@@ -439,7 +439,7 @@
         <input type="text" ng-model="selectedOrder"
           typeahead="orderName for orderName in orderNames | filter:$viewValue | limitTo:8"
           class="form-control input-sm bg-light no-border rounded padder" placeholder="Search for project or job.."
-          id="selectedOrder" typeahead-on-select="searchProject($item)" ng-disabled="disableSearch">
+          id="selectedOrder" typeahead-on-select="searchProject($item)" ng-disabled="disableSearch" autocomplete="off">
         <span class="input-group-btn">
           <!-- <a href="javascript:void(0);" ng-click="searchProject()" class="btn btn-sm bg-light rounded"><i class="fa fa-search"></i></a> -->
           <a id="clearBtn" ng-if="selectedOrder" href="javascript:void(0)"

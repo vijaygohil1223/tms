@@ -2138,8 +2138,8 @@ td { font-size: 11px; } */
                       <thead>
                         <tr>
                           <th>#</th>
+                          <th>Job Number</th>
                           <th>Scoop Number</th>
-                          <!-- <th>Job Number</th> -->
                           <th>Client</th>
                           <!-- <th>Account</th> -->
                           <!-- <th>Type</th> -->
@@ -2158,11 +2158,13 @@ td { font-size: 11px; } */
                         <tr ng-repeat="jList in jobsListAll">
                           <td>{{$index + 1}}</td>
                           <!-- <td>{{jList.item_id}}</td> -->
-                          <td style="white-space:nowrap;"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.proj_scoop_no}}</a></td>
+                          <td style="white-space:nowrap;"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></td>
                           <!-- <td>
                             <span ng-if="!jList.po_number"> - </span>
                             <span ng-if="jList.po_number"><a href="javascript:void(0);" ng-click="goToJob(jList.job_summmeryId,jList.order_id);">{{jList.po_number}}</a></span>
                           </td> -->
+                          <td style="white-space:nowrap;">{{jList.proj_scoop_no}}</td>
+                          
                           <td style="white-space:nowrap;"><!-- {{jList.Client}} -->
                             <article class="media">
                               <span class="customerthumb pull-left thumb-sm"

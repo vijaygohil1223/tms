@@ -990,7 +990,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = "dashboardOrderGet";
         rest.get().success(function (data) {
-            $scope.projectData = data;
+            // remove same project orderNumber
+            $scope.projectData = UniqueArraybyId(data, 'orderNumber'); 
+            
             var orders = [];
             $timeout(function () {
                 angular.forEach($scope.projectData, function (ordersData) {
@@ -1489,6 +1491,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //Project Get From DashBoard Recent Activity
     $scope.edit = function (id) {
+        console.log('activity-id', id)
         if (id) {
             rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
@@ -1505,7 +1508,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.userType = 3;
                     $window.localStorage.currentUserName = data.vClientName;
                     $window.localStorage.genfC = 1;
-                    $location.path('/general');
+                    $location.path('/general/'+data.order_id);
                     $window.localStorage.orderBlock = 1;
                 } else {
                     notification('Information not available', 'warning');
@@ -1874,6 +1877,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
+    // Jobs delivered status
+    $scope.jobListDelivered = [];
+    if ($cookieStore.get('session_iUserId') != undefined) {
+        rest.path = 'getJobsFromTmsSummeryView';
+        rest.get().success(function (data) {
+            $scope.jobListDelivered = data;
+            console.log('$scope.jobListDelivered', $scope.jobListDelivered)
+        })
+    }         
+
     // Tabs permission array
     //$scope.tabPermission = { "due_today": true, "to_be_assigned": true, "in_progress": true, "qa_ready": true, "to_be_delivered": true, "due_tomorrow": true, "delivered": true, "my_projects": true };
     $scope.tabPermission = {};
@@ -2131,11 +2144,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 //if (val.projectStatus == 14) {
                 if (val.itemStatus == "QA Ready") {
-                    val.progrss_precentage = 75;
-                    val.projectstatus_class = 'projectstatus_ready';
-                    val.projectstatus_color = '#019788';
-                    $scope.projectsQaready.push(val);
-                    $scope.projectsQaReadyCount++;
+                    let isQaReady = true;
+                    if($scope.jobListDelivered.length > 0){
+                        const checkqaReady = $scope.jobListDelivered.filter( jb => jb.item_status != 'Delivered' && jb.order_id == val.orderId && jb.item_id == val.item_number );
+                        if(checkqaReady.length > 0)
+                            isQaReady = false;
+                        console.log('checkqaReady', checkqaReady)
+                    }
+                    if(isQaReady){
+                        val.progrss_precentage = 75;
+                        val.projectstatus_class = 'projectstatus_ready';
+                        val.projectstatus_color = '#019788';
+                        $scope.projectsQaready.push(val);
+                        $scope.projectsQaReadyCount++;
+                    }    
                 }
                 //if (val.projectStatus == 15) {
                 if (val.itemStatus == "To be Delivered") {
@@ -2403,6 +2425,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function (data) {
             $scope.dashboardJobList = data;
+            
             var allJobsData = [];
             var Requested = [];
             var NewJob = [];
@@ -3108,7 +3131,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //set isNewProject to false
                     $window.localStorage.setItem("isNewProject", "false");
 
-                    $location.path('/general');
+                    $location.path('/general/'+data.order_id);
                     $window.localStorage.orderBlock = 1;
                     /*$timeout(function() {
                         $scope.cancel();
@@ -16041,7 +16064,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $window.localStorage.userType = 3;
                 $window.localStorage.currentUserName = data.vClientName;
                 $window.localStorage.genfC = 1;
-                $location.path('/general');
+                $location.path('/general/'+data.order_id);
             }).error(errorCallback);
             $window.localStorage.orderBlock = 1;
         }
@@ -27493,7 +27516,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //set isNewProject to false
                     $window.localStorage.setItem("isNewProject", "false");
 
-                    $location.path('/general');
+                    $location.path('/general/'+data.order_id);
                     $window.localStorage.orderBlock = 1;
                     $timeout(function () {
                         $scope.cancel();
@@ -27683,7 +27706,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //set isNewProject to false
                     $window.localStorage.setItem("isNewProject", "false");
 
-                    $location.path('/general');
+                    $location.path('/general/'+data.order_id);
                     $window.localStorage.orderBlock = 1;
                     $timeout(function () {
                         $scope.cancel();
@@ -30159,7 +30182,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //set isNewProject to false
                     $window.localStorage.setItem("isNewProject", "false");
 
-                    $location.path('/general');
+                    $location.path('/general/'+data.order_id);
                     $window.localStorage.orderBlock = 1;
                     $timeout(function () {
                         $scope.cancel();
