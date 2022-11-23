@@ -1578,9 +1578,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     //jobs Add recent activity
-    if ($cookieStore.get('jobRecentAdd') != undefined) {
+    function getCookie(ckName) {
+        var cookieArr = document.cookie.split(";");
+        for(var i = 0; i < cookieArr.length; i++) {
+            var cookiePair = cookieArr[i].split("=");
+            if(ckName == cookiePair[0].trim()) {
+                return decodeURIComponent(cookiePair[1]);
+            }
+        }
+        return null;
+    }
+    var cookieName = getCookie("jobRecentAdd");
+    if(cookieName)
+        cookieName.replace(/[\[\]']+/g,'');
+    if ($cookieStore.get('jobRecentAdd') != undefined && cookieName) {
+        //if ($cookieStore.get('jobRecentAdd') != undefined) {
         rest.path = "jobActivityGet";
-        rest.post(jQuery.unique($cookieStore.get('jobRecentAdd'))).success(function (data) {
+        rest.post(jQuery.unique(cookieName.split(','))).success(function (data) {
+            //rest.post(jQuery.unique($cookieStore.get('jobRecentAdd'))).success(function (data) {
             //$scope.jobEditActivity = data;
             var obj = [];
             angular.forEach(data, function (val, i) {
@@ -1883,7 +1898,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsAll';
         rest.get().success(function (data) {
             $scope.jobListDelivered = data;
-            console.log('$scope.jobListDelivered', $scope.jobListDelivered)
         })
     }         
 
@@ -3781,8 +3795,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($window.localStorage.getItem('global_dateFormat'));
             angular.element('#due_time').val(due_timeval);
             if ($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == 'Invalid date') {
-                angular.element('#duedate').val('0000.00.00');
-                angular.element('#due_time').val('00:00');
+                angular.element('#duedate').val('');
+                angular.element('#due_time').val('');
             }
 
             /*var time = $scope.jobdetail.due_date.split(' ')[1].split(':');
@@ -3990,6 +4004,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('$cookieStore.get',$cookieStore.get('editJobact'))
         if ($routeParams.id) {
             $scope.jobdetail.due_date = angular.element('#duedate').val();
+            console.log('$scope.jobdetail.due_date-get', $scope.jobdetail.due_date)
 
             $scope.jobdetail.description = $scope.jobdetail.jobDesc;
             delete $scope.jobdetail['jobDesc'];
@@ -4038,7 +4053,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return false;
             }
 
-            if ($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == '0000-00-00') {
+            if ($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == '0000-00-00' ||  $scope.jobdetail.due_date == '') {
                 notification('Please select due date', 'warning');
                 return false;
             }
@@ -4052,7 +4067,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var due_timevl1 = angular.element('#due_time').val();
             //console.log('due_timevl1',due_timevl1);
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
-            //console.log('date-time',$scope.jobdetail.due_date);
+            console.log('date-time-ckk',$scope.jobdetail.due_date);
 
             // this field used in tabel join for csv pay calculation
             if ($scope.jobdetail.project_type_name)
@@ -19829,7 +19844,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $scope.master_job_id = $scope.itemdata.job_id;
 
                                 if ($scope.iData != null) {
-                                    $scope.contact_person = $scope.iData.contact_person;
+                                    console.log('$scope.iData', $scope.iData)
+                                    //$scope.contact_person = $scope.iData.contact_person;
+                                    $scope.contact_person = $scope.iData.manager;
                                     $scope.due_date = $scope.iData.due_date;
                                     $scope.item_status = $scope.iData.item_status;
                                 } else {
@@ -19843,7 +19860,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $scope.jobitem.job_code = $scope.job_code;
                                 $scope.jobitem.contact_person = $scope.contact_person;
                                 $scope.jobitem.order_id = $routeParams.id;
-                                $scope.jobitem.due_date = $scope.due_date;
+                                //$scope.jobitem.due_date = $scope.due_date;
+                                $scope.jobitem.due_date = '';
                                 $scope.jobitem.master_job_id = $scope.master_job_id;
                                 if ($scope.job_no == undefined) {
                                     $scope.job_no = 1;
@@ -19866,6 +19884,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     var newlangIns = newLag[0].newSourceLang + ' > ' + newLag[0].newTargetLang;
                                     $scope.jobitem.ItemLanguage = newlangIns;
                                 }
+                                console.log('$scope.jobitem', $scope.jobitem)
+                                    
 
                                 rest.path = 'jobSummarySave';
                                 rest.post($scope.jobitem).success(function (data) {
@@ -19919,7 +19939,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                     }
 
                                                     if ($scope.iData != null) {
-                                                        $scope.contact_person = $scope.iData.contact_person;
+                                                        //$scope.contact_person = $scope.iData.contact_person;
+                                                        $scope.contact_person = $scope.iData.manager;
                                                         $scope.due_date = $scope.iData.due_date;
                                                         $scope.item_status = $scope.iData.item_status;
                                                     } else {
@@ -19938,7 +19959,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                     $scope.jobitem.job_code = $scope.job_code;
                                                     $scope.jobitem.contact_person = $scope.contact_person;
                                                     $scope.jobitem.order_id = $routeParams.id;
-                                                    $scope.jobitem.due_date = $scope.due_date;
+                                                    //$scope.jobitem.due_date = $scope.due_date;
+                                                    $scope.jobitem.due_date = '';
                                                     if ($scope.job_no == undefined) {
                                                         $scope.job_no = 1;
                                                     }

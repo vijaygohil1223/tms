@@ -1761,6 +1761,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th></th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -1778,6 +1779,7 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsAll">
+                              <td>{{ order.itemId }}</td>
                               <td>
                                 <a href="javascript:void(0)" ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)" style="color:{{order.scoop_projectColor}}">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
