@@ -389,8 +389,11 @@ app.filter('customNumber', function($filter,$window) {
         var numFix = 2;
         if (numStr.includes('.')) {
             var dec = numStr.split('.')[1].length;
-            if(dec > 2)
-                numFix = (dec > 4 ) ? 4 : parseInt(dec);   
+            console.log('dec', dec)
+            if(dec == 3)
+                numFix = 3;
+            if(dec > 3)
+                numFix = 4;       
         };
         var number = $filter('number')(input,numFix);
         //console.log('number-afterrr', number)
@@ -483,7 +486,9 @@ app.filter('NumbersCommaformat', function($filter) {
         } else {
             //console.log(input);
             //var str1 = input.toFixed(2);
+            var decNo = 2;
             var str1 = input;
+            console.log('str1', str1)
             var str=str1.toString();
             var numarray=str.split('.');
             var a=new Array();
@@ -492,7 +497,13 @@ app.filter('NumbersCommaformat', function($filter) {
             var a2=',00';
             if(a[1]==undefined && a[1]!=='00'){
                 a[1]='';
-            }else{ var a2 = ','+a[1].slice(0, 2); }
+            }else{
+                if(a[1].length == 3)
+                    decNo = 3 
+                if(a[1].length > 3)
+                    decNo = 4 
+                var a2 = ','+a[1].slice(0, decNo); 
+            }
             var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
             return n1 + a2;
         }

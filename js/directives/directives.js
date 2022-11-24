@@ -5805,7 +5805,7 @@ app.directive('allowDecimalCommaNumber', function () {
                     // numpad number  
                     return true;  
                 } else if ([46, 110, 190, 188].indexOf(event.which) > -1) {  
-                    // dot and numpad dot comma 
+                    // dot and dot comma numpad 
                     return true;  
                 } else {  
                     event.preventDefault();

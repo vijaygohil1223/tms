@@ -478,6 +478,7 @@ function numberFormatComma(input) {
     if (input == undefined || input == 0 || input == '') {
         return '';
     } else {
+        var decNo = 2;
         var str = input.toString();
         var numarray = str.split('.');
         var a = new Array();
@@ -488,7 +489,11 @@ function numberFormatComma(input) {
         if (a[1] == undefined && a[1] !== '00') {
             a[1] = '';
         } else {
-            var n2 = ',' + a[1].slice(0, 2);
+            if(a[1].length == 3)
+                decNo = 3 
+            if(a[1].length > 3)
+                decNo = 4 
+            var n2 = ',' + a[1].slice(0, decNo);
             //var n2 = ','+a[1];
         }
         var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
@@ -500,17 +505,24 @@ function numberFormatCommaToPoint(input) {
     if (input == undefined || input == 0 || input == '') {
         return '';
     } else {
+        var decNo = 2;
         var str = input.toString();
         var numarray = str.split(',');
         var a = new Array();
         a = numarray;
         var a1 = a[0];
-        var n2 = '';
+        var n2 = '.00';
         var n1 = '';
         if (a[1] == undefined && a[1] !== '00') {
+            console.log('a[1]', a[1])
             a[1] = '';
         } else {
+            if(a[1].length == 3)
+                decNo = 3 
+            if(a[1].length > 3)
+                decNo = 4 
             var n2 = '.' + a[1].slice(0, a[1].length);
+            console.log('n2', n2)
         }
         //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "");
         var n1 = a1.toString().replace(/\./g, "");
@@ -17277,23 +17289,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
         var totalPrice1 = $scope.itemList[parentIndex].total_price;
-        var totalPrice = totalPrice1.toFixed(2);
-
+        //var totalPrice = totalPrice1.toFixed(2);
+        var totalPrice = parseFloat(totalPrice1).toFixed(3);
         var price1 = $scope.itemPriceUni[id][index].itemTotal;
-
         var price = numberFormatCommaToPoint(price1);
-
         if (totalPrice == price) {
             $scope.itemList[parentIndex].total_price = 0;
         } else {
             var total = totalPrice - price;
-            $scope.itemList[parentIndex].total_price = total;
+            $scope.itemList[parentIndex].total_price = parseFloat(total).toFixed(2);
         }
-
         $scope.itemPriceUni[id].splice(index, 1);
     }
 
 
+    Number.prototype.countDecimals = function () {
+        if(Math.floor(this.valueOf()) === this.valueOf()) return 0;
+        return this.toString().split(".")[1].length || 0; 
+    }
 
     $scope.itemPriceUni = [];
     //change item price module
@@ -17316,20 +17329,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         quantity = numberFormatCommaToPoint(quantity);
         if (quantity == '')
             itemPrice = 0;
-        
-        console.log('quantity-comma', quantity)
         itemPrice = numberFormatCommaToPoint(itemPrice);
+        
+        var decimalPoint = 100;
+        if(itemPrice){
+            var decimalCnt = parseFloat(itemPrice).countDecimals();
+            if(decimalCnt==3)
+                decimalPoint = 1000;
+            if(decimalCnt > 3)
+                decimalPoint = 10000;    
+        }
         if (itemPrice == '')
             itemPrice = 0;
         
         var price = quantity * parseFloat(itemPrice);
+        price = Math.round(price * decimalPoint)/decimalPoint
         var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
         if (!oldPrice1) {
             var oldPrice = 0;
         } else {
             var oldPrice = numberFormatCommaToPoint(oldPrice1);
         }
-
         if (itemChng > 0) {
             price = numberFormatCommaToPoint(itemTtl);
             if (!price) {
@@ -17347,7 +17367,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             oldPrice = 0;
         }
         var total = $scope.itemList[parentIndex].total_price;
-
         var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
         //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
         if (itemChng > 0) {
@@ -17356,6 +17375,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.itemPriceUni[id][index].itemTotal = price;
             $scope.itemPriceUni[id][index].itemTotal = price ? numberFormatComma(price) : 0;
         }
+        
         $scope.itemPriceUni[id][index].amtSum = price;
         $scope.itemList[parentIndex].total_price = totalPrice;
         setTimeout(() => {
@@ -17363,11 +17383,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $(".itemTotal"+id).each(function () {
                 const val1 = ($(this).val() != 0 || $(this).val() =='') ? numberFormatCommaToPoint($(this).val()) : 0;
                 var sub_ttl = parseFloat(val1);
-                console.log('sub_ttl',sub_ttl)
+                //sub_ttl = Math.round(sub_ttl * decimalPoint)/decimalPoint;
                 grandTotal += isNaN(sub_ttl) ? 0 : sub_ttl;
-                //console.log('grandTotal--before', grandTotal += sub_ttl)
             });
-            $scope.itemList[parentIndex].total_price = grandTotal.toFixed(4);
+            $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
         }, 200);
     }
     
