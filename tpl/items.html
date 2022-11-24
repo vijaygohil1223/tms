@@ -121,14 +121,20 @@
                                     <div class="panel panel-default">
                                        <div class="panel-heading font-bold">
                                           <h4>
-                                             Scoop -
-                                             <span id="itemCode" class="itemCode{{it.itemId}}"
-                                                ng-bind="projectOrderName"></span>
-                                             <span class="itemClient{{it.itemId}}">{{indirectCustomerName}}</span>
-                                             <span>{{it.item_number | numberFixedLen:3}}</span>
+                                             <div>
+                                                <!-- <span class="itemClient{{it.itemId}}">{{indirectCustomerName}}</span> -->
+                                                <!-- <span>{{it.item_number | numberFixedLen:3}}</span> -->
+                                                <div class="input-group" style="width:60%;">
+                                                   <span id="itemCode" class="itemCode{{it.itemId}} input-group-addon"
+                                                   ng-bind="projectOrderName" style="border-right:none;padding-right:0;"></span>
+                                                   <span class="input-group-addon" style="border-left: none; padding-left: 0;">-{{it.item_number | numberFixedLen:3}}</span>
+                                                   <input type="text" class="form-control" name="scoop_full_name"
+                                                      ng-model="it.scoop_full_name" id="scoopfullname{{it.itemId}}">
+                                                </div>
+                                             </div>
                                              <a href="javascript:void(0)"
                                                 ng-click="deleteItemsId(it.itemId,it.item_number)" title="delete"
-                                                style="margin-right:40px;float:right;">
+                                                style="margin-right:30px;margin-top:-25px;float:right;width:40%;text-align:right;">
                                                 <i class="iconDelete glyph-icon fa-times"></i>
                                              </a>
                                           </h4>

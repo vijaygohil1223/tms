@@ -17438,6 +17438,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //New Itemname with order(Project)number.
                     var itemName = $("#item_number").text();
                     $scope.item.item_name += ' - ' + $scope.projectOrderName + '-' + itemName;
+                    $scope.item.scoop_name = $scope.item.item_name;
 
                     $("textarea#item_name").val($scope.item.item_name);
                 }, 100);
@@ -17948,7 +17949,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
-
+                    //scoop_full_name
+                    if(val.scoop_full_name == '')
+                        val.scoop_full_name = val.item_name
+                    
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
 
@@ -28454,6 +28458,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
 
+                    if(val.scoop_full_name == '')
+                        val.scoop_full_name = val.item_name
+                    
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
                     console.log('$scope.jobchainoption', $scope.jobchainoption)
