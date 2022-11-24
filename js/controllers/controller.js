@@ -17949,9 +17949,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
-                    //scoop_full_name
-                    if(val.scoop_full_name == '')
-                        val.scoop_full_name = val.item_name
                     
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
@@ -28457,9 +28454,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     console.log('custom-data', data)
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
-
-                    if(val.scoop_full_name == '')
-                        val.scoop_full_name = val.item_name
                     
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
