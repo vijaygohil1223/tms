@@ -482,13 +482,12 @@ app.filter('CurrencyNumbersCommaformat', function($filter) {
 app.filter('NumbersCommaformat', function($filter) {
     return function(input) {
         if (input == undefined || input == '') {
-            return '';
+            return 0;
         } else {
-            //console.log(input);
+            console.log('in',input);
             //var str1 = input.toFixed(2);
             var decNo = 2;
             var str1 = input;
-            console.log('str1', str1)
             var str=str1.toString();
             var numarray=str.split('.');
             var a=new Array();
