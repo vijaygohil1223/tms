@@ -4334,7 +4334,8 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 var totaPrice = scope.it.total_price;
                 
                 var quantity = angular.element('#Quantity'+scope.it.itemId).val();
-
+                quantity = numberFormatCommaToPoint(quantity);
+                quantity = isNaN(parseFloat(quantity)) ? 0 : quantity; 
                 if (!quantity) {
                     quantity = 1;
                 }

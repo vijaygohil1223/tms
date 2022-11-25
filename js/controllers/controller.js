@@ -17343,7 +17343,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         var price = parseFloat(quantity) * parseFloat(itemPrice);
         price = isNaN(price) ? 0 : Math.round(price * decimalPoint)/decimalPoint
-        
+        console.log('numberFormatCommaToPoint(quantity)',numberFormatCommaToPoint('dasd,534'))
         if (totalChng > 0) {
             $scope.itemPriceUni[id][index].itemTotal = itemTtl;
         } else {
