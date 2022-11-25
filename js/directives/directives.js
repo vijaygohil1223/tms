@@ -4334,8 +4334,10 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 var totaPrice = scope.it.total_price;
                 
                 var quantity = angular.element('#Quantity'+scope.it.itemId).val();
-                quantity = numberFormatCommaToPoint(quantity);
-                quantity = isNaN(parseFloat(quantity)) ? 0 : quantity; 
+                if(quantity.includes(',')){
+                    quantity = numberFormatCommaToPoint(quantity);
+                    quantity = isNaN(parseFloat(quantity)) ? 0 : quantity; 
+                }    
                 if (!quantity) {
                     quantity = 1;
                 }
@@ -4366,7 +4368,11 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 }
                 if(exists){
                     var amount = temp[1];
+                    var decimalCnt = amount.includes('.') ? (amount).toString().split(".")[1].length : 2;
                     var total = amount * quantity;
+                        total = total.toFixed(decimalCnt);
+                    console.log('itemTotal1-111=', total)
+                        
                     if(scope.it == undefined) {
                         scope.it = {};
                     }
@@ -4380,14 +4386,17 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                     if (quantity && price != 0) {
                         var totalItemPrice = parseFloat(total) + parseFloat(totaPrice);
                         scope.it.total_price = totalItemPrice;
+                        var quantityComaa = numberFormatComma(quantity)
                         $('#priceUnit'+scope.it.itemId).val(0);
                         $('#Quantity').val('');
                         scope.counter++;
                         var itemTotal1 = quantity*amount;
+                            itemTotal1 = itemTotal1.toFixed(decimalCnt);
+                        console.log('itemTotal1-@@=', itemTotal1)
                         var itemTotal = itemTotal1.toString().replace('.', ',');  
                         var amount = amount.toString().replace('.', ',');  
                         scope.itemPriceUni[scope.it.itemId].push({
-                            'quantity': quantity,
+                            'quantity': quantityComaa,
                             'pricelist':Price_unit,
                             'itemPrice':amount,
                             'itemTotal':itemTotal

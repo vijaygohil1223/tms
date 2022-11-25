@@ -484,7 +484,6 @@ app.filter('NumbersCommaformat', function($filter) {
         if (input == undefined || input == '') {
             return 0;
         } else {
-            console.log('in',input);
             //var str1 = input.toFixed(2);
             var decNo = 2;
             var str1 = input;
