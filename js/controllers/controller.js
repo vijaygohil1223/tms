@@ -3992,19 +3992,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.itemPriceUni[id].splice(index, 1);
         var decimalPoint = 100;
         var grandTotal = 0;
-        var smPromise = new Promise((resolve, reject) => {
-            $scope.itemPriceUni[id].forEach((element, indx, array) => {
-                let elVal = $scope.itemPriceUni[id][indx].itemTotal;
-                elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
-                decimalPoint = decimalNumberCount(elVal.toString());
-                var subTtl = parseFloat(elVal);
-                grandTotal += isNaN(subTtl) ? 0 : subTtl;
-                if (indx === array.length -1) resolve();
+        if($scope.itemPriceUni[id].length){
+            var smPromise = new Promise((resolve, reject) => {
+                $scope.itemPriceUni[id].forEach((element, indx, array) => {
+                    let elVal = $scope.itemPriceUni[id][indx].itemTotal;
+                    elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
+                    decimalPoint = decimalNumberCount(elVal.toString());
+                    var subTtl = parseFloat(elVal);
+                    grandTotal += isNaN(subTtl) ? 0 : subTtl;
+                    if (indx === array.length -1) resolve();
+                });
             });
-        });
-        smPromise.then(() => {
-            $scope.jobdetail.total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
-        });
+            smPromise.then(() => {
+                $scope.jobdetail.total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
+            });
+        }else{
+            $scope.jobdetail.total_price = '00';
+        }    
     }
     // end job price
 
@@ -17298,20 +17302,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.itemPriceUni[id].splice(index, 1);
         var decimalPoint = 100;
         var grandTotal = 0;
-        var smPromise = new Promise((resolve, reject) => {
-            $scope.itemPriceUni[id].forEach((element, indx, array) => {
-                let elVal = $scope.itemPriceUni[id][indx].itemTotal;
-                console.log('elVal', elVal)
-                elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
-                var decimalPoint = decimalNumberCount(elVal.toString());    
-                var subTtl = parseFloat(elVal);
-                grandTotal += isNaN(subTtl) ? 0 : subTtl;
-                if (indx === array.length -1) resolve();
+        if($scope.itemPriceUni[id].length){
+            var smPromise = new Promise((resolve, reject) => {
+                $scope.itemPriceUni[id].forEach((element, indx, array) => {
+                    console.log('indx=>', indx)
+                    let elVal = $scope.itemPriceUni[id][indx].itemTotal;
+                    console.log('elVal', elVal)
+                    elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
+                    var decimalPoint = decimalNumberCount(elVal.toString());    
+                    var subTtl = parseFloat(elVal);
+                    grandTotal += isNaN(subTtl) ? 0 : subTtl;
+                    if (indx === array.length -1) resolve();
+                });
             });
-        });
-        smPromise.then(() => {
-            $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
-        });
+            smPromise.then(() => {
+                $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
+            });
+        }else{
+            $scope.itemList[parentIndex].total_price = '00';
+        }    
     }
 
 
@@ -28050,20 +28059,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.itemPriceUni[id].splice(index, 1);
         var decimalPoint = 100;
         var grandTotal = 0;
-        var smPromise = new Promise((resolve, reject) => {
-            $scope.itemPriceUni[id].forEach((element, indx, array) => {
-                let elVal = $scope.itemPriceUni[id][indx].itemTotal;
-                console.log('elVal', elVal)
-                elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
-                var decimalPoint = decimalNumberCount(elVal.toString());    
-                var subTtl = parseFloat(elVal);
-                grandTotal += isNaN(subTtl) ? 0 : subTtl;
-                if (indx === array.length -1) resolve();
+        if($scope.itemPriceUni[id].length){    
+            var smPromise = new Promise((resolve, reject) => {
+                $scope.itemPriceUni[id].forEach((element, indx, array) => {
+                    let elVal = $scope.itemPriceUni[id][indx].itemTotal;
+                    console.log('elVal', elVal)
+                    elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
+                    var decimalPoint = decimalNumberCount(elVal.toString());    
+                    var subTtl = parseFloat(elVal);
+                    grandTotal += isNaN(subTtl) ? 0 : subTtl;
+                    if (indx === array.length -1) resolve();
+                });
             });
-        });
-        smPromise.then(() => {
-            $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
-        });
+            smPromise.then(() => {
+                $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
+            });
+        }else{
+            $scope.itemList[parentIndex].total_price = '00';
+        }
     }
 
     $scope.itemPriceUni = [];
