@@ -6086,11 +6086,13 @@ app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compi
                     var len = angular.element('[id^=totalItem_'+scope.jobdetail.job_summmeryId+']').length;
                     scope.counter = len + 1;
                 }
-                
                 var totaPrice = scope.jobdetail.total_price;
                 
                 var quantity = angular.element('#Quantity'+scope.jobdetail.job_summmeryId).val();
-
+                if(quantity.includes(',')){
+                    quantity = numberFormatCommaToPoint(quantity);
+                    quantity = isNaN(parseFloat(quantity)) ? 0 : quantity; 
+                }
                 if (!quantity) {
                     quantity = 1;
                 }
@@ -6122,19 +6124,18 @@ app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compi
                 if(exists){
                     var amount = temp[1];
                     var total = amount * quantity;
-
+                    var decimalCnt = amount.includes('.') ? (amount).toString().split(".")[1].length : 2;
+                    var total = amount * quantity;
+                        total = total.toFixed(decimalCnt);
                     if(scope.it == undefined) {
                         scope.it = {};
                     }
-
                     if(scope.jobdetail.quantity==undefined || scope.jobdetail.itemPrice==undefined) {
                         scope.jobdetail.quantity = [];
                         scope.jobdetail.itemPrice = [];
                     }
-                    
                     scope.jobdetail.quantity[scope.counter] = quantity;
                     scope.jobdetail.itemPrice[scope.counter] = amount;
-
 
                     if (quantity && price != 0) {
                         var totalItemPrice = parseFloat(total) + parseFloat(totaPrice);
@@ -6143,6 +6144,7 @@ app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compi
                         $('#Quantity').val('');
                         scope.counter++;
                         var itemTotal1 = quantity*amount;
+                            itemTotal1 = itemTotal1.toFixed(decimalCnt);
                         var itemTotal = itemTotal1.toString().replace('.', ',');  
                         var amount = amount.toString().replace('.', ',');  
                         scope.itemPriceUni[scope.jobdetail.job_summmeryId].push({

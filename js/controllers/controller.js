@@ -3939,86 +3939,72 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Change job price
     $scope.itemPriceUni = [];
     //change jobitem price module
-    $scope.changeItemField = function (id, index, parentIndex, itemChng = 0) {
+    $scope.changeItemField = function (id, index, parentIndex, totalChng = 0) {
         var quantity = $scope.itemPriceUni[id][index].quantity;
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
         var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
-        var itemAmt = $scope.itemPriceUni[id][index].amtSum;
-        if (!quantity || !itemPrice) {
+        
+        if (!quantity) {
             quantity = 0;
-            itemPrice = 0;
+            $scope.itemPriceUni[id][index].quantity = 0;
         }
-        if (!itemTtl) {
+        if (!itemPrice) {
+            itemPrice = 0;
+            $scope.itemPriceUni[id][index].itemPrice = 0;
+        }
+        if (!itemTtl)
             itemTtl = 0;
-        }
-        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
-        itemPrice = numberFormatCommaToPoint(itemPrice);
-        if (itemPrice == '') {
+        quantity = numberFormatCommaToPoint(quantity);
+        if (quantity == '')
             itemPrice = 0;
-        }
-        var price = quantity * parseFloat(itemPrice);
-        var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
-        if (!oldPrice1) {
-            var oldPrice = 0;
-        } else {
-            var oldPrice = numberFormatCommaToPoint(oldPrice1);
+        itemPrice = numberFormatCommaToPoint(itemPrice);
 
-            /*if(oldPrice1.toString().includes(',')==true){
-                var oldPrice = numberFormatCommaToPoint(oldPrice1);
-            }else{
-                var oldPrice = oldPrice1;
-            }*/
-        }
+        if (itemPrice == '')
+            itemPrice = 0;
 
-        if (itemChng > 0) {
-            price = numberFormatCommaToPoint(itemTtl);
-            if (!price) {
-                price = 0;
-            }
-            //oldPrice = amtTotal;    
-            if (typeof itemAmt !== 'undefined') {
-                var oldPrice = $scope.itemPriceUni[id][index].amtSum;
-            }
-            if (typeof itemAmt === 'undefined') {
-                var oldPrice = quantity * parseFloat(itemPrice);
-            }
-        }
-        if (!oldPrice) {
-            oldPrice = 0;
-        }
-        //var total = $scope.jobdetail[parentIndex].total_price;
-        var total = $scope.jobdetail.total_price;
-        var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
-
-        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
-        if (itemChng > 0) {
+        var decimalPoint = decimalNumberCount(itemPrice);    
+        
+        var price = parseFloat(quantity) * parseFloat(itemPrice);
+        price = isNaN(price) ? 0 : Math.round(price * decimalPoint)/decimalPoint
+        if (totalChng > 0) {
             $scope.itemPriceUni[id][index].itemTotal = itemTtl;
         } else {
-            //$scope.itemPriceUni[id][index].itemTotal = price;
-            $scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price);
+            $scope.itemPriceUni[id][index].itemTotal = price ? numberFormatComma(price) : 0;
         }
         $scope.itemPriceUni[id][index].amtSum = price;
-        //$scope.jobdetail[parentIndex].total_price = totalPrice;
-        $scope.jobdetail.total_price = totalPrice;
+        var grandTotal = 0;
+        var smPromise = new Promise((resolve, reject) => {
+            $scope.itemPriceUni[id].forEach((element, indx, array) => {
+                let elVal = $scope.itemPriceUni[id][indx].itemTotal;
+                elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
+                var subTtl = parseFloat(elVal);
+                //subTtl = Math.round(subTtl * decimalPoint)/decimalPoint;
+                grandTotal += isNaN(subTtl) ? 0 : subTtl;
+                if (indx === array.length -1) resolve();
+            });
+        });
+        smPromise.then(() => {
+            $scope.jobdetail.total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
+        });
     }
-
+    // Delete job price row
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
-
-        var totalPrice1 = $scope.jobdetail.total_price;
-        var totalPrice = totalPrice1.toFixed(2);
-
-        var price1 = $scope.itemPriceUni[id][index].itemTotal;
-
-        var price = numberFormatCommaToPoint(price1);
-
-        if (totalPrice == price) {
-            $scope.jobdetail.total_price = 0;
-        } else {
-            var total = totalPrice - price;
-            $scope.jobdetail.total_price = total;
-        }
-
         $scope.itemPriceUni[id].splice(index, 1);
+        var decimalPoint = 100;
+        var grandTotal = 0;
+        var smPromise = new Promise((resolve, reject) => {
+            $scope.itemPriceUni[id].forEach((element, indx, array) => {
+                let elVal = $scope.itemPriceUni[id][indx].itemTotal;
+                elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
+                decimalPoint = decimalNumberCount(elVal.toString());
+                var subTtl = parseFloat(elVal);
+                grandTotal += isNaN(subTtl) ? 0 : subTtl;
+                if (indx === array.length -1) resolve();
+            });
+        });
+        smPromise.then(() => {
+            $scope.jobdetail.total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
+        });
     }
     // end job price
 
@@ -17298,23 +17284,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
-        var totalPrice1 = $scope.itemList[parentIndex].total_price;
-        //var totalPrice = totalPrice1.toFixed(2);
-        var totalPrice = parseFloat(totalPrice1).toFixed(3);
-        var price1 = $scope.itemPriceUni[id][index].itemTotal;
-        var price = numberFormatCommaToPoint(price1);
-        if (totalPrice == price) {
-            $scope.itemList[parentIndex].total_price = 0;
-        } else {
-            var total = totalPrice - price;
-            $scope.itemList[parentIndex].total_price = parseFloat(total).toFixed(2);
-        }
+        // var totalPrice1 = $scope.itemList[parentIndex].total_price;
+        // //var totalPrice = totalPrice1.toFixed(2);
+        // var totalPrice = parseFloat(totalPrice1).toFixed(3);
+        // var price1 = $scope.itemPriceUni[id][index].itemTotal;
+        // var price = numberFormatCommaToPoint(price1);
+        // if (totalPrice == price) {
+        //     $scope.itemList[parentIndex].total_price = 0;
+        // } else {
+        //     var total = totalPrice - price;
+        //     $scope.itemList[parentIndex].total_price = parseFloat(total).toFixed(2);
+        // }
         $scope.itemPriceUni[id].splice(index, 1);
+        var decimalPoint = 100;
+        var grandTotal = 0;
+        var smPromise = new Promise((resolve, reject) => {
+            $scope.itemPriceUni[id].forEach((element, indx, array) => {
+                let elVal = $scope.itemPriceUni[id][indx].itemTotal;
+                console.log('elVal', elVal)
+                elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
+                var decimalPoint = decimalNumberCount(elVal.toString());    
+                var subTtl = parseFloat(elVal);
+                grandTotal += isNaN(subTtl) ? 0 : subTtl;
+                if (indx === array.length -1) resolve();
+            });
+        });
+        smPromise.then(() => {
+            $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
+        });
     }
 
 
     $scope.itemPriceUni = [];
-    //change item price module
+    //change item price module scoop
     $scope.changeItemField = function (id, index, parentIndex, totalChng = 0) {
         var quantity = $scope.itemPriceUni[id][index].quantity;
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
@@ -17357,9 +17359,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let elVal = $scope.itemPriceUni[id][indx].itemTotal;
                 elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
                 var subTtl = parseFloat(elVal);
-                //subTtl = Math.round(subTtl * decimalPoint)/decimalPoint;
                 grandTotal += isNaN(subTtl) ? 0 : subTtl;
-                console.log('grandTotal', grandTotal)
                 if (indx === array.length -1) resolve();
             });
         });
@@ -28036,170 +28036,89 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }, 2000);
     
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
-
-        var totalPrice1 = $scope.itemList[parentIndex].total_price;
-        var totalPrice = totalPrice1.toFixed(2);
-
-        var price1 = $scope.itemPriceUni[id][index].itemTotal;
-
-        var price = numberFormatCommaToPoint(price1);
-
-        if (totalPrice == price) {
-            $scope.itemList[parentIndex].total_price = 0;
-        } else {
-            var total = totalPrice - price;
-            $scope.itemList[parentIndex].total_price = total;
-        }
-
+        // var totalPrice1 = $scope.itemList[parentIndex].total_price;
+        // var totalPrice = totalPrice1.toFixed(2);
+        // var price1 = $scope.itemPriceUni[id][index].itemTotal;
+        // var price = numberFormatCommaToPoint(price1);
+        // if (totalPrice == price) {
+        //     $scope.itemList[parentIndex].total_price = 0;
+        // } else {
+        //     var total = totalPrice - price;
+        //     $scope.itemList[parentIndex].total_price = total;
+        // }
         $scope.itemPriceUni[id].splice(index, 1);
+        //$scope.itemPriceUni[id].splice(index, 1);
+        var decimalPoint = 100;
+        var grandTotal = 0;
+        var smPromise = new Promise((resolve, reject) => {
+            $scope.itemPriceUni[id].forEach((element, indx, array) => {
+                let elVal = $scope.itemPriceUni[id][indx].itemTotal;
+                console.log('elVal', elVal)
+                elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
+                var decimalPoint = decimalNumberCount(elVal.toString());    
+                var subTtl = parseFloat(elVal);
+                grandTotal += isNaN(subTtl) ? 0 : subTtl;
+                if (indx === array.length -1) resolve();
+            });
+        });
+        smPromise.then(() => {
+            $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
+        });
     }
 
     $scope.itemPriceUni = [];
-    //change item price module
-    $scope.changeItemField = function (id, index, parentIndex, itemChng = 0) {
+    //change item price module scopp-popup
+    $scope.changeItemField = function (id, index, parentIndex, totalChng = 0) {
         var quantity = $scope.itemPriceUni[id][index].quantity;
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
         var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
         var itemAmt = $scope.itemPriceUni[id][index].amtSum;
-        if (!quantity || !itemPrice) {
+        if (!quantity) {
             quantity = 0;
-            itemPrice = 0;
+            $scope.itemPriceUni[id][index].quantity = 0;
         }
-        if (!itemTtl) {
+        if (!itemPrice) {
+            itemPrice = 0;
+            $scope.itemPriceUni[id][index].itemPrice = 0;
+        }
+        if (!itemTtl)
             itemTtl = 0;
-        }
         //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
-        itemPrice = numberFormatCommaToPoint(itemPrice);
-        if (itemPrice == '') {
+        quantity = numberFormatCommaToPoint(quantity);
+        if (quantity == '')
             itemPrice = 0;
-        }
-        var price = quantity * parseFloat(itemPrice);
-        var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
-        if (!oldPrice1) {
-            var oldPrice = 0;
-        } else {
-            var oldPrice = numberFormatCommaToPoint(oldPrice1);
-            /*
-            if(oldPrice1.toString().includes(',')==true){
-                var oldPrice = numberFormatCommaToPoint(oldPrice1);
-            }else{
-                var oldPrice = oldPrice1;
-            }
-            */
-        }
+        itemPrice = numberFormatCommaToPoint(itemPrice);
 
-        if (itemChng > 0) {
-            price = numberFormatCommaToPoint(itemTtl);
-            if (!price) {
-                price = 0;
-            }
-            //oldPrice = amtTotal;    
-            if (typeof itemAmt !== 'undefined') {
-                var oldPrice = $scope.itemPriceUni[id][index].amtSum;
-            }
-            if (typeof itemAmt === 'undefined') {
-                var oldPrice = quantity * parseFloat(itemPrice);
-            }
-        }
-        if (!oldPrice) {
-            oldPrice = 0;
-        }
-        var total = $scope.itemList[parentIndex].total_price;
+        if (itemPrice == '')
+            itemPrice = 0;
 
-        var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
-        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
-        if (itemChng > 0) {
+        var decimalPoint = decimalNumberCount(itemPrice);    
+        
+        var price = parseFloat(quantity) * parseFloat(itemPrice);
+        price = isNaN(price) ? 0 : Math.round(price * decimalPoint)/decimalPoint
+        console.log('numberFormatCommaToPoint(quantity)',numberFormatCommaToPoint('dasd,534'))
+        if (totalChng > 0) {
             $scope.itemPriceUni[id][index].itemTotal = itemTtl;
         } else {
-            //$scope.itemPriceUni[id][index].itemTotal = price;
-            $scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price);
+            $scope.itemPriceUni[id][index].itemTotal = price ? numberFormatComma(price) : 0;
         }
         $scope.itemPriceUni[id][index].amtSum = price;
-        $scope.itemList[parentIndex].total_price = totalPrice;
-    }
-        // Demo calculation...
-        $scope.changeItemField_demo = function (id, index, parentIndex, itemChng = 0) {
-            console.log('itemChng', itemChng)
-            var quantity = $scope.itemPriceUni[id][index].quantity;
-            var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
-            console.log('itemPrice', typeof itemPrice)
-            var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
-            var itemAmt = $scope.itemPriceUni[id][index].amtSum;
-            
-            console.log('quantity', quantity)
-            console.log('itemTtl', itemTtl)
-            var sumAll = 0;
-            var quantity = (!quantity || quantity != '') ? 0 : quantity; 
-            //var itemPrice = (itemPrice!=0 || itemPrice!='')  ? parseFloat(numberFormatCommaToPoint(itemPrice)) : 0;
-            var itemPrice = (itemPrice && (itemPrice!=0 || itemPrice!='') )  ? parseFloat(numberFormatCommaToPoint(itemPrice)) : 0;
-            console.log('itemPrice', itemPrice)
-            var Qprice = quantity * itemPrice;
-            console.log('Qprice', Qprice)
-            $scope.itemPriceUni[id].forEach(element => {
-                var stval = parseFloat(numberFormatCommaToPoint(element.itemTotal));
-                if(itemTtl != element.itemTotal){
-                    sumAll += isNaN(stval) ? 0 : stval;
-                    console.log('element-in',sumAll )
-                }
-                console.log('sumAll', sumAll)
+        //$scope.itemList[parentIndex].total_price = totalPrice;
+        var grandTotal = 0;
+        var smPromise = new Promise((resolve, reject) => {
+            $scope.itemPriceUni[id].forEach((element, indx, array) => {
+                let elVal = $scope.itemPriceUni[id][indx].itemTotal;
+                elVal = (elVal != 0 || elVal != '') ? numberFormatCommaToPoint(elVal) : 0;
+                var subTtl = parseFloat(elVal);
+                grandTotal += isNaN(subTtl) ? 0 : subTtl;
+                if (indx === array.length -1) resolve();
             });
-            var totalValue = itemChng > 0 ? parseFloat(numberFormatCommaToPoint(itemTtl))+parseFloat(sumAll) : parseFloat(Qprice+sumAll).toFixed(2);
-            console.log('sumAll', typeof sumAll)
-            console.log('numberFormatCommaToPoint(itemTtl)', typeof numberFormatCommaToPoint(itemTtl))
-            console.log('Qprice=FInal',totalValue  )
-    
-            if (!quantity || !itemPrice) {
-                quantity = 0;
-                itemPrice = 0;
-            }
-            if (!itemTtl) {
-                itemTtl = 0;
-            }
-            //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
-            //itemPrice = numberFormatCommaToPoint(itemPrice);
-            if (itemPrice == '') {
-                itemPrice = 0;
-            }
-            var price = quantity * parseFloat(itemPrice);
-            var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
-            if (!oldPrice1) {
-                var oldPrice = 0;
-            } else {
-                var oldPrice = numberFormatCommaToPoint(oldPrice1);
-            }
-    
-            if (itemChng > 0) {
-                price = numberFormatCommaToPoint(itemTtl);
-                if (!price) {
-                    price = 0;
-                }
-                //oldPrice = amtTotal;    
-                if (typeof itemAmt !== 'undefined') {
-                    var oldPrice = $scope.itemPriceUni[id][index].amtSum;
-                }
-                if (typeof itemAmt === 'undefined') {
-                    var oldPrice = quantity * parseFloat(itemPrice);
-                }
-            }
-            if (!oldPrice) {
-                oldPrice = 0;
-            }
-            var total = $scope.itemList[parentIndex].total_price;
-    
-            var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
-            //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
-            if (itemChng > 0) {
-                $scope.itemPriceUni[id][index].itemTotal = itemTtl;
-            } else {
-                //$scope.itemPriceUni[id][index].itemTotal = price;
-                $scope.itemPriceUni[id][index].itemTotal = price > 0 ? numberFormatComma(price) : 0;
-            }
-            $scope.itemPriceUni[id][index].amtSum = price;
-            //$scope.itemList[parentIndex].total_price = totalPrice;
-            $scope.itemList[parentIndex].total_price = totalValue;
-        }
-        // End demo
-    
+        });
+        smPromise.then(() => {
+            $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
+        });
+    }
+    // End scoop-popup calculation on change
 
     $scope.joboption = [];
     rest.path = 'Jobsummeryget';

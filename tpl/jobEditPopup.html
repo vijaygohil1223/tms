@@ -1,12 +1,6 @@
 <style type="text/css">
 .modal-dialog {
     width: 90%;
-    /* top: -30px;
-    left: 132px; */
-}
-.panel-body {
-    /*padding: 15px;*/
-    /*height: 350px;*/
 }
 .app-content-body {
     float:none;
@@ -20,14 +14,12 @@
     overflow-y: auto;
     padding: 0px 15px;
 }
-
 /*.bolck {
     float: left;
     width: 100%;
     padding: 15px;
     background: #fff;
 }*/
-
 .bolck .control-label {
     text-align: right;
     font-size: 12px;
@@ -425,7 +417,7 @@
                                                                    <div ng-repeat="it1 in itemPriceUni[jobdetail.job_summmeryId] track by $index" class="col-sm-12 itemfield" id="totalItem_{{jobdetail.job_summmeryId}}">
                                                                       <div class="col-sm-2">
                                                                          <div class="form-group">
-                                                                            <input type="text" class="form-control" name="itemQuantity" id="itemQuantity{{jobdetail.job_summmeryId}}" ng-change="changeItemField(jobdetail.job_summmeryId,$index,$parent.$index)" ng-model="it1.quantity" numbers-only/>
+                                                                            <input type="text" class="form-control" name="itemQuantity" id="itemQuantity{{jobdetail.job_summmeryId}}" ng-change="changeItemField(jobdetail.job_summmeryId,$index,$parent.$index)" ng-model="it1.quantity" allow-decimal-comma-number />
                                                                          </div>
                                                                       </div>
                                                                       <div class="col-sm-4" style="margin-top:1%;"> 
@@ -455,10 +447,11 @@
                                                                     </div>
                                                                     <div class="col-sm-12 put_row">
                                                                       <div class="col-sm-2">
-                                                                         <div class="form-group">
+                                                                        <div class="form-group">
                                                                             <!-- <label class="control-label">Total amount</label>  -->
-                                                                            <input type="text" numbers-only class="form-control" name="Quantity" id="Quantity{{jobdetail.job_summmeryId}}" ng-model="quantity" min="0"  placeholder="Quantity" />
-                                                                         </div>
+                                                                            <!-- <input type="text" numbers-only class="form-control" name="Quantity" id="Quantity{{jobdetail.job_summmeryId}}" ng-model="quantity" min="0"  placeholder="Quantity" /> -->
+                                                                            <input type="text" allow-decimal-comma-number class="form-control" name="Quantity" id="Quantity{{jobdetail.job_summmeryId}}" ng-model="quantity" placeholder="Quantity" />
+                                                                        </div>
                                                                       </div>
                                                                       <div class="col-sm-4">
                                                                          <div class="form-group">

@@ -91,7 +91,7 @@
                                                                   <input type="text" class="form-control"
                                                                      name="itemQuantity" id="itemQuantity{{it.itemId}}"
                                                                      ng-change="changeItemField(it.itemId,$index,$parent.$index)"
-                                                                     ng-model="it1.quantity" numbers-only />
+                                                                     ng-model="it1.quantity" allow-decimal-comma-number />
                                                                </div>
                                                             </div>
                                                             <div class="col-sm-4" style="margin-top:1%;">
@@ -139,9 +139,9 @@
                                                             <div class="col-sm-2">
                                                                <div class="form-group">
                                                                   <!-- <label class="control-label">Total amount</label>  -->
-                                                                  <input type="text" numbers-only class="form-control"
+                                                                  <input type="text" allow-decimal-comma-number class="form-control"
                                                                      name="Quantity" id="Quantity{{it.itemId}}"
-                                                                     ng-model="quantity" min="0"
+                                                                     ng-model="quantity"
                                                                      placeholder="Quantity" />
                                                                </div>
                                                             </div>
