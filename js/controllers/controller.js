@@ -10003,6 +10003,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //RandomPassword Generate
     $scope.getRandomPassword = function () {
         $scope.userprofiledata.vPassword = randomPassword(10)
+        // Internal user
+        var vPass = angular.element('#vPass').attr('type');
+        if(vPass)    
+            angular.element('#vPass').attr('type', 'text');
     }
 
     //Change Input Type
@@ -10012,6 +10016,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#vPassword').attr('type', 'text');
         } else {
             angular.element('#vPassword').attr('type', 'password');
+        }
+    }
+
+    //Change Input Type Internal user
+    $scope.changeInputTypeInternal = function () {
+        var vPass = angular.element('#vPass').attr('type');
+        if (vPass == 'password') {
+            angular.element('#vPass').attr('type', 'text');
+        } else {
+            angular.element('#vPass').attr('type', 'password');
         }
     }
 
@@ -11985,6 +11999,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.basePriceAdd = function () {
         var selectedPrices = $('#priceUnit').val();
+        console.log('selectedPrices', selectedPrices)
         if (!$scope.priceBasiList.length || $scope.priceBasiList == undefined) {
             $scope.priceBasiList = [];
         }
@@ -12066,7 +12081,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     var exists = false;
                     angular.forEach($scope.priceBasiList, function (val, i) {
-                        if (val.basePriceUnit == data.name) {
+                        if (val.childPriceId == data.child_price_id) {
+                            //if (val.basePriceUnit == data.name) {    
                             exists = true;
                         }
                     })
@@ -17258,6 +17274,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
         var indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
+            if(indirectCustomerName == null)
+                indirectCustomerName = '';
         if (source && !target) {
             $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - English (US)';
         } else if (!source && target) {
@@ -18040,6 +18058,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
+                    console.log('jobChainoption', jobChainoption)
 
                     var chaintext = val.attached_workflow.split('jobChain -');
                     //console.log('jobtext', jobtext[1])
@@ -22379,6 +22398,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         if ($('#' + frmId).valid()) {
             if ($scope.jobchain.job_chain_id) {
+                
+                if($scope.jobchain.project_type)
+                    $scope.jobchain.project_type = $scope.jobchain.project_type.toString().includes(',') ? $scope.jobchain.project_type.split(',')[1] : $scope.jobchain.project_type;   
                 $scope.customer = [];
                 for (var i = 0; i < angular.element("[id^=Cuscode]").length; i++) {
                     var Ccode = angular.element('#Cuscode' + i).text();
@@ -22395,6 +22417,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.jobchain.creator = creator;
                 //console.log("$scope.jobchain", $scope.jobchain);return;
                 $routeParams.id = $scope.jobchain.job_chain_id;
+                console.log('$scope.jobchain',$scope.jobchain)
+
                 rest.path = 'jobChainupdate';
                 rest.put($scope.jobchain).success(function (data) {
 

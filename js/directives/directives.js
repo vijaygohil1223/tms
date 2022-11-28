@@ -4350,6 +4350,7 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 }
                 var temp = price.split(',');
                 var Price_unit = temp[0];
+                console.log('Price_unit', Price_unit)
 
                 //check if priceUitt already exists
                 var exists = true;

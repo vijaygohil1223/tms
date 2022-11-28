@@ -85,12 +85,17 @@
                      </div>
                   </div>
                </div>
-               <div class="panel-heading font-bold">Client</div>
+               <div class="panel-heading font-bold">Client   
+                  
+               </div>
                <div class="panel-body">
                   <div class="col-sm-12">
-                     <div class="col-sm-2">
+                     <div class="col-sm-3" style="width:300px;">
                         <div class="form-group">
-                           <label>Use job chain for</label>
+                           <label style="margin-bottom:12px;">
+                              Use job chain for 
+                           </label>
+                           <label class="i-checks i-checks-sm" style="margin-left:15px;"> <input type="checkbox" name="all_customer" ng-model="jobchain.all_customer" ng-true-value="1" ng-false-value="0" ng-checked="jobchain.all_customer==1 || !jobchain.job_chain_id" > <i></i>Check All client  </label>
                            <select class="form-control m-b w-md" name="jobchainName" ng-model="jobchain.customer" ng-change="jobChainCustomerAdd(jobchain.customer)" required>
                               <optgroup label="Client">
                                  <option class="summertablebc " ng-repeat="jobdc in customerGroup" value="c,{{jobdc.iClientId}},{{jobdc.vUserName}}">{{jobdc.vUserName}}</option>
@@ -103,7 +108,7 @@
                         </div>
                      </div>
                      <customer-group-clone>
-                        <button class="btn-info but" style="margin-top: 28px;margin-left:92px;">ok</button>
+                        <button class="btn-info but" style="margin-top:33px;">ok</button>
                      </customer-group-clone>
                   </div>
                   <div class="col-sm-12">

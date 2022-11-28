@@ -81,7 +81,8 @@
                                                     <div class="form-group">
                                                         <div class="col-sm-8">
                                                             <label>Profile Picture</label>
-                                                            <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)"  ng-required='!imageSrc && !userprofiledata.vProfilePic'/>
+                                                            <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)" />
+                                                            <!-- <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)"  ng-required='!imageSrc && !userprofiledata.vProfilePic'/> -->
                                                         </div>
                                                         <div class="col-sm-4">
                                                             <div class="thumb-info mb-md">
@@ -107,8 +108,13 @@
                                                     </div>
                                                     <div class="form-group" ng-show="!userprofiledata.iUserId">
                                                         <label>Password</label>
-                                                        <input type="password" class="form-control" data-clipboard-text="{{userprofiledata.vPassword}}" id="vPass"  name="vPassword" ng-model="userprofiledata.vPassword" required />
+                                                        <div class="input-group">
+                                                            <input type="password" class="form-control" data-clipboard-text="{{userprofiledata.vPassword}}" id="vPass"  name="vPassword" ng-model="userprofiledata.vPassword" required />
+                                                            <span class="input-group-addon"><a href="javascript:void(0)" ng-click="getRandomPassword()"><i style="" class="fa fa-key"></i><span style="margin-left: 6px;">Auto Generate</span></a></span>
+                                                        </div>
+                                                        <a href="javascript:void(0)" id="viewPassword" ng-click="changeInputTypeInternal()"><i class="fa fa-eye"></i><span style="margin-left: 6px;">View Password</span></a>
                                                     </div>
+                                                    
                                                     <div class="form-group" ng-show="!userprofiledata.iUserId">
                                                         <label>Confirm Password</label>
                                                         <input type="password" class="form-control"  id="cPass"  name="cPassword" ng-change="ConfirmPass(userprofiledata.vPassword,matchPassword)" ng-model="matchPassword" ng-required="!userprofiledata.iUserId"/>

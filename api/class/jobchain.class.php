@@ -179,12 +179,16 @@ class jobchain {
 				$jobChainArray = array();
 				
 				foreach ($data as $key => $value) {
-					if($value['customer']){
-						foreach (json_decode($value['customer'],true) as $key1 => $value1) {
-							if($value1['Cusid'] == $customer['client']){
-								array_push($jobChainArray, $data[$key]);
+					if($value['all_customer'] ==1){
+						array_push($jobChainArray, $data[$key]);
+					}else{
+						if($value['customer']){
+							foreach (json_decode($value['customer'],true) as $key1 => $value1) {
+								if($value1['Cusid'] == $customer['client']){
+									array_push($jobChainArray, $data[$key]);
+								}
 							}
-						}		
+						}			
 					}
 				}
 				return $jobChainArray;
