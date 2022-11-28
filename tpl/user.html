@@ -36,6 +36,7 @@
                                 <th>Status</th>
                                 <th>Email</th>
                                 <th>Csv Import</th>
+                                <th>Profile Activate</th>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="user in userlist">
@@ -59,6 +60,10 @@
                                         <span ng-if="!user.csv_import">-</span>
                                         <span ng-if="user.csv_import">Imported</span>
                                     </td>
+                                    <td>
+                                        <span ng-if="user.activation_status==1"> Activated</span>
+                                        <span ng-if="user.activation_status!=1" style="color:#f05050;">Not Activated</span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -77,6 +82,7 @@
                                 </th>
                                 <th>Position</th>
                                 <th>Email</th>
+                                <th>Profile Activate</th>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="user in userlist">
@@ -138,6 +144,10 @@
                                             <!-- </br>
                                         <strong>Email</strong> -->
                                         </div>
+                                    </td>
+                                    <td>
+                                        <span ng-if="user.activation_status==1"> Activated</span>
+                                        <span ng-if="user.activation_status!=1" style="color:#f05050;">Not Activated</span>
                                     </td>
                                 </tr>
                             </tbody>

@@ -131,7 +131,7 @@ class users {
         //$data = $this->_db->get(TBL_USERS);
         /*$data = $this->_db->rawQuery("SELECT tu.*,tut.vType FROM tms_users As tu INNER JOIN tms_user_type As tut on tu.vResourceType = tut.iTypeId WHERE iFkUserTypeId = $type");*/
         if($type == 1){
-            $data = $this->_db->rawQuery("SELECT tu.*,tut.vType,tup.position_name,tus.status_name FROM tms_users As tu INNER JOIN tms_user_type As tut on tu.vResourceType = tut.iTypeId INNER JOIN tms_user_position As tup ON tup.position_id = tu.vResourcePosition INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type && activation_status = 1");
+            $data = $this->_db->rawQuery("SELECT tu.*,tut.vType,tup.position_name,tus.status_name FROM tms_users As tu INNER JOIN tms_user_type As tut on tu.vResourceType = tut.iTypeId INNER JOIN tms_user_position As tup ON tup.position_id = tu.vResourcePosition INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
         }else{
             //$data = $this->_db->rawQuery("SELECT tu.*,tus.status_name FROM tms_users As tu  INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type && activation_status = 1");
             $data = $this->_db->rawQuery("SELECT tu.*,tus.status_name FROM tms_users As tu  INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
@@ -215,8 +215,8 @@ class users {
             $user['iFkUserTypeId'] = '1';
             $user['org_pass'] = $user['vPassword'];
             $user['vPassword'] = md5($user['vPassword']);
-            $user['vProfilePic'] = $this->uploadimage($user);
-            $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
+            $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : ''; 
+            $user['dtBirthDate'] = (isset($user['dtBirthDate']) && $user['dtBirthDate'] != 'Invalid Date') ? date('Y-m-d', strtotime($user['dtBirthDate'])) : '0000-00-00';
             $user['dtCreationDate'] = $user['dtCreationDate'];
             $user['dtCreatedDate'] = date('Y-m-d H:i:s');
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
@@ -285,7 +285,7 @@ class users {
         }else {
             $user['iFkUserTypeId'] = '2';
             $user['vPassword'] = md5($user['vPassword']);
-            $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : 'user-icon.png';
+            $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : '';
             $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
             $user['dtCreationDate'] = date('Y-m-d H:i:s')/*$user['dtCreationDate']*/;
             $user['dtCreatedDate'] = date('Y-m-d H:i:s');
