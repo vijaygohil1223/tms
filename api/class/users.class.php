@@ -402,10 +402,14 @@ class users {
 
     public function saveuserprofileexternelupdate($id, $user) {
         $email = self::getUserAllfile('vEmailAddress',$user['vEmailAddress']);
+        $uId = $user['iUserId'];
+        $emailid = $user['vEmailAddress'];
+        $emailExsists = $this->_db->rawQuery("SELECT * FROM tms_users WHERE vEmailAddress = '$emailid' AND iUserId != $uId");
         if ($this->getUser_Username()) {
             $return['status'] = 422;
             $return['msg'] = 'User name already exists.';
-        } else if($email['iUserId'] != $id && $email['vEmailAddress'] ==  $user['vEmailAddress']) {
+        //} else if($email['iUserId'] != $id && $email['vEmailAddress'] ==  $user['vEmailAddress']) {
+        } else if($emailExsists) {
             $return['status'] = 422;
             $return['msg'] = 'Email address already exists.';
         } else if($user['vEmailAddress'] == $user['vSecondaryEmailAddress']){
@@ -429,7 +433,8 @@ class users {
                 }   
                 $user['vProfilePic'] = $this->uploadimage($user);
             }
-            $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
+            if(($user['dtBirthDate'] != 'Invalid date'))
+                $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
             unset($user['image']);
             $this->_db->where('iUserId', $id);

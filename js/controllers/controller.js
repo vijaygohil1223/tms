@@ -10135,8 +10135,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.userprofiledata.dtLast_job = '';
         
     }
+    var userLastJob = '';
+    if ($routeParams.id != undefined) {
+        rest.path = 'getExternalUserJobs/' + $routeParams.id;
+        rest.get().success(function (data) {
+            let resDate = new Date(Math.max.apply(null, data.map(function(e) {
+                if(e.created_date)
+                    return new Date(e.created_date);
+              })));
+            if(resDate)
+                userLastJob = moment(resDate).format($scope.dateFormatGlobal);
+            //console.log('userLastJob', userLastJob )
+        });    
+    }    
 
-        // Europe country form json file
+    // Europe country form json file
     // api - https://restcountries.com/v3.1/region/europe
     $scope.europeCountry = [];
     fetch('country-europe.json', { method: 'GET'}).then(function (response) {
@@ -10195,7 +10208,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             else
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
             
-            $scope.userprofiledata.dtLast_job = moment($scope.userprofiledata.dtLast_job).format($scope.dateFormatGlobal);
+            $scope.userprofiledata.dtLast_job = userLastJob;
             if ($scope.userprofiledata.dtLast_job == 'Invalid date')
                 $scope.userprofiledata.dtLast_job = '';
                 
