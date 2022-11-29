@@ -12336,8 +12336,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 notification('Please create user', 'warning');
                 return false;
             }
-            var validVatNo = angular.element("#vatResponseFormTable tr td:first-child").find('span').hasClass('validStyle');
-            var Norwegian = angular.element("#true").text();
+            //var validVatNo = angular.element("#vatResponseFormTable tr td:first-child").find('span').hasClass('validStyle');
+            //var Norwegian = angular.element("#true").text();
+            var validVatNo = true;
+            var Norwegian = 'true';
             if (validVatNo || Norwegian == 'true') {
                 if ($scope.paymentData.iPaymentId != '' && $scope.paymentData.iPaymentId != undefined) {
                     $scope.payament_data = {};
@@ -12428,7 +12430,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //LU26375245
     //vat number api
-
     $scope.vatCount = function (payment) {
         console.log("payment-vat", payment);
         if (payment == 'paymentDataNotAvailble') {
@@ -12451,26 +12452,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (payment.country_code && payment.tax_id) {
             rest.path = "getVatcount/" + payment.country_code + '/' + payment.tax_id;
             rest.get().success(function (data) {
+                $scope.payment.tax_id = payment.country_code + payment.tax_id;
                 if (data.From == 'europa') {
                     $scope.payment.country_code = payment.country_code;
-                    // if (data) {
-                    //     if (data.data) {
-                    //         $scope.payment.tax_id = payment.country_code + payment.tax_id;
-                    //         $scope.vatList = data.data.substring(12250, 13222);
-                    //     }
-                    // }
-
-                    // if ($scope.vatList.length > 0) {
-                    //     angular.element('.vatNumberValid').html($scope.vatList);
-                    //     angular.element('.invalidStyle').text('No, invalid VAT number');
-                    //     $scope.blockVat = true;
-                    //     angular.element('#vatResponseFormTable').addClass('table');
-                    //     angular.element('#vatResponseFormTable').addClass('table-bordered');
-                    // } else {
-                    //     notification('Unable to get vat information, please try again.', 'warning');
-                    //     angular.element('.vatNumberValid').html('');
-                    // }
-
+                    
                     if (data) {
                         if (data.data) {
                             $scope.payment.tax_id = payment.country_code + payment.tax_id;
@@ -12479,8 +12464,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             // var part = str.substring( str.lastIndexOf(":") + 1, str.lastIndexOf(";") );
                         }
                     }
-
-                    console.log('$scope.vatList', $scope.vatList)
 
                     if ($scope.vatList.valid == true) {
                         let response = '';

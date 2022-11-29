@@ -389,7 +389,6 @@ app.filter('customNumber', function($filter,$window) {
         var numFix = 2;
         if (numStr.includes('.')) {
             var dec = numStr.split('.')[1].length;
-            console.log('dec', dec)
             if(dec == 3)
                 numFix = 3;
             if(dec > 3)

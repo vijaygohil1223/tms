@@ -103,9 +103,19 @@ class payment {
             //$url = "http://apilayer.net/api/validate?access_key=13b874bb136eff80a24f5c03888262c9&vat_number=".$country1.$vatnum1."&format=1";
             $url = "http://apilayer.net/api/validate?access_key=13b874bb136eff80a24f5c03888262c9&vat_number=".$country1.$vatnum1."&format=1";
 
-            $data = file_get_contents($url);
-            $data = json_decode($data);
+            // $data = file_get_contents($url);
             
+            // $data = json_decode($data);
+
+            $curl_handle=curl_init();
+            curl_setopt($curl_handle, CURLOPT_URL,$url);
+            curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, 2);
+            curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
+            //curl_setopt($curl_handle, CURLOPT_USERAGENT, 'Your application name');
+            $data = curl_exec($curl_handle);
+            curl_close($curl_handle);
+
+
             // sol -3
 /*             $timeout = 30;
             $response = array ();
@@ -120,7 +130,7 @@ class payment {
             </tns1:checkVat>
             </s11:Body>
             </s11:Envelope>";
-
+            
             $opts = array (
             'http' => array (
             'method' => 'POST',
@@ -137,8 +147,7 @@ class payment {
             foreach ( $keys as $key )
                 preg_match ( sprintf ( $pattern, $key ), $matches [2], $value ) && $response [$key] = $value [2];
             } */
-
-            $return['data'] = $data;
+            $return['data'] = $data ? json_decode($data) : '';
             $return['From'] = 'europa';
             return $return;
         }    

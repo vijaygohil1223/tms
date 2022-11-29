@@ -1070,15 +1070,11 @@ class jobs_detail
 
     public function jobdetailresourceGet()
     {
-
-        $this->_db->where('iFkUserTypeId', 2);
-
-        $this->_db->where('eUserStatus', 3);
-
-        $this->_db->where('activation_status', 1);
-
-        $data =  $this->_db->get('tms_users');
-
+        // $this->_db->where('iFkUserTypeId', 2);
+        // $this->_db->where('eUserStatus', 3);
+        // $this->_db->where('activation_status', 1);
+        // $data =  $this->_db->get('tms_users');
+        $data = $this->_db->rawQuery("select * from tms_users where iFkUserTypeId = 2 AND eUserStatus!=4 AND activation_status=1");
         return $data;
     }
 
@@ -1086,23 +1082,15 @@ class jobs_detail
 
     public function jobSummeryDetailsAutoChangeon($orderId, $autoId)
     {
-
         $this->_db->where('job_summmeryId', $orderId);
-
         $info =  $this->_db->update('tms_summmery_view', array('auto_job' => '0'));
-
         return $info;
     }
 
-
-
     public function jobSummeryDetailsAutoChangeoff($orderId, $autoId)
     {
-
         $this->_db->where('job_summmeryId', $orderId);
-
         $info =  $this->_db->update('tms_summmery_view', array('auto_job' => $autoId));
-
         return $info;
     }
 
@@ -1112,25 +1100,15 @@ class jobs_detail
     {
 
         if (isset($data['jobnumber']))
-
             $jobnumber = $data['jobnumber'];
-
         else
-
             $jobnumber = " ";
-
         if (isset($data['jduedate']))
-
             $duedate = $data['jduedate'];
-
         else
-
             $duedate =  " ";
-
         if (isset($data['jobEmail']))
-
             $to = $data['jobEmail'];
-
         else
             $to = " ";
         if (isset($data['item_status']))
