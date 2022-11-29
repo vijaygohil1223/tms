@@ -351,11 +351,16 @@ class users {
 
     public function saveuserprofileinternalupdate($id, $user) {
         $email = $user['vEmailAddress'];
+        $vUserName = $user['vUserName'];
         $uId = $user['iUserId'];
         $emailExsists = $this->_db->rawQuery("SELECT * FROM tms_users WHERE vEmailAddress = '$email'  AND iUserId != $uId");
+        $vUserName = $this->_db->rawQuery("SELECT * FROM tms_users WHERE vUserName = '$vUserName' AND iUserId != $uId");
         if($emailExsists){
                 $return['status'] = 422;
                 $return['msg'] = 'Email address already exists.';
+        }else if($vUserName){
+            $return['status'] = 422;
+            $return['msg'] = 'UserName already exists.';
         }else{
             if (isset($user['image'])) {
                 if(isset($id)){
@@ -378,6 +383,7 @@ class users {
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
             unset($user['image']);
             $this->_db->where('iUserId', $id);
+            //echo $this->_db->getLastQuery();
             if ($this->_db->update(TBL_USERS, $user)) {
                 $return['status'] = 200;
                 $return['msg'] = 'Updated Successfully.';

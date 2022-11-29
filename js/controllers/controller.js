@@ -8961,6 +8961,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
+    $scope.sendAcountActivationlink = function (id) {
+        if(id && $scope.userprofiledata){
+            if($scope.userprofiledata.vEmailAddress){
+                rest.path = 'sendAcountActivationlink'
+                rest.post($scope.userprofiledata).success(function (result) {
+                    console.log('result', result)
+                    if(result.status == 200){
+                        notification('Activation link has been sent successfully!','success')
+                    }else{
+                        notification('Activation link has not been sent!','warning')
+                    }
+                }).error(errorCallback);
+            }else{
+                notification('Email not available!','warning')
+            }    
+        }
+    }
+
 }).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.bccShow = function () {
@@ -10281,8 +10299,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     
     $scope.checkusername = function () {
-        rest.path = 'checkusername';
-        rest.post($scope.userprofiledata.vUserName).success(function (data) { }).error(errorCallback);
+        if(!$routeParams.id){
+            rest.path = 'checkusername';
+            rest.post($scope.userprofiledata.vUserName).success(function (data) { }).error(errorCallback);
+        }    
     };
 
     $scope.checkemailaddress = function () {
@@ -10606,8 +10626,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
                 var mobile = angular.element('#iMobile').val();
+                console.log('mobile', mobile)
                 var phone = angular.element('#iphone').val();
-
+                
                 var countryObj = {
                     "countryTitle": countryCodeData,
                     "countryFlagClass": countryClass,
@@ -10617,7 +10638,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 var mobileData = JSON.stringify(countryObj);
                 $scope.userprofiledata.iMobile = mobileData;
-
+                
                 $scope.userprofiledata.vPhoneNumber = phone;
 
                 var tabInput = angular.element('#tabPermission').select2('data');
