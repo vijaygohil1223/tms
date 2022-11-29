@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="wrapper-md ng-scope">
-                <ul class="nav nav-pills nav-wizard d-flex" style="width:71%;margin: auto;white-space: nowrap;">
+                <ul class="nav nav-pills nav-wizard d-flex" style="justify-content:center;margin: auto;white-space: nowrap;">
                     <li ng-if="uType == '1'">
                         <a href="#/user-profile/{{user_Id}}">1.Communication</a>
                         <div class="nav-arrow"></div>
@@ -67,11 +67,11 @@
                     </li>
                     <li ng-if="uType == '1' && ContactPersonName=='translation'">
                         <div class="nav-wedge"></div>
-                        <a href="#/payment">5.Payment Information</a>
+                        <a href="#/payment"><span ng-if="userRight!=1">4.</span><span ng-if="userRight==1">5.</span>Payment Information</a>
                     </li>
                     <li ng-if="uType == '1' && ContactPersonName!='translation'">
                         <div class="nav-wedge"></div>
-                        <a href="#/payment">4.Payment Information</a>
+                        <a href="#/payment"><span ng-if="userRight!=1">3.</span><span ng-if="userRight==1">4.</span>Payment Information</a>
                     </li>
 
                 </ul>

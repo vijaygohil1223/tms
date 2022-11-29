@@ -10208,6 +10208,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             else
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
             
+                console.log('$scope.userprofiledata.dtBirthDate', $scope.userprofiledata.dtBirthDate)
+            
             $scope.userprofiledata.dtLast_job = userLastJob;
             if ($scope.userprofiledata.dtLast_job == 'Invalid date')
                 $scope.userprofiledata.dtLast_job = '';
@@ -10238,7 +10240,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(val.id == "address1_country"){
                         setTimeout(() => {
                             let euCountryEdt = $scope.europeCountry.filter(e => e.name.toLowerCase() === val.value.toLowerCase()).length > 0 ? true :false;
-                            console.log('$scope.europeCountry', $scope.europeCountry)
+                            //console.log('$scope.europeCountry', $scope.europeCountry)
                             if(euCountryEdt){
                                 $scope.stateOptional = '(Optional)';
                                 $('#address1_administrative_area_level_1').removeAttr('required');
@@ -12201,7 +12203,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.userType = 1;
         $scope.uType = 1;
     }
-
+    $scope.bank = { 'payment_method': '', 'currency_code':'EUR'}
 
     if ($routeParams.id != ' ' && $routeParams.id != undefined) {
 
@@ -12217,8 +12219,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             if (data != null) {
                 $scope.payment = JSON.parse(data.vPaymentInfo);
-                $scope.vatCount($scope.payment);
-                $scope.bank = JSON.parse(data.vBankInfo);
+                //$scope.vatCount($scope.payment);
+                if(data.vBankInfo)
+                    $scope.bank = JSON.parse(data.vBankInfo);
 
                 if ($scope.bank.payment_method == 'Bank Transfer') {
                     $scope.displaybankOption = true;
@@ -12257,6 +12260,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (data.vPaymentInfo) {
                     $scope.payment = JSON.parse(data.vPaymentInfo);
                 }
+                console.log('called -2')
                 $scope.vatCount($scope.payment);
                 if (data.vBankInfo) {
                     $scope.bank = JSON.parse(data.vBankInfo);
@@ -12465,7 +12469,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }
 
-                    if ($scope.vatList.valid == true) {
+                    if ($scope.vatList && $scope.vatList.valid == true) {
                         let response = '';
                         response += '<table class="table table-bordered table-striped">';
                         response += '<tbody>';
@@ -12576,6 +12580,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     if ($scope.notRootParamsId) {
+        console.log('called -1')
         $scope.vatCount('paymentDataNotAvailble');
     }
     //vat edit 
