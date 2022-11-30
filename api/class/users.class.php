@@ -720,9 +720,11 @@ array(
 
     public function deleteUser($id,$image) {
         $path = "../../uploads/profilePic/";
-        $images = glob($path.$image);
-        if($images){
-            unlink($path.$image);
+        if($image != '' || $image == 'blank.png'){
+            $images = glob($path.$image);
+            if($images){
+                unlink($path.$image);
+            }
         }
         $this->_db->where('iUserId', $id);
         $this->_db->delete('tms_user_contact');

@@ -8915,6 +8915,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
     $scope.deleteUser = function (id, image, userName, iFkUserTypeId) {
+        image = image ? image : 'blank.png'; 
         bootbox.confirm("Are you sure you want to delete this resource.?<br/><strong>Please note that all information in this resource profile will be deleted.</strong>", function (result) {
             if (result == true) {
                 rest.path = 'deleteUser/' + id + '/' + image;
@@ -9649,6 +9650,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.deleteUser = function (id, image, userName, iFkUserTypeId) {
+        var image = image ? image : 'blank.png'; 
         bootbox.confirm("Are you sure you want to delete this resource.?<br/><strong>Please note that all information in this resource profile will be deleted.</strong>", function (result) {
             if (result == true) {
                 rest.path = 'deleteUser/' + id + '/' + image;
