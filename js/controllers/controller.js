@@ -10157,7 +10157,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     })
     .then(function (data) {
         $scope.europeCountry = data;
-        //console.log('$scope.europeCountry-TIME', $scope.europeCountry)
+        //console.log('$scope.europeCountry', $scope.europeCountry)
     });
     $scope.stateOptional = '';
 
@@ -10316,7 +10316,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.checkusername = function () {
         if(!$routeParams.id){
             rest.path = 'checkusername';
-            rest.post($scope.userprofiledata.vUserName).success(function (data) { }).error(errorCallback);
+            rest.post($scope.userprofiledata.vUserName).success(function (data) { console.LOG }).error(errorCallback);
+        }    
+    };
+    $scope.checkusernameExist = function () {
+        if(!$routeParams.id){
+            let objUsernm = { 
+                'username':$scope.userprofiledata.vUserName ? $scope.userprofiledata.vUserName : '',
+                 'id': 0
+            }
+            rest.path = 'checkusernameExist';
+            rest.post(objUsernm).success(function (data) { 
+                if(data && data.userExist ==1)
+                    $scope.userprofiledata.vUserName =  $scope.userprofiledata.vUserName + $scope.userprofiledata.iResourceNumber 
+            }).error(errorCallback);
         }    
     };
 
@@ -10359,6 +10372,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.setUsername2 = function (value) {
+        console.log('value', value)
         if ($scope.userprofiledata.vFirstName) {
             if (value != undefined) {
                 $scope.userprofiledata.vUserName = $scope.userprofiledata.vFirstName + ' ' + value;
@@ -10420,7 +10434,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         } else {
             $window.localStorage.setItem("contactPersonId", 'freelancer');
         }
-        if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
+        
+        if (angular.element("#" + formId).valid()) {
             var $oldUser_id = $window.localStorage.getItem("session_internalResourceUpdatedId");
             var $recentUser_id = $window.localStorage.getItem("session_iUserId");
 
@@ -10557,6 +10572,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
                 var mobile = angular.element('#iMobile').val();
+                console.log('mobile', mobile)
                 var phone = angular.element('#iphone').val();
 
                 var countryObj = {
@@ -10569,12 +10585,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var phone = angular.element('#iphone').val();
                 $scope.userprofiledata.iMobile = JSON.stringify(countryObj);
                 $scope.userprofiledata.vPhoneNumber = phone;
+                if(!$scope.userprofiledata.vPassword)
+                    $scope.userprofiledata.vPassword = randomPassword(10);
                 $scope.userprofiledata.org_pass = $scope.userprofiledata.vPassword;
 
                 $scope.userprofiledata.dtBirthDate = $('#dtBirthDate').val();
-                $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
-                $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
-
+                if($scope.userprofiledata.dtBirthDate){
+                    $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
+                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
+                }    
+                if(!$scope.userprofiledata.vUserName)
+                    $scope.userprofiledata.vUserName = $scope.userprofiledata.iResourceNumber
+                    if(!$scope.userprofiledata.freelancer)    
+                    $scope.userprofiledata.freelancer = 'freelancer'
+                    if(!$scope.userprofiledata.eUserStatus)    
+                    $scope.userprofiledata.eUserStatus = 3
+                if(!$scope.userprofiledata.eUserStatus)    
+                    $scope.userprofiledata.eUserStatus = 3
+                if(!$scope.userprofiledata.iGender)    
+                    $scope.userprofiledata.iGender = 1
+                
                 console.log('$scope.userprofiledata=Add',$scope.userprofiledata )
 
                 rest.path = 'saveuserprofileexternelS';

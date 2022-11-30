@@ -127,7 +127,7 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <label>Gender</label>
-                                                            <input type="text" select2-gender class="form-control" name="iGender" id="iGender" ng-model="userprofiledata.iGender" required/>
+                                                            <input type="text" select2-gender class="form-control" name="iGender" id="iGender" ng-model="userprofiledata.iGender"/>
                                                         </div>
                                                     </div>
                                                         <!-- <div class="col-sm-4 pl-0">
@@ -148,8 +148,8 @@
                                                             <div class="form-group">
                                                                 <label>Date of Birth</label>
                                                                 <input type="text" class="form-control" id="dtBirthDate" name="dtBirthDate" ng-model="userprofiledata.dtBirthDate" ng-outgoing autocomplete="off">
-                                                                <label for="dtBirthDate" class="error"></label>
-                                                                <span id="error-msg-dob" class="hide" style="color:#a94442">Enter valid date</span>    
+                                                                <!-- <label for="dtBirthDate" class="error"></label>
+                                                                <span id="error-msg-dob" class="hide" style="color:#a94442">Enter valid date</span>     -->
                                                             </div>
                                                             <!-- <div class="form-group">
                                                                 <label>Facebook Link</label>
@@ -179,7 +179,7 @@
                                                             </div>
                                                             <div class="form-group" ng-show="userRight==1">
                                                                 <label>Resource Status</label>
-                                                                <input type="text" select2-userstatus class="form-control" id="eUserStatus" name="eUserStatus" ng-model="userprofiledata.eUserStatus" required />
+                                                                <input type="text" select2-userstatus class="form-control" id="eUserStatus" name="eUserStatus" ng-model="userprofiledata.eUserStatus" />
                                                             </div>
                                                             <!-- <div class="form-group" ng-show="!userprofiledata.iUserId">
                                                                 <label>Department</label>
@@ -216,12 +216,12 @@
                                                 <div class="col-sm-12 pl-0">
                                                     <div class="form-group">
                                                         <label>Username</label>
-                                                        <input type="text" class="form-control" name="vUserName" ng-model="userprofiledata.vUserName" required ng-blur="checkusername()" ng-disabled="userRight!=1">
+                                                        <input type="text" class="form-control" name="vUserName" ng-model="userprofiledata.vUserName" ng-blur="checkusernameExist()" ng-disabled="userRight!=1">
                                                     </div>
                                                     <div class="form-group" ng-show="!userprofiledata.iUserId">
                                                         <label>Password</label>
                                                         <div class="input-group">
-                                                            <input type="password" class="form-control"  name="vPassword" id="vPassword" ng-model="userprofiledata.vPassword" required autocomplete="new-password">
+                                                            <input type="password" class="form-control"  name="vPassword" id="vPassword" ng-model="userprofiledata.vPassword" autocomplete="new-password">
                                                             <span class="input-group-addon"><a href="javascript:void(0)" ng-click="getRandomPassword()"><i style="" class="fa fa-key"></i><span style="margin-left: 6px;">Auto Generate</span></a></span>
                                                         </div>
                                                         <label for="vPassword" class="error"></label>
@@ -254,7 +254,7 @@
                                                     <div class="form-group">
                                                         <label for="Mobile" class="control-label">Mobile</label>
                                                         <div class="input-group" style="width:100% !important">
-                                                            <input type="text" class="form-control" id="iMobile" name="iMobile"  ng-model="userprofiledata.iMobile" international-phone-number required />
+                                                            <input type="text" class="form-control" id="iMobile" name="iMobile"  ng-model="userprofiledata.iMobile" international-phone-number />
                                                         </div>
                                                         <label for="iMobile" class="error"></label>
                                                         <span id="valid-msg" class="hide" style="color:green">✓ Valid</span>
@@ -297,7 +297,7 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label>Address</label>
-                                                            <input class="form-control" id="address1" ng-blur="getLocationdetail(userprofiledata.vAddress1)" ng-model="userprofiledata.vAddress1" details="address1" required/>
+                                                            <input class="form-control" id="address1" ng-blur="getLocationdetail(userprofiledata.vAddress1)" ng-model="userprofiledata.vAddress1" details="address1"/>
                                                             <!-- <input class="form-control" id="address1" ng-model="userprofiledata.vAddress1" details="address1" googleplace required/> -->
                                                         </div>
                                                     </div>
@@ -309,9 +309,9 @@
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">Country</label>
-                                                            <input type="text" class="form-control country" select2-countryall name="vCountry" id="address1_country" ng-model="vCountry1" ng-change="countryChange(vCountry1)" required> 
-                                                        </div>                       
+                                                            <label class="control-label">City</label>
+                                                            <input type="text" class="form-control city"  id="address1_locality" name="route" ng-model="vCity1" ng-blur="cityTimezone(vCity1)">          
+                                                        </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
@@ -323,14 +323,14 @@
                                                 <div class="col-lg-12 pl-0">
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">City</label>
-                                                            <input type="text" class="form-control city"  id="address1_locality" name="route" ng-model="vCity1" ng-blur="cityTimezone(vCity1)" required>          
-                                                        </div>
+                                                            <label class="control-label">Country</label>
+                                                            <input type="text" class="form-control country" select2-countryall name="vCountry" id="address1_country" ng-model="vCountry1" ng-change="countryChange(vCountry1)"> 
+                                                        </div>                       
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label class="control-label">Zip Code</label>
-                                                            <input type="text" class="form-control postal_code" id="address1_postal_code" name="vZipcode" ng-model="vZipcode1"  required> 
+                                                            <input type="text" class="form-control postal_code" id="address1_postal_code" name="vZipcode" ng-model="vZipcode1" > 
                                                         </div>                       
                                                     </div>
                                                     <div class="col-sm-4">

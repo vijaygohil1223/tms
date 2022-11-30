@@ -185,6 +185,23 @@ class users {
         return $return;
     }
 
+    public function checkusernameExist($data) {
+        if($data['id'] != 0)
+            $this->_db->where("iUserId", $data['id']);
+        $this->_db->where("vUserName", $data['username']);
+        $results = $this->_db->getOne(TBL_USERS);
+        
+        if ($results) {
+            $return['userExist'] = 1;
+            $return['status'] = 200;
+            $return['msg'] = 'User name already exists.';
+        } else {
+            $return['status'] = 200;
+            $return['msg'] = 'success';
+        }
+        return $return;
+    }
+
     public function checkemailaddress($data) {
         $this->_useremail = $data;
         if ($this->getUser_Email()) {
@@ -274,9 +291,9 @@ class users {
         $this->_username = $user['vUserName'];
         $this->_useremail = $user['vEmailAddress'];
         if ($this->getUser_Username()) {
-            $return['status'] = 422;
-            $return['msg'] = 'User name already exists.';
-        } else if ($this->getUser_Email()) {
+            $user['vUserName'] = $user['vUserName'].' '.$user['iResourceNumber'];    
+        } 
+        if ($this->getUser_Email()) {
             $return['status'] = 422;
             $return['msg'] = 'Email address already exists.';
         } else if(isset($user['vSecondaryEmailAddress']) && ($user['vEmailAddress'] == $user['vSecondaryEmailAddress'])){
@@ -286,7 +303,7 @@ class users {
             $user['iFkUserTypeId'] = '2';
             $user['vPassword'] = md5($user['vPassword']);
             $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : '';
-            $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
+            $user['dtBirthDate'] = $user['dtBirthDate'] ? date('Y-m-d', strtotime($user['dtBirthDate'])) : '0000-00-00';
             $user['dtCreationDate'] = date('Y-m-d H:i:s')/*$user['dtCreationDate']*/;
             $user['dtCreatedDate'] = date('Y-m-d H:i:s');
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');

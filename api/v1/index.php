@@ -311,6 +311,12 @@ $app->post('/checkusername', function () use($app) {
     $result = $user->checkusername($app->request->getBody());
     echoResponse($result ['status'], $result);
 });
+$app->post('/checkusernameExist', function () use($app) {
+    $user = new users ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $user->checkusernameExist($data);
+    echoResponse($result, $result);
+});
 $app->post('/checkemailaddress','authenticate', function () use($app) {
     $user = new users ();
     $result = $user->checkemailaddress($app->request->getBody());
