@@ -10205,7 +10205,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $window.localStorage.setItem("contactPersonId", 'translation');
             }
             
-            if ($scope.userprofiledata.dtBirthDate == 'Invalid date' || $scope.userprofiledata.dtBirthDate == '1970-01-01 00:00:00')
+            if ($scope.userprofiledata.dtBirthDate == 'Invalid date' || $scope.userprofiledata.dtBirthDate == '1970-01-01 00:00:00' || $scope.userprofiledata.dtBirthDate == '0000-00-00 00:00:00' || $scope.userprofiledata.dtBirthDate == '0000-00-00')
                 $scope.userprofiledata.dtBirthDate = '';
             else
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
@@ -10322,17 +10322,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
     };
     $scope.checkusernameExist = function () {
-        if(!$routeParams.id){
-            let objUsernm = { 
-                'username':$scope.userprofiledata.vUserName ? $scope.userprofiledata.vUserName : '',
-                 'id': 0
-            }
-            rest.path = 'checkusernameExist';
-            rest.post(objUsernm).success(function (data) { 
-                if(data && data.userExist ==1)
-                    $scope.userprofiledata.vUserName =  $scope.userprofiledata.vUserName + $scope.userprofiledata.iResourceNumber 
-            }).error(errorCallback);
-        }    
+        let objUsernm = { 
+            'username':$scope.userprofiledata.vUserName ? $scope.userprofiledata.vUserName : '',
+                'id': $routeParams.id ? $routeParams.id : 0  
+        }
+        rest.path = 'checkusernameExist';
+        rest.post(objUsernm).success(function (data) { 
+            if(data && data.userExist ==1)
+                $scope.userprofiledata.vUserName =  $scope.userprofiledata.vUserName +' '+ $scope.userprofiledata.iResourceNumber 
+        }).error(errorCallback);
+        
     };
 
     $scope.checkemailaddress = function () {
