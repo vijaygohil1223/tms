@@ -1064,6 +1064,61 @@ app.directive('select2ProjType', function($http, rest, $timeout) {
         }
     }
 });
+// --------- select2 Client Price---------------------//
+app.directive('select2ClientPrice', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element) {
+            rest.path = 'customerpriceAll/1';
+            rest.get().success(function(data) {
+                console.log('price_ClientID', scope.price_ClientID)
+                var custPriceData = data.filter( (e) => e.resource_id == scope.price_ClientID )
+                console.log('custPriceData', custPriceData)
+                //let custPrice = []; 
+                var custPrice = [{
+                    id: '0',
+                    text: 'Please Select'
+                }];
+                $.each(custPriceData, function(key, value) {
+                    var obj = {
+                        id: value.price_list_id,
+                        text: value.price_name
+                    };
+                    custPrice.push(obj);
+                });
+                $timeout(function() {
+                    // element.select2({
+                    //     allowClear: true,
+                    //     data: prType,
+                    //     multiple:true,
+                    //     maximumSelectionSize:1
+                    // });
+                    element.select2({
+                        allowClear: true,
+                        data: custPrice,
+                        multiple: false,
+                    }).on("change", function (e) {
+                        // const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        // if(e.added){
+                        //     $(inputIdS2+' li').each(function() {
+                        //         const childDiv = $(this).children();
+                        //         let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                        //         if(eleText){
+                        //             if(eleText !== e.added.text){
+                        //                 $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                        //             }    
+                        //         }
+                        //     });
+                        // }    
+                    });
+
+                }, 200);
+
+            }).error(function(data, error, status) {});
+        }
+    }
+});
 // --------- project Progression -------------------//
 app.directive('select2ProjJobs', function($http, rest, $timeout) {
     return {

@@ -583,12 +583,14 @@ array(
             return false;
         }else{
             $path = "../../uploads/logo/";
-            $images = glob($path . $image);
-            if ($images) {
-                $image;
-                unlink($path . $image);
-            } else {
-                $image;
+            if($image != 'blank.png'){
+                $images = glob($path . $image);
+                if ($images) {
+                    $image;
+                    unlink($path . $image);
+                } else {
+                    $image;
+                }
             }
 
             self::deleteclientfield('client_id', $id, 'tms_filemanager');
