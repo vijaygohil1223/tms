@@ -1,8 +1,7 @@
 <style type="text/css">
-   .nav-pills.nav-wizard>>ul>li {
+   .nav-pills.nav-wizard>ul>li {
       border-right: 78px solid #eef5fa !important;
    }
-
    .hrght {
       float: right;
       color: red;
@@ -25,6 +24,9 @@
       font-weight: bold !important;
       color: #333 !important;
       /*background-color: yellow !important;*/
+   }
+   .clientSelect2 .select2-chosen{
+      max-width: 225px;
    }
 </style>
 <script type="text/javascript">
@@ -250,7 +252,7 @@
                                                                               <option ng-repeat="child in newchildPriceArr[it.itemId] track by $index"
                                                                                  ng-if="child.master_price_id == master.master_price_id"
                                                                                  value="{{child.name}},{{child.rate}}">
-                                                                                 {{child.name}} {{it.itemId}}</option>
+                                                                                 {{child.name}} </option>
                                                                            </optgroup>
                                                                         </select>
                                                                      </items-add2>
@@ -320,7 +322,7 @@
                                                             </div>
                                                          </div>
                                                          <div class="col-sm-12">
-                                                            <div class="form-group">
+                                                            <div class="form-group clientSelect2">
                                                                <label class="control-label">Price List:</label>
                                                                <input select2-client-price type="text" class="form-control"
                                                                   name="project_pricelist" ng-model="it.project_pricelist"
