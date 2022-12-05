@@ -1078,7 +1078,7 @@ app.directive('select2ClientPrice', function($http, rest, $timeout) {
                 //let custPrice = []; 
                 var custPrice = [{
                     id: '0',
-                    text: 'Please Select'
+                    text: '--Please Select--'
                 }];
                 $.each(custPriceData, function(key, value) {
                     var obj = {
