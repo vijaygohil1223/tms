@@ -3478,7 +3478,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-}).controller('jobSummeryDetailsController', function ($interval, $uibModalInstance, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams) {
+}).controller('jobSummeryDetailsController', function ($interval, $uibModalInstance, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("parentId", " ");
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
@@ -3499,6 +3499,111 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('$scope.priceList', $scope.priceList)
         });
     }
+
+    $scope.exChildPriceArr = [];
+    // Get PriceList for client
+    $scope.scoopSpecializationArr = '';
+    $scope.customerpriceAll = [];
+    $scope.exCustPriceAll = function (data) {
+        var deferred = $q.defer();
+        rest.path = 'customerpriceAll/' + 2;
+        rest.get().success(function (data) {
+            var lpData = data;
+            $scope.customerpriceAll = data;
+            $scope.clientpriceList = data.filter( function (lp) {
+                if(lp.price_basis)
+                    lp.price_basis = JSON.parse(lp.price_basis)
+                if(lp.price_language)
+                    lp.price_language = JSON.parse(lp.price_language)    
+                if(lp.specialization)
+                    lp.specialization = (lp.specialization.toString()).split(',');     
+                return lp;  
+            });
+            deferred.resolve(lpData);
+        }).error(function () {
+            deferred.reject();
+        });
+
+        return deferred.promise;
+    };
+
+    $scope.childPrice = [];
+    $scope.childPriceAll = function (data) {        
+        var deferredCh = $q.defer();
+        rest.path = 'childPriceitemget';
+        rest.get().success(function (data) {
+            $scope.childPrice = data;
+            console.log('$scope.childPrice', $scope.childPrice)
+            $scope.exChildPriceArr = [];
+            deferredCh.resolve($scope.childPrice);
+        }).error( function(){
+            deferredCh.reject();
+        })
+        return deferredCh.promise;
+    }    
+
+    // Linguist Price list fetching
+    $scope.changeLinguistPrice = function(resourceId, specializationArr, langPair){
+        console.log('specializationArr', specializationArr)
+        console.log('resourceId', resourceId)
+        console.log('langPair-2', langPair)
+        console.log('id', resourceId)
+        if(resourceId > 0){
+            let clientPricelist = $scope.customerpriceAll.filter((e) => e.resource_id == resourceId )
+            if(clientPricelist){
+                angular.forEach($scope.exChildPriceArr, function (val, i) {
+                    $scope.exChildPriceArr[i].rate = 0;
+                    angular.forEach(clientPricelist, function (val2, i2) {
+                        val2.price_basis.find(x => {
+                                // if(val.child_price_id == x.childPriceId){
+                                //     if(val.child_price_id == x.childPriceId){
+                                //         if(val.itemId == item_id){
+                                //             $scope.exChildPriceArr[i].rate = x.basePrice; 
+                                //             console.log('$scope.newchildPriceArr-'+item_id, $scope.newchildPriceArr)
+                                //         }
+                                //     }
+                                //     return x;
+                                // }
+                                if(val.child_price_id == x.childPriceId){
+                                    if(specializationArr)
+                                        var spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
+                                    else
+                                        var spclFound = false; 
+                                    const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
+                                    if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
+                                        console.log('match', val.child_price_id)
+                                        $scope.exChildPriceArr[i].rate = x.basePrice;  
+                                    }
+                                    return x;
+                                }
+                            });    
+                    });    
+                });
+            }
+        }else{
+            angular.forEach($scope.exChildPriceArr, function(val, i) {
+                $scope.exChildPriceArr[i].rate = 0;
+                // angular.forEach($scope.clientpriceList, function (val2, i2) {
+                //     val2.price_basis.find(x => {
+                //         if(val.child_price_id == x.childPriceId){
+                //             if(specializationArr)
+                //                 var spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
+                //             else
+                //                 var spclFound = false; 
+                //             const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
+                //             if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
+                //                 console.log('match', val.child_price_id)
+                //                 $scope.exChildPriceArr[i].rate = x.basePrice;  
+                //             }
+                //             return x;
+                //         }
+                //     });    
+                // });    
+                
+            });
+        }
+    }
+
     $scope.csvProgress = true;
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
@@ -3554,12 +3659,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.isResourceChange = 0;
             $scope.resourceChange = function (resID) {
                 if (resID) {
-                    resource_id_csv = resID;
+                    const res_id = resID.includes(',') ? resID.substring(resID.indexOf(',') + 1) : resID;
+
+                    resource_id_csv = res_id;
                     $scope.isResourceChange = 1;
                     //var priceList = $scope.priceList;
                     var priceList = $scope.priceList.filter(function (priceList) { return priceList.resource_id == resource_id_csv; });
                     //var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
                     var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
+                    
+                    console.log('langPair', $scope.jobdetail.ItemLanguage)
+                    $scope.changeLinguistPrice(res_id, projSpecialization, $scope.jobdetail.ItemLanguage);
                     //var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
                     var newPriceList = priceList.filter(function (priceList) { 
                         if(!priceList.specialization)
@@ -3829,6 +3939,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.jobdetail.ItemLanguage = '';
             rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
             rest.get().success(function (data) {
+                console.log('data=itemss', data)
 
                 var sourceData = JSON.parse(data.source_lang);
                 var targetData = JSON.parse(data.target_lang);
@@ -3839,6 +3950,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var trgLang = trgLang ? trgLang : '';
 
                 $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+            });
+
+            
+            rest.path = 'getOrderSingle/' + data[0].order_id ;
+            rest.get().success(function (data) {
+                console.log('data=general', data)
+                //$scope.jobdetail.genSpecialization = data.specialization;
+                $scope.scoopSpecializationArr = (data.specialization.toString()).split(',');
             });
             //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             //var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
@@ -3909,6 +4028,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 })
             }
             $cookieStore.put('editJobact', data[0]);
+            
+            console.log('data[0]', data[0])
+
+            var newitemData = data[0];
+            console.log('newitemData', newitemData)
+            // ----->>>>  Price List Linguist <<<<---------
+            $scope.childPriceAll().then((chData) => {
+                //newitemData.forEach( function(eleVal, index, arr){
+                    console.log('specilall', $scope.scoopSpecializationArr)
+                    var langPair = newitemData.ItemLanguage;
+                    console.log('langPair', langPair)
+                    $scope.exChildPriceArr = $scope.childPrice;
+                    console.log('newchildPriceArr', $scope.exChildPriceArr)
+                    console.log('$scope.customerpriceAll', $scope.customerpriceAll)
+                    $scope.exCustPriceAll().then((prData) => {
+                        let resourceId = newitemData.resource ? newitemData.resource : 0; 
+                        console.log('prData', prData)
+                        $scope.changeLinguistPrice(resourceId, $scope.scoopSpecializationArr, langPair)
+                        // if($scope.exChildPriceArr && newitemData.resource)
+                        //     $scope.changeLinguistPrice(newitemData.resource, '', '')
+                        // if($scope.exChildPriceArr && !newitemData.resource){
+                        //     $scope.changeLinguistPrice(0, newitemData.job_id, $scope.scoopSpecializationArr, langPair)
+                        // }
+                    });    
+                //})
+            });
+
         }).error(errorCallback);
     }
 
