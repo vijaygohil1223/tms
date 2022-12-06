@@ -17151,6 +17151,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
 
         // Get PriceList for client
+        $scope.scoopSpecializationArr = '';
         $scope.customerpriceAll = [];
         $scope.custPriceAll = function (data) {
             var deferred = $q.defer();
@@ -17175,47 +17176,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return deferred.promise;
         };
 
-        rest.path = 'childPriceitemget';
-        rest.get().success(function (data) {
-            $scope.childPrice = data;
-            console.log('$scope.childPrice', $scope.childPrice)
-
-                rest.path = 'customerpriceAll/' + 1;
-                rest.get().success(function (data) {
-                    var newdata = data;
-                    
-                    //$scope.customerpriceAll = data;
-                    
-                    //console.log('$scope.specialization',$scope.specialization )
-                    // $scope.clientpriceList = data.filter( function (data) {
-                    //     if(data.price_basis)
-                    //         data.price_basis = JSON.parse(data.price_basis)
-                    //     if(data.specialization)
-                    //         data.specialization = (data.specialization.toString()).split(',');     
-                    //     return data.resource_id == $scope.customer.client;  
-                    // });
-                    // angular.forEach($scope.childPrice, function (val, i) {
-                    //     angular.forEach($scope.clientpriceList, function (val2, i2) {
-                    //         val2.price_basis.find(x => {
-                    //                 if(val.child_price_id == x.childPriceId){
-                    //                     const spclFound = $scope.specialization.some(r => (val2.specialization).indexOf(r) >= 0)
-                    //                     console.log('spclFound', spclFound)
-                    //                     if(val.child_price_id == x.childPriceId && spclFound){
-                    //                         //console.log('val2', val2)
-                    //                         $scope.childPrice[i].rate = x.basePrice; 
-                    //                     }
-                    //                     //return val.child_price_id == x.childPriceId;
-                    //                     return x;
-                    //                 }
-                    //             });    
-                    //     });    
-                        
-                    // });    
-                    //console.log('$scope.clientpriceList', $scope.clientpriceList)
-                    //console.log('$scope.childPrice==after',$scope.childPrice )
-                });    
-    
-        }).error(errorCallback);
+        $scope.childPrice = [];
+        $scope.childPriceAll = function (data) {        
+            var deferredCh = $q.defer();
+            rest.path = 'childPriceitemget';
+            rest.get().success(function (data) {
+                $scope.childPrice = data;
+                console.log('$scope.childPrice', $scope.childPrice)
+                deferredCh.resolve($scope.childPrice);
+            }).error( function(){
+                deferredCh.reject();
+            })
+            return deferredCh.promise;
+        }    
 
         // Client Price list fetching
         $scope.changeClientPrice = function(priceId, item_id, specializationArr, langPair){
@@ -17244,12 +17217,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }else{
                 angular.forEach($scope.newchildPriceArr[item_id], function(val, i) {
+                    $scope.newchildPriceArr[item_id][i].rate = 0;
                     angular.forEach($scope.clientpriceList, function (val2, i2) {
                         val2.price_basis.find(x => {
                             if(val.child_price_id == x.childPriceId){
                                 const spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
                                 const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
-                                console.log('lngPairFound', lngPairFound)
+                                //console.log('lngPairFound', lngPairFound)
                                 //console.log('spclFound', spclFound)
                                 if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
                                     console.log('match', val.child_price_id)
@@ -17262,8 +17236,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                 });
             }
-            
-            
         }
 
         //currency update
@@ -17424,7 +17396,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.stLangPair = source + ' > ' + target;
         console.log('$scope.stLangPair', $scope.stLangPair)
         // Client price list base on language
-        $scope.changeClientPrice(0, eleId, $scope.specializationArr, $scope.stLangPair)
+        $scope.changeClientPrice(0, eleId, $scope.scoopSpecializationArr, $scope.stLangPair)
     });
 
     $scope.plsModel = {
@@ -18187,11 +18159,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             var newitemData = data;
             // ----->>>>  Price List Client <<<<---------
-            $scope.custPriceAll().then((prData) => {
+            $scope.childPriceAll().then((chData) => {
                 newitemData.forEach( function(eleVal, index, arr){
-                    $scope.specializationArr = '';
+                    $scope.scoopSpecializationArr = '';
                     if(eleVal.specialization)
-                        $scope.specializationArr = (eleVal.specialization.toString()).split(',')                    
+                        $scope.scoopSpecializationArr = (eleVal.specialization.toString()).split(',')                    
                     var sourceLang = 'English (US)';
                     var targetLang = 'English (US)';
                     if(eleVal.target_lang){
@@ -18214,13 +18186,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.newchildPriceArr[eleVal.itemId] = searchedPrice;
                     console.log('newchildPriceArr', $scope.newchildPriceArr)
                     console.log('$scope.customerpriceAll', $scope.customerpriceAll)
-                    if(searchedPrice && $scope.newchildPriceArr[eleVal.itemId] && eleVal.project_pricelist)
-                        $scope.changeClientPrice(eleVal.project_pricelist, eleVal.itemId)
-                    
-                    if(searchedPrice && $scope.newchildPriceArr[eleVal.itemId] && !eleVal.project_pricelist){
-                        $scope.changeClientPrice(0, eleVal.itemId, $scope.specializationArr, langPair)
-                    }
-                        
+                    $scope.custPriceAll().then((prData) => {
+                        if(searchedPrice && $scope.newchildPriceArr[eleVal.itemId] && eleVal.project_pricelist)
+                            $scope.changeClientPrice(eleVal.project_pricelist, eleVal.itemId)
+                        if(searchedPrice && $scope.newchildPriceArr[eleVal.itemId] && !eleVal.project_pricelist){
+                            $scope.changeClientPrice(0, eleVal.itemId, $scope.scoopSpecializationArr, langPair)
+                        }
+                    });    
                 })
             });    
 
@@ -28037,12 +28009,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     };
 
-}).controller('viewScoopPopupController', function (allLanguages, $scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance, $cookieStore, $interval, DTOptionsBuilder, $filter) {
+}).controller('viewScoopPopupController', function (allLanguages, $scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance, $cookieStore, $interval, DTOptionsBuilder, $filter, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $routeParams.id = items ? items.order_id : 0;
     $scope.order_id = items ? items.order_id : 0;
     $scope.scoop_id = items ? items.scoop_id : 0;
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
+    $scope.newchildPriceArr = [];
     
     if ($scope.order_id) {
         //getting ProjectOrderName and indirect clint name
@@ -28068,16 +28041,111 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.dueDateItem = data;
         }).error(errorCallback);
 
+        $scope.clientpriceList = {};
+        $scope.customer = {};
+        rest.path = 'customer/' + $scope.order_id;
+        rest.get().success(function (res) {
+            $scope.customer = res;
+            $scope.customerData = res;
+            $scope.price_ClientID = $scope.customer.client;
+        })
+
         rest.path = 'masterPriceitemget/' + $scope.order_id;
         rest.get().success(function (data) {
             $scope.masterPrice = data;
         }).error(errorCallback);
 
-        rest.path = 'childPriceitemget';
-        rest.get().success(function (data) {
-            $scope.childPrice = data;
-        }).error(errorCallback);
+        // Get PriceList for client.
+        $scope.scoopSpecializationArr = '';
+        $scope.customerpriceAll = [];
+        $scope.custPriceAll = function (data) {
+            var deferred = $q.defer();
+            rest.path = 'customerpriceAll/' + 1;
+            rest.get().success(function (data) {
+                var newdata = data;
+                $scope.customerpriceAll = data;
+                $scope.clientpriceList = data.filter( function (data) {
+                    if(data.price_basis)
+                        data.price_basis = JSON.parse(data.price_basis)
+                    if(data.price_language)
+                        data.price_language = JSON.parse(data.price_language)    
+                    if(data.specialization)
+                        data.specialization = (data.specialization.toString()).split(',');     
+                    return data.resource_id == $scope.customerData.client;  
+                });
+                deferred.resolve(newdata);
+            }).error(function () {
+                deferred.reject();
+            });
 
+            return deferred.promise;
+        };
+
+        $scope.childPrice = [];
+        $scope.childPriceAll = function (data) {        
+            var deferredCh = $q.defer();
+            rest.path = 'childPriceitemget';
+            rest.get().success(function (data) {
+                $scope.childPrice = data;
+                console.log('$scope.childPrice', $scope.childPrice)
+                deferredCh.resolve($scope.childPrice);
+            }).error( function(){
+                deferredCh.reject();
+            })
+            return deferredCh.promise;
+        }    
+
+        // Client Price list fetching
+        $scope.changeClientPrice = function(priceId, item_id, specializationArr, langPair){
+            console.log('specializationArr', specializationArr)
+            console.log('langPair', langPair)
+            console.log('item_id', item_id)
+            console.log('id', priceId)
+            console.log('$scope.testClientList',$scope.newchildPriceArr )
+            if(priceId > 0){
+                let clientPricelist = $scope.customerpriceAll.filter((e) => e.price_list_id == priceId )
+                if(clientPricelist){
+                    angular.forEach($scope.newchildPriceArr[item_id], function (val, newi) {
+                        angular.forEach(clientPricelist, function (val2, i2) {
+                            val2.price_basis.find(x => {
+                                    if(val.child_price_id == x.childPriceId){
+                                        if(val.child_price_id == x.childPriceId){
+                                            if(val.itemId == item_id){
+                                                $scope.newchildPriceArr[item_id][newi].rate = x.basePrice; 
+                                                console.log('$scope.newchildPriceArr-'+item_id, $scope.newchildPriceArr)
+                                            }
+                                        }
+                                        return x;
+                                    }
+                                });    
+                        });    
+                    });
+                }
+            }else{
+                angular.forEach($scope.newchildPriceArr[item_id], function(val, i) {
+                    // Default price rate 0
+                    $scope.newchildPriceArr[item_id][i].rate = 0;
+                    angular.forEach($scope.clientpriceList, function (val2, i2) {
+                        val2.price_basis.find(x => {
+                            if(val.child_price_id == x.childPriceId){
+                                const spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
+                                const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
+                                console.log('lngPairFound', lngPairFound)
+                                //console.log('spclFound', spclFound)
+                                if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
+                                    console.log('match', val.child_price_id)
+                                    $scope.newchildPriceArr[item_id][i].rate = x.basePrice;  
+                                }
+                                return x;
+                            }
+                        });    
+                    });    
+                    
+                });
+            }
+        }
+        // END Client Price list fetching
+        
         //currency update
         rest.path = 'orderCurrencyMatch/' + $scope.order_id;
         rest.get().success(function (data) {
@@ -28230,6 +28298,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + '-' + target;
         }
 
+        $scope.stLangPair = source + ' > ' + target;
+        
+        $scope.changeClientPrice(0, eleId, $scope.scoopSpecializationArr, $scope.stLangPair)
     });
 
     $scope.plsModel = {
@@ -28662,6 +28733,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.projectItemEmpty = jQuery.isEmptyObject(data);
             $scope.totalPrice = 0;
             var cont = [];
+
+            var newitemData = data;
+            console.log('newitemData', newitemData)
+            // ----->>>>  Price List Client <<<<---------
+            //$scope.custPriceAll().then((chData) => {
+            $scope.childPriceAll().then((chData) => {
+                    newitemData.forEach( function(eleVal, index, arr){
+                    if(eleVal.specialization)
+                        $scope.scoopSpecializationArr = (eleVal.specialization.toString()).split(',')                    
+                    var sourceLang = 'English (US)';
+                    var targetLang = 'English (US)';
+                    if(eleVal.target_lang){
+                        sourceLang = JSON.parse(eleVal.source_lang)
+                        sourceLang = sourceLang.sourceLang
+                    }
+                    if(eleVal.target_lang){
+                        targetLang = JSON.parse(eleVal.target_lang)
+                        targetLang = targetLang.sourceLang
+                    }
+                    var langPair = sourceLang+' > '+targetLang;
+                    
+                    const searchedPrice = $scope.childPrice.map(child => {
+                        return Object.assign({}, child, {
+                        itemId: arr[index].itemId
+                        })
+                    })
+                    //newArr2[eleVal.itemId] = Object.assign({}, ...newArr1)
+                    console.log('newArr2-MAP', searchedPrice)
+                    $scope.newchildPriceArr[eleVal.itemId] = searchedPrice;
+                    console.log('newchildPriceArr', $scope.newchildPriceArr)
+                    console.log('$scope.customerpriceAll', $scope.customerpriceAll)
+                    $scope.custPriceAll().then((prData) => {
+                        if(searchedPrice && $scope.newchildPriceArr[eleVal.itemId] && eleVal.project_pricelist)
+                            $scope.changeClientPrice(eleVal.project_pricelist, eleVal.itemId)
+                        if(searchedPrice && $scope.newchildPriceArr[eleVal.itemId] && !eleVal.project_pricelist){
+                            $scope.changeClientPrice(0, eleVal.itemId, $scope.scoopSpecializationArr, langPair)
+                        }
+                    });    
+                })
+            });    
+            
             angular.forEach(data, function (val, i) {
                 $scope.item_number = val.item_number;
                 //getClient By OrderId while edit item

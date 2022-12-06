@@ -2,6 +2,9 @@
    .modal-dialog {
       width: 80%;
    }
+   .clientSelect2 .select2-chosen{
+      max-width: 225px;
+   }
 </style>
 <div class="modal-header" style="min-height:60px;">
    <div class="modal-title">
@@ -155,7 +158,7 @@
                                                                         <option value="0">--Please Select--</option>
                                                                         <optgroup ng-repeat="master in masterPrice"
                                                                            label="{{master.name}}">
-                                                                           <option ng-repeat="child in childPrice"
+                                                                           <option ng-repeat="child in newchildPriceArr[it.itemId] track by $index"
                                                                               ng-if="child.master_price_id == master.master_price_id"
                                                                               value="{{child.name}},{{child.rate}}">
                                                                               {{child.name}}</option>
@@ -224,6 +227,14 @@
                                                             <input select2-proj-type type="text" class="form-control"
                                                                name="project_type" ng-model="it.project_type"
                                                                id="project_type{{it.itemId}}" required>
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-sm-12">
+                                                         <div class="form-group clientSelect2">
+                                                            <label class="control-label">Price List:</label>
+                                                            <input select2-client-price type="text" class="form-control"
+                                                               name="project_pricelist" ng-model="it.project_pricelist"
+                                                               id="project_pricelist{{it.itemId}}" ng-change="changeClientPrice(it.project_pricelist, it.itemId)">
                                                          </div>
                                                       </div>
                                                       <div class="col-sm-6">
