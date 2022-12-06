@@ -12651,7 +12651,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     if (data) {
                         if (data.data) {
-                            $scope.payment.tax_id = payment.country_code + payment.tax_id;
+                            console.log('data.data', data.data)
+                            $scope.payment.tax_id = (payment.tax_id).includes(payment.country_code) ? payment.tax_id : payment.country_code + payment.tax_id;
+                            console.log('$scope.payment.tax_id', $scope.payment.tax_id)
                             //$scope.vatList = data.data.substring(20550, 21550);
                             $scope.vatList = data.data;
                             // var part = str.substring( str.lastIndexOf(":") + 1, str.lastIndexOf(";") );
@@ -12724,26 +12726,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         response += '</table>';
                         angular.element('.vatNumberValid').html(response);
                         $scope.payment.country_code = payment.country_code;
-                        $scope.payment.tax_id = payment.country_code + payment.tax_id;
+                        //$scope.payment.tax_id = payment.country_code + payment.tax_id;
+                        $scope.payment.tax_id = (payment.tax_id).includes(payment.country_code) ? payment.tax_id : payment.country_code + payment.tax_id;
+                            
                         angular.element('#vatLoader').css('display', 'none');
                     } else if (!data.data) {
                         notification('Unable to get vat information, please try again.', 'warning');
                         $scope.payment.country_code = payment.country_code;
-                        $scope.payment.tax_id = payment.country_code + payment.tax_id;
+                        //$scope.payment.tax_id = payment.country_code + payment.tax_id;
+                        $scope.payment.tax_id = (payment.tax_id).includes(payment.country_code) ? payment.tax_id : payment.country_code + payment.tax_id;
                         angular.element('.vatNumberValid').html(' ');
                         angular.element('#true').text('false');
                         angular.element('#vatLoader').css('display', 'none');
                     } else if (data.data.status == 400) {
                         notification(data.data.message, 'warning');
                         $scope.payment.country_code = payment.country_code;
-                        $scope.payment.tax_id = payment.country_code + payment.tax_id;
+                        //$scope.payment.tax_id = payment.country_code + payment.tax_id;
+                        $scope.payment.tax_id = (payment.tax_id).includes(payment.country_code) ? payment.tax_id : payment.country_code + payment.tax_id;
                         angular.element('.vatNumberValid').html(' ');
                         angular.element('#true').text('false');
                         angular.element('#vatLoader').css('display', 'none');
                     } else {
                         notification('Unable to get vat information, please try again.', 'warning');
                         $scope.payment.country_code = payment.country_code;
-                        $scope.payment.tax_id = payment.country_code + payment.tax_id;
+                        //$scope.payment.tax_id = payment.country_code + payment.tax_id;
+                        $scope.payment.tax_id = (payment.tax_id).includes(payment.country_code) ? payment.tax_id : payment.country_code + payment.tax_id;
                         angular.element('.vatNumberValid').html(' ');
                         angular.element('#true').text('false');
                         angular.element('#vatLoader').css('display', 'none');
