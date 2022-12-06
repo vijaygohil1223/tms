@@ -3937,20 +3937,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('-').reverse().join('.') + ' ' + time;
             }, 100);*/
             $scope.jobdetail.ItemLanguage = '';
-            rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
-            rest.get().success(function (data) {
-                console.log('data=itemss', data)
+            $scope.promiseItemLang = function (res) {        
+                var deferredIl = $q.defer();
+                rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
+                rest.get().success(function (data) {
+                    console.log('data=itemss', data)
 
-                var sourceData = JSON.parse(data.source_lang);
-                var targetData = JSON.parse(data.target_lang);
-                var srcLang = sourceData.sourceLang;
-                var trgLang = targetData.sourceLang;
+                    var sourceData = JSON.parse(data.source_lang);
+                    var targetData = JSON.parse(data.target_lang);
+                    var srcLang = sourceData.sourceLang;
+                    var trgLang = targetData.sourceLang;
 
-                var srcLang = srcLang ? srcLang : '';
-                var trgLang = trgLang ? trgLang : '';
+                    var srcLang = srcLang ? srcLang : '';
+                    var trgLang = trgLang ? trgLang : '';
 
-                $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
-            });
+                    $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+                    deferredIl.resolve($scope.jobdetail.ItemLanguage);
+                }).error( function(){
+                    deferredIl.reject();
+                })
+                return deferredIl.promise;
+            }
 
             
             rest.path = 'getOrderSingle/' + data[0].order_id ;
@@ -4037,15 +4044,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.childPriceAll().then((chData) => {
                 //newitemData.forEach( function(eleVal, index, arr){
                     console.log('specilall', $scope.scoopSpecializationArr)
-                    var langPair = newitemData.ItemLanguage;
-                    console.log('langPair', langPair)
+                    
                     $scope.exChildPriceArr = $scope.childPrice;
                     console.log('newchildPriceArr', $scope.exChildPriceArr)
                     console.log('$scope.customerpriceAll', $scope.customerpriceAll)
                     $scope.exCustPriceAll().then((prData) => {
                         let resourceId = newitemData.resource ? newitemData.resource : 0; 
+                        
                         console.log('prData', prData)
-                        $scope.changeLinguistPrice(resourceId, $scope.scoopSpecializationArr, langPair)
+                        $scope.promiseItemLang().then( (lang) => {
+                            var langPair = $scope.jobdetail.ItemLanguage;
+                            console.log('langPair-get', langPair)
+                    
+                            $scope.changeLinguistPrice(resourceId, $scope.scoopSpecializationArr, langPair)
+                        });
                         // if($scope.exChildPriceArr && newitemData.resource)
                         //     $scope.changeLinguistPrice(newitemData.resource, '', '')
                         // if($scope.exChildPriceArr && !newitemData.resource){
