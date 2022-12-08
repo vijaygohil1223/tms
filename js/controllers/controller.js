@@ -2248,19 +2248,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_class = 'projectstatus_overdue';
                     val.projectstatus_color = '#f44237';
                 }
-
-                if (val.DueDate.split(' ')[0] == $scope.dateToday  && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
-                    $scope.projectsDueToday.push(val);
-                    $scope.projectsDueTodayCount++;
-                }
-                if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
-                    $scope.projectsDueTomorrow.push(val);
-                    $scope.projectsDueTomorrowCount++;
-                }
-                if (val.DueDate.split(' ')[0] > $scope.dateToday && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
-                    $scope.projectsOverdue.push(val);
-                    $scope.projectsOverdueCount++;
-                }
+                // val.DueDate
+                let scoopDueDate = val.itemDuedate;
+                if(scoopDueDate){
+                    if (val.itemDuedate.split(' ')[0] == $scope.dateToday  && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
+                        $scope.projectsDueToday.push(val);
+                        $scope.projectsDueTodayCount++;
+                    }
+                    if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
+                        $scope.projectsDueTomorrow.push(val);
+                        $scope.projectsDueTomorrowCount++;
+                    }
+                    if (scoopDueDate.split(' ')[0] > $scope.dateToday && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
+                        $scope.projectsOverdue.push(val);
+                        $scope.projectsOverdueCount++;
+                    }
+                }    
                 if (val.heads_up == 1) {
                     $scope.projectsToDisplay.push(val);
                 }
@@ -28877,6 +28880,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //log file end
                         //$route.reload();
                         notification('Item successfully updated.', 'success');
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 200);
+
                     });
                 } else {
 
