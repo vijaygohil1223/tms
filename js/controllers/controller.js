@@ -2249,15 +2249,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_color = '#f44237';
                 }
 
-                if (val.DueDate.split(' ')[0] == $scope.dateToday && val.itemStatus != "Delivered") {
+                if (val.DueDate.split(' ')[0] == $scope.dateToday  && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
                     $scope.projectsDueToday.push(val);
                     $scope.projectsDueTodayCount++;
                 }
-                if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1) && val.itemStatus != "Delivered") {
+                if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
                     $scope.projectsDueTomorrow.push(val);
                     $scope.projectsDueTomorrowCount++;
                 }
-                if (val.DueDate.split(' ')[0] > $scope.dateToday && val.itemStatus != "Delivered") {
+                if (val.DueDate.split(' ')[0] > $scope.dateToday && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
                     $scope.projectsOverdue.push(val);
                     $scope.projectsOverdueCount++;
                 }
@@ -31099,6 +31099,72 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         bootbox.confirm("Are you sure you want to delete?", function (result) {
             if (result == true) {
                 rest.path = 'deleteLangs/' + id;
+                rest.delete().success(function (data) {
+                    if (data.status == 422) {
+                        notification('You can not delete this record.', 'warning');
+                    } else {
+                        notification('Record deleted successfully.', 'success');
+                        $route.reload();
+                    }
+                }).error(errorCallback);
+            }
+        });
+    }
+}).controller('specializedController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.CurrentDate = new Date();
+    $scope.editOn = 0;
+
+    $scope.save = function (formId) {
+        if (angular.element('#' + formId).valid()) {
+            if ($scope.speclz.id) {
+
+                $routeParams.id = $scope.speclz.id;
+                rest.path = 'specializedUpdate';
+                rest.put($scope.speclz).success(function (data) {
+                    notification('Record updated successfully.', 'success');
+                    //$route.reload();
+                    $timeout(function () {
+                        $window.location.reload();
+                    }, 100);
+                }).error(errorCallback);
+            } else {
+                if ($scope.speclz.is_active == undefined) {
+                    $scope.speclz.is_active = '0';
+                }
+                
+                rest.path = 'specializedSave';
+                rest.post($scope.speclz).success(function (data) {
+                    notification('Record inserted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        }
+    }
+
+    if ($window.localStorage.getItem("session_iUserId")) {
+        rest.path = 'specializedGet';
+        rest.get().success(function (data) {
+            $scope.speclzList = data;
+        }).error(errorCallback);
+
+    }
+
+    $scope.disableField = false;
+    $scope.LangEdit = function (id, eID) {
+        $scope.editOn = 1;
+        rest.path = 'specializedOne/' + id;
+        rest.get().success(function (data) {
+            $scope.speclz = data;
+            $scope.disableField = true;
+        }).error(errorCallback);
+        scrollToId(eID);
+    }
+
+    $scope.deleteLang = function (id) {
+        bootbox.confirm("Are you sure you want to delete?", function (result) {
+            if (result == true) {
+                rest.path = 'deleteSpecialized/' + id;
                 rest.delete().success(function (data) {
                     if (data.status == 422) {
                         notification('You can not delete this record.', 'warning');

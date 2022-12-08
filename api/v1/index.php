@@ -1417,7 +1417,34 @@ $app->delete('/deleteLangs/:id','authenticate', function ($id) {
     $result = $language->deletelangs($id);
     echoResponse(200, $result);
 });
-
+//----------------- Specialization -----------------//
+$app->post('/specializedSave','authenticate', function () use($app) {
+    $specialized = new specialized ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $specialized->specializedSave($data);
+    echoResponse($result ['status'], $result);
+});
+$app->get('/specializedGet','authenticate', function () {
+    $specialized = new specialized ();
+    $result = $specialized->specializedGetAll();
+    echoResponse(200, $result);
+});
+$app->get('/specializedOne/:id','authenticate', function ($id) {
+    $specialized = new specialized ();
+    $result = $specialized->specializedOne($id);
+    echoResponse(200, $result);
+});
+$app->put('/specializedUpdate/:id','authenticate', function ($id) use($app) {
+    $specialized = new specialized ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $specialized->specializedUpdate($id, $data);
+    echoResponse($result ['status'], $result);
+});
+$app->delete('/deleteSpecialized/:id','authenticate', function ($id) {
+    $specialized = new specialized ();
+    $result = $specialized->deleteSpecialized($id);
+    echoResponse(200, $result);
+});
 // ---------------- product section----------------------//
 $app->get('/products', 'authenticate',function () {
     $product = new product ();

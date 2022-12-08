@@ -252,6 +252,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'languagesController',
             activetab: 'languages',
             role: '1'
+        }).when('/specialized', {
+            templateUrl: modulesPath + 'specialized.html',
+            controller: 'specializedController',
+            activetab: 'specialized',
+            role: '1'
         }).when('/tax-status', {
             templateUrl: modulesPath + 'tax-status.html',
             controller: 'taxstatusController',

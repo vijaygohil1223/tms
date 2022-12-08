@@ -466,6 +466,15 @@
               ng-click="addToFavouriteMenu($event);" id="languagestransMenu" title="Add to Favourite"></i>
           </li>
 
+          <li ng-class="{'active menuBg': activetab == '/specialized'}" ng-mouseover="menuHoverIn('specializedMenu');"
+            ng-mouseleave="menuHoverOut('specializedMenu')">
+            <a href="#/specialized" md-ink-ripple>
+              <span class="font-bol underSubmenu">Specialization</span>
+            </a>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="specializedMenu" title="Add to Favourite"></i>
+          </li>
+
           <li ng-class="{'active menuBg': activetab == '/business-units'}"
             ng-mouseover="menuHoverIn('businessUnitsMenu');" ng-mouseleave="menuHoverOut('businessUnitsMenu')">
             <a href="#/business-units" md-ink-ripple>

@@ -2461,7 +2461,7 @@ td { font-size: 11px; } */
                                   <thead>
                                     <th>#</th>
                                     <th>Job Number</th>
-                                    <th>Client</th>
+                                    <!-- <th>Client</th> -->
                                     <th>Account</th>
                                     <th>Description</th>
                                     <th>Due date</th>
@@ -2491,9 +2491,9 @@ td { font-size: 11px; } */
                                       </td>
                                       <td ng-if="!job.poNumber">-</td>
                                       <!-- <td><a href="#/project-job-detail/{{job.job_summmeryId}}" class="summeryColor">{{job.order_no}}_{{job.job_code}}{{job.job_no| numberFixedLen:3}}</a></td> -->
-                                      <td class="clientDnld">
+                                      <!-- <td class="clientDnld">
                                         {{job.clientName}}
-                                      </td>
+                                      </td> -->
                                       <td>{{job.IndirectClientName}}</td>
                                       <td>
                                         <span ng-if="job.description">{{job.description}}</span>
@@ -2532,7 +2532,7 @@ td { font-size: 11px; } */
                                   <thead>
                                     <th>#</th>
                                     <th>Job Number</th>
-                                    <th>Client</th>
+                                    <!-- <th>Client</th> -->
                                     <th>Account</th>
                                     <th>Description</th>
                                     <th>Due date</th>
@@ -2545,7 +2545,7 @@ td { font-size: 11px; } */
                                         {{job.order_no}}-{{job.job_code}}{{job.job_no
                                         | numberFixedLen:3}}
                                       </td>
-                                      <td>{{job.clientName}}</td>
+                                      <!-- <td>{{job.clientName}}</td> -->
                                       <td>{{job.IndirectClientName}}</td>
                                       <td>
                                         <span ng-if="job.description">{{job.description}}</span>
