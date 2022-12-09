@@ -2182,10 +2182,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.itemStatus == "QA Ready") {
                     let isQaReady = true;
                     if($scope.jobListDelivered.length > 0){
-                        const checkqaReady = $scope.jobListDelivered.filter( jb => jb.item_status != 'Delivered' && jb.order_id == val.orderId && jb.item_id == val.item_number );
+                        let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.item_status != 'Delivered' );
                         if(checkqaReady.length > 0)
                             isQaReady = false;
-                        console.log('checkqaReady', checkqaReady)
                     }
                     if(isQaReady){
                         val.progrss_precentage = 75;
@@ -2249,17 +2248,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_color = '#f44237';
                 }
                 // val.DueDate
+                let statusExistArr = ["Delivered","Approved","Invoiced","Paid"];
                 let scoopDueDate = val.itemDuedate;
-                if(scoopDueDate){
-                    if (val.itemDuedate.split(' ')[0] == $scope.dateToday  && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
+                    
+                if(scoopDueDate && !(statusExistArr.indexOf(val.itemStatus) > -1) ){
+                    if (scoopDueDate.split(' ')[0] == $scope.dateToday) {
                         $scope.projectsDueToday.push(val);
                         $scope.projectsDueTodayCount++;
                     }
-                    if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
+                    if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1) ) {
                         $scope.projectsDueTomorrow.push(val);
                         $scope.projectsDueTomorrowCount++;
                     }
-                    if (scoopDueDate.split(' ')[0] > $scope.dateToday && val.itemStatus != "Delivered" && val.itemStatus != "Approved") {
+                    if (scoopDueDate.split(' ')[0] > $scope.dateToday) {
                         $scope.projectsOverdue.push(val);
                         $scope.projectsOverdueCount++;
                     }
@@ -2464,6 +2465,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function (data) {
             $scope.dashboardJobList = data;
+            console.log('$scope.dashboardJobList', $scope.dashboardJobList)
             
             var allJobsData = [];
             var Requested = [];
@@ -2523,19 +2525,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
 
                 //Due date counts for jobs
-                if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
-                    jobDueToday.push(val);
-                    jobDueTodayCount++;
-                }
-                if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
-                    jobDueTomorrow.push(val);
-                    jobDueTomorrowCount++;
-                }
-                const dateToday = dateFormat(new Date()).split(".").reverse().join("-");
-                if (val.due_date.split(' ')[0] < dateToday && val.item_status != 'Completed' && val.item_status != 'Delivered') {
-                    jobOverDue.push(val);
-                    jobOverDueCount++;
-                }
+                    
+                if( ! ['Delivered','Completed','Paid','Invoice Accepted'].indexOf(val.item_status) > -1 ){
+                    if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
+                        jobDueToday.push(val);
+                        jobDueTodayCount++;
+                    }
+                    if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                        jobDueTomorrow.push(val);
+                        jobDueTomorrowCount++;
+                    }
+                    const dateToday = dateFormat(new Date()).split(".").reverse().join("-");
+                    if (val.due_date.split(' ')[0] < dateToday) {
+                        jobOverDue.push(val);
+                        jobOverDueCount++;
+                    }
+                }    
 
             });
             $timeout(function () {
