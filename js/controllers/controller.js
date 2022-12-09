@@ -10086,6 +10086,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
+    rest.path = 'customerpriceAll/' + 2;
+    rest.get().success(function (data) {
+        $scope.priceListAll = data;
+        console.log('$scope.priceListAll', $scope.priceListAll)
+        console.log('$window.localStorage.iUserId', $window.localStorage.iUserId)
+        $scope.lngstPriceList = data.filter( function (data) {
+            if(data.price_currency)
+                data.price_currency = (data.price_currency.toString()).split(',')[0];     
+            return data.resource_id == $window.localStorage.iUserId;  
+        });
+    }).error(function () {
+    });
+
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("parentId", " ");

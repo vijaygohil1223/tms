@@ -293,6 +293,31 @@
                                 </table>
                             </div>
                         </tab>
+                        <tab index="10">
+                            <tab-heading>
+                                <i class="fa fa-list"></i>
+                                <span>Price List</span>
+                            </tab-heading>
+                            <div class="col-sm-6">
+                                <table class="table table-striped b-t b-b">
+                                    <thead>
+                                        <th>#</th>
+                                        <th>Price Name</th>
+                                        <th>Currency</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="p in lngstPriceList">
+                                            <td ng-bind="$index + 1"></td>
+                                            <td ng-bind="p.price_name"></td>
+                                            <td ng-bind="p.price_currency"></td>
+                                        </tr>
+                                        <tr ng-show="!lngstPriceList.length">
+                                            <td colspan="3" ng-bind="dataNotFound"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </tab>
                         <tab index="6">
                             <tab-heading>
                                 <i class="fa fa-lock"></i>
