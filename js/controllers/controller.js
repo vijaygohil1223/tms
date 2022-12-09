@@ -11750,6 +11750,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+
     $scope.customerChange = function (id) {
         console.log('id', id)
         if(id){
@@ -11809,6 +11810,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.customerPriceList = true;
         }    
     }
+
+    if($routeParams.id){
+        $scope.customerChange($routeParams.id);
+        $scope.customerPriceId = $routeParams.id; 
+
+        console.log('$window.localStorage.currentUserName', $window.localStorage.currentUserName)
+        //angular.element('#customerPriceId').select2('val', 'T Admin | ENG>POR | Medical');
+        rest.path = 'customerpriceGetOne/' + $scope.customerPriceId;
+        rest.get().success(function (data) {
+            $scope.customerPrice_route = data;
+            angular.element('#price_currency').select2('val', data.price_currency);
+            angular.element('#calculation_basis').select2('val', data.calculation_basis);
+            angular.element('#rounding_proc').select2('val', data.rounding_proc);
+            setTimeout(() => {
+                angular.element("#customerPriceId").select2('data', { id: $routeParams.id, text: data.price_name });
+            }, 200);
+        })    
+    }    
+
 
     $scope.removecustomerPriceId = function () {
         $scope.customerPrice = {};

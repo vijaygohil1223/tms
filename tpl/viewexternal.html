@@ -293,7 +293,7 @@
                                 </table>
                             </div>
                         </tab>
-                        <tab index="10">
+                        <tab index="9" ng-if="userRight==1">
                             <tab-heading>
                                 <i class="fa fa-list"></i>
                                 <span>Price List</span>
@@ -308,6 +308,7 @@
                                     <tbody>
                                         <tr ng-repeat="p in lngstPriceList">
                                             <td ng-bind="$index + 1"></td>
+                                            <!-- <td> <a href="#/price-list1/{{p.price_list_id}}"> {{p.price_name}}</a></td> -->
                                             <td ng-bind="p.price_name"></td>
                                             <td ng-bind="p.price_currency"></td>
                                         </tr>
