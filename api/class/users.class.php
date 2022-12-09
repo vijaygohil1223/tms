@@ -131,7 +131,9 @@ class users {
         //$data = $this->_db->get(TBL_USERS);
         /*$data = $this->_db->rawQuery("SELECT tu.*,tut.vType FROM tms_users As tu INNER JOIN tms_user_type As tut on tu.vResourceType = tut.iTypeId WHERE iFkUserTypeId = $type");*/
         if($type == 1){
-            $data = $this->_db->rawQuery("SELECT tu.*,tut.vType,tup.position_name,tus.status_name FROM tms_users As tu INNER JOIN tms_user_type As tut on tu.vResourceType = tut.iTypeId INNER JOIN tms_user_position As tup ON tup.position_id = tu.vResourcePosition INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
+            //$data = $this->_db->rawQuery("SELECT tu.*,tut.vType,tup.position_name,tus.status_name FROM tms_users As tu INNER JOIN tms_user_type As tut on tu.vResourceType = tut.iTypeId INNER JOIN tms_user_position As tup ON tup.position_id = tu.vResourcePosition INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
+            // Innrer Join to left join (tms_user_type)
+            $data = $this->_db->rawQuery("SELECT tu.*,tut.vType,tup.position_name,tus.status_name FROM tms_users As tu LEFT JOIN tms_user_type As tut on tu.vResourceType = tut.iTypeId INNER JOIN tms_user_position As tup ON tup.position_id = tu.vResourcePosition INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
         }else{
             //$data = $this->_db->rawQuery("SELECT tu.*,tus.status_name FROM tms_users As tu  INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type && activation_status = 1");
             $data = $this->_db->rawQuery("SELECT tu.*,tus.status_name FROM tms_users As tu  INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
@@ -806,6 +808,11 @@ array(
             $this->_db->where('iTypeId', $data['vResourceType']);
             $id = $this->_db->getone('tms_user_type');
             $data['vResourceType'] = $id['vType'];
+        }
+        if(isset($data['vResourcePosition'])){
+            $this->_db->where('position_id', $data['vResourcePosition']);
+            $id = $this->_db->getone('tms_user_position');
+            $data['vResourcePositionName'] = $id['position_name'];
         }
         if(isset($data['eUserStatus'])) {
             $this->_db->where('status_id', $data['eUserStatus']);

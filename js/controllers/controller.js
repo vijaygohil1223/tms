@@ -9069,7 +9069,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewExternalget/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.userprofiledata = data;
-            console.log("$scope.userprofiledata", $scope.userprofiledata);
+            console.log('$scope.userprofiledata', $scope.userprofiledata)
             var CountryCode = JSON.parse(data.iMobile).countryTitle;
             var displayCode = '(+' + CountryCode.split('+')[1] + ')';
             $scope.userprofiledata.iMobile = displayCode + ' ' + JSON.parse(data.iMobile).mobileNumber;
@@ -10539,7 +10539,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.setUsername2 = function (value) {
-        console.log('value', value)
         if ($scope.userprofiledata.vFirstName) {
             if (value != undefined) {
                 $scope.userprofiledata.vUserName = $scope.userprofiledata.vFirstName + ' ' + value;
@@ -10805,6 +10804,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var flagClass = JSON.parse($scope.userprofiledata.iMobile).countryFlagClass;
                     var Ccode = flagClass.split(' ')[1];
                     var CcodeNum = flagTitle.split(':')[1].trim();
+                    console.log('CcodeNum', CcodeNum)
 
                     var FinalMobileNum = CcodeNum + JSON.parse($scope.userprofiledata.iMobile).mobileNumber;
 
@@ -10849,6 +10849,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
 
                 var mobileData = JSON.stringify(countryObj);
+                console.log('mobileData', mobileData)
                 $scope.userprofiledata.iMobile = mobileData;
                 
                 $scope.userprofiledata.vPhoneNumber = phone;
@@ -10911,7 +10912,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //Setting Mobile field after saved.
                     var flagTitle = JSON.parse($scope.userprofiledata.iMobile).countryTitle;
                     var flagClass = JSON.parse($scope.userprofiledata.iMobile).countryFlagClass;
-
+                    
                     $('#iMobile').val(JSON.parse($scope.userprofiledata.iMobile).mobileNumber)
 
                     var countryCodeData = angular.element('#iMobile').parent().find('.selected-flag').prop('title', flagTitle);
@@ -10927,7 +10928,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             notification('Information updated successfully...', 'success');
                         }, 500);
                     }
-                }).error(errorCallback);
+                }).error(function (data, error, status) { 
+                    angular.element('#iMobile').val(mobile)
+                });
             } else {
                 /*delete $scope.userprofiledata["cPassword"];*/
                 // --------address only -----------------//
