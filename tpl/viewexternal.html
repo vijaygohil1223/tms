@@ -308,8 +308,8 @@
                                     <tbody>
                                         <tr ng-repeat="p in lngstPriceList">
                                             <td ng-bind="$index + 1"></td>
-                                            <!-- <td> <a href="#/price-list1/{{p.price_list_id}}"> {{p.price_name}}</a></td> -->
-                                            <td ng-bind="p.price_name"></td>
+                                            <td> <a href="javascript:void(0)"  ng-click="goToPricelist(p.price_list_id)"> {{p.price_name}}</a></td>
+                                            <!-- <td ng-bind="p.price_name"></td> -->
                                             <td ng-bind="p.price_currency"></td>
                                         </tr>
                                         <tr ng-show="!lngstPriceList.length">

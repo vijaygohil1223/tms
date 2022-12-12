@@ -10096,8 +10096,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 data.price_currency = (data.price_currency.toString()).split(',')[0];     
             return data.resource_id == $window.localStorage.iUserId;  
         });
-    }).error(function () {
-    });
+        
+    }).error(function () {});
+
+    $scope.goToPricelist = function(id){
+        console.log('detail==id', id)
+        if(id){
+            $rootScope.parentPriceId = id;
+            let extUserName = $scope.viewExternalCommunicational ? $scope.viewExternalCommunicational.vFirstName + ' ' + $scope.viewExternalCommunicational.vLastName : '';
+            $rootScope.parentCurrentUserName = extUserName;
+            $rootScope.parentExternalUserId = $window.localStorage.iUserId;
+            $rootScope.parentUserId = $window.localStorage.iUserId;
+            
+            $location.path('price-list1');
+        }
+    
+    }    
 
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -11569,7 +11583,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/price-list1');
     }
 
-}).controller('pricelistController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter) {
+}).controller('pricelistController', function ($scope,$rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.clientPriceId = $window.localStorage.getItem("clientpricelistdataId");
     $scope.inputCounter = 1;
@@ -11582,7 +11596,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
     $scope.uType = $window.localStorage.userType;
     $scope.currentUserName = $window.localStorage.currentUserName;
-    // console.log("$scope.currentUserName", $scope.UserId);
     $scope.user_Id = $window.localStorage.getItem("contactUserId");
     $scope.priceBasiList = [];
     $scope.baseQuentity = [];
@@ -11666,13 +11679,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'masterPriceitemgetFromPriceList';
     rest.get().success(function (data) {
         $scope.masterPrice = data;
-        console.log("$scope.masterPrice", $scope.masterPrice);
     }).error(errorCallback);
 
     rest.path = 'childPriceitemget';
     rest.get().success(function (data) {
         $scope.childPrice = data;
-        //console.log("$scope.childPrice", $scope.childPrice);
     }).error(errorCallback);
 
     $scope.itemLanguage = function (item) {
@@ -11726,12 +11737,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.removeBasePrice = function (index) {
-        console.log('index', index)
         $scope.priceBasiList
-        console.log('$scope.priceBasiList==before', $scope.priceBasiList)
         $scope.priceBasiList.splice(index, 1);
-        console.log('$scope.priceBasiList==after', $scope.priceBasiList)
-        
         // Also remove from price and total sum price
         $scope.basePrice.splice(index, 1);
         $scope.baseTtl.splice(index, 1);
@@ -11750,14 +11757,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-
     $scope.customerChange = function (id) {
-        console.log('id', id)
         if(id){
             rest.path = 'customerpriceGetOne/' + id;
             rest.get().success(function (data) {
                 $scope.customerPrice = data;
-                console.log('pricechange', data);
                 angular.element('#price_currency').select2('val', data.price_currency);
                 angular.element('#calculation_basis').select2('val', data.calculation_basis);
                 angular.element('#rounding_proc').select2('val', data.rounding_proc);
@@ -11811,35 +11815,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
     }
 
-    if($routeParams.id){
-        $scope.customerChange($routeParams.id);
-        $scope.customerPriceId = $routeParams.id; 
-
-        console.log('$window.localStorage.currentUserName', $window.localStorage.currentUserName)
-        //angular.element('#customerPriceId').select2('val', 'T Admin | ENG>POR | Medical');
+    // External user detail page pricelist
+    if($rootScope.parentPriceId && $rootScope.Oldtab == "/viewExternal/"+$rootScope.parentUserId){
+        $scope.customerChange($rootScope.parentPriceId);
+        $scope.customerPriceId = $rootScope.parentPriceId; 
+        $window.localStorage.setItem("currentUserName", $rootScope.parentCurrentUserName);
+        $scope.currentUserName = $rootScope.parentCurrentUserName;
+        $scope.ExternalPricelistId = $rootScope.parentExternalUserId;
+        $window.localStorage.setItem("externalPricelistId", $rootScope.externalPricelistId);
+        $window.localStorage.setItem("contactUserId", $rootScope.parentUserId);
+        $scope.user_Id = $rootScope.parentUserId;
         rest.path = 'customerpriceGetOne/' + $scope.customerPriceId;
         rest.get().success(function (data) {
-            $scope.customerPrice_route = data;
-            angular.element('#price_currency').select2('val', data.price_currency);
-            angular.element('#calculation_basis').select2('val', data.calculation_basis);
-            angular.element('#rounding_proc').select2('val', data.rounding_proc);
+            $scope.customerPrice = data;
             setTimeout(() => {
-                angular.element("#customerPriceId").select2('data', { id: $routeParams.id, text: data.price_name });
+                angular.element("#customerPriceId").select2('data', { id: $rootScope.parentPriceId, text: data.price_name });
+                angular.element('#price_currency').select2('val', data.price_currency);
+                angular.element('#calculation_basis').select2('val', data.calculation_basis);
+                angular.element('#rounding_proc').select2('val', data.rounding_proc);
             }, 200);
         })    
     }    
-
 
     $scope.removecustomerPriceId = function () {
         $scope.customerPrice = {};
         $scope.priceBasiList = {};
         $scope.priceLanguageList = {};
         angular.element('#customerPriceId').select2('val', '');
+        if($rootScope.parentPriceId)
+            $rootScope.parentPriceId = '';
         $route.reload();
     };
 
     $scope.save = function (frmId) {
-        console.log('frmId', frmId)
         if (angular.element('#' + frmId).valid()) {
             var setPriceLanguage = angular.element('.setPriceLanguage').text();
 
@@ -11900,7 +11908,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var basePrice = angular.element('#basePrice' + i).val().trim();
                     basePrice = numberFormatCommaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
-                    console.log('priceBasiList', $scope.priceBasiList);
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
                         'basePricecheck': basePricecheck,
@@ -11929,7 +11936,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // }
                 rest.path = "customerpriceUpdate";
                 rest.put($scope.customerPrice).success(function (data) {
-                    console.log('data', data)
                     notification('Price list successfully updated', 'success');
                     $timeout(function () {
                         angular.element("#customerPriceId").select2('data', { id: data.LastIsertedData.price_list_id, text: data.LastIsertedData.price_name });
@@ -12103,7 +12109,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     });
 
     $scope.basePriceOtyChnage = function (id) {
-        console.log('id', id)
         var bsprice1 = $scope.basePrice[id];
         var basePrice1 = bsprice1.replace(/[.]/g, '');
         var basePrice = basePrice1.replace(/[,]/g, '.');
@@ -12112,7 +12117,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         var qty = $scope.priceBasiList[id].baseQuentity;
         var basePrice_p = $scope.priceBasiList[id].basePrice;
-        console.log('basePrice_p', basePrice_p)
         var basePrice_p1 = basePrice_p.toString().replace(/[.]/g, '');
         var basePrice_p2 = basePrice_p1.replace(/[,]/g, '.');
         var subTotal_p = qty * parseFloat(basePrice_p2);
@@ -12168,7 +12172,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'masterPriceGetdata';
         rest.get().success(function (data) {
             $scope.projectType = data;
-            console.log('$scope.projectType', $scope.projectType)
         }).error(errorCallback);
 
     }, 1000)
@@ -12189,7 +12192,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             angular.forEach($scope.masterPrice, function (v, i) {
                 angular.forEach($scope.childPrice, function (val1, i1) {
-                    //console.log('$scope.childPrice', $scope.childPrice)
                     if (v.master_price_id == val1.master_price_id) {
                         var obj2 = {
                             id: val1.child_price_id,
