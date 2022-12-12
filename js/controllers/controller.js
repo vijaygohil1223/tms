@@ -3080,12 +3080,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var absentLngstFilter = absentLngstlist.filter(x => {
                     if(x.is_available){
                         let isAailable = JSON.parse(x.is_available);
-                        //console.log('isAailable', isAailable)
                         if(isAailable.length){
-                            const isFound = up7Days.some(r => isAailable.indexOf(r) >= 0)
+                            //const isFound = up7Days.some(r => isAailable.indexOf(r) >= 0)
                             //console.log('found', isFound)
                             x.is_available = JSON.parse(x.is_available);
-                            if(isFound)
+                            //if(isFound)
                             return isAailable;
                             //return isAailable.includes(currentDatestr);
                         }
@@ -3108,7 +3107,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         let element = '';
         let div = document.createElement('ul');
         for (let index = 0; index < absentDateArr.length; index++) {
-            var date = moment(absentDateArr[index]).format('DD-MM-YYYY');
+            var date = moment(absentDateArr[index]).format($window.localStorage.getItem('global_dateFormat') + ' HH:mm' );
             element = div.innerHTML += "<li> <i class='fa fa-calendar'></i> &nbsp;&nbsp;"+ date +"</li>";
         }
         var dialog = bootbox.dialog({
@@ -10326,6 +10325,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.clearAbsentDate = function () {
         //$scope.userprofiledata.is_available = '';
         $scope.abscentDateArr = [];
+        $scope.abDate = '';
+        $scope.abTime = '';
         //$('#multidatePick').multiDatesPicker('resetDates', 'picked');
     }
     $scope.clearJobDate = function () {
