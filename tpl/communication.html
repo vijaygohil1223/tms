@@ -11,12 +11,14 @@
 .ui-datepicker .ui-datepicker-calendar .ui-state-highlight a {
     background: #502dc4 none;
 }
-.datebadge > .badge {
-    background-color: #4b5254;
+.datebadge .badge {
+    background-color:#9ea3a4;
     margin: 5px 3px;
-    padding: 8px 20px;
+    /* padding: 8px 20px; */
 }
-
+.pl-0{
+    padding-left: initial;
+}
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' ">
 </div>
@@ -207,21 +209,25 @@
                                                             </div>
                                                             <div class="form-group">
                                                                 <label>Linguist Absent <a ng-click="clearAbsentDate()"title="Clear Field" style="margin-left:5px;"> <i class="glyphicon glyphicon-refresh"></i> </a></label>
-                                                                <input type="text" class="form-control" class="hasDatepicker" id="multidatePick" ng-multidate name="multidatePick" ng-model="userprofiledata.is_available" onkeydown="return false" autocomplete="off">
-                                                                <!-- <div class="d-flex">
-                                                                    <div class="col-sm-6" style="padding-left:initial;">  
-                                                                        <input class="form-control" ng-datepicker2 ng-model="abDate" onkeydown="return false" /> 
+                                                                <!-- <input type="text" class="form-control" class="hasDatepicker" id="multidatePick" ng-multidate name="multidatePick" ng-model="userprofiledata.is_available" onkeydown="return false" autocomplete="off"> -->
+                                                                <div class="d-flex">
+                                                                    <div class="col-sm-6 pl-0">  
+                                                                        <input class="form-control" ng-datepicker2 ng-model="abDate" id="abDate" onkeydown="return false" placeholder="Date"/> 
+                                                                    </div>
+                                                                    <div class="col-sm-3 pl-0">  
+                                                                        <input class="form-control" timepicker1 allowtimefrmt ng-model="abTime" id="abTime" onkeydown="return true" placeholder="Time">
                                                                     </div>
                                                                     <div class="col-sm-3" style="padding-left:initial;">  
-                                                                        <input class="form-control" timepicker1 allowtimefrmt ng-model="abTime" onkeydown="return true">
-                                                                    </div>
-                                                                    <div class="col-sm-3" style="padding-left:initial;">  
-                                                                        <a class="btn btn-info" style="padding:7px 12px;"> OK </a>
+                                                                        <a class="btn btn-info" style="padding:7px 12px;" ng-click="addAbsDate(abDate, abTime)"> OK </a>
                                                                     </div>    
                                                                 </div>
-                                                                <div style="margin-top:10px;" class="datebadge">
-                                                                    <span class="badge">05.12.2022 12:45</span>
-                                                                </div> -->
+                                                                <div style="margin-top:10px;" >
+                                                                    <ul style="list-style:none;margin-left:-40px;">
+                                                                        <li ng-repeat="dtlist in abscentDateArr track by $index" class="datebadge" style="float: left;"> <span class="badge " id="datespan{{$index}}">{{dtlist}} <i ng-click="removeAbscentDateArr($index,dtlist)" class="fa fa-close" style="padding:5px;cursor: pointer;"></i></span> </li>
+                                                                    </ul>
+
+                                                                    
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     <!-- <button type="submit" class="btn btn-sm btn-info">Submit</button> -->

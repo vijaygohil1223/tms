@@ -10124,6 +10124,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.isValidMobileNumber = false;
     $scope.multipleDateArr = [];
+    $scope.abscentDateArr = [];
+    
             
     /* Mobile Validation START */
     var telInput = $("#iMobile"),
@@ -10323,12 +10325,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.clearAbsentDate = function () {
         //$scope.userprofiledata.is_available = '';
-        $('#multidatePick').multiDatesPicker('resetDates', 'picked');
+        $scope.abscentDateArr = [];
+        //$('#multidatePick').multiDatesPicker('resetDates', 'picked');
     }
     $scope.clearJobDate = function () {
-    
         $scope.userprofiledata.dtLast_job = '';
-        
     }
     var userLastJob = '';
     if ($routeParams.id != undefined) {
@@ -10416,10 +10417,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(is_available.length){
                     let abscentArr = is_available.filter(function(item) {
                         console.log('item-cont', item)
-                        if(item.split('-').length ==3)
-                            return moment(item).format($scope.dateFormatGlobal);
+                        if(item.split('-').length > 2){
+                            const abFormatDate = moment(item).format($scope.dateFormatGlobal + ' HH:mm');
+                            console.log('$scope.dateFormatGlobal', abFormatDate)
+                            $scope.abscentDateArr.push(abFormatDate)
+                            return abFormatDate;
+                        }
+                        //return datestring;
                     });
-                    $scope.userprofiledata.is_available = abscentArr.toString();    
+                    console.log('abscentArr', abscentArr)
+                        
+                    //$scope.userprofiledata.is_available = abscentArr.toString();    
+                    //console.log('$scope.userprofiledata.is_available', $scope.userprofiledata.is_available)
+                    //abscentDateArr
                 }    
             }
 
@@ -10595,6 +10605,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    // Add abscent Dates
+    $scope.addAbsDate = function(abDate, abTime){
+        console.log('abDate', abDate)
+        if(abDate){
+            var abTime = abTime ? ' ' + moment(abTime).format('HH:mm') : ' 00:00';
+            let absFullDate = abDate + abTime;
+            if(! $scope.abscentDateArr.includes(absFullDate)){
+                $scope.abscentDateArr.push(absFullDate)
+                $scope.abDate = '';
+                $scope.abTime = '';
+            }    
+            console.log('$scope.abscentDateArr', $scope.abscentDateArr)
+        }
+    }
+    $scope.removeAbscentDateArr = function (id,dtItem) {
+        // if(id && $scope.abscentDateArr)
+             //$scope.abscentDateArr.splice(id,1);
+        const index = $scope.abscentDateArr.indexOf(dtItem);
+        if (index > -1) { // only splice array when item is found
+            $scope.abscentDateArr.splice(index, 1); // 2nd parameter means remove one item only
+        }    
+    } 
+
     rest.path = 'usertype';
     rest.get().success(function (data) {
         $scope.userTypes = data;
@@ -10637,17 +10670,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 $scope.userprofiledata.iEditedBy = 0;
             }
-            const multidatePick = $('#multidatePick').val();
-            var abscentArr = '';
-            if(multidatePick != '' && multidatePick != 1){
-                var abscentArr = multidatePick.split(",").map(function(item) {
-                    var dt = originalDateFormat(item.trim()); // dot format
-                    return moment(dt).format('YYYY-MM-DD');
-                });
-            }    
-            $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
+            //const multidatePick = $('#multidatePick').val();
+            //var abscentArr = '';
+            // if(multidatePick != '' && multidatePick != 1 && multidatePick != undefined ){
+            //     var abscentArr = multidatePick.split(",").map(function(item) {
+            //         var dt = originalDateFormat(item.trim()); // dot format
+            //         return moment(dt).format('YYYY-MM-DD');
+            //     });
+            // }    
+            //$scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
             
-
             if ($scope.userprofiledata.iUserId) {
                 // --------address only -----------------//
                 var address1 = [];
@@ -10692,6 +10724,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
 
+                var abscentArr = '';
+                if($scope.abscentDateArr.length > 0)
+                    var abscentArr = $scope.abscentDateArr.map(function(item) {
+                        var dt = originalDateFormat(item.trim()); // dot format
+                        return moment(dt).format('YYYY-MM-DD HH:mm');
+                    });
+                $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
+                
                 $scope.userprofiledata.iMobile = JSON.stringify(countryObj);
                 $scope.userprofiledata.vPhoneNumber = phone;
                 $scope.userprofiledata.image = $scope.imageSrc;
@@ -10798,7 +10838,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(!$scope.userprofiledata.iGender)    
                     $scope.userprofiledata.iGender = 1
                 
-                console.log('$scope.userprofiledata=Add',$scope.userprofiledata )
+                console.log('$scope.abscentDateArr', $scope.abscentDateArr)
+                var abscentArr = '';
+                if($scope.abscentDateArr.length > 0)
+                    var abscentArr = $scope.abscentDateArr.map(function(item) {
+                        var dt = originalDateFormat(item.trim()); // dot format
+                        return moment(dt).format('YYYY-MM-DD HH:mm');
+                    });
+                console.log('abscentArr', abscentArr)
+                
+                $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
+                console.log('$scope.userprofiledata.is_available', $scope.userprofiledata.is_available)
+                
 
                 rest.path = 'saveuserprofileexternelS';
                 rest.post($scope.userprofiledata).success(function (data) {
