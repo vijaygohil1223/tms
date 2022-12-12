@@ -23088,14 +23088,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.childprice.child_price_id) {
                 $routeParams.id = $scope.childprice.child_price_id;
 
-                $scope.childprice.rate = numberFormatCommaToPoint($scope.childprice.rate);
+                //$scope.childprice.rate = numberFormatCommaToPoint($scope.childprice.rate);
+                $scope.childprice.rate = 0;
                 rest.path = 'childpriceupdate';
                 rest.put($scope.childprice).success(function () {
                     notification('Record updated successfully.', 'success');
                     $route.reload();
                 }).error(errorCallback);
             } else {
-                $scope.childprice.rate = numberFormatCommaToPoint($scope.childprice.rate);
+                //$scope.childprice.rate = numberFormatCommaToPoint($scope.childprice.rate);
+                $scope.childprice.rate = 0;
                 rest.path = 'childpricesave';
                 rest.post($scope.childprice).success(function (data) {
                     notification('Record inserted successfully.', 'success');
