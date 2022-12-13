@@ -1,0 +1,68 @@
+<div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
+  data-ng-include=" 'tpl/material.header.html' "></div>
+<div layout="row">
+  <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs"
+    data-ng-include=" 'tpl/material.aside.html' "></div>
+  <div flex layout="column">
+    <div ui-butterbar></div>
+    <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
+    <div class="md-content page_content_wrapper">
+      <form id="invoice-Detail">  
+        <div class="content_head bg-light lter b-b wrapper-md ng-scope">
+          <a href="javascript:history.back()" class="btn btn-info pull-right">Back</a>
+          <h1 class="m-n font-thin h3">Invoice Create</h1>
+        </div>
+        <div class="wrapper-md ng-scope">
+          <div class="panel panel-default">
+            <div class="table-responsive">
+              <div class="bg-light lter b-b wrapper-md d-flex">
+                <h4 class="m-n font-thin col-sm-11"> </h4>
+                <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)">Create invoice</button>
+              </div>
+              <table class="table table-striped b-t b-b table-bordered" >
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Scoop number</th>
+                    <th>Client</th>
+                    <th>PO number</th>
+                    <th>Due Date</th>
+                    <th>status</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody ng-init="invLen = InvoiceResult.length - 1" ng-repeat="invoiceL in InvoiceResult  track by $index">
+                  <tr>
+                    <td colspan="7" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd" ng-if="$index ==0 || InvoiceResult[$index-1].contactPerson != invoiceL.contactPerson">Client: {{ invoiceL.contactName }}</td>
+                  </tr>               
+                  <tr>
+                    <td>
+                      <span ng-if="invoiceL.itemStatus=='Approved' || invoiceL.itemStatus=='Overdue'">
+                          <input type="checkbox" ng-model="invoiceL.SELECTED" ng-true-value="1" ng-false-value="0"/>
+                      </span>
+                      <span ng-if="invoiceL.itemStatus!='Approved'">
+                          <input type="checkbox" name="invoceCheck" disabled>
+                      </span>
+                    </td>
+                    <td><span ng-bind="(invoiceL.orderNumber)"></span>-<span ng-bind="(invoiceL.item_number | numberFixedLen:3)"></span></td>
+                    <td>{{ invoiceL.contactName }}</td>
+                    <td>{{ invoiceL.itemPonumber }}</td>
+                    <td ng-bind="invoiceL.itemDuedate | globalDtFormat"></td>
+                    <td>
+                      <button class="btn approvedColor" ng-if="invoiceL.itemStatus == 'Approved'"></button>
+                      &nbsp;{{invoiceL.itemStatus}}
+                    </td>
+                    <td ng-bind="invoiceL.totalAmount | customNumber"></td>
+                    
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- footer copy right -->
+      <div data-ng-include="'tpl/copyRight.html'"></div>
+    </div>
+  </div>
+</div>

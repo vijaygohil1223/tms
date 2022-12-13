@@ -13875,6 +13875,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.info.iEditedBy = 0;
                 }
 
+                if(($scope.info.vCodeRights).includes(',')){
+                    $scope.info.vCodeRights = ($scope.info.vCodeRights).split(',').pop();
+                }
+
                 //$scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
                 $scope.info.dtCreationDate = $filter('globalDtFormat')($scope.info.dtCreationDate);
                 $scope.info.dtCreationDate = originalDateFormatNew($scope.info.dtCreationDate);
@@ -25971,6 +25975,54 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.close();
     }
+}).controller('clientInvoiceScoopController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore) {    
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.InvoiceResult = [];
+    $scope.searchOrderNumber = '';
+
+    rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+    rest.get().success(function (data) {
+        //$scope.InvoiceResult = data;
+        $scope.InvoiceResult = data.filter(function (el) {
+            return el.itemStatus == 'Approved';
+        });
+        $scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
+        console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+    })    
+
+
+    $scope.addInvoice = function (data) {
+        console.log('data', data)
+        var client = "";
+        var flag = 0;
+        var array = [];
+
+        angular.forEach(data, function (val, i) {
+            if (val.SELECTED == 1) {
+                console.log('val.SELECTED', val.SELECTED)
+                if (!client) {
+                    client = val.contactName;
+                }
+                if (val.contactName != client) {
+                    flag = 1;
+                } else {
+                    array.push(val.itemId);
+                }
+            }
+        });
+
+        if (flag != 1 && array.length) {
+            $cookieStore.put('invoiceScoopId', array);
+            $location.path('/client-invoice-create');
+        } else {
+            if ($scope.InvoiceResult != undefined && flag != 1) {
+                notification("Pelase select Project scoop to create invoice.", "warning");
+            } else {
+                notification("You cannot add two different client invoice", "warning");
+            }
+        }
+    }
+
 }).controller('projectjobDetailController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
@@ -27614,7 +27666,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
 
             var date = new Date();
-            $scope.invoiceDetail.invoiceNumber = data[0].orderNumber + '_' + pad(data[0].invoiceCount + 1, 3);
+            //$scope.invoiceDetail.invoiceNumber = data[0].orderNumber + '_' + pad(data[0].invoiceCount + 1, 3);
+            $scope.invoiceDetail.invoiceNumber = 'S-' + pad(data[0].invoiceCount + 1, 6);
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.scoop_id = obj;
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, data[0].number_of_days);
