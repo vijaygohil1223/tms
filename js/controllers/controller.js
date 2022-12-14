@@ -27676,12 +27676,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             }).error(errorCallback);
 
-            var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
-            var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
+            var mobileNo = $scope.invoiceDetail.freelancePhone ? JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber : '';
+            var countryCode = $scope.invoiceDetail.freelancePhone ? JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle : ':';
             $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
+        
 
-            var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
-            var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
+            var mobileNo1 = $scope.invoiceDetail.companyPhone ? JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber : '';
+            var countryCode1 = $scope.invoiceDetail.companyPhone ? JSON.parse($scope.invoiceDetail.companyPhone).countryTitle : ':';
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
 
             var date = new Date();
