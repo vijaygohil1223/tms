@@ -15137,10 +15137,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 console.log('$scope.invoiceList', $scope.invoiceList)
             })
-            $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
+            //$scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
+            $scope.grandTotal = parseFloat($scope.invoiceTotal);
             $scope.invoiceTotal = (invoiceTotal.toString().includes(',')) ? $scope.invoiceTotal : $filter('customNumber')($scope.invoiceTotal);
-            console.log('$scope.invoiceTotal-filter', $scope.invoiceTotal)
+            $scope.totalDue = $scope.invoiceList[0].Invoice_cost - $scope.invoiceList[0].paid_amount;
             $scope.vat = $filter('customNumber')($scope.vat);
+            if($scope.invoiceList[0].paid_amount > 0){
+                $scope.dueAmountText = 'DUE AMOUNT'; 
+            }
 
             if ($scope.invoiceDetail.invoice_status == 'Irrecoverable') {
                 angular.element('#irrecoverable').addClass('btn-danger');
@@ -25782,7 +25786,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function (val, i) {
                 var invoice_duedate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod);
-                console.log('invoice_duedate', invoice_duedate)
                 //if(invoice_duedate)
                     //val.invoice_duedate = invoice_duedate;
                 if (val.invoice_status == 'Complete') {
@@ -25980,14 +25983,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.InvoiceResult = [];
     $scope.searchOrderNumber = '';
 
-    rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+    $scope.scoopIds = [];
+    rest.path = "getClientInvoicelistAll";
     rest.get().success(function (data) {
-        //$scope.InvoiceResult = data;
-        $scope.InvoiceResult = data.filter(function (el) {
-            return el.itemStatus == 'Approved';
-        });
-        $scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
-        console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+        $scope.allInvoice = data;
+        console.log('$scope.allInvoice', $scope.allInvoice)
+        $scope.allInvoice.filter( function (allInvoice) {
+            let scoopIds = JSON.parse(allInvoice.scoop_id);
+                if(scoopIds){
+                    scoopIds.map((elm) => {
+                        return $scope.scoopIds.push(elm.id)
+                      });
+                }
+        })
+
+        rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+        rest.get().success(function (data) {
+            //$scope.InvoiceResult = data;
+            $scope.InvoiceResult = data.filter(function (el) {
+                if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
+                    return el;
+            });
+            $scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
+            console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+        })    
+    
     })    
 
 
@@ -27491,7 +27511,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
             $scope.grandTotal = $scope.invoiceTotal + $scope.vat;
             $scope.invoiceTotal = $filter('customNumber')($scope.invoiceTotal);
-
         });
     }
 

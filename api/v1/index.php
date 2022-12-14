@@ -3277,6 +3277,11 @@ $app->post('/clientinvoiceSave', 'authenticate',function () use($app) {
     $result = $invoice->saveclientInvoice($data);
     echoResponse(200, $result);
 });
+$app->get('/getClientInvoicelistAll', 'authenticate',function() {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getClientInvoicelistAll();
+    echoResponse(200, $result);
+});
 $app->get('/viewAllClientInvoice/:type/:userId', 'authenticate',function($type,$userId) {
     $invoice = new Client_invoice ();
     $result = $invoice->viewAllClientInvoice($type,$userId);

@@ -20,7 +20,8 @@
     margin-bottom: 25px;
   }
   .imgcenter{
-    margin-left: 44%;;
+    margin: 0 auto;
+    width: max-content;
   }
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
@@ -42,12 +43,12 @@
       </div>
       <div class="wrapper-md ng-scope">
         <div class="panel panel-default">
-          <div class="panel-body">
+          <div class="panel-body" style="padding-top:0;">
             <form id="invoice-form">
               <!-- <div class="col-sm-12">
                     <a href="" class="btn btn-sm btn-info pull-right" onclick="window.print();">Print</a>
                 </div> -->
-              <div class="wrapper-md ng-scope">
+                <div class="col-sm-12">
                 <div class="row">
                   <div class="row invoice-header">
                     <div class="col-xs-6">
@@ -76,7 +77,7 @@
                       </p>
                     </div>
                     <div class="col-xs-6 text-right">
-                      <p class="h4"> <strong>#{{ invoiceDetail.invoiceNumber }}</strong></p>
+                      <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoiceNumber }}</strong></p>
                       <br />
                       <p>
                         Invoice date: <br /><span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span></br>
@@ -133,16 +134,17 @@
                             <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal"
                               id="invSubTotal{{$index}}"
                               ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
-                              name="itemVal_{{invL.itemId}}" />
+                              name="itemVal_{{invL.itemId}}" style="min-width:100px;"/>
                           </th>
                         </tr>
                         <tr ng-if="$index == invoiceLength" class="">
-                          <td colspan="5" class="text-right"><strong>Subtotal</strong></td>
+                          <td colspan="5" class="text-right"><strong>Sub Total</strong></td>
                           <td style="width:9%;">
-                            <!-- {{grandTotal | customNumber}} -->
-                            <input class="form-control" type="text" ng-model="invoiceTotal"
+                            <!-- {{invoiceTotal | customNumber}} -->
+                            {{ invoiceTotal }}
+                            <!-- <input class="form-control" type="text" ng-model="invoiceTotal"
                               ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
-                              id="invSubtotal" />
+                              id="invSubtotal" /> -->
                             <!-- <span ng-if="!invoiceLength">{{invL.item.subTotal | customNumber}}</span>
                                   <span ng-if="invoiceLength">{{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> </td> -->
                         </tr>

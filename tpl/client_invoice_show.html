@@ -27,7 +27,8 @@
     margin-bottom: 25px;
   }
   .imgcenter{
-    margin-left: 44%;;
+    margin: 0 auto;
+    width: max-content;
   }
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
@@ -60,7 +61,7 @@
       </div>
       <div class="wrapper-md ng-scope">
         <div class="panel panel-default invoiceInput" id="exportable">
-          <div class="panel-body">
+          <div class="panel-body" style="padding-top:0;">
             <div class="col-sm-12">
               <div class="row">
                 <div class="row invoice-header">
@@ -90,7 +91,7 @@
                     </p>
                   </div>
                   <div class="col-xs-6 text-right">
-                    <p class="h4"> <strong>#{{ invoiceDetail.invoice_number }}</strong></p>
+                    <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoice_number }}</strong></p>
                     <br />
                     <p>
                       Invoice date: <br /><span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span></br>
@@ -147,119 +148,45 @@
                           <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal"
                             id="invSubTotal{{$index}}"
                             ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
-                            name="itemVal_{{invL.itemId}}" />
+                            name="itemVal_{{invL.itemId}}" style="min-width:100px;"/>
                         </th>
                       </tr>
-                      <tr ng-if="$index == invoiceLength" class="">
-                        <td colspan="5" class="text-right"><strong>Subtotal</strong></td>
-                        <td style="width:9%;">
-                          <!-- {{grandTotal | customNumber}} -->
-                          <input class="form-control" type="text" ng-model="invoiceTotal"
-                            ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
-                            id="invSubtotal" />
-                          <!-- <span ng-if="!invoiceLength">{{invL.item.subTotal | customNumber}}</span>
-                                <span ng-if="invoiceLength">{{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> </td> -->
+                      <tr ng-if="$index == invoiceLength">
+                        <td colspan="5" class="text-right">
+                          <strong>Sub Total</strong>
+                        </td>
+                        <td style="width:10%;">
+                          {{invoiceTotal}}
+                          <!-- <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="invoiceTotal"
+                          ng-disabled="editDisabled" ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
+                            id="invSubtotal" /> -->
                       </tr>
-                      <!-- <tr ng-if="$index == invoiceLength">
-                        <td colspan="3" class="text-right no-border"><strong>Tax</strong></td>
-                        <td>{{currencyType}}0.00</td>
-                      </tr> -->
                       <!-- <tr ng-if="$index == invoiceLength" class="tdborder">
-                        <td colspan="5" class="text-right no-border"><strong>Vat Tax</strong></td>
+                        <td colspan="5" class="text-right no-border"><strong>VAT Tax</strong></td>
                         <td>
-                          <input type="text" class="form-control" ng-model="vat"
-                            ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
+                          <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="vat"
+                          ng-disabled="editDisabled" ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
                         </td>
                       </tr> -->
                       <!-- <tr ng-if="$index == invoiceLength" class="tdborder">
                         <td colspan="5" class="text-right no-border"><strong>Total</strong></td>
                         <td>
-                          <span> <strong> {{grandTotal | customNumber}} </strong> </span> -->
-                      <!-- <span ng-if="!invoiceLength" id="invoiceTotal"> {{invL.item.subTotal | customNumber}}</span> -->
-                      <!-- <span ng-if="invoiceLength" id="invoiceTotal"> {{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> -->
-                      <!-- </td>
+                          <span> <strong> {{grandTotal | customNumber}} </strong> </span>
+                        </td>
                       </tr> -->
+                      <tr ng-if="$index == invoiceLength && invL.paid_amount > 0" class="tdborder">
+                        <td colspan="5" class="text-right no-border"><strong>Paid</strong></td>
+                        <td style="width:10%;"> {{invL.paid_amount | customNumber}}</td>
+                      </tr>
+                      <!-- <tr ng-if="$index == invoiceLength && invL.paid_amount > 0" class="tdborder">
+                        <td colspan="5" class="text-right no-border"><strong>Total Due Amount</strong></td>
+                        <td style="width:10%;"> <strong> {{invL.Invoice_cost - invL.paid_amount |
+                            customNumber}}</strong></td>
+                      </tr> -->
+
                     </tbody>
                   </table>
                 </div>  
-
-
-                <!-- <div class="col-sm-12" style="padding:0;bottom:10px;"> -->
-                  <!-- <p class="m-t m-b" style="font-weight:600;background: #edf1f2;
-  padding: 11px;">Payment Information:</p> -->
-                  <!-- <div class="col-sm-12" ng-if="currencyPaymentMethod == 'Bank Transfer'">
-                    <table class="table table-striped b-t b-b table-bordered">
-                      <tbody> -->
-                        <!-- <tr>
-                          <th><span class="TblSpan">Payment Method</span></th>
-                          <td><span ng-bind="vBankInfo.payment_method" class="ng-binding"></span></td>
-                        </tr> -->
-                        <!-- <tr>
-                            <th><span class="TblSpan">Bank Address</span></th>
-                            <td><span ng-bind="vBankInfo.address" class="ng-binding"></span></td>
-                        </tr> -->
-                        <!-- <tr>
-                          <td><span class="TblSpan">Bank Name</span></td>
-                          <td><span> Revolut Bank UAB</span></td>
-                        </tr>
-                        <tr>
-                          <td><span class="TblSpan">Account Holder</span></td>
-                          <td><span ng-bind="vBankInfo.holder_name" class="ng-binding"></span></td>
-                        </tr>
-                        <tr>
-                          <td><span class="TblSpan">IBAN</span></td>
-                          <td><span ng-bind="vBankInfo.iban" class="ng-binding"></span></td>
-                        </tr>
-                        <tr>
-                          <td><span class="TblSpan">SWIFT/BIC</span></td>
-                          <td><span ng-bind="vBankInfo.swift_bic" class="ng-binding"></span></td>
-                        </tr> -->
-                        <!-- <tr>
-                          <th><span class="TblSpan">Currency</span></th>
-                          <td><span ng-bind="vBankInfo.currency_code" class="ng-binding"></span></td>
-                        </tr> -->
-                      <!-- </tbody>
-                    </table>
-                  </div> -->
-                  <!-- <div class="col-sm-6" ng-if="currencyPaymentMethod == 'Bank Transfer'">
-                    <table class="table table-striped b-t b-b table-bordered">
-                      <tbody> -->
-                  <!-- <tr>
-                          <th><span class="TblSpan">IBAN</span></th>
-                          <td><span ng-bind="vBankInfo.iban" class="ng-binding"></span></td>
-                        </tr>
-                        <tr>
-                          <th><span class="TblSpan">SWIFT/BIC</span></th>
-                          <td><span ng-bind="vBankInfo.swift_bic" class="ng-binding"></span></td>
-                        </tr> -->
-                  <!-- <tr>
-                            <th><span class="TblSpan">Routing Number</span></th>
-                            <td><span  ng-bind="vBankInfo.bank_code" class="ng-binding"></span></td>
-                        </tr> -->
-                  <!-- </tbody>
-                    </table>
-                  </div> -->
-                  <!-- <div class="col-sm-6" ng-if="currencyPaymentMethod == 'Paypal'">
-                    <table class="table table-striped b-t b-b table-bordered">
-                      <tbody>
-                        <tr>
-                          <th><span class="TblSpan">Paysera Account</span></th>
-                          <td><span ng-bind="vBankInfo.paypal_address" class="ng-binding"></span></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div> -->
-                  <!-- <p class="m-t m-b">Payment Method:
-                                  <br>
-                                  <span ng-if="currencyPaymentMethod == 'Bank Transfer'">
-                                                        <input type="radio" id="Bank" name="paymentType" ng-init="currencyPaymentMethod == 'Bank Transfer'" ng-model="invoiceDetail.payment" ng-value='"Bank"' disabled> Bank
-                                                      </span>
-                                  <span ng-if="currencyPaymentMethod == 'Paypal'">
-                                                        <input type="radio" id="Paypal" name="paymentType" ng-model="invoiceDetail.payment" ng-value='"Paypal"' disabled> Paypal
-                                                      </span>
-                              </p> -->
-                <!-- </div> -->
-                
                 <div class="row invoice-footer">
                   <div class="col-xs-6">
                     <p>Bank Name: Revolut Bank UAB </br>
@@ -269,8 +196,8 @@
                   </div>
                   <div class="col-xs-6 text-right">
                     <!-- <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;"> -->
-                    <h4>TOTAL</h4>
-                    <h3>€ {{grandTotal | customNumber}}</h3>
+                    <h4>TOTAL <span ng-bind="dueAmountText"></span></h4>
+                    <h3>€ {{totalDue | customNumber}}</h3>
                   </div>
                 </div>
                 <div class="row">
@@ -280,29 +207,31 @@
                 </div>
               
               <div id="toAddEleAfterDwonload"></div>
-              <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft'"
-                class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
-              <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
-                class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as cancel</button>
-              <button id="btnSave"
-                ng-show="invoiceDetail.invoice_type!='save' || invoiceDetail.is_invoice_sent!=1 && invoiceDetail.invoice_status!='Complete'"
-                class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o"
-                  aria-hidden="true"></i>&nbsp; To be sent</button>
-              <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
-                ng-click="save('invoice-form', 'draft');"> Draft</button>
-              <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="cancel();">
-                Cancel</button>
-              <button id="irrecoverable" class="btn btn-info btnSave" ng-show="reminderBtnHideShow"
-                ng-click="isIrrecoverableInvoice();"> Irrecoverable </button>
-              <button id="editInvoiceSave" class="btn btn-info invcBtn btnSave" ng-hide="editDisabled"  
-                ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i class="fa fa-pencil"></i> Edit & Save </button>
+              <div class="row" style="margin-top:20px;">
+                <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft'"
+                  class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
+                <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
+                  class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as cancel</button>
+                <button id="btnSave"
+                  ng-show="invoiceDetail.invoice_type!='save' || invoiceDetail.is_invoice_sent!=1 && invoiceDetail.invoice_status!='Complete'"
+                  class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o"
+                    aria-hidden="true"></i>&nbsp; To be sent</button>
+                <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
+                  ng-click="save('invoice-form', 'draft');"> Draft</button>
+                <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="cancel();">
+                  Cancel</button>
+                <button id="irrecoverable" class="btn btn-info btnSave" ng-show="reminderBtnHideShow"
+                  ng-click="isIrrecoverableInvoice();"> Irrecoverable </button>
+                <button id="editInvoiceSave" class="btn btn-info invcBtn btnSave" ng-hide="editDisabled"  
+                  ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i class="fa fa-pencil"></i> Edit & Save </button>
+              </div>    
             </div>
           </div>
         </div>
+
+      </div>
         <!-- footer copy right -->
         <div data-ng-include="'tpl/copyRight.html'"></div>
-      </div>
-
     </div>
 
   </div>

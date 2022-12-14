@@ -668,4 +668,10 @@ class Client_invoice {
         return $data;
     }
 
+    // Get all invoice list
+    public function getClientInvoicelistAll() {
+        $data = $this->_db->get('tms_invoice_client');
+        return $data;
+    }
+
 }

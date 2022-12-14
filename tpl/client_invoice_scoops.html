@@ -9,15 +9,16 @@
     <div class="md-content page_content_wrapper">
       <form id="invoice-Detail">  
         <div class="content_head bg-light lter b-b wrapper-md ng-scope">
-          <a href="javascript:history.back()" class="btn btn-info pull-right">Back</a>
+          <!-- <a href="#/invoice-client" class="btn btn-info pull-right" style="margin-left:10px;">Go To Invoice List</a> -->
+          <!-- <a href="javascript:history.back()" class="btn btn-info pull-right">Back</a> -->
           <h1 class="m-n font-thin h3">Invoice Create</h1>
         </div>
         <div class="wrapper-md ng-scope">
           <div class="panel panel-default">
             <div class="table-responsive">
               <div class="bg-light lter b-b wrapper-md d-flex">
-                <h4 class="m-n font-thin col-sm-11"> </h4>
-                <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)">Create invoice</button>
+                <h4 class="m-n font-thin col-sm-11"> <a href="#/invoice-client" class="btn btn-info"><i class="fa fa-hand-o-right"></i> Go To Invoice List</a> </h4>
+                <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)"><i class="fa fa-plus"></i>&nbsp;&nbsp; Create invoice</button>
               </div>
               <table class="table table-striped b-t b-b table-bordered" >
                 <thead>
