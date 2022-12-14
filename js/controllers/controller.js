@@ -14983,6 +14983,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.is_disabled = false;
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
+    //$scope.noneCls = "none"
     $scope.invoicePaid = function (frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -15005,13 +15006,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     }
-    $scope.changeInvoiceSum = function (id) {
-
-    }
 
     $scope.vat = 0;
     //change jobitem price module
     $scope.changeInvoiceField = function (index, parentIndex, itemVal = 0, type = '') {
+        console.log('type', type)
         var invoiceSum = 0;
         $(".invoiceCal").each(function () {
             var invPrice = numberFormatCommaToPoint(this.value)
@@ -15025,19 +15024,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         if (type == 'vat') {
             $scope.vat = numberFormatCommaToPoint(itemVal);
-            //$scope.grandTotal = parseFloat(invoiceSum) + parseFloat($scope.vat);
             var invoiceTotal = $scope.invoiceTotal
             if ($scope.invoiceTotal.indexOf(',') > -1) {
                 invoiceTotal = numberFormatCommaToPoint($scope.invoiceTotal);
             }
             $scope.grandTotal = parseFloat(invoiceTotal) + parseFloat($scope.vat);
-            //$scope.grandTotal = parseFloat(invoiceSubTotal) + parseFloat(invoiceVat);
         }
         if (type == 'invoiceTotal') {
             $scope.invoiceTotal = numberFormatCommaToPoint(itemVal);
             console.log('$scope.invoiceTotal', $scope.invoiceTotal)
             $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
-            //$scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat(invoiceVat);
         }
         if (type == 'itemPrice') {
             $scope.grandTotal = parseFloat(invoiceSum) + parseFloat($scope.vat);
@@ -15273,6 +15269,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.printIt = function (number) {
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
+        //$scope.noneCls = "";
 
         var btnPaid = angular.element('#btnPaid');
         var btnMarkAsCancel = angular.element('#btnMarkAsCancel');
@@ -27680,7 +27677,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var countryCode = $scope.invoiceDetail.freelancePhone ? JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle : ':';
             $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
         
-
             var mobileNo1 = $scope.invoiceDetail.companyPhone ? JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber : '';
             var countryCode1 = $scope.invoiceDetail.companyPhone ? JSON.parse($scope.invoiceDetail.companyPhone).countryTitle : ':';
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
@@ -27781,11 +27777,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.invoice_number = $scope.invoiceDetail.invoiceNumber;
 
         $scope.invoiceData.vat = $scope.vat;
-        $scope.invoiceData.item_total = $scope.invoiceTotal;
+        //$scope.invoiceData.item_total = $scope.invoiceTotal;
+        $scope.invoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal);
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
-
-        //
-        // $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
+        
+        //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         // $scope.upInvoiceData.vat = $scope.vat
         // $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;  
         $scope.invoiceData.item = [];
@@ -27806,10 +27802,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     notification('Invoice already added for this Project / Scoop.', 'error');
                 } else {
                     if (data['inserted_id']) {
-                        notification('Success', 'success');
+                        notification('Invoice created successfully', 'success');
                         $location.path('/client-invoice-show/' + data['inserted_id']);
                     } else {
-                        $location.path('/invoice-client');
+                        //$location.path('/invoice-client');
+                        $location.path('/client-invoice-create');
                     }
                 }
             });

@@ -417,7 +417,7 @@ class Client_invoice {
         $attachments = '';
         $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
         $to_name = 'TMS';
-        //$to = 'anil.kanhasoft@yopmail.com';
+        //$to = 'anil.kanhasoft@gmail.com';
         $to = $data['companycontactEmail'];
 
         if($data['pdfData']){
