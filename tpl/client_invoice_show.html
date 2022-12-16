@@ -144,7 +144,7 @@
                           <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal"
                             id="invSubTotal{{$index}}"
                             ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
-                            name="itemVal_{{invL.itemId}}" style="width:180px;"/>
+                            name="itemVal_{{invL.itemId}}" style="width:180px;" ng-disabled="editDisabled"/>
                         </th>
                         <th>{{invL.tax_rate | customNumber}}%</th>
                         <th>

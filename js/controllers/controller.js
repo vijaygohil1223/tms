@@ -3541,6 +3541,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         return deferred.promise;
     };
+    $scope.poTempate = false;
+    $scope.sendPO = function(){
+        $scope.poTempate = true;
+            //document.getElementById('downloadPO').innerHTML += $scope.emailTplData.template_content;
+            kendo.drawing.drawDOM($("#downloadPO")).then(function (group) {
+                group.options.set("font", "8px DejaVu Sans");
+                // group.options.set("pdf", {
+                //     margin: {
+                //         left   : "40mm",
+                //         top    : "0mm",
+                //         right  : "40mm",
+                //         bottom : "0mm"
+                //     },
+                //     paperSize: "A4",
+                // });
+                kendo.drawing.pdf.saveAs(group, "testinf.pdf");
+                $scope.poTempate = false;
+            });
+
+    }    
 
     $scope.childPrice = [];
     $scope.childPriceAll = function (data) {        
