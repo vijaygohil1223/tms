@@ -79,10 +79,10 @@
 
                 <div class="row invoice-content1">
                   <div class="col-xs-6">
-                    <p>
+                    <p style="font-size:20px;">
                       <strong ng-bind="invoiceDetail.clientCompanyName"></strong></br>
                     </p>
-                    <p>
+                    <p class="mb-0">
                       {{invoiceDetail.companyAddress}} </br>
                       {{clientZipcode}} <span ng-if="clientCity"> , {{clientCity}}</span> </br>
                       {{clientCountry}} </br>
@@ -140,15 +140,19 @@
                         <th>({{$index + 1}})</th>
                         <th>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }}</th>
                         <th>1</th>
-                        <th>{{invL.item.itemTotalVal }}</th>
-                        <th>0%</th>
                         <th>
-                          <!-- {{invL.item.subTotal | customNumber }}  -->
-                          <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
                           <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal"
                             id="invSubTotal{{$index}}"
                             ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
-                            name="itemVal_{{invL.itemId}}" style="min-width:100px;"/>
+                            name="itemVal_{{invL.itemId}}" style="width:180px;"/>
+                        </th>
+                        <th>{{invL.tax_rate | customNumber}}%</th>
+                        <th>
+                          <!-- {{invL.item.subTotal | customNumber }}  -->
+                          <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
+                          <!-- {{ invL.itemPriceTax }} -->
+                          <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }}</span>
+                          
                         </th>
                       </tr>
                       <tr ng-if="$index == invoiceLength">

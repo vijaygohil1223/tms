@@ -527,6 +527,11 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'InvoiceCreateController',
             activetab: 'invoice-detail',
             role: '2'
+        }).when('/invoice-linguist-jobs', {
+            templateUrl: modulesPath + 'invoice_linguist_jobs.html',
+            controller: 'invoiceCreateJobsController',
+            activetab: 'invoice-detail',
+            role: '2'
         }).when('/invoice-show/:id', {
             templateUrl: modulesPath + 'invoice_show.html',
             controller: 'invoiceShowController',

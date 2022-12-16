@@ -382,20 +382,18 @@ app.filter('dateLessThenToday', function() {
 });
 app.filter('customNumber', function($filter,$window) {
     return function(input) {
-        //console.log('input', input)
         var decimalSeparator = $window.localStorage.getItem('DecimalSeparator')
         const numStr = String(input);
         // String Contains Decimal
         var numFix = 2;
-        if (numStr.includes('.')) {
-            var dec = numStr.split('.')[1].length;
-            if(dec == 3)
-                numFix = 3;
-            if(dec > 3)
-                numFix = 4;       
-        };
+        // if (numStr.includes('.')) {
+        //     var dec = numStr.split('.')[1].length;
+        //     if(dec == 3)
+        //         numFix = 3;
+        //     if(dec > 3)
+        //         numFix = 4;       
+        // };
         var number = $filter('number')(input,numFix);
-        //console.log('number-afterrr', number)
         if(number){
             if(decimalSeparator){
                 if(decimalSeparator == '.'){
@@ -405,9 +403,7 @@ app.filter('customNumber', function($filter,$window) {
                 }
             }else{
                 return number
-                
             }
-            
         }
     };
 });

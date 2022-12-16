@@ -21,7 +21,7 @@ body{padding-top: 62px;}
 .m-0{
     margin: 0px !important;
 }
-.mb-0 {
+.mb-0, .pb-0{
     margin-bottom: 0px !important;
 }
 .pb-15{

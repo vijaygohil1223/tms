@@ -6454,6 +6454,56 @@ app.directive('ngDateformatdob', function () {
         }  
     }  
 });
+app.directive('select2Taxrate', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element) {
+            rest.path = 'itemTaxget';
+            rest.get().success(function(data) {
+                var taxList = [{
+                    id: '0',
+                    text: '--Please Select Tax Rate--'
+                }];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        id: value.tax_percentage,
+                        text: value.tax_name + ' (' + value.tax_percentage + '% )'
+                    };
+                    taxList.push(obj);
+                });
+                $timeout(function() {
+                    // element.select2({
+                    //     allowClear: true,
+                    //     data: prType,
+                    //     multiple:true,
+                    //     maximumSelectionSize:1
+                    // });
+                    element.select2({
+                        allowClear: true,
+                        data: taxList,
+                        multiple: false,
+                    }).on("change", function (e) {
+                        // const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        // if(e.added){
+                        //     $(inputIdS2+' li').each(function() {
+                        //         const childDiv = $(this).children();
+                        //         let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                        //         if(eleText){
+                        //             if(eleText !== e.added.text){
+                        //                 $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                        //             }    
+                        //         }
+                        //     });
+                        // }    
+                    });
+
+                }, 200);
+
+            }).error(function(data, error, status) {});
+        }
+    }
+});
 /* Tabs permission */
 app.directive('select2Tabpermission', function($http, rest, $timeout) {
     return {

@@ -66,6 +66,9 @@
                   <div class="row invoice-content1">
                     <div class="col-xs-6">
                       <p>
+                        <strong>BILL TO:</strong> </br> 
+                      </p>
+                      <p class="mb-0" style="font-size:20px;">
                         <strong ng-bind="invoiceDetail.clientCompanyName"></strong></br>
                       </p>
                       <p>
@@ -124,17 +127,20 @@
                         class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
                         <tr class="thfont">
                           <th>({{$index + 1}})</th>
-                          <th>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }}</th>
+                          <th>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }} | {{invL.item_name}}</th>
                           <th>1</th>
-                          <th>{{invL.item.itemTotalVal }}</th>
-                          <th>0%</th>
                           <th>
-                            <!-- {{invL.item.subTotal | customNumber }}  -->
-                            <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
                             <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal"
                               id="invSubTotal{{$index}}"
                               ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
-                              name="itemVal_{{invL.itemId}}" style="min-width:100px;"/>
+                              name="itemVal_{{invL.itemId}}" style="width:180px;"/>
+                          </th>
+                          <th style="white-space:nowrap;"> {{ invL.tax_rate | customNumber }} % </th>
+                          <th>
+                            <!-- {{invL.item.subTotal | customNumber }}  -->
+                            <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }}</span>
+                            <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
+                            
                           </th>
                         </tr>
                         <tr ng-if="$index == invoiceLength" class="">
@@ -171,86 +177,9 @@
                     </table>
                   </div>  
 
-
-                  <!-- <div class="col-sm-12" style="padding:0;bottom:10px;"> -->
-                    <!-- <p class="m-t m-b" style="font-weight:600;background: #edf1f2;
-    padding: 11px;">Payment Information:</p> -->
-                    <!-- <div class="col-sm-12" ng-if="currencyPaymentMethod == 'Bank Transfer'">
-                      <table class="table table-striped b-t b-b table-bordered">
-                        <tbody> -->
-                          <!-- <tr>
-                            <th><span class="TblSpan">Payment Method</span></th>
-                            <td><span ng-bind="vBankInfo.payment_method" class="ng-binding"></span></td>
-                          </tr> -->
-                          <!-- <tr>
-                              <th><span class="TblSpan">Bank Address</span></th>
-                              <td><span ng-bind="vBankInfo.address" class="ng-binding"></span></td>
-                          </tr> -->
-                          <!-- <tr>
-                            <td><span class="TblSpan">Bank Name</span></td>
-                            <td><span> Revolut Bank UAB</span></td>
-                          </tr>
-                          <tr>
-                            <td><span class="TblSpan">Account Holder</span></td>
-                            <td><span ng-bind="vBankInfo.holder_name" class="ng-binding"></span></td>
-                          </tr>
-                          <tr>
-                            <td><span class="TblSpan">IBAN</span></td>
-                            <td><span ng-bind="vBankInfo.iban" class="ng-binding"></span></td>
-                          </tr>
-                          <tr>
-                            <td><span class="TblSpan">SWIFT/BIC</span></td>
-                            <td><span ng-bind="vBankInfo.swift_bic" class="ng-binding"></span></td>
-                          </tr> -->
-                          <!-- <tr>
-                            <th><span class="TblSpan">Currency</span></th>
-                            <td><span ng-bind="vBankInfo.currency_code" class="ng-binding"></span></td>
-                          </tr> -->
-                        <!-- </tbody>
-                      </table>
-                    </div> -->
-                    <!-- <div class="col-sm-6" ng-if="currencyPaymentMethod == 'Bank Transfer'">
-                      <table class="table table-striped b-t b-b table-bordered">
-                        <tbody> -->
-                    <!-- <tr>
-                            <th><span class="TblSpan">IBAN</span></th>
-                            <td><span ng-bind="vBankInfo.iban" class="ng-binding"></span></td>
-                          </tr>
-                          <tr>
-                            <th><span class="TblSpan">SWIFT/BIC</span></th>
-                            <td><span ng-bind="vBankInfo.swift_bic" class="ng-binding"></span></td>
-                          </tr> -->
-                    <!-- <tr>
-                              <th><span class="TblSpan">Routing Number</span></th>
-                              <td><span  ng-bind="vBankInfo.bank_code" class="ng-binding"></span></td>
-                          </tr> -->
-                    <!-- </tbody>
-                      </table>
-                    </div> -->
-                    <!-- <div class="col-sm-6" ng-if="currencyPaymentMethod == 'Paypal'">
-                      <table class="table table-striped b-t b-b table-bordered">
-                        <tbody>
-                          <tr>
-                            <th><span class="TblSpan">Paysera Account</span></th>
-                            <td><span ng-bind="vBankInfo.paypal_address" class="ng-binding"></span></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div> -->
-                    <!-- <p class="m-t m-b">Payment Method:
-                                    <br>
-                                    <span ng-if="currencyPaymentMethod == 'Bank Transfer'">
-                                                          <input type="radio" id="Bank" name="paymentType" ng-init="currencyPaymentMethod == 'Bank Transfer'" ng-model="invoiceDetail.payment" ng-value='"Bank"' disabled> Bank
-                                                        </span>
-                                    <span ng-if="currencyPaymentMethod == 'Paypal'">
-                                                          <input type="radio" id="Paypal" name="paymentType" ng-model="invoiceDetail.payment" ng-value='"Paypal"' disabled> Paypal
-                                                        </span>
-                                </p> -->
-                  <!-- </div> -->
-                  
                   <div class="row invoice-footer">
                     <div class="col-xs-6">
-                      <p>Bank Name: Revolut Bank UAB </br>
+                      <p>Bank Name: <span ng-bind="vBankInfo.bank_name"></span> </br>
                         Account Holder: <span ng-bind="vBankInfo.holder_name"></span> </br>
                         IBAN: <span ng-bind="vBankInfo.iban"></span> </br>
                         SWIFT: <span ng-bind="vBankInfo.swift_bic"></span></P>
