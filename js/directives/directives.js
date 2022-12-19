@@ -4426,8 +4426,12 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                     var amount = temp[1];
                     var decimalCnt = amount.includes('.') ? (amount).toString().split(".")[1].length : 2;
                     var total = amount * quantity;
-                        total = total.toFixed(decimalCnt);
-                    console.log('itemTotal1-111=', total)
+                        //total = total.toFixed(decimalCnt);
+                        //total = isNaN(total) ? 0 : Math.round(total * decimalPoint)/decimalPoint
+                        //total = ParseFloatNumber(total, 2)
+                        total = total.toFixed(2);
+                        
+                        console.log('itemTotal1-111=', total)
                         
                     if(scope.it == undefined) {
                         scope.it = {};
@@ -4447,7 +4451,7 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                         $('#Quantity').val('');
                         scope.counter++;
                         var itemTotal1 = quantity*amount;
-                            itemTotal1 = itemTotal1.toFixed(decimalCnt);
+                            itemTotal1 = itemTotal1.toFixed(2);
                         console.log('itemTotal1-@@=', itemTotal1)
                         var itemTotal = itemTotal1.toString().replace('.', ',');  
                         var amount = amount.toString().replace('.', ',');  

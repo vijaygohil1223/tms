@@ -467,7 +467,9 @@ $('#priceUnit').css('display', 'block');
 
                                                             <div ng-if="basePrice[$index] && baseQuentity[$index]" class="col-sm-2" id="baseWaiting{{$index}}">
                                                                 <!-- {{ baseTtl[$index] | customNumber}} -->
-                                                                {{ priceBase.baseTtl | customNumber}}
+                                                                <!-- {{ priceBase.baseTtl | customNumber}} -->
+                                                                {{ priceBase.baseTtl | customNumber4Digit}}
+                                                                
                                                             </div>
 
                                                             <div class="col-sm-2">

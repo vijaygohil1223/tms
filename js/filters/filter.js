@@ -407,6 +407,33 @@ app.filter('customNumber', function($filter,$window) {
         }
     };
 });
+app.filter('customNumber4Digit', function($filter,$window) {
+    return function(input) {
+        var decimalSeparator = $window.localStorage.getItem('DecimalSeparator')
+        const numStr = String(input);
+        // String Contains Decimal
+        var numFix = 2;
+        if (numStr.includes('.')) {
+            var dec = numStr.split('.')[1].length;
+            if(dec == 3)
+                numFix = 3;
+            if(dec > 3)
+                numFix = 4;       
+        };
+        var number = $filter('number')(input,numFix);
+        if(number){
+            if(decimalSeparator){
+                if(decimalSeparator == '.'){
+                    return number;
+                }else{
+                    return number.split('.')[0].replace(/,/g,'.')+','+number.split('.')[1];
+                }
+            }else{
+                return number
+            }
+        }
+    };
+});
 
 app.filter('filterJobs', function() {
         return function(items) {
