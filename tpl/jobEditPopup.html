@@ -824,17 +824,15 @@
                                         <th>AMOUNT</th>
                                     </tr>
                                 </thead>
-                                <tbody ng-init="invoiceLength = itemPriceUni[jobdetail.job_summmeryId].length - 1"
-                                    ng-init="invL.item.subTotal = {}" s class="table table-striped bg-white b-a"
-                                    ng-repeat="invL in itemPriceUni[jobdetail.job_summmeryId] track by $index">
-                                    <tr class="thfont">
+                                <tbody class="table table-striped bg-white b-a">
+                                    <tr class="thfont" ng-repeat="invL in itemPriceUni[jobdetail.job_summmeryId] track by $index">
                                         <th>({{$index + 1}})</th>
                                         <th> {{ invL.pricelist }}</th>
                                         <th>{{invL.quantity}}</th>
                                         <th style="white-space:nowrap;"> {{ invL.itemPrice }} </th>
-                                        <th> {{ invL.itemTotal | NumbersCommaformat }}</th>
+                                        <th> {{ invL.itemTotal }}</th>
                                     </tr>
-                                    <tr ng-if="invoiceLength == $index">
+                                    <tr>
                                         <td colspan="4" style="text-align:right !important;">Subtotal:</td>
                                         <td>{{ jobdetail.total_price | NumbersCommaformat }}</td>
                                     </tr>
