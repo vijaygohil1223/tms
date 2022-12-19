@@ -3541,25 +3541,56 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         return deferred.promise;
     };
-    $scope.poTempate = false;
-    $scope.sendPO = function(){
-        $scope.poTempate = true;
-            //document.getElementById('downloadPO').innerHTML += $scope.emailTplData.template_content;
-            kendo.drawing.drawDOM($("#downloadPO")).then(function (group) {
-                group.options.set("font", "8px DejaVu Sans");
-                // group.options.set("pdf", {
-                //     margin: {
-                //         left   : "40mm",
-                //         top    : "0mm",
-                //         right  : "40mm",
-                //         bottom : "0mm"
-                //     },
-                //     paperSize: "A4",
-                // });
-                kendo.drawing.pdf.saveAs(group, "testinf.pdf");
-                $scope.poTempate = false;
-            });
 
+
+    $scope.poTempate = false;
+    $scope.sendPO = function(type){
+        $scope.poTempate = true;
+        console.log('$scope.poTempate', $scope.poTempate)
+        if(type == 'Download'){
+            setTimeout(() => {
+                kendo.drawing.drawDOM($("#downloadPO")).then(function (group) {
+                    //group.options.set("font", "8px DejaVu Sans");
+                    kendo.drawing.pdf.saveAs(group, "purchase-order.pdf");
+                });
+                setTimeout(() => {
+                    $scope.poTempate = false;  
+                }, 3000); 
+            }, 500);
+            
+        }
+        if(type == 'SendOrder'){    
+            $scope.poTempate = true;
+            setTimeout(() => {
+                kendo.drawing.drawDOM($("#downloadPO"))
+                    .then(function (group) {
+                        // Render the result as a PDF file
+                        return kendo.drawing.exportPDF(group, {
+                            //paperSize: "auto",
+                        });
+                    })
+                    .done(function (data) {
+                        $scope.invoicemailDetail = {
+                            'pdfData': data,
+                            'purchaseOrderNo': $scope.purchaseDetail.purchaseOrderNo,
+                            'resourceEmail': $scope.resourceDetail.vEmailAddress,
+                            'resourceName': $scope.resourceDetail.vFirstName + $scope.resourceDetail.vLastName
+                        };
+                        rest.path = 'sendPurchaseOrderLinguist';
+                        rest.post($scope.invoicemailDetail).success(function (data) {
+                            console.log('sendPurchaseOrderLinguist=data', data)
+                            if (data.status == 200) {
+                                notification('Purchase order has been sent successfully', 'success');
+                                $scope.poTempate = false; 
+                            }
+                        }).error(errorCallback);
+
+                    });
+                }, 500);
+        }        
+        // setTimeout(() => {
+        //     $scope.poTempate = false;  
+        // }, 5000);    
     }    
 
     $scope.childPrice = [];
@@ -3638,12 +3669,49 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
     }
+    // Resource detail API function
+    $scope.purchaseDetail = [];
+    $scope.purchaseDetail.purchaseOrderDate = new Date();
+    $scope.resourceCity = $scope.resourceCountry = $scope.resourceZipcode = $scope.resourceState = $scope.resourceVatinfo = '';
+    $scope.resourceDetail = [];
+    $scope.resourceDetailFn = function(resID){
+        $scope.purchaseDetail.purchaseOrderNo = 'S-' + pad($scope.jobdetail.job_summmeryId, 7);
+        if(resID){
+            rest.path = 'viewExternalget/' + resID;
+            rest.get().success(function (data) {
+                $scope.resourceDetail = data;
+                console.log('$scope.resourceDetail=='+resID, $scope.resourceDetail)
+            if ($scope.resourceDetail.address1Detail) {
+                let resourceAddDetail = JSON.parse($scope.resourceDetail.address1Detail);
+                angular.forEach(resourceAddDetail, function (resourceAddress, i) {
+                    if (resourceAddress.id == 'address1_locality')
+                        $scope.resourceCity = resourceAddress.value;
+                    if (resourceAddress.id == 'address1_country')
+                        $scope.resourceCountry = resourceAddress.value;
+                    if (resourceAddress.id == 'address1_postal_code')
+                        $scope.resourceZipcode = resourceAddress.value;
+                })
+            }
+            }).error(errorCallback);
+
+            rest.path = "getUserDataById/" + resID;
+            rest.get().success(function (dataUser) {
+                if(dataUser.userPaymentData){
+                    if(dataUser.userPaymentData.vPaymentInfo){
+                     var vPaymentInfo = JSON.parse(dataUser.userPaymentData.vPaymentInfo)
+                     $scope.resourceVatinfo = vPaymentInfo.tax_id;
+                    }
+                }
+            });
+        }    
+    }
 
     $scope.csvProgress = true;
     if ($scope.DetailId) {
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
+            console.log('$scope.jobdetail', $scope.jobdetail)
             $scope.jobdetail.ItemLanguage = '';
             var srcLang = 'English (US)';
             var trgLang = 'English (US)';
@@ -3689,13 +3757,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }, 300);
             }*/
             // service - 
+            $scope.resourceDetailFn($scope.jobdetail.resource);
+            console.log('$scope.jobdetail.resource', $scope.jobdetail.resource)
+            
             $scope.lngPriceList = [];
             var resource_id_csv = $scope.jobdetail.resource;
             $scope.isResourceChange = 0;
             $scope.resourceChange = function (resID) {
                 if (resID) {
                     const res_id = resID.includes(',') ? resID.substring(resID.indexOf(',') + 1) : resID;
-
+                    
+                    // To get resource detail (Purchase order)
+                    $scope.resourceDetailFn(res_id);
+            
                     resource_id_csv = res_id;
                     $scope.isResourceChange = 1;
                     //var priceList = $scope.priceList;
@@ -3927,7 +4001,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
-
+    
     $scope.jumptoItem = function () {
         $window.localStorage.orderID = $scope.DetailId;
         //set isNewProject to false

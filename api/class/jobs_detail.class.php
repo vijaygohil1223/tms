@@ -2046,4 +2046,59 @@ class jobs_detail
         return $data;
     }    
 
+    public function sendPurchaseOrderLinguist($data) {
+        $pdf_content = explode("base64,",$data['pdfData']);
+        $bin = base64_decode($pdf_content[1], true);
+        $pdfFileName = $data['purchaseOrderNo'].'.pdf';
+
+        $body = "<p> Hello ".$data['resourceName']." </p>";
+        $body .= "<p>Please see the attached Purchased Order : <b>" .$data['purchaseOrderNo']. "</b> </p>";
+        $body .= "<p> From :TMS </p>";
+        //$body .= "welcome to <img src=\"cid:id1\"></br>";
+        
+        $attachments = '';
+        $subject = 'Purchase Order';
+        $to_name = 'TMS';
+        //$to = 'anil.kanhasoft@gmail.com';
+        $to = $data['resourceEmail'];
+
+        if($data['pdfData']){
+            if ($pdf_content != '') {
+                $pdfFileContent = ''; 
+                if(is_array($pdf_content)){
+                    $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
+                    // pdf file
+                    $attachments =  [[
+                        'ContentType' => 'application/pdf',
+                        'Filename' => $pdfFileName,
+                        'Base64Content' => $pdfFileContent
+                    ]]; 
+                }
+            }    
+        $send_fn = new functions();
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+        if($mailResponse['status'] == 200) {
+                // if(isset($data['outstanding_reminder'])){
+                //     if($data['outstanding_reminder']==1)
+                //     $upData['reminder_sent'] = 1;
+                // }
+                // $upData['modified_date'] = date('Y-m-d');
+                // $upData['is_invoice_sent'] = 1;
+                // $this->_db->where('invoice_id', $data['invoice_id']);
+                // $this->_db->update('tms_invoice_client',$upData);
+
+                $result['status'] = 200;
+                $result['msg'] = 'Thank you for your email';
+                return $result;
+            } else {
+                $result['status'] = 422;
+                $result['msg'] = 'Could not send mail!';
+                return $result;
+            }
+        }else{
+            return $result['status'] = 422;
+        }
+    }
+
 }

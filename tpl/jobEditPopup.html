@@ -501,9 +501,13 @@
                                     </div>
                                 </div>
                                 <div class="panel panel-default">
-                                    <div class="panel-heading font-bold d-flex">
-                                        <h4 class="pull-left">Payment to linguist</h4>
-                                        <button ng-click="sendPO()" class="btn btn-info pull-right">Send PO format</button>
+                                    <div class="panel-heading font-bold d-flex justify-space-between">
+                                        <h4>Payment to linguist</h4>
+                                        <div>
+                                            <a ng-click="sendPO('SendOrder')" class="btn btn-info">Send PO</a>
+                                            <a ng-click="sendPO('Download')" class="btn btn-info">
+                                                <i class="fa fa-download"></i> PO</a>
+                                        </div>
                                     </div>
                                     <div class="panel-body">
                                         <div class="col-sm-3">
@@ -786,21 +790,22 @@
                                     <strong>Issued to:</strong> </br>
                                 </p>
                                 <p class="mb-0" style="font-size:20px;">
-                                    <strong ng-bind="invoiceDetail.clientCompanyName"></strong></br>
+                                    <strong ng-bind="resourceDetail.vFirstName + resourceDetail.vLastName"></strong></br>
                                 </p>
                                 <p>
-                                    {{invoiceDetail.companyAddress}} </br>
-                                    {{clientZipcode}} <span ng-if="clientCity"> , {{clientCity}}</span> </br>
-                                    {{clientCountry}} </br>
-                                    Vat Number : {{invoiceDetail.clientVatinfo}} </br>
+                                    {{resourceDetail.vAddress1}} </br>
+                                    {{resourceZipcode}} <span ng-if="resourceCity"> , {{resourceCity}}</span> </br>
+                                    {{resourceCountry}} </br>
+                                    Vat Number : {{resourceVatinfo}} </br>
                                 </p>
                             </div>
                             <div class="col-xs-6 text-right">
-                                <p class="h4"> <strong>PO #{{ invoiceDetail.invoiceNumber }}</strong></p>
+                                <p class="h4"> <strong>PO #{{ purchaseDetail.purchaseOrderNo }}</strong></p>
                                 <br />
                                 <p>
-                                    PO date: <br /><span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span></br>
-                                    Project Name: <br />
+                                    PO date: <br /><span ng-bind="purchaseDetail.purchaseOrderDate | globalDtFormat"></span></br>
+                                    <strong>Project Name:</strong> <br />
+                                    <span ng-bind="jobdetail.projectName"></span>
                                     
                                 </p>
                             </div>
@@ -819,7 +824,7 @@
                                         <th>AMOUNT</th>
                                     </tr>
                                 </thead>
-                                <tbody ng-init="invoiceLength = invoiceList.length - 1"
+                                <tbody ng-init="invoiceLength = itemPriceUni[jobdetail.job_summmeryId].length - 1"
                                     ng-init="invL.item.subTotal = {}" s class="table table-striped bg-white b-a"
                                     ng-repeat="invL in itemPriceUni[jobdetail.job_summmeryId] track by $index">
                                     <tr class="thfont">
@@ -828,6 +833,10 @@
                                         <th>{{invL.quantity}}</th>
                                         <th style="white-space:nowrap;"> {{ invL.itemPrice }} </th>
                                         <th> {{ invL.itemTotal | NumbersCommaformat }}</th>
+                                    </tr>
+                                    <tr ng-if="invoiceLength == $index">
+                                        <td colspan="4" style="text-align:right !important;">Subtotal:</td>
+                                        <td>{{ jobdetail.total_price | NumbersCommaformat }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -838,7 +847,7 @@
                                 <h3>€ {{jobdetail.total_price | NumbersCommaformat}}</h3>
                             </div>
                         </div>
-                        <div class="row" style="margin-bottom: 10px;">
+                        <div class="row" style="margin-bottom: 10px !important;">
                             <div class="imgcenter" style="margin: 0 auto;width: 170px;">
                                 <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="SpellUp"
                                     style="max-height: 50px; max-width: 100%; width: auto;">

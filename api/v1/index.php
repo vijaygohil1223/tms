@@ -2539,6 +2539,13 @@ $app->put('/rejectJobStatus/:id', 'authenticate',function ($id) use($app) {
     $result = $itemsJob->rejectJobStatus($id, $data);
     echoResponse($result ['status'], $result);
 });
+// Purchase Order to linguist
+$app->post('/sendPurchaseOrderLinguist', 'authenticate',function () use($app) {
+    $invoice = new jobs_detail ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->sendPurchaseOrderLinguist($data);
+    echoResponse(200, $result);
+});
 //-----------------Contect per Message------------------//
 $app->get('/contactPerMessage/:id','authenticate', function ($id) {
     $msg = new contactPerMsg ();
