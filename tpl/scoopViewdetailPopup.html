@@ -39,17 +39,24 @@
                            <div class="row">
                               <div class="col-sm-12">
                                  <div class="panel panel-default">
-                                    <div class="panel-heading font-bold">
-                                           <h4>
-                                             <div class="input-group" style="width:60%;">
+                                    <div class="panel-heading font-bold d-flex justify-space-between" style="font-weight:initial;">
+                                           <div>
+                                             <div class="input-group">
                                                 <span id="itemCode" class="itemCode{{it.itemId}} input-group-addon"
                                                 ng-bind="projectOrderName" style="border-right:none;padding-right:0;"></span>
                                                 <span class="input-group-addon" style="border-left: none; padding-left: 0;">-{{it.item_number | numberFixedLen:3}}</span>
                                                 <input type="text" class="form-control" name="item_name"
                                                    ng-model="it.item_name" id="item_name{{it.itemId}}">
                                              </div>
-                                           </h4>
-                                        </div>
+                                          </div>
+                                           <div class="d-flex">
+                                             <span style="margin-top: 6px; margin-right: 12px;">Scoop start date</span>
+                                             <input ng-datetimepicker1 id="start_date{{it.itemId}}" type="text"
+                                                class="form-control start-date" name="start_date{{it.itemId}}"
+                                                ng-model="it.start_date" required onkeydown="return false"
+                                                readonly="" style="width: auto;"/>
+                                          </div>
+                                       </div>
                                     <div class="panel-body p-0">
                                        <div class="col-sm-12 p-0">
                                           <table class="pl-0 pr-0 table m-b-none default footable-loaded footable">
@@ -284,6 +291,15 @@
                                                          </div>
                                                       </div>
                                                       <div class="col-sm-12">
+                                                         <div class="form-group">
+                                                            <label class="control-label">Place of Delivery </label>
+                                                            <input type="text" class="form-control"
+                                                               id="EmailSub{{it.itemId}}"
+                                                               name="item_email_subject{{it.itemId}}"
+                                                               ng-model="it.place_of_delivery" />
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-sm-12">
                                                          <label class="control-label">Add new job/workflow</label>
                                                          <select class="form-control m-b "
                                                             ng-init="jobi.jobSummery = 'select'"
@@ -334,14 +350,13 @@
                                                             <tr>
                                                                <td class="pl-0">
                                                                   <div class="form-group">
-                                                                     <label class="control-label">Scoop start
-                                                                        date</label>
-                                                                     <input ng-datetimepicker1
-                                                                        id="start_date{{it.itemId}}" type="text"
-                                                                        class="form-control start-date"
-                                                                        name="start_date{{it.itemId}}"
-                                                                        ng-model="it.start_date" required
-                                                                        onkeydown="return false" readonly="" />
+                                                                     <label class="control-label">Project
+                                                                        Coordinator</label>
+                                                                     <input type="text"
+                                                                        class="form-control ProCoordinator"
+                                                                        name="Coordinator" id="coordinator{{it.itemId}}"
+                                                                        select2-coordinator ng-model="it.coordinator"
+                                                                        disabled />
                                                                   </div>
                                                                </td>
                                                                <td>
@@ -356,12 +371,11 @@
                                                                </td>
                                                                <td>
                                                                   <div class="form-group">
-                                                                     <label class="control-label">Project
-                                                                        Coordinator</label>
+                                                                     <label class="control-label">QA Specialist</label>
                                                                      <input type="text"
-                                                                        class="form-control ProCoordinator"
-                                                                        name="Coordinator" id="coordinator{{it.itemId}}"
-                                                                        select2-coordinator ng-model="it.coordinator"
+                                                                        class="form-control QA_specialist"
+                                                                        name="Coordinator" select2-qaspa
+                                                                        id="QA_specialist{{it.itemId}}" ng-model="QA_specialist"
                                                                         disabled />
                                                                   </div>
                                                                </td>

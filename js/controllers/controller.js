@@ -29386,6 +29386,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     console.log('custom-data', data)
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
+                    angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
                     
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
