@@ -854,6 +854,44 @@ $app->get('/proStatusgetOne','authenticate', function () use($app) {
     $result = $projectstatus->proStatusgetOne();
     echoResponse(200, $result);
 });
+//--------------------Job status--------------------------//
+$app->post('/jobStatus','authenticate', function () use($app) {
+    $jobstatus = new jobstatus ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $jobstatus->save($data);
+    echoResponse($result ['status'], $result);
+});
+$app->get('/jobStatus','authenticate', function () use($app) {
+    $jobstatus = new jobstatus ();
+    $result = $jobstatus->getAll();
+    echoResponse(200, $result);
+});
+$app->get('/jobStatus/:id','authenticate', function ($id) use($app) {
+    $jobstatus = new jobstatus ();
+    $result = $jobstatus->getTypeById($id);
+    echoResponse(200, $result);
+});
+$app->put('/jobStatus/:id','authenticate', function ($id) use($app) {
+    $jobstatus = new jobstatus ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $jobstatus->update($id, $data);
+    echoResponse($result ['status'], $result);
+});
+$app->delete('/jobStatus/:id','authenticate', function ($id) {
+    $jobstatus = new jobstatus ();
+    $result = $jobstatus->delete($id);
+    echoResponse($result ['status'], $result);
+});
+$app->get('/jobStatusget','authenticate', function () use($app) {
+    $jobstatus = new jobstatus ();
+    $result = $jobstatus->proStatusget();
+    echoResponse(200, $result);
+});
+$app->get('/jobStatusgetOne','authenticate', function () use($app) {
+    $jobstatus = new jobstatus ();
+    $result = $jobstatus->proStatusgetOne();
+    echoResponse(200, $result);
+});
 // ------------------currency section -----------------------//
 $app->get('/currencyactive','authenticate', function () use($app) {
     $currency = new currency ();

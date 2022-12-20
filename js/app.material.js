@@ -247,6 +247,10 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             templateUrl: modulesPath + 'project-status.html',
             controller: 'projectStatusController',
             role: '1'
+        }).when('/job-status', {
+            templateUrl: modulesPath + 'job-status.html',
+            controller: 'jobStatusController',
+            role: '1'    
         }).when('/language', {
             templateUrl: modulesPath + 'language.html',
             controller: 'langController',

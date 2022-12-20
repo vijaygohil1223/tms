@@ -555,6 +555,16 @@
               ng-click="addToFavouriteMenu($event);" id="projectStatuMenu" title="Add to Favourite"></i>
           </li>
 
+          <li ng-class="{'active menuBg': activetab == '/job-status'}"
+            ng-mouseover="menuHoverIn('jobStatuMenu');" ng-mouseleave="menuHoverOut('jobStatuMenu')">
+            <a href="#/job-status" md-ink-ripple>
+              <span class="font-bol underSubmenu">Job Status</span>
+            </a>
+
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="jobStatuMenu" title="Add to Favourite"></i>
+          </li>
+
           <li ng-class="{'active menuBg': activetab == '/jobs'}" ng-mouseover="menuHoverIn('jobsMenu');"
             ng-mouseleave="menuHoverOut('jobsMenu')">
             <a href="#/jobs" md-ink-ripple>

@@ -22644,7 +22644,62 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
+}).controller('jobStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.save = function (formId) {
+        if (angular.element("#" + formId).valid()) {
+            if ($scope.jb_status.jb_status_id) {
+                $routeParams.id = $scope.jb_status.jb_status_id;
+                rest.path = 'jobStatus';
+                rest.put($scope.jb_status).success(function () {
+                    notification('Record updated successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            } else {
+                if ($scope.jb_status.is_default == undefined) {
+                    $scope.jb_status.is_default = '0';
+                }
+                if ($scope.jb_status.is_active == undefined) {
+                    $scope.jb_status.is_active = '0';
+                }
+                rest.path = 'jobStatus';
+                rest.post($scope.jb_status).success(function (data) {
+                    notification('Record inserted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        }
+    }
 
+    rest.path = 'jobStatus';
+    rest.get().success(function (data) {
+        $scope.projectStatus = data;
+        $scope.projectStatusEmpty = jQuery.isEmptyObject(data);
+    }).error(errorCallback);
+
+    $scope.getType = function (id, eID) {
+        console.log('eID', eID)
+        console.log('id', id)
+        $routeParams.id = id;
+        rest.path = 'jobStatus';
+        rest.model().success(function (data) {
+            $scope.jb_status = data;
+            console.log('$scope.jb_status', $scope.jb_status)
+        }).error(errorCallback);
+        scrollToId(eID);
+    }
+
+    $scope.deleteModel = function (id) {
+        bootbox.confirm("Are you sure you want to delete this row?", function (result) {
+            if (result == true) {
+                rest.path = 'jobStatus/' + id;
+                rest.delete().success(function () {
+                    notification('Record deleted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        });
+    };
 }).controller('jobController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.save = function (formId) {
