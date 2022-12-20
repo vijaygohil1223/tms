@@ -18633,9 +18633,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //getClient By OrderId while edit item
                 rest.path = 'customer/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
+                    console.log('data=>customer', data)
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
+                    angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
                     
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
