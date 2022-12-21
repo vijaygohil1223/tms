@@ -598,16 +598,15 @@ const decimalCount = num => {
  }
 // Decimal number in thousand
 function decimalNumberCount(val){
+    var dcNumber = window.localStorage.getItem('DecimalNumber') ? window.localStorage.getItem('DecimalNumber') : 2;
     var decimalPoint = 100;
-    //Number(('1').padEnd($scope.decimalNumber+1, '0'));    
     if(val){
-        var decimalCnt = val.includes('.') ? (val).toString().split(".")[1].length : 2;
-        if(decimalCnt==3)
-            decimalPoint = 1000;
-        if(decimalCnt > 3)
-            decimalPoint = 10000;    
+        var decimalCnt = val.toString().includes('.') ? val.toString().split(".")[1].length : 2;
+        if(decimalCnt){
+            decimalPoint =  Number(('1').padEnd(Number(dcNumber)+1, '0'));
+        }
     }
-    return decimalPoint;
+    return decimalPoint ? decimalPoint : 100;
 }
 function ParseFloatNumber(str,val) {
     str = str.toString();
@@ -4266,8 +4265,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (itemPrice == '')
             itemPrice = 0;
 
-        //var decimalPoint = decimalNumberCount(itemPrice);    
-        var decimalPoint = 100;    
+        var decimalPoint = decimalNumberCount(itemPrice);    
+        //var decimalPoint = 100;    
             
         var price = parseFloat(quantity) * parseFloat(itemPrice);
         price = isNaN(price) ? 0 : Math.round(price * decimalPoint)/decimalPoint
@@ -4283,12 +4282,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let elVal = $scope.itemPriceUni[id][indx].itemTotal;
                 elVal = (elVal != 0 || elVal != '') ? CommaToPoint4Digit(elVal) : 0;
                 var subTtl = parseFloat(elVal);
-                //subTtl = Math.round(subTtl * decimalPoint)/decimalPoint;
                 grandTotal += isNaN(subTtl) ? 0 : subTtl;
                 if (indx === array.length -1) resolve();
             });
         });
         smPromise.then(() => {
+            var decimalPoint = decimalNumberCount(grandTotal);    
             $scope.jobdetail.total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
         });
     }
@@ -4302,14 +4301,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.itemPriceUni[id].forEach((element, indx, array) => {
                     let elVal = $scope.itemPriceUni[id][indx].itemTotal;
                     elVal = (elVal != 0 || elVal != '') ? CommaToPoint4Digit(elVal) : 0;
-                    //decimalPoint = decimalNumberCount(elVal.toString());
-                    decimalPoint = 100;
                     var subTtl = parseFloat(elVal);
                     grandTotal += isNaN(subTtl) ? 0 : subTtl;
                     if (indx === array.length -1) resolve();
                 });
             });
             smPromise.then(() => {
+                decimalPoint = decimalNumberCount(grandTotal );
                 $scope.jobdetail.total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
             });
         }else{
@@ -4358,7 +4356,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             if (itemPriceUnit) {
                 for (var j = 0; j < itemPriceUnit.length; j++) {
-                    itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? numberFormatCommaToPoint(itemPriceUnit[j].itemTotal) : 0;
+                    //itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? numberFormatCommaToPoint(itemPriceUnit[j].itemTotal) : 0;
+                    itemPriceUnit[j].itemTotal = itemPriceUnit[j].itemTotal ? CommaToPoint4Digit(itemPriceUnit[j].itemTotal) : 0;
                 }
             }
             $scope.jobdetail.price = JSON.stringify(itemPriceUnit);
@@ -17868,18 +17867,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if($scope.itemPriceUni[id].length){
             var smPromise = new Promise((resolve, reject) => {
                 $scope.itemPriceUni[id].forEach((element, indx, array) => {
-                    console.log('indx=>', indx)
                     let elVal = $scope.itemPriceUni[id][indx].itemTotal;
-                    console.log('elVal', elVal)
                     elVal = (elVal != 0 || elVal != '') ? CommaToPoint4Digit(elVal) : 0;
-                    //var decimalPoint = decimalNumberCount(elVal.toString());    
-                    var decimalPoint = 100;    
                     var subTtl = parseFloat(elVal);
                     grandTotal += isNaN(subTtl) ? 0 : subTtl;
                     if (indx === array.length -1) resolve();
                 });
             });
             smPromise.then(() => {
+                var decimalPoint = decimalNumberCount(grandTotal);    
                 $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
             });
         }else{
@@ -17916,9 +17912,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (itemPrice == '')
             itemPrice = 0;
 
-        //var decimalPoint = decimalNumberCount(itemPrice);    
-        //var decimalPoint = Number(('1').padEnd($scope.decimalNumber+1, '0'));    
-        var decimalPoint = 100;    
+        var decimalPoint = decimalNumberCount(itemPrice);    
+        //var decimalPoint = 100;    
     
         var price = parseFloat(quantity) * parseFloat(itemPrice);
         price = isNaN(price) ? 0 : Math.round(price * decimalPoint)/decimalPoint
@@ -17941,90 +17936,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         });
         smPromise.then(() => {
+            var decimalPoint = decimalNumberCount(grandTotal);    
             $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
         });
     }
-
-    $scope.changeItemField_copy = function (id, index, parentIndex, itemChng = 0) {
-        var quantity = $scope.itemPriceUni[id][index].quantity;
-        var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
-        var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
-        var itemAmt = $scope.itemPriceUni[id][index].amtSum;
-        if (!quantity) {
-            quantity = 0;
-            $scope.itemPriceUni[id][index].quantity = 0;
-        }
-        if (!itemPrice) {
-            itemPrice = 0;
-            $scope.itemPriceUni[id][index].itemPrice = 0;
-        }
-        if (!itemTtl)
-            itemTtl = 0;
-        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(itemTtl);
-        quantity = numberFormatCommaToPoint(quantity);
-        if (quantity == '')
-            itemPrice = 0;
-        itemPrice = numberFormatCommaToPoint(itemPrice);
-        
-        var decimalPoint = 100;
-        if(itemPrice){
-            var decimalCnt = parseFloat(itemPrice).countDecimals();
-            if(decimalCnt==3)
-                decimalPoint = 1000;
-            if(decimalCnt > 3)
-                decimalPoint = 10000;    
-        }
-        if (itemPrice == '')
-            itemPrice = 0;
-        
-        var price = quantity * parseFloat(itemPrice);
-        price = Math.round(price * decimalPoint)/decimalPoint
-        var oldPrice1 = $scope.itemPriceUni[id][index].itemTotal;
-        if (!oldPrice1) {
-            var oldPrice = 0;
-        } else {
-            var oldPrice = numberFormatCommaToPoint(oldPrice1);
-        }
-        if (itemChng > 0) {
-            price = numberFormatCommaToPoint(itemTtl);
-            if (!price) {
-                price = 0;
-            }
-            //oldPrice = amtTotal;    
-            if (typeof itemAmt !== 'undefined') {
-                var oldPrice = $scope.itemPriceUni[id][index].amtSum;
-            }
-            if (typeof itemAmt === 'undefined') {
-                var oldPrice = quantity * parseFloat(itemPrice);
-            }
-        }
-        if (!oldPrice) {
-            oldPrice = 0;
-        }
-        var total = $scope.itemList[parentIndex].total_price;
-        var totalPrice = (parseFloat(total) + parseFloat(price)) - parseFloat(oldPrice);
-        //$scope.itemPriceUni[id][index].itemTotal = numberFormatComma(price2);
-        if (itemChng > 0) {
-            $scope.itemPriceUni[id][index].itemTotal = itemTtl;
-        } else {
-            //$scope.itemPriceUni[id][index].itemTotal = price;
-            $scope.itemPriceUni[id][index].itemTotal = price ? numberFormatComma(price) : 0;
-        }
-        
-        $scope.itemPriceUni[id][index].amtSum = price;
-        $scope.itemList[parentIndex].total_price = totalPrice;
-        setTimeout(() => {
-            var grandTotal = 0;
-            $(".itemTotal"+id).each(function () {
-                const val1 = ($(this).val() != 0 || $(this).val() =='') ? numberFormatCommaToPoint($(this).val()) : 0;
-                var sub_ttl = parseFloat(val1);
-                //sub_ttl = Math.round(sub_ttl * decimalPoint)/decimalPoint;
-                grandTotal += isNaN(sub_ttl) ? 0 : sub_ttl;
-            });
-            $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
-        }, 200);
-    }
-
     // End Change price
     
     //create item
@@ -18227,7 +18142,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     itemPriceUnit = $scope.itemPriceUni[formId];
                     if (itemPriceUnit) {
                         for (var j = 0; j < itemPriceUnit.length; j++) {
-                            itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                            //itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                            itemPriceUnit[j].itemTotal = CommaToPoint4Digit(itemPriceUnit[j].itemTotal);
                         }
                     }
                     $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
@@ -18265,8 +18181,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].source_lang = JSON.stringify(sourceObj);
                     $scope.itemList[formIndex].target_lang = JSON.stringify(targetObj);
 
-                    $scope.itemList[formIndex].total_amount = $scope.itemList[formIndex].total_price;
+                    console.log('$scope.itemList[formIndex].total_price', $scope.itemList[formIndex].total_price)
 
+                    $scope.itemList[formIndex].total_amount = $scope.itemList[formIndex].total_price;
+                    
                     /*if(!$scope.itemList[formIndex].total_amount || $scope.itemList[formIndex].price ==undefined){
                         $scope.itemList[formIndex].total_amount = 0
                         $scope.itemList[formIndex].total_price = 0
@@ -28949,14 +28867,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     let elVal = $scope.itemPriceUni[id][indx].itemTotal;
                     console.log('elVal', elVal)
                     elVal = (elVal != 0 || elVal != '') ? CommaToPoint4Digit(elVal) : 0;
-                    //var decimalPoint = decimalNumberCount(elVal.toString());    
-                    var decimalPoint = 100;    
                     var subTtl = parseFloat(elVal);
                     grandTotal += isNaN(subTtl) ? 0 : subTtl;
                     if (indx === array.length -1) resolve();
                 });
             });
             smPromise.then(() => {
+                var decimalPoint = decimalNumberCount(grandTotal);    
                 $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
             });
         }else{
@@ -28986,12 +28903,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (quantity == '')
             itemPrice = 0;
         itemPrice = CommaToPoint4Digit(itemPrice);
-    
 
         if (itemPrice == '')
             itemPrice = 0;
 
-        var decimalPoint = 100;    
+        //var decimalPoint = 100;   
+        var decimalPoint = decimalNumberCount(itemPrice); 
         
         var price = parseFloat(quantity) * parseFloat(itemPrice);
         price = isNaN(price) ? 0 : Math.round(price * decimalPoint)/decimalPoint
@@ -29014,6 +28931,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         });
         smPromise.then(() => {
+            var decimalPoint = decimalNumberCount(grandTotal);
             $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
         });
     }
@@ -29045,7 +28963,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     itemPriceUnit = $scope.itemPriceUni[formId];
                     if (itemPriceUnit) {
                         for (var j = 0; j < itemPriceUnit.length; j++) {
-                            itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                            itemPriceUnit[j].itemTotal = CommaToPoint4Digit(itemPriceUnit[j].itemTotal);
+                            //itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
                         }
                     }
                     $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);

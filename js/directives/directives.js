@@ -4398,15 +4398,13 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 }
 
                 var price = angular.element('#priceUnit'+scope.it.itemId).val();
-                console.log('price', price)
                 if(price == 0){
                     notification('please select price','warning');
                     return false;
                 }
                 var temp = price.split(',');
                 var Price_unit = temp[0];
-                console.log('Price_unit', Price_unit)
-
+                
                 //check if priceUitt already exists
                 var exists = true;
                  if(scope.itemPriceUni[scope.it.itemId]){
@@ -4424,14 +4422,11 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 }
                 if(exists){
                     var amount = temp[1];
-                    var decimalCnt = amount.includes('.') ? (amount).toString().split(".")[1].length : 2;
                     var total = amount * quantity;
+                    var decimalPoint = decimalNumberCount(total);
                         //total = total.toFixed(decimalCnt);
-                        //total = isNaN(total) ? 0 : Math.round(total * decimalPoint)/decimalPoint
-                        //total = ParseFloatNumber(total, 2)
-                        total = total.toFixed(2);
-                        
-                        console.log('itemTotal1-111=', total)
+                        total = isNaN(total) ? 0 : Math.round(total * decimalPoint)/decimalPoint
+                        //total = total.toFixed(2);
                         
                     if(scope.it == undefined) {
                         scope.it = {};
@@ -4451,7 +4446,9 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                         $('#Quantity').val('');
                         scope.counter++;
                         var itemTotal1 = quantity*amount;
-                            itemTotal1 = itemTotal1.toFixed(2);
+                            var decimalPoint = decimalNumberCount(itemTotal1);
+                            itemTotal1 = isNaN(itemTotal1) ? 0 : Math.round(itemTotal1 * decimalPoint)/decimalPoint
+                            //itemTotal1 = itemTotal1.toFixed(2);
                         console.log('itemTotal1-@@=', itemTotal1)
                         var itemTotal = itemTotal1.toString().replace('.', ',');  
                         var amount = amount.toString().replace('.', ',');  
@@ -6186,7 +6183,11 @@ app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compi
                     var total = amount * quantity;
                     var decimalCnt = amount.includes('.') ? (amount).toString().split(".")[1].length : 2;
                     var total = amount * quantity;
-                        total = total.toFixed(decimalCnt);
+                    var total = amount * quantity;
+                    var decimalPoint = decimalNumberCount(total);
+                        total = isNaN(total) ? 0 : Math.round(total * decimalPoint)/decimalPoint
+                    //total = total.toFixed(decimalCnt);
+                    
                     if(scope.it == undefined) {
                         scope.it = {};
                     }
@@ -6204,7 +6205,9 @@ app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compi
                         $('#Quantity').val('');
                         scope.counter++;
                         var itemTotal1 = quantity*amount;
-                            itemTotal1 = itemTotal1.toFixed(decimalCnt);
+                        var decimalPoint = decimalNumberCount(itemTotal1);
+                            itemTotal1 = isNaN(itemTotal1) ? 0 : Math.round(itemTotal1 * decimalPoint)/decimalPoint
+                            //itemTotal1 = itemTotal1.toFixed(decimalCnt);
                         var itemTotal = itemTotal1.toString().replace('.', ',');  
                         var amount = amount.toString().replace('.', ',');  
                         scope.itemPriceUni[scope.jobdetail.job_summmeryId].push({
