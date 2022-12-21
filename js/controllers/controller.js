@@ -484,8 +484,7 @@ function numberFormatComma(input) {
         var a = new Array();
         a = numarray;
         var a1 = a[0];
-        var n1 = '';
-        var n2 = '';
+        var n1 = n2 = '';
         if (a[1] == undefined && a[1] !== '00') {
             a[1] = '';
         } else {
@@ -532,7 +531,7 @@ function CommaToPoint4Digit(input) {
     if (input == undefined || input == 0 || input == '') {
         return '';
     } else {
-        var decNo = 2;
+        var decNo = window.localStorage.getItem('DecimalNumber') ? window.localStorage.getItem('DecimalNumber') : 2;
         var str = input.toString();
         var numarray = str.split(',');
         var a = new Array();
@@ -543,11 +542,6 @@ function CommaToPoint4Digit(input) {
         if (a[1] == undefined && a[1] !== '00') {
             a[1] = '';
         } else {
-            if(a[1].length == 3)
-                decNo = 3 
-            if(a[1].length > 3)
-                decNo = 4 
-            //var n2 = '.' + a[1].slice(0, 2);
             var n2 = '.' + a[1].slice(0, decNo);
         }
         //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "");
@@ -594,9 +588,18 @@ function commentDatetimeToText(ndate, dtseperator = '-') {
     }
     return cmtDateText;
 }
+// Decimal digit count
+const decimalCount = num => {
+    const numStr = String(num);
+    if (numStr.includes('.')) {
+       return numStr.split('.')[1].length;
+    };
+    return 0;
+ }
 // Decimal number in thousand
 function decimalNumberCount(val){
     var decimalPoint = 100;
+    //Number(('1').padEnd($scope.decimalNumber+1, '0'));    
     if(val){
         var decimalCnt = val.includes('.') ? (val).toString().split(".")[1].length : 2;
         if(decimalCnt==3)
@@ -686,8 +689,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.get().success(function (data) {
                         if (data) {
                             $window.localStorage.setItem("DecimalSeparator", data.separatorChar);
+                            $window.localStorage.setItem("DecimalNumber", data.decimal_number);
                         } else {
                             $window.localStorage.setItem("DecimalSeparator", ',');
+                            $window.localStorage.setItem("DecimalNumber", 2);
                         }
                     }).error(errorCallback);
 
@@ -17482,6 +17487,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //$window.localStorage.scoopfolderId = $routeParams.id;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
+    $scope.decimalNumber = $window.localStorage.getItem("DecimalNumber") ? $window.localStorage.getItem("DecimalNumber") : 2;
     if ($scope.isNewProject === 'true') {
         $location.path('/dashboard1');
         notification('Please create project.', 'warning');
@@ -17905,11 +17911,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             itemPrice = 0;
         //itemPrice = numberFormatCommaToPoint(itemPrice);
         itemPrice = CommaToPoint4Digit(itemPrice);
+        console.log('itemPrice', itemPrice)
     
         if (itemPrice == '')
             itemPrice = 0;
 
         //var decimalPoint = decimalNumberCount(itemPrice);    
+        //var decimalPoint = Number(('1').padEnd($scope.decimalNumber+1, '0'));    
         var decimalPoint = 100;    
     
         var price = parseFloat(quantity) * parseFloat(itemPrice);
@@ -18633,7 +18641,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //getClient By OrderId while edit item
                 rest.path = 'customer/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
-                    console.log('data=>customer', data)
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
@@ -18672,10 +18679,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }
                     
-                    //console.log('dttt=',$scope.itemPriceUni[val.itemId][0].itemTotal);
-                    //console.log('length=',$scope.itemPriceUni[val.itemId].length);
-
-                    $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    if( isNaN(Date.parse($scope.itemList[i].start_date)) )
+                        $scope.itemList[i].start_date = moment($scope.itemList[i].created_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    else
+                        $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    //$scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    
+                    //console.log('$scope.itemList[i].start_date', $scope.itemList[i].start_date)
 
                     if ($scope.itemList[i].due_date) {
                         var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
@@ -29425,7 +29435,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //console.log('dttt=',$scope.itemPriceUni[val.itemId][0].itemTotal);
                     //console.log('length=',$scope.itemPriceUni[val.itemId].length);
 
-                    $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    if( isNaN(Date.parse($scope.itemList[i].start_date)) )
+                        $scope.itemList[i].start_date = moment($scope.itemList[i].created_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    else
+                        $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    //$scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
                     
                     if ($scope.itemList[i].due_date) {
                         var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
@@ -30920,6 +30934,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.put($scope.separator).success(function (data) {
                         if (data.status == 200) {
                             $window.localStorage.setItem('DecimalSeparator', $scope.separator.separatorChar);
+                            $window.localStorage.setItem('DecimalNumber', $scope.separator.decimal_number);
                         }
                         notification('Record updated successfully.', 'success');
                         $route.reload();

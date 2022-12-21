@@ -7,8 +7,9 @@
         <div ui-butterbar></div>
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
         <div class="md-content page_content_wrapper" id="top">
-            <div class="content_head bg-light lter b-b wrapper-md ng-scope">
+            <div class="content_head bg-light lter b-b wrapper-md d-flex justify-space-between ng-scope">
                 <h1 class="m-n font-thin h3">Decimal Separator</h1>
+                
             </div>
             <div class="wrapper-md ng-scope">
                 <div class="panel panel-default">
@@ -18,7 +19,13 @@
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label>Select Decimal separator</label>
-                                        <input type="text" id="separatorChar" class="form-control" id="separatorChar" name="separatorChar" select2-decimal-separator ng-model="separator.separatorChar" ng-change="changeDecimalSeparator();" required/>
+                                        <input type="text" class="form-control" id="separatorChar" name="separatorChar" select2-decimal-separator ng-model="separator.separatorChar" ng-change="changeDecimalSeparator();" required/>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Decimal Number</label>
+                                        <input type="number" class="form-control" id="decimal_number" name="decimal_number" ng-model="separator.decimal_number" min="1" max="5" required/>
                                     </div>
                                 </div>
                                  
@@ -45,6 +52,7 @@
                         <thead>
                             <th>#</th>
                             <th>Decimal Separator</th>
+                            <th>Decimal Number</th>
                             <th>Status</th>
                             <th>Action</th>
                         </thead>
@@ -52,6 +60,10 @@
                             <tr ng-repeat="dts in seperatorList" ng-class="(dts.separator_id == separator.separator_id) ? 'rowactivate' : ''">
                                 <td ng-bind="$index + 1"></td>
                                 <td ng-bind="dts.separatorChar"></td>
+                                <td>
+                                    <span ng-bind="dts.decimal_number" ng-if="dts.is_active == '1'"></span>
+                                    <span ng-if="dts.is_active == '0'">-</span>
+                                </td>
                                 <td ng-if="dts.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
                                 <td ng-if="dts.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td>
                                 <td><a href="javascript:void(0)" ng-click="getEdit(dts.separator_id, 'top');" title="edit"><i class="glyph-icon fa-edit"></i></a>  <a href="javascript:void(0)" ng-click="deleteModel(dts.separator_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
