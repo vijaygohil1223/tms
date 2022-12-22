@@ -826,16 +826,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.cityTimezone = function (id) {
-        var city = id.split(',')[0];
-        rest.path = "cityTimeZoneget/" + city;
-        rest.get().success(function (data) {
-            if (data != false) {
-                if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
-                    $scope.userprofiledata = {};
+        if(id){
+            var city = id.split(',')[0];
+            rest.path = "cityTimeZoneget/" + city;
+            rest.get().success(function (data) {
+                if (data != false) {
+                    if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
+                        $scope.userprofiledata = {};
+                    }
+                    $scope.userprofiledata.vTimeZone = data.timeZone;
                 }
-                $scope.userprofiledata.vTimeZone = data.timeZone;
-            }
-        });
+            });
+        }    
     }
 
     //Change Input Type
@@ -3120,19 +3122,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 var absentLngstlist = data.data;
                 let currentDatestr = new Date(); 
+
                 currentDatestr = currentDatestr.toISOString().split('T')[0];
+                console.log('currentDatestr', currentDatestr)
+                let cDate1 = new Date();
+                let cDate = cDate1.setHours(0, 0, 0, 0);
+
                 var absentLngstFilter = absentLngstlist.filter(x => {
                     if(x.is_available){
                         let isAailable = JSON.parse(x.is_available);
                         if(isAailable.length){
-                            //const isFound = up7Days.some(r => isAailable.indexOf(r) >= 0)
-                            //console.log('found', isFound)
+                            console.log('isAailable', isAailable)
+                            const isFound = isAailable.filter( dt => {
+                                if(Date.parse(dt.dateFrom) >= cDate || Date.parse(dt.dateTO) <= cDate ){
+                                    return true
+                                }
+                            } )
                             x.is_available = JSON.parse(x.is_available);
-                            //if(isFound)
-                            return isAailable;
+                            if(isFound.length)
+                                return isAailable;
                             //return isAailable.includes(currentDatestr);
                         }
-                        
                     }
                 });
                 $scope.absentLngstlist = absentLngstFilter;
@@ -3147,12 +3157,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return x.is_available
             }
         });
-        const absentDateArr = absentRec[0].is_available;
+        const absentDateArr = absentRec ? absentRec[0].is_available : [];
         let element = '';
         let div = document.createElement('ul');
         for (let index = 0; index < absentDateArr.length; index++) {
-            var date = moment(absentDateArr[index]).format($window.localStorage.getItem('global_dateFormat') + ' HH:mm' );
-            element = div.innerHTML += "<li> <i class='fa fa-calendar'></i> &nbsp;&nbsp;"+ date +"</li>";
+            let dateFrom = moment(absentDateArr[index].dateFrom).format($window.localStorage.getItem('global_dateFormat') );
+            var dateTo = moment(absentDateArr[index].dateTo).format($window.localStorage.getItem('global_dateFormat') );
+            element = div.innerHTML += "<li> <i class='fa fa-calendar'></i> &nbsp;&nbsp;"+ dateFrom + ' To ' + dateTo +"</li>";
         }
         var dialog = bootbox.dialog({
             title: 'Absent Linguist : '+ absentRec[0].vUserName,
@@ -10386,23 +10397,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.cityTimezone = function (id) {
         console.log('id-city', id)
-        var city = id.split(',')[0];
-        rest.path = "cityTimeZoneget/" + city;
-        rest.get().success(function (data) {
-            console.log('data', data)
-            if (data != false) {
-                if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
-                    $scope.userprofiledata = {};
+        if(id){
+            var city = id.split(',')[0];
+            rest.path = "cityTimeZoneget/" + city;
+            rest.get().success(function (data) {
+                console.log('data', data)
+                if (data != false) {
+                    if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
+                        $scope.userprofiledata = {};
+                    }
+                    //$scope.userprofiledata.vTimeZoneCity = data.timeZoneCity;
+                    $scope.userprofiledata.vTimeZone = data.timeZone;
+                    //    $timeout(function () {
+                    //     $scope.$apply(function () {
+                    //         $scope.userprofiledata.vTimeZone = data;
+                    //     });
+                    // }, 100);
                 }
-                //$scope.userprofiledata.vTimeZoneCity = data.timeZoneCity;
-                $scope.userprofiledata.vTimeZone = data.timeZone;
-                //    $timeout(function () {
-                //     $scope.$apply(function () {
-                //         $scope.userprofiledata.vTimeZone = data;
-                //     });
-                // }, 100);
-            }
-        });
+            });
+        }    
     }
 
     $scope.getLocationdetail = function (id) {
@@ -10466,7 +10479,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.userprofiledata.is_available = '';
         $scope.abscentDateArr = [];
         $scope.abDate = '';
-        $scope.abTime = '';
+        $scope.abDateTo = '';
+        $scope.checkFromDate();
         //$('#multidatePick').multiDatesPicker('resetDates', 'picked');
     }
     $scope.clearJobDate = function () {
@@ -10554,15 +10568,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.userprofiledata.is_available && $scope.userprofiledata.is_available != '["Invalid date"]'){    
                 let is_available =  JSON.parse($scope.userprofiledata.is_available);
                 $scope.multipleDateArr = is_available;
-                //console.log('is_available', is_available)
                 if(is_available.length){
                     let abscentArr = is_available.filter(function(item) {
                         console.log('item-cont', item)
-                        if(item.split('-').length > 2){
-                            const abFormatDate = moment(item).format($scope.dateFormatGlobal + ' HH:mm');
-                            console.log('$scope.dateFormatGlobal', abFormatDate)
-                            $scope.abscentDateArr.push(abFormatDate)
-                            return abFormatDate;
+                        if(item.dateFrom.split('-').length > 2){
+                            //const abFormatDate = moment(item).format($scope.dateFormatGlobal + ' HH:mm');
+                            item.dateFrom = moment(item.dateFrom).format($scope.dateFormatGlobal);
+                            item.dateTo = moment(item.dateTo).format($scope.dateFormatGlobal);
+                            console.log('$scope.dateFormatGlobal', item)
+                            $scope.abscentDateArr.push(item)
+                            return item;
                         }
                         //return datestring;
                     });
@@ -10746,23 +10761,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    $scope.abDateToflg = true; 
+    $scope.checkFromDate = function(fromdate){
+       $scope.abDateToflg = ! isNaN(Date.parse(fromdate)) ? false : true;
+    }
     // Add abscent Dates
-    $scope.addAbsDate = function(abDate, abTime){
+    //$scope.abscentDateArr = [];
+    $scope.abDate = '';
+    $scope.addAbsDate = function(abDate, abDateTo){
+        console.log('abDateTo', abDateTo)
         console.log('abDate', abDate)
         if(abDate){
-            var abTime = abTime ? ' ' + moment(abTime).format('HH:mm') : ' 00:00';
-            let absFullDate = abDate + abTime;
-            if(! $scope.abscentDateArr.includes(absFullDate)){
-                $scope.abscentDateArr.push(absFullDate)
-                $scope.abDate = '';
-                $scope.abTime = '';
-            }    
+            var abDateTo =  abDateTo ? abDateTo : abDate;
+            let date1 = moment(abDate).format('YYYY-MM-DD')
+            let date2 = moment(abDateTo).format('YYYY-MM-DD')
+            let multiDay = (Date.parse(date1) < Date.parse(date2)) ? 1 : 0;
+                abDateTo = (Date.parse(date1) > Date.parse(date2)) ? abDate :  abDateTo;
+            
+            var obj = {
+                dateFrom : abDate,
+                dateTo : abDateTo,
+                multiDay : multiDay,
+            }
+            $scope.abscentDateArr.push(obj);
             console.log('$scope.abscentDateArr', $scope.abscentDateArr)
         }
+        $scope.abDate = '';
+        $scope.abDateTo = '';
+        $scope.checkFromDate();
     }
     $scope.removeAbscentDateArr = function (id,dtItem) {
-        // if(id && $scope.abscentDateArr)
-             //$scope.abscentDateArr.splice(id,1);
         const index = $scope.abscentDateArr.indexOf(dtItem);
         if (index > -1) { // only splice array when item is found
             $scope.abscentDateArr.splice(index, 1); // 2nd parameter means remove one item only
@@ -10811,15 +10839,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 $scope.userprofiledata.iEditedBy = 0;
             }
-            //const multidatePick = $('#multidatePick').val();
-            //var abscentArr = '';
-            // if(multidatePick != '' && multidatePick != 1 && multidatePick != undefined ){
-            //     var abscentArr = multidatePick.split(",").map(function(item) {
-            //         var dt = originalDateFormat(item.trim()); // dot format
-            //         return moment(dt).format('YYYY-MM-DD');
-            //     });
-            // }    
-            //$scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
+            var abscentArr = '';
+            if($scope.abscentDateArr.length > 0){
+                var abscentDateArr = $scope.abscentDateArr;
+                var abscentArr = abscentDateArr.map(function(item) {
+                    item.dateFrom = moment(item.dateFrom).format('YYYY-MM-DD')
+                    item.dateTo = moment(item.dateTo).format('YYYY-MM-DD')
+                    return item;
+                });
+            }    
             
             if ($scope.userprofiledata.iUserId) {
                 // --------address only -----------------//
@@ -10865,12 +10893,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
 
-                var abscentArr = '';
-                if($scope.abscentDateArr.length > 0)
-                    var abscentArr = $scope.abscentDateArr.map(function(item) {
-                        var dt = originalDateFormat(item.trim()); // dot format
-                        return moment(dt).format('YYYY-MM-DD HH:mm');
-                    });
                 $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
                 
                 $scope.userprofiledata.iMobile = JSON.stringify(countryObj);
@@ -10916,6 +10938,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $timeout(function () {
                         $('#iMobile').intlTelInput("setNumber", FinalMobileNum);
                     }, 100);
+
+                    let is_available =  JSON.parse($scope.userprofiledata.is_available);
+                    if(is_available.length){
+                        let abscentArr = is_available.filter(function(item) {
+                            item.dateFrom = moment(item.dateFrom).format($scope.dateFormatGlobal);
+                            item.dateTo = moment(item.dateTo).format($scope.dateFormatGlobal);
+                            //$scope.abscentDateArr.push(item)
+                            return item;
+                        });
+                        $scope.abscentDateArr = abscentArr;
+                    }
+
                     notification(data['msg'], 'error');
                 });
             } else {
@@ -10979,18 +11013,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(!$scope.userprofiledata.iGender)    
                     $scope.userprofiledata.iGender = 1
                 
-                console.log('$scope.abscentDateArr', $scope.abscentDateArr)
-                var abscentArr = '';
-                if($scope.abscentDateArr.length > 0)
-                    var abscentArr = $scope.abscentDateArr.map(function(item) {
-                        var dt = originalDateFormat(item.trim()); // dot format
-                        return moment(dt).format('YYYY-MM-DD HH:mm');
-                    });
-                console.log('abscentArr', abscentArr)
-                
                 $scope.userprofiledata.is_available = abscentArr ? JSON.stringify(abscentArr) : '';
-                console.log('$scope.userprofiledata.is_available', $scope.userprofiledata.is_available)
-                
 
                 rest.path = 'saveuserprofileexternelS';
                 rest.post($scope.userprofiledata).success(function (data) {
@@ -11030,6 +11053,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $timeout(function () {
                         $('#iMobile').intlTelInput("setNumber", FinalMobileNum);
                     }, 100);
+                    
+                    let is_available =  JSON.parse($scope.userprofiledata.is_available);
+                    if(is_available.length){
+                        let abscentArr = is_available.filter(function(item) {
+                            item.dateFrom = moment(item.dateFrom).format($scope.dateFormatGlobal);
+                            item.dateTo = moment(item.dateTo).format($scope.dateFormatGlobal);
+                            //$scope.abscentDateArr.push(item)
+                            return item;
+                        });
+                        $scope.abscentDateArr = abscentArr;
+                    }
+
                     notification(data['msg'], 'error');
                 });
             }

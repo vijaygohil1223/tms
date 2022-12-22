@@ -211,19 +211,23 @@
                                                                 <label>Linguist Absent <a ng-click="clearAbsentDate()"title="Clear Field" style="margin-left:5px;"> <i class="glyphicon glyphicon-refresh"></i> </a></label>
                                                                 <!-- <input type="text" class="form-control" class="hasDatepicker" id="multidatePick" ng-multidate name="multidatePick" ng-model="userprofiledata.is_available" onkeydown="return false" autocomplete="off"> -->
                                                                 <div class="d-flex">
-                                                                    <div class="col-sm-6 pl-0">  
-                                                                        <input class="form-control" ng-datepicker2 ng-model="abDate" id="abDate" onkeydown="return false" placeholder="Date"/> 
+                                                                    <div class="col-sm-5 pl-0">  
+                                                                        <input class="form-control" ng-datepicker2 ng-model="abDate" id="abDate" ng-blur="checkFromDate(abDate)"  onkeydown="return false" placeholder="From Date"/> 
                                                                     </div>
-                                                                    <div class="col-sm-3 pl-0">  
-                                                                        <input class="form-control" timepicker1 allowtimefrmt ng-model="abTime" id="abTime" onkeydown="return true" placeholder="Time">
+                                                                    <div class="col-sm-5 pl-0">  
+                                                                        <input class="form-control" ng-datepicker2 ng-model="abDateTo" id="abDateTo" ng-disabled="abDateToflg==true" onkeydown="return false" placeholder="To Date (Optional)" /> 
                                                                     </div>
-                                                                    <div class="col-sm-3" style="padding-left:initial;">  
-                                                                        <a class="btn btn-info" style="padding:7px 12px;" ng-click="addAbsDate(abDate, abTime)"> OK </a>
+                                                                    <div class="col-sm-2" style="padding-left:initial;">  
+                                                                        <a class="btn btn-info" style="padding:7px 12px;" ng-click="addAbsDate(abDate, abDateTo)"> OK </a>
                                                                     </div>    
                                                                 </div>
                                                                 <div style="margin-top:10px;" >
                                                                     <ul style="list-style:none;margin-left:-40px;">
-                                                                        <li ng-repeat="dtlist in abscentDateArr track by $index" class="datebadge" style="float: left;"> <span class="badge " id="datespan{{$index}}">{{dtlist}} <i ng-click="removeAbscentDateArr($index,dtlist)" class="fa fa-close" style="padding:5px;cursor: pointer;"></i></span> </li>
+                                                                        <li ng-repeat="dtlist in abscentDateArr track by $index" class="datebadge" style="float: left;"> 
+                                                                            <span class="badge " id="datespan{{$index}}"> 
+                                                                                {{dtlist.dateFrom}} <span ng-if="dtlist.multiDay==1"> To {{dtlist.dateTo}} </span> 
+                                                                            <i ng-click="removeAbscentDateArr($index,dtlist)" class="fa fa-close" style="padding:5px;cursor: pointer;"></i></span> 
+                                                                        </li>
                                                                     </ul>
 
                                                                     
