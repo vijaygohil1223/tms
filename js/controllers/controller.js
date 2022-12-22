@@ -10269,6 +10269,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.setItem("contactUserId", $routeParams.id);
     angular.element('.help-block').css('display', 'none');
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
+    console.log('$scope.dateFormatGlobal', $scope.dateFormatGlobal)
     $scope.dtSeparator = $window.localStorage.getItem('dtSeparator');
     $scope.dateFormatD = moment($scope.toDayDate).format($window.localStorage.getItem('global_dateFormat'));
     
@@ -10763,7 +10764,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.abDateToflg = true; 
     $scope.checkFromDate = function(fromdate){
-       $scope.abDateToflg = ! isNaN(Date.parse(fromdate)) ? false : true;
+       let frmDate = moment(fromdate,$scope.dateFormatGlobal).format('YYYY-MM-DD');
+       //$scope.abDateToflg = ! isNaN(Date.parse(fromdate)) ? false : true;
+       $scope.abDateToflg = ! isNaN(Date.parse(frmDate)) ? false : true;
+       
     }
     // Add abscent Dates
     //$scope.abscentDateArr = [];
@@ -10773,8 +10777,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('abDate', abDate)
         if(abDate){
             var abDateTo =  abDateTo ? abDateTo : abDate;
-            let date1 = moment(abDate).format('YYYY-MM-DD')
-            let date2 = moment(abDateTo).format('YYYY-MM-DD')
+            //let date1 = moment(abDate).format('YYYY-MM-DD')
+            let date1 = moment(abDate,$scope.dateFormatGlobal).format('YYYY-MM-DD');
+            console.log('date1=before', date1)
+            //let date2 = moment(abDateTo).format('YYYY-MM-DD')
+            let date2 = moment(abDateTo,$scope.dateFormatGlobal).format('YYYY-MM-DD');
+            
             let multiDay = (Date.parse(date1) < Date.parse(date2)) ? 1 : 0;
                 abDateTo = (Date.parse(date1) > Date.parse(date2)) ? abDate :  abDateTo;
             
@@ -10843,8 +10851,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.abscentDateArr.length > 0){
                 var abscentDateArr = $scope.abscentDateArr;
                 var abscentArr = abscentDateArr.map(function(item) {
-                    item.dateFrom = moment(item.dateFrom).format('YYYY-MM-DD')
-                    item.dateTo = moment(item.dateTo).format('YYYY-MM-DD')
+                    item.dateFrom = moment(item.dateFrom, $scope.dateFormatGlobal).format('YYYY-MM-DD')
+                    console.log('item.dateFrom', item.dateFrom)
+                    item.dateTo = moment(item.dateTo, $scope.dateFormatGlobal).format('YYYY-MM-DD')
+                    
                     return item;
                 });
             }    
