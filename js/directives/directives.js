@@ -4390,7 +4390,9 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 
                 var quantity = angular.element('#Quantity'+scope.it.itemId).val();
                 if(quantity.includes(',')){
-                    quantity = numberFormatCommaToPoint(quantity);
+                    quantity = CommaToPoint4Digit(quantity);
+                    //quantity = numberFormatCommaToPoint(quantity);
+                    
                     quantity = isNaN(parseFloat(quantity)) ? 0 : quantity; 
                 }    
                 if (!quantity) {
@@ -6147,7 +6149,8 @@ app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compi
                 
                 var quantity = angular.element('#Quantity'+scope.jobdetail.job_summmeryId).val();
                 if(quantity.includes(',')){
-                    quantity = numberFormatCommaToPoint(quantity);
+                    quantity = CommaToPoint4Digit(quantity);
+                    //quantity = numberFormatCommaToPoint(quantity);
                     quantity = isNaN(parseFloat(quantity)) ? 0 : quantity; 
                 }
                 if (!quantity) {
