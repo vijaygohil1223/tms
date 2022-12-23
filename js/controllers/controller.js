@@ -11145,11 +11145,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $cookieStore.remove('editInternalUser')
                     }
                 }
-
                 $scope.userprofiledata.dtBirthDate = angular.element('#dtBirthDate').val();
                 $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
-
+                
                 rest.path = 'saveuserprofileinternal';
                 rest.put($scope.userprofiledata).success(function (data) {
 
@@ -11194,6 +11193,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }).error(function (data, error, status) { 
                     angular.element('#iMobile').val(mobile)
+                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat'));
                 });
             } else {
                 /*delete $scope.userprofiledata["cPassword"];*/
@@ -11274,7 +11274,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }, 500);
                     }
                     $location.path('/internal/' + data.iUserId);
-                }).error(errorCallback);
+                }).error(function (data, error, status) { 
+                    angular.element('#iMobile').val(mobile)
+                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat'));
+                });
             }
         }
     };
@@ -17105,12 +17108,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }
 
-                    //Project end  recent activity store in cookie
-                    rest.path = 'general';
+                    $scope.general.specialization = $scope.general.specialization.toString().includes(',') ? ($scope.general.specialization).split(',').pop() : $scope.general.specialization; 
+                    
                     delete $scope.general['vProjectCoordinator'];
                     delete $scope.general['vProjectManager'];
                     delete $scope.general['vQASpecialist'];
-
+                    //Project end  recent activity store in cookie
+                    rest.path = 'general';
                     rest.put($scope.general).success(function (data) {
 
                         //log file start 
@@ -17198,6 +17202,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.general.due_date = originalDateFormatDash($scope.general.due_date + ' - ' + due_timeval1);
                         $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
                     }
+                    $scope.general.specialization = $scope.general.specialization.toString().includes(',') ? ($scope.general.specialization).split(',').pop() : $scope.general.specialization;
 
                     $window.localStorage.orderNumber = $scope.general.order_no;
                     $scope.routeOrderID = $scope.routeOrderID ? $scope.routeOrderID : $window.localStorage.orderID;
@@ -18135,6 +18140,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $scope.order_id;
         rest.path = 'contactPerson';
         rest.model().success(function (data) {
+            console.log('data=>customer', data)
             var cor = [];
             var man = [];
             angular.forEach(data, function (val, i) {
@@ -18912,9 +18918,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         scrollToId(eID);
     }
 
+    $scope.itemJobs = [];
+    if($scope.routeOrderID){
+        rest.path = 'jobitemsGet/' + $scope.routeOrderID;
+        rest.get().success(function (data) {
+            $scope.itemJobs = data;
+        });    
+    }
+
     $scope.deleteItemsId = function (itemId, itemNnumber) {
         itemId = itemId + '-' + itemNnumber;
-
+        console.log('itemNnumber', itemNnumber)
+        const itemJobsExist = $scope.itemJobs.filter( el => {
+            console.log('el', el)
+            if (el.item_number == itemNnumber)
+                return el;
+        })
+        console.log('itemJobsExist', itemJobsExist)
+            
+        console.log('$scope.itemJobs', $scope.itemJobs)
         bootbox.confirm("Are you sure you want to delete this scoop?", function (result) {
             if (result == true) {
                 rest.path = 'itemDelete/' + itemId + '/' + $scope.routeOrderID;
@@ -29354,6 +29376,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             angular.forEach(data, function (val, i) {
                 $scope.item_number = val.item_number;
+                $scope.scoop_number = val.item_number; 
                 //getClient By OrderId while edit item
                 rest.path = 'customer/' + val.order_id;
                 rest.get().success(function (data) {
@@ -29481,7 +29504,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var appr = [];
                         var other = [];
                         angular.forEach(data, function (val, i) {
-                            $scope.scoop_number = val.item_id;
+                            //$scope.scoop_number = val.item_id;
                             if (val.item_status == 'Approved') {
                                 appr.push(val.item_status);
                             }
