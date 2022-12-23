@@ -46,7 +46,7 @@
                                                 ng-bind="projectOrderName" style="border-right:none;padding-right:0;"></span>
                                                 <span class="input-group-addon" style="border-left: none; padding-left: 0;">-{{it.item_number | numberFixedLen:3}}</span>
                                                 <input type="text" class="form-control" name="item_name"
-                                                   ng-model="it.item_name" id="item_name{{it.itemId}}">
+                                                   ng-model="it.item_name" id="item_name{{it.itemId}}" style="min-width:350px;">
                                              </div>
                                           </div>
                                            <div class="d-flex">
@@ -56,6 +56,11 @@
                                                 ng-model="it.start_date" required onkeydown="return false"
                                                 readonly="" style="width: auto;"/>
                                           </div>
+                                          <a href="javascript:void(0)"
+                                             ng-click="deleteItemsId(it.itemId,it.item_number)" title="delete"
+                                             style="padding:8px 10px;">
+                                             <i class="iconDelete glyph-icon fa-times"></i>
+                                          </a>
                                        </div>
                                     <div class="panel-body p-0">
                                        <div class="col-sm-12 p-0">

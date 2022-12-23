@@ -18920,24 +18920,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.itemJobs = [];
     if($scope.routeOrderID){
-        rest.path = 'jobitemsGet/' + $scope.routeOrderID;
+        rest.path = 'select2Jobdata';
         rest.get().success(function (data) {
-            $scope.itemJobs = data;
+            const itemJobs = data.filter( el => {
+                if (el.order_id == $scope.routeOrderID)
+                    return el;
+            })
+            $scope.itemJobs = itemJobs;
+            console.log('$scope.itemJobs', $scope.itemJobs)
         });    
     }
 
     $scope.deleteItemsId = function (itemId, itemNnumber) {
         itemId = itemId + '-' + itemNnumber;
-        console.log('itemNnumber', itemNnumber)
         const itemJobsExist = $scope.itemJobs.filter( el => {
-            console.log('el', el)
-            if (el.item_number == itemNnumber)
+            if (el.item_id == itemNnumber)
                 return el;
         })
+        var deleteMessage = "Are you sure you want to delete this scoop?";
+        if(itemJobsExist.length){
+            deleteMessage = "Jobs are available. You can not <b>DELETE.</b>";
+        }
         console.log('itemJobsExist', itemJobsExist)
-            
-        console.log('$scope.itemJobs', $scope.itemJobs)
-        bootbox.confirm("Are you sure you want to delete this scoop?", function (result) {
+
+        bootbox.confirm(deleteMessage, function (result) {
+            deleteMessage = '';
             if (result == true) {
                 rest.path = 'itemDelete/' + itemId + '/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
@@ -30127,6 +30134,56 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.cancel = function () {
         $uibModalInstance.close();
+    }
+
+    // Delete scoop if jobs not exist
+    $scope.itemJobs = [];
+    if($scope.order_id){
+        rest.path = 'select2Jobdata';
+        rest.get().success(function (data) {
+            const itemJobs = data.filter( el => {
+                if (el.order_id == $scope.order_id)
+                    return el;
+            })
+            $scope.itemJobs = itemJobs;
+            console.log('$scope.itemJobs', $scope.itemJobs)
+        });    
+    }
+
+    $scope.deleteItemsId = function (itemId, itemNnumber) {
+        itemId = itemId + '-' + itemNnumber;
+        const itemJobsExist = $scope.itemJobs.filter( el => {
+            if (el.item_id == itemNnumber)
+                return el;
+        })
+        var deleteMessage = "Are you sure you want to delete this scoop?";
+        if(itemJobsExist.length){
+            deleteMessage = "Jobs are available. You can not <b>DELETE.</b>";
+            $(".bootbox-confirm [data-bb-handler|='confirm']").hide()
+        }
+        console.log('itemJobsExist', itemJobsExist)
+        $scope.cancel();
+        bootbox.confirm(deleteMessage, function (result) {
+            deleteMessage = '';
+            if (result == true) {
+                rest.path = 'itemDelete/' + itemId + '/' + $scope.order_id;
+                rest.get().success(function (data) {
+                    if (data.status == 422) {
+                        notification(data.msg, 'error');
+                    } else {
+                        var hideId = itemId.split('-')[0];
+                        $('#item-form' + hideId).hide('slow', function () { $('#item-form' + hideId).remove(); });
+                        $('#trRowId' + hideId).hide('slow', function () { $('#trRowId' + hideId).remove(); });
+                        notification('Scoop deleted successfully.', 'success');
+                        $route.reload();
+                    }
+                }).error(errorCallback);
+            }
+        });
+        // if (confirm('Are you sure you want to save this thing into the database?')) {
+        // console.log('Thing was saved to the database.');
+        // } else {
+        // }
     }
 
 }).controller('resourceAdvanceSearchController', function ($timeout, $scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $filter) {
