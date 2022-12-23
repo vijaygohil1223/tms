@@ -18937,9 +18937,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (el.item_id == itemNnumber)
                 return el;
         })
-        var deleteMessage = "Are you sure you want to delete this scoop?";
+        var deleteMessage = "Are you sure you want to <b>DELETE</b> this scoop?";
         if(itemJobsExist.length){
-            deleteMessage = "Jobs are available. You can not <b>DELETE.</b>";
+            deleteMessage = "Jobs are available in the scoop. You can not delete.";
         }
         console.log('itemJobsExist', itemJobsExist)
 
@@ -30156,9 +30156,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (el.item_id == itemNnumber)
                 return el;
         })
-        var deleteMessage = "Are you sure you want to delete this scoop?";
+        var deleteMessage = "Are you sure you want to <b>DELETE</b> this scoop?";
         if(itemJobsExist.length){
-            deleteMessage = "Jobs are available. You can not <b>DELETE.</b>";
+            deleteMessage = "Jobs are available in the scoop. You can not delete.";
             $(".bootbox-confirm [data-bb-handler|='confirm']").hide()
         }
         console.log('itemJobsExist', itemJobsExist)
