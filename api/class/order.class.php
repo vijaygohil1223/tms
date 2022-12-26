@@ -420,7 +420,7 @@ class order {
 
             if($value['total_amount'] == ''){
 
-                array_splice($result, $key, 1);
+                //array_splice($result, $key, 1);
 
             }
 

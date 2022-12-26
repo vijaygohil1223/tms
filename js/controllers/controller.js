@@ -4605,7 +4605,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var id = $window.localStorage.getItem("jobFolderRoot");
         var type = $window.localStorage.getItem("jobFoldertype");
         var externalResourceUserId = null;
-
         rest.path = 'filefolderGet/' + id + '/' + type + '/' + externalResourceUserId;
         rest.get().success(function (data) {
             $window.localStorage.setItem("sourceFolderCount", data.length);
@@ -4619,6 +4618,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($window.localStorage.jobFoldertype == 'target') {
         $scope.hideuploadBtn = ($scope.userRight == 2) ? false : true;
     }
+    if($routeParams.id == 'target' && $scope.userRight == 1)
+        $scope.hideuploadBtn = true;
 
     //project root get display front
     if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
@@ -4631,10 +4632,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $window.localStorage.countSt == " " && $scope.userRight == '1') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
+            $routeParams.id = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
             rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data[0].fmanager_id);
-
                 //setting variable for jobfilecounter
                 $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
                 $window.localStorage.setItem("jobFoldertype", $routeParams.id);
@@ -4795,15 +4796,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var DefaultImgPath = "assets/img/file_icon/fileicon.png";
                             previewContainer.attr('src', DefaultImgPath);
                         }*/
-                        if (fileExtension != 'jpg' && fileExtension != 'png' && fileExtension != 'gif' && fileExtension != 'svg') {
+                        
+                        if (['jpg', 'jpeg', 'png','gif','svg', 'tiff','bmp','pcx', 'rle', 'dib'].includes(fileExtension)) {
                             var previewContainer = $('.upimg' + fullTxt.charAt(0).toString()).parent().children(':first-child');
                             previewContainer.css('display', 'block', 'margin-left', '40px');
                             previewContainer.css('margin-left', '55px');
                             var DefaultImgPath = "assets/img/file_icon/fileicon.png";
-                            if (fileExtension == 'docx' || fileExtension == 'doc') {
+                            if (['docx','doc'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/doc.png";
                             }
-                            if (fileExtension == 'xlsx' || fileExtension == 'xlsm' || fileExtension == 'xls' || fileExtension == 'csv') {
+                            if (['xlsx','xlsm','xls','csv'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/xls.png";
                             }
                             if (fileExtension == 'pdf') {
@@ -4812,16 +4814,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (fileExtension == 'ppt') {
                                 DefaultImgPath = "assets/img/file_icon/ppt.png";
                             }
-                            if (fileExtension == 'zip' || fileExtension == 'gz' || fileExtension == 'rar') {
+                            if (['zip','zipx','gz','rar','tar','7z'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/zip.png";
                             }
-                            if (fileExtension == 'mp3' || fileExtension == 'wav' || fileExtension == 'wma') {
+                            if (['mp3','wav','wma'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/mp3.png";
                             }
-                            if (fileExtension == 'mp4' || fileExtension == 'wmv' || fileExtension == 'avi' || fileExtension == '3gp' || fileExtension == 'mov' || fileExtension == 'vob') {
+                            if (['mp4','wmv','avi','3gp','mov','vob'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/video.png";
                             }
-                            if (fileExtension == 'txt' || fileExtension == 'html' || fileExtension == 'htm' || fileExtension == 'js' || fileExtension == 'css' || fileExtension == 'vob' || fileExtension == 'sql' || fileExtension == 'tiff' || fileExtension == 'ttf') {
+                            if (['txt','html','htm','js','css','vob','sql','tiff','ttf'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/video.txt";
                             }
                             previewContainer.attr('src', DefaultImgPath);
@@ -5051,6 +5053,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     if ($window.localStorage.getItem("parentId") != " ") {
         var id = $window.localStorage.getItem("parentId");
+        console.log('id', id)
         var externalResourceUserId = null;
         rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
         //rest.path = 'filefolderGet/' + id + '/' + $routeParams.id;
@@ -5451,9 +5454,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.menuOptionsFiles.splice(0, 1);
                     $scope.menuOptionsFolder.splice(0, 1);
                 }
+
+                console.log('$routeParams', $routeParams)
                 if ($window.localStorage.jobFoldertype == 'source' && $scope.userRight == 1) {
-                    $scope.menuOptionsFiles.splice(0, 1);
-                    $scope.menuOptionsFolder.splice(0, 1);
+                    let urlName = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+                    if($routeParams.id != 'target'){
+                        $scope.menuOptionsFiles.splice(0, 1);
+                        $scope.menuOptionsFolder.splice(1, 1);
+                    }
                 }
 
 
@@ -19309,6 +19317,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.lang_st = [];
     if ($routeParams.id) {
+        
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobitList = [];
@@ -19379,6 +19388,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         JobFolders.addEventListener("beforeunload", function () {
             var id1 = $window.localStorage.getItem("jobFolderRoot");
             var type1 = $window.localStorage.getItem("jobFoldertype");
+            console.log('type1', type1)
             var externalResourceUserId1 = null;
             var count;
             rest.path = 'filefolderGet/' + id1 + '/' + type1 + '/' + externalResourceUserId1;
@@ -19412,7 +19422,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         var type = $window.localStorage.getItem("jobFoldertype");
         var id = $window.localStorage.getItem("jobfolderId");
-        //console.log('testid',id);
         if (type) {
             if (type == 'source') {
                 $('#sourceCount-' + id).text(count);
