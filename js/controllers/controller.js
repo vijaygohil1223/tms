@@ -2165,9 +2165,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.jobLinguist = UniqueArraybyId(val.linguist, 'resources');
                 }
 
-                if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
-                    val.pm_name = val.sub_pm_name
-                }
+                // if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
+                //     val.pm_name = val.sub_pm_name
+                // }
+                // if(val.price_currency){
+                //     val.price_currency = val.price_currency.includes(',') ? val.price_currency.split(',')[0] : '';
+                // }else if(val.price_currency2){
+                //     val.price_currency = val.price_currency2.includes(',') ? val.price_currency2.split(',')[0] : '';
+                // }else{
+                //     val.price_currency = 'EUR';
+                // }
 
                 // Comment read unRead
                 var cmtcolor = '#0190d8';
@@ -26278,7 +26285,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
                     return el;
             });
-            $scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
+            //$scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
+
+            $scope.InvoiceResult.sort(function (a, b) {
+            if (a.contactName < b.contactName) {
+                return -1;
+            }
+            if (a.contactName > b.contactName) {
+                return 1;
+            }
+            return 0;
+            });
+            console.log('$scope.InvoiceResult', $scope.InvoiceResult)
         })    
     
     })    

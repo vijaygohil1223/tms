@@ -34,7 +34,7 @@
                 </thead>
                 <tbody ng-init="invLen = InvoiceResult.length - 1" ng-repeat="invoiceL in InvoiceResult  track by $index">
                   <tr>
-                    <td colspan="7" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd" ng-if="$index ==0 || InvoiceResult[$index-1].contactPerson != invoiceL.contactPerson">Client: {{ invoiceL.contactName }}</td>
+                    <td colspan="7" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd" ng-if="$index ==0 || InvoiceResult[$index-1].iClientId !== invoiceL.iClientId">Client: {{ invoiceL.contactName }}</td>
                   </tr>               
                   <tr>
                     <td>
