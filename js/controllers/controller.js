@@ -15349,6 +15349,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     })
                     //$scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(itemTotal);
                 }
+                $scope.invoiceList[i].tax_rate = $scope.invoiceList[i].tax_rate ? $scope.invoiceList[i].tax_rate : 0;
                 let amountTaxRate = taxRateAmountCalc(val.scoop_value, $scope.invoiceList[i].tax_rate);
                 let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
                 $scope.invoiceTotal += itemPriceTax;
