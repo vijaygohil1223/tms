@@ -12778,6 +12778,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.savePaymentdirect = function (formId, type) {
+        
+        if($scope.payment.tax_id){
+            $scope.payment.country_code = $scope.payment.tax_id.substring(0, 2).toUpperCase();
+            //$scope.payment.country_code =  $scope.payment.country_code.toString().match(/[a-z]/i) ? $scope.payment.tax_id.substring(0, 2).toUpperCase() : '';
+            //$scope.payment.tax_id = $scope.payment.tax_id.substring(2, 15);
+            $scope.payment.tax_id = $scope.payment.tax_id;
+        }   
         if (!$scope.payment.country_code || !$scope.payment.tax_id) {
             notification('please enter vat number', 'warning');
             return false
