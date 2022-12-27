@@ -8,6 +8,9 @@
         color: red;
         margin-top: -1.5%;
     }
+    .mt-20 {
+        margin-top:20px;
+    }
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
     data-ng-include=" 'tpl/material.header.html' ">
@@ -101,21 +104,21 @@
                                             <!-- </div> -->
                                             <div class="col-sm-12 vatNumberValid">
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-6 mt-20">
                                                 <div class="form-group">
                                                     <label>Tax Rate</label>
                                                     <input type="text" select2-taxrate class="form-control" name="tax_rate"  ng-model="paymentData.tax_rate"/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6"></div>
-                                            <div class="col-sm-12" style="margin-top:20px;">
+                                            <div class="col-sm-12 mt-20">
                                                 <div class="form-group">
                                                     <label>Accounting notes</label>
                                                     <textarea name="memos" ng-model="payment.memos" class="form-control"
                                                         rows="12" style="resize: none;"></textarea>
                                                 </div>
                                                 <div class="panel-footer">
-                                                    <strong>Payment terms :</strong> (e.g. all invoices are paid 45 days
+                                                    <strong>Payment terms :</strong> (e.g. all invoices are paid {{invoicePeriodDays}} days
                                                     after date of issue)
                                                     <a ng-if="uType == '1'" class="btn btn-info pull-right"
                                                         ng-click="savePayment('payment_form','1');">Save</a>

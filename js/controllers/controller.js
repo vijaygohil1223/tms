@@ -12700,12 +12700,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.uType = 1;
     }
     $scope.bank = { 'payment_method': '', 'currency_code':'EUR'}
-
+    $scope.payment = {'tax_id': '', 'country_code':''}
     if ($routeParams.id != ' ' && $routeParams.id != undefined) {
 
         rest.path = 'getuserpayment/' + $routeParams.id + '/' + $window.localStorage.userType;
-        console.log('$window.localStorage.userType', $window.localStorage.userType)
-        console.log('$routeParams.id', $routeParams.id)
         rest.get().success(function (data) {
             console.log('data-daaa', data)
             if (data == null) {
@@ -12743,6 +12741,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.paymentData = {};
         $scope.notRootParamsId = true;
     }
+
+    $scope.invoicePeriodDays = 30;
+    rest.path = "getAllInvoicePeriod";
+    rest.get().success(function (data) {
+        //console.log('data', data)
+        $scope.dueperiodList = data;
+        if ($scope.dueperiodList.length > 0) {
+            $scope.invoicePeriodDays = $scope.dueperiodList[0].number_of_days;
+        }
+        //$scope.getOne(data[0].invoice_due_id);
+    }).error(errorCallback);
 
     if ($scope.clientId != " " && $scope.userRight != 2) {
         console.log('$scope.clientId', $scope.clientId)
