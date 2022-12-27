@@ -27999,7 +27999,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceTotal = 0;
             $scope.grandTotal = 0;
             angular.forEach($scope.invoiceList, function (val, i) {
-                console.log('val', val)
+                //console.log('val', val)
                 if (val.item) {
                     var itemTotal = 0;
                     angular.forEach(val.item, function (v, i2) {
@@ -28007,10 +28007,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         itemTotal += v.itemTotal;
                     })
                 }
+                $scope.invoiceList[i].tax_rate = $scope.invoiceList[i].tax_rate ? $scope.invoiceList[i].tax_rate : 0;
                 let amountTaxRate = taxRateAmountCalc(val.scoop_value, $scope.invoiceList[i].tax_rate);
                 let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
                 $scope.invoiceTotal += itemPriceTax;
                 $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
+                console.log('$scope.invoiceList[i].item.itemTotalVal', $scope.invoiceList[i].item.itemTotalVal)
                 $scope.invoiceList[i].item.priceWithTax = itemPriceTax;
                 console.log('$scope.invoiceList[i].item.priceWithTax', $scope.invoiceList[i].item.priceWithTax)
                 //$scope.invoiceList[i].itemPriceTax = $filter('customNumber')(itemPriceTax);
