@@ -615,6 +615,8 @@ function ParseFloatNumber(str,val) {
 }
 // Tax rate on amount
 function taxRateAmountCalc(price, tax_rate) {
+    if(! tax_rate)
+        var tax_rate = 0
     if(isNaN(price) || isNaN(tax_rate))
         return 0;
     else    
@@ -15262,6 +15264,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
+            console.log('data', data)
             $scope.invoiceDetail = data[0];
             //console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             if ($scope.invoiceDetail.clientVatinfo) {
@@ -15349,7 +15352,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     })
                     //$scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(itemTotal);
                 }
-                $scope.invoiceList[i].tax_rate = $scope.invoiceList[i].tax_rate ? $scope.invoiceList[i].tax_rate : 0;
+                //$scope.invoiceList[i].tax_rate = $scope.invoiceList[i].tax_rate ? $scope.invoiceList[i].tax_rate : 0;
                 let amountTaxRate = taxRateAmountCalc(val.scoop_value, $scope.invoiceList[i].tax_rate);
                 let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
                 $scope.invoiceTotal += itemPriceTax;
@@ -27944,6 +27947,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 })
 
             }
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
                 $scope.userPaymentData = dataUser.userPaymentData;
@@ -27951,6 +27956,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
                 $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
                 $scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                console.log('$scope.currencyType', $scope.currencyType)
                 $scope.currencyType = vBankInfo.currency_code;
 
                 $scope.currencyPaymentMethod = 'Bank Transfer';
@@ -28014,9 +28020,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
                 $scope.invoiceTotal += itemPriceTax;
                 $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
-                console.log('$scope.invoiceList[i].item.itemTotalVal', $scope.invoiceList[i].item.itemTotalVal)
                 $scope.invoiceList[i].item.priceWithTax = itemPriceTax;
-                console.log('$scope.invoiceList[i].item.priceWithTax', $scope.invoiceList[i].item.priceWithTax)
                 //$scope.invoiceList[i].itemPriceTax = $filter('customNumber')(itemPriceTax);
             })
             //$scope.grandTotal = $scope.invoiceTotal + $scope.vat;

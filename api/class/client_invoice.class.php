@@ -166,7 +166,6 @@ class Client_invoice {
 
                 //payment due date number of day
                 $data['number_of_days'] = $paymentDue[0]['number_of_days'];
-
                 //invoiceNumber Count
                 $data['invoiceCount'] = count(self::get('tms_invoice_client'));
                 $this->_db->where('item_number',$data['item_number']);

@@ -135,7 +135,10 @@
                               ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
                               name="itemVal_{{invL.itemId}}" style="width:180px;"/>
                           </th>
-                          <th style="white-space:nowrap;"> {{ invL.tax_rate | customNumber }} % </th>
+                          <th style="white-space:nowrap;"> 
+                            <span ng-if="invL.tax_rate">{{invL.tax_rate | customNumber}}%</span>
+                            <span ng-if="!invL.tax_rate">{{'0.00' | customNumber}}%</span>
+                         </th>
                           <th>
                             <!-- {{invL.item.subTotal | customNumber }}  -->
                             <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }}</span>
