@@ -12704,6 +12704,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id != ' ' && $routeParams.id != undefined) {
 
         rest.path = 'getuserpayment/' + $routeParams.id + '/' + $window.localStorage.userType;
+        console.log('$window.localStorage.userType', $window.localStorage.userType)
+        console.log('$routeParams.id', $routeParams.id)
         rest.get().success(function (data) {
             console.log('data-daaa', data)
             if (data == null) {
@@ -12743,6 +12745,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     if ($scope.clientId != " " && $scope.userRight != 2) {
+        console.log('$scope.clientId', $scope.clientId)
         $routeParams.id = $scope.clientId;
         rest.path = 'getClientpayment/' + $routeParams.id;
         rest.get().success(function (data) {
@@ -12757,7 +12760,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.payment = JSON.parse(data.vPaymentInfo);
                 }
                 console.log('called -2')
-                $scope.vatCount($scope.payment);
+                //$scope.vatCount($scope.payment);
                 if (data.vBankInfo) {
                     $scope.bank = JSON.parse(data.vBankInfo);
                 }
@@ -12953,6 +12956,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         payment.country_code = payment.tax_id.substring(0, 2).toUpperCase();
         payment.tax_id = payment.tax_id.substring(2, 15);
         if (payment.country_code && payment.tax_id) {
+            console.log('payment', payment)
             rest.path = "getVatcount/" + payment.country_code + '/' + payment.tax_id;
             rest.get().success(function (data) {
                 $scope.payment.tax_id = payment.country_code + payment.tax_id;
@@ -13067,6 +13071,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
             }).error(errorCallback);
+            
         }
 
         //resource payment vate last td remove
