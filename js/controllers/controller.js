@@ -2176,6 +2176,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }else{
                     val.price_currency = 'EUR';
                 }
+                
               
                 // Comment read unRead
                 var cmtcolor = '#0190d8';
