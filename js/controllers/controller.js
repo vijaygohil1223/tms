@@ -18677,11 +18677,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //getClient By OrderId while edit item
                 rest.path = 'customer/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
+                    console.log('data-customer', data)
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
                     
+                    $scope.custPriceAll().then((prData) => {
+                        let customerpriceFltr =  $scope.customerpriceAll ;
+                        angular.element('#currency'+ val.itemId).text('Eur');
+                        customerpriceFltr.filter( (el) => {
+                            if(val.project_pricelist){
+                                if(el.price_list_id == val.project_pricelist){
+                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
+                                    angular.element('#currency'+ val.itemId).text(price_currency);
+                                    return el;
+                                }
+                            }else{
+                                if(el.resource_id == data.client){
+                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
+                                    angular.element('#currency'+ val.itemId).text(price_currency);
+                                    return el;
+                                }
+                            }
+                        });
+                    })
+               
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
                     console.log('jobChainoption', jobChainoption)
@@ -18787,6 +18808,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }else{
 
                 }*/
+                
                 $scope.totalPrice += val.total_amount;
                 if (val.itemId) {
                     $routeParams.id = val.itemId;
@@ -29485,6 +29507,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
                     
+                    $scope.custPriceAll().then((prData) => {
+                        let customerpriceFltr =  $scope.customerpriceAll ;
+                        angular.element('#currency'+ val.itemId).text('Eur');
+                        customerpriceFltr.filter( (el) => {
+                            if(val.project_pricelist){
+                                if(el.price_list_id == val.project_pricelist){
+                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
+                                    angular.element('#currency'+ val.itemId).text(price_currency);
+                                    return el;
+                                }
+                            }else{
+                                if(el.resource_id == data.client){
+                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
+                                    angular.element('#currency'+ val.itemId).text(price_currency);
+                                    return el;
+                                }
+                            }
+                        });
+                    })
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
                     console.log('$scope.jobchainoption', $scope.jobchainoption)
