@@ -10,10 +10,18 @@ class payment {
     }
 
     public function save($info) {
+        if(isset($info['invoice_no_of_days'])){
+            $invoiceDays['dtUpdatedDate'] = date('Y-m-d H:i:s');
+            $invoiceDays['invoice_no_of_days'] = $info['invoice_no_of_days'];
+            $this->_db->where('iClientId', $info['iClientId']);
+            $upid = $this->_db->update('tms_client', $invoiceDays);
+        }
+        unset($info['invoice_no_of_days']);
         $info['dtCreatedDate'] = date('Y-m-d H:i:s');
         $info['dtUpdatedDate'] = date('Y-m-d H:i:s');
         $id = $this->_db->insert('tms_payment', $info);
         if ($id) {
+            
             $return['status'] = 200;
             $return['msg'] = 'Successfully Inserted.';
         } else {
@@ -54,6 +62,14 @@ class payment {
     	return $data;
     }
     public function paymentdirectUpdate($id, $type, $info) {
+        if(isset($info['invoice_no_of_days'])){
+            $invoiceDays['dtUpdatedDate'] = date('Y-m-d H:i:s');
+    	    $invoiceDays['invoice_no_of_days'] = $info['invoice_no_of_days'];
+            $this->_db->where('iClientId', $id);
+    	    $upid = $this->_db->update('tms_client', $invoiceDays);
+    	}
+        unset($info['invoice_no_of_days']);
+
     	$info['dtUpdatedDate'] = date('Y-m-d H:i:s');
     	$this->_db->where('iClientId', $id);
     	$this->_db->where('iType', $type);

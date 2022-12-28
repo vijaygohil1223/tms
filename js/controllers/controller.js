@@ -12699,6 +12699,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.userType = 1;
         $scope.uType = 1;
     }
+    
     $scope.bank = { 'payment_method': '', 'currency_code':'EUR'}
     $scope.payment = {'tax_id': '', 'country_code':''}
     if ($routeParams.id != ' ' && $routeParams.id != undefined) {
@@ -12726,7 +12727,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.displaybankOption = false;
                     $scope.displayPaypalOption = true;
                 }
-
+                
                 $timeout(function () {
                     $('#currencyCoded').select2('data', { id: $scope.bank.currency_code, text: $scope.bank.currency_code.split(',')[0] });
                 }, 500);
@@ -12773,6 +12774,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (data.vBankInfo) {
                     $scope.bank = JSON.parse(data.vBankInfo);
                 }
+
+                rest.path = 'client/' + $routeParams.id;
+                rest.get().success(function (dataCl) {
+                    console.log('dataCl', dataCl)
+                    if(dataCl)
+                        $scope.paymentData.invoice_no_of_days = dataCl.invoice_no_of_days
+                });
             }
         }).error(errorCallback);
     }
@@ -12801,6 +12809,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $scope.payament_data.tax_rate = $scope.paymentData.tax_rate ? $scope.paymentData.tax_rate : 0;
                     console.log('$scope.payament_data.tax_rate', $scope.payament_data.tax_rate)
+                    $scope.payament_data.invoice_no_of_days = $scope.paymentData.invoice_no_of_days 
 
                     rest.path = 'paymentdirectUpdate/' + $routeParams.id + '/' + $window.localStorage.userType;
                     rest.post($scope.payament_data).success(function (data) {
@@ -12823,6 +12832,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.payament_data.iType = $window.localStorage.userType;
                         $scope.payament_data.vPaymentInfo = JSON.stringify($scope.payment);
                         $scope.payament_data.vBankInfo = JSON.stringify($scope.bank);
+                        $scope.payament_data.tax_rate = $scope.paymentData.tax_rate ? $scope.paymentData.tax_rate : 0;
+                        $scope.payament_data.invoice_no_of_days = $scope.paymentData.invoice_no_of_days
                         rest.path = 'paymentsave';
                         rest.post($scope.payament_data).success(function (data) {
                             //log file start 
@@ -15216,6 +15227,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.is_disabled = false;
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
+    $scope.currencyType = 'EUR';
     //$scope.noneCls = "none"
     $scope.invoicePaid = function (frmId) {
         var obj = {
@@ -15287,7 +15299,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             console.log('data', data)
             $scope.invoiceDetail = data[0];
-            //console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
@@ -15311,9 +15323,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 })
             }
+            rest.path = "customerpriceAll/1";
+            rest.get().success(function (dataPrice) {
+                console.log('dataPrice', dataPrice)
+                dataPrice.filter( (el) =>{
+                    if(el.resource_id == $scope.invoiceDetail.clientId){
+                        $scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
+                    }
+                })
+            }) 
             $scope.invoiceDetail.tax_rate = $scope.invoiceDetail.tax_rate ? $scope.invoiceDetail.tax_rate : 0; 
             $scope.vat = $scope.invoiceDetail.tax_rate;
-            $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
+            //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
                 //$scope.userData = dataUser.userData;
@@ -15321,13 +15342,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
                 $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
-                $scope.currencyType = vBankInfo.currency_code.split(',')[1];
-                $scope.currencyType = vBankInfo.currency_code;
+                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                //$scope.currencyType = vBankInfo.currency_code;
 
                 //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 $scope.currencyPaymentMethod = 'Bank Transfer';
                 $scope.vBankInfo.currency_code = 'EUR';
-                $scope.currencyType = '€ ';
+                //$scope.currencyType = '€ ';
                 if ($scope.currencyPaymentMethod == 'Bank Transfer') {
                     $timeout(function () {
                         $("#Bank").prop('checked', true);
@@ -15346,17 +15367,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
 
-            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
-            $scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
+            //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            //$scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
 
-            var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
-            var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
-            $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
+            console.log('$scope.invoiceDetail.freelancePhone', $scope.invoiceDetail.freelancePhone)
+            if($scope.invoiceDetail.freelancePhone){
+                var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
+                var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
+                $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
+            }
 
-            var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
-            var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
-            $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            if($scope.invoiceDetail.companyPhone){
+                var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
+                var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
+                $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
+            }
 
             //$scope.vat = $scope.invoiceDetail.vat ? $scope.invoiceDetail.vat : 0;
             //$scope.invoiceTotal = $scope.invoiceDetail.item_total ? $scope.invoiceDetail.item_total : 0;
@@ -27930,6 +27955,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('clientInvoiceCreateController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceList = [];
+    $scope.currencyType = 'EUR';
+            
     //get data of invoice
     if ($cookieStore.get('invoiceScoopId').length) {
         var obj = [];
@@ -27938,10 +27965,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
         $scope.invoiceLt = {};
         $scope.invoiceLt.id = obj;
-        console.log('$scope.invoiceLt.id', $scope.invoiceLt.id)
         rest.path = "clientInvoiceCreate";
         rest.post($scope.invoiceLt).success(function (data) {
-            console.log('$scope.invoiceLt', $scope.invoiceLt)
+            console.log('$scope.invoiceLt', data)
             $scope.invoiceDetail = data[0];
             console.log('$scope.invoiceDetail=>1', $scope.invoiceDetail)
             if ($scope.invoiceDetail.clientVatinfo) {
@@ -27968,21 +27994,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 })
 
             }
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
-            
+            rest.path = "customerpriceAll/1";
+            rest.get().success(function (dataPrice) {
+                console.log('dataPrice', dataPrice)
+                dataPrice.filter( (el) =>{
+                    if(el.resource_id == $scope.invoiceDetail.clientId){
+                        $scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
+                        console.log('scope.currencyType', $scope.currencyType)
+                    }
+                })
+                
+            })    
+
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
                 $scope.userPaymentData = dataUser.userPaymentData;
                 //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
                 $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
-                $scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
                 console.log('$scope.currencyType', $scope.currencyType)
-                $scope.currencyType = vBankInfo.currency_code;
+                //$scope.currencyType = vBankInfo.currency_code;
 
                 $scope.currencyPaymentMethod = 'Bank Transfer';
                 //$scope.vBankInfo.currency_code = 'EUR,€'; 
-                $scope.currencyType = '€ ';
+                //$scope.currencyType = '€ ';
                 if ($scope.currencyPaymentMethod == 'Bank Transfer') {
                     $timeout(function () {
                         $("#Bank").prop('checked', true);

@@ -158,14 +158,16 @@ class Client_invoice {
                 $this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
                 $this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
                 $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
-                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tcc.vEmail as companycontactEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tp.tax_rate, ti.po_number');
+                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tci.invoice_no_of_days, tcc.vEmail as companycontactEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tp.tax_rate, ti.po_number');
                 
                 //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
     
                 //$data['companyName'] = 'test';                
 
                 //payment due date number of day
-                $data['number_of_days'] = $paymentDue[0]['number_of_days'];
+                //$data['number_of_days'] = $paymentDue[0]['number_of_days'];
+                $data['number_of_days'] = $data['invoice_no_of_days'] > 0 ? $data['invoice_no_of_days'] : $paymentDue[0]['number_of_days'];
+            
                 //invoiceNumber Count
                 $data['invoiceCount'] = count(self::get('tms_invoice_client'));
                 $this->_db->where('item_number',$data['item_number']);
@@ -551,7 +553,7 @@ class Client_invoice {
             $this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
             $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
 			//$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tg.company_code, tsv.job_code AS jobCode');
-			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.item_name, ti.order_id AS orderId,ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS companyAddressDtl, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tp.tax_rate, ti.po_number');
+			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.item_name, ti.order_id AS orderId,ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS companyAddressDtl,tci.invoice_no_of_days, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tp.tax_rate, ti.po_number');
 
             // echo $this->_db->getLastQuery();
             // exit;
@@ -560,8 +562,9 @@ class Client_invoice {
 			//$data['companyName'] = 'test';
 
 			//payment due date number of day
-			$data['number_of_days'] = $paymentDue[0]['number_of_days'];
-
+			//$data['number_of_days'] = $paymentDue[0]['number_of_days'];
+            $data['number_of_days'] = $data['invoice_no_of_days'] > 0 ? $data['invoice_no_of_days'] : $paymentDue[0]['number_of_days'];
+            
 			//invoiceNumber Count
 			$data['invoiceCount'] = count(self::get('tms_invoice_client'));
             //echo '<pre>'; print_r($data); echo '</pre>';exit;
