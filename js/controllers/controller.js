@@ -29329,7 +29329,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             $scope.jobnumchain = data.job_no += 1;
                                             $scope.ijNum = 1;
                                             if (data.newJob == "") {
-                                                notification('No job in jobchain', 'warning');
+                                                //notification('No job in jobchain', 'warning');
                                             } else {
                                                 angular.forEach(data.newJob, function (val, i) {
                                                     if (chainId) {
