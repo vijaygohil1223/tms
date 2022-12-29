@@ -18309,18 +18309,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //$scope.itemList[formIndex].price = ''
                     }*/
 
-                    if ($scope.itemList[formIndex].attached_workflow) {
-                        if ($('#jobchainName' + formId).val() !== 'select') {
-                            var jobchainval = $('#jobchainName' + formId).val();
-                            var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
-                            var scoopitemData = $scope.TblItemList;
-                            var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
-                            if (chainworkflow.length == 0) {
-                                notification('workflow already attached', 'warning');
-                            }
-                            // notification('workflow already attached', 'warning');
-                        }
-                    } else {
+                    // if ($scope.itemList[formIndex].attached_workflow) {
+                    //     if ($('#jobchainName' + formId).val() !== 'select') {
+                    //         var jobchainval = $('#jobchainName' + formId).val();
+                    //         var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
+                    //         var scoopitemData = $scope.TblItemList;
+                    //         var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
+                    //         if (chainworkflow.length == 0) {
+                    //             notification('workflow already attached', 'warning');
+                    //         }
+                    //     }
+                    // } else {
                         if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
                             notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
@@ -18505,7 +18504,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 }
                             }
                         }
-                    }
+                    //}
 
                     const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
                     if(hasKeySpclz)    

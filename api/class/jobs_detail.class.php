@@ -141,7 +141,6 @@ class jobs_detail
     {
 
         //echo '<pre>'; print_r($info); echo '</pre>';
-
         $this->_db->where('item_id', $info['item_id']);
 
         $this->_db->where('job_id', $info['job_id']);
@@ -150,9 +149,10 @@ class jobs_detail
 
         $alreadyExists = $this->_db->getOne('tms_summmery_view');
 
+        // changes - If same job exist we can add new jobs
+        $alreadyExists2 = false;
 
-
-        if ($alreadyExists) {
+        if ($alreadyExists2) {
 
             return false;
 
