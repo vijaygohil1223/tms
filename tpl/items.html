@@ -403,8 +403,8 @@
                                                             <div class="form-group">
                                                                <label class="control-label">Place of Delivery </label>
                                                                <input type="text" class="form-control"
-                                                                  id="EmailSub{{it.itemId}}"
-                                                                  name="item_email_subject{{it.itemId}}"
+                                                                  id="place_of_delivery{{it.itemId}}"
+                                                                  name="place_of_delivery{{it.itemId}}"
                                                                   ng-model="it.place_of_delivery" />
                                                             </div>
                                                          </div>
@@ -414,6 +414,7 @@
                                                                ng-init="jobi.jobSummery = 'select'"
                                                                name="jobchainName{{it.itemId}}"
                                                                ng-model="jobi.jobSummery" id="jobchainName{{it.itemId}}"
+                                                               ng-change="changeWorkflow({{it.itemId}})"
                                                                required>
                                                                <option value="select">--Please Select--</option>
                                                                <optgroup label="Job Chain">

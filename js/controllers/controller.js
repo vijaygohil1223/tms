@@ -18248,6 +18248,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#curRate').text(data.currencyRate);
         });
     }
+    $scope.workflowChange = false;
+    $scope.changeWorkflow = function (id) {
+        console.log('id', id)
+        $scope.workflowChange = true; 
+        console.log('$scope.workflowChange', $scope.workflowChange)
+    }
 
     $scope.jobi = {};
     $scope.saveitems = function (formId, formIndex) {
@@ -18320,15 +18326,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //         }
                     //     }
                     // } else {
+
                         if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
                             notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
                             $scope.TblItemList[formIndex].total_amount = 0;
                             return false;
                         } else {
-                            if ($scope.jobi.jobSummery) {
+                            if ($scope.jobi.jobSummery && $scope.workflowChange) {
+                                console.log('$scope.jobi.jobSummery', $scope.jobi.jobSummery)
+                                console.log('$scope.workflowChange', $scope.workflowChange)
                                 // gettingName of selected workflow job chain
                                 $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formId).find(':selected').text();
+                                console.log('$scope.itemList[formIndex].attached_workflow', $scope.itemList[formIndex].attached_workflow)
 
                                 $scope.jobitem = {};
                                 var dd = $scope.jobi.jobSummery;
@@ -18414,10 +18424,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     }).error(errorCallback);
                                 } else {
                                     var chainId = $scope.itemList[formIndex].item_number;
+                                    console.log('chainId', chainId)
 
                                     // gettingName of selected workflow job chain
                                     $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
-                                    if (chainId != undefined) {
+                                    if (chainId != undefined  && $scope.workflowChange) {
                                         rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.routeOrderID + '/' + chainId;
                                         rest.get().success(function (data) {
                                             $scope.jobnumchain = data.job_no += 1;
@@ -18530,6 +18541,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
                         $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
 
+                        $scope.workflowChange = false;
                         //log file start
                         $scope.logMaster = {};
                         $scope.logMaster.log_title = $scope.projectOrderName;
@@ -29139,6 +29151,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('$scope.jobchainoption', $scope.jobchainoption)
     }).error(errorCallback)
 
+    $scope.workflowChange = false;
+    $scope.changeWorkflow = function (id) {
+        console.log('id', id)
+        $scope.workflowChange = true; 
+        console.log('$scope.workflowChange', $scope.workflowChange)
+    }
     //*****------- Update project scoop start-------****//
     $scope.jobi = {};
     $scope.saveitems = function (formId, formIndex) {
@@ -29198,25 +29216,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //$scope.itemList[formIndex].price = ''
                     }*/
 
-                    if ($scope.itemList[formIndex].attached_workflow) {
-                        if ($('#jobchainName' + formId).val() !== 'select') {
-                            var jobchainval = $('#jobchainName' + formId).val();
-                            var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
-                            var scoopitemData = $scope.TblItemList;
-                            var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
-                            if (chainworkflow.length == 0) {
-                                notification('workflow already attached', 'warning');
-                            }
-                            // notification('workflow already attached', 'warning');
-                        }
-                    } else {
+                    // if ($scope.itemList[formIndex].attached_workflow) {
+                    //     if ($('#jobchainName' + formId).val() !== 'select') {
+                    //         var jobchainval = $('#jobchainName' + formId).val();
+                    //         var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
+                    //         var scoopitemData = $scope.TblItemList;
+                    //         var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
+                    //         if (chainworkflow.length == 0) {
+                    //             notification('workflow already attached', 'warning');
+                    //         }
+                    //         // notification('workflow already attached', 'warning');
+                    //     }
+                    // } else {
                         if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
                             notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
                             $scope.TblItemList[formIndex].total_amount = 0;
                             return false;
                         } else {
-                            if ($scope.jobi.jobSummery) {
+                            if ($scope.jobi.jobSummery  && $scope.workflowChange) {
                                 // gettingName of selected workflow job chain
                                 $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formId).find(':selected').text();
 
@@ -29305,7 +29323,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                                     // gettingName of selected workflow job chain
                                     $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
-                                    if (chainId != undefined) {
+                                    if (chainId != undefined  && $scope.workflowChange) {
                                         rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.order_id + '/' + chainId;
                                         rest.get().success(function (data) {
                                             $scope.jobnumchain = data.job_no += 1;
@@ -29392,7 +29410,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 }
                             }
                         }
-                    }
+                    //}
 
                     const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
                     if(hasKeySpclz)    
