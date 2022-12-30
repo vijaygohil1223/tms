@@ -11100,12 +11100,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
-
     $scope.saveUserProfileInternal = function (formId, redirectWithSave) {
+        $scope.selectedNodes = [];
         if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             if ($scope.userprofiledata.iUserId) {
                 console.log('$scope.userprofiledata.iUserId', $scope.userprofiledata.iUserId)
-
+                
+                //$scope.selectedNodes = nestedMap($scope.nodes);
+                // $scope.nodes.forEach(function(entry){ 
+                //     $scope.selectedNodes.push(entry);
+                //     entry.children.forEach(function(childrenEntry) { // was missing a )
+                //       $scope.selectedNodes.push(childrenEntry);
+                //       console.log('childrenEntry',$scope.selectedNodes);
+                //     })
+                // })
+                
                 // ---------------address only -----------------//
                 $scope.userprofiledata.image = $scope.imageSrc;
                 var $oldUser_id = $window.localStorage.getItem("session_internalResourceUpdatedId");
@@ -11393,6 +11402,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }        
     }
 
+    $scope.selectedNodes = [];
+    const nestedMap = (arr) => {
+        const result = arr.map(row => {
+          var flagTrue = false;
+          // check if row.children exists AND if its length exists / is greater than 0
+          if (row.children && row.children.length) {
+            if(row.checked == 1)
+                flagTrue = true;
+            const children = nestedMap(row.children);
+            //$scope.selectedNodes = { ...children};
+
+            return { ...row, checked: flagTrue, children };
+          } else {
+            if(row.checked == 1)
+                flagTrue = true;
+            //$scope.selectedNodes = {...row};    
+            return { ...row, checked: flagTrue };
+          }
+        });
+        // Note: You should probably return the entire result here, not result[0].children[0]
+        return result;
+      }
+
+    $scope.nodes = [];
+    rest.path = 'getTreeMenu';
+    rest.get().success(function (data) {
+        console.log('data', data)
+        $scope.nodes = Object.values(data).filter( function(el) {
+            // if(el.checked ==1)
+            //     el.checked = true;
+            // if(el.checked == 0)
+            //     el.checked = false;
+            return el;    
+        });
+        $scope.nodes = nestedMap($scope.nodes)
+        console.log('$scope.nodes', $scope.nodes)
+
+        //console.log(nestedMap($scope.nodes));
+        
+
+    });     
     
 }).controller('contactController', function ($scope, $log, $location, $route, rest, $window, $routeParams, $uibModal, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

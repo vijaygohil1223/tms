@@ -1451,5 +1451,41 @@ array(
         return $return;
     }
 
+    // Sidebar menu structure tree view
+    public function buildTree(array $elements, $parentId = 0) {
+        $branch = array();
+        foreach ($elements as $element) {
+            if ($element['parent_id'] == $parentId) {
+                $children = Self::buildTree($elements, $element['id']);
+
+                if ($children) {
+                    $element['children'] = $children;
+                }
+                $branch[] = $element;
+            }
+        }
+        return $branch;
+    }
+
+    public function getTreeMenu() {
+        $dataArr = $this->_db->get('tms_tree_menu');    
+        $data = $this->_db->get('tms_tree_menu');    
+            $i = 0;
+            foreach($data as $data1){
+                //$data[$i]['children'] = [];
+                //if($data1['parent_id'] == 0){
+                    $data[$i]['children'] = self::buildTree($dataArr,$data[$i]['id']);
+                //}
+                if($data1['parent_id'] != 0){
+                    unset($data[$i]); 
+                }
+                $i++;
+            }
+            //print_r($data);
+            //exit;
+        return $data;    
+            
+    }
+
 
 }

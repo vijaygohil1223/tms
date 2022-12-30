@@ -198,6 +198,12 @@ $app->get('/getAlluserGroup','authenticate', function () {
     $result = $user->getAlluserGroup();
     echoResponse(200, $result);
 });
+$app->get('/getTreeMenu','authenticate', function () {
+    $user = new users ();
+    $result = $user->getTreeMenu();
+    echoResponse(200, $result);
+});
+
 
 // ---------------------additional info section -------------------------//
 $app->post('/additionalinfo','authenticate', function () use($app) {
