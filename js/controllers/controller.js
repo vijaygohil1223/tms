@@ -11202,6 +11202,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
                 $scope.userprofiledata.menu_access = JSON.stringify(menuArr);
                 console.log('$scope.userprofiledata.menu_access', $scope.userprofiledata.menu_access)
+                $window.localStorage.setItem("session_menuAccess", $scope.userprofiledata.menu_access);
 
                 //user start recent activity store in cookieStore
                 if ($cookieStore.get('editInternalUser') != undefined) {
@@ -11309,6 +11310,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     menuArr[value.id] = true;
                 });
                 $scope.userprofiledata.menu_access = JSON.stringify(menuArr);
+                $window.localStorage.setItem("session_menuAccess", $scope.userprofiledata.menu_access);
+                
                 
 
                 $scope.userprofiledata.dtBirthDate = angular.element('#dtBirthDate').val();
