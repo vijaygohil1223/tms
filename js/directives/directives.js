@@ -6132,6 +6132,7 @@ app.directive('angularTreeview', ['$compile', function($compile) { // inject $co
             }
     }
 }]);
+// Tree view sidebar Menu
 app.directive('treeView', ['$compile', function($compile) { // inject $compile service as
     // dependency
     return {
@@ -6145,7 +6146,6 @@ app.directive('treeView', ['$compile', function($compile) { // inject $compile s
           var maxLevels = (angular.isUndefined(tAttrs.maxlevels)) ? 10 : tAttrs.maxlevels; 
           var hasCheckBox = (angular.isUndefined(tAttrs.checkbox)) ? 0 : 1;
           scope.showItems = [];
-          scope.selectedNodes = [];
 
           scope.showHide = function(ulId) {
             var hideThis = document.getElementById(ulId);
@@ -6175,13 +6175,10 @@ app.directive('treeView', ['$compile', function($compile) { // inject $compile s
          
           scope.checkChange = function(node) {
             console.log('node', node)
-            //console.log('scope.selectedNodes', scope.selectedNodes)
             if (node.children) {
               parentCheckChange(node);
               console.log('node-child', node)
             }
-            
-            
           }
     
           function renderTreeView(collection, level, max) {
@@ -6191,7 +6188,7 @@ app.directive('treeView', ['$compile', function($compile) { // inject $compile s
             text += '<span ng-show=!showIcon(n) style="padding-right: 13px"></span>';
            
             if (hasCheckBox) {
-              text += '<input class="tree-checkbox" type=checkbox ng-model=n.checked ng-change=checkChange(n)>';
+              text += '<input class="tree-checkbox" type=checkbox ng-model=n.checked ng-change=checkChange(n) >';
             }
             
             // text+= '<span class="edit" ng-click=localClick({node:n})><i class="fa fa-pencil"></i></span>'
@@ -6221,6 +6218,34 @@ app.directive('treeView', ['$compile', function($compile) { // inject $compile s
         }
       };
 }]);
+// sidebar menu Normal
+app.directive('select2Sidebarmenu', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            var menu = {"dashboard":'Dashboard',"resources":'Resources',"clients":'Clients',"reports":'Reports',"invoice":'Invoice', "statement":'Statement',"admin":'Admin',"knowledge-base":'Knowledge Base',"favourite":'Favourite',"activity":'Activity'};
+            var arr = [];
+            $.each(menu, function(key, value) {
+                var obj = {
+                    'id': key,
+                    'text': value
+                };
+                arr.push(obj);
+            });
+            $timeout(function() {
+                element.select2({
+                    allowClear: true,
+                    data: arr,
+                    multiple: true,
+                    closeOnSelect:false,
+                });
+                
+            }, 500);
+        
+        }
+    }
+});
 app.directive('jobitemsAdd2', ['$compile', function($compile) { // inject $compile service as dependency
     return {
         restrict: 'E',

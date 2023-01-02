@@ -661,8 +661,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("session_vUserFullName", data.session_data.vFirstName + " " + data.session_data.vLastName);
                     $window.localStorage.setItem("session_vProfilePic", data.session_data.vProfilePic);
                     $window.localStorage.welUser = data.session_data.vUserName.toString();
+                    
+                    $window.localStorage.setItem("session_menuAccess", data.session_data.menu_access);
+                    
                     $rootScope.myData = data;
-
+                    
                     //getting global dateformat
                     rest.path = 'getdateFormatByIuserId/1';
                     rest.get().success(function (data) {
@@ -1009,6 +1012,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.session_vProfilePic = $window.localStorage.session_vProfilePic;
         $scope.session_vResourceType = $window.localStorage.getItem("session_vResourceType");
         $scope.uId = $window.localStorage.getItem("session_iUserId");
+        $scope.menuAccess = $window.localStorage.getItem("session_menuAccess");
+        $scope.menuAccess = $scope.menuAccess ? JSON.parse($scope.menuAccess) : [];
+        console.log('$scope.menuAccess', $scope.menuAccess)
+        
         $scope.logout = function () {
             angular.forEach(["session_iUserId", "auth", "session_iFkUserTypeId", "session_vEmailAddress", "session_password", "internalUserEdit", "internalUserAdd", "jobRecentEdit", "jobRecentAdd", "session_holidayCountry", "generalEdit", "editInternalUser"], function (key) {
                 $cookieStore.remove(key);
@@ -10291,7 +10298,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     console.log('$scope.dateFormatGlobal', $scope.dateFormatGlobal)
     $scope.dtSeparator = $window.localStorage.getItem('dtSeparator');
     $scope.dateFormatD = moment($scope.toDayDate).format($window.localStorage.getItem('global_dateFormat'));
-    
+    $scope.existMenu = [];
     $scope.isValidMobileNumber = false;
     $scope.multipleDateArr = [];
     $scope.abscentDateArr = [];
@@ -10562,9 +10569,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     const tabPermission = Object.keys(JSON.parse(data.tabPermission))
                     angular.element('#tabPermission').val(tabPermission).trigger('change');
                 }    
+                if(data.menu_access){
+                    const menu_access = Object.keys(JSON.parse(data.menu_access))
+                    console.log('menu_access', menu_access)
+                    angular.element('#menu_access').val(menu_access).trigger('change');
+                }    
             }, 100);
 
-
+            //$scope.userprofiledata.menu_access = $scope.userprofiledata.menu_access ? JSON.parse($scope.userprofiledata.menu_access) : []; 
+            //$scope.existMenu = $scope.userprofiledata.menu_access;
+            
             $window.localStorage.admminusername = $scope.userprofiledata.vUserName;
             $window.localStorage.notewarning = $scope.userprofiledata.tMemo;
 
@@ -11099,12 +11113,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     };
+    $scope.selectedNodes = [];
+    const nestedMenuFlat = (arr) => {
+        const result = arr.map(row => {
+            console.log('row', row)
+            if(row){
+                let obj = {
+                    id : row.id,
+                    parent_id : row.parent_id,
+                    name : row.name,
+                    checked : row.checked,
+                }
+                $scope.selectedNodes.push(obj)  
+            }
+            if (row.children && row.children.length) {
+            const children = nestedMenuFlat(row.children);
+            return row;
+            } else {
+            return row;
+            }
 
+        });
+        return result;
+    }
     $scope.saveUserProfileInternal = function (formId, redirectWithSave) {
         $scope.selectedNodes = [];
         if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             if ($scope.userprofiledata.iUserId) {
                 console.log('$scope.userprofiledata.iUserId', $scope.userprofiledata.iUserId)
+                console.log('$scope.userprofiledata', $scope.userprofiledata)
+                
+                //$scope.userprofiledata.menu_access = JSON.stringify($scope.selectedNodes);
                 
                 //$scope.selectedNodes = nestedMap($scope.nodes);
                 // $scope.nodes.forEach(function(entry){ 
@@ -11152,6 +11191,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     tabArr[value.id] = true;
                 });
                 $scope.userprofiledata.tabPermission = JSON.stringify(tabArr);
+                
+                // Flat Array for sidebar Menu
+                //nestedMenuFlat($scope.nodes);
+                //console.log('selectedNodes',$scope.selectedNodes )
+                var menuInput = angular.element('#menu_access').select2('data');
+                let menuArr = {};
+                $.each(menuInput, function(key, value) {
+                    menuArr[value.id] = true;
+                });
+                $scope.userprofiledata.menu_access = JSON.stringify(menuArr);
+                console.log('$scope.userprofiledata.menu_access', $scope.userprofiledata.menu_access)
+
                 //user start recent activity store in cookieStore
                 if ($cookieStore.get('editInternalUser') != undefined) {
                     var arr1 = $.map($scope.userprofiledata, function (el) {
@@ -11251,6 +11302,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     tabArr[value.id] = true;
                 });
                 $scope.userprofiledata.tabPermission = JSON.stringify(tabArr);
+
+                var menuInput = angular.element('#menu_access').select2('data');
+                let menuArr = {};
+                $.each(menuInput, function(key, value) {
+                    menuArr[value.id] = true;
+                });
+                $scope.userprofiledata.menu_access = JSON.stringify(menuArr);
+                
 
                 $scope.userprofiledata.dtBirthDate = angular.element('#dtBirthDate').val();
                 $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
@@ -11411,13 +11470,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if(row.checked == 1)
                 flagTrue = true;
             const children = nestedMap(row.children);
-            //$scope.selectedNodes = { ...children};
-
             return { ...row, checked: flagTrue, children };
           } else {
             if(row.checked == 1)
                 flagTrue = true;
-            //$scope.selectedNodes = {...row};    
             return { ...row, checked: flagTrue };
           }
         });
@@ -11430,19 +11486,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
         console.log('data', data)
         $scope.nodes = Object.values(data).filter( function(el) {
-            // if(el.checked ==1)
-            //     el.checked = true;
-            // if(el.checked == 0)
-            //     el.checked = false;
             return el;    
         });
+
+        console.log($scope.existMenu)
+        
         $scope.nodes = nestedMap($scope.nodes)
         console.log('$scope.nodes', $scope.nodes)
-
         //console.log(nestedMap($scope.nodes));
-        
-
     });     
+    
     
 }).controller('contactController', function ($scope, $log, $location, $route, rest, $window, $routeParams, $uibModal, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
