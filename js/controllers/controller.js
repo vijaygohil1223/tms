@@ -10295,8 +10295,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.superAdmin = $window.localStorage.getItem("session_superAdmin");
-    console.log('$scope.superAdmin', $scope.superAdmin)
-
+  
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.setItem("contactUserId", $routeParams.id);
     angular.element('.help-block').css('display', 'none');
@@ -11191,22 +11190,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 $scope.userprofiledata.vPhoneNumber = phone;
 
-                var tabInput = angular.element('#tabPermission').select2('data');
-                let tabArr = {};
-                $.each(tabInput, function(key, value) {
-                    tabArr[value.id] = true;
-                });
-                $scope.userprofiledata.tabPermission = JSON.stringify(tabArr);
+                if($scope.superAdmin){
+                    var tabInput = angular.element('#tabPermission').select2('data');
+                    let tabArr = {};
+                    $.each(tabInput, function(key, value) {
+                        tabArr[value.id] = true;
+                    });
+                    $scope.userprofiledata.tabPermission = JSON.stringify(tabArr);
+                }    
                 
                 // Flat Array for sidebar Menu
                 //nestedMenuFlat($scope.nodes);
                 //console.log('selectedNodes',$scope.selectedNodes )
-                var menuInput = angular.element('#menu_access').select2('data');
-                let menuArr = {};
-                $.each(menuInput, function(key, value) {
-                    menuArr[value.id] = true;
-                });
-                $scope.userprofiledata.menu_access = JSON.stringify(menuArr);
+                if($scope.superAdmin){
+                    var menuInput = angular.element('#menu_access').select2('data');
+                    let menuArr = {};
+                    $.each(menuInput, function(key, value) {
+                        menuArr[value.id] = true;
+                    });
+                    $scope.userprofiledata.menu_access = JSON.stringify(menuArr);
+                }
                 
                 if($scope.userprofiledata.iUserId == $scope.userRight )
                     $window.localStorage.setItem("session_menuAccess", $scope.userprofiledata.menu_access);

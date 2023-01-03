@@ -91,7 +91,7 @@
       ng-click="addToFavouriteMenu($event);" id="dashboardMenu" title="Add to Favourite"></i>
   </li>
 
-  <li ng-if="adminRole==1 && menuAccess.clients" class="sidebarArrow">
+  <li ng-if="superAdmin == 1 || (adminRole==1 && menuAccess.clients)" class="sidebarArrow">
     <a href="#/resources" md-ink-ripple>
       <i class="glyphicon glyphicon-th icon-user" style="color: #ff8800"></i>
 

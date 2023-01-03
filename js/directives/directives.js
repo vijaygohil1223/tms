@@ -1560,6 +1560,37 @@ app.directive('ngSelect2Userposition', function(rest, $timeout) {
     }
 
 });
+// --------- User Position select2 Multiple---------------------//
+app.directive('ngSelect2Userpositionmulti', function(rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+
+            rest.path = 'select2GetAll/' + attrs.typeid;
+            rest.get().success(function(data) {
+                var type = [];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        'id': value.position_id,
+                        'text': value.position_name
+                    };
+                    type.push(obj);
+                });
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: type,
+                        multiple:true,
+                        //maximumSelectionSize:1,
+                        closeOnSelect:true,
+                    });
+                }, 500);
+            }).error(function(data, error, status) {});
+        }
+    }
+
+});
 // --------------------Currrency----------------------//
 app.directive('ngSelect2Currency', function(rest, $timeout) {
     return {

@@ -145,20 +145,24 @@ class users {
     }
 
     public function userQaSpecialist($type) {
-        $this->_db->where('vResourcePosition', $type);
+        //$this->_db->where('vResourcePosition', $type);
+        $this->_db->where('FIND_IN_SET('.$type.',vResourcePosition)');
         $this->_db->where('eUserStatus',3);//new Added after Set Inactive in users
         $this->_db->where('activation_status',1);
         $data = $this->_db->get('tms_users');
+        //$data = $this->_db->rawQuery("SELECT * FROM tms_users WHERE activation_status=1  AND eUserStatus = 3 AND (FIND_IN_SET($type,vResourcePosition) > 0) ");
+
         $result['data'] = $data;
         $result['status'] = 200;
         return $result;
     }
 
     public function userManager($type) {
-        $this->_db->where('vResourcePosition', $type);
+        $this->_db->where('FIND_IN_SET('.$type.',vResourcePosition)');
         $this->_db->where('eUserStatus',3);//new Added after Set Inactive in users
         $this->_db->where('activation_status',1);
         $data = $this->_db->get('tms_users');
+        //$data = $this->_db->rawQuery("SELECT * FROM tms_users WHERE activation_status=1  AND eUserStatus=3 AND (FIND_IN_SET($type,vResourcePosition) > 0) ");
         
         $result['data'] = $data;
         $result['status'] = 200;
@@ -166,10 +170,13 @@ class users {
     }
 
     public function userCoordinator($type) {
-        $this->_db->where('vResourcePosition', $type);
+        // $this->_db->where('vResourcePosition', $type);
+        $this->_db->where('FIND_IN_SET('.$type.',vResourcePosition)');
         $this->_db->where('eUserStatus',3);//new Added after Set Inactive in users
         $this->_db->where('activation_status',1);
         $data = $this->_db->get('tms_users');
+        //$data = $this->_db->rawQuery("SELECT * FROM tms_users WHERE activation_status=1  AND eUserStatus=3 AND (FIND_IN_SET($type,vResourcePosition) > 0) ");
+
         $result['data'] = $data;
         $result['status'] = 200;
         return $result;
