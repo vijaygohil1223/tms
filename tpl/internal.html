@@ -229,7 +229,7 @@
                                                             </div>
                                                             <label for="vSkypeName" class="error"></label>
                                                         </div>
-                                                        <div class="form-group">
+                                                        <div class="form-group" ng-if="superAdmin==1">
                                                             <div class="form-group">
                                                                 <label>Tabs Permission</label>
                                                                 <input type="text" select2-tabPermission
@@ -238,7 +238,7 @@
                                                                     ng-model="userprofiledata.tabPermission" required>
                                                             </div>
                                                         </div>
-                                                        <div class="form-group">
+                                                        <div class="form-group" ng-if="superAdmin==1">
                                                             <div class="form-group">
                                                                 <label>Menu Permission</label>
                                                                 <input type="text" select2-Sidebarmenu

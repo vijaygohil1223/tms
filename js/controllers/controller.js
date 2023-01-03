@@ -663,7 +663,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.welUser = data.session_data.vUserName.toString();
                     
                     $window.localStorage.setItem("session_menuAccess", data.session_data.menu_access);
-                    
+                    $window.localStorage.setItem("session_superAdmin", data.session_data.super_admin);
+
                     $rootScope.myData = data;
                     
                     //getting global dateformat
@@ -1003,6 +1004,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.superAdmin = $window.localStorage.getItem("session_superAdmin");
+    
     if ($cookieStore.get('session_iUserId') != undefined) {
         $scope.session_iUserId = $window.localStorage.session_iUserId;
         $scope.session_eUserStatus = $window.localStorage.session_eUserStatus;
@@ -10291,6 +10294,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.superAdmin = $window.localStorage.getItem("session_superAdmin");
+    console.log('$scope.superAdmin', $scope.superAdmin)
+
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.setItem("contactUserId", $routeParams.id);
     angular.element('.help-block').css('display', 'none');
@@ -29543,6 +29549,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
                     $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
+                    // Upcoming scoop Project
+                    $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
+                    $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
+                    if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
+                        $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
+                    }
+                    
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     rest.path = 'ItemUpdate';
                     rest.put($scope.itemList[formIndex]).success(function () {
@@ -29704,6 +29717,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     else
                         $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
                     //$scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    
+                    if( isNaN(Date.parse($scope.itemList[i].upcomingDate)) )
+                        $scope.itemList[i].upcomingDate = '';
+                    else
+                        $scope.itemList[i].upcomingDate = moment($scope.itemList[i].upcomingDate).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
                     
                     if ($scope.itemList[i].due_date) {
                         var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
