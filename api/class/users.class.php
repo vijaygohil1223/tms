@@ -401,6 +401,11 @@ class users {
             $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
             unset($user['image']);
+            
+            //print_r($user);
+            if(isset($user['vPassword']))
+                unset($user['vPassword']);
+            
             $this->_db->where('iUserId', $id);
             //echo $this->_db->getLastQuery();
             if ($this->_db->update(TBL_USERS, $user)) {

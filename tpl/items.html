@@ -144,7 +144,7 @@
                                              </div>
                                           </div>
                                           <div class="d-flex">
-                                             <span style="margin-top: 6px; margin-right: 12px;">Scoop start date</span>
+                                             <span style="margin-top: 6px; margin-right:12px; white-space:nowrap;">Start date </span>
                                              <input ng-datetimepicker1 id="start_date{{it.itemId}}" type="text"
                                                 class="form-control start-date" name="start_date{{it.itemId}}"
                                                 ng-model="it.start_date" required onkeydown="return false"
@@ -351,6 +351,16 @@
                                                                   ng-change="changeClientPrice(it.project_pricelist, it.itemId)">
                                                             </div>
                                                          </div>
+                                                         <div class="col-sm-12">
+                                                            <div class="form-group">
+                                                               <span>Upcoming Date</span>
+                                                               <label class="i-checks i-checks-sm" style="margin-top: 7px;">
+                                                                  <input type="checkbox" name="heads_up" ng-true-value="1" ng-false-value="0" ng-model="it.heads_up" ng-checked="it.heads_up == 1">
+                                                                  <i></i>
+                                                               </label>
+                                                               <input ng-datetimepicker1 id="upcomingDate" type="text" class="form-control start-date" name="upcomingDate" ng-model="it.upcomingDate" required onkeydown="return false" ng-if="it.heads_up == 1"/>
+                                                            </div>
+                                                         </div>
                                                          <div class="col-sm-6">
                                                             <div class="form-group">
                                                                <label class="control-label">Due Date</label>
@@ -371,6 +381,7 @@
                                                                   allowtimefrmt />
                                                             </div>
                                                          </div>
+                                                         
                                                          <div class="col-sm-12">
                                                             <div class="form-group">
                                                                <label>PO number</label>

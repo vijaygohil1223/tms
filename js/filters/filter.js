@@ -64,12 +64,18 @@ app.filter('dateFormat2', function($window) {
 });
 app.filter('dateFormatDisplayFront', function() {
     return function(input) {
+        //console.log('input', input)
         var d = new Date(input);
-        return (d.getDate().toString().length > 1 ? d.getDate() : '0' + d.getDate()) + "." +
-            ((d.getMonth() + 1).toString().length > 1 ? (d.getMonth() + 1) : '0' + (d.getMonth() + 1)) + "." +
-            d.getFullYear() + " | "
-        + ((d.getHours()).toString().length > 1 ? (d.getHours()) : '0' + (d.getHours())) + ":"  
-        + ((d.getMinutes()).toString().length > 1 ? (d.getMinutes()) : '0' + (d.getMinutes()));
+        if( ! isNaN(Date.parse(d)) ){
+            return (d.getDate().toString().length > 1 ? d.getDate() : '0' + d.getDate()) + "." +
+                ((d.getMonth() + 1).toString().length > 1 ? (d.getMonth() + 1) : '0' + (d.getMonth() + 1)) + "." +
+                d.getFullYear() + " | "
+            + ((d.getHours()).toString().length > 1 ? (d.getHours()) : '0' + (d.getHours())) + ":"  
+            + ((d.getMinutes()).toString().length > 1 ? (d.getMinutes()) : '0' + (d.getMinutes()));
+        }else{
+            //console.log(Date.parse(d))
+            return '' 
+        }
     }
 });
 app.filter('commaseperator', function() {

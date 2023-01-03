@@ -11315,8 +11315,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if($scope.userprofiledata.iUserId == $scope.userRight )
                     $window.localStorage.setItem("session_menuAccess", $scope.userprofiledata.menu_access);
                 
-                
-
                 $scope.userprofiledata.dtBirthDate = angular.element('#dtBirthDate').val();
                 $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
@@ -18638,6 +18636,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
                     $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
+                    
+                    $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
+                    $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
+                    if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
+                        $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
+                    }
+
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     
                     rest.path = 'ItemUpdate';
@@ -18863,6 +18868,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
                     
                     //console.log('$scope.itemList[i].start_date', $scope.itemList[i].start_date)
+                    if( isNaN(Date.parse($scope.itemList[i].upcomingDate)) )
+                        $scope.itemList[i].upcomingDate = '';
+                    else
+                        $scope.itemList[i].upcomingDate = moment($scope.itemList[i].upcomingDate).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+                    
 
                     if ($scope.itemList[i].due_date) {
                         var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
