@@ -229,4 +229,14 @@ class property {
         $data = $this->_db->getOne('tms_property_values');
         return $data['value_name'];
     }
+
+    public function propertyByType($type) {
+        $values = new value();
+        $this->_db->where('type', $type);
+        $result = $this->_db->get('tms_user_property');
+        
+        return $result;
+
+    }    
+
 }

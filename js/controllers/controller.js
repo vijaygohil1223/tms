@@ -30634,182 +30634,248 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('linguistSearchController', function ($timeout, $scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.clientnamec = "";
-
+    $scope.resourceType = 'external';
+    // 1 for external users users
+    $scope.propertyList = [];
+    rest.path = 'propertyByType/1' ;
+    rest.get().success(function (data) {
+        $scope.propertyList = data;
+        console.log('$scope.propertyList', $scope.propertyList)
+    });    
+    $scope.jobReport = {};
+    $scope.jobReport.resourceType = 'external';
     //Advance Resource search start
     $scope.jobstatusReportsearch = function (frmId, eID, job) {
-        if ($scope.jobReport == undefined || $scope.jobReport == null || $scope.jobReport == "") {
-            notification('Please Select option', 'information');
+        //if ($scope.jobReport == undefined || $scope.jobReport == null || $scope.jobReport == "") {
+        if (Object.keys($scope.jobReport).length < 2) {
+                notification('Please Select option', 'information');
         } else {
             console.log('$scope.jobReport', $scope.jobReport)
 
-            rest.path = 'searchExternalResource';
-            rest.get().success(function (data) {
+            if($scope.jobReport.resourceType == 'external'){
+                rest.path = 'searchExternalResource';
+                rest.get().success(function (data) {
 
-                let temp_data = data;
-                if($scope.jobReport.freelancerType){
-                    temp_data = temp_data.filter((obj)=> obj.freelancerType === $scope.jobReport.freelancerType);
-                }
-                if($scope.jobReport.resourceName){
-                    temp_data = temp_data.filter((obj) => {
-                        if(obj.resourceName.toUpperCase() == $scope.jobReport.resourceName.toUpperCase())
-                            return obj;
-                    });
-                }
-                if($scope.jobReport.currency){
-                    temp_data = temp_data.filter((obj) => {
-                        if (obj.price_currency) {
-                            if(obj.price_currency.includes(',')){
-                                obj.currency = obj.price_currency.split(',')[0];
-                                if($scope.jobReport.currency == obj.currency)
-                                    return obj;
-                            }    
-                        }
-                    });
-                }
-                if($scope.jobReport.userCountry){
-                    temp_data = temp_data.filter((obj) => {
-                        if (obj.userCountry) {
-                            const userCountryLen = JSON.parse(obj.userCountry);
-                            if(userCountryLen.length > 2){
-                                obj.userCountry = userCountryLen[3].value;
-                                if($scope.jobReport.userCountry == obj.userCountry)
-                                    return obj;
-                            }    
-                        }
-                    });
-                }
-                if($scope.jobReport.priceUnit){
-                    temp_data = temp_data.filter((obj) => {
-                        if (obj.price_basis) {
-                            let priceObj = JSON.parse(obj.price_basis);
-                            let priceUnit = priceObj.filter( (prc) => { 
-                                if(prc.childPriceId == $scope.jobReport.priceUnit) 
-                                    return prc.childPriceId 
-                            });
-                            if(priceUnit.length)
-                                return obj
-                        }
-                    });
-                }
-                if($scope.jobReport.priceUnit){
-                    temp_data = temp_data.filter((obj) => {
-                        if (obj.price_basis) {
-                            let priceObj = JSON.parse(obj.price_basis);
-                            let priceUnit = priceObj.filter( (prc) => { 
-                                if(prc.childPriceId == $scope.jobReport.priceUnit) 
-                                    return prc.childPriceId 
-                            });
-                            if(priceUnit.length)
-                                return obj
-                        }
-                    });
-                }
-                if($scope.jobReport.priceRate){
-                    const priceRate = numberFormatCommaToPoint($scope.jobReport.priceRate); 
-                    temp_data = temp_data.filter((obj) => {
-                        if (obj.price_basis) {
-                            let priceObj = JSON.parse(obj.price_basis);
-                            let priceRateObj = priceObj.filter( (prc) => { 
-                                if(prc.basePrice == priceRate) 
-                                    return prc.childPriceId 
-                            });
-                            if(priceRateObj.length)
-                                return obj
-                        }
-                    });
-                }
-                if($scope.jobReport.specialization){
-                    temp_data = temp_data.filter((obj) => {
-                        //console.log('obj', obj.specialization)
-                        if(obj.specialization){
-                            let spclz = obj.specialization.toString();
-                            if (spclz.split(',').includes($scope.jobReport.specialization)) {
-                                return obj
-                            }
-                        }
-                    });
-                }
-                if($scope.jobReport.source_lang){
-                    temp_data = temp_data.filter((obj) => {
-                        if (!jQuery.isEmptyObject(obj.price_language)) {
-                            let langObj = JSON.parse(obj.price_language);
-                            let srcLang = langObj.filter( (lng) => { 
-                                if(lng.languagePrice.split(' > ')[0] == $scope.jobReport.source_lang) 
-                                    return lng.languagePrice 
-                            });
-                            if(srcLang.length)
+                    let temp_data = data;
+                    if($scope.jobReport.freelancerType){
+                        temp_data = temp_data.filter((obj)=> obj.freelancerType === $scope.jobReport.freelancerType);
+                    }
+                    if($scope.jobReport.resourceName){
+                        temp_data = temp_data.filter((obj) => {
+                            let firstName = obj.vFirstName.toUpperCase();
+                            let lastName = obj.vLastName.toUpperCase();
+                            let fullName = firstName +' '+ lastName;
+                            let nameArr = [fullName, firstName, lastName];
+                            if( nameArr.includes($scope.jobReport.resourceName.toUpperCase()) )
                                 return obj;
-                        }
-                    });
-                }
-                if($scope.jobReport.target_lang){
-                    temp_data = temp_data.filter((obj) => {
-                        if (!jQuery.isEmptyObject(obj.price_language)) {
-                            let langObj = JSON.parse(obj.price_language);
-                            let trgtLang = langObj.filter( (lng) => { 
-                                if(lng.languagePrice.split(' > ')[1] == $scope.jobReport.target_lang) 
-                                    return lng.languagePrice 
-                            });
-                            if(trgtLang.length)
-                                return obj
-                        }
-                    });
-                }
+                        });
+                    }
 
-                var objC;
-                angular.forEach(data, function (val, i) {
-                    if(!$scope.jobReport.userCountry){
-                        if (!jQuery.isEmptyObject(val.userCountry)) {
-                            objC = JSON.parse(val.userCountry);
-                            val.userCountry = objC[3].value;
+                    if($scope.jobReport.companyName){
+                        temp_data = temp_data.filter((obj) => {
+                            if( $scope.jobReport.companyName.toUpperCase() == obj.companyName.toUpperCase() )
+                                return obj;
+                        });
+                    }
+                    if($scope.jobReport.currency){
+                        temp_data = temp_data.filter((obj) => {
+                            if (obj.price_currency) {
+                                if(obj.price_currency.includes(',')){
+                                    obj.currency = obj.price_currency.split(',')[0];
+                                    if($scope.jobReport.currency == obj.currency)
+                                        return obj;
+                                }    
+                            }
+                        });
+                    }
+                    if($scope.jobReport.userCountry){
+                        temp_data = temp_data.filter((obj) => {
+                            if (obj.userCountry) {
+                                const userCountryLen = JSON.parse(obj.userCountry);
+                                if(userCountryLen.length > 2){
+                                    obj.userCountry = userCountryLen[3].value;
+                                    if($scope.jobReport.userCountry == obj.userCountry)
+                                        return obj;
+                                }    
+                            }
+                        });
+                    }
+                    if($scope.jobReport.priceUnit){
+                        temp_data = temp_data.filter((obj) => {
+                            if (obj.price_basis) {
+                                let priceObj = JSON.parse(obj.price_basis);
+                                let priceUnit = priceObj.filter( (prc) => { 
+                                    if(prc.childPriceId == $scope.jobReport.priceUnit) 
+                                        return prc.childPriceId 
+                                });
+                                if(priceUnit.length)
+                                    return obj
+                            }
+                        });
+                    }
+                    if($scope.jobReport.priceUnit){
+                        temp_data = temp_data.filter((obj) => {
+                            if (obj.price_basis) {
+                                let priceObj = JSON.parse(obj.price_basis);
+                                let priceUnit = priceObj.filter( (prc) => { 
+                                    if(prc.childPriceId == $scope.jobReport.priceUnit) 
+                                        return prc.childPriceId 
+                                });
+                                if(priceUnit.length)
+                                    return obj
+                            }
+                        });
+                    }
+                    if($scope.jobReport.priceRate){
+                        const priceRate = numberFormatCommaToPoint($scope.jobReport.priceRate); 
+                        temp_data = temp_data.filter((obj) => {
+                            if (obj.price_basis) {
+                                let priceObj = JSON.parse(obj.price_basis);
+                                let priceRateObj = priceObj.filter( (prc) => { 
+                                    if(prc.basePrice == priceRate) 
+                                        return prc.childPriceId 
+                                });
+                                if(priceRateObj.length)
+                                    return obj
+                            }
+                        });
+                    }
+                    if($scope.jobReport.specialization){
+                        temp_data = temp_data.filter((obj) => {
+                            //console.log('obj', obj.specialization)
+                            if(obj.specialization){
+                                let spclz = obj.specialization.toString();
+                                if (spclz.split(',').includes($scope.jobReport.specialization)) {
+                                    return obj
+                                }
+                            }
+                        });
+                    }
+                    if($scope.jobReport.source_lang){
+                        temp_data = temp_data.filter((obj) => {
+                            if (!jQuery.isEmptyObject(obj.price_language)) {
+                                let langObj = JSON.parse(obj.price_language);
+                                let srcLang = langObj.filter( (lng) => { 
+                                    if(lng.languagePrice.split(' > ')[0] == $scope.jobReport.source_lang) 
+                                        return lng.languagePrice 
+                                });
+                                if(srcLang.length)
+                                    return obj;
+                            }
+                        });
+                    }
+                    if($scope.jobReport.target_lang){
+                        temp_data = temp_data.filter((obj) => {
+                            if (!jQuery.isEmptyObject(obj.price_language)) {
+                                let langObj = JSON.parse(obj.price_language);
+                                let trgtLang = langObj.filter( (lng) => { 
+                                    if(lng.languagePrice.split(' > ')[1] == $scope.jobReport.target_lang) 
+                                        return lng.languagePrice 
+                                });
+                                if(trgtLang.length)
+                                    return obj
+                            }
+                        });
+                    }
+
+                    if($scope.jobReport.property_id){
+                        temp_data = temp_data.filter((obj) => {
+                            let prt = $scope.propertyList.filter( (pl) => {
+                                if(pl.property_id == $scope.jobReport.property_id &&  pl.user_id == obj.iUserId) 
+                                    return pl 
+                            });
+                            if(prt.length)
+                                return obj;
+                        });
+                    }
+                    if($scope.jobReport.value_id){
+                        temp_data = temp_data.filter((obj) => {
+                            let prv = $scope.propertyList.filter( (pl) => {
+                                if(pl.user_id == obj.iUserId && pl.value_id.toString().split(',').includes($scope.jobReport.value_id)) 
+                                    return pl 
+                            });
+                            if(prv.length)
+                                return obj;
+                        });
+                    }
+
+                    var objC;
+                    angular.forEach(data, function (val, i) {
+                        if(!$scope.jobReport.userCountry){
+                            if (!jQuery.isEmptyObject(val.userCountry)) {
+                                objC = JSON.parse(val.userCountry);
+                                val.userCountry = objC[3].value;
+                            }
+                        }    
+                        if (!jQuery.isEmptyObject(val.price_basis)) {
+                            //let priceObj = JSON.parse(val.price_basis);
+                            //const priceRate = $scope.jobReport.priceRate ? numberFormatCommaToPoint($scope.jobReport.priceRate) : ''; 
+                            // let priceUnit = priceObj.filter( (prc) => { 
+                            //     if(prc.childPriceId == $scope.jobReport.priceUnit) 
+                            //         return prc.childPriceId 
+                            // });
+                            // let priceRateObj = priceObj.filter( (prc) => { 
+                            //     if(prc.basePrice == priceRate) 
+                            //         return prc.childPriceId 
+                            // });
+                            // if(priceUnit.length)
+                            //     val.priceUnit = $scope.jobReport.priceUnit
+                            // if(priceRateObj.length)
+                            //     val.priceRate = $scope.jobReport.priceRate    
                         }
-                    }    
-                    if (!jQuery.isEmptyObject(val.price_basis)) {
-                        //let priceObj = JSON.parse(val.price_basis);
-                        //const priceRate = $scope.jobReport.priceRate ? numberFormatCommaToPoint($scope.jobReport.priceRate) : ''; 
-                        // let priceUnit = priceObj.filter( (prc) => { 
-                        //     if(prc.childPriceId == $scope.jobReport.priceUnit) 
-                        //         return prc.childPriceId 
-                        // });
-                        // let priceRateObj = priceObj.filter( (prc) => { 
-                        //     if(prc.basePrice == priceRate) 
-                        //         return prc.childPriceId 
-                        // });
-                        // if(priceUnit.length)
-                        //     val.priceUnit = $scope.jobReport.priceUnit
-                        // if(priceRateObj.length)
-                        //     val.priceRate = $scope.jobReport.priceRate    
-                    }
-                    // if(val.specialization != $scope.jobReport.specialization)
-                    //     val.specialization = '';
-                    // if (!jQuery.isEmptyObject(val.price_language)) {
-                    //     let langObj = JSON.parse(val.price_language);
-                    //     let srcLang = langObj.filter( (lng) => { 
-                    //         if(lng.languagePrice.split(' > ')[0] == $scope.jobReport.source_lang) 
-                    //             return lng.languagePrice 
-                    //     });
-                    //     let trgtLang = langObj.filter( (lng) => { 
-                    //         if(lng.languagePrice.split(' > ')[1] == $scope.jobReport.target_lang) 
-                    //             return lng.languagePrice 
-                    //     });
-                    //     if(srcLang.length)
-                    //         val.source_lang = $scope.jobReport.source_lang
-                    //     if(trgtLang.length)
-                    //         val.target_lang = $scope.jobReport.target_lang
-                    // }
-                    if (val.price_currency) {
-                        if(val.price_currency.includes(','))
-                            val.currency = val.price_currency.split(',')[0];
-                    }
-                });
-                //$scope.statusResult = data;
-                console.log('data', data)
-                $scope.statusResult = Object.keys($scope.jobReport).length > 0 ? UniqueArraybyId(temp_data, 'iUserId') : {};
-                console.log('$scope.statusResult', $scope.statusResult)
-            })
+                        // if(val.specialization != $scope.jobReport.specialization)
+                        //     val.specialization = '';
+                        // if (!jQuery.isEmptyObject(val.price_language)) {
+                        //     let langObj = JSON.parse(val.price_language);
+                        //     let srcLang = langObj.filter( (lng) => { 
+                        //         if(lng.languagePrice.split(' > ')[0] == $scope.jobReport.source_lang) 
+                        //             return lng.languagePrice 
+                        //     });
+                        //     let trgtLang = langObj.filter( (lng) => { 
+                        //         if(lng.languagePrice.split(' > ')[1] == $scope.jobReport.target_lang) 
+                        //             return lng.languagePrice 
+                        //     });
+                        //     if(srcLang.length)
+                        //         val.source_lang = $scope.jobReport.source_lang
+                        //     if(trgtLang.length)
+                        //         val.target_lang = $scope.jobReport.target_lang
+                        // }
+                        if (val.price_currency) {
+                            if(val.price_currency.includes(','))
+                                val.currency = val.price_currency.split(',')[0];
+                        }
+                    });
+                    //$scope.statusResult = data;
+                    console.log('data', data)
+                    $scope.statusResult = Object.keys($scope.jobReport).length > 0 ? UniqueArraybyId(temp_data, 'iUserId') : {};
+                    console.log('$scope.statusResult', $scope.statusResult)
+                })
+            }    
             scrollToId(eID);
         }
     }
+
+    $scope.show_value = false;
+    $scope.loadValue = function (id, element) {
+        $scope.show_value = true;
+        rest.path = 'propertyvalues/' + id ;
+        rest.get().success(function (data) {
+            console.log('data', data)
+            var valueData = [];
+            angular.forEach(data, function (value, key) {
+                var obj = {
+                    'id': value.value_id,
+                    'text': value.value_name.toString()
+                };
+                valueData.push(obj);
+            });
+            angular.element('#' + element).select2({
+                allowClear: true,
+                data: valueData,
+                multiple: false
+            });
+        }).error(function (data, error, status) { });
+    };
 
     // Price multiple selection
     rest.path = 'masterPriceitemgetFromPriceList';
@@ -31041,13 +31107,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.statusResult = '';
                     }
                 }
-                break;        
+                break;    
+            case "property_id":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.property_id = '';
+                    angular.element('#property_id').select2('val', '');
+                    $scope.show_value = false;
+                }
+            break;
+            case "value_id":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.value_id = '';
+                    angular.element('#property-value').select2('val', '');
+                }
+            break; 
+            case "companyName":
+                if ($scope.jobReport != undefined) {
+                    $scope.jobReport.companyName = '';
+                    angular.element('#companyName').select2('val', '');
+                }
+            break;        
             case "FrmDate":
             if ($scope.jobDate != undefined) {
                 $scope.jobDate.FrmDate = '';
                 angular.element('#FrmDate').val('');
             }
             break;
+                    
         case "ToDate":
             if ($scope.jobDate != undefined) {
                 $scope.jobDate.ToDate = '';

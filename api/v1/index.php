@@ -1011,6 +1011,11 @@ $app->get('/searchByCreteria/:property_id/:user_id/:type', function ($property_i
     $result = $property->searchResult($property_id, $user_id, $type);
     echoResponse(200, $result);
 });
+$app->get('/propertyByType/:type', function ($type) use($app) {
+    $property = new property ();
+    $result = $property->propertyByType($type);
+    echoResponse(200, $result);
+});
 $app->post('/values', 'authenticate',function () use($app) {
     $value = new value ();
     $data = json_decode($app->request->getBody(), TRUE);
