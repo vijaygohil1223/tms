@@ -98,6 +98,13 @@
                                  class="btn btn-info m-l" ng-click="vatCount(payment)">Check</button>
                               <div class="col-sm-12 vatNumberValid p-0">
                               </div>
+                              
+                              <div class="col-sm-12 p-0">
+                                 <div class="form-group">
+                                     <label>Tax Rate</label>
+                                     <input type="text" select2-taxrate class="form-control" name="tax_rate"  ng-model="paymentData.tax_rate"/>
+                                 </div>
+                             </div>
                               <div class="col-sm-12 p-0">
                                  <div class="form-group" style="margin-top:16px;">
                                     <label>Taxation Type</label>

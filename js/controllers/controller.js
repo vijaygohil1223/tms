@@ -13006,7 +13006,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.payament_data.vPaymentInfo = JSON.stringify($scope.payment);
                     $scope.payament_data.vBankInfo = JSON.stringify($scope.bank);
                     $scope.payament_data.iUserId = $window.localStorage.iUserId;
-
+                    $scope.payament_data.tax_rate = $scope.paymentData.tax_rate ? $scope.paymentData.tax_rate : 0;
 
                     //console.log("$scope.payament_data", $scope.payament_data);return false;
                     rest.path = 'paymentsave/' + $routeParams.id + '/' + $window.localStorage.userType;
@@ -13045,6 +13045,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.payament_data.iType = $window.localStorage.userType;
                         $scope.payament_data.vPaymentInfo = JSON.stringify($scope.payment);
                         $scope.payament_data.vBankInfo = JSON.stringify($scope.bank);
+                        $scope.payament_data.tax_rate = $scope.paymentData.tax_rate ? $scope.paymentData.tax_rate : 0;
+
                         rest.path = 'paymentsave';
                         //console.log("$scope.payament_data", $scope.payament_data);return false;
                         rest.post($scope.payament_data).success(function (data) {
