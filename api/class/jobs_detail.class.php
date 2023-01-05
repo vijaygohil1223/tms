@@ -593,7 +593,7 @@ class jobs_detail
 
         $this->_db->where('eUserStatus', 3); //new Added after Set Inactive in External users
 
-        $this->_db->where('vResourcePosition', 2);
+        $this->_db->where('FIND_IN_SET(2, vResourcePosition)');
 
         $data = $this->_db->get('tms_users');
 

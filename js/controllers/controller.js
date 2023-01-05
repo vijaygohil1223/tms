@@ -12822,7 +12822,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = 'getuserpayment/' + $routeParams.id + '/' + $window.localStorage.userType;
         rest.get().success(function (data) {
-            console.log('data-daaa', data)
+            console.log('data-daaa-payment', data)
             if (data == null) {
                 $scope.paymentData = {};
                 $scope.payment = {};
