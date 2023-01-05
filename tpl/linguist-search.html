@@ -35,7 +35,7 @@
                                                     <label class="i-checks">
                                                         <input type="radio" ng-model="jobReport.resourceType" value="external"
                                                             ng-true-value="1" ng-false-value="0"
-                                                            ng-checked="jobReport.resourceType == 'external'">
+                                                            ng-checked="jobReport.resourceType == 'external'" ng-click="chnageResourceType('external')">
                                                         <i></i>
                                                         External
                                                     </label>
@@ -44,7 +44,7 @@
                                                     <label class="i-checks">
                                                         <input type="radio" ng-model="jobReport.resourceType" value="internal"
                                                             ng-true-value="1" ng-false-value="0"
-                                                            ng-checked="jobReport.resourceType == 'internal'">
+                                                            ng-checked="jobReport.resourceType == 'internal'" ng-click="chnageResourceType('internal')">
                                                         <i></i>
                                                         Internal
                                                     </label>
@@ -261,7 +261,7 @@
                                             </div>
                                             <div class="col-sm-6 form-group">
                                                 <div class="col-sm-11">
-                                                    <label>Resource Status</label>
+                                                    <label>Resource Position</label>
                                                     
                                                     <input type="text" ng-select2-userposition id="vResourcePosition"
                                                         class="form-control" name="vResourcePosition"
@@ -312,7 +312,7 @@
                     <div class="panel-body">
                         <div class="col-sm-12">
                             <div class="table-responsive">
-                                <table class="table m-b-none default footable-loaded footable">
+                                <table class="table m-b-none default footable-loaded footable"  ng-if="jobReport.resourceType == 'external'">
                                     <thead>
                                         <th>#</th>
                                         <th>Resource</th>
@@ -334,6 +334,33 @@
                                             <td>{{result.userCountry}}</td>
                                         </tr>
                                         <tr ng-show="!statusRes.length">
+                                            <td colspan="8" ng-bind="dataNotFound"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- Internal Resource -->
+                                <table class="table m-b-none default footable-loaded footable"  ng-if="jobReport.resourceType == 'internal'">
+                                    <thead>
+                                        <th>#</th>
+                                        <th>Resource</th>
+                                        <th>Position</th>
+                                        <th>Email</th>
+                                        <th>Profile status</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="result in internalResult">
+                                            <!-- <tr ng-repeat="result in statusRes=(statusResult | filter : jobReport)"> -->
+                                            <td>
+                                                {{ $index + 1 }}
+                                            </td>
+                                            <td>
+                                                {{result.vFirstName}} {{result.vLastName}}
+                                            </td>
+                                            <td>{{result.position_name}}</td>
+                                            <td>{{result.vEmailAddress}}</td>
+                                            <td>{{result.status_name}}</td>
+                                        </tr>
+                                        <tr ng-show="!internalResult.length">
                                             <td colspan="8" ng-bind="dataNotFound"></td>
                                         </tr>
                                     </tbody>
