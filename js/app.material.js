@@ -601,10 +601,10 @@ app.config(function($locationProvider, $routeProvider, $httpProvider, $compilePr
             controller: 'resourceAdvanceSearchController',
             activetab: 'resource-advance-search',
             role: '1'
-        }).when('/linguist-search', {
+        }).when('/resource-search', {
             templateUrl: modulesPath + 'linguist-search.html',
             controller: 'linguistSearchController',
-            activetab: 'linguist-search',
+            activetab: 'resources',
             role: '1'
         }).when('/resource-position', {
             templateUrl: modulesPath + 'resource-position.html',

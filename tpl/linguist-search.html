@@ -37,7 +37,7 @@
                                                             ng-true-value="1" ng-false-value="0"
                                                             ng-checked="jobReport.resourceType == 'external'" ng-click="chnageResourceType('external')">
                                                         <i></i>
-                                                        External
+                                                        External Resource
                                                     </label>
                                                 </div>
                                                 <div class=" ml-20">
@@ -46,7 +46,7 @@
                                                             ng-true-value="1" ng-false-value="0"
                                                             ng-checked="jobReport.resourceType == 'internal'" ng-click="chnageResourceType('internal')">
                                                         <i></i>
-                                                        Internal
+                                                        Internal Resource
                                                     </label>
                                                 </div>
                                             </div>
@@ -286,6 +286,38 @@
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','vEmailAddress')"
                                                         ng-if="jobReport.vEmailAddress"><i
+                                                            class="iconDelete glyph-icon fa-times"
+                                                            aria-hidden="true"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 form-group">
+                                                <div class="col-sm-11">
+                                                    <label>Tab Permission</label>
+                                                    
+                                                    <input type="text" select2-tabpermission id="tabPermission"
+                                                        class="form-control" name="tabPermission"
+                                                        ng-model="jobReport.tabPermission" />
+                                                </div>
+                                                <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                    <a href="javascript:void(0)"
+                                                        ng-click="clearCode('job-status-report','tabPermission')"
+                                                        ng-if="jobReport.tabPermission"><i
+                                                            class="iconDelete glyph-icon fa-times"
+                                                            aria-hidden="true"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 form-group">
+                                                <div class="col-sm-11">
+                                                    <label>Sidebar Menu</label>
+                                                    
+                                                    <input type="text" select2-sidebarmenu id="menu_access"
+                                                        class="form-control" name="menu_access"
+                                                        ng-model="jobReport.menu_access" />
+                                                </div>
+                                                <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                    <a href="javascript:void(0)"
+                                                        ng-click="clearCode('job-status-report','menu_access')"
+                                                        ng-if="jobReport.menu_access"><i
                                                             class="iconDelete glyph-icon fa-times"
                                                             aria-hidden="true"></i></a>
                                                 </div>

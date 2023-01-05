@@ -30871,11 +30871,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if($scope.jobReport.vEmailAddress){
                         temp_internal = temp_internal.filter((obj)=> obj.vEmailAddress === $scope.jobReport.vEmailAddress);
                     }
-                    
 
+                    if($scope.jobReport.tabPermission){
+                        let tabField = $scope.jobReport.tabPermission.toString().split(',')
+                        temp_internal = temp_internal.filter((obj)=> {
+                            if (obj.tabPermission) {
+                                let tabPermission = JSON.parse(obj.tabPermission);
+                                if(Object.keys(tabPermission)){
+                                    let tabKeys = Object.keys(tabPermission);
+                                    if(tabField.every(elem => tabKeys.includes(elem)))
+                                        return obj
+                                }
+                            }
+                        });
+                    }
+                    if($scope.jobReport.menu_access){
+                        let menuField = $scope.jobReport.menu_access.toString().split(',')
+                        temp_internal = temp_internal.filter((obj)=> {
+                            if (obj.menu_access) {
+                                let menu_access = JSON.parse(obj.menu_access);
+                                if(Object.keys(menu_access)){
+                                    let menuKeys = Object.keys(menu_access);
+                                    if(menuField.every(elem => menuKeys.includes(elem)))
+                                        return obj
+                                }
+                            }
+                        });
+                    }
+                    
                     var objC;
-                    $scope.internalResult = Object.keys($scope.jobReport).length > 0 ? UniqueArraybyId(temp_internal, 'iUserId') : {};
-                    console.log('$scope.statusResult', $scope.internalResult)
+                    //$scope.internalResult = Object.keys($scope.jobReport).length > 0 ? UniqueArraybyId(temp_internal, 'iUserId') : {};
+                    $scope.internalResult = temp_internal;
+                    console.log('internalResult', $scope.internalResult)
                 })
                 scrollToId(eID);
             }    
@@ -31004,7 +31031,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
 
@@ -31019,7 +31046,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31033,7 +31060,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31047,7 +31074,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31061,7 +31088,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31075,7 +31102,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31089,7 +31116,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31103,7 +31130,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31117,7 +31144,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31131,7 +31158,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             delete $scope.jobReport[key];
                         }
                     });
-                    if (jQuery.isEmptyObject($scope.jobReport)) {
+                    if (Object.keys($scope.jobReport).length < 2) {
                         $scope.statusResult = '';
                     }
                 }
@@ -31155,6 +31182,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#companyName').select2('val', '');
                 }
             break;        
+            // External Resource    
+            case "eUserStatus":
+            if ($scope.jobReport != undefined) {
+                $scope.jobReport.eUserStatus = '';
+                angular.element('#eUserStatus').select2('val', '');
+                angular.forEach($scope.jobReport, function (value, key) {
+                    if (value === "" || value === null) {
+                        delete $scope.jobReport[key];
+                    }
+                });
+                if (Object.keys($scope.jobReport).length < 2) {
+                    $scope.internalResult = '';
+                    $scope.statusResult = '';
+                }
+            }
+            case "vResourcePosition":
+            if ($scope.jobReport != undefined) {
+                $scope.jobReport.vResourcePosition = '';
+                angular.element('#vResourcePosition').select2('val', '');
+                angular.forEach($scope.jobReport, function (value, key) {
+                    if (value === "" || value === null) {
+                        delete $scope.jobReport[key];
+                    }
+                });
+                if (Object.keys($scope.jobReport).length < 2) {
+                    $scope.internalResult = '';
+                    $scope.statusResult = '';
+                }
+            }
+            case "vResourcePosition":
+            if ($scope.jobReport != undefined) {
+                $scope.jobReport.vResourcePosition = '';
+                angular.element('#vResourcePosition').select2('val', '');
+                angular.forEach($scope.jobReport, function (value, key) {
+                    if (value === "" || value === null) {
+                        delete $scope.jobReport[key];
+                    }
+                });
+                if (Object.keys($scope.jobReport).length < 2) {
+                    $scope.internalResult = '';
+                    $scope.statusResult = '';
+                }
+            }
+            break;
             case "FrmDate":
             if ($scope.jobDate != undefined) {
                 $scope.jobDate.FrmDate = '';
