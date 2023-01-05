@@ -390,7 +390,10 @@
                                             </td>
                                             <td>{{result.position_name}}</td>
                                             <td>{{result.vEmailAddress}}</td>
-                                            <td>{{result.status_name}}</td>
+                                            <td>
+                                                <span ng-if="result.activation_status==1"> Activated</span>
+                                                <span ng-if="result.activation_status!=1" style="color:#f05050;">Not Activated</span>
+                                            </td>
                                         </tr>
                                         <tr ng-show="!internalResult.length">
                                             <td colspan="8" ng-bind="dataNotFound"></td>
