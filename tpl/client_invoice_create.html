@@ -116,6 +116,7 @@
                       <thead>
                         <tr>
                           <th>ITEMS</th>
+                          <th>PO Number</th>
                           <th>DESCRIPTION</th>
                           <th>QUANTITY</th>
                           <th>PRICE</th>
@@ -127,6 +128,7 @@
                         class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
                         <tr class="thfont">
                           <th>({{$index + 1}})</th>
+                          <th>{{invL.po_number}}</th>
                           <th>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }} | {{invL.item_name}}</th>
                           <th>1</th>
                           <th>
