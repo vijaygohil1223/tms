@@ -27891,7 +27891,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceList = [];
     $scope.editInvoiceField = true;
+    $scope.taxPercentage = 0;
+
     //get data of invoice
+
     if ($cookieStore.get('invoiceJobId').length) {
         var obj = [];
         angular.forEach($cookieStore.get('invoiceJobId'), function (val, i) {
@@ -27950,13 +27953,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.currencyPaymentMethod == 'Bank Transfer'
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
+                console.log('dataUser', dataUser)
                 $scope.userPaymentData = dataUser.userPaymentData;
-                if (dataUser.userPaymentData.vPaymentInfo) {
+                if (dataUser.userPaymentData && dataUser.userPaymentData.vPaymentInfo) {
                     let vpaymentInfo = JSON.parse(dataUser.userPaymentData.vPaymentInfo);
                     $scope.vatNo = vpaymentInfo.tax_id;
+                    $scope.taxPercentage = dataUser.userPaymentData.tax_percentage ? dataUser.userPaymentData.tax_percentage : 0;
+                    console.log('dataUser.userPaymentData.tax_percentage', dataUser.userPaymentData.tax_percentage)
                 }
                 //console.log('$scope.userPaymentData', $scope.userPaymentData)
-                if ($scope.userPaymentData.vBankInfo) {
+                if ($scope.userPaymentData && $scope.userPaymentData.vBankInfo) {
                     //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
@@ -28015,7 +28021,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.invoiceList[i].price_per_job = $filter('customNumber')(val.price_per_job);
                 }
             })
-            $scope.grandTotal = $scope.invoiceTotal + $scope.vat;
+            let taxRate = $scope.invoiceList[0].tax_percentage ? $scope.invoiceList[0].tax_percentage : 0;
+            console.log('taxRate', taxRate)
+            let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
+            $scope.taxValue = amountTaxRate;
+            //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
+                
+            $scope.grandTotal = $scope.invoiceTotal + parseFloat(amountTaxRate);
             $scope.invoiceTotal = $filter('customNumber')($scope.invoiceTotal);
         });
     }

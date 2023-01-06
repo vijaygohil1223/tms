@@ -33,9 +33,16 @@ class Freelance_invoice {
 			$this->_db->join('tms_general tg','tg.order_id = tsv.order_id', 'INNER');
 			$this->_db->join('tms_customer tcu','tcu.order_id = tsv.order_id', 'INNER');
 			$this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
-            $this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
-			$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress,tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tg.company_code, tsv.job_code AS jobCode, tsv.price AS jobPrice, tsv.total_price as price_per_job,tp.vPaymentInfo as clientVatinfo');
-			$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
+            //$this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
+			$this->_db->join('tms_payment tp', 'tp.iUserId = tu.iUserId AND tp.iType = 1', 'LEFT');
+			$this->_db->join('tms_tax tx', 'tp.tax_rate = tx.tax_id', 'LEFT');
+			$this->_db->join('tms_items ti', 'ti.order_id=tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
+			$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress,tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tg.company_code, tsv.job_code AS jobCode, tsv.price AS jobPrice, tsv.total_price as price_per_job,tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber ');
+			
+            //echo $this->_db->getLastQuery();
+            //exit;
+
+            $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
 
 			$data['companyName'] = $companyName[0]['name'];
 

@@ -995,7 +995,8 @@ array(
         //$userData = $this->_db->getOne('tms_users');
 
         $this->_db->where('iUserId',$id);
-        $userPaymentData = $this->_db->getOne('tms_payment');
+        $this->_db->join('tms_tax tx','tx.tax_id = tp.tax_rate','LEFT');
+        $userPaymentData = $this->_db->getOne('tms_payment tp', 'tp.*, tx.tax_percentage');
 
         //$result['userData'] = $userData;
         $result['userPaymentData'] = $userPaymentData;
