@@ -40,9 +40,9 @@
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
         <div class="md-content page_content_wrapper">
             <div class="content_head bg-light lter b-b wrapper-md ng-scope">
-                <a id="editInvoiceSave" class="btn btn-info pull-right invcBtn btnSave" ng-hide="editDisabled"
+                <!-- <a id="editInvoiceSave" class="btn btn-info pull-right invcBtn btnSave" ng-hide="editDisabled"
                     ng-click="editInvoiceLinguist(invoiceDetail.invoice_number)"><i class="fa fa-pencil"></i> Edit &
-                    Save </a>
+                    Save </a> -->
                 <a href="" class="btn btn-sm btn-info btnSave pull-right" ng-show="reminderBtnHideShow"
                     ng-click="sendRemiderinvoice(invoiceDetail.invoice_number)">Send Reminder</a>
                 <a href="" class="btn btn-sm btn-info pull-right"
@@ -96,7 +96,7 @@
                                       NO930108995</P>
                                   </div>
                                   <div class="col-xs-6 text-right">
-                                    <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoiceNumber }}</strong></p>
+                                    <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoice_number }}</strong></p>
                                     <br />
                                     <p>
                                       Invoice date: <br /><span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span></br>
@@ -119,102 +119,77 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xs-12 well none">
-                                <div class="col-xs-6">
-                                    <p class="m-t m-b">
-                                        <span>Job
-                                            <!-- Number --> :
-                                        </span>
-                                        <strong ng-bind="invoiceDetail.poNumber.split('_')[1]"></strong></br>
-                                        <span>Project Number : </span>
-                                        <strong ng-bind="invoiceDetail.poNumber.split('_')[0]"></strong></br>
-                                    </p>
-                                </div>
-                                <div class="col-xs-6">
-                                    <strong>Company:</strong>
-                                    <h4 ng-bind="invoiceDetail.companyName"></h4>
-                                    <p>
-                                        <span ng-bind="invoiceDetail.companyAddress"></span></br>
-                                        Phone: <span ng-bind="invoiceDetail.companyPhone"></span>
-                                        <!-- <br> Email: <span ng-bind="invoiceDetail.companyEmail"></span>
-                                        <br> -->
-                                    </p>
-                                </div>
-                            </div>
-                            <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}"
-                                class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 60px">#</th>
-                                        <th style="width: 230px">Job Number</th>
-                                        <!-- <th>QUANTITY</th> -->
-                                        <th style="width: 140px">Job Description</th>
-                                        <th style="width: 90px">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="invL in invoiceList track by $index">
-                                        <td style="width: 60px">{{$index + 1}}</td>
-                                        <td>{{invL.poNumber}}</td>
-                                        <td style="width: 230px">{{invL.poNumber.split('_')[1]}}</td>
-                                        <td style="width: 90px">
-                                            {{invL.price_per_job | customNumber}}
-                                            <input class="invoiceCal form-control itemVal_{{invL.jobId}}"
-                                                ng-show="editInvoiceField" type="text" ng-model="invL.price_per_job"
-                                                ng-disabled="editDisabled" id="invSubTotal{{$index}}"
-                                                ng-change="changeInvoiceField($index,$parent.$index,invL.price_per_job,'itemPrice')"
-                                                name="itemVal_{{invL.jobId}}" />
-                                        </td>
-                                    </tr>
-                                    <!-- <tr ng-repeat="jobpr in invL.jobpriceList track by $index">
-                                        <td ng-bind="$index+1"></td>
-                                        <td ng-bind="jobpr.pricelist"></td>
-                                        <td ng-bind="jobpr.quantity"></td>
-                                        <td ng-bind="jobpr.itemPrice"></td>
-                                        <td ng-bind="jobpr.itemTotal | customNumber"></td>
-                                        <td class="none" ng-init="invL.jobpr.jobsubTotal = invL.jobpr.jobsubTotal + jobpr.itemTotal"></td>
-                                    </tr> -->
-                                    <tr>
-                                        <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
-                                        <td style="width:10%;">
-                                            <!-- {{invoiceTotal | customNumber}} -->
-                                            <input class="form-control" ng-show="editInvoiceField" type="text"
-                                                ng-model="invoiceTotal" ng-disabled="editDisabled"
-                                                ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
-                                                id="invSubtotal" />
-                                        </td>
-                                    </tr>
-                                    <tr class="tdborder">
-                                        <td colspan="3" class="text-right no-border"><strong>Vat Tax</strong></td>
-                                        <td>
-                                            <input class="form-control" ng-show="editInvoiceField"
-                                                ng-disabled="editDisabled" type="text" ng-model="vat"
-                                                ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
-                                        </td>
-                                    </tr>
-                                    <!-- <tr>
-                                        <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
-                                        <td>{{currencyType}} 0.00</td>
-                                    </tr> -->
-                                    <tr class="tdborder">
-                                        <td colspan="3" class="text-right no-border"><strong>Total </strong></td>
-                                        <td style="white-space: nowrap;">
-                                            {{grandJobTotal | customNumber}}
-                                        </td>
-                                    </tr>
-                                    <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
-                                        <td colspan="3" class="text-right no-border"><strong>Paid
-                                            </strong></td>
-                                        <td style="width:10%;">{{invoiceDetail.paid_amount | customNumber}}</td>
-                                    </tr>
-                                    <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
-                                        <td colspan="3" class="text-right no-border"><strong>Total Due Amount</strong>
-                                        </td>
-                                        <td style="white-space: nowrap;">{{grandJobTotal -
-                                            invoiceDetail.paid_amount | customNumber}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="invoice-content2">  
+                                <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}"
+                                    class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:50px">#</th>
+                                            <th style="width:100px">PO Number</th>
+                                            <!-- <th>QUANTITY</th> -->
+                                            <th style="width:150px">Job Description</th>
+                                            <th style="width:100px">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="invL in invoiceList track by $index">
+                                            <td style="width:50px">{{$index + 1}}</td>
+                                            <td style="width:100px">{{invL.scoop_poNumber}}</td>
+                                            <td style="width:150px">
+                                                {{invL.poNumber}} | {{invL.item_name}}
+                                            </td>
+                                            <td style="width:100px">
+                                                {{invL.price_per_job}}
+                                                <!-- <input class="invoiceCal form-control itemVal_{{invL.jobId}}"
+                                                    ng-show="editInvoiceField" type="text" ng-model="invL.price_per_job"
+                                                    ng-disabled="editDisabled" id="invSubTotal{{$index}}"
+                                                    ng-change="changeInvoiceField($index,$parent.$index,invL.price_per_job,'itemPrice')"
+                                                    name="itemVal_{{invL.jobId}}" /> -->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
+                                            <td style="width:10%;">
+                                                {{invoiceTotal}}
+                                                <!-- <input class="form-control" ng-show="editInvoiceField" type="text"
+                                                    ng-model="invoiceTotal" ng-disabled="editDisabled"
+                                                    ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
+                                                    id="invSubtotal" /> -->
+                                            </td>
+                                        </tr>
+                                        <tr class="tdborder">
+                                            <td colspan="3" class="text-right no-border"><strong>Tax ({{taxPercentage}}%)</strong></td>
+                                            <td>
+                                                <span>{{ taxValue | customNumber }}</span>
+                                                <!-- <input class="form-control" ng-show="editInvoiceField"
+                                                    ng-disabled="editDisabled" type="text" ng-model="vat"
+                                                    ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" /> -->
+                                            </td>
+                                        </tr>
+                                        <!-- <tr>
+                                            <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
+                                            <td>{{currencyType}} 0.00</td>
+                                        </tr> -->
+                                        <!-- <tr class="tdborder">
+                                            <td colspan="3" class="text-right no-border"><strong>Total </strong></td>
+                                            <td style="white-space: nowrap;">
+                                                {{grandJobTotal | customNumber}}
+                                            </td>
+                                        </tr> -->
+                                        <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
+                                            <td colspan="3" class="text-right no-border"><strong>Paid
+                                                </strong></td>
+                                            <td style="width:10%;">{{invoiceDetail.paid_amount | customNumber}}</td>
+                                        </tr>
+                                        <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
+                                            <td colspan="3" class="text-right no-border"><strong>Total Due Amount</strong>
+                                            </td>
+                                            <td style="white-space: nowrap;">{{grandJobTotal -
+                                                invoiceDetail.paid_amount | customNumber}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>    
                             
                             <div class="row invoice-footer">
                                 <div class="col-xs-6">
@@ -259,9 +234,9 @@
                                 ng-show="invoiceDetail.is_approved==0 && !isPdfdownload"
                                 ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd"
                                 style="color: #454f59 !important;"> UnApproved</button>
-                            <button id="editInvoiceSave2" class="btn btn-info btnSave" ng-hide="editDisabled"
+                            <!-- <button id="editInvoiceSave2" class="btn btn-info btnSave" ng-hide="editDisabled"
                                 ng-click="editInvoiceLinguist(invoiceDetail.invoice_number)"><i
-                                    class="fa fa-pencil"></i> Edit & Save </button>
+                                    class="fa fa-pencil"></i> Edit & Save </button> -->
                         </div>
                     </div>
                 </div>

@@ -4538,6 +4538,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (type) {
             if (type == 'source') {
                 $('#popSourceCount').text(count);
+                $('#popTargetCount').text(count);
             }
             if (type == 'target') {
                 $('#popTargetCount').text(count);
@@ -16145,7 +16146,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             })
 
-            $scope.grandJobTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
+            let taxRate = $scope.invoiceList[0].tax_percentage ? $scope.invoiceList[0].tax_percentage : 0;
+            console.log('taxRate', taxRate)
+            let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
+            $scope.taxValue = amountTaxRate;
+            $scope.taxPercentage = taxRate;
+            
+            $scope.grandJobTotal = parseFloat($scope.invoiceTotal) + parseFloat(amountTaxRate);
             $scope.invoiceTotal = (invoiceTotal.toString().includes(',')) ? $scope.invoiceTotal : $filter('customNumber')($scope.invoiceTotal);
             $scope.vat = ($scope.vat.toString().includes(',')) ? $scope.vat : $filter('customNumber')($scope.vat);
 

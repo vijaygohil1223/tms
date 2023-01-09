@@ -56,53 +56,18 @@
     background-origin: content-box;
   }
 
-  .video {
-    background-image: url(assets/img/file_icon/video.png);
-  }
-
-  .png {
-    background-image: url(assets/img/file_icon/png.png);
-  }
-
-  folder {
-    background-image: url(assets/img/file_icon/folder1.png);
-  }
-
-  .doc {
-    background-image: url(assets/img/file_icon/doc.png);
-  }
-
-  .pdf {
-    background-image: url(assets/img/file_icon/pdf.png);
-  }
-
-  .zip {
-    background-image: url(assets/img/file_icon/zip.png);
-  }
-
-  .xls {
-    background-image: url(assets/img/file_icon/xls.png);
-  }
-
-  .ppt {
-    background-image: url(assets/img/file_icon/ppt.png);
-  }
-
-  .txt {
-    background-image: url(assets/img/file_icon/txt.png);
-  }
-
-  .exe {
-    background-image: url(assets/img/file_icon/exe.png);
-  }
-
-  .mp3 {
-    background-image: url(assets/img/file_icon/mp3.png);
-  }
-
-  .fileicon{
-    background-image: url(assets/img/file_icon/fileicon.png);
-  }
+  .video { background-image: url(assets/img/file_icon/video.png); }
+  .png { background-image: url(assets/img/file_icon/png.png); }
+  folder { background-image: url(assets/img/file_icon/folder1.png); }
+  .doc { background-image: url(assets/img/file_icon/doc.png); }
+  .pdf { background-image: url(assets/img/file_icon/pdf.png); }
+  .zip { background-image: url(assets/img/file_icon/zip.png); }
+  .xls { background-image: url(assets/img/file_icon/xls.png); }
+  .ppt { background-image: url(assets/img/file_icon/ppt.png); }
+  .txt { background-image: url(assets/img/file_icon/txt.png); }
+  .exe { background-image: url(assets/img/file_icon/exe.png); }
+  .mp3 { background-image: url(assets/img/file_icon/mp3.png); }
+  .fileicon{ background-image: url(assets/img/file_icon/fileicon.png); }
 
   .breadcrumb {
     padding: 8px 15px;
@@ -498,6 +463,9 @@
 
                        <!-- doc&docx -->
                        <file extension="doc" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)" ng-if="category.ext == 'doc' || category.ext =='docx'" class="doc" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.name}}</p></file>
+
+                       <!-- Unknown extension Extra-->
+                        <file extension="msg" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)" ng-if="category.ext == 'msg' " class="fileicon" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.name}}</p></file>
 
                        <!-- Xls -->
                        <file extension="xls" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)" 
