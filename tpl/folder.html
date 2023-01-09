@@ -61,6 +61,8 @@ table {
    .txt{ background-image: url(assets/img/file_icon/txt.png);}
    .exe{ background-image: url(assets/img/file_icon/exe.png);}
    .mp3{ background-image: url(assets/img/file_icon/mp3.png);}
+   .fileicon{ background-image: url(assets/img/file_icon/fileicon.png);}
+
    .breadcrumb {
    padding: 8px 15px;
    list-style: none;
@@ -360,8 +362,14 @@ table {
                         " class="zip" context-menu="menuOptionsFiles"><p>
                {{display.name}}</p></file>
 
-               <!-- doc&docx -->
-               <file extension="doc" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" ng-if="display.ext == 'doc' || display.ext =='docx'" class="doc" context-menu="menuOptionsFiles"><p>{{display.name}}</p></file>
+              <!-- doc&docx -->
+              <file extension="doc" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" ng-if="display.ext == 'doc' || display.ext =='docx'" class="doc" context-menu="menuOptionsFiles"><p>{{display.name}}</p></file>
+              
+              <!-- Unknown extension Extra-->
+              <file extension="msg" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" ng-if="display.ext == 'msg' " class="fileicon" context-menu="menuOptionsFiles">
+                <span style="text-shadow: 1px 5px #352f2f; color:transparent;font-size:12px; font-weight: 900;text-transform: capitalize;"> {{display.ext}}</span>
+                <p style="margin-top: -10px;">{{display.name}}</p>
+              </file>
 
                <!-- Xls -->
                <file extension="xls" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" 

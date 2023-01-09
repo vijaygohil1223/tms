@@ -4832,6 +4832,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (fileExtension == 'pdf') {
                                 DefaultImgPath = "assets/img/file_icon/pdf.png";
                             }
+                            if (fileExtension == 'msg') {
+                                DefaultImgPath = "assets/img/file_icon/fileicon.png";
+                            }
                             if (fileExtension == 'ppt') {
                                 DefaultImgPath = "assets/img/file_icon/ppt.png";
                             }
@@ -6013,6 +6016,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (fileExtension == 'pdf') {
                                 DefaultImgPath = "assets/img/file_icon/pdf.png";
                             }
+                            if (fileExtension == 'msg') {
+                                DefaultImgPath = "assets/img/file_icon/fileicon.png";
+                            }
                             if (fileExtension == 'ppt') {
                                 DefaultImgPath = "assets/img/file_icon/ppt.png";
                             }
@@ -6350,6 +6356,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 $timeout(function () {
                     $scope.displayfolder = data;
+                    //console.log('$scope.displayfolder', $scope.displayfolder)
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function (val, i) {
                         $scope.displayfolder[i].countchild = val.categories.length;
