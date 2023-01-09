@@ -6623,7 +6623,8 @@ app.directive('select2Taxrate', function($http, rest, $timeout) {
                 }];
                 $.each(data, function(key, value) {
                     var obj = {
-                        id: value.tax_percentage,
+                        //id: value.tax_percentage,
+                        id: value.tax_id,
                         text: value.tax_name + ' (' + value.tax_percentage + '% )'
                     };
                     taxList.push(obj);
