@@ -30412,12 +30412,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //console.log('testid',id);
         if (type) {
             if (type == 'source') {
-                //$('#sourceCount-' + id).text(count);
-                $('.sourceC-' + id).text(count);
+                $('#sourceCount-' + id).text(count);
+                $('#targetCount-' + id).text(count);
+                //$('.sourceC-' + id).text(count);
             }
             if (type == 'target') {
+                $('#sourceCount-' + id).text(count);
+                $('#targetCount-' + id).text(count);
                 //$('#targetCount-' + id).text(count);
-                $('.sourceC-' + id).text(count);
             }
         }
     }
