@@ -6644,39 +6644,6 @@ app.directive('select2Taxrate', function($http, rest, $timeout) {
         }
     }
 });
-app.directive('select2Taxrate2id', function($http, rest, $timeout) {
-    return {
-        restrict: 'EA',
-        require: 'ngModel',
-        link: function(scope, element) {
-            rest.path = 'itemTaxget';
-            rest.get().success(function(data) {
-                var taxList = [{
-                    id: '0',
-                    text: '--Please Select Tax Rate--'
-                }];
-                $.each(data, function(key, value) {
-                    var obj = {
-                        id: value.tax_id,
-                        text: value.tax_name + ' (' + value.tax_percentage + '% )'
-                    };
-                    taxList.push(obj);
-                });
-                $timeout(function() {
-                    element.select2({
-                        allowClear: true,
-                        data: taxList,
-                        multiple: false,
-                    }).on("change", function (e) {
-
-                    });
-
-                }, 200);
-
-            }).error(function(data, error, status) {});
-        }
-    }
-});
 /* Tabs permission */
 app.directive('select2Tabpermission', function($http, rest, $timeout) {
     return {

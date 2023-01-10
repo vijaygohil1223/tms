@@ -16119,6 +16119,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             }).error(errorCallback);
 
+            rest.path = 'customerpriceAll/' + 2;  //2 for external userID
+            rest.get().success(function (data) {
+                const currency = data.filter(pd => {
+                    if(pd.resource_id == $scope.invoiceDetail.freelanceId){
+                        $scope.currencyType = (pd.price_currency).toString().includes(',') ? (pd.price_currency).split(',')[0] : 'EUR';
+                        return pd;
+                    }
+                })
+            })
+
             $scope.invoiceList = data;
             console.log('$scope.invoiceList-paid-amount', $scope.invoiceList[0].paid_amount)
 
@@ -28015,6 +28025,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
             }).error(errorCallback);
+
+            rest.path = 'customerpriceAll/' + 2;  //2 for external userID
+            rest.get().success(function (data) {
+                const currency = data.filter(pd => {
+                    if(pd.resource_id == $scope.invoiceDetail.freelanceId){
+                        $scope.currencyType = (pd.price_currency).toString().includes(',') ? (pd.price_currency).split(',')[0] : 'EUR';
+                        return pd;
+                    }
+                })
+            })
 
             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
