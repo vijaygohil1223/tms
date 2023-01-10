@@ -1926,6 +1926,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }else{
 
             if (viewType && orderId) {
+                $window.localStorage.orderID = orderId;
                 var modalInstance = $uibModal.open({
                     //animation: $scope.animationsEnabled,
                     templateUrl: 'tpl/scoopViewdetailPopup.html',
@@ -5496,6 +5497,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'fileManagerGet';
         rest.get().success(function (data) {
             $scope.displayfolder = data;
+            console.log('$scope.displayfolder-all', $scope.displayfolder)
+            console.log('$routeParams', $routeParams)
             //Change ItemFolder Name to item001 -> Files-001
             angular.forEach($scope.displayfolder, function (val, i) {
                 if (val.item_id != 0) {
@@ -5507,8 +5510,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
             })
-
+            
             $window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
+
+            // Stop to list all filemanager file if orderID null - Source-target
+            if($routeParams.id == 'source' || $routeParams.id == 'target'){
+                if($window.localStorage.orderID == null){
+                    $scope.displayfolder = [];  
+                    console.log('$window.localStorage.orderID=>innnn', $window.localStorage.orderID)
+                }
+            }
+
         }).error(errorCallback);
     }
 
@@ -19637,6 +19649,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (type1) {
                     if (type1 == 'source') {
                         $('#sourceCount-' + id).text(count);
+
                     }
                     if (type1 == 'target') {
                         $('#targetCount-' + id).text(count);
@@ -19658,12 +19671,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         var type = $window.localStorage.getItem("jobFoldertype");
         var id = $window.localStorage.getItem("jobfolderId");
+        
         if (type) {
             if (type == 'source') {
-                $('#sourceCount-' + id).text(count);
+                //$('#sourceCount-' + id).text(count);
+                $('.sourceC' + id).text(count);
             }
             if (type == 'target') {
-                $('#targetCount-' + id).text(count);
+                //$('#targetCount-' + id).text(count);
+                $('.sourceC' + id).text(count);
             }
         }
     }
@@ -28152,6 +28168,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.forEach($cookieStore.get('invoiceScoopId'), function (val, i) {
             obj.push({ "id": val });
         });
+
         $scope.invoiceLt = {};
         $scope.invoiceLt.id = obj;
         rest.path = "clientInvoiceCreate";
@@ -30370,6 +30387,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (type1) {
                     if (type1 == 'source') {
                         $('#sourceCount-' + id).text(count);
+                        console.log('count-soutrce-'+id, count)
                     }
                     if (type1 == 'target') {
                         $('#targetCount-' + id).text(count);
@@ -30394,10 +30412,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //console.log('testid',id);
         if (type) {
             if (type == 'source') {
-                $('#sourceCount-' + id).text(count);
+                //$('#sourceCount-' + id).text(count);
+                $('.sourceC-' + id).text(count);
             }
             if (type == 'target') {
-                $('#targetCount-' + id).text(count);
+                //$('#targetCount-' + id).text(count);
+                $('.sourceC-' + id).text(count);
             }
         }
     }
