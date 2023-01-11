@@ -2003,6 +2003,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projBranchChange = false;
     // Tab view Project List
     $scope.projectsAll = [];
+    $scope.projectsMyproj = [];
+    $scope.projectsUpcoming = [];
     $scope.projectsInProgress = [];
     $scope.projectsDueToday = [];
     $scope.projectsDueTomorrow = [];
@@ -2015,6 +2017,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectsToDisplay = [];
 
     $scope.projectsAllCount = 0;
+    $scope.projectsMyprojCount = 0;
+    $scope.projectsUpcomingCount = 0;
     $scope.projectsInprogressCount = 0;
     $scope.projectsDueTodayCount = 0;
     $scope.projectsDueTomorrowCount = 0;
@@ -2041,6 +2045,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
                 $scope.projectsAll = [];
+                $scope.projectsMyproj = [];
                 $scope.projectsInProgress = [];
                 $scope.projectsDueToday = [];
                 $scope.projectsDueTomorrow = [];
@@ -2053,6 +2058,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsToDisplay = [];
 
                 $scope.projectsAllCount = 0;
+                $scope.projectsMyprojCount = 0;
                 $scope.projectsInprogressCount = 0;
                 $scope.projectsDueTodayCount = 0;
                 $scope.projectsDueTomorrowCount = 0;
@@ -2217,9 +2223,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.projectstatus_color = '#FFFF';
                 
                 // Projects All
-                if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
+                if (val) {
                     $scope.projectsAll.push(val);
                     $scope.projectsAllCount++;
+                }
+                if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
+                    $scope.projectsMyproj.push(val);
+                    $scope.projectsMyprojCount++;
+                }
+                if (val.heads_up == 1 ) {
+                    $scope.projectsUpcoming.push(val);
+                    $scope.projectsUpcomingCount++;
                 }
                 //if (val.projectStatus == 12) {
                 if (val.itemStatus == "To be Assigned") {
@@ -2371,14 +2385,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $route.reload();
     }
 
-    $scope.tabList = [{name:'All',className:'All',statusCount:'0'},{name:'Ongoing',className:'Ongoing',statusCount:'0'}];
+    // Dynamic Dashboard tabs
+/*     $scope.tabList = [{name:'All',className:'All',statusCount:'0'},{name:'Ongoing',className:'Ongoing',statusCount:'0'}];
     $scope.projectsListData = [];
     $scope.dashboardProjects = function (tabName) {
         $scope.showDataLoader = true;
-        console.log('tabName', tabName)
         $scope.projectsListData = [];
         let tabList = $scope.tabList;
-        console.log('$scope.tabList', $scope.tabList)
         switch (tabName) {
             case 'All':
                 $scope.projectsListData = $scope.projectsAll;
@@ -2386,7 +2399,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(nm.name == 'All')
                         nm.statusCount = $scope.projectsAllCount 
                 })
-                //$scope.showDataLoader = false;
                 break;
             case 'Ongoing':
                 $scope.projectsListData = $scope.projectsAssigned;
@@ -2400,10 +2412,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsListData = $scope.projectsAssigned;
                 break;
         }
-
-        console.log('$scope.projectsListData',$scope.projectsListData )
-    
-    }
+    } */
 
     /* overview display */
     $scope.isoverviewProject = false;
