@@ -1395,12 +1395,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 200);
         }).error(errorCallback);
     };
+    //$scope.getJobList();
 
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
     }
 
-    //$scope.getJobList();
 
     var objCenter = [];
     rest.path = 'centerClientGet';
@@ -1999,6 +1999,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    // ** Dashoboard Project start ** //
     $scope.projBranchChange = false;
     // Tab view Project List
     $scope.projectsAll = [];
@@ -2369,6 +2370,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //console.log('branchRefresh')
         $route.reload();
     }
+
+    $scope.tabList = [{name:'All',className:'All',statusCount:'0'},{name:'Ongoing',className:'Ongoing',statusCount:'0'}];
+    $scope.projectsListData = [];
+    $scope.dashboardProjects = function (tabName) {
+        $scope.showDataLoader = true;
+        console.log('tabName', tabName)
+        $scope.projectsListData = [];
+        let tabList = $scope.tabList;
+        console.log('$scope.tabList', $scope.tabList)
+        switch (tabName) {
+            case 'All':
+                $scope.projectsListData = $scope.projectsAll;
+                tabList.filter( (nm) => { 
+                    if(nm.name == 'All')
+                        nm.statusCount = $scope.projectsAllCount 
+                })
+                //$scope.showDataLoader = false;
+                break;
+            case 'Ongoing':
+                $scope.projectsListData = $scope.projectsAssigned;
+                tabList.filter( (nm) => { 
+                    if(nm.name == 'Ongoing')
+                        nm.statusCount = 5 
+                } )
+                $scope.showDataLoader = false;
+                break;
+            default:
+                $scope.projectsListData = $scope.projectsAssigned;
+                break;
+        }
+
+        console.log('$scope.projectsListData',$scope.projectsListData )
+    
+    }
+
     /* overview display */
     $scope.isoverviewProject = false;
     //Getting Jobs from getJobsFromTmsSummeryView
@@ -28026,6 +28062,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             }).error(errorCallback);
 
+            // Currency display for invoice
             rest.path = 'customerpriceAll/' + 2;  //2 for external userID
             rest.get().success(function (data) {
                 const currency = data.filter(pd => {
