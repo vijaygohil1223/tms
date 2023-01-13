@@ -251,8 +251,8 @@ class users {
             if ($id) {
                 //Sending registation email to users email address
                 $userName = $user['vUserName'];
-                $registrationLink = SITE_URL.'#/activation/'.$activationToken;
-                $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
+                $registrationLink = ACTIVATION_URL.'#/activation/'.$activationToken;
+                $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 $userEmail = $user['vEmailAddress'];
                 $userPassword = $emailPassToSend;
                 $businessManagerLink = '';
@@ -344,8 +344,8 @@ class users {
                 
                 //Sending registation email to users email address
                 $userName = $user['vUserName'];
-                $registrationLink = SITE_URL.'#/activation/'.$activationToken;
-                $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
+                $registrationLink = ACTIVATION_URL.'#/activation/'.$activationToken;
+                $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 
                 $userEmail = $user['vEmailAddress'];
                 $userPassword = $emailPassToSend;
@@ -613,7 +613,7 @@ array(
             $emailTemplate = $this->_db->getOne('tms_email_templates');
             if($emailTemplate){
                 $resetPasswordToken = sha1(mt_rand(10000,99999).time());
-                $resetPasswordLink = SITE_URL.'#/resetpassword/'.$resetPasswordToken;
+                $resetPasswordLink = ACTIVATION_URL.'#/resetpassword/'.$resetPasswordToken;
                 //$search_array = array("[USERNAME]","[USEREMAIL]","[USERPASSWORD]");
                 $search_array = array("[USERNAME]","[RESETPASSWORDLINK]");
                 $userNm = $results['vUserName'];
@@ -1190,8 +1190,8 @@ array(
         //Sending registation email to users email address
         $userName = $user['vUserName'];
 
-        $registrationLink = SITE_URL.'#/activation/'.$user['activation_token'];
-        $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$user['activation_token'].'"> '.$registrationLink.' </a>';
+        $registrationLink = ACTIVATION_URL.'#/activation/'.$user['activation_token'];
+        $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$user['activation_token'].'"> '.$registrationLink.' </a>';
                 
         $userEmail = $user['vEmailAddress'];
         $userPassword = $user['org_pass'];
@@ -1434,8 +1434,8 @@ array(
                 
                 //Sending registation email to users email address
                 $userName = $user['vFirstName'];
-                $registrationLink = SITE_URL.'#/activation/'.$activationToken;
-                $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
+                $registrationLink = ACTIVATION_URL.'#/activation/'.$activationToken;
+                $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 
                 $userEmail = $user['vEmailAddress'];
                 $userPassword = $emailPassToSend;
