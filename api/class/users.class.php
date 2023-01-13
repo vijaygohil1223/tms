@@ -1433,7 +1433,7 @@ array(
                 }
                 
                 //Sending registation email to users email address
-                $userName = $user['vUserName'];
+                $userName = $user['vFirstName'];
                 $registrationLink = SITE_URL.'#/activation/'.$activationToken;
                 $registrationLink = '<a href="'.SITE_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 
