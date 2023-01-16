@@ -2189,13 +2189,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.pm_name = val.sub_pm_name
                 }
                 
-                if(val.price_currency){
-                    val.price_currency = val.price_currency.includes(',') ? val.price_currency.split(',')[0] : '';
-                }else if(val.price_currency2){
-                    val.price_currency = val.price_currency2.includes(',') ? val.price_currency2.split(',')[0] : '';
-                }else{
-                    val.price_currency = 'EUR';
-                }
+                // if(val.price_currency){
+                //     val.price_currency = val.price_currency.includes(',') ? val.price_currency.split(',')[0] : '';
+                // }else if(val.price_currency2){
+                //     val.price_currency = val.price_currency2.includes(',') ? val.price_currency2.split(',')[0] : '';
+                // }else{
+                //     val.price_currency = 'EUR';
+                // }
+                
+                val.price_currency = val.client_currency && val.client_currency.includes(',') ? val.client_currency.split(',')[0] : 'EUR';
+                
                 
               
                 // Comment read unRead
@@ -3825,7 +3828,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
-            console.log('$scope.jobdetail', $scope.jobdetail)
+            console.log('$scope.jobdetail?', $scope.jobdetail)
             $scope.jobdetail.ItemLanguage = '';
             var srcLang = 'English (US)';
             var trgLang = 'English (US)';
@@ -3857,6 +3860,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 //angular.element('#totalItemPrice').text(data.total_price);
             }
+            
+            $scope.clientCurrency = $scope.jobdetail.freelance_currency ? $scope.jobdetail.freelance_currency.split(',')[0] : 'EUR'; 
 
             console.log('$scope.itemPriceUni-', $scope.itemPriceUni);
             /*if (isNaN(Date.parse($scope.jobdetail.due_date))) {
@@ -4086,7 +4091,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if (data) {
                         rest.path = 'getClientCurrency/' + data.contact_person;
                         rest.get().success(function (data) {
-                            $scope.clientCurrency = data.client_currency.split(',')[0];
+                            //$scope.clientCurrency = data.client_currency.split(',')[0];
                             $scope.clientCurrencySymbole = data.client_currency.split(',')[1];
                         })
                         $scope.totalPrice = data.total_amount;
@@ -10719,8 +10724,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#' + val.id).val(val.value);
                 });
             }
-            
 
+            if(data.freelance_currency && data.freelance_currency.includes(','))
+                angular.element('#freelanceCurrency').select2('data', { text: data.freelance_currency.split(',')[0] });
+            
             $cookieStore.put('editInternalUser', $scope.userprofiledata);
             rest.path = 'getProfile/' + data.created_by;
             rest.get().success(function (result) {
@@ -15511,10 +15518,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('dataPrice', dataPrice)
                 dataPrice.filter( (el) =>{
                     if(el.resource_id == $scope.invoiceDetail.clientId){
-                        $scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
+                        //$scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
                     }
                 })
             }) 
+            $scope.currencyType = $scope.invoiceDetail && $scope.invoiceDetail.client_currency.includes(',') ?  $scope.invoiceDetail.client_currency.split(',')[0] : 'EUR';
             $scope.invoiceDetail.tax_rate = $scope.invoiceDetail.tax_rate ? $scope.invoiceDetail.tax_rate : 0; 
             $scope.vat = $scope.invoiceDetail.tax_rate;
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
@@ -16134,7 +16142,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ($scope.userPaymentData.vBankInfo) {
                     //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
-                    $scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
+                    //$scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
                     $scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
                     console.log('$scope.currencyType', $scope.currencyType)
                     //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
@@ -16164,15 +16172,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             }).error(errorCallback);
 
-            rest.path = 'customerpriceAll/' + 2;  //2 for external userID
-            rest.get().success(function (data) {
-                const currency = data.filter(pd => {
-                    if(pd.resource_id == $scope.invoiceDetail.freelanceId){
-                        $scope.currencyType = (pd.price_currency).toString().includes(',') ? (pd.price_currency).split(',')[0] : 'EUR';
-                        return pd;
-                    }
-                })
-            })
+            // rest.path = 'customerpriceAll/' + 2;  //2 for external userID
+            // rest.get().success(function (data) {
+            //     const currency = data.filter(pd => {
+            //         if(pd.resource_id == $scope.invoiceDetail.freelanceId){
+            //             $scope.currencyType = (pd.price_currency).toString().includes(',') ? (pd.price_currency).split(',')[0] : 'EUR';
+            //             return pd;
+            //         }
+            //     })
+            // })
+            $scope.currencyType = ($scope.invoiceDetail.freelance_currency).toString().includes(',') ? ($scope.invoiceDetail.freelance_currency).split(',')[0] : 'EUR';
 
             $scope.invoiceList = data;
             console.log('$scope.invoiceList-paid-amount', $scope.invoiceList[0].paid_amount)
@@ -18902,24 +18911,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $scope.custPriceAll().then((prData) => {
                         let customerpriceFltr =  $scope.customerpriceAll ;
-                        angular.element('#currency'+ val.itemId).text('Eur');
+                        //angular.element('#currency'+ val.itemId).text('Eur');
                         customerpriceFltr.filter( (el) => {
                             if(val.project_pricelist){
                                 if(el.price_list_id == val.project_pricelist){
                                     let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
-                                    angular.element('#currency'+ val.itemId).text(price_currency);
+                                    //angular.element('#currency'+ val.itemId).text(price_currency);
                                     return el;
                                 }
                             }else{
                                 if(el.resource_id == data.client){
                                     let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
-                                    angular.element('#currency'+ val.itemId).text(price_currency);
+                                    //angular.element('#currency'+ val.itemId).text(price_currency);
                                     return el;
                                 }
                             }
                         });
                     })
-               
                     //console.log('$scope.joboption',$scope.joboption);
                     var jobChainoption = $scope.jobchainoption;
                     console.log('jobChainoption', jobChainoption)
@@ -28050,9 +28058,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ($scope.userPaymentData && $scope.userPaymentData.vBankInfo) {
                     //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
-                    $scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
+                    //$scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
                     $scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
-                    console.log('$scope.currencyType', $scope.currencyType)
+                    //console.log('$scope.currencyType', $scope.currencyType)
                     //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.currencyPaymentMethod = $scope.vBankInfo.payment_method;
                 }
@@ -28068,20 +28076,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $scope.invoiceDetail.payment = $scope.currencyPaymentMethod;
 
-
             }).error(errorCallback);
 
             // Currency display for invoice
-            rest.path = 'customerpriceAll/' + 2;  //2 for external userID
-            rest.get().success(function (data) {
-                const currency = data.filter(pd => {
-                    if(pd.resource_id == $scope.invoiceDetail.freelanceId){
-                        $scope.currencyType = (pd.price_currency).toString().includes(',') ? (pd.price_currency).split(',')[0] : 'EUR';
-                        return pd;
-                    }
-                })
-            })
+            // rest.path = 'customerpriceAll/' + 2;  //2 for external userID
+            // rest.get().success(function (data) {
+            //     const currency = data.filter(pd => {
+            //         if(pd.resource_id == $scope.invoiceDetail.freelanceId){
+            //             $scope.currencyType = (pd.price_currency).toString().includes(',') ? (pd.price_currency).split(',')[0] : 'EUR';
+            //             return pd;
+            //         }
+            //     })
+            // })
 
+            $scope.currencyType = ($scope.invoiceDetail.freelance_currency).toString().includes(',') ? ($scope.invoiceDetail.freelance_currency).split(',')[0] : 'EUR';
+            
             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
             $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
@@ -28271,12 +28280,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('dataPrice', dataPrice)
                 dataPrice.filter( (el) =>{
                     if(el.resource_id == $scope.invoiceDetail.clientId){
-                        $scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
-                        console.log('scope.currencyType', $scope.currencyType)
+                        //$scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
+                        //console.log('scope.currencyType', $scope.currencyType)
                     }
                 })
-                
             })    
+            $scope.currencyType = $scope.invoiceDetail && $scope.invoiceDetail.client_currency.includes(',') ?  $scope.invoiceDetail.client_currency.split(',')[0] : 'EUR';
 
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {

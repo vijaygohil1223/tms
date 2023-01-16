@@ -560,7 +560,7 @@
                                                                 <div class="col-sm-3" style="margin-bottom:15px;">
                                                                     <span style="font-weight:bold">Grand Total:
                                                                         &nbsp;&nbsp;&nbsp;</span>
-                                                                    <span>{{ClientCurrency}}</span> <span
+                                                                    <span>{{clientCurrency}}</span> <span
                                                                         id="totalItemPrice">{{jobdetail.total_price |
                                                                         NumbersCommaformat}}</span>
                                                                 </div>
@@ -842,7 +842,7 @@
                         <div class="row invoice-footer">
                             <div class="col-xs-12 text-right">
                                 <h4>TOTAL</h4>
-                                <h3>€ {{jobdetail.total_price | NumbersCommaformat}}</h3>
+                                <h3>{{clientCurrency}} {{jobdetail.total_price | NumbersCommaformat}}</h3>
                             </div>
                         </div>
                         <div class="row" style="margin-bottom: 10px !important;">

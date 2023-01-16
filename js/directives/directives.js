@@ -3292,7 +3292,6 @@ app.directive('select2Contactsummery', function($http, rest, $timeout) {
         link: function(scope, element, ngModel) {
             rest.path = 'JobsummerycontactGet';
             rest.get().success(function(data) {
-                console.log('data', data)
                 var lang = [];
                 angular.forEach(data, function(value, key) {
                     var obj = {
