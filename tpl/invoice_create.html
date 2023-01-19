@@ -131,6 +131,7 @@
                           <!-- <th>QUANTITY</th> -->
                           <th style="width: 150px">Job Description</th>
                           <th style="width: 90px">Amount</th>
+                          <th style="width: 90px">Amount (in NOK)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -144,10 +145,14 @@
                           </td> 
                           <td style="width: 90px">
                             <!-- {{invL.price_per_job | customNumber}} -->
-                            <input class="invoiceCal form-control" type="text" ng-model="invL.price_per_job"
+                            {{invL.price_per_job}}
+                            <!-- <input class="invoiceCal form-control" type="text" ng-model="invL.price_per_job"
                               id="invSubTotal{{$index}}"
                               ng-change="changeInvoiceField($index,$parent.$index,invL.price_per_job,'itemPrice')"
-                              name="itemVal_{{invL.jobId}}" />
+                              name="itemVal_{{invL.jobId}}" /> -->
+                          </td>
+                          <td style="width: 90px">
+                            {{invL.price_per_job}}
                           </td>
                         </tr>
                         <!-- <tr ng-repeat="item in invL.item track by $index">
@@ -161,6 +166,10 @@
                           <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
                           <td style="width:9%;">
                             <span ng-bind="invoiceTotal"></span>
+                          </td>
+                          <td style="width:9%;">
+                            <span ng-bind="invoiceTotal"></span>
+                          </td>  
                             <!-- {{grandTotal | customNumber}} -->
                             <!-- <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="invoiceTotal"
                               ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
@@ -174,6 +183,9 @@
                             <span>{{ taxValue | customNumber }}</span>
                             <!-- <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="vat"
                               ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" /> -->
+                          </td>
+                          <td style="width:9%;">
+                            <span>{{ taxValue | customNumber }}</span>
                           </td>
                         </tr>
                         <!-- <tr class="tdborder">

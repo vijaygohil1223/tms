@@ -4458,7 +4458,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return false;
             }
 
-
             //$scope.jobdetail.due_date = originalDateFormatNew($scope.jobdetail.due_date);
             //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format('YYYY-MM-DD HH:mm:ss');
             $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('.').reverse().join('-');
@@ -4483,26 +4482,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var arr1 = $.map($scope.jobdetail, function (el) {
                 return el;
             });
-            var arr2 = $.map($cookieStore.get('editJobact'), function (el) {
-                return el;
-            });
 
-            if (array_diff(arr1, arr2) != "") {
-                var obj = [];
-                if ($cookieStore.get('jobRecentEdit') != undefined) {
-                    angular.forEach($cookieStore.get('jobRecentEdit'), function (val, i) {
-                        obj.push(val);
-                    });
+            if($cookieStore.get){
+                var arr2 = $.map($cookieStore.get('editJobact'), function (el) {
+                    return el;
+                });
+                if (array_diff(arr1, arr2) != "") {
+                    var obj = [];
+                    if ($cookieStore.get('jobRecentEdit') != undefined) {
+                        angular.forEach($cookieStore.get('jobRecentEdit'), function (val, i) {
+                            obj.push(val);
+                        });
+                    }
+                    obj.push($routeParams.id);
+                    $cookieStore.put('jobRecentEdit', obj);
+                    $cookieStore.remove('editJobact')
                 }
-                obj.push($routeParams.id);
-                $cookieStore.put('jobRecentEdit', obj);
-                $cookieStore.remove('editJobact')
-            }
+            }    
 
             if ($scope.jobdetail.resource != '' && $scope.jobdetail.item_status == 'New') {
                 $scope.jobdetail.item_status = 'In-progress';
             }
+            console.log('$scope.jobdetail',$scope.jobdetail)
             delete $scope.jobdetail['ProjectDueDate'];
+            delete $scope.jobdetail['freelance_currency'];
 
             $routeParams.id;
             rest.path = 'jobSummeryJobDetailsUpdate';
@@ -4526,7 +4529,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 notification('Job successfully updated.', 'success');
                 $uibModalInstance.dismiss('cancel');
                 $route.reload();
-            }).error(errorCallback);
+            }).error( function(data,error,status){
+                if($scope.jobdetail && $scope.jobdetail.due_date){
+                    var due_timeval_e = $scope.jobdetail.due_date.split(" ")[1];
+                    var due_timeval_e = due_timeval_e.substring(0, 5);
+                    $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($window.localStorage.getItem('global_dateFormat'));
+                    console.log('$scope.jobdetail.due_date', $scope.jobdetail.due_date)
+                    angular.element('#due_time').val(due_timeval_e);
+                }
+            });
         }
     }
     $scope.filemanagerSource = function (name) {
