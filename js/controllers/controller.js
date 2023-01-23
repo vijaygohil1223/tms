@@ -4503,7 +4503,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.jobdetail.resource != '' && $scope.jobdetail.item_status == 'New') {
                 $scope.jobdetail.item_status = 'In-progress';
             }
-            console.log('$scope.jobdetail',$scope.jobdetail)
             delete $scope.jobdetail['ProjectDueDate'];
             delete $scope.jobdetail['freelance_currency'];
 

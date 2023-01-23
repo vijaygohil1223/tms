@@ -128,10 +128,9 @@
                         <tr>
                           <th style="width: 50px">#</th>
                           <th style="width: 100px">PO Number</th>
-                          <!-- <th>QUANTITY</th> -->
                           <th style="width: 150px">Job Description</th>
                           <th style="width: 90px">Amount</th>
-                          <th style="width: 90px">Amount (in NOK)</th>
+                          <!-- <th style="width: 90px">Amount (in NOK)</th> -->
                         </tr>
                       </thead>
                       <tbody>
@@ -151,9 +150,6 @@
                               ng-change="changeInvoiceField($index,$parent.$index,invL.price_per_job,'itemPrice')"
                               name="itemVal_{{invL.jobId}}" /> -->
                           </td>
-                          <td style="width: 90px">
-                            {{invL.price_per_job}}
-                          </td>
                         </tr>
                         <!-- <tr ng-repeat="item in invL.item track by $index">
                           <td ng-bind="$index+1"></td>
@@ -164,9 +160,6 @@
                         </tr> -->
                         <tr>
                           <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
-                          <td style="width:9%;">
-                            <span ng-bind="invoiceTotal"></span>
-                          </td>
                           <td style="width:9%;">
                             <span ng-bind="invoiceTotal"></span>
                           </td>  
@@ -183,9 +176,6 @@
                             <span>{{ taxValue | customNumber }}</span>
                             <!-- <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="vat"
                               ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" /> -->
-                          </td>
-                          <td style="width:9%;">
-                            <span>{{ taxValue | customNumber }}</span>
                           </td>
                         </tr>
                         <!-- <tr class="tdborder">
