@@ -3447,8 +3447,8 @@ app.directive('select2ScoopDetailitmStatus', function($http, rest, $timeout) {
                 var indirect = [];
                 $.each(data, function(key, value) {
                     var obj = {
-                        //'id': value.item_status_id,
-                        'id': value.item_status_name,
+                        'id': value.item_status_id,
+                        //'id': value.item_status_name,
                         'text': value.item_status_name
                     };
                     indirect.push(obj);

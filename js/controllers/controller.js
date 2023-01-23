@@ -2230,45 +2230,95 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsAll.push(val);
                     $scope.projectsAllCount++;
                 }
+                // My Projects
                 if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
                     $scope.projectsMyproj.push(val);
                     $scope.projectsMyprojCount++;
                 }
+                // upcoming Projects - Heads up
                 if (val.heads_up == 1 ) {
                     $scope.projectsUpcoming.push(val);
                     $scope.projectsUpcomingCount++;
                 }
-                //if (val.projectStatus == 12) {
-                if (val.itemStatus == "To be Assigned") {
-                    //if (val.itemStatus == "In preparation") {
-                    //To be Assigned
+                //To be Assigned - Assign
+                if (val.itemStatusId == "1") {
+                //if (val.itemStatusId == "To be Assigned") {
                     val.progrss_precentage = 0;
                     val.projectstatus_class = 'projectstatus_assigned';
                     val.projectstatus_color = '#ffea3c';
                     $scope.projectsAssigned.push(val);
                     $scope.projectsAssignedCount++;
                 }
-                //if (val.projectStatus == 4) {
-                if (val.itemStatus == "In Progress") {
+                // In Progress - Ongoing
+                if (val.itemStatusId == "2") {
                     val.progrss_precentage = 25;
                     val.projectstatus_class = 'projectstatus_inprogress';
                     val.projectstatus_color = '#fec106';
                     $scope.projectsInProgress.push(val);
                     $scope.projectsInprogressCount++;
                 }
-                //if (val.projectStatus == 13) {
-                if (val.itemStatus == "Completed by linguist") {
+                // To be Delivered - Delivery
+                if (val.itemStatusId == "3") {
+                    val.progrss_precentage = 100;
+                    val.projectstatus_class = 'projectstatus_tobedelivered';
+                    val.projectstatus_color = '#c6d732';
+                    $scope.projectsToBeDelivered.push(val);
+                    $scope.projectsToBeDeliveredCount++;
+                }
+                // Delivered - Completed
+                if (val.itemStatusId == "4") {
+                    val.progrss_precentage = 100;
+                    //$scope.projectDileveredCount++;
+                    $scope.projectsDelivered.push(val);
+                    $scope.projectsDeliveredCount++;
+                    val.projectstatus_class = 'projectstatus_delivered';
+                    val.projectstatus_color = '#80bb41';
+                }
+                // Approved - Approved
+                if (val.itemStatusId == "5") {
+                    $scope.projectApprovedCount++;
+                    val.projectstatus_class = 'projectstatus_approved';
+                    val.projectstatus_color = '#4caf52';
+                }
+                // Invoiced 
+                if (val.itemStatusId == "6") {
+                    val.progrss_precentage = 100;
+                    $scope.projectInvoicedCount++;
+                    val.projectstatus_class = 'projectstatus_invoiced';
+                    val.projectstatus_color = '#ea1e63';
+                }
+                // Paid
+                if (val.itemStatusId == "7") {
+                    val.progrss_precentage = 100;
+                    $scope.projectPaidCount++;
+                    val.projectstatus_class = 'projectstatus_paid';
+                    val.projectstatus_color = '#00bcd5';
+                }
+                //Without invoice => Non-payable
+                if (val.itemStatusId == "8") {
+                    $scope.projectWithoutInvoicedCount++;
+                    val.projectstatus_class = 'projectstatus_withoutInvoice';
+                    val.projectstatus_color = '#9e9e9e';
+                }
+                // Cancelled
+                if (val.itemStatusId == "9") {
+                    $scope.projectCancelledCount++;
+                    val.projectstatus_class = 'projectstatus_cancelled';
+                    val.projectstatus_color = '#f44237';
+                }
+                // Completed by linguist
+                if (val.itemStatusId == "10") {
                     val.progrss_precentage = 50;
                     val.projectstatus_class = 'projectstatus_completed';
                     val.projectstatus_color = '#ff9700';
                     $scope.projectsCompletedByLng.push(val);
                     $scope.projectLinguistCount++;
                 }
-                //if (val.projectStatus == 14) {
-                if (val.itemStatus == "QA Ready") {
+                // QA Ready
+                if (val.itemStatusId == "11") {
                     let isQaReady = true;
                     if($scope.jobListDelivered.length > 0){
-                        let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.item_status != 'Delivered' );
+                        let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.item_status != '4' );
                         if(checkqaReady.length > 0)
                             isQaReady = false;
                     }
@@ -2280,64 +2330,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.projectsQaReadyCount++;
                     }    
                 }
-                //if (val.projectStatus == 15) {
-                if (val.itemStatus == "To be Delivered") {
-                    val.progrss_precentage = 100;
-                    val.projectstatus_class = 'projectstatus_tobedelivered';
-                    val.projectstatus_color = '#c6d732';
-                    $scope.projectsToBeDelivered.push(val);
-                    $scope.projectsToBeDeliveredCount++;
-                }
-                if (val.itemStatus == "Delivered") {
-                    val.progrss_precentage = 100;
-                    val.projectstatus_class = 'projectstatus_tobedelivered';
-                    val.projectstatus_color = '#c6d732';
-                    $scope.projectsDelivered.push(val);
-                    $scope.projectsDeliveredCount++;
-                }
-                if (val.itemStatus == "Delivered") {
-                    val.progrss_precentage = 100;
-                    $scope.projectDileveredCount++;
-                    val.projectstatus_class = 'projectstatus_delivered';
-                    val.projectstatus_color = '#80bb41';
-                }
-                if (val.itemStatus == "Approved") {
-                    $scope.projectApprovedCount++;
-                    val.projectstatus_class = 'projectstatus_approved';
-                    val.projectstatus_color = '#4caf52';
-                }
-                if (val.itemStatus == "Invoiced") {
-                    val.progrss_precentage = 100;
-                    $scope.projectInvoicedCount++;
-                    val.projectstatus_class = 'projectstatus_invoiced';
-                    val.projectstatus_color = '#ea1e63';
-                }
-                if (val.itemStatus == "Paid") {
-                    val.progrss_precentage = 100;
-                    $scope.projectPaidCount++;
-                    val.projectstatus_class = 'projectstatus_paid';
-                    val.projectstatus_color = '#00bcd5';
-                }
-                if (val.itemStatus == "Without invoice") {
-                    $scope.projectWithoutInvoicedCount++;
-                    val.projectstatus_class = 'projectstatus_withoutInvoice';
-                    val.projectstatus_color = '#9e9e9e';
-                }
-                if (val.itemStatus == "Cancelled") {
-                    $scope.projectCancelledCount++;
-                    val.projectstatus_class = 'projectstatus_cancelled';
-                    val.projectstatus_color = '#f44237';
-                }
-                if (val.itemStatus == "Overdue") {
+                // Overdue
+                if (val.itemStatusId == "12") {
                     $scope.projectOverdueCount++;
                     val.projectstatus_class = 'projectstatus_overdue';
                     val.projectstatus_color = '#f44237';
                 }
-                // val.DueDate
-                let statusExistArr = ["Delivered","Approved","Invoiced","Paid"];
+                // val.DueDate - due Today
+                //let statusExistArr = ["Delivered","Approved","Invoiced","Paid"];
+                let statusExistArr = ["4","5","6","7"];
                 let scoopDueDate = val.itemDuedate;
                     
-                if(scoopDueDate && !(statusExistArr.indexOf(val.itemStatus) > -1) ){
+                if(scoopDueDate && !(statusExistArr.indexOf(val.itemStatusId) > -1) ){
                     if (scoopDueDate.split(' ')[0] == $scope.dateToday) {
                         $scope.projectsDueToday.push(val);
                         $scope.projectsDueTodayCount++;
@@ -18475,6 +18479,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.jobi = {};
     $scope.saveitems = function (formId, formIndex) {
+        console.log('$scope.itemList=>updtval',$scope.itemList)
         if (angular.element('#item-form' + formId).valid()) {
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
@@ -18499,6 +18504,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemList[formIndex].item_number = angular.element('#item_number').text();
                         $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
                     }
+
+                    $scope.itemList[formIndex].contact_person = $scope.itemList[formIndex].contact_person ? ($scope.itemList[formIndex].contact_person.toString()).split(',').pop() : '';
+
 
                     $scope.itemList[formIndex].order_id = $scope.routeOrderID;
                     $scope.itemList[formIndex].total_amount = $scope.total_amount;
