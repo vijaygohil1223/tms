@@ -1142,3 +1142,41 @@ table.customerPriceTable tbody [id^=priceLanguageID] tr.priceLPrice.rowactivate 
 .invoice-footer p {
     margin-top: 10px;
 }
+
+/* Start  Dashboard tabs scrolling
+Scroll Tabs css */
+.scrollNav ul.nav.nav-tabs {
+  /* Make this scrollable when needed */
+  overflow-x: auto;
+  /* We don't want vertical scrolling */
+  overflow-y: hidden;
+  /* Make an auto-hiding scroller for the 3 people using a IE */
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  /* For WebKit implementations, provide inertia scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* We don't want internal inline elements to wrap */
+}
+.scrollNav ul.nav.nav-tabs::-webkit-scrollbar {
+  display: none;
+}
+.nav-prev.arrow, .nav-next.arrow{
+  background: #e5eaf0;
+  width: 20px;
+  text-align: center;
+  padding: 4px 0;
+  height: initial;
+  border-width: initial;
+  border-color: none;
+  border-style: initial;
+  font-size: 20px;
+  cursor: pointer;
+}  
+.nav-prev {
+  position: absolute;
+  left: 0px;
+}
+.nav-next {
+  position: absolute;
+  right: 0px;
+}
+/* End Dashboard tabs scrolling  */
