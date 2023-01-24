@@ -18499,14 +18499,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     if ($scope.itemList[formIndex].item_number != undefined) {
                         $scope.itemList[formIndex].item_number;
-
                     } else {
                         $scope.itemList[formIndex].item_number = angular.element('#item_number').text();
                         $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
                     }
 
                     $scope.itemList[formIndex].contact_person = $scope.itemList[formIndex].contact_person ? ($scope.itemList[formIndex].contact_person.toString()).split(',').pop() : '';
-
 
                     $scope.itemList[formIndex].order_id = $scope.routeOrderID;
                     $scope.itemList[formIndex].total_amount = $scope.total_amount;
