@@ -2315,7 +2315,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectLinguistCount++;
                 }
                 // QA Ready
-                if (val.itemStatusId == "11") {
+                if (val.itemStatusId == "10") {
                     let isQaReady = true;
                     if($scope.jobListDelivered.length > 0){
                         let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.item_status != '4' );
@@ -2331,7 +2331,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }    
                 }
                 // Overdue
-                if (val.itemStatusId == "12") {
+                if (val.itemStatusId == "11") {
                     $scope.projectOverdueCount++;
                     val.projectstatus_class = 'projectstatus_overdue';
                     val.projectstatus_color = '#f44237';

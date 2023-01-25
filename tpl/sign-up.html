@@ -9,15 +9,16 @@
     }
 </style>
 <div class="container w-auto-xs" style="margin-top: -30px;">
-    <a href class="navbar-brand block">
-        <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="..."
-            style="max-height: 50px; max-width: 100%; width: auto;">
-    </a>
+    
     <div class="m-b-sm">
-        <div class="wrapper text-center">
+        <div class="wrapper d-flex space-between justify-space-between">
+            <a ng-click="backtoPage()" class="navbar-brand block">
+                <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="..."
+                    style="max-height: 50px; max-width: 100%; width: auto;">
+            </a>
             <h3><strong>Sign Up</strong></h3>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default" style="box-shadow: 0px 1px 1px 1px #bbb5b5;">
             <div class="panel-body">
                 <form id="userprofileform" class="form-validation">
                     <!--   TAB1 -->
@@ -309,8 +310,9 @@
                     <div class="panel-footer text-center">
                         <a class="btn btn-info"
                             ng-click="saveUserSignUp('userprofileform',userprofiledata.freelancer);" style="width:18%;"> Sign Up </a>
-                        <a class="btn btn-info"
-                            ng-click="backtoPage()" style="width:18%;"> Back </a>
+                        <!-- <a class="btn btn-info"
+                            ng-click="backtoPage()" style="width:18%;"> Back </a> -->
+                            <a ng-click="backtoPage()" style="margin-left: 35px;"> Back </a>    
                             
                     </div>
                 </form>

@@ -1146,7 +1146,6 @@ table.customerPriceTable tbody [id^=priceLanguageID] tr.priceLPrice.rowactivate 
 /* Start  Dashboard tabs scrolling
 Scroll Tabs css */
 .scrollNav ul.nav.nav-tabs {
-  /* Make this scrollable when needed */
   overflow-x: auto;
   /* We don't want vertical scrolling */
   overflow-y: hidden;
@@ -1155,6 +1154,8 @@ Scroll Tabs css */
   /* For WebKit implementations, provide inertia scrolling */
   -webkit-overflow-scrolling: touch;
   /* We don't want internal inline elements to wrap */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 .scrollNav ul.nav.nav-tabs::-webkit-scrollbar {
   display: none;
