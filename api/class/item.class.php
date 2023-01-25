@@ -98,6 +98,13 @@ class item {
             $info['user_id'] = 0;
             $this->_db->where('item_id',$id);
             $this->_db->update('tms_filemanager',$info);
+
+            // if scoop status Cancelled (status id = 9) all jobs will be cancel for that scoop
+            if (isset($data['order_id']) && $data['item_status'] == '9') {
+                $qry_up = "UPDATE tms_summmery_view SET item_status = 'Canceled' WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_number']."' ";
+                $this->_db->rawQuery($qry_up);
+            }
+
             $return['status'] = 200;
             $return['msg'] = 'Successfully Updated.';
         } else {

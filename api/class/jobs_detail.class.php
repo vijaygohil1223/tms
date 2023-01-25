@@ -222,7 +222,14 @@ class jobs_detail
                 $in['updated_date'] = date('Y-m-d H:i:s');
 
                 $test = $this->_db->insert('tms_filemanager', $in);
+
             }
+            // update item status if status 2 (Ongoing) back to 1 (Assign)
+            if ($info['order_id'] && $info['item_id']) {
+                $qry_up = "UPDATE tms_items SET `item_status` = '1' WHERE order_id = '".$info['order_id']."' AND item_number = '".$info['item_id']."' AND item_status = '2' ";
+                $this->_db->rawQuery($qry_up);
+            }
+
             if ($id) {
 
                 $return['status'] = 200;
@@ -1172,6 +1179,7 @@ class jobs_detail
 
     public function jobSummeryJobDetailsUpdate($id, $data)
     {
+        
         unset($data['auto_job'], $data['fmanager_id'], $data['userName'], $data['contactPerson'], $data['projectName'], $data['projectManager'], $data['project_type_name']);
         //unset($data['quantity'],$data['itemPrice']);
         if (isset($data['proj_specialization'])) {
@@ -1186,7 +1194,17 @@ class jobs_detail
 
         $this->_db->where('job_summmeryId', $id);
 
-        $data = $this->_db->update('tms_summmery_view', $data);
+        $update = $this->_db->update('tms_summmery_view', $data);
+        if ($update) {
+            $qry = "SELECT count(*) as count FROM tms_summmery_view WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_id']."' AND resource = '' ";
+            $res_exist = $this->_db->rawQuery($qry);
+            if ($res_exist && $res_exist[0]['count'] == 0) {
+                $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '".$data['order_id']."' AND item_number = '".$data['item_id']."' AND item_status = '1' ";
+                $this->_db->rawQuery($qry_up);
+            }
+        }
+        
+
         if ($id) {
 
             $return['status'] = 200;

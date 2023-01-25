@@ -26606,7 +26606,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.InvoiceResult = data;
             $scope.InvoiceResult = data.filter(function (el) {
-                if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
+                // status Approved = 5 id
+                //if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
+                if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId))
                     return el;
             });
             //$scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
