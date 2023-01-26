@@ -142,15 +142,13 @@ class jobs_detail
 
         //echo '<pre>'; print_r($info); echo '</pre>';
         $this->_db->where('item_id', $info['item_id']);
-
         $this->_db->where('job_id', $info['job_id']);
-
         $this->_db->where('order_id', $info['order_id']);
-
         $alreadyExists = $this->_db->getOne('tms_summmery_view');
 
         // changes - If same job exist we can add new jobs
         $alreadyExists2 = false;
+
 
         if ($alreadyExists2) {
 
@@ -162,16 +160,21 @@ class jobs_detail
 
         } else {
 
-
-
             //jobsummery insert
 
             if (isset($info['job_no'])) {
-
                 $info['job_no'];
             } else {
-
                 $info['job_no'] = 1;
+            }
+            // Add resource if Job is External Quality Assurance(EQA) = 11
+            if($info['job_id'] == '11'){
+                $this->_db->where('item_id', $info['item_id']);
+                $this->_db->where('order_id', $info['order_id']);
+                $this->_db->orderBy('job_summmeryId','DESC');
+                $jobAssigned = $this->_db->getOne('tms_summmery_view');
+                if (count($jobAssigned) > 0)
+                    $info['resource'] = $jobAssigned['resource'];
             }
 
             $info['created_date'] = date('Y-m-d H:i:s');
@@ -179,7 +182,7 @@ class jobs_detail
             $info['updated_date'] = date('Y-m-d H:i:s');
 
             if(isset($info['contact_person']) && $info['contact_person'] == '')
-            unset($info['contact_person']);
+                unset($info['contact_person']);
 
             $id = $this->_db->insert('tms_summmery_view', $info);
 
@@ -224,10 +227,17 @@ class jobs_detail
                 $test = $this->_db->insert('tms_filemanager', $in);
 
             }
-            // update item status if status 2 (Ongoing) back to 1 (Assign)
             if ($info['order_id'] && $info['item_id']) {
-                $qry_up = "UPDATE tms_items SET `item_status` = '1' WHERE order_id = '".$info['order_id']."' AND item_number = '".$info['item_id']."' AND item_status = '2' ";
-                $this->_db->rawQuery($qry_up);
+                // job Name External Quality Assurance (EQA) = 11
+                if($info['job_id'] == '11'){
+                    // item scoop status QA issues = 11 id
+                    $qry_up = "UPDATE tms_items SET `item_status` = '11' WHERE order_id = '" . $info['order_id'] . "' AND item_number = '" . $info['item_id'] . "' ";
+                } else {
+                    // update item status if status 2 (Ongoing) back to 1 (Assign)
+                    $qry_up = "UPDATE tms_items SET `item_status` = '1' WHERE order_id = '" . $info['order_id'] . "' AND item_number = '" . $info['item_id'] . "' AND item_status = '2' ";
+                }
+                if($qry_up)    
+                    $this->_db->rawQuery($qry_up);
             }
 
             if ($id) {
@@ -1059,7 +1069,9 @@ class jobs_detail
     public function jobdetailItemStatusGet()
     {
 
-        $data = array('1' => 'In preparation', '2' => 'Requested', '3' => 'Assigned-waiting', '4' => 'In-progress', '5' => 'Overdue', '6' => 'Delivered', '7' => 'Approved', '8' => 'Invoice Accepted', '9' => 'Paid', '10' => 'Canceled', '11' => 'Without invoice', '12' => 'Pending', '13' => 'New', '14' => 'Ready to be Delivered', '15' => 'Completed');
+        //$data = array('1' => 'In preparation', '2' => 'Requested', '3' => 'Assigned-waiting', '4' => 'In-progress', '5' => 'Overdue', '6' => 'Delivered', '7' => 'Approved', '8' => 'Invoice Accepted', '9' => 'Paid', '10' => 'Canceled', '11' => 'Without invoice', '12' => 'Pending', '13' => 'New', '14' => 'Ready to be Delivered', '15' => 'Completed');
+        $this->_db->where('is_active', 1);
+        $data = $this->_db->get('tms_job_status');
 
         return $data;
     }

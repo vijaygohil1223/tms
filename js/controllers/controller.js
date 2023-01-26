@@ -18868,8 +18868,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'itemsGet/' + $scope.order_idd;
         rest.get().success(function (data) {
             $scope.itemList = data;
-            console.log('$scope.itemList', $scope.itemList)
             $scope.TblItemList = data;
+
             $scope.projectItemEmpty = jQuery.isEmptyObject(data);
             $scope.totalPrice = 0;
             var cont = [];
@@ -20861,6 +20861,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //var dd = $scope.jobi.jobSummery[0];
                 $scope.jobi.jobSummery = dd.substr(1);
                 $scope.matchjob = dd.slice(0, 1);
+                
                 if ($scope.matchjob == 'j') {
                     rest.path = 'jobpertjobGet/' + $scope.jobi.jobSummery + '/' + $routeParams.id;
                     rest.get().success(function (data) {
@@ -20909,9 +20910,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $scope.jobitem.tmp_po_number = $scope.po_number;
                                 }
 
-                                /* Job Status To New When Creating New Job*/
-                                $scope.jobitem.item_status = 'New';
-
+                                /* Job Status To New When Creating New / In preparation Job*/
+                                $scope.jobitem.item_status = 'In preparation';
+                                
                                 // Remove if Display Assign PO Link
                                 //$scope.jobitem.po_number = '';
                                 $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;

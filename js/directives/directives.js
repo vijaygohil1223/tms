@@ -3404,9 +3404,13 @@ app.directive('select2JobDetailitmStatus', function($http, rest, $timeout) {
             rest.get().success(function(data) {
                 var indirect = [];
                 $.each(data, function(key, value) {
+                    // var obj = {
+                    //     'id': value,
+                    //     'text': value
+                    // };
                     var obj = {
-                        'id': value,
-                        'text': value
+                        'id': value.job_status_name,
+                        'text': value.job_status_name
                     };
                     indirect.push(obj);
                 });

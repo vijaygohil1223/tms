@@ -184,11 +184,15 @@
                         </td>
                       </tr> -->
                       <tr ng-if="$index == invoiceLength && invL.paid_amount > 0" class="tdborder">
-                        <td colspan="5" class="text-right no-border"><strong>Paid</strong></td>
+                        <td colspan="6" class="text-right no-border"><strong>Paid</strong></td>
                         <td style="width:10%;"> {{invL.paid_amount | customNumber}}</td>
                       </tr>
+                      <tr ng-if="$index == invoiceLength && invL.paid_amount > 0" class="tdborder">
+                        <td colspan="6" class="text-right no-border"><strong>Total Due Amount</strong></td>
+                        <td style="width:10%;"> {{totalDue | customNumber}} </td>
+                      </tr>
                       <!-- <tr ng-if="$index == invoiceLength && invL.paid_amount > 0" class="tdborder">
-                        <td colspan="5" class="text-right no-border"><strong>Total Due Amount</strong></td>
+                        <td colspan="6" class="text-right no-border"><strong>Total Due Amount</strong></td>
                         <td style="width:10%;"> <strong> {{invL.Invoice_cost - invL.paid_amount |
                             customNumber}}</strong></td>
                       </tr> -->
@@ -198,15 +202,16 @@
                 </div>  
                 <div class="row invoice-footer">
                   <div class="col-xs-6">
-                    <p>Bank Name: Revolut Bank UAB </br>
+                    <p>Bank Name: <span ng-bind="vBankInfo.bank_name"></span> </br>
                       Account Holder: <span ng-bind="vBankInfo.holder_name"></span> </br>
                       IBAN: <span ng-bind="vBankInfo.iban"></span> </br>
                       SWIFT: <span ng-bind="vBankInfo.swift_bic"></span></P>
                   </div>
                   <div class="col-xs-6 text-right">
-                    <!-- <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;"> -->
-                    <h4>TOTAL <span ng-bind="dueAmountText"></span></h4>
-                    <h3>{{currencyType}} {{totalDue | customNumber}}</h3>
+                    <!-- <h4>TOTAL <span ng-bind="dueAmountText"></span></h4> -->
+                    <!-- <h3>{{currencyType}} {{totalDue | customNumber}}</h3> -->
+                    <h4>TOTAL</h4>
+                    <h3>{{currencyType}} {{invoiceTotal}}</h3>
                   </div>
                 </div>
                 <div class="row">

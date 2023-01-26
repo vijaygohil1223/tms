@@ -65,7 +65,7 @@ class item {
     }
 
     public function itemsGet($id) {
-        $data = $this->_db->rawQuery("SELECT ti.*,tg.project_name,tg.specialization  FROM `tms_items` As ti INNER JOIN tms_general As tg ON ti.order_id = tg.order_id WHERE ti.order_id = $id");
+        $data = $this->_db->rawQuery("SELECT ti.*,tg.project_name,tg.specialization, tis.item_status_name  FROM `tms_items` As ti INNER JOIN tms_general As tg ON ti.order_id = tg.order_id LEFT JOIN tms_item_status As tis ON ti.item_status = tis.item_status_id WHERE ti.order_id = $id");
         return $data;
     }
 
@@ -77,6 +77,9 @@ class item {
 
     public function ItemUpdate($id,$data) {
         unset($data['project_name']);
+        if(isset($data['item_status_name']))
+            unset($data['item_status_name']);
+        
         if(isset($data['currencyRate'])) {
             $cur['currency'] = $data['currencyRate'];
             $cur['modified_date'] = date('Y-m-d H:i:s');

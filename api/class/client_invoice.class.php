@@ -263,7 +263,8 @@ class Client_invoice {
             if($data['invoice_status'] == 'Complete'){
                 foreach (json_decode($invoiceRecords[0]['scoop_id']) as $field => $val) {
                     $scpData['updated_date'] = date('Y-m-d H:i:s');
-                    $scpData['item_status'] = 'Paid';
+                    //$scpData['item_status'] = 'Paid';
+                    $scpData['item_status'] = '7'; // Paid status ID
                     $this->_db->where('itemId', $val->id);
                     $scpstsId = $this->_db->update('tms_items', $scpData);
                 }
@@ -406,7 +407,6 @@ class Client_invoice {
     }
 
     public function sendInvoiceMail($data) {
-
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
         $pdfFileName = $data['invoiceno'].'.pdf';
@@ -443,12 +443,26 @@ class Client_invoice {
         //if ($response->success()) { //output success or failure messages
                 if(isset($data['outstanding_reminder'])){
                     if($data['outstanding_reminder']==1)
-                    $upData['reminder_sent'] = 1;
+                        $upData['reminder_sent'] = 1;
                 }
                 $upData['modified_date'] = date('Y-m-d');
                 $upData['is_invoice_sent'] = 1;
                 $this->_db->where('invoice_id', $data['invoice_id']);
                 $this->_db->update('tms_invoice_client',$upData);
+
+                // start Update status in scoop table
+                $qry_invc = "SELECT scoop_id FROM tms_invoice_client WHERE invoice_id = '".$data['invoice_id']."' ";
+                $invcData = $this->_db->rawQuery($qry_invc);
+                if ( count($invcData) && array_key_exists("scoop_id", $invcData[0])) {
+                    $invcScpIds = json_decode($invcData[0]['scoop_id']);
+                    foreach ($invcScpIds as $key => $value) {
+                        $scpData['updated_date'] = date('Y-m-d H:i:s');
+                        $scpData['item_status'] = '6'; // Invoiced status ID
+                        $this->_db->where('itemId', $value->id);
+                        $scpstsId = $this->_db->update('tms_items', $scpData);
+                    }
+                }
+                // End Update status in scoop table
 
                 $result['status'] = 200;
                 $result['msg'] = 'Thank you for your email';
@@ -538,7 +552,6 @@ class Client_invoice {
         }else{
             return $result['status'] = 422;
         }
-
 
     }
 
