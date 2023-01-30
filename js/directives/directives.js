@@ -5896,17 +5896,29 @@ app.directive('allowDecimalCommaNumber', function () {
                 if (containsDot != null) {  
                     return true;  
                 }
+                // control key
+                var ctrl = event.ctrlKey ? event.ctrlKey : ((event.which === 17) ? true : false);
+                
                 if (event.which == 64 || event.which == 16) {  
                     // numbers  
                     return false;  
-                } if ([8, 13, 27, 37, 38, 39, 40, 110].indexOf(event.which) > -1) {  
-                    // backspace, enter, escape, arrows  
+                } if ([8, 9, 13, 27, 37, 38, 39, 40, 110].indexOf(event.which) > -1) {  
+                    // tab, backspace, enter, escape, arrows  
                     return true;  
                 } else if (event.which >= 48 && event.which <= 57) {  
                     // numbers  
                     return true;  
                 } else if (event.which >= 96 && event.which <= 105) {  
                     // numpad number  
+                    return true;  
+                } else if (ctrl && event.which === 86) {  
+                    // ctr + V  
+                    return true;  
+                } else if (ctrl && event.which === 67) {  
+                    // ctr + C  
+                    return true;  
+                } else if (ctrl && event.which === 65) {  
+                    // ctr + A  
                     return true;  
                 } else if ([46, 110, 190, 188].indexOf(event.which) > -1) {  
                     // dot and dot comma numpad 

@@ -2629,8 +2629,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     pendingPo.push(val);
                 }
                 allJobsData.push(val);
-                if (val.item_status == 'New') {
-                    NewJob.push(val);
+                if (val.item_status == 'In preparation') {
+                //if (val.item_status == 'New') {
+                        NewJob.push(val);
                 } else if (val.item_status == 'Requested') {
                     Requested.push(val);
                     jobRequestesCount++;
@@ -4504,7 +4505,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }    
 
-            if ($scope.jobdetail.resource != '' && $scope.jobdetail.item_status == 'New') {
+            if ($scope.jobdetail.resource != '' && $scope.jobdetail.item_status == 'In preparation') {
                 $scope.jobdetail.item_status = 'In-progress';
             }
             delete $scope.jobdetail['ProjectDueDate'];
@@ -18619,7 +18620,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 }
 
                                                 /* Job Status To New When Creating New Job*/
-                                                $scope.jobitem.item_status = 'New';
+                                                $scope.jobitem.item_status = 'In preparation';
 
                                                 // Remove if Display Assign PO Link
                                                 //$scope.jobitem.po_number = '';
@@ -18709,7 +18710,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                                 $scope.jobitem.tmp_po_number = $scope.po_number;
                                                             }
 
-                                                            $scope.jobitem.item_status = 'New';
+                                                            $scope.jobitem.item_status = 'In preparation';
                                                             $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
                                                             $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
 
@@ -21009,7 +21010,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                     }
 
                                                     /* Job Status To New When Creating New Job*/
-                                                    $scope.jobitem.item_status = 'New';
+                                                    $scope.jobitem.item_status = 'In preparation';
                                                     //$scope.jobitem.po_number = '';
                                                     // to insert lang pair in job
                                                     var newLag = $scope.lang_st.filter((st) => st.item_number == $scope.jobitem.item_id);
@@ -29558,7 +29559,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 }
 
                                                 /* Job Status To New When Creating New Job*/
-                                                $scope.jobitem.item_status = 'New';
+                                                $scope.jobitem.item_status = 'In preparation';
 
                                                 // Remove if Display Assign PO Link
                                                 //$scope.jobitem.po_number = '';
@@ -29647,7 +29648,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                                 $scope.jobitem.tmp_po_number = $scope.po_number;
                                                             }
 
-                                                            $scope.jobitem.item_status = 'New';
+                                                            $scope.jobitem.item_status = 'In preparation';
                                                             $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
                                                             $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
 
