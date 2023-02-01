@@ -18763,9 +18763,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     
-                    const hasKeyStsName = 'item_status_name' in $scope.itemList;
-                    if(hasKeyStsName)    
-                        delete $scope.itemList.item_status_name;
+                    // const hasKeyStsName = 'item_status_name' in $scope.itemList;
+                    // if(hasKeyStsName)    
+                    //     delete $scope.itemList.item_status_name;
                     
                     rest.path = 'ItemUpdate';
                     rest.put($scope.itemList[formIndex]).success(function () {
