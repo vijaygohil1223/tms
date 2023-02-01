@@ -77,7 +77,8 @@ class item {
 
     public function ItemUpdate($id,$data) {
         unset($data['project_name']);
-        unset($data['item_status_name']);
+        if(isset($data['item_status_name']))
+            unset($data['item_status_name']);
         
         if(isset($data['currencyRate'])) {
             $cur['currency'] = $data['currencyRate'];
