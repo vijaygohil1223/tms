@@ -97,6 +97,11 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'signupController',
             //activetab: 'dashboard',
             //role: '1'    
+        }).when('/job-accept/:id', {
+            templateUrl: modulesPath + 'sign-up.html',
+            controller: 'signupController',
+            //activetab: 'dashboard',
+            //role: '1'    
         })
 
         // ------------------- client profile ------------------------//

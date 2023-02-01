@@ -737,9 +737,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('signupController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope, fileReader) {
     /*-------Check for login--------*/
-    if ($cookieStore.get('session_iUserId') != undefined) {
-        $location.path('/dashboard');
-    }
+    // if ($cookieStore.get('session_iUserId') != undefined) {
+    //     $location.path('/dashboard');
+    // }
 
     $window.localStorage.setItem("global_dateFormat", 'DD.MM.YYYY'); // Default
     $window.localStorage.setItem("dtSeparator", '.'); // Default
@@ -18765,7 +18765,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     // const hasKeyStsName = 'item_status_name' in $scope.itemList;
                     // if(hasKeyStsName)    
-                    //     delete $scope.itemList.item_status_name;
+                    //  delete $scope.itemList.item_status_name;
                     
                     rest.path = 'ItemUpdate';
                     rest.put($scope.itemList[formIndex]).success(function () {

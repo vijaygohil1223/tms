@@ -1134,11 +1134,16 @@ class jobs_detail
         else
             $itemStatus = " ";
 
+        $urlSlug = base64_encode('jobId=147&userId=4');
+        $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlug.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
+        
         $body = "<p>Please login to account accept.</p>";
         $body .= "<p>Job No. : " . $jobnumber . ",</p>";
         $body .= "<p>Due Date : " . $duedate . ",</p>";
         $body .= "<p>job Status : " . $itemStatus . ",</p>";
-
+        
+        $body .= "<p> click here to accept the job" . $acceptLink . "</p>";
+        
         $subject = "Job Detail's ";
 
         // $this->_mailer = new PHPMailer();

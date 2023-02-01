@@ -462,30 +462,48 @@ li.seperatordate.comment {
                                                 </div>
                                             </div>
                                             <div class="panel panel-default custm-table">
-                                                <div class="panel-heading font-bold"><h4>Work instructions</h4></div>
+                                                <div class="panel-heading font-bold"><h4>Job Status</h4></div>
                                                 <div class="panel-body">
-                                                    <table  class="table m-b-none default footable-loaded footable">
-                                                        <thead style="background-color:#3615a0;">
-                                                        <th style="color:#454f59;">Work Instructions</th>
-                                                        <!-- <th>Check list</th> -->
-                                                        <th></th>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
-                                                                <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
-                                                                <td>
-                                                                    <!-- <span style="color:green;"> <i class="fa fa-check" aria-hidden="true"></i> </span> -->
-                                                                    <span id="work_name{{$index}}" ng-bind="war.work_name"><span>
-                                                                </td>
-                                                                <td><span class="checkList"></span> <input type="checkbox" id="workcheck{{war.work_id}}" value="war.work_checked" ng-checked="war.work_checked == true" name="work_checked" ng-click="checkWorkInstruct(war.work_id)"> </td>
-                                                            </tr>
-                                                            <tr ng-show="wrInstructEmpty">
-                                                                <td colspan="4" ng-bind="dataNotFound"></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                    <div class="col-sm-12">
+                                                        <div class="" ng-if="jobdetail.item_status == 'Requested'">
+                                                            <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'accept');">Accept</a>
+                                                            <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'reject');">Reject</a>
+                                                        </div>
+                                                        <div class="" ng-if="jobdetail.item_status == 'Assigned-waiting'">
+                                                            <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'start');">Start</a>
+                                                        </div>
+                                                        <div class="" ng-if="jobdetail.item_status == 'In-progress'">
+                                                            <!-- <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'save');">Save</a> -->
+                                                            <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'save');">Delivered</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div class="panel panel-default custm-table">
+                                              <div class="panel-heading font-bold"><h4>Work instructions</h4></div>
+                                              <div class="panel-body">
+                                                  <table  class="table m-b-none default footable-loaded footable">
+                                                      <thead style="background-color:#3615a0;">
+                                                      <th style="color:#454f59;">Work Instructions</th>
+                                                      <!-- <th>Check list</th> -->
+                                                      <th></th>
+                                                      </thead>
+                                                      <tbody>
+                                                          <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
+                                                              <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
+                                                              <td>
+                                                                  <!-- <span style="color:green;"> <i class="fa fa-check" aria-hidden="true"></i> </span> -->
+                                                                  <span id="work_name{{$index}}" ng-bind="war.work_name"><span>
+                                                              </td>
+                                                              <td><span class="checkList"></span> <input type="checkbox" id="workcheck{{war.work_id}}" value="war.work_checked" ng-checked="war.work_checked == true" name="work_checked" ng-click="checkWorkInstruct(war.work_id)"> </td>
+                                                          </tr>
+                                                          <tr ng-show="wrInstructEmpty">
+                                                              <td colspan="4" ng-bind="dataNotFound"></td>
+                                                          </tr>
+                                                      </tbody>
+                                                  </table>
+                                              </div>
+                                          </div>
                                             <div class="panel panel-default">
                                               <div class="panel-heading font-bold"><h4>Payment to linguist</h4></div>
                                                 <div class="panel-body">
@@ -516,7 +534,8 @@ li.seperatordate.comment {
                                                             </tbody>
                                                         </table>
                                                     </div>
-                                                </div>
+                                              </div>
+                                              
                                             </div>
                                             
     
