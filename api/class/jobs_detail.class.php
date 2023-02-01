@@ -700,7 +700,6 @@ class jobs_detail
         }
 
         if (isset($data['item_status'])) {
-
             $data['updated_date'] = date('Y-m-d H:i:s');
 
             $this->_db->where('job_summmeryId', $id);
@@ -723,7 +722,7 @@ class jobs_detail
         }
 
         if (isset($data['due_date'])) {
-
+            
             $data['updated_date'] = date('Y-m-d H:i:s');
 
             $data['due_date'] = date("Y.m.d H:i:s", strtotime($data['due_date']));
@@ -1191,23 +1190,27 @@ class jobs_detail
 
     public function jobSummeryJobDetailsUpdate($id, $data)
     {
-        
+        //print_r($data);
         unset($data['auto_job'], $data['fmanager_id'], $data['userName'], $data['contactPerson'], $data['projectName'], $data['projectManager'], $data['project_type_name']);
         //unset($data['quantity'],$data['itemPrice']);
         if (isset($data['proj_specialization'])) {
             unset($data['proj_specialization']);
         }
         if (isset($data['due_date'])) {
-
             $data['due_date'] = date('Y-m-d H:i:s', strtoTime($data['due_date']));
         }
-
+        if (isset($data['resource'])) {
+            $explR = explode(",", $data['resource']);
+            $data['resource'] = $explR[count($explR)-1];
+        }
+        
         $data['updated_date'] = date('Y-m-d H:i:s');
 
         $this->_db->where('job_summmeryId', $id);
 
         $update = $this->_db->update('tms_summmery_view', $data);
-        if ($update) {
+
+        if($update && isset($data['order_id'])) {
             $qry = "SELECT count(*) as count FROM tms_summmery_view WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_id']."' AND resource = '' ";
             $res_exist = $this->_db->rawQuery($qry);
             if ($res_exist && $res_exist[0]['count'] == 0) {
@@ -1932,40 +1935,27 @@ class jobs_detail
 
             $jobs = json_decode($data['sorted_json'], true);
 
-
-
             foreach ($jobs as $key => $value) {
 
                 $res = array_merge($res, $jobs[$key]);
             }
 
-
-
             foreach ($res as $key => $value) {
 
                 $jobId = $value['job_summmeryId'];
 
-
-
-                $query = "SELECT tsv.*,tu.vUserName,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId FROM tms_summmery_view tsv LEFT JOIN tms_users tu on tsv.resource = tu.iUserId LEFT JOIN tms_users tsu on tsv.contact_person = tsu.iUserId WHERE tsv.`job_summmeryId` = $jobId";
-
-
+                $query = "SELECT tsv.*,tu.vUserName,tu.vEmailAddress,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId FROM tms_summmery_view tsv LEFT JOIN tms_users tu on tsv.resource = tu.iUserId LEFT JOIN tms_users tsu on tsv.contact_person = tsu.iUserId WHERE tsv.`job_summmeryId` = $jobId";
 
                 $chk = $this->_db->rawQuery($query);
-
-
 
                 if ($chk) {
 
                     array_push($newArray, $chk[0]);
                 }
             }
-
-
-
             //Actual Data from tmsSummery view by orderId
 
-            $qry = "SELECT tsv.*,tu.vUserName,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId FROM tms_summmery_view tsv LEFT JOIN tms_users tu on tsv.resource = tu.iUserId LEFT JOIN tms_users tsu on tsv.contact_person = tsu.iUserId WHERE tsv.`order_id` = $orderId";
+            $qry = "SELECT tsv.*,tu.vUserName,tu.vEmailAddress,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId FROM tms_summmery_view tsv LEFT JOIN tms_users tu on tsv.resource = tu.iUserId LEFT JOIN tms_users tsu on tsv.contact_person = tsu.iUserId WHERE tsv.`order_id` = $orderId";
 
             $actualData = $this->_db->rawQuery($qry);
 
@@ -1976,35 +1966,22 @@ class jobs_detail
                     $aTmp1[] = $aV['job_summmeryId'];
                 }
 
-
-
                 foreach ($actualData as $aV) {
 
                     $aTmp2[] = $aV['job_summmeryId'];
                 }
 
-
-
                 $newlyAddedJobs = array_diff($aTmp2, $aTmp1);
-
-
 
                 foreach ($newlyAddedJobs as $key => $value) {
 
                     $jobId = $value;
 
-
-
-                    $query = "SELECT tsv.*,tu.vUserName,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId FROM tms_summmery_view tsv LEFT JOIN tms_users tu on tsv.resource = tu.iUserId LEFT JOIN tms_users tsu on tsv.contact_person = tsu.iUserId WHERE tsv.`job_summmeryId` = $jobId";
-
-
+                    $query = "SELECT tsv.*,tu.vUserName,tu.vEmailAddress,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId FROM tms_summmery_view tsv LEFT JOIN tms_users tu on tsv.resource = tu.iUserId LEFT JOIN tms_users tsu on tsv.contact_person = tsu.iUserId WHERE tsv.`job_summmeryId` = $jobId";
 
                     $row = $this->_db->rawQuery($query);
 
-
-
                     if ($row) {
-
                         array_push($newArray, $row[0]);
                     }
                 }

@@ -103,10 +103,20 @@ class item {
             $this->_db->update('tms_filemanager',$info);
 
             // if scoop status Cancelled (status id = 9) all jobs will be cancel for that scoop
-            if (isset($data['order_id']) && $data['item_status'] == '9') {
-                $qry_up = "UPDATE tms_summmery_view SET item_status = 'Canceled' WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_number']."' ";
+            // scoop status Approved = 5 , jobs will get Invoice ready status 
+            $jobStatus = '';
+            $andWhere = "";
+            if ($data['item_status'] == '9')
+                $jobStatus = 'Cancelled';
+            if ($data['item_status'] == '5') {
+                $jobStatus = 'Invoice Ready';
+                $andWhere = " AND item_status NOT IN ('Cancelled','Canceled','Invoiced','Paid','Invoiced') ";
+            }    
+            if (isset($data['order_id']) && $jobStatus != '' ) {
+                $qry_up = "UPDATE tms_summmery_view SET item_status = '".$jobStatus."' WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_number']."' ".$andWhere." ";
                 $this->_db->rawQuery($qry_up);
             }
+            // End job status update
 
             $return['status'] = 200;
             $return['msg'] = 'Successfully Updated.';

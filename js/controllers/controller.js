@@ -4016,7 +4016,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         var obj = {
                                             'id': numindex,
                                             'quantity': val[2],
-                                            //'pricelist': 'Words '+ $scope.jobdetail.project_type_name + ' ' + val[0] + matchStr,
+                                            //'pricelist': 'Words ' + $scope.jobdetail.project_type_name + ' ' + val[0] + matchStr,
                                             'pricelist': pricelistData,
                                             'itemPrice': itemVal ? numberFormatComma(itemVal) : 0,
                                             'itemTotal': total ? numberFormatComma(total) : 0,
@@ -20074,7 +20074,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemListFinal.push($scope.itemList.filter(function (e1, i1) {
                             return e1.item_id == e.item_number;
                         }));
-                        //console.log('$scope.itemListFinal',$scope.itemList);
+                        console.log('$scope.itemListFinal',$scope.itemList);
                     });
 
                     angular.forEach($scope.itemList, function (val, i) {
@@ -20617,6 +20617,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             case "Change Status to":
                 var setItemStatus = $('#setItemStatus').val();
+                console.log('setItemStatus', setItemStatus)
                 if (setItemStatus == 0) {
                     notification('Please select status.', 'warning');
                     $('#s2id_setItemStatus').css('border', '1px solid red');

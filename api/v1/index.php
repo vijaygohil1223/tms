@@ -3660,7 +3660,8 @@ $app->get('/getUserUsingId/:id','authenticate', function ($id) use($app) {
 });
 $app->post('/sendMailTest', function () use($app) {
     $users = new users ();
-    $data = json_decode($app->request->getBody(), TRUE);
+    $data = json_decode($app->request->getBody());
+    //$data = json_decode($app->request->getBody(), TRUE);
     $result = $users->mailTest($data);
     echoResponse(200, $result);
 });
