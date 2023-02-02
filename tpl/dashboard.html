@@ -3593,12 +3593,12 @@ td { font-size: 11px; } */
         });
         console.log('init-scroll: ' + $(".nav-next").scrollLeft());
         $(".nav-next").on("click", function () {
-          $(".scrollNav ul.nav.nav-tabs").animate({ scrollLeft: '+=250' }, 200);
+          $(".scrollNav ul.nav.nav-tabs").animate({ scrollLeft: '+=320' }, 200);
           console.log('click scroll: ' + $(".nav-next").scrollLeft());
 
         });
         $(".nav-prev").on("click", function () {
-          $(".scrollNav ul.nav.nav-tabs").animate({ scrollLeft: '-=250' }, 200);
+          $(".scrollNav ul.nav.nav-tabs").animate({ scrollLeft: '-=320' }, 200);
         });
 
         if ($(".scrollNav ul.nav.nav-tabs .nav-prev").css("display") == "block") {
