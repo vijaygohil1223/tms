@@ -934,6 +934,9 @@ class jobs_detail
 
         $resource = $UserData['vUserName'];
 
+        $urlSlug = base64_encode('jobId=147&userId=4');
+        $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlug.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
+        
         $body = "<p>Hello " . $info['contact_person'] . "</p>";
 
         $body .= "<p>Following Job has been created and assigned to you.</p>";
@@ -948,6 +951,8 @@ class jobs_detail
 
         $body .= "<p>Item Status : " . $itemStatus . ".</p>";
 
+        $body .= "<br><p> click here to accept the job <br>" . $acceptLink . "</p>";
+        
         $subject = "Job Detail's";
 
         //$this->_mailer = new PHPMailer();
@@ -1142,7 +1147,7 @@ class jobs_detail
         $body .= "<p>Due Date : " . $duedate . ",</p>";
         $body .= "<p>job Status : " . $itemStatus . ",</p>";
         
-        $body .= "<p> click here to accept the job" . $acceptLink . "</p>";
+        $body .= "<p> click here to accept the job <br>" . $acceptLink . "</p>";
         
         $subject = "Job Detail's ";
 

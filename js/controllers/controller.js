@@ -2013,6 +2013,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectsQaready = [];
     $scope.projectsToBeDelivered = [];
     $scope.projectsDelivered = [];
+    $scope.projectsApproved = [];
     $scope.projectsCompletedByLng = [];
     $scope.projectsToDisplay = [];
 
@@ -2026,6 +2027,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectsToBeDeliveredCount = 0;
     $scope.projectsDeliveredCount = 0;
     $scope.projectsQaReadyCount = 0;
+    $scope.projectsApprovedCount = 0;
     $scope.projectsAssignedCount = 0;
     // -- new status for scoop item count based on status -- //
     $scope.projectLinguistCount = 0;
@@ -2054,6 +2056,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsQaready = [];
                 $scope.projectsToBeDelivered = [];
                 $scope.projectsDelivered = [];
+                $scope.projectsApproved = [];
                 $scope.projectsCompletedByLng = [];
                 $scope.projectsToDisplay = [];
 
@@ -2065,6 +2068,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsOverdueCount = 0;
                 $scope.projectsToBeDeliveredCount = 0;
                 $scope.projectsDeliveredCount = 0;
+                $scope.projectsApprovedCount = 0;
                 $scope.projectsQaReadyCount = 0;
                 $scope.projectsAssignedCount = 0;
                 // -- new status for scoop item count based on status -- //
@@ -2276,7 +2280,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 // Approved - Approved
                 if (val.itemStatusId == "5") {
-                    $scope.projectApprovedCount++;
+                    val.progrss_precentage = 100;
+                    $scope.projectsApprovedCount++;
+                    $scope.projectsApproved.push(val);
                     val.projectstatus_class = 'projectstatus_approved';
                     val.projectstatus_color = '#4caf52';
                 }
