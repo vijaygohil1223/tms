@@ -15463,18 +15463,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    $scope.vat = 0;
+    $scope.vatTax = 0;
     //change jobitem price module
     $scope.changeInvoiceField = function (index, parentIndex, itemVal = 0, type = '') {
         var invoiceSum = 0;
         $(".invoiceCal").each(function (indx) {
             var invPrice = numberFormatCommaToPoint(this.value)
             if (!isNaN(invPrice) && this.value.length != 0) {
-                let amountTaxRate = taxRateAmountCalc(invPrice, $scope.invoiceList[0].tax_rate);
-                let itemPriceTax = parseFloat(invPrice) + parseFloat(amountTaxRate);                        
+                //let amountTaxRate = taxRateAmountCalc(invPrice, $scope.invoiceList[0].tax_rate);
+                //let itemPriceTax1 = parseFloat(invPrice) + parseFloat(amountTaxRate);                        
+                //$('#priceWithTax'+indx).text($filter('customNumber')(itemPriceTax1));
+                //$scope.invoiceTotal = $filter('customNumber')(itemPriceTax1);
+                //invoiceSum += parseFloat(itemPriceTax1);
+                let itemPriceTax = parseFloat(invPrice);                        
                 $('#priceWithTax'+indx).text($filter('customNumber')(itemPriceTax));
-                //$scope.invoiceTotal = $filter('customNumber')(itemPriceTax);
-                invoiceSum += parseFloat(itemPriceTax);
+                invoiceSum += parseFloat(invPrice);
             }
         });
 
@@ -15495,10 +15498,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
         }
         if (type == 'itemPrice') {
+            $scope.vatAmount = taxRateAmountCalc(invoiceSum, $scope.vatTax);
             //$scope.grandTotal = parseFloat(invoiceSum) + parseFloat($scope.vat);
-            $scope.grandTotal = parseFloat(invoiceSum);
+            $scope.grandTotal = parseFloat(invoiceSum) + parseFloat($scope.vatAmount);
             $scope.invoiceTotal = $filter('customNumber')(invoiceSum);
-            $scope.totalDue = invoiceSum - $scope.invoiceList[0].paid_amount;
+            $scope.totalDue = $scope.grandTotal - $scope.invoiceList[0].paid_amount;
+            //$scope.totalDue = invoiceSum - $scope.invoiceList[0].paid_amount;
             //$scope.invoiceList[0].Invoice_cost
             //$scope.vat = $filter('customNumber')($scope.vat);
             angular.element('#invSubtotal').val($scope.invoiceTotal);
@@ -15545,7 +15550,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }) 
             $scope.currencyType = $scope.invoiceDetail && $scope.invoiceDetail.client_currency.includes(',') ?  $scope.invoiceDetail.client_currency.split(',')[0] : 'EUR';
             $scope.invoiceDetail.tax_rate = $scope.invoiceDetail.tax_rate ? $scope.invoiceDetail.tax_rate : 0; 
-            $scope.vat = $scope.invoiceDetail.tax_rate;
+            $scope.vatTax = $scope.invoiceDetail.tax_rate;
+            $scope.vatAmount = 0;
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
@@ -15611,18 +15617,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(itemTotal);
                 }
                 //$scope.invoiceList[i].tax_rate = $scope.invoiceList[i].tax_rate ? $scope.invoiceList[i].tax_rate : 0;
-                let amountTaxRate = taxRateAmountCalc(val.scoop_value, $scope.invoiceList[i].tax_rate);
-                let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
-                $scope.invoiceTotal += itemPriceTax;
-                $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
+                //let amountTaxRate = taxRateAmountCalc(val.scoop_value, $scope.invoiceList[i].tax_rate);
+                //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
+                
+                //$scope.invoiceTotal += itemPriceTax;
                 //$scope.invoiceList[i].itemPriceTax = $filter('customNumber')(itemPriceTax);
-                $scope.invoiceList[i].item.priceWithTax = itemPriceTax;
+                //$scope.invoiceList[i].item.priceWithTax = itemPriceTax;
                 //$scope.invoiceList[i].scoop_value = $filter('customNumber')(val.scoop_value);
                 
+                $scope.invoiceTotal += parseFloat(val.scoop_value);
+                $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
+                $scope.invoiceList[i].item.priceWithTax = parseFloat(val.scoop_value);
             })
             //$scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
-            $scope.grandTotal = parseFloat($scope.invoiceTotal);
-            $scope.invoiceList[0].Invoice_cost = $scope.invoiceTotal;
+            $scope.vatAmount = taxRateAmountCalc(parseFloat($scope.invoiceTotal), $scope.vatTax);
+            $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vatAmount);
+            //$scope.grandTotal = parseFloat($scope.invoiceTotal);
+            $scope.invoiceList[0].Invoice_cost = $scope.grandTotal;
+            //$scope.invoiceList[0].Invoice_cost = $scope.invoiceTotal;
             $scope.totalDue = $scope.invoiceList[0].Invoice_cost - $scope.invoiceList[0].paid_amount;
             
             $scope.invoiceTotal = (invoiceTotal.toString().includes(',')) ? $scope.invoiceTotal : $filter('customNumber')($scope.invoiceTotal);
@@ -28370,7 +28382,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //         })
             //     }
             // })
-            $scope.vat = 0;
+            $scope.vatTax = 0;
+            $scope.vatAmount = 0;
             $scope.invoiceTotal = 0;
             $scope.grandTotal = 0;
             angular.forEach($scope.invoiceList, function (val, i) {
@@ -28383,15 +28396,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     })
                 }
                 $scope.invoiceList[i].tax_rate = $scope.invoiceList[i].tax_rate ? $scope.invoiceList[i].tax_rate : 0;
-                let amountTaxRate = taxRateAmountCalc(val.scoop_value, $scope.invoiceList[i].tax_rate);
-                let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
-                $scope.invoiceTotal += itemPriceTax;
+                $scope.vatTax = $scope.invoiceList[i].tax_rate;    
+                //let amountTaxRate = taxRateAmountCalc(val.scoop_value, $scope.invoiceList[i].tax_rate);
+                //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
+                $scope.invoiceTotal += parseFloat(val.scoop_value);
                 $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
-                $scope.invoiceList[i].item.priceWithTax = itemPriceTax;
+                $scope.invoiceList[i].item.priceWithTax = parseFloat(val.scoop_value);
+                //$scope.invoiceList[i].item.priceWithTax = itemPriceTax;
                 //$scope.invoiceList[i].itemPriceTax = $filter('customNumber')(itemPriceTax);
             })
-            //$scope.grandTotal = $scope.invoiceTotal + $scope.vat;
-            $scope.grandTotal = $scope.invoiceTotal;
+            //$scope.grandTotal = $scope.invoiceTotal;
+            $scope.vatAmount = taxRateAmountCalc($scope.invoiceTotal, $scope.vatTax);
+            $scope.grandTotal = $scope.invoiceTotal + parseFloat($scope.vatAmount);
             $scope.invoiceTotal = $filter('customNumber')($scope.invoiceTotal);
 
 
@@ -28405,11 +28421,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $(".invoiceCal").each(function (indx) {
             var invPrice = numberFormatCommaToPoint(this.value)
             if (!isNaN(invPrice) && this.value.length != 0) {
-                let amountTaxRate = taxRateAmountCalc(invPrice, $scope.invoiceList[0].tax_rate);
-                let itemPriceTax = parseFloat(invPrice) + parseFloat(amountTaxRate);                        
-                $('#priceWithTax'+indx).text($filter('customNumber')(itemPriceTax));
+                //let amountTaxRate = taxRateAmountCalc(invPrice, $scope.invoiceList[0].tax_rate);
+                //let itemPriceTax = parseFloat(invPrice) + parseFloat(amountTaxRate);                        
+                $('#priceWithTax'+indx).text($filter('customNumber')(invPrice));
+                //$('#priceWithTax'+indx).text($filter('customNumber')(itemPriceTax));
                 //$scope.invoiceTotal = $filter('customNumber')(itemPriceTax);
-                invoiceSum += parseFloat(itemPriceTax);
+                invoiceSum += parseFloat(invPrice);
             }
         });
         if (type == 'invoiceTotal') {
@@ -28417,9 +28434,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
         }
         if (type == 'itemPrice') {
-            $scope.grandTotal = parseFloat(invoiceSum);
+            $scope.vatAmount = taxRateAmountCalc(invoiceSum, $scope.vatTax);
+            $scope.grandTotal = parseFloat(invoiceSum) + parseFloat($scope.vatAmount);
             $scope.invoiceTotal = $filter('customNumber')(invoiceSum);
-            $scope.totalDue = invoiceSum - $scope.invoiceList[0].paid_amount;
+            $scope.totalDue = $scope.grandTotal - $scope.invoiceList[0].paid_amount;
             angular.element('#invSubtotal').val($scope.invoiceTotal);
         }
     }

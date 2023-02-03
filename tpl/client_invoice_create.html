@@ -59,6 +59,7 @@
                       <!-- <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;"> -->
                       <h4>SpellUp AS</h4>
                       <p>Ødegårdsveien 43J </br>
+                        1911 Flateby </br>
                         Norway </br>
                         NO930108995</P>
                     </div>
@@ -121,7 +122,7 @@
                           <th>DESCRIPTION</th>
                           <th>QUANTITY</th>
                           <th>PRICE</th>
-                          <th>TAX</th>
+                          <!-- <th>TAX</th> -->
                           <th>AMOUNT</th>
                         </tr>
                       </thead>
@@ -138,28 +139,30 @@
                               ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
                               name="itemVal_{{invL.itemId}}" style="width:180px;"/>
                           </th>
-                          <th style="white-space:nowrap;"> 
+                          <!-- <th style="white-space:nowrap;"> 
                             <span ng-if="invL.tax_rate">{{invL.tax_rate | customNumber}}%</span>
                             <span ng-if="!invL.tax_rate">{{'0.00' | customNumber}}%</span>
-                         </th>
+                         </th> -->
                           <th>
                             <!-- {{invL.item.subTotal | customNumber }}  -->
                             <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }}</span>
                             <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
-                            
                           </th>
                         </tr>
                         <tr ng-if="$index == invoiceLength" class="">
-                          <td colspan="6" class="text-right"><strong>Sub Total</strong></td>
+                          <td colspan="5" class="text-right"><strong>Sub Total</strong></td>
                           <td style="width:9%;">
                             <!-- {{invoiceTotal | customNumber}} -->
                             {{ invoiceTotal }}
-                            <!-- <input class="form-control" type="text" ng-model="invoiceTotal"
-                              ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
-                              id="invSubtotal" /> -->
-                            <!-- <span ng-if="!invoiceLength">{{invL.item.subTotal | customNumber}}</span>
-                                  <span ng-if="invoiceLength">{{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> </td> -->
+                          </td>
                         </tr>
+                        <tr ng-if="$index == invoiceLength" class="">
+                          <td colspan="5" class="text-right"><strong>{{vatTax | customNumber}}% Tax</strong></td>
+                          <td style="width:9%;"> 
+                            <span ng-if="vatAmount">{{vatAmount | customNumber}}</span>
+                            <span ng-if="!vatAmount">0</span>
+                          </td>
+                        </tr>    
                         <!-- <tr ng-if="$index == invoiceLength">
                           <td colspan="3" class="text-right no-border"><strong>Tax</strong></td>
                           <td>{{currencyType}}0.00</td>
@@ -201,10 +204,7 @@
                       <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="SpellUp" style="max-height: 50px; max-width: 100%; width: auto;">
                     </div>
                   </div>
-                
                 </div>
-                
-                
 
               </div>
               <button class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o"
