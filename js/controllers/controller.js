@@ -1001,6 +1001,131 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.backtoPage = function () {
         $location.path('/');
     }
+}).controller('jobacceptrejectController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope, fileReader) {
+    /*-------Check for login--------*/
+    // if ($cookieStore.get('session_iUserId') != undefined) {
+    //     $location.path('/dashboard');
+    // }
+
+    $window.localStorage.setItem("global_dateFormat", 'DD.MM.YYYY'); // Default
+    $window.localStorage.setItem("dtSeparator", '.'); // Default
+
+    let fullUrl = $location.absUrl();
+    console.log('fullUrl', fullUrl)
+    $scope.baseURL = fullUrl.split('#')[0];
+    console.log('baseURL', $scope.baseURL)
+    let queryString = fullUrl.split('/').pop();
+    console.log('queryString', queryString)
+    var encodedUrl = atob(queryString);
+    let paramsName = encodedUrl.split('&')
+    console.log(encodedUrl);
+    $scope.jobId = 0;
+    $scope.UserId = 0;
+    $scope.accept = 0;
+    $scope.reject = 0;
+    console.log('paramsName', paramsName)
+    
+    $scope.jobDetails = {};
+    $scope.jobDetails.resourceId = 0;
+    if(paramsName.length > 0){
+        let paramsJob = paramsName[0].split('=') 
+        console.log('paramsJob', paramsJob)
+        if(paramsJob[0] =='jobId'){
+            $scope.jobId = paramsJob[1];
+            $scope.jobDetails.jobId = $scope.jobId; 
+        }
+        if(paramsName.length > 1){
+            let paramsUser = paramsName[1].split('=') 
+            console.log('paramsUser', paramsUser)
+            if(paramsUser[0] =='userId'){
+                $scope.userId = paramsUser[1];
+                $scope.jobDetails.resourceId = $scope.userId;
+                console.log('$scope.userId', $scope.userId)
+            }
+        }
+        if(paramsName.length > 2){
+            let paramsAccept = paramsName[2].split('=') 
+            console.log('paramsAccept', paramsAccept)
+            if(paramsAccept[0] =='accept'){
+                $scope.accept = paramsAccept[1];
+                $scope.jobDetails.jobAccept = 1;
+                console.log('$scope.accept', $scope.accept)
+            }
+            if(paramsAccept[0] == 'reject'){
+                $scope.reject = paramsAccept[1];
+                $scope.jobDetails.jobAccept = 0;
+                console.log('$scope.accept', $scope.accept)
+                notification('You have rejected the Job.', 'warning');
+            }
+        }
+
+        //if($scope.jobDetails.jobId && $scope.jobDetails.jobAccept){
+        if($scope.jobDetails.jobId){
+            rest.path = 'getOneJobsummury/'+ $scope.jobDetails.jobId;
+            rest.get().success(function (data) {
+                if (data) {
+                    if(data.accept > 0 ){
+                        if($scope.jobDetails.jobAccept == 1 && data.accept == $scope.jobDetails.resourceId){
+                            $('#responseMsg').text('Already, You have accepted the job');
+                            $("#responseMsg").addClass("alert alert-success" );
+                        }else{
+                            let msgText = $scope.jobDetails.jobAccept ? 'The job is accepted by someone else!' : 'You have rejected the job' ;
+                            $('#responseMsg').text(msgText);
+                            $("#responseMsg").addClass("alert alert-warning" );
+                        }
+                    }else{
+                        rest.path = 'jobAccept';
+                        rest.post($scope.jobDetails).success(function (data) {
+                            console.log('data-updated', data)
+                            if(data && data.jobAccept == 1){
+                                notification('You have accepted the job', 'success');
+                                $('#responseMsg').text('You have accepted the job');
+                                $("#responseMsg").addClass( "alert alert-success" );
+                            }else{
+                                if($scope.jobDetails.jobAccept == '0' ){
+                                    notification('You have rejected the job', 'warning');
+                                    $('#responseMsg').text('You have rejected the job');
+                                    $("#responseMsg").addClass( "alert alert-warning" );
+                                }
+                            }
+                            setTimeout(() => {
+                                //$route.reload();
+                            }, 1000);
+                        }).error(errorCallback);
+                    }
+                }
+            });
+        }    
+        console.log('$scope.jobDetails', $scope.jobDetails)
+    }
+        
+    
+    //getting global dateformat
+    rest.path = 'getdateFormatByIuserId/1';
+    rest.get().success(function (data) {
+        if (data) {
+            if (data.dateSeparator == '/') {
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            } else if (data.dateSeparator == '.') {
+                data.dateformat = data.dateformat.replace(/\//g, data.dateSeparator);
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            } else {
+                data.dateformat = data.dateformat.replace(/\//g, data.dateSeparator);
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            }
+        } else {
+            $window.localStorage.setItem("global_dateFormat", 'DD/MM/YYYY');
+            $window.localStorage.setItem("dtSeparator", '/');
+        }
+    }).error(errorCallback);
+
+    $scope.backtoPage = function () {
+        //$location.path('/dashboard1');
+        //$location.path($scope.baseURL+'/#');
+    }
     
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -2899,6 +3024,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
             $scope.jobList = data;
+            console.log('$scope.jobList============', $scope.jobList)
             $scope.freelanceEmpty = jQuery.isEmptyObject(data);
             var allStatus = [];
             var Requested = [];
@@ -2914,8 +3040,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.item_status == 'Requested') {
                     Requested.push(val.item_status);
                 }
-                if (val.item_status == 'Assigned-waiting') {
-                    aw.push(val.item_status);
+                if (val.item_status == 'Waiting') {
+                //if (val.item_status == 'Assigned-waiting') {
+                        aw.push(val.item_status);
                 }
 
                 if (val.item_status == 'In-progress') {
@@ -2980,9 +3107,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.jobRow = "Requested";
                 $scope.highlightSearch = "Requested";
                 break;
-            case "Assigned-waiting":
-                $scope.jobRow = "Assigned-waiting";
-                $scope.highlightSearch = "Assigned-waiting";
+            //case "Assigned-waiting":
+            case "Waiting":
+                $scope.jobRow = "Waiting";
+                $scope.highlightSearch = "Waiting";
                 break;
             case "In_progress":
                 $scope.jobRow = "In-progress";
@@ -4512,7 +4640,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }    
 
             if ($scope.jobdetail.resource != '' && $scope.jobdetail.item_status == 'In preparation') {
-                $scope.jobdetail.item_status = 'In-progress';
+                //$scope.jobdetail.item_status = 'In-progress';
             }
             delete $scope.jobdetail['ProjectDueDate'];
             delete $scope.jobdetail['freelance_currency'];
@@ -15661,7 +15789,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.reminderBtnHideShow = true;
                     }
                 }
-
             }, 500);
 
         }).error(errorCallback);
@@ -20757,6 +20884,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    
     $scope.jobsumResource = function (resourceName, jobSummeryId) {
         $window.localStorage.ResourceMsg = resourceName;
         var modalInstance = $uibModal.open({
@@ -20767,6 +20895,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             resolve: {
                 items: function () {
                     return $scope.data;
+                }
+            }
+        });
+
+    }
+
+    $scope.jobSendRequest = function (resourceName, jobSummeryId) {
+        $window.localStorage.ResourceMsg = resourceName;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/job-send-request.html',
+            controller: 'jobSendRequestController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return jobSummeryId;
                 }
             }
         });
@@ -25213,6 +25357,108 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
+}).controller('jobSendRequestController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.ResourceMsg;
+
+    $scope.cPersonMsg = {};
+    $scope.cPersonMsg.subject = 'Job Request';
+
+    $scope.bccShow = function () {
+        $scope.bccshow = true;
+    }
+    $scope.ccHideShow = function () {
+        angular.element('#ccHideShow').toggleClass('none');
+    }
+    $scope.bccHideShow = function () {
+        angular.element('#bccHideShow').toggleClass('none');
+    }
+    $timeout(function () {
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(2)').prop('disabled', true);
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(3)').prop('disabled', true);
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(4)').prop('disabled', true);
+    }, 500);
+
+    $scope.getFile = function (file) {
+        fileReader.readAsDataUrl(file, $scope).then(function (result) {
+            $scope.fileAttatchName = file.name;
+            $scope.attachementfile = result;
+        });
+    };
+
+    if($window.localStorage.ResourceMsg){
+        rest.path = 'jobResourceMsg/' + $window.localStorage.ResourceMsg;
+        rest.get().success(function (data) {
+            console.log('data', data)
+            $scope.cPersonMsg2 = data.data;
+            //$scope.cPersonMsg.vUserName = data.data.vUserName;
+            $scope.cPersonMsg.vEmailAddress = data.data.iUserId; 
+            //if ($rootScope.linguistJobmsg != 'linguistJobmsg')
+            //$scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
+        }).error(errorCallback);
+    }    
+
+    $scope.ok = function (frmId, message) {
+
+        console.log('$scope.cPersonMsg', $scope.cPersonMsg)
+        var data = {
+            "id": items,
+            "file": $scope.attachementfile,
+            "data": message
+        };
+        if (angular.element("#" + frmId).valid()) {
+            rest.path = 'jobSendRequest';
+            rest.post(data).success(function (data) {
+                notification('Job Request has been sent successfully', 'success');
+            }).error(errorCallback);
+            $timeout(function () {
+                $uibModalInstance.close(data);
+                $route.reload();
+            }, 100);
+        }
+    }
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+}).controller('jobAcceptRejectController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope, fileReader) {
+    /*-------Check for login--------*/
+    // if ($cookieStore.get('session_iUserId') != undefined) {
+    //     $location.path('/dashboard');
+    // }
+
+    console.log('we are here from acceot job')
+
+    $window.localStorage.setItem("global_dateFormat", 'DD.MM.YYYY'); // Default
+    $window.localStorage.setItem("dtSeparator", '.'); // Default
+
+    //getting global dateformat
+    rest.path = 'getdateFormatByIuserId/1';
+    rest.get().success(function (data) {
+        if (data) {
+            console.log('data', data)
+            if (data.dateSeparator == '/') {
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            } else if (data.dateSeparator == '.') {
+                data.dateformat = data.dateformat.replace(/\//g, data.dateSeparator);
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            } else {
+                data.dateformat = data.dateformat.replace(/\//g, data.dateSeparator);
+                $window.localStorage.setItem("global_dateFormat", data.dateformat);
+                $window.localStorage.setItem("dtSeparator", data.dateSeparator);
+            }
+        } else {
+            $window.localStorage.setItem("global_dateFormat", 'DD/MM/YYYY');
+            $window.localStorage.setItem("dtSeparator", '/');
+        }
+    }).error(errorCallback);
+
+    $scope.backtoPage = function () {
+        $location.path('/');
+    }
+
 }).controller('projectTeamMsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.projectTeamMsg;
@@ -26822,8 +27068,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
                 break;
             case "start":
-                if (status == 'Assigned-waiting') {
-                    $scope.item_status = "In-progress";
+                if (status == 'Assigned-waiting' || status == 'Waiting') {
+                //if (status == 'Assigned-waiting') {
+                        //$scope.item_status = "In-progress";
+                    $scope.item_status = "Ongoing";
                 }
                 if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
                     $scope.job = {};
@@ -27051,8 +27299,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
                 break;
             case "start":
-                if (status == 'Assigned-waiting') {
-                    $scope.item_status = "In-progress";
+                if (status == 'Assigned-waiting' || status == 'Waiting') {
+                    //$scope.item_status = "In-progress";
+                    $scope.item_status = "Ongoing";
                 }
                 if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
                     $scope.job = {};
@@ -27060,7 +27309,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.job.item_status = $scope.item_status;
                 break;
             case "save":
-                $scope.item_status = "Delivered";
+                //$scope.item_status = "Delivered";
+                $scope.item_status = "Completed";
                 if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
                     $scope.job = {};
                 }

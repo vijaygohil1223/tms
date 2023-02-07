@@ -3642,6 +3642,39 @@ app.directive('select2UserEmail', function($http, rest, $timeout) {
     }
 });
 
+//----------------------User Email External (Linguist)---------------------------//
+
+app.directive('select2UserEmailExternal', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            rest.path = 'users';
+            rest.get().success(function(data) {
+                console.log('data-freelance email', data)
+                var linguistUser = data.data.filter( (u)=>{
+                    if(u.iFkUserTypeId ==2)
+                        return u;
+                } )
+                var users = [];
+                $.each(linguistUser, function(key, value) {
+                    var obj = {
+                        'id': value.iUserId,
+                        'text': value.vEmailAddress
+                    };
+                    users.push(obj);
+                });
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: users,
+                        multiple: true
+                    });
+                }, 500);
+            }).error(function(data, error, status) {});
+        }
+    }
+});
 //--------------service child price-----------------//
 app.directive('select2Service', function($http, rest, $timeout) {
     return {

@@ -1139,7 +1139,7 @@ class jobs_detail
         else
             $itemStatus = " ";
 
-        $urlSlug = base64_encode('jobId=147&userId=4');
+        $urlSlug = base64_encode(`jobId=$itemStatus&userId=$itemStatus`);
         $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlug.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
         
         $body = "<p>Please login to account accept.</p>";
@@ -1190,6 +1190,114 @@ class jobs_detail
 
             $return['status'] = 422;
 
+            $return['msg'] = 'Not Updated.';
+        }
+
+        return $return;
+    }
+
+    public function jobSendRequest($data)
+    {
+        if (isset($data['id'])) {
+            $this->_db->where('job_summmeryId', $data['id']);
+            $jobDetails = $this->_db->getone('tms_summmery_view');
+            
+            if (isset($jobDetails['po_number']))
+                $jobnumber = $jobDetails['po_number'];
+            else
+                $jobnumber = " ";
+                if (isset($jobDetails['due_date']))
+                $duedate = $jobDetails['due_date'];
+            else
+                $duedate =  " ";
+            if (isset($jobDetails['ItemLanguage']))
+                $langPair = $jobDetails['ItemLanguage'];
+            else
+                $langPair =  " ";
+                    
+            if (isset($jobDetails['item_status']))
+                $itemStatus = $jobDetails['item_status'];
+            else
+                $itemStatus = " ";
+    
+            if (isset($data['data']['vEmailAddress'])) {
+                $eIds = explode(',', $data['data']['vEmailAddress']);
+                $dataUp['send_request'] = $data['data']['vEmailAddress'];
+                foreach ($eIds as $val) {
+                    $this->_db->where('iUserId', $val);
+                    $freelaceremail = $this->_db->getone('tms_users');
+
+                    $jobId = $data['id'];
+                    $urlSlugAc = base64_encode("jobId=$jobId&userId=$val&accept=1");
+                    $urlSlugRej = base64_encode("jobId=$jobId&userId=$val&reject=1");
+                    $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlugAc.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
+                    $rejectLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlugRej.'" target="blank" style="padding: 7px 7px; background: red; border-radius: 5px; color: white;"> Reject Job </a>';
+
+                    if (isset($freelaceremail['vEmailAddress'])){
+                        $to = $freelaceremail['vEmailAddress'];
+                        // Message
+                        $body = "<p> Please login to account accept Or Click on below link.</p>";
+                        $body .= "<p>Job No. : " . $jobnumber . ",</p>";
+                        $body .= "<p>Language Pair. : " . $langPair . ",</p>";
+                        $body .= "<p>Due Date : " . $duedate . ",</p>";
+                        $body .= "<p>job Status : " . $itemStatus . ",</p>";
+                        $body .= "<p> click here to accept the job <br><br>" . $acceptLink . "</p>";
+                        $body .= "<p> click here to reject the job <br><br>" . $rejectLink . "</p>";
+                        
+                        $subject = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Send Request ";
+                
+                        $attachments = '';
+                        $to_name = '';
+
+                        $send_fn = new functions();
+                        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc = '', $bcc = '', $subject, $body, $attachments);
+                    }
+                }
+            }
+
+            $dataUp['updated_date'] = date('Y-m-d H:i:s');
+            $dataUp['item_status'] = 'Requested';
+            $this->_db->where('job_summmeryId', $data['id']);
+            $updt = $this->_db->update('tms_summmery_view', $dataUp);
+            
+            //if($mailResponse['status'] == 200) {
+            if ($updt) {
+                $return['status'] = 200;
+                $return['msg'] = 'Successfully Sent.';
+            } 
+        }else {
+            $return['status'] = 422;
+            $return['msg'] = 'Not Sent.';
+        }
+
+        return $return;
+    }
+
+    public function jobAcceptUpdate($data)
+    {
+        if (isset($data['jobId'])) {
+            $this->_db->where('job_summmeryId', $data['jobId']);
+            $jobDetails = $this->_db->getone('tms_summmery_view');
+        
+            $dataUp['updated_date'] = date('Y-m-d H:i:s');
+            if (isset($data['jobAccept']) && $data['jobAccept'] == '1') {
+                $dataUp['accept'] = $data['resourceId'];
+                $dataUp['resource'] = $data['resourceId'];
+                $dataUp['item_status'] = 'Waiting';
+            } else {
+                $dataUp['rejection'] = $data['resourceId'];
+            }   
+            $this->_db->where('job_summmeryId', $data['jobId']);
+            $updt = $this->_db->update('tms_summmery_view', $dataUp);
+        
+            //if($mailResponse['status'] == 200) {
+            if ($updt) {
+                $return['status'] = 200;
+                $return['jobAccept'] = $data['jobAccept'];
+                $return['msg'] = 'Successfully Updated.';
+            } 
+        }else {
+            $return['status'] = 422;
             $return['msg'] = 'Not Updated.';
         }
 
@@ -2062,6 +2170,13 @@ class jobs_detail
         $data = $this->_db->rawQuery($qry);
         return $data;
     }    
+
+    public function getOneJobsummury($id)
+    {
+        $this->_db->where('job_summmeryId', $id);
+        $data = $this->_db->getOne('tms_summmery_view');
+        return $data;
+    }
 
     public function sendPurchaseOrderLinguist($data) {
         $pdf_content = explode("base64,",$data['pdfData']);

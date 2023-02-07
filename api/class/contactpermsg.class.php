@@ -70,7 +70,7 @@ class contactPerMsg {
         $to = $data['data']['vEmail'];
 
         $attachments = '';
-        $to_name = 'TMS';
+        $to_name = 'SpellUp';
         if ($encoded_content != ' ') {
             $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
             $fileNm = explode(',', $data['file']);
@@ -620,7 +620,6 @@ class contactPerMsg {
         if (isset($data['data']['messageData'])) {
             $str = $data['data']['messageData'];
             $message = str_replace($emailsignData,"",$str);
-
         } else {
             $message = " ";
         }

@@ -2502,6 +2502,25 @@ $app->put('/jobSummeryDetailsUpdate/:id','authenticate', function ($id) use($app
     $result = $itemsJob->jobSummeryDetailsUpdate($id, $data);
     echoResponse($result ['status'], $result);
 });
+// Send job request by email
+$app->post('/jobSendRequest','authenticate', function () use($app) {
+    $job = new jobs_detail ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $job->jobSendRequest($data);
+    echoResponse($result ['status'], $result);
+});
+$app->get('/getOneJobsummury/:jobId', function ($jobId) {
+    $itemsJob = new jobs_detail ();
+    $result = $itemsJob->getOneJobsummury($jobId);
+    echoResponse(200, $result);
+});
+$app->post('/jobAccept', function () use($app) {
+    $job = new jobs_detail ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $job->jobAcceptUpdate($data);
+    echoResponse($result ['status'], $result);
+});
+
 $app->put('/jobSummeryWorkinstructUpdate/:id','authenticate', function ($id) use($app) {
     $itemsJob = new jobs_detail ();
     $data = json_decode($app->request->getBody(), TRUE);

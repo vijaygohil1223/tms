@@ -3264,9 +3264,9 @@ td { font-size: 11px; } */
                                     </a>
                                   </li>
                                   <li class="list-group-item tab-due-today"
-                                    ng-class="(highlightSearch == 'Assigned-waiting') ? 'active' : ''">
-                                    <a href="javascript:void(0)" ng-click="sortJob('Assigned-waiting', 'middle')">
-                                      Assigned - waiting
+                                    ng-class="(highlightSearch == 'Waiting') ? 'active' : ''">
+                                    <a href="javascript:void(0)" ng-click="sortJob('Waiting', 'middle')">
+                                      Waiting
                                       <span ng-if="awCount" class="badge bg-info">{{awCount}}</span>
                                       <span ng-if="!awCount" class="badge bg-info">0</span>
                                   </li>
@@ -3367,7 +3367,7 @@ td { font-size: 11px; } */
                                         <button class="btn requestedColor"
                                           ng-if="job.item_status == 'Requested'"></button>
                                         <button class="btn assignedwaitongColor"
-                                          ng-if="job.item_status == 'Assigned-waiting'"></button>
+                                          ng-if="job.item_status == 'Assigned-waiting' || job.item_status == 'Waiting'"></button>
                                         <button class="btn inprogressColor"
                                           ng-if="job.item_status == 'In-progress'"></button>
                                         <button class="btn deliveredColor"

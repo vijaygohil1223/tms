@@ -465,11 +465,11 @@ li.seperatordate.comment {
                                                 <div class="panel-heading font-bold"><h4>Job Status</h4></div>
                                                 <div class="panel-body">
                                                     <div class="col-sm-12">
-                                                        <div class="" ng-if="jobdetail.item_status == 'Requested'">
+                                                        <div class="" ng-if="jobdetail.item_status == 'Requested' ">
                                                             <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'accept');">Accept</a>
                                                             <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'reject');">Reject</a>
                                                         </div>
-                                                        <div class="" ng-if="jobdetail.item_status == 'Assigned-waiting'">
+                                                        <div class="" ng-if="jobdetail.item_status == 'Assigned-waiting' || jobdetail.item_status == 'Waiting'">
                                                             <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'start');">Start</a>
                                                         </div>
                                                         <div class="" ng-if="jobdetail.item_status == 'In-progress'">

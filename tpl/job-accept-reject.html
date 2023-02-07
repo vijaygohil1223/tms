@@ -1,0 +1,54 @@
+<style type="text/css">
+    md-progress-linear .md-bar {
+        background-color: rgb(45, 150, 243);
+    }
+    .boxEffect {
+        -webkit-box-shadow: 0 10px 6px -6px #777;
+        -moz-box-shadow: 0 10px 6px -6px #777;
+        box-shadow: 0 10px 6px -6px #777;
+    }
+</style>
+<div class="container w-auto-xs" style="margin-top: -30px;">
+    
+    <div class="m-b-sm">
+        <div class="wrapper d-flex space-between justify-space-between">
+            <a ng-click="backtoPage()" class="navbar-brand block">
+                <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="..."
+                    style="max-height: 50px; max-width: 100%; width: auto;">
+            </a>
+            <h3><strong>Job Accept/Reject</strong></h3>
+        </div>
+        <div class="panel panel-default" style="box-shadow: 0px 1px 1px 1px #bbb5b5;">
+            <div class="panel-body">
+                <form id="userprofileform" class="form-validation">
+                    <!--   TAB1 -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="panel panel-default" style="text-align: center;">
+                                <div class="panel-heading font-bold">
+                                    <h4>Thanks.</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-sm-12 pl-0">
+                                        <h4 id="responseMsg" style="font-size:16px;"></h4>
+                                        <p>Please login to your dashboard for more Details.</p>
+                                        <!-- <button type="submit" class="btn btn-sm btn-info">Submit</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--   TAB1 ng-hide="!iresource"-->
+                    <div class="panel-footer text-center">
+                        <!-- <a ng-click="backtoPage()" style="margin-left: 35px;"> Back </a>     -->
+                        <!-- <a ng-href="http://localhost:890/tms/#/" style="margin-left: 35px;" target="_blank"> Back </a>     -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="text-center" ng-include="'tpl/page_footer.html'">
+        {% include 'blocks/page_footer.html' %}
+    </div>
+</div>
