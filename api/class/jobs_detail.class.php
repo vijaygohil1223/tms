@@ -1121,15 +1121,38 @@ class jobs_detail
 
     public function jobSummeryDetailsUpdate($id, $data)
     {
+        $this->_db->where('template_id',11);
+        $emailTemplateRegistration = $this->_db->getOne('tms_email_templates');
+        $search_array = array("[JOBNO]", "[LANGUAGES]",'[JOBSTATUS]','[DUEDATE]','[ACCEPTLINK]','[REJECTLINK]');
 
-        if (isset($data['jobnumber']))
-            $jobnumber = $data['jobnumber'];
+        $this->_db->where('job_summmeryId', $id);
+        $jobDetails = $this->_db->getone('tms_summmery_view');
+        
+        if (isset($jobDetails['po_number']))
+            $jobnumber = $jobDetails['po_number'];
         else
             $jobnumber = " ";
-        if (isset($data['jduedate']))
-            $duedate = $data['jduedate'];
+        if (isset($jobDetails['due_date']))
+            $duedate = $jobDetails['due_date'];
         else
             $duedate =  " ";
+        if (isset($jobDetails['ItemLanguage']))
+            $langPair = $jobDetails['ItemLanguage'];
+        else
+            $langPair =  " ";
+        
+        if (isset($jobDetails['resource']))
+            $resource = $jobDetails['resource'];
+        else
+            $resource = " ";    
+        // if (isset($data['jobnumber']))
+        //     $jobnumber = $data['jobnumber'];
+        // else
+        //     $jobnumber = " ";
+        // if (isset($data['jduedate']))
+        //     $duedate = $data['jduedate'];
+        // else
+        //     $duedate =  " ";
         if (isset($data['jobEmail']))
             $to = $data['jobEmail'];
         else
@@ -1138,18 +1161,24 @@ class jobs_detail
             $itemStatus = $data['item_status'];
         else
             $itemStatus = " ";
+            
 
-        $urlSlug = base64_encode(`jobId=$itemStatus&userId=$itemStatus`);
-        $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlug.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
-        
-        $body = "<p>Please login to account accept.</p>";
-        $body .= "<p>Job No. : " . $jobnumber . ",</p>";
-        $body .= "<p>Due Date : " . $duedate . ",</p>";
-        $body .= "<p>job Status : " . $itemStatus . ",</p>";
-        
-        $body .= "<p> click here to accept the job <br>" . $acceptLink . "</p>";
-        
-        $subject = "Job Detail's ";
+        $jobId = $id;
+        $urlSlugAc = base64_encode("jobId=$jobId&userId=$resource&accept=1");
+        $urlSlugRej = base64_encode("jobId=$jobId&userId=$resource&reject=1");
+        $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlugAc.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
+        $rejectLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlugRej.'" target="blank" style="padding: 7px 7px; background: red; border-radius: 5px; color: white;"> Reject Job </a>';        
+
+        // $body = "<p>Please login to account accept.</p>";
+        // $body .= "<p>Job No. : " . $jobnumber . ",</p>";
+        // $body .= "<p>Due Date : " . $duedate . ",</p>";
+        // $body .= "<p>job Status : " . $itemStatus . ",</p>";
+        // $body .= "<p> click here to accept the job <br>" . $acceptLink . "</p>";
+
+        $replace_array = array($jobnumber,$langPair,$itemStatus,$duedate,$acceptLink,$rejectLink);
+        $body = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
+
+        $subject = "Job Request";
 
         // $this->_mailer = new PHPMailer();
         //$this->_mailer = 'ISO-8859-1';
@@ -1197,7 +1226,11 @@ class jobs_detail
     }
 
     public function jobSendRequest($data)
-    {
+    {   
+        $this->_db->where('template_id',11);
+        $emailTemplateRegistration = $this->_db->getOne('tms_email_templates');
+        $search_array = array("[JOBNO]", "[LANGUAGES]",'[JOBSTATUS]','[DUEDATE]','[ACCEPTLINK]','[REJECTLINK]');
+
         if (isset($data['id'])) {
             $this->_db->where('job_summmeryId', $data['id']);
             $jobDetails = $this->_db->getone('tms_summmery_view');
@@ -1236,13 +1269,16 @@ class jobs_detail
                     if (isset($freelaceremail['vEmailAddress'])){
                         $to = $freelaceremail['vEmailAddress'];
                         // Message
-                        $body = "<p> Please login to account accept Or Click on below link.</p>";
-                        $body .= "<p>Job No. : " . $jobnumber . ",</p>";
-                        $body .= "<p>Language Pair. : " . $langPair . ",</p>";
-                        $body .= "<p>Due Date : " . $duedate . ",</p>";
-                        $body .= "<p>job Status : " . $itemStatus . ",</p>";
-                        $body .= "<p> click here to accept the job <br><br>" . $acceptLink . "</p>";
-                        $body .= "<p> click here to reject the job <br><br>" . $rejectLink . "</p>";
+                        // $body = "<p> Please login to account accept Or Click on below link.</p>";
+                        // $body .= "<p>Job No. : " . $jobnumber . ",</p>";
+                        // $body .= "<p>Language Pair. : " . $langPair . ",</p>";
+                        // $body .= "<p>Due Date : " . $duedate . ",</p>";
+                        // $body .= "<p>job Status : " . $itemStatus . ",</p>";
+                        // $body .= "<p> click here to accept the job <br><br>" . $acceptLink . "</p>";
+                        // $body .= "<p> click here to reject the job <br><br>" . $rejectLink . "</p>";
+
+                        $replace_array = array($jobnumber,$langPair,$itemStatus,$duedate,$acceptLink,$rejectLink);
+                        $body = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
                         
                         $subject = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Send Request ";
                 

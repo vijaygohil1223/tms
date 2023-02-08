@@ -39,7 +39,7 @@
                             <td ng-if="jobItem.due_date =='0000-00-00 00:00:00'">-</td>
                             <td ng-if="jobItem.due_date !='0000-00-00 00:00:00'">{{jobItem.due_date | globalDtFormat}}</td>
                             <td>
-                                <div class="job-table-status btn completedColor" ng-if="jobItem.item_status == 'Completed'"></div>
+                                <!-- <div class="job-table-status btn completedColor" ng-if="jobItem.item_status == 'Completed'"></div>
                                 <div class="job-table-status btn inpreprartionColor" ng-if="jobItem.item_status == 'In preparation'"></div>
                                 <div class="job-table-status btn requestedColor" ng-if="jobItem.item_status == 'Requested'"></div>
                                 <div class="job-table-status btn newJob" ng-if="jobItem.item_status == 'New'"></div>
@@ -53,7 +53,21 @@
                                 <div class="job-table-status btn invoiceacceptedColor" ng-if="jobItem.item_status == 'Invoice Accepted'"></div>
                                 <div class="job-table-status btn paidColor" ng-if="jobItem.item_status == 'Paid'"></div>
                                 <div class="job-table-status btn canceledColor" ng-if="jobItem.item_status == 'Canceled'"></div>
-                                <div class="job-table-status btn withoutInvoiceColor" ng-if="jobItem.item_status == 'Without invoice'"></div>
+                                <div class="job-table-status btn withoutInvoiceColor" ng-if="jobItem.item_status == 'Without invoice'"></div> -->
+                                
+                                <div class="job-table-status btn inpreprartionColor" ng-if="jobItem.item_status == 'In preparation'"></div>
+                                <div class="job-table-status btn requestedColor" ng-if="jobItem.item_status == 'Requested'"></div>
+                                <div class="job-table-status btn assignedwaitongColor" ng-if="jobItem.item_status == 'Assigned-waiting' || jobItem.item_status == 'Waiting'"></div>
+                                <div class="job-table-status btn inprogressColor" ng-if="jobItem.item_status == 'In-progress' || jobItem.item_status == 'Ongoing'"></div>
+                                <div class="job-table-status btn overdueColor" ng-if="jobItem.item_status == 'Overdue'"></div>
+                                <div class="job-table-status btn deliveredColor" ng-if="jobItem.item_status == 'Delivered' || jobItem.item_status == 'Completed' "></div>
+                                <div class="job-table-status btn approvedColor" ng-if="jobItem.item_status == 'Approved' || jobItem.item_status == 'Invoice Ready' "></div>
+                                <div class="job-table-status btn invoicecreatedColor" ng-if="jobItem.item_status == 'Invoice created'"></div>
+                                <div class="job-table-status btn invoiceckedColor" ng-if="jobItem.item_status == 'Invoice checked'"></div>
+                                <div class="job-table-status btn invoiceacceptedColor" ng-if="jobItem.item_status == 'Invoice Accepted' || jobItem.item_status == 'Invoiced' "></div>
+                                <div class="job-table-status btn paidColor" ng-if="jobItem.item_status == 'Paid'"></div>
+                                <div class="job-table-status btn canceledColor" ng-if="jobItem.item_status == 'Canceled' || jobItem.item_status == 'Cancelled'"></div>
+
                                 &nbsp;{{jobItem.item_status}}
                             </td>
                             <td></td>

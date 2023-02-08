@@ -3750,29 +3750,31 @@ app.directive('chainElemup', ['$compile', 'rest', function($compile, rest) { // 
                         statusClass = 'inpreprartionColor';
                     } else if (val.item_status == 'Requested') {
                         statusClass = 'requestedColor';
-                    } else if (val.item_status == 'Assigned-waiting') {
+                    } else if (['Assigned-waiting','Waiting'].includes(val.item_status)) {
                         statusClass = 'assignedwaitongColor';
-                    } else if (val.item_status == 'In-progress') {
+                    } else if ( ['In-progress','Ongoing'].includes(val.item_status) ) {
                         statusClass = 'inprogressColor';
                     } else if (val.item_status == 'Overdue') {
                         statusClass = 'overdueColor';
-                    } else if (val.item_status == 'Delivered') {
+                    } else if (['Delivered','Completed'].includes(val.item_status)) {
                         statusClass = 'deliveredColor';
-                    } else if (val.item_status == 'Approved') {
+                    } else if (['Approved','Invoice Ready'].includes(val.item_status)) {
                         statusClass = 'approvedColor';
-                    } else if (val.item_status == 'Invoice Accepted') {
+                    } else if (['Invoice Accepted','Invoiced'].includes(val.item_status)) {
                         statusClass = 'invoiceacceptedColor';
-                    } else if (val.item_status == 'Canceled') {
+                    } else if (['Canceled','Cancelled'].includes(val.item_status) ) {
                         statusClass = 'canceledColor';
                     } else if (val.item_status == 'Without invoice') {
                         statusClass = 'withoutInvoiceColor';
                     }else if (val.item_status == 'New') {
                         statusClass = 'newJob';
-                    }else if (val.item_status == 'Ready to be Delivered') {
-                        statusClass = 'rdyToDeliverColor';
-                    }else if (val.item_status == 'Completed') {
-                        statusClass = 'completedColor';
                     }
+                    // else if (val.item_status == 'Ready to be Delivered') {
+                    //     statusClass = 'rdyToDeliverColor';
+                    // }else if (val.item_status == 'Completed') {
+                    //     statusClass = 'completedColor';
+                    // }
+                    
                     if (val.per_id == '0') {
                         var input = angular.element('<button class="btn m-b-xs w-xs btn-default wpl-jobChainwidth btnch">' +
                             '<div>&nbsp;&nbsp;&nbsp;<i class="fa fa-stop ' + statusClass +
@@ -5613,6 +5615,9 @@ app.directive('select2EmailTplCat', function($http, rest, $timeout, $log) {
                 },{
                     id: '7',
                     text: 'Password to resource'
+                },{
+                    id: '8',
+                    text: 'Send Job Request'
                 }
             ];
             /*var tplCat = [{

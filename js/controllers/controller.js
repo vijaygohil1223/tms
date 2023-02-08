@@ -1055,7 +1055,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.reject = paramsAccept[1];
                 $scope.jobDetails.jobAccept = 0;
                 console.log('$scope.accept', $scope.accept)
-                notification('You have rejected the Job.', 'warning');
+                //notification('You have rejected the Job.', 'warning');
             }
         }
 
@@ -1063,17 +1063,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if($scope.jobDetails.jobId){
             rest.path = 'getOneJobsummury/'+ $scope.jobDetails.jobId;
             rest.get().success(function (data) {
+                console.log('response-data', data)
                 if (data) {
-                    if(data.accept > 0 ){
+                    if(data.accept > '0' ){
+                        console.log('if part == $scope.jobDetails ', $scope.jobDetails)
+                        
                         if($scope.jobDetails.jobAccept == 1 && data.accept == $scope.jobDetails.resourceId){
                             $('#responseMsg').text('Already, You have accepted the job');
                             $("#responseMsg").addClass("alert alert-success" );
                         }else{
-                            let msgText = $scope.jobDetails.jobAccept ? 'The job is accepted by someone else!' : 'You have rejected the job' ;
+                            let msgText = $scope.jobDetails.jobAccept ? 'The job is accepted by someone else!' : 'Job is already accepted!' ;
                             $('#responseMsg').text(msgText);
                             $("#responseMsg").addClass("alert alert-warning" );
+                            notification(msgText);
                         }
                     }else{
+                        console.log('else part  == $scope.jobDetails ', $scope.jobDetails)
                         rest.path = 'jobAccept';
                         rest.post($scope.jobDetails).success(function (data) {
                             console.log('data-updated', data)
@@ -1088,9 +1093,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $("#responseMsg").addClass( "alert alert-warning" );
                                 }
                             }
-                            setTimeout(() => {
-                                //$route.reload();
-                            }, 1000);
                         }).error(errorCallback);
                     }
                 }
@@ -1866,25 +1868,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     $scope.projectDilevered = $scope.projectDilevered;
 
-                    if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
-                        $scope.DueDateTomorrowCount++;
-                    }
-                    $scope.DueDateTomorrowCount = $scope.DueDateTomorrowCount;
+                    if(val.DueDate){
+                        if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+                            $scope.DueDateTomorrowCount++;
+                        }
+                        $scope.DueDateTomorrowCount = $scope.DueDateTomorrowCount;
 
-                    if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 2)) {
-                        $scope.dueDayAfterTomorrowCount++;
-                    }
-                    $scope.dueDayAfterTomorrowCount = $scope.dueDayAfterTomorrowCount;
+                        if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 2)) {
+                            $scope.dueDayAfterTomorrowCount++;
+                        }
+                        $scope.dueDayAfterTomorrowCount = $scope.dueDayAfterTomorrowCount;
 
-                    if (val.DueDate.split(' ')[0] == dateFormat(new Date())) {
-                        $scope.DueDateTodayCount++;
-                    }
-                    $scope.DueDateTodayCount = $scope.DueDateTodayCount;
+                        if (val.DueDate.split(' ')[0] == dateFormat(new Date())) {
+                            $scope.DueDateTodayCount++;
+                        }
+                        $scope.DueDateTodayCount = $scope.DueDateTodayCount;
 
-                    if (val.DueDate.split(' ')[0].split(".").reverse().join("-") < dateFormat(new Date()).split(".").reverse().join("-")) {
-                        $scope.overDueDateCount++;
-                    }
-                    $scope.overDueDateCount = $scope.overDueDateCount;
+                        if (val.DueDate.split(' ')[0].split(".").reverse().join("-") < dateFormat(new Date()).split(".").reverse().join("-")) {
+                            $scope.overDueDateCount++;
+                        }
+                        $scope.overDueDateCount = $scope.overDueDateCount;
+                    }    
+                    
 
                     if (val.heads_up == 1) {
                         $scope.headsUp++;
@@ -1926,19 +1931,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.itemStatus == 'In preparation') {
                     order.inpreparation += 1;
                 }
-                if (val.itemStatus == 'Assigned-waiting') {
+                if (val.itemStatus == 'Assigned-waiting' || val.itemStatus == 'Waiting') {
                     order.assignedwaiting += 1;
                 }
-                if (val.itemStatus == 'In-progress') {
+                if (val.itemStatus == 'In-progress' || val.itemStatus == 'Ongoing') {
                     order.inprogress += 1;
                 }
                 /*if (val.itemStatus == 'Overdue') {
                     order.overdue += 1;
                 }*/
-                if (val.itemStatus == 'Delivered') {
+                if (val.itemStatus == 'Delivered' || val.itemStatus == 'Completed') {
                     order.delivered += 1;
                 }
-                if (val.itemStatus == 'Approved') {
+                if (val.itemStatus == 'Approved'  || val.itemStatus == 'Invoice Ready' ) {
                     order.approved += 1;
                 }
                 /*if (val.DueDate == dayAftertomorrow) {
@@ -2766,7 +2771,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 } else if (val.item_status == 'Requested') {
                     Requested.push(val);
                     jobRequestesCount++;
-                } else if (val.item_status == 'In-progress') {
+                } else if (val.item_status == 'In-progress' || val.item_status == 'Ongoing') {
                     inProgerss.push(val);
                     jobInProgressCount++;
                 } else if (val.item_status == 'Ready to be Delivered') {
@@ -2916,7 +2921,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#exportExport').show();
                 scrollToId(eID);
                 break;
-            case "Assigned-waiting":
+            case "Waiting":
+            //case "Assigned-waiting":
                 $scope.itemStatus = id;
                 $scope.orderItem.itemStatus = $scope.itemStatus;
                 $scope.ordersData = true;
@@ -3040,20 +3046,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.item_status == 'Requested') {
                     Requested.push(val.item_status);
                 }
-                if (val.item_status == 'Waiting') {
-                //if (val.item_status == 'Assigned-waiting') {
+                if (val.item_status == 'Assigned-waiting' || val.item_status == 'Waiting') {
                         aw.push(val.item_status);
                 }
-
-                if (val.item_status == 'In-progress') {
+                if (val.item_status == 'In-progress' || val.item_status == 'Ongoing') {
                     ip.push(val.item_status);
                 }
 
-                if (val.item_status == 'Delivered') {
+                if (val.item_status == 'Delivered' || val.item_status == 'Completed') {
                     Delivered.push(val.item_status);
                 }
-
-                if (val.item_status == 'Approved') {
+                if (val.item_status == 'Approved' || val.item_status == 'Invoice Ready') {
                     Approved.push(val.item_status);
                 }
             });
@@ -3107,7 +3110,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.jobRow = "Requested";
                 $scope.highlightSearch = "Requested";
                 break;
-            //case "Assigned-waiting":
             case "Waiting":
                 $scope.jobRow = "Waiting";
                 $scope.highlightSearch = "Waiting";
@@ -8776,7 +8778,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.item_status == 'Requested') {
                     $scope.requestedJobAmt += val.total_price;
                 }
-                if (val.item_status == 'In-progress') {
+                if (val.item_status == 'In-progress' || val.item_status == 'Ongoing') {
                     $scope.inProgressJobAmt += val.total_price;
                 }
                 if (val.item_status == 'In preparation') {
@@ -8785,15 +8787,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.item_status == 'Overdue') {
                     $scope.overdueJobAmt += val.total_price;
                 }
-                if (val.item_status == 'Delivered') {
+                if (val.item_status == 'Delivered' || val.item_status == 'Completed') {
                     $scope.deliveredJobAmt += val.total_price;
                 }
-                if (val.item_status == 'Approved') {
+                if (val.item_status == 'Approved' || val.item_status == 'Invoice Ready') {
                     $scope.approvedJobAmt += val.total_price;
                 }
-                if (val.item_status == 'Completed') {
-                    $scope.completedJobAmt += val.total_price;
-                }
+                // if (val.item_status == 'Completed') {
+                //     $scope.completedJobAmt += val.total_price;
+                // }
                 if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
                     $scope.dueTodayJobAmt += val.total_price;
                 }
@@ -27052,7 +27054,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         switch (action) {
             case "accept":
                 if (status == 'Requested') {
-                    $scope.item_status = "Assigned-waiting";
+                    //$scope.item_status = "Assigned-waiting";
+                    $scope.item_status = "Waiting";
                 }
                 if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
                     $scope.job = {};
@@ -27283,7 +27286,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         switch (action) {
             case "accept":
                 if (status == 'Requested') {
-                    $scope.item_status = "Assigned-waiting";
+                    $scope.item_status = "Waiting";
+                    //$scope.item_status = "Assigned-waiting";
                 }
                 if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
                     $scope.job = {};
@@ -32258,7 +32262,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.jobDispalyTxt = 'In preparation';
                 }
             } else if ($scope.jobDisplayType == 'inProgress') {
-                if (val.item_status == 'In-progress') {
+                if (val.item_status == 'In-progress' || val.item_status == 'Ongoing') {
                     $scope.jobsToDisplay.push(val);
                     $scope.jobDispalyTxt = 'In Progress';
                 }
@@ -32268,17 +32272,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.jobDispalyTxt = 'Ready to be Delivered';
                 }
             } else if ($scope.jobDisplayType == 'jobDilevered') {
-                if (val.item_status == 'Delivered') {
+                if (val.item_status == 'Delivered' || val.item_status == 'Completed') {
                     $scope.jobsToDisplay.push(val);
                     $scope.jobDispalyTxt = 'Delivered';
                 }
             } else if ($scope.jobDisplayType == 'jobApproved') {
-                if (val.item_status == 'Approved') {
+                if (val.item_status == 'Approved' || val.item_status == 'Invoice Ready') {
                     $scope.jobsToDisplay.push(val);
                     $scope.jobDispalyTxt = 'Approved';
                 }
             } else if ($scope.jobDisplayType == 'jobInvoiced') {
-                if (val.item_status == 'Invoice Accepted') {
+                if (val.item_status == 'Invoice Accepted' || val.item_status == 'Invoiced') {
                     $scope.jobsToDisplay.push(val);
                     $scope.jobDispalyTxt = 'Invoice Accepted';
                 }

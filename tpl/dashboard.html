@@ -3369,13 +3369,13 @@ td { font-size: 11px; } */
                                         <button class="btn assignedwaitongColor"
                                           ng-if="job.item_status == 'Assigned-waiting' || job.item_status == 'Waiting'"></button>
                                         <button class="btn inprogressColor"
-                                          ng-if="job.item_status == 'In-progress'"></button>
+                                          ng-if="job.item_status == 'Ongoing' || job.item_status == 'In-progress'"></button>
                                         <button class="btn deliveredColor"
-                                          ng-if="job.item_status == 'Delivered'"></button>
+                                          ng-if="job.item_status == 'Completed' || job.item_status == 'Delivered'"></button>
+                                        <button class="btn invoiceacceptedColor"
+                                          ng-if="job.item_status == 'Invoiced' || job.item_status == 'Invoice Accepted'"></button>
                                         <button class="btn approvedColor"
-                                          ng-if="job.item_status == 'Invoice Accepted'"></button>
-                                        <button class="btn approvedColor"
-                                          ng-if="job.item_status == 'Approved'"></button>
+                                          ng-if="job.item_status == 'Invoice Ready' || job.item_status == 'Approved'"></button>
                                         {{job.item_status}}
                                       </td>
                                     </tr>
@@ -3420,13 +3420,13 @@ td { font-size: 11px; } */
                                         <button class="btn requestedColor"
                                           ng-if="job.item_status == 'Requested'"></button>
                                         <button class="btn assignedwaitongColor"
-                                          ng-if="job.item_status == 'Assigned-waiting'"></button>
+                                          ng-if="job.item_status == 'Waiting' || job.item_status == 'Assigned-waiting'"></button>
                                         <button class="btn inprogressColor"
-                                          ng-if="job.item_status == 'In-progress'"></button>
+                                          ng-if="job.item_status == 'In-progress' || job.item_status == 'Ongoing'"></button>
                                         <button class="btn deliveredColor"
-                                          ng-if="job.item_status == 'Delivered'"></button>
+                                          ng-if="job.item_status == 'Delivered' || job.item_status == 'Completed'"></button>
                                         <button class="btn approvedColor"
-                                          ng-if="job.item_status == 'Approved'"></button>
+                                          ng-if="job.item_status == 'Approved' || job.item_status == 'Invoice Ready'"></button>
                                         {{job.item_status}}
                                       </td>
                                     </tr>
