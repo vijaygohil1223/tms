@@ -645,6 +645,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'authenticate';
                 rest.post(user).success(function (data) {
                     $('#loginSpin').hide();
+                    $scope.userProfilepic = data.session_data.vProfilePic ? data.session_data.vProfilePic : 'user-icon.png';
                     $window.localStorage.setItem("_auth", data.session_data.vPassword);
                     $cookieStore.put('auth', data.session_data.vPassword);
                     $cookieStore.put('session_iUserId', data.session_data.iUserId);
@@ -659,7 +660,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("session_vUserName", data.session_data.vUserName);
                     $window.localStorage.setItem("session_iFkUserTypeId", data.session_data.iFkUserTypeId);
                     $window.localStorage.setItem("session_vUserFullName", data.session_data.vFirstName + " " + data.session_data.vLastName);
-                    $window.localStorage.setItem("session_vProfilePic", data.session_data.vProfilePic);
+                    $window.localStorage.setItem("session_vProfilePic", $scope.userProfilepic);
                     $window.localStorage.welUser = data.session_data.vUserName.toString();
                     
                     $window.localStorage.setItem("session_menuAccess", data.session_data.menu_access);
@@ -2783,7 +2784,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 //Due date counts for jobs
                     
-                if( ! ['Delivered','Completed','Paid','Invoice Accepted'].indexOf(val.item_status) > -1 ){
+                if( ! ['Delivered','Completed','Paid','Invoice Ready','Invoice Accepted','Invoiced'].indexOf(val.item_status) > -1 ){
                     if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
                         jobDueToday.push(val);
                         jobDueTodayCount++;
@@ -2794,8 +2795,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     const dateToday = dateFormat(new Date()).split(".").reverse().join("-");
                     if (val.due_date.split(' ')[0] < dateToday) {
-                        jobOverDue.push(val);
-                        jobOverDueCount++;
+                        if( ['In preparation','Requested','Assigned-waiting','Waiting','In-progress','Ongoing'].indexOf(val.item_status) > -1 ){
+                            jobOverDue.push(val);
+                            jobOverDueCount++;
+                        }
                     }
                 }    
 
@@ -3030,7 +3033,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
             $scope.jobList = data;
-            console.log('$scope.jobList============', $scope.jobList)
             $scope.freelanceEmpty = jQuery.isEmptyObject(data);
             var allStatus = [];
             var Requested = [];
@@ -3052,10 +3054,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.item_status == 'In-progress' || val.item_status == 'Ongoing') {
                     ip.push(val.item_status);
                 }
-
+                // Delivered status rename as Completed
                 if (val.item_status == 'Delivered' || val.item_status == 'Completed') {
                     Delivered.push(val.item_status);
                 }
+                // Approved status rename as Invoice Ready
                 if (val.item_status == 'Approved' || val.item_status == 'Invoice Ready') {
                     Approved.push(val.item_status);
                 }
