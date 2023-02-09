@@ -1319,7 +1319,8 @@ class jobs_detail
             if (isset($data['jobAccept']) && $data['jobAccept'] == '1') {
                 $dataUp['accept'] = $data['resourceId'];
                 $dataUp['resource'] = $data['resourceId'];
-                $dataUp['item_status'] = 'Waiting';
+                //$dataUp['item_status'] = 'Waiting';
+                $dataUp['item_status'] = 'Ongoing';
             } else {
                 $dataUp['rejection'] = $data['resourceId'];
             }   
@@ -1675,7 +1676,7 @@ class jobs_detail
 
 
 
-            if ($data['item_status'] == 'Delivered') {
+            if ($data['item_status'] == 'Delivered' || $data['item_status'] == 'Completed') {
 
                 //Sending Email to manager after job is Delivered START
 

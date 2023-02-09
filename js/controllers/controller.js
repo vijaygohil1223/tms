@@ -3118,15 +3118,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.highlightSearch = "Waiting";
                 break;
             case "In_progress":
-                $scope.jobRow = "In-progress";
+                $scope.jobRow = "Ongoing";
+                //$scope.jobRow = "In-progress";
                 $scope.highlightSearch = "In_progress";
                 break;
             case "Delivered":
-                $scope.jobRow = "Delivered";
+                $scope.jobRow = "Completed";
+                //$scope.jobRow = "Delivered";
                 $scope.highlightSearch = "Delivered";
                 break;
             case "Approved":
-                $scope.jobRow = "Approved";
+                $scope.jobRow = "Invoice Ready";
+                //$scope.jobRow = "Approved";
                 $scope.highlightSearch = "Approved";
                 break;
             case "Calculated":
@@ -27057,8 +27060,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         switch (action) {
             case "accept":
                 if (status == 'Requested') {
+                    $scope.item_status = "Ongoing";
                     //$scope.item_status = "Assigned-waiting";
-                    $scope.item_status = "Waiting";
                 }
                 if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
                     $scope.job = {};
@@ -27289,7 +27292,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         switch (action) {
             case "accept":
                 if (status == 'Requested') {
-                    $scope.item_status = "Waiting";
+                    $scope.item_status = "Ongoing";
+                    //$scope.item_status = "Waiting";
                     //$scope.item_status = "Assigned-waiting";
                 }
                 if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
@@ -27332,7 +27336,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //console.log("$scope.job", $scope.job);return false;
             rest.put($scope.job).success(function (data) {
                 if (data.status == 200 && data.emailSend == 'true') {
-                    if ($scope.job.item_status == 'Delivered') {
+                    if ($scope.job.item_status == 'Delivered' || $scope.job.item_status == 'Completed') {
                         notification('job is delivered successfully and email sent to project manager.', 'success');
                     } else {
                         notification('job is accepted successfully and email sent to project manager.', 'success');

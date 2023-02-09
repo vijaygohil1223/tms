@@ -3653,14 +3653,14 @@ app.directive('select2UserEmailExternal', function($http, rest, $timeout) {
             rest.get().success(function(data) {
                 console.log('data-freelance email', data)
                 var linguistUser = data.data.filter( (u)=>{
-                    if(u.iFkUserTypeId ==2)
+                    if(u.iFkUserTypeId == 2)
                         return u;
                 } )
                 var users = [];
                 $.each(linguistUser, function(key, value) {
                     var obj = {
                         'id': value.iUserId,
-                        'text': value.vEmailAddress
+                        'text': value.vFirstName + ' ' + value.vLastName
                     };
                     users.push(obj);
                 });
