@@ -18307,14 +18307,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (source == undefined || source == null || source == "") {
             source = '';
         }
-
         var indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
             if(indirectCustomerName == null)
                 indirectCustomerName = '';
         if (source && !target) {
-            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - English (US)';
+            //$scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - English (US)';
+            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - ';
         } else if (!source && target) {
-            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | English (US) - ' + target;
+            //$scope.itemList[itemIndex].item_name = indirectCustomerName + ' | English (US) - ' + target;
+            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' |  - ' + target;
         } else {
             $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + '-' + target;
         }
@@ -18638,6 +18639,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
                     console.log('itemId = first', $scope.itemList[formIndex].itemId)
+                    var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
+                    var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
+                    if(!srcLang || !trgLang){
+                        notification('Please select source-target language','warning')
+                        return false;
+                    }
 
                     var itemPriceUnit = [];
                     itemPriceUnit = $scope.itemPriceUni[formId];
@@ -18666,8 +18673,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var sourceField = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale");
                     var targetField = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale");
 
-                    var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
-                    var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
                     var sourceObj = {
                         sourceLang: srcLang,
                         dataNgSrc: sourceField.children().attr('data-ng-src'),
@@ -18951,7 +18956,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         notification('Item successfully updated.', 'success');
                     });
                 } else {
-                    console.log('second');
                     //if source and target language not selected
                     var source = angular.element('#source_lang').text();
                     var target = angular.element('#target_lang').text();
@@ -19174,9 +19178,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
                     var sourceField = angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale");
+                    console.log('sourceField', sourceField)
 
                     var targetField = angular.element("#plsTargetLang" + val.itemId).children("a.pls-selected-locale");
                     var sourceImg = sourceField.children('img');
+                    console.log('sourceImg', sourceImg)
                     var targetImg = targetField.children('img');
 
                     angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale").text('');
@@ -19186,16 +19192,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     targetField.append(targetImg);
 
                     if ($scope.itemList[i].source_lang.length == 0 && $scope.itemList[i].target_lang.length == 0) {
-                        sourceField.children().attr('data-ng-src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
-                        sourceField.children().attr('src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
-                        sourceField.children().attr('alt', 'United States');
+                        let defaultImgSrc = 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png';
+                        let defaultLangName = 'English (US)';
+                        let defaultAltName = 'United States';
+                        sourceField.children().attr('data-ng-src', '');
+                        sourceField.children().attr('src', '');
+                        sourceField.children().attr('alt', 'Select');
+                        
+                        //targetField.children().attr('data-ng-src', defaultImgSrc);
+                        targetField.children().attr('data-ng-src', '');
+                        targetField.children().attr('src', '');
+                        targetField.children().attr('alt', 'Select');
 
-                        targetField.children().attr('data-ng-src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
-                        targetField.children().attr('src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
-                        targetField.children().attr('alt', 'United States');
-
-                        var sourceImg = sourceField.children('img').after('English (US)');
-                        var targetImg = targetField.children('img').after('English (US)');
+                        var sourceImg = sourceField.children('img').after('');
+                        var targetImg = targetField.children('img').after('');
                     } else {
                         sourceField.children().attr('data-ng-src', sourceData.dataNgSrc);
                         sourceField.children().attr('src', sourceData.dataNgSrc);
@@ -19204,8 +19214,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         targetField.children().attr('data-ng-src', targetData.dataNgSrc);
                         targetField.children().attr('src', targetData.dataNgSrc);
                         targetField.children().attr('alt', targetData.alt);
-                        var sourceImg = sourceField.children('img').after(sourceData.sourceLang);
                         var targetImg = targetField.children('img').after(targetData.sourceLang);
+                        var sourceImg = sourceField.children('img').after(sourceData.sourceLang);
                     }
                 }).error(errorCallback);
 
@@ -29579,9 +29589,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         var indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
         if (source && !target) {
-            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - English (US)';
+            //$scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' - English (US)';
+            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + ' -  ';
         } else if (!source && target) {
-            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | English (US) - ' + target;
+            //$scope.itemList[itemIndex].item_name = indirectCustomerName + ' | English (US) - ' + target;
+            $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | - ' + target;
         } else {
             $scope.itemList[itemIndex].item_name = indirectCustomerName + ' | ' + source + '-' + target;
         }
@@ -29726,7 +29738,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.order_id) {
                 if ($scope.itemList[formIndex].itemId) {
                     console.log('itemId = first', $scope.itemList[formIndex].itemId)
-
+                    // if empty language pair
+                    var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
+                    var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
+                    if(!srcLang || !trgLang){
+                        notification('Please select source-target language','warning')
+                        return false;
+                    }
                     var itemPriceUnit = [];
                     itemPriceUnit = $scope.itemPriceUni[formId];
                     if (itemPriceUnit) {
@@ -29753,8 +29771,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var sourceField = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale");
                     var targetField = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale");
 
-                    var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
-                    var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
                     var sourceObj = {
                         sourceLang: srcLang,
                         dataNgSrc: sourceField.children().attr('data-ng-src'),
@@ -30196,16 +30212,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     targetField.append(targetImg);
 
                     if ($scope.itemList[i].source_lang.length == 0 && $scope.itemList[i].target_lang.length == 0) {
-                        sourceField.children().attr('data-ng-src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
-                        sourceField.children().attr('src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
-                        sourceField.children().attr('alt', 'United States');
+                        let defaultImgSrc = 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png';
+                        let defaultLangName = 'English (US)';
+                        let defaultAltName = 'United States';
+                        sourceField.children().attr('data-ng-src', '');
+                        sourceField.children().attr('src', '');
+                        sourceField.children().attr('alt', 'Select');
+                        
+                        //targetField.children().attr('data-ng-src', defaultImgSrc);
+                        targetField.children().attr('data-ng-src', '');
+                        targetField.children().attr('src', '');
+                        targetField.children().attr('alt', 'Select');
 
-                        targetField.children().attr('data-ng-src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
-                        targetField.children().attr('src', 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png');
-                        targetField.children().attr('alt', 'United States');
-
-                        var sourceImg = sourceField.children('img').after('English (US)');
-                        var targetImg = targetField.children('img').after('English (US)');
+                        var sourceImg = sourceField.children('img').after('');
+                        var targetImg = targetField.children('img').after('');
                     } else {
                         sourceField.children().attr('data-ng-src', sourceData.dataNgSrc);
                         sourceField.children().attr('src', sourceData.dataNgSrc);

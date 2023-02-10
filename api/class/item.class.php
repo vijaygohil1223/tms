@@ -292,7 +292,8 @@ class item {
             $Indirectclient = new client();
             $IcData = $Indirectclient->getIndirectClient($result['indirect_customer']);
             
-            $itemName = $IcData['vUserName'].' | English (US) - English (US)';
+            //$itemName = $IcData['vUserName'].' | English (US) - English (US)';
+            $itemName = $IcData['vUserName'];
             $contactPerson = $result['client'];
             //echo $itemId;exit;
             for($i=$itemId+1;$i<=$no_of_items+$itemId;$i++){
