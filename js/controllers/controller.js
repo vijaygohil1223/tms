@@ -2479,11 +2479,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let scoopDueDate = val.itemDuedate;
                     
                 if(scoopDueDate && !(statusExistArr.indexOf(val.itemStatusId) > -1) ){
-                    if (scoopDueDate.split(' ')[0] == $scope.dateToday) {
+                    if (scoopDueDate.split(' ')[0] == $scope.dateToday && ['1','2'].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsDueToday.push(val);
                         $scope.projectsDueTodayCount++;
                     }
-                    if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1) ) {
+                    if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && ['1','2'].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsDueTomorrow.push(val);
                         $scope.projectsDueTomorrowCount++;
                     }
@@ -18908,12 +18908,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
                     $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
                     
-                    $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
-                    $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
-                    if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
-                        $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
-                    }
-
+                    
+                    if($scope.itemList[formIndex].upcomingDate){
+                        $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
+                        $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
+                        if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
+                            $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
+                        }
+                    }else{
+                        $scope.itemList[formIndex].upcomingDate = '0000-00-00';
+                    } 
+                    
+                    
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     
                     // const hasKeyStsName = 'item_status_name' in $scope.itemList;
@@ -29981,11 +29987,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
                     $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
                     // Upcoming scoop Project
-                    $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
-                    $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
-                    if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
-                        $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
-                    }
+                    if($scope.itemList[formIndex].upcomingDate){
+                        $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
+                        $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
+                        if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
+                            $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
+                        }
+                    }else{
+                        $scope.itemList[formIndex].upcomingDate = '0000-00-00';
+                    }    
                     
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     rest.path = 'ItemUpdate';
