@@ -2221,7 +2221,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.progrss_precentage = -1;
                 //$scope.projectsAll = $scope.projectData;
                 //console.log('$scope.projectsAll==',$scope.projectsAll);
-                var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
+                //var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
+                var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
                 if (val.itemsSourceLang) {
                     $scope.projectData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
                     // var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
@@ -2475,19 +2476,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 // val.DueDate - due Today
                 //let statusExistArr = ["Delivered","Approved","Invoiced","Paid"];
-                let statusExistArr = ["4","5","6","7"];
+                let statusExistArr = [4,5,6,7];
                 let scoopDueDate = val.itemDuedate;
                     
                 if(scoopDueDate && !(statusExistArr.indexOf(val.itemStatusId) > -1) ){
-                    if (scoopDueDate.split(' ')[0] == $scope.dateToday && ['1','2'].indexOf(val.itemStatusId) > -1 ) {
+                    if (scoopDueDate.split(' ')[0] == $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsDueToday.push(val);
                         $scope.projectsDueTodayCount++;
                     }
-                    if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && ['1','2'].indexOf(val.itemStatusId) > -1 ) {
+                    if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsDueTomorrow.push(val);
                         $scope.projectsDueTomorrowCount++;
                     }
-                    if (scoopDueDate.split(' ')[0] > $scope.dateToday) {
+                    //console.log('$scope.dateToday=before', $scope.dateToday)
+                    if (scoopDueDate.split(' ')[0] < $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsOverdue.push(val);
                         $scope.projectsOverdueCount++;
                     }
@@ -17235,7 +17237,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'customer/' + $routeParams.id;
         rest.get().success(function (res) {
             $scope.customer = res;
-            console.log('$scope.customer', $scope.customer)
+            console.log('$scope.customer===>general', $scope.customer)
             if (res) {
                 rest.path = 'client/' + $scope.customer.client;
                 rest.get().success(function (cData) {
@@ -17286,6 +17288,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                         angular.element('#indirect_customer').select($scope.customer.indirect_customer);
                         angular.element('#indirect_customer').trigger('change');
+                        
                         if($scope.customer.sub_pm)
                             $scope.checksub_pm = 1;
                         if($scope.customer.sub_pc)
@@ -17841,6 +17844,78 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.indirectCustomerName = account.text;
         $window.localStorage.setItem('indirectCustomerName', account.text);
     }
+    $scope.accountPopup = function () {
+        
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/account_popup.html',
+            controller: 'accountPopupController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            // debugger;
+            $scope.selected = selectedItem;
+            //$route.reload();
+        });
+    };
+
+}).controller('accountPopupController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+
+    $scope.info = {};
+    var currentdate = new Date();
+
+    //$scope.info.vClientNumber = randNumber();
+
+    rest.path = "clientProfileNumber/2";
+    rest.get().success(function (data) {
+        $scope.info.vClientNumber = pad(data, 3);
+    });
+
+    $scope.info.dtCreationDate = currentdate.getDate() + "/" +
+        (currentdate.getMonth() + 1) + "/" +
+        currentdate.getFullYear() + " " +
+        currentdate.getHours() + ":" +
+        currentdate.getMinutes() + ":" +
+        currentdate.getSeconds();
+    
+    $scope.saveAccountclient = function (formId) {
+        if (angular.element("#" + formId).valid()) {
+            if ($scope.imageSrc) {
+                $scope.info.image = $scope.imageSrc;
+            }
+            $scope.fileId = angular.element('.fileId').text();
+            $scope.info.fileId = $scope.fileId;
+            rest.path = 'clientsaveindirect';
+            rest.post($scope.info).success(function (data) {
+                //$window.localStorage.setItem("IndirectClientId", data.iClientId);
+                
+                //log file start
+                $scope.logMaster = {};
+                $scope.logMaster.log_type_id = data.iClientId;
+                $scope.logMaster.log_title = $scope.info.vUserName;
+                $scope.logMaster.log_type = "add";
+                $scope.logMaster.log_status = "indirect_cli";
+                $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                rest.path = "saveLog";
+                rest.post($scope.logMaster).success(function (data) { });
+
+                //$location.path('/client/2');
+                //$route.reload();
+            }).error(errorCallback);
+        }
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
 }).controller('profileViewController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $routeParams.id = $routeParams.clientId;

@@ -294,13 +294,19 @@ class item {
             
             //$itemName = $IcData['vUserName'].' | English (US) - English (US)';
             $itemName = $IcData['vUserName'];
-            $contactPerson = $result['client'];
+            //$contactPerson = $result['client'];
+            $contactPerson = $result['contact']; // default contact person
+            
+            $this->_db->where("order_id", $order_id);
+            $genData = $this->_db->getOne('tms_general');
+            $gen_due_date = $genData['due_date']; // default due date for scoop item
             //echo $itemId;exit;
             for($i=$itemId+1;$i<=$no_of_items+$itemId;$i++){
                 $Idata['item_number'] =$i;
-                $Idata['contact_person'] =$contactPerson;
+                $Idata['contact_person'] = $contactPerson;
                 $Idata['item_name'] =$itemName;
                 $Idata['order_id'] = $data['order_id'];
+                $Idata['due_date'] = $gen_due_date;
                 $Idata['created_date'] = date('Y-m-d H:i:s');
                 $Idata['updated_date'] = date('Y-m-d H:i:s');
 
