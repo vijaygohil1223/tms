@@ -17861,10 +17861,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         modalInstance.result.then(function (selectedItem) {
             // debugger;
             $scope.selected = selectedItem;
-            //$route.reload();
+            rest.path = 'clientlistindirect_show';
+            rest.get().success(function(data) {
+                var indirectS2Arr = [];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        'id': value.iClientId,
+                        'text': value.vUserName
+                    };
+                    indirectS2Arr.push(obj);
+                });
+                $timeout(function() {
+                    angular.element('#indirect_customer').select2({
+                        allowClear: true,
+                        data: indirectS2Arr,
+                        multiple:true,
+                        closeOnSelect:true,
+                    }).on("change", function (e) {
+                        const inputIdS2 = '#s2id_'+$(this).attr('id');
+                        if(e.added){
+                            $(inputIdS2+' li').each(function() {
+                                const childDiv = $(this).children();
+                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                if(eleText){
+                                    if(eleText !== e.added.text){
+                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                    }    
+                                }
+                            });
+                        }    
+                    });
+                }, 200);
+            }).error(function(data, error, status) {});
         });
     };
-
+    
 }).controller('accountPopupController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
@@ -17906,14 +17937,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = "saveLog";
                 rest.post($scope.logMaster).success(function (data) { });
 
+                $scope.selected = {
+                    item: 'Saved'
+                };
+                $uibModalInstance.close($scope.selected.item);
                 //$location.path('/client/2');
                 //$route.reload();
             }).error(errorCallback);
         }
     };
-
+    
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
+       
     };
 
 }).controller('profileViewController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {

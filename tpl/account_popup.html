@@ -33,7 +33,7 @@
                                         <label>Website :</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="website"
-                                                ng-model="info.vWebsite" required> <span class="input-group-addon"><a
+                                                ng-model="info.vWebsite"> <span class="input-group-addon"><a
                                                     target="_blank" ng-href="http://{{info.vWebsite}}/"><i
                                                         class="fa fa-external-link"></i></a></span>
                                         </div>
@@ -48,14 +48,17 @@
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
             </div>
             <!--   TAB1 -->
             <div class="panel-footer">
-                <a class="btn btn-info btn-rightside" ng-click="saveAccountclient('client-profile1');"><i
+                <div class="col-md-12">
+                    <a class="btn btn-info btn-rightside" ng-click="saveAccountclient('client-profile1');"><i
                         class="fa fa-floppy-o" aria-hidden="true"></i> Save</a>
+                </div>
             </div>
         </form>
     </div>
