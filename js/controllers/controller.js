@@ -18742,16 +18742,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.workflowChange = true; 
         console.log('$scope.workflowChange', $scope.workflowChange)
     }
-
+    $scope.allScoopUpdate = false;
     $scope.jobi = {};
     $scope.saveitems = function (formId, formIndex) {
-        console.log('$scope.itemList=>updtval',$scope.itemList)
+        console.log('$scope.itemList=>updtval='+formIndex ,$scope.itemList)
         if (angular.element('#item-form' + formId).valid()) {
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
+                    var formIdAllSave = $scope.allScoopUpdate ? $scope.itemList[0].itemId : formId;
+                    var formIndexNew = $scope.allScoopUpdate ? 0 : formIndex;
+                    if($scope.allScoopUpdate)
+                        $scope.workflowChange = true; 
                     console.log('itemId = first', $scope.itemList[formIndex].itemId)
-                    var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
-                    var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
+                    var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
+                    var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
                     if(!srcLang || !trgLang){
                         notification('Please select source-target language','warning')
                         return false;
@@ -18781,8 +18785,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].order_id = $scope.routeOrderID;
                     $scope.itemList[formIndex].total_amount = $scope.total_amount;
 
-                    var sourceField = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale");
-                    var targetField = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale");
+                    var sourceField = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale");
+                    var targetField = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale");
 
                     var sourceObj = {
                         sourceLang: srcLang,
@@ -18820,22 +18824,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //         }
                     //     }
                     // } else {
-
-                        if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
+                        console.log('job-changes',$scope.jobi.jobSummery)
+                        let formIdNew = 0;    
+                        if ($('#jobchainName' + formIdAllSave).val() == 'select' || $('#jobDropDown' + formIdAllSave).val() == 'select') {
                             notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
                             $scope.TblItemList[formIndex].total_amount = 0;
                             return false;
                         } else {
-                            if ($scope.jobi.jobSummery && $scope.workflowChange) {
-                                console.log('$scope.jobi.jobSummery', $scope.jobi.jobSummery)
+                            if ($scope.jobi.jobSummery && $scope.workflowChange || ($scope.allScoopUpdate) ) {
+                                console.log('$scope.jobi.jobSummery=>', $scope.jobi.jobSummery)
                                 console.log('$scope.workflowChange', $scope.workflowChange)
                                 // gettingName of selected workflow job chain
-                                $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formId).find(':selected').text();
+                                
+                                $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formIdAllSave).find(':selected').text();
                                 console.log('$scope.itemList[formIndex].attached_workflow', $scope.itemList[formIndex].attached_workflow)
+                                let workflowSel = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();        
 
                                 $scope.jobitem = {};
-                                var dd = $scope.jobi.jobSummery;
+                                var dd = $scope.allScoopUpdate ? workflowSel : $scope.jobi.jobSummery;
                                 $scope.jobi.jobSummery = dd.substr(1);
                                 $scope.matchjob = dd.slice(0, 1);
                                 if ($scope.matchjob == 'j') {
@@ -19010,7 +19017,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                         }
                     //}
-
+                    
                     const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
                     if(hasKeySpclz)    
                         delete $scope.itemList[formIndex].specialization;
@@ -19024,7 +19031,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
                     $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
                     
-                    
                     if($scope.itemList[formIndex].upcomingDate){
                         $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
                         $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
@@ -19035,22 +19041,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemList[formIndex].upcomingDate = '0000-00-00';
                     } 
                     
-                    
-                    $routeParams.id = $scope.itemList[formIndex].itemId
-                    
                     // const hasKeyStsName = 'item_status_name' in $scope.itemList;
                     // if(hasKeyStsName)    
                     //  delete $scope.itemList.item_status_name;
+                    if($scope.allScoopUpdate){
+                        $scope.itemList[formIndex].project_type = $scope.itemList[0].project_type; 
+                        $scope.itemList[formIndex].po_number = $scope.itemList[0].po_number; 
+                        $scope.itemList[formIndex].item_status = $scope.itemList[0].item_status; 
+                        $scope.itemList[formIndex].project_pricelist = $scope.itemList[0].project_pricelist; 
+                        $scope.itemList[formIndex].place_of_delivery = $scope.itemList[0].place_of_delivery; 
+                    }    
                     
+                    $routeParams.id = $scope.itemList[formIndex].itemId
                     rest.path = 'ItemUpdate';
                     rest.put($scope.itemList[formIndex]).success(function () {
                         $('#jobchainName' + formId).val('select');
                         //Updating current updated row data(item)
                         $scope.getItems();
 
-                        //After update change to global date format dates
-                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
-                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
+                        //if(!$scope.allScoopUpdate){
+                            //After update change to global date format dates
+                            $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
+                            $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
+                        //}    
 
                         $scope.workflowChange = false;
                         //log file start
@@ -19098,7 +19111,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             'pricelist': pricelist,
                             'itemPrice': itemPrice,
                             'itemTotal': itemTotal
-
                         });
                     }
                     $scope.price = JSON.stringify(itemPriceUnit);
@@ -19138,6 +19150,61 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     }
+
+    $scope.itemListAppy = {};
+    $scope.scoopAllSave = function() {
+        $scope.allScoopUpdate = true;    
+        console.log('apply left side save', $scope.itemList.length)
+        jQuery('.scoopall').removeAttr('required');
+        //$(".scoopall").attr('required', '');
+        console.log('$scope.itemList=apply scoop',$scope.itemList )
+        angular.forEach($scope.itemList, function (val, index) {
+            
+            jQuery('#project_type'+val.itemId).removeAttr('required');
+            console.log('val=appyAll '+index, val)
+            let selectedWorkflow = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();
+            console.log('selectedWorkflow', selectedWorkflow)
+            $('#jobchainName'+val.itemId).find('option').val(selectedWorkflow).trigger('click');
+                                
+            //$scope.itemList[index].project_type = $scope.itemList[0].project_type; 
+            //$scope.itemList[index].po_number = $scope.itemList[0].po_number; 
+            //angular.element('#po_number'+val.itemId).text($scope.itemList[0].po_number)
+            
+            $scope.saveitems(val.itemId, index);
+            
+            // Added new object
+            // $scope.itemListAppy.project_type = $scope.itemList[0].project_type; 
+            // $scope.itemListAppy.po_number = $scope.itemList[0].po_number; 
+            // $scope.itemListAppy.item_status = $scope.itemList[0].item_status; 
+            // $scope.itemListAppy.project_pricelist = $scope.itemList[0].project_pricelist; 
+            
+            // var srcLang = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
+            // var trgLang = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
+            // var sourceField = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
+            // var targetField = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
+            // var sourceObj = {
+            //     sourceLang: srcLang,
+            //     dataNgSrc: sourceField.children().attr('data-ng-src'),
+            //     alt: sourceField.children().attr('alt')
+            // }
+            // var targetObj = {
+            //     sourceLang: trgLang,
+            //     dataNgSrc: targetField.children().attr('data-ng-src'),
+            //     alt: targetField.children().attr('alt')
+            // }
+            // $scope.itemListAppy.source_lang = JSON.stringify(sourceObj);
+            // $scope.itemListAppy.target_lang = JSON.stringify(targetObj);
+            
+            // console.log('$scope.itemListAppy', $scope.itemListAppy)
+            
+            // $routeParams.id = $scope.itemList[index].itemId
+            // rest.path = 'ItemUpdate';
+            // rest.put($scope.itemListAppy).success(function () {
+            
+            // })
+
+        })
+    }    
 
     $scope.getItems = function () {
         var popitemList = [];

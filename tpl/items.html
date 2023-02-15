@@ -94,6 +94,8 @@
                </div> -->
                   <a href="javascript:void(0);" ng-click="goTojobDetail()" style="margin-right: 5px;"
                      ng-if="itemList.length >0" class="btn btn-info">Go to jobs<span class="fa fa-times1"></span></a>
+                  <a href="javascript:void(0);" ng-click="scoopAllSave()" style="margin-right: 5px;"
+                     ng-if="itemList.length >0" class="btn btn-info">Appy Save<span class="fa fa-times1"></span></a>   
                </div>
             </div>
             <div class="hrght1" ng-if="showEditedByName">
@@ -410,7 +412,7 @@
                                                          <div class="col-sm-12">
                                                             <div class="form-group">
                                                                <label class="control-label">Email Subject</label>
-                                                               <input type="text" class="form-control"
+                                                               <input type="text" class="form-control scoopall"
                                                                   id="EmailSub{{it.itemId}}"
                                                                   name="item_email_subject{{it.itemId}}"
                                                                   ng-model="it.item_email_subject" required />
@@ -516,7 +518,7 @@
                                                    <tr>
                                                       <td colspan="4">
                                                          <button class="btn btn-info"
-                                                            ng-click="saveitems(it.itemId,$index);"><i
+                                                            ng-click="saveitems(it.itemId,$index);" id="saveitem{{it.itemId}}"><i
                                                                class="fa fa-floppy-o" aria-hidden="true"></i>
                                                             Save</button>
 
