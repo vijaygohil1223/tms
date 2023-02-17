@@ -138,8 +138,7 @@ class jobs_detail
 
 
     public function jobSummarySave($info)
-    {
-
+    {   
         //echo '<pre>'; print_r($info); echo '</pre>';
         $this->_db->where('item_id', $info['item_id']);
         $this->_db->where('job_id', $info['job_id']);
@@ -149,19 +148,13 @@ class jobs_detail
         // changes - If same job exist we can add new jobs
         $alreadyExists2 = false;
 
-
         if ($alreadyExists2) {
 
             return false;
-
             // $return['status'] = 404;
-
             // $return['msg'] = 'Job already Exists.';
-
         } else {
-
             //jobsummery insert
-
             if (isset($info['job_no'])) {
                 $info['job_no'];
             } else {

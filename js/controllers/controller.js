@@ -18453,7 +18453,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }, 2000);
 
-
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
         // var totalPrice1 = $scope.itemList[parentIndex].total_price;
         // //var totalPrice = totalPrice1.toFixed(2);
@@ -18742,17 +18741,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.workflowChange = true; 
         console.log('$scope.workflowChange', $scope.workflowChange)
     }
-    $scope.allScoopUpdate = false;
+    $scope.isAllScoopUpdated = false;
     $scope.jobi = {};
     $scope.saveitems = function (formId, formIndex) {
-        console.log('$scope.itemList=>updtval='+formIndex ,$scope.itemList)
         if (angular.element('#item-form' + formId).valid()) {
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
-                    var formIdAllSave = $scope.allScoopUpdate ? $scope.itemList[0].itemId : formId;
-                    var formIndexNew = $scope.allScoopUpdate ? 0 : formIndex;
-                    if($scope.allScoopUpdate)
-                        $scope.workflowChange = true; 
+                    var formIdAllSave = $scope.isAllScoopUpdated ? $scope.itemList[0].itemId : formId;
+                    var formIndexNew = $scope.isAllScoopUpdated ? 0 : formIndex;
+                    
+                    console.log('formIdAllSave', formIdAllSave)
                     console.log('itemId = first', $scope.itemList[formIndex].itemId)
                     var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
                     var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
@@ -18793,7 +18791,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         dataNgSrc: sourceField.children().attr('data-ng-src'),
                         alt: sourceField.children().attr('alt')
                     }
-
                     var targetObj = {
                         sourceLang: trgLang,
                         dataNgSrc: targetField.children().attr('data-ng-src'),
@@ -18802,8 +18799,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     $scope.itemList[formIndex].source_lang = JSON.stringify(sourceObj);
                     $scope.itemList[formIndex].target_lang = JSON.stringify(targetObj);
-
-                    console.log('$scope.itemList[formIndex].total_price', $scope.itemList[formIndex].total_price)
 
                     $scope.itemList[formIndex].total_amount = $scope.itemList[formIndex].total_price;
                     
@@ -18824,25 +18819,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //         }
                     //     }
                     // } else {
-                        console.log('job-changes',$scope.jobi.jobSummery)
-                        let formIdNew = 0;    
                         if ($('#jobchainName' + formIdAllSave).val() == 'select' || $('#jobDropDown' + formIdAllSave).val() == 'select') {
                             notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
                             $scope.TblItemList[formIndex].total_amount = 0;
                             return false;
                         } else {
-                            if ($scope.jobi.jobSummery && $scope.workflowChange || ($scope.allScoopUpdate) ) {
+                            if ($scope.jobi.jobSummery && $scope.workflowChange || ($scope.isAllScoopUpdated && $scope.workflowChange) ) {
                                 console.log('$scope.jobi.jobSummery=>', $scope.jobi.jobSummery)
                                 console.log('$scope.workflowChange', $scope.workflowChange)
                                 // gettingName of selected workflow job chain
                                 
                                 $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formIdAllSave).find(':selected').text();
-                                console.log('$scope.itemList[formIndex].attached_workflow', $scope.itemList[formIndex].attached_workflow)
                                 let workflowSel = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();        
-
+                                
                                 $scope.jobitem = {};
-                                var dd = $scope.allScoopUpdate ? workflowSel : $scope.jobi.jobSummery;
+                                var dd = $scope.isAllScoopUpdated ? workflowSel : $scope.jobi.jobSummery;
                                 $scope.jobi.jobSummery = dd.substr(1);
                                 $scope.matchjob = dd.slice(0, 1);
                                 if ($scope.matchjob == 'j') {
@@ -18850,6 +18842,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     rest.get().success(function (data) {
                                         $scope.itemdata = data;
                                         $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+                                        console.log('$scope.jobitem.item_id='+$scope.itemList[formIndex].itemId, $scope.jobitem.item_id)
                                         if ($scope.jobitem.item_id) {
                                             rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.routeOrderID;
                                             rest.get().success(function (data) {
@@ -18904,6 +18897,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
                                                 $scope.jobitem.price = '';
                                                 $scope.jobitem.total_price = parseFloat(0.00);
+                                                $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+                                                
                                                 rest.path = 'jobSummarySave';
                                                 rest.post($scope.jobitem).success(function (data) {
                                                     if (data) {
@@ -18928,7 +18923,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     console.log('chainId', chainId)
 
                                     // gettingName of selected workflow job chain
-                                    $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
+                                    $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName'+formIdAllSave).find(':selected').text();
                                     if (chainId != undefined  && $scope.workflowChange) {
                                         rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.routeOrderID + '/' + chainId;
                                         rest.get().success(function (data) {
@@ -19022,10 +19017,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(hasKeySpclz)    
                         delete $scope.itemList[formIndex].specialization;
                     
-                    $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
-                    $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
-                    var due_timevl1 = angular.element('#due_time' + formIndex).val();
-                    $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
+                    console.log('due_date-before=->'+$scope.itemList[formIndex].itemId ,$scope.itemList[formIndex].due_date )
+                    $scope.itemList[formIndexNew].itemId ,$scope.itemList[formIndexNew].due_date;
+                    if($scope.isAllScoopUpdated && formIndex != 0 ){    
+                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndexNew].due_date).format("YYYY-MM-DD HH:mm");
+                        console.log('due_date-after=->'+$scope.itemList[formIndexNew].itemId ,$scope.itemList[formIndex].due_date )
+                    }else{
+                        $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
+                        $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
+                        var due_timevl1 = angular.element('#due_time' + formIndex).val();
+                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
+                    }    
+                        
                     //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
                     //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
                     $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
@@ -19039,17 +19042,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }else{
                         $scope.itemList[formIndex].upcomingDate = '0000-00-00';
-                    } 
+                    }
+                    if($scope.isAllScoopUpdated && formIndex != 0 && $scope.itemList[formIndexNew].heads_up == 1){    
+                        $scope.itemList[formIndex].upcomingDate = $scope.itemList[formIndexNew].upcomingDate;
+                        console.log('upcomingDate-all'+formIndex, $scope.itemList[formIndex].upcomingDate)
+                        if(! isNaN(Date.parse($scope.itemList[formIndexNew].upcomingDate))){
+                            $scope.itemList[formIndex].start_date = $scope.itemList[formIndexNew].upcomingDate;
+                        }
+                    }
+                    
                     
                     // const hasKeyStsName = 'item_status_name' in $scope.itemList;
                     // if(hasKeyStsName)    
                     //  delete $scope.itemList.item_status_name;
-                    if($scope.allScoopUpdate){
+                    if($scope.isAllScoopUpdated){
                         $scope.itemList[formIndex].project_type = $scope.itemList[0].project_type; 
                         $scope.itemList[formIndex].po_number = $scope.itemList[0].po_number; 
                         $scope.itemList[formIndex].item_status = $scope.itemList[0].item_status; 
                         $scope.itemList[formIndex].project_pricelist = $scope.itemList[0].project_pricelist; 
                         $scope.itemList[formIndex].place_of_delivery = $scope.itemList[0].place_of_delivery; 
+                        $scope.itemList[formIndex].item_name = $scope.itemList[0].item_name; 
                     }    
                     
                     $routeParams.id = $scope.itemList[formIndex].itemId
@@ -19059,12 +19071,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //Updating current updated row data(item)
                         $scope.getItems();
 
-                        //if(!$scope.allScoopUpdate){
-                            //After update change to global date format dates
-                            $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
-                            $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
-                        //}    
-
+                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
+                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
+                    
                         $scope.workflowChange = false;
                         //log file start
                         $scope.logMaster = {};
@@ -19077,7 +19086,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.post($scope.logMaster).success(function (data) { });
                         //log file end
                         //$route.reload();
-                        notification('Item successfully updated.', 'success');
+                                
+                        if(!$scope.isAllScoopUpdated){
+                            console.log('single scoop'+ $scope.itemList[formIndex].itemId,$scope.isAllScoopUpdated)
+                            notification('Item successfully updated.', 'success');
+                        }else{
+                            if( $scope.itemList[$scope.itemList.length-1].itemId == $scope.itemList[formIndex].itemId ){
+                                notification('All items successfully updated.', 'success');
+                                $scope.isAllScoopUpdated = false;
+                                $route.reload();
+                            }
+                        }
+                    }).error(function (data, error, status) { 
+                        $scope.isAllScoopUpdated = false;
                     });
                 } else {
                     //if source and target language not selected
@@ -19140,7 +19161,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.post($scope.logMaster).success(function (data) { });
                         //log file end
                         //$scope.myitems = false;
-                        //$route.reload();
+                        $route.reload();
                         notification('Item successfully created.', 'success');
                         //$scope.getItems();
                     });
@@ -19151,58 +19172,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    $scope.itemListAppy = {};
+    // Save all scoop data (only left side value)
     $scope.scoopAllSave = function() {
-        $scope.allScoopUpdate = true;    
-        console.log('apply left side save', $scope.itemList.length)
+        //debugger
+        $scope.isAllScoopUpdated = true;    
         jQuery('.scoopall').removeAttr('required');
         //$(".scoopall").attr('required', '');
-        console.log('$scope.itemList=apply scoop',$scope.itemList )
         angular.forEach($scope.itemList, function (val, index) {
-            
-            jQuery('#project_type'+val.itemId).removeAttr('required');
-            console.log('val=appyAll '+index, val)
+            //debugger
+            $scope.isAllScoopUpdated = true; 
+            $('#project_type'+val.itemId).removeAttr('required');
+            $('#upcomingDate'+val.itemId).removeAttr('required');
+            //$('#EmailSub'+val.itemId).removeAttr('required');
+            //$scope.workflowChange = false;
+            console.log('$scope.workflowChange-before'+index, $scope.workflowChange)
+            if($scope.itemList[0].heads_up == 1 && index != 0)
+                $('#headsup'+val.itemId).click();
+            if($scope.itemList[0].heads_up != 1 )    
+                $('#upcomingDate'+val.itemId).css('display','none');    
+
             let selectedWorkflow = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();
-            console.log('selectedWorkflow', selectedWorkflow)
-            $('#jobchainName'+val.itemId).find('option').val(selectedWorkflow).trigger('click');
-                                
-            //$scope.itemList[index].project_type = $scope.itemList[0].project_type; 
-            //$scope.itemList[index].po_number = $scope.itemList[0].po_number; 
-            //angular.element('#po_number'+val.itemId).text($scope.itemList[0].po_number)
+            if($('#jobchainName'+val.itemId).find(':selected').val() == 'select'){
+                $scope.workflowChange = true;
+                $('#jobchainName'+val.itemId).find('option').val(selectedWorkflow).trigger('click');
+            }else{
+                $scope.workflowChange = $scope.workflowChange ? $scope.workflowChange : false;
+            }
+            console.log('$scope.workflowChange-After-'+index, $scope.workflowChange)
             
             $scope.saveitems(val.itemId, index);
-            
-            // Added new object
-            // $scope.itemListAppy.project_type = $scope.itemList[0].project_type; 
-            // $scope.itemListAppy.po_number = $scope.itemList[0].po_number; 
-            // $scope.itemListAppy.item_status = $scope.itemList[0].item_status; 
-            // $scope.itemListAppy.project_pricelist = $scope.itemList[0].project_pricelist; 
-            
-            // var srcLang = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
-            // var trgLang = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
-            // var sourceField = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
-            // var targetField = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
-            // var sourceObj = {
-            //     sourceLang: srcLang,
-            //     dataNgSrc: sourceField.children().attr('data-ng-src'),
-            //     alt: sourceField.children().attr('alt')
-            // }
-            // var targetObj = {
-            //     sourceLang: trgLang,
-            //     dataNgSrc: targetField.children().attr('data-ng-src'),
-            //     alt: targetField.children().attr('alt')
-            // }
-            // $scope.itemListAppy.source_lang = JSON.stringify(sourceObj);
-            // $scope.itemListAppy.target_lang = JSON.stringify(targetObj);
-            
-            // console.log('$scope.itemListAppy', $scope.itemListAppy)
-            
-            // $routeParams.id = $scope.itemList[index].itemId
-            // rest.path = 'ItemUpdate';
-            // rest.put($scope.itemListAppy).success(function () {
-            
-            // })
-
+        
         })
     }    
 
@@ -19434,13 +19433,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         angular.element('#itemPer' + i).html($scope.percent);
                         angular.element('.itemPer' + i).val($scope.percent);
                         if ($scope.percent == 100) {
-                            angular.element('#sumimg' + i).append('<img src="assets/img/wf_4.png" alt=""/> Completed /');
+                            if(! $('#sumimg'+i+' img').length)
+                                angular.element('#sumimg' + i).append('<img src="assets/img/wf_4.png" alt=""/> Completed /');
                         } else if ($scope.percent < 100 && $scope.percent != 0) {
-                            angular.element('#sumimg' + i).append('<img src="assets/img/wf_3.png" alt=""/> Started /');
+                            if(! $('#sumimg'+i+' img').length)
+                                angular.element('#sumimg' + i).append('<img src="assets/img/wf_3.png" alt=""/> Started /');
                         } else if ($scope.percent == 0) {
-                            angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
+                            if(! $('#sumimg'+i+' img').length){
+                                //if($('#sumimg'+i+' img').attr('src') != 'assets/img/wf_1.png')
+                                angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
+                            }
+                            
+                            
                         } else {
-                            $('#noJob' + i).append('No jobs');
+                            if(! $('.jbClassDel' + val.itemId).text() )
+                                $('#noJob' + i).append('No jobs');
                             angular.element('#progress' + i).remove();
                             angular.element('#sumimg' + i).remove();
                         }
