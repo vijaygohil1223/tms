@@ -13141,8 +13141,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.payment.tax_id = $scope.payment.tax_id;
         }   
         if (!$scope.payment.country_code || !$scope.payment.tax_id) {
-            notification('please enter vat number', 'warning');
-            return false
+            $scope.payment.country_code = $scope.payment.country_code ? $scope.payment.country_code : '';
+            $scope.payment.tax_id = $scope.payment.tax_id ? $scope.payment.tax_id : '';
+            //notification('please enter vat number', 'warning');
+            //return false
         }
         if ($scope.clientId != " ") {
             if (angular.element("#" + formId).valid()) {
@@ -15367,15 +15369,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, invoiceDuePeriodDays) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    var allInvoiceListArr = [];
     $scope.getData = function () {
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
             //console.log(invoiceDuePeriodDays);
             $scope.invoiceList = data;
+            $scope.getAllInvoice = data;
+            allInvoiceListArr = data;
             //console.log("$scope.invoiceList", $scope.invoiceList);
             $scope.invoiceStatus = [];
             for (var i = 0; i < data.length; i++) {
                 $scope.invoiceStatus[i] = true;
+                data[i].freelance_currency = data[i].freelance_currency ? data[i].freelance_currency.split(',')[0] : 'EUR'; 
                 //console.log('data[i]',data[i].created_date)
                 const invoice_duedate = TodayAfterNumberOfDays(data[i].created_date, invoiceDuePeriodDays);
                 //console.log('invoice_duedate', invoice_duedate)
@@ -15471,31 +15477,70 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    //Invoice export to excel
-    $scope.exportData = function () {
-        var count = 0;
-        for (var i = 0; i <= angular.element('[id^=exportable] > tr').length; i++) {
-            //if ($("#orderCheck" + i).prop('checked') == true) {
-            count++;
-            //}
-        }
-        if (count == 0) {
-            notification('Please select record to export', 'information');
-        }
-        if (count > 0) {
-            for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
-                if ($("#orderCheck" + i).prop('checked') == true) {
-                    $("#Export_" + i).show()
-                } else {
-                    $("#Export_" + i).hide()
+    // Remove Element from array
+    function arrayRemove(arr, value) { 
+        return arr.filter(function(ele){ 
+            return ele != value; 
+        });
+    }
+    $scope.checkedIds = [];
+    $scope.checkInvoiceIds = function(id){
+        //var result = arrayRemove(array, 6);
+        console.log('clickerd-id', id)
+        if(id){
+            if(id == 'all'){
+                let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
+                console.log('isCheckedAll', isCheckedAll)
+                if(isCheckedAll == 'true'){
+                    $("input[id^=invoiceCheck]:checkbox").prop("checked", true);
+                    for (var i = 0; i < angular.element('[id^=invoiceCheck]').length; i++) {
+                        var invoiceselected = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
+                        console.log('invoiceselected', invoiceselected)
+                        if (invoiceselected == 'true') {
+                            var invoiceIds = angular.element('#invoiceCheckData' + i).val();
+                            $scope.checkedIds.push(invoiceIds.toString());
+                        }
+                    }        
+                }else{
+                    $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+                    $('input[id^=checkAll]:checkbox').removeAttr('checked');
+                    //$('#checkAll').removeAttr('checked');
+                    $scope.checkedIds = [];
                 }
-            }
+            }else{
+                let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
+                console.log('isChecked', isChecked)
+                if(isChecked == 'true')
+                    $scope.checkedIds.push(id.toString());
+                else
+                    $scope.checkedIds = arrayRemove($scope.checkedIds, id);
+            }        
+        }    
+        console.log('$scope.checkedIds', $scope.checkedIds)
+                        
+    }
+
+    //Linguist Invoice export to excel
+    $scope.exportData = function () {
+        console.log('$scope.checkedIds=excel', $scope.checkedIds)
+        if($scope.checkedIds.length > 0)
+            $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+        console.log('$scope.getAllInvoice', $scope.getAllInvoice)
+        setTimeout(() => {
+            console.log('$scope.getAllInvoice', $scope.getAllInvoice)
+
             var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             });
-            saveAs(blob, "Linguist-invoice-report.xls");
-            //$scope.jobstatusReportsearch();
-        }
+            saveAs(blob, "Linguist Invoice Report.xls");
+            $scope.getAllInvoice = allInvoiceListArr
+            // Remove selected
+            $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+            $('input[id^=checkAll]:checkbox').removeAttr('checked');
+
+            $scope.checkedIds = [];
+        }, 500);
+
     };
 
     //search data action
@@ -19192,7 +19237,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $('#upcomingDate'+val.itemId).css('display','none');    
 
             let selectedWorkflow = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();
-            if($('#jobchainName'+val.itemId).find(':selected').val() == 'select'){
+            console.log('selectedWorkflow=before='+val.itemId, selectedWorkflow)
+            if($('#jobchainName'+val.itemId).find(':selected').val() == 'select' && selectedWorkflow != 'select' ){
                 $scope.workflowChange = true;
                 $('#jobchainName'+val.itemId).find('option').val(selectedWorkflow).trigger('click');
             }else{
@@ -26859,16 +26905,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.getInvoicePeriod();
 
     $scope.scoopId = [];
+    var allInvoiceListArr = [];
     $scope.getAllInvoice = function () {
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (invoices) {
             $scope.getAllInvoice = invoices;
+            allInvoiceListArr = invoices;
             console.log('invoices', invoices)
             //get of invoice due period
             $scope.invoiceUnpaid = [];
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function (val, i) {
                 var invoice_duedate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod);
+
+                val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
                 //if(invoice_duedate)
                     //val.invoice_duedate = invoice_duedate;
                 if (val.invoice_status == 'Complete') {
@@ -26916,31 +26966,70 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     };
 
+    // Remove Element from array
+    function arrayRemove(arr, value) { 
+        return arr.filter(function(ele){ 
+            return ele != value; 
+        });
+    }
+    $scope.checkedIds = [];
+    $scope.checkInvoiceIds = function(id){
+        //var result = arrayRemove(array, 6);
+        console.log('clickerd-id', id)
+        if(id){
+            if(id == 'all'){
+                let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
+                console.log('isCheckedAll', isCheckedAll)
+                if(isCheckedAll == 'true'){
+                    $("input[id^=invoiceCheck]:checkbox").prop("checked", true);
+                    for (var i = 0; i < angular.element('[id^=invoiceCheck]').length; i++) {
+                        var invoiceselected = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
+                        console.log('invoiceselected', invoiceselected)
+                        if (invoiceselected == 'true') {
+                            var invoiceIds = angular.element('#invoiceCheckData' + i).val();
+                            $scope.checkedIds.push(invoiceIds.toString());
+                        }
+                    }        
+                }else{
+                    $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+                    $('input[id^=checkAll]:checkbox').removeAttr('checked');
+                    //$('#checkAll').removeAttr('checked');
+                    $scope.checkedIds = [];
+                }
+            }else{
+                let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
+                console.log('isChecked', isChecked)
+                if(isChecked == 'true')
+                    $scope.checkedIds.push(id);
+                else
+                    $scope.checkedIds = arrayRemove($scope.checkedIds, id);
+            }        
+        }    
+        console.log('$scope.checkedIds', $scope.checkedIds)
+                        
+    }
+
     //Invoice export to excel
     $scope.exportData = function () {
-        var count = 0;
-        for (var i = 0; i <= angular.element('[id^=exportable] > tr').length; i++) {
-            //if ($("#orderCheck" + i).prop('checked') == true) {
-            count++;
-            //}
-        }
-        if (count == 0) {
-            notification('Please select record to export', 'information');
-        }
-        if (count > 0) {
-            for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
-                if ($("#orderCheck" + i).prop('checked') == true) {
-                    $("#Export_" + i).show()
-                } else {
-                    $("#Export_" + i).hide()
-                }
-            }
+        console.log('$scope.checkedIds=excel', $scope.checkedIds)
+        if($scope.checkedIds.length > 0)
+            $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+        console.log('$scope.getAllInvoice', $scope.getAllInvoice)
+        setTimeout(() => {
+            console.log('$scope.getAllInvoice', $scope.getAllInvoice)
+
             var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             });
-            saveAs(blob, "Linguist-invoice-report.xls");
-            //$scope.jobstatusReportsearch();
-        }
+            saveAs(blob, "Client Invoice Report.xls");
+            $scope.getAllInvoice = allInvoiceListArr
+            // Remove selected
+            $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+            $('input[id^=checkAll]:checkbox').removeAttr('checked');
+
+            $scope.checkedIds = [];
+        }, 500);
+
     };
 
     //search data action

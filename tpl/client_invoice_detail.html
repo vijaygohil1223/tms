@@ -59,7 +59,14 @@
           <div class="table-responsive">
             <div class="bg-light lter b-b wrapper-md d-flex">
               <h4 class="m-n font-thin col-sm-8">Unpaid/Partially Paid Invoices</h4>
-              <div class="col-sm-4">
+              <div class="col-sm-2">
+                <div class="col-sm-12 d-flex" style="white-space:nowrap;">
+                  <label style="margin-top:5px;">Check All &nbsp;&nbsp;</label>
+                  <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall" 
+                      ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" />
+                </div>
+              </div>
+              <div class="col-sm-6">
                 <div class="col-sm-10 d-flex" style="white-space:nowrap;">
                   <label style="margin-top:5px;">Change Status &nbsp;&nbsp;</label>
                   <input type="text" select2-client-invoice-status id="invoiceStatusdata"
@@ -76,33 +83,34 @@
               <thead>
                 <th>#</th>
                 <th>Invoice number</th>
-                <!-- <th>Freelancer name</th> -->
-                <th>Price</th>
-                <th>Due Date</th>
                 <th>Company name</th>
+                <th>Price</th>
+                <th>Currency</th>
                 <th>Creation Date</th>
-                <th>Invoice status</th>
+                <th>Due Date</th>
+                <th>Invoice Status</th>
                 <th>Action</th>
               </thead>
               <tbody>
                 <tr ng-repeat="invoiceL in invoiceUnpaid">
                   <td>
-                    <input type="checkbox" id="invoiceCheck{{$index}}" name="invoiceCheck{{$index}}" ng-model="checkor"
+                    <input type="checkbox" id="invoiceCheck{{$index}}" ng-click="checkInvoiceIds(invoiceL.invoice_id)" class="invoiceCheck{{invoiceL.invoice_id}}"  name="invoiceCheck{{$index}}" ng-model="checkor"
                       ng-checked="checkdata=='invoicecheck'" />
+                    <span class="fa fa-check" title="csv exported" style="margin-left:10px;"></span>  
                     <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
                       style="display: none" ng-model="invoiceL.invoice_id" />
                   </td>
                   <td ng-bind="invoiceL.invoice_number"></td>
-                  <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
-                  <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
-                  <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                   <td>
                     {{ invoiceL.clientCompanyName }}
                     <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
                       title="Comment" class="trActionIcon">
                       &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
                   </td>
+                  <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
+                  <td> {{invoiceL.client_currency}} </td>
                   <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                  <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                   <td>
                     <span ng-bind="invoiceL.invoice_status"></span>
                   </td>
@@ -127,36 +135,35 @@
             </div>
             <table class="table table-striped b-t b-b table-bordered" datatable="ng">
               <thead>
-                <th>#</th>
+                <th># </th>
                 <th>Invoice number</th>
-                <!-- <th>Freelancer name</th> -->
-                <th>Price</th>
-                <th>Due Date</th>
                 <th>Company name</th>
+                <th>Currency</th>
+                <th>Price</th>
                 <th>Creation Date</th>
-                <th>Invoice status</th>
+                <th>Due Date</th>
+                <th>Invoice Status</th>
                 <th>Action</th>
               </thead>
               <tbody>
                 <tr ng-repeat="invoiceL in invoiceCompleted">
                   <td>
-                    <input type="checkbox" id="invoiceCheck{{$index}}" name="invoiceCheck{{$index}}" ng-model="checkor"
+                    <input type="checkbox" id="invoiceCheck{{$index}}" ng-click="checkInvoiceIds(invoiceL.invoice_id)" class="invoiceCheck{{invoiceL.invoice_id}}" name="invoiceCheck{{$index}}" ng-model="checkor"
                       ng-checked="checkdata=='invoicecheck'" />
                     <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
                       style="display: none" ng-model="invoiceL.invoice_id" />
                   </td>
                   <td ng-bind="invoiceL.invoice_number"></td>
-                  <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
-                  <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
-                  <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
-                  <!-- <td ng-bind="invoiceL.companyName"></td> -->
                   <td>
                     {{invoiceL.clientCompanyName}}
                     <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
                       title="Comment" class="trActionIcon">
                       &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
                   </td>
+                  <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
+                  <td> {{invoiceL.client_currency}} </td>
                   <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                  <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                   <td>
                     <span ng-bind="invoiceL.invoice_status"></span>
                   </td>
@@ -179,22 +186,22 @@
               <thead>
                 <th>#</th>
                 <th>Invoice number</th>
-                <!-- <th>Freelancer name</th> -->
-                <th>Price</th>
-                <th>Due Date</th>
                 <th>Company name</th>
+                <th>Price</th>
+                <th>Currency</th>
                 <th>Creation Date</th>
+                <th>Due Date</th>
                 <th>Invoice status</th>
               </thead>
               <tbody>
-                <tr ng-repeat="invoiceL in getAllInvoice">
+                <tr id="Export_{{$index}}" ng-repeat="invoiceL in getAllInvoice">
                   <td ng-bind="$index + 1"></td>
                   <td ng-bind="invoiceL.invoice_number"></td>
-                  <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
-                  <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
-                  <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                   <td>{{invoiceL.clientCompanyName}}</td>
+                  <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
+                  <td>{{invoiceL.client_currency}} </td>
                   <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                  <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                   <td>
                     <span ng-bind="invoiceL.invoice_status"></span>
                   </td>

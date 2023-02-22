@@ -121,8 +121,8 @@
                                             <td style="width:150px">
                                                 {{invL.poNumber}} | {{invL.item_name}}
                                             </td>
-                                            <td style="width:100px">
-                                                {{invL.price_per_job}}
+                                            <td style="width:100px"  class="nowrap">
+                                                {{invL.price_per_job}} {{currencyType}}
                                                 <!-- <input class="invoiceCal form-control itemVal_{{invL.jobId}}"
                                                     ng-show="editInvoiceField" type="text" ng-model="invL.price_per_job"
                                                     ng-disabled="editDisabled" id="invSubTotal{{$index}}"
@@ -132,18 +132,18 @@
                                         </tr>
                                         <tr>
                                             <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
-                                            <td style="width:10%;">
-                                                {{invoiceTotal}}
+                                            <td style="width:10%;" class="nowrap">
+                                                {{invoiceTotal}} {{currencyType}}
                                                 <!-- <input class="form-control" ng-show="editInvoiceField" type="text"
                                                     ng-model="invoiceTotal" ng-disabled="editDisabled"
                                                     ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
                                                     id="invSubtotal" /> -->
                                             </td>
                                         </tr>
-                                        <tr class="tdborder">
-                                            <td colspan="3" class="text-right no-border"><strong>Tax ({{taxPercentage}}%)</strong></td>
-                                            <td>
-                                                <span>{{ taxValue | customNumber }}</span>
+                                        <tr class="tdborder" ng-if="taxPercentage">
+                                            <td colspan="3" class="text-right no-border nowrap"><strong>Tax ({{taxPercentage}}%)</strong></td>
+                                            <td class="nowrap">
+                                                <span>{{ taxValue | customNumber }} {{currencyType}}</span>
                                                 <!-- <input class="form-control" ng-show="editInvoiceField"
                                                     ng-disabled="editDisabled" type="text" ng-model="vat"
                                                     ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" /> -->
@@ -162,13 +162,13 @@
                                         <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
                                             <td colspan="3" class="text-right no-border"><strong>Paid
                                                 </strong></td>
-                                            <td style="width:10%;">{{invoiceDetail.paid_amount | customNumber}}</td>
+                                            <td style="width:10%;" class="nowrap">{{invoiceDetail.paid_amount | customNumber}} {{currencyType}}</td>
                                         </tr>
-                                        <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
+                                        <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder nowrap">
                                             <td colspan="3" class="text-right no-border"><strong>Total Due Amount</strong>
                                             </td>
                                             <td style="white-space: nowrap;">{{grandJobTotal -
-                                                invoiceDetail.paid_amount | customNumber}}</td>
+                                                invoiceDetail.paid_amount | customNumber}} {{currencyType}}</td>
                                         </tr>
                                     </tbody>
                                 </table>

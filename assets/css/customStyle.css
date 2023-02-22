@@ -39,6 +39,7 @@ body{padding-top: 62px;}
 .justify-space-between{
     justify-content: space-between;
 }
+.nowrap {white-space: nowrap;}
 
 /* anchore */
 a{color: #502dc4;}
@@ -47,7 +48,6 @@ a[title="delete"]{text-decoration: none;}
 
 /* select */
 select{color: #3615a0;}
-
 /* multiselect dropdown */
 .select2-container-multi.select2-container-active .select2-choices{border-color: #502dc4; box-shadow: inset 0 1px 1px rgb(0 0 0 / 8%), 0 0 8px rgb(80 45 196 / 60%);}
 .select2-container-multi .select2-choices .select2-search-choice{border-color: #502dc4;}
@@ -1124,24 +1124,40 @@ table.customerPriceTable tbody [id^=priceLanguageID] tr.priceLPrice.rowactivate 
   max-height: 200px;
 }
 
-/* Invoice style */
+/* Start Invoice -po page */
 .invoice-header,
 .invoice-footer {
-    background-color: #6D85Ad;
-    padding: 25px;
-    padding-bottom: 25px;
-    color: #FFF;
-    margin-bottom: 15px;
+  background-color: #6D85Ad;
+  padding: 25px;
+  padding-bottom: 25px;
+  color: #FFF;
+  margin-bottom: 15px;
 }
 .invoice-content1 {
-    padding: 25px;
+  padding: 25px 20px;
 }
 .invoice-header h1 {
-    margin-top: 50px;
+  margin-top: 50px;
 }
 .invoice-footer p {
-    margin-top: 10px;
+  margin-top: 10px;
 }
+.invcBtn {
+  margin-right: 5px;
+}
+.invoiceInput .imgcenter{
+  margin: 0 auto;
+  width: max-content;
+}
+.poTempate>.line {
+  background: #f1ecec;
+  margin-bottom: 25px;
+}
+.poTempate >.imgcenter {
+  margin: 0 auto;
+  width: max-content;
+}
+/* End Invoice style */
 
 /* Start  Dashboard tabs scrolling
 Scroll Tabs css */
