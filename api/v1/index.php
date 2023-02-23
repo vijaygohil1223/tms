@@ -3323,6 +3323,12 @@ $app->get('/getFreelanceStatement/:id','authenticate', function($id) {
     $result = $stmt->getFreelanceStatement($id);
     echoResponse(200, $result);
 });
+$app->post('/freelanceInvoiceExcelStatus', 'authenticate',function () use($app) {
+    $invoice = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->freelanceInvoiceExcelStatus($data);
+    echoResponse(200, $result);
+});
 function echoResponse($status_code, $response) {
     global $app;
     $app->status($status_code);
@@ -3410,6 +3416,12 @@ $app->put('/invoiceStatusIrrecoverable/:id','authenticate', function ($id) use($
     $invoice = new Client_invoice ();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $invoice->invoiceStatusIrrecoverable($data, $id);
+    echoResponse(200, $result);
+});
+$app->post('/clientInvoiceExcelStatus', 'authenticate',function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->clientInvoiceExcelStatus($data);
     echoResponse(200, $result);
 });
 $app->get('/getClientStatement/:id', 'authenticate',function($id) {

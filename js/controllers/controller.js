@@ -15533,12 +15533,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             });
             saveAs(blob, "Linguist Invoice Report.xls");
+            rest.path = 'freelanceInvoiceExcelStatus';
+            rest.post($scope.checkedIds).success(function (data) {
+                if (data.status == 200) {
+                    $route.reload();
+                    //notification('File downloaded successfully', 'success');
+                    $scope.checkedIds = [];
+                }
+            }).error(errorCallback);
             $scope.getAllInvoice = allInvoiceListArr
             // Remove selected
             $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
             $('input[id^=checkAll]:checkbox').removeAttr('checked');
 
-            $scope.checkedIds = [];
         }, 500);
 
     };
@@ -27016,18 +27023,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
         console.log('$scope.getAllInvoice', $scope.getAllInvoice)
         setTimeout(() => {
-            console.log('$scope.getAllInvoice', $scope.getAllInvoice)
-
             var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             });
             saveAs(blob, "Client Invoice Report.xls");
+            // on excel download add flag 1 (To display check mark)
+            rest.path = 'clientInvoiceExcelStatus';
+            rest.post($scope.checkedIds).success(function (data) {
+                if (data.status == 200) {
+                    $route.reload();
+                    //notification('File downloaded successfully', 'success');
+                    $scope.checkedIds = [];
+                }
+            }).error(errorCallback);
             $scope.getAllInvoice = allInvoiceListArr
             // Remove selected
             $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
             $('input[id^=checkAll]:checkbox').removeAttr('checked');
-
-            $scope.checkedIds = [];
+            
         }, 500);
 
     };

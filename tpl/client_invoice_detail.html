@@ -96,7 +96,7 @@
                   <td>
                     <input type="checkbox" id="invoiceCheck{{$index}}" ng-click="checkInvoiceIds(invoiceL.invoice_id)" class="invoiceCheck{{invoiceL.invoice_id}}"  name="invoiceCheck{{$index}}" ng-model="checkor"
                       ng-checked="checkdata=='invoicecheck'" />
-                    <span class="fa fa-check" title="csv exported" style="margin-left:10px;"></span>  
+                    <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="csv exported" style="margin-left:10px;"></span>  
                     <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
                       style="display: none" ng-model="invoiceL.invoice_id" />
                   </td>

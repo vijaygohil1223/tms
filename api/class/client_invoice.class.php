@@ -660,6 +660,30 @@ class Client_invoice {
         }
 
     }
+
+    public function clientInvoiceExcelStatus($data) {
+        $allUpdated = false;
+        $i = 0;
+        $len = count($data);
+        $updata['value_date'] = date('Y-m-d H:i');
+        $updata['is_excel_download'] = 1;
+        foreach ($data as $item) {
+            $this->_db->where('invoice_id', $item);
+            $scpstsId = $this->_db->update('tms_invoice_client', $updata);
+            if($i == $len - 1) {
+                $allUpdated = true;
+            }
+            $i++;
+        }
+        if($allUpdated){
+            $result['status'] = 200;
+            $result['msg'] = "Successfully Updated";
+        }else{
+            $result['status'] = 422;
+            $result['msg'] = "Not updated";
+        }
+        return $result;
+    }
     
     /* Get All client invoice */
     public function getAllInvoiceClient($type,$userId) {
@@ -670,7 +694,7 @@ class Client_invoice {
         $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
         $this->_db->where('tmInvoice.invoice_type', $type);
         //$this->_db->where('tmInvoice.freelance_id',$userId);
-        $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.invoice_date, tmInvoice.created_date');
+        $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.invoice_date, tmInvoice.created_date');
         //echo $this->_db->getLastQuery();
         foreach ($data as $key => $value) {
             $data[$key]['companyName'] = ''; 
