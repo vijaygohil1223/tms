@@ -17,7 +17,7 @@
           <div class="panel panel-default">
             <div class="table-responsive">
               <div class="bg-light lter b-b wrapper-md d-flex">
-                <h4 class="m-n font-thin col-sm-11"> <a href="#/invoice-client" class="btn btn-info"><i class="fa fa-eye"></i>&nbsp; Go To Invoice List</a> </h4>
+                <h4 class="m-n font-thin col-sm-11"> <a href="#/invoice-client" class="btn btn-info"><i class="fa fa-list"></i>&nbsp; Go To Invoice List</a> </h4>
                 <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)"><i class="fa fa-plus"></i>&nbsp;&nbsp; Create invoice</button>
               </div>
               <table class="table table-striped b-t b-b table-bordered" >
@@ -30,6 +30,7 @@
                     <th>Due Date</th>
                     <th>status</th>
                     <th>Price</th>
+                    <th>Currency</th>
                   </tr>
                 </thead>
                 <tbody ng-init="invLen = InvoiceResult.length - 1" ng-repeat="invoiceL in InvoiceResult  track by $index">
@@ -49,11 +50,12 @@
                     <td>{{ invoiceL.contactName }}</td>
                     <td>{{ invoiceL.itemPonumber }}</td>
                     <td ng-bind="invoiceL.itemDuedate | globalDtFormat"></td>
-                    <td>
+                    <td class="nowrap">
                       <button class="btn approvedColor" ng-if="invoiceL.itemStatus == 'Approved'"></button>
                       &nbsp;{{invoiceL.itemStatus}}
                     </td>
                     <td ng-bind="invoiceL.totalAmount | customNumber"></td>
+                    <td ng-bind="invoiceL.client_currency"></td>
                     
                   </tr>
                 </tbody>

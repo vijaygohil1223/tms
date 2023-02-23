@@ -170,7 +170,7 @@
                             <!-- <span ng-if="!invoiceLength">{{invL.item.subTotal | customNumber}}</span>
                                   <span ng-if="invoiceLength">{{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> </td> -->
                         </tr>
-                        <tr class="tdborder">
+                        <tr class="tdborder" ng-if="taxValue > 0">
                           <td colspan="3" class="text-right no-border"><strong>Tax ({{taxPercentage}}%)</strong></td>
                           <td>
                             <span>{{ taxValue | customNumber }}</span>

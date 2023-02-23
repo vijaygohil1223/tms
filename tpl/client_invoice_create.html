@@ -145,7 +145,7 @@
                          </th> -->
                           <th class="nowrap">
                             <!-- {{invL.item.subTotal | customNumber }}  -->
-                            <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }} {{currencyType}}</span>
+                            <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }}</span>
                             <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
                           </th>
                         </tr>
@@ -153,13 +153,13 @@
                           <td colspan="5" class="text-right"><strong>Sub Total</strong></td>
                           <td style="width:9%;">
                             <!-- {{invoiceTotal | customNumber}} -->
-                            {{ invoiceTotal }} {{currencyType}}
+                            {{ invoiceTotal }}
                           </td>
                         </tr>
                         <tr ng-if="$index == invoiceLength && vatTax > 0" class="nowrap">
                           <td colspan="5" class="text-right"><strong>{{vatTax | customNumber}}% Tax</strong></td>
                           <td style="width:9%;"> 
-                            <span ng-if="vatAmount">{{vatAmount | customNumber}} {{currencyType}}</span>
+                            <span ng-if="vatAmount">{{vatAmount | customNumber}}</span>
                             <span ng-if="!vatAmount">0</span>
                           </td>
                         </tr>    

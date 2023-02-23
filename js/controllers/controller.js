@@ -27185,7 +27185,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             $scope.InvoiceResult = data;
+            console.log('$scope.InvoiceResult+>', $scope.InvoiceResult)
             $scope.InvoiceResult = data.filter(function (el) {
+                el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
                 // status Approved = 5 id
                 //if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
                 if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId))

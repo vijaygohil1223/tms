@@ -155,7 +155,7 @@
                           <!-- {{invL.item.subTotal | customNumber }}  -->
                           <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
                           <!-- {{ invL.itemPriceTax }} -->
-                          <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }} {{currencyType}}</span>
+                          <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }}</span>
                         </th>
                       </tr>
                       <tr ng-if="$index == invoiceLength">
@@ -163,7 +163,7 @@
                           <strong>Sub Total</strong>
                         </td>
                         <td style="width:10%;" class="nowrap">
-                          {{invoiceTotal}} {{currencyType}}</td>
+                          {{invoiceTotal}} </td>
                           <!-- <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="invoiceTotal"
                           ng-disabled="editDisabled" ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
                             id="invSubtotal" /> -->
@@ -171,7 +171,7 @@
                       <tr ng-if="$index == invoiceLength && vatTax>0">
                         <td colspan="5" class="text-right"><strong>{{vatTax | customNumber}}% Tax</strong></td>
                         <td style="width:9%;" class="nowrap"> 
-                          <span ng-if="vatAmount">{{vatAmount | customNumber}} {{currencyType}}</span>
+                          <span ng-if="vatAmount">{{vatAmount | customNumber}}</span>
                           <span ng-if="!vatAmount">0</span>
                         </td>
                       </tr>
