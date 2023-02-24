@@ -2211,16 +2211,17 @@ class jobs_detail
     public function sendPurchaseOrderLinguist($data) {
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
-        $pdfFileName = $data['purchaseOrderNo'].'.pdf';
+        //$pdfFileName = $data['purchaseOrderNo'].'.pdf';
+        $pdfFileName = isset($data['poFilenamePdf']) ? $data['poFilenamePdf'] : 'purchase_order.pdf';
 
         $body = "<p> Hello ".$data['resourceName']." </p>";
-        $body .= "<p>Please see the attached Purchased Order : <b>" .$data['purchaseOrderNo']. "</b> </p>";
-        $body .= "<p> From :TMS </p>";
+        $body .= "<p>Please see the attached Purchased Order : <b>" .$pdfFileName. "</b> </p>";
+        $body .= "<p> From :SpellUp </p>";
         //$body .= "welcome to <img src=\"cid:id1\"></br>";
         
         $attachments = '';
         $subject = 'Purchase Order';
-        $to_name = 'TMS';
+        $to_name = 'SpellUp';
         //$to = 'anil.kanhasoft@gmail.com';
         $to = $data['resourceEmail'];
 

@@ -3811,14 +3811,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.poTempate = false;
     $scope.sendPO = function(type){
-        let filePOname = 'PO_' +$scope.jobdetail.po_number +'.pdf'; 
+        let poFilenamePdf = $scope.jobdetail.po_number ? 'PO_' +$scope.jobdetail.po_number +'.pdf' : 'purchase_order.pdf'; 
         $scope.poTempate = true;
         console.log('$scope.poTempate', $scope.poTempate)
         if(type == 'Download'){
             setTimeout(() => {
                 kendo.drawing.drawDOM($("#downloadPO")).then(function (group) {
                     //group.options.set("font", "8px DejaVu Sans");
-                    kendo.drawing.pdf.saveAs(group, filePOname);
+                    kendo.drawing.pdf.saveAs(group, poFilenamePdf);
                 });
                 setTimeout(() => {
                     $scope.poTempate = false;  
@@ -3841,6 +3841,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             'pdfData': data,
                             'purchaseOrderNo': $scope.purchaseDetail.purchaseOrderNo,
                             'resourceEmail': $scope.resourceDetail.vEmailAddress,
+                            'poFilenamePdf': poFilenamePdf,
                             'resourceName': $scope.resourceDetail.vFirstName + $scope.resourceDetail.vLastName
                         };
                         rest.path = 'sendPurchaseOrderLinguist';
