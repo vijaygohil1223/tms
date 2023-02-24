@@ -768,8 +768,9 @@
                             <div class="col-xs-6 text-right">
                                 <h4>SpellUp AS</h4>
                                 <p>Ødegårdsveien 43J </br>
+                                    1911 Flateby </br>
                                     Norway </br>
-                                    NO930108995</P>
+                                    NO930108995</P>    
                             </div>
                         </div>
 
@@ -779,7 +780,7 @@
                                     <strong>Issued to:</strong> </br>
                                 </p>
                                 <p class="mb-0" style="font-size:20px;">
-                                    <strong ng-bind="resourceDetail.vFirstName + resourceDetail.vLastName"></strong></br>
+                                    <span ng-bind="resourceDetail.vFirstName + resourceDetail.vLastName"></span></br>
                                 </p>
                                 <p>
                                     {{resourceDetail.vAddress1}} </br>
@@ -789,7 +790,7 @@
                                 </p>
                             </div>
                             <div class="col-xs-6 text-right">
-                                <p class="h4"> <strong>PO #{{ purchaseDetail.purchaseOrderNo }}</strong></p>
+                                <p class="h4"> <strong>PO #{{jobdetail.po_number}} <!-- {{purchaseDetail.purchaseOrderNo }}--> </strong></p>
                                 <br />
                                 <p>
                                     PO date: <br /><span ng-bind="purchaseDetail.purchaseOrderDate | globalDtFormat"></span></br>
@@ -834,7 +835,7 @@
                                 <h3>{{clientCurrency}} {{jobdetail.total_price | NumbersCommaformat}}</h3>
                             </div>
                         </div>
-                        <div class="row" style="margin-bottom: 10px !important;">
+                        <div class="row" style="margin-bottom: 15px !important;">
                             <div class="imgcenter" style="margin: 0 auto;width: 170px;">
                                 <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="SpellUp"
                                     style="max-height: 50px; max-width: 100%; width: auto;">

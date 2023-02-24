@@ -3811,13 +3811,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.poTempate = false;
     $scope.sendPO = function(type){
+        let filePOname = 'PO_' +$scope.jobdetail.po_number +'.pdf'; 
         $scope.poTempate = true;
         console.log('$scope.poTempate', $scope.poTempate)
         if(type == 'Download'){
             setTimeout(() => {
                 kendo.drawing.drawDOM($("#downloadPO")).then(function (group) {
                     //group.options.set("font", "8px DejaVu Sans");
-                    kendo.drawing.pdf.saveAs(group, "purchase-order.pdf");
+                    kendo.drawing.pdf.saveAs(group, filePOname);
                 });
                 setTimeout(() => {
                     $scope.poTempate = false;  
