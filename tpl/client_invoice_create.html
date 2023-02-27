@@ -1,12 +1,12 @@
 <style>
-  .invoice-header,.invoice-footer {
+  /* .invoice-header,.invoice-footer {
     background-color: #6D85Ad;
     padding: 25px;
     padding-bottom: 25px;
     color: #FFF;
     margin-bottom: 15px;
-  }
-  .invoice-content1{
+  } */
+  /* .invoice-content1{
     padding: 25px;
   }
   .invoice-header h1 {
@@ -14,15 +14,15 @@
   }
   .invoice-footer p{
     margin-top: 10px;
-  }
+  } */
   .line{
     background: #f1ecec;
     margin-bottom: 25px;
   }
-  .imgcenter{
+  /* .imgcenter{
     margin: 0 auto;
     width: max-content;
-  }
+  } */
   
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
@@ -43,7 +43,7 @@
         <h1 class="m-n font-thin h3">Invoice <span style="font-size:16px;font-weight:normal;">(Preview)</span></h1>
       </div>
       <div class="wrapper-md ng-scope">
-        <div class="panel panel-default">
+        <div class="panel panel-default invoiceInput">
           <div class="panel-body" style="padding-top:0;">
             <form id="invoice-form">
               <!-- <div class="col-sm-12">

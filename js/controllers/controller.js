@@ -26947,6 +26947,85 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.getAllInvoice();
 
+// ***-----*** #Start Invoice Tabs    ***-----*** //
+    $scope.alljobsWidget = [];
+    $scope.isoverviewJobs = false;
+    $scope.jobstatusRecord = function (statusType, jobStatus) {
+        if (jobStatus) {
+            $scope.jobstatusFilter = jobStatus;
+            $scope.isoverviewJobs = true;
+            $scope.jobsListAll = [];
+            $scope.showDataLoaderJob = true;
+        } else {
+            $scope.jobstatusFilter = 'all';
+            //$scope.jobstatusFilter = '';
+        }
+        $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
+
+        rest.path = "getAllInvoiceClient/save/" + 1;
+        rest.get().success(function (data) {
+            $scope.dashboardJobList = data;
+            console.log('$scope.dashboardJobList', $scope.dashboardJobList)
+            
+            var allJobsData = [];
+            var Requested = [];
+            var inProgerss = [];
+            // -- Job count -- //
+            var jobRequestesCount = 0;
+            var jobInProgressCount = 0;
+
+            angular.forEach($scope.dashboardJobList, function (val, i) {
+
+                allJobsData.push(val);
+                if (val.invoice_status == 'In preparation') {
+                //if (val.invoice_status == 'New') {
+                    NewJob.push(val);
+                } else if (val.invoice_status == 'Open') {
+                    Requested.push(val);
+                    jobRequestesCount++;
+                } else if (val.invoice_status == 'Open') {
+                    inProgerss.push(val);
+                    jobInProgressCount++;
+                }
+                //Due date counts for jobs
+
+            });
+            $timeout(function () {
+                $scope.inProgerss = inProgerss;
+                
+                $scope.jobRequestesCount = jobRequestesCount;
+                $scope.jobInProgressCount = jobInProgressCount;
+
+                /* All jobs list for widget */
+                $scope.alljobsWidget = allJobsData;
+
+                if ($scope.jobstatusFilter == 'all') {
+                    $scope.jobsListAll = allJobsData;
+                }
+                if ($scope.jobstatusFilter == 'Requested') {
+                    $scope.jobsListAll = Requested;
+                }
+                if ($scope.jobstatusFilter == 'Open') {
+                    $scope.jobsListAll = inProgerss;
+                }
+                //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
+                if ($scope.jobsListAll) {
+                    $scope.jobsListAll = $scope.jobsListAll;
+                }
+                /* Start Upcoming Due Jobs - widgetBox */
+
+
+                $scope.showDataLoaderJob = false;
+                /* End */
+
+
+            }, 2000);
+
+        }).error(errorCallback);
+    };
+    $scope.jobstatusRecord('jobs', 'all');
+// ****** END invioce TABS ******* //
+
     $scope.msgEmailSubject = '';
     $scope.generalEmail = function (id, invoiceNo) {
         rest.path = 'viewcontactdirectEdit/' + id;

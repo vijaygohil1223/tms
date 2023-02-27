@@ -3,10 +3,10 @@
     background: #f1ecec;
     margin-bottom: 25px;
   }
-  .imgcenter{
+  /* .imgcenter{
     margin: 0 auto;
     width: max-content;
-  }
+  } */
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
   data-ng-include=" 'tpl/material.header.html' ">
@@ -26,15 +26,15 @@
         <h1 class="m-n font-thin h3">Invoice (Preview)</h1>
       </div>
       <div class="wrapper-md ng-scope">
-        <div class="panel panel-default">
+        <div class="panel panel-default invoiceInput">
           <div class="panel-body">
             <form id="invoice-form">
               <!-- <div class="col-sm-12">
                     <a href="" class="btn btn-sm btn-info pull-right" onclick="window.print();">Print</a>
                 </div> -->
-              <div class="wrapper-md ng-scope">
-                <div>
-                  <div class="row">
+              <div class="col-sm-12">
+                <div class="row">
+                  <div class="">
                     <div class="row invoice-header">
                       <div class="col-xs-6">
                         <h1>Invoice</h1>
@@ -84,7 +84,7 @@
                   </div>
                   <div class="well">
                     <div class="row">
-                      <div class="col-xs-4 d-flex">
+                      <div class="col-xs-5 d-flex">
                         <label style="white-space: nowrap; margin-top: 10px;">Invoice No <i
                             class="glyphicon glyphicon-pencil"></i> &nbsp;&nbsp;</label>
                         <input type="text" id="custom_invoice_no" name="custom_invoice_no"
@@ -121,6 +121,7 @@
                   </div>
 
                   <div class="line"></div>
+                  
                   <div class="invoice-content2">  
                     <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
                       class="table table-striped" id="InvoiceTbl">

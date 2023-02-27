@@ -1128,8 +1128,7 @@ table.customerPriceTable tbody [id^=priceLanguageID] tr.priceLPrice.rowactivate 
 .invoice-header,
 .invoice-footer {
   background-color: #6D85Ad;
-  padding: 25px;
-  padding-bottom: 25px;
+  padding: 25px 20px;
   color: #FFF;
   margin-bottom: 15px;
 }
@@ -1144,6 +1143,9 @@ table.customerPriceTable tbody [id^=priceLanguageID] tr.priceLPrice.rowactivate 
 }
 .invcBtn {
   margin-right: 5px;
+}
+.invoiceInput{
+  width:780px;
 }
 .invoiceInput .imgcenter{
   margin: 0 auto;

@@ -210,6 +210,78 @@
             </table>
           </div>
         </div>
+
+        <div class="panel panel-default">
+          <ul class="alt projectjobdv2 overviewli">
+            <li class="list-group-item tab-due-today" ng-class="{ 'active': jobsactive=='all'}">
+              <a href="javascript:void(0)" ng-click="jobstatusRecord('jobs','all')">
+                All Invoices <span class="badge bg-info">{{jobDueTodayCount}}</span></a>
+            </li>
+            <li class="list-group-item tab-requested" ng-class="{ 'active': jobsactive=='Open'}">
+              <a href="javascript:void(0)" ng-click="jobstatusRecord('jobs','Open')">
+                Open <span class="badge bg-info">{{jobRequestesCount}}</span></a>
+            </li>
+            <li class="list-group-item tab-in-progress" ng-class="{ 'active': jobsactive=='Completed'}">
+              <a href="javascript:void(0)" ng-click="jobstatusRecord('jobs','Completed')">
+                Completed <span class="badge bg-info">{{jobCompletedCount}}</span></a>
+            </li>
+            
+            
+          </ul>
+          <div class="overview-list projecttable">
+            <div class="table-responsive">
+              <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
+              <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsJob">
+                <thead>
+                  <th># </th>
+                  <th>Invoice number</th>
+                  <th>Company name</th>
+                  <th>Currency</th>
+                  <th>Price</th>
+                  <th>Creation Date</th>
+                  <th>Due Date</th>
+                  <th>Invoice Status</th>
+                  <th>Action</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="invoiceL in jobsListAll">
+                    <td>
+                      <input type="checkbox" id="invoiceCheck{{$index}}" ng-click="checkInvoiceIds(invoiceL.invoice_id)" class="invoiceCheck{{invoiceL.invoice_id}}" name="invoiceCheck{{$index}}" ng-model="checkor"
+                        ng-checked="checkdata=='invoicecheck'" />
+                      <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
+                        style="display: none" ng-model="invoiceL.invoice_id" />
+                    </td>
+                    <td ng-bind="invoiceL.invoice_number"></td>
+                    <td>
+                      {{invoiceL.clientCompanyName}}
+                      <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
+                        title="Comment" class="trActionIcon">
+                        &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
+                    </td>
+                    <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
+                    <td> {{invoiceL.client_currency}} </td>
+                    <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                    <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                    <td>
+                      <span ng-bind="invoiceL.invoice_status"></span>
+                    </td>
+                    <td>
+                      <div class="trActiontitle">
+                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                            class="fa fa-eye"></i></a>
+                        <!-- </br>
+                                          <strong>View Payments</strong> -->
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+               
+        </div>
+
+
       </div>
       <!-- footer copy right -->
       <div data-ng-include="'tpl/copyRight.html'"></div>
