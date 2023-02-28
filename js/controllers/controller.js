@@ -26947,84 +26947,112 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.getAllInvoice();
 
-// ***-----*** #Start Invoice Tabs    ***-----*** //
-    $scope.alljobsWidget = [];
-    $scope.isoverviewJobs = false;
-    $scope.jobstatusRecord = function (statusType, jobStatus) {
-        if (jobStatus) {
-            $scope.jobstatusFilter = jobStatus;
-            $scope.isoverviewJobs = true;
-            $scope.jobsListAll = [];
+    //----- ****** Start Invoice Tabs    ****** --------//
+    $scope.invcStatusRecord = function (invcStatus) {
+        console.log('invcStatus', invcStatus)
+        if (invcStatus) {
+            $scope.invcstatusFilter = invcStatus;
+            $scope.invoiceListAll = [];
             $scope.showDataLoaderJob = true;
         } else {
-            $scope.jobstatusFilter = 'all';
-            //$scope.jobstatusFilter = '';
+            $scope.invcstatusFilter = 'all';
+            //$scope.invcstatusFilter = '';
         }
-        $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
+        $scope.invoiceActive = $scope.invoiceActive == invcStatus ? '' : invcStatus;
 
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (data) {
-            $scope.dashboardJobList = data;
-            console.log('$scope.dashboardJobList', $scope.dashboardJobList)
+            $scope.clientInvoiceListData = data;
+            console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
             
-            var allJobsData = [];
-            var Requested = [];
-            var inProgerss = [];
-            // -- Job count -- //
-            var jobRequestesCount = 0;
-            var jobInProgressCount = 0;
+            var allInvcData = [];
+            var openInvc = [];
+            var completeInvc = [];
+            var partPaidInvc = [];
+            var irrecoverableInvc = [];
+            // -- Invoice count -- //
+            var openInvcCount = 0;
+            var completedInvcCount = 0;
+            var partPaidInvcCount = 0;
+            var noRecoverInvcCount = 0;
 
-            angular.forEach($scope.dashboardJobList, function (val, i) {
+            angular.forEach($scope.clientInvoiceListData, function (val, i) {
 
-                allJobsData.push(val);
-                if (val.invoice_status == 'In preparation') {
-                //if (val.invoice_status == 'New') {
-                    NewJob.push(val);
-                } else if (val.invoice_status == 'Open') {
-                    Requested.push(val);
-                    jobRequestesCount++;
-                } else if (val.invoice_status == 'Open') {
-                    inProgerss.push(val);
-                    jobInProgressCount++;
-                }
-                //Due date counts for jobs
-
-            });
-            $timeout(function () {
-                $scope.inProgerss = inProgerss;
+                val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
                 
-                $scope.jobRequestesCount = jobRequestesCount;
-                $scope.jobInProgressCount = jobInProgressCount;
+                allInvcData.push(val);
+                if (val.invoice_status == 'Open') {
+                    openInvc.push(val);
+                    openInvcCount++;
+                } else if (val.invoice_status == 'Complete') {
+                    completedInvcCount++;
+                    completeInvc.push(val);
+                } else if (val.invoice_status == 'Part Paid') {
+                    partPaidInvcCount++;
+                    partPaidInvc.push(val);
+                } else if (val.invoice_status == 'Irrecoverable') {
+                    noRecoverInvcCount++;
+                    irrecoverableInvc.push(val);
+                }
 
-                /* All jobs list for widget */
-                $scope.alljobsWidget = allJobsData;
+                //Due date counts for Invoice
+            });
 
-                if ($scope.jobstatusFilter == 'all') {
-                    $scope.jobsListAll = allJobsData;
+            // objects.reduce(function(p, val) {
+            //     return p.then(function() {
+            //         return doSomething(val);
+            //     });
+            // }, $q.when(true)).then(function(finalResult) {
+            //     // done here
+            // }, function(err) {
+            //     // error here
+            // });
+
+            $timeout(function () {
+                
+                $scope.allInvcCount = allInvcData.length;
+                $scope.openInvcCount = openInvcCount;
+                $scope.completedInvcCount = completedInvcCount;
+                $scope.partPaidInvcCount = partPaidInvcCount;
+                $scope.noRecoverInvcCount = noRecoverInvcCount;
+
+                /* All Invoice list for widget */
+                switch ($scope.invcstatusFilter) {
+                    case "all":
+                        $scope.invoiceListAll = allInvcData;
+                        break;
+                    case "Open":
+                        $scope.invoiceListAll = openInvc;
+                        break;
+                    case "Completed":
+                        $scope.invoiceListAll = completeInvc;
+                        break;
+                    case "Part Paid":
+                        $scope.invoiceListAll = partPaidInvc;
+                        break;    
+                    case "Irrecoverable":
+                        $scope.invoiceListAll = irrecoverableInvc;
+                        break;    
                 }
-                if ($scope.jobstatusFilter == 'Requested') {
-                    $scope.jobsListAll = Requested;
+                if ($scope.invcstatusFilter == 'all') {
+                    $scope.invoiceListAll = allInvcData;
                 }
-                if ($scope.jobstatusFilter == 'Open') {
-                    $scope.jobsListAll = inProgerss;
-                }
+
                 //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
-                if ($scope.jobsListAll) {
-                    $scope.jobsListAll = $scope.jobsListAll;
+                if ($scope.invoiceListAll) {
+                    $scope.invoiceListAll = $scope.invoiceListAll;
                 }
-                /* Start Upcoming Due Jobs - widgetBox */
-
+                /* Start Upcoming Due Invoice - widgetBox */
 
                 $scope.showDataLoaderJob = false;
                 /* End */
-
 
             }, 2000);
 
         }).error(errorCallback);
     };
-    $scope.jobstatusRecord('jobs', 'all');
-// ****** END invioce TABS ******* //
+    $scope.invcStatusRecord('all');
+    // ****** END invioce TABS ******* //
 
     $scope.msgEmailSubject = '';
     $scope.generalEmail = function (id, invoiceNo) {
@@ -27075,7 +27103,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         console.log('invoiceselected', invoiceselected)
                         if (invoiceselected == 'true') {
                             var invoiceIds = angular.element('#invoiceCheckData' + i).val();
-                            $scope.checkedIds.push(invoiceIds.toString());
+                            $scope.checkedIds.push(parseInt(invoiceIds));
                         }
                     }        
                 }else{
@@ -27100,8 +27128,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //Invoice export to excel
     $scope.exportData = function () {
         console.log('$scope.checkedIds=excel', $scope.checkedIds)
-        if($scope.checkedIds.length > 0)
+        console.log('$scope.invoiceListAll=before',$scope.invoiceListAll)
+        if($scope.checkedIds.length > 0){
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+            $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
+            console.log('$scope.invoiceListAll-', $scope.invoiceListAll)
+        }    
         console.log('$scope.getAllInvoice', $scope.getAllInvoice)
         setTimeout(() => {
             var blob = new Blob([document.getElementById('exportable').innerHTML], {
