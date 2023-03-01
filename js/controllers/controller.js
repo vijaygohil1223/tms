@@ -27033,10 +27033,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceActive = $scope.invoiceActive == invcStatus ? '' : invcStatus;
         // Uncheck checkbox
         $('input[id^=checkAll]:checkbox').removeAttr('checked');
-
-        $scope.invcList_tabFilter()
-        .then(function (invoicePromiseData) {
-
+        // $scope.invcList_tabFilter()
+        // .then(function (invoicePromiseData) {
                 $scope.allInvcCount = $scope.allInvcData.length;
                 /* All Invoice list for widget */
                 switch ($scope.invcstatusFilter) {
@@ -27065,20 +27063,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // if ($scope.invcstatusFilter == 'all') {
                 //     $scope.invoiceListAll = $scope.allInvcData;
                 // }
-
                 //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
                 if ($scope.invoiceListAll) {
                     $scope.invoiceListAll = $scope.invoiceListAll;
                 }
                 /* Start Upcoming Due Invoice - widgetBox */
-
                 $scope.showDataLoaderJob = false;
                 /* End */
-
-        })    
+        //})    
     };
 
-    $scope.invcStatusRecord('all');
+    $scope.invcList_tabFilter()
+        .then(function (invoicePromiseData) {
+            $scope.invcStatusRecord('all');
+    });
     // ****** END invioce TABS ******* //
 
     $scope.msgEmailSubject = '';
