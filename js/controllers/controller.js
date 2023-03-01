@@ -26806,7 +26806,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('clientInvoiceController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route) {
+}).controller('clientInvoiceController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.search = function (search) {
@@ -26947,96 +26947,124 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.getAllInvoice();
 
+    $scope.dateToday = new Date();
     //----- ****** Start Invoice Tabs    ****** --------//
+    $scope.invcList_tabFilter = function () {
+        var deferred = $q.defer();
+
+        $scope.allInvcData = [];
+        $scope.openInvc = [];
+        $scope.completeInvc = [];
+        $scope.partPaidInvc = [];
+        $scope.irrecoverableInvc = [];
+        $scope.cancelledInvc = [];
+        $scope.overdueInvc = [];
+        // -- Invoice count -- //
+        $scope.openInvcCount = 0;
+        $scope.completedInvcCount = 0;
+        $scope.partPaidInvcCount = 0;
+        $scope.noRecoverInvcCount = 0;
+        $scope.cancelledInvcCount = 0;
+        $scope.overdueInvcCount = 0;
+        
+        rest.path = "getAllInvoiceClient/save/" + 1;
+        rest.get().success(function (data) {
+            $scope.clientInvoiceListData = data;
+            console.log('$scope.clientInvoiceListData-prmc', $scope.clientInvoiceListData)
+            
+            angular.forEach($scope.clientInvoiceListData, function (val, i) {
+                let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : $scope.invoicePeriod
+                var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
+                val.invoice_duedate = invoice_duedate;
+                var InDuedate = new Date(invoice_duedate); 
+                
+                val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
+                
+                $scope.allInvcData.push(val);
+                if (val.invoice_status == 'Open') {
+                    $scope.openInvcCount++;
+                    $scope.openInvc.push(val);
+                }
+                if (val.invoice_status == 'Complete') {
+                    $scope.completedInvcCount++;
+                    $scope.completeInvc.push(val);
+                }
+                if (val.invoice_status == 'Part Paid') {
+                    $scope.partPaidInvcCount++;
+                    $scope.partPaidInvc.push(val);
+                } 
+                if (val.invoice_status == 'Irrecoverable') {
+                    $scope.noRecoverInvcCount++;
+                    $scope.irrecoverableInvc.push(val);
+                } 
+                if (val.invoice_status == 'Cancelled') {
+                    $scope.cancelledInvcCount++;
+                    $scope.cancelledInvc.push(val);
+                }
+                if(new Date(InDuedate) < $scope.dateToday  ){
+                    $scope.overdueInvcCount++ 
+                    $scope.overdueInvc.push(val);
+                }
+                //Due date counts for Invoice
+            });
+            //deferred.resolve($scope.openInvc);
+            //deferred.resolve($scope.completeInvc);
+            //deferred.resolve($scope.partPaidInvc);
+            //deferred.resolve($scope.irrecoverableInvc);
+            deferred.resolve($scope.allInvcData);
+
+        }).error(function () {
+            deferred.reject();
+        });    
+
+        return deferred.promise;
+    };
+
     $scope.invcStatusRecord = function (invcStatus) {
         console.log('invcStatus', invcStatus)
         if (invcStatus) {
             $scope.invcstatusFilter = invcStatus;
-            $scope.invoiceListAll = [];
+            //$scope.invoiceListAll = [];
             $scope.showDataLoaderJob = true;
         } else {
             $scope.invcstatusFilter = 'all';
             //$scope.invcstatusFilter = '';
         }
         $scope.invoiceActive = $scope.invoiceActive == invcStatus ? '' : invcStatus;
+        // Uncheck checkbox
+        $('input[id^=checkAll]:checkbox').removeAttr('checked');
 
-        rest.path = "getAllInvoiceClient/save/" + 1;
-        rest.get().success(function (data) {
-            $scope.clientInvoiceListData = data;
-            console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
-            
-            var allInvcData = [];
-            var openInvc = [];
-            var completeInvc = [];
-            var partPaidInvc = [];
-            var irrecoverableInvc = [];
-            // -- Invoice count -- //
-            var openInvcCount = 0;
-            var completedInvcCount = 0;
-            var partPaidInvcCount = 0;
-            var noRecoverInvcCount = 0;
+        $scope.invcList_tabFilter()
+        .then(function (invoicePromiseData) {
 
-            angular.forEach($scope.clientInvoiceListData, function (val, i) {
-
-                val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
-                
-                allInvcData.push(val);
-                if (val.invoice_status == 'Open') {
-                    openInvc.push(val);
-                    openInvcCount++;
-                } else if (val.invoice_status == 'Complete') {
-                    completedInvcCount++;
-                    completeInvc.push(val);
-                } else if (val.invoice_status == 'Part Paid') {
-                    partPaidInvcCount++;
-                    partPaidInvc.push(val);
-                } else if (val.invoice_status == 'Irrecoverable') {
-                    noRecoverInvcCount++;
-                    irrecoverableInvc.push(val);
-                }
-
-                //Due date counts for Invoice
-            });
-
-            // objects.reduce(function(p, val) {
-            //     return p.then(function() {
-            //         return doSomething(val);
-            //     });
-            // }, $q.when(true)).then(function(finalResult) {
-            //     // done here
-            // }, function(err) {
-            //     // error here
-            // });
-
-            $timeout(function () {
-                
-                $scope.allInvcCount = allInvcData.length;
-                $scope.openInvcCount = openInvcCount;
-                $scope.completedInvcCount = completedInvcCount;
-                $scope.partPaidInvcCount = partPaidInvcCount;
-                $scope.noRecoverInvcCount = noRecoverInvcCount;
-
+                $scope.allInvcCount = $scope.allInvcData.length;
                 /* All Invoice list for widget */
                 switch ($scope.invcstatusFilter) {
                     case "all":
-                        $scope.invoiceListAll = allInvcData;
+                        $scope.invoiceListAll = $scope.allInvcData;
                         break;
                     case "Open":
-                        $scope.invoiceListAll = openInvc;
+                        $scope.invoiceListAll = $scope.openInvc;
                         break;
                     case "Completed":
-                        $scope.invoiceListAll = completeInvc;
+                        $scope.invoiceListAll = $scope.completeInvc;
                         break;
                     case "Part Paid":
-                        $scope.invoiceListAll = partPaidInvc;
+                        $scope.invoiceListAll = $scope.partPaidInvc;
                         break;    
                     case "Irrecoverable":
-                        $scope.invoiceListAll = irrecoverableInvc;
+                        $scope.invoiceListAll = $scope.irrecoverableInvc;
+                        break;
+                    case "Overdue":
+                        $scope.invoiceListAll = $scope.overdueInvc;
                         break;    
+                    case "Cancelled":
+                        $scope.invoiceListAll = $scope.cancelledInvc;
+                        break;            
                 }
-                if ($scope.invcstatusFilter == 'all') {
-                    $scope.invoiceListAll = allInvcData;
-                }
+                // if ($scope.invcstatusFilter == 'all') {
+                //     $scope.invoiceListAll = $scope.allInvcData;
+                // }
 
                 //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
                 if ($scope.invoiceListAll) {
@@ -27047,10 +27075,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.showDataLoaderJob = false;
                 /* End */
 
-            }, 2000);
-
-        }).error(errorCallback);
+        })    
     };
+
     $scope.invcStatusRecord('all');
     // ****** END invioce TABS ******* //
 

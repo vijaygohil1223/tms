@@ -1,7 +1,12 @@
 <style>
   .overview-list.projecttable .dataTables_wrapper {
     margin-top: 10px;
-}
+  }
+  .overviewli li.list-group-item a {
+    text-decoration: none;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
 </style>
 
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
@@ -18,7 +23,7 @@
         <h1 class="m-n font-thin h3">Invoice List</h1>
       </div>
       <div class="wrapper-md ng-scope">
-        <div class="panel panel-default">
+        <div class="panel panel-default" style="margin-bottom:5px;">
           <div class="panel-body">
             <div class="table-responsive">
               <table class="table">
@@ -36,10 +41,9 @@
                                 ok
                               </button></span>
                           </div> -->
-                          <a href="#/invoice-client-projects" class="btn btn-info btn-rightside"> 
+                          <a href="#/invoice-client-projects" class="btn btn-info btn-rightside">
                             <i class="fa fa-hand-o-right"></i> Go To Invoice Create</a>
                           <div class="pull-right">
-                            
                             <button class="btn btn-info btn-rightside" ng-click="viewInvoice('draft')">
                               <i class="fa fa-eye"></i> Draft Invoice
                             </button>
@@ -68,8 +72,8 @@
               <div class="col-sm-2">
                 <div class="col-sm-12 d-flex" style="white-space:nowrap;">
                   <label style="margin-top:5px;">Check All &nbsp;&nbsp;</label>
-                  <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall" 
-                      ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" />
+                  <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall"
+                    ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" />
                 </div>
               </div>
               <div class="col-sm-6">
@@ -99,9 +103,17 @@
                 <a href="javascript:void(0)" ng-click="invcStatusRecord('Part Paid')">
                   Part Paid <span class="badge bg-info">{{partPaidInvcCount}}</span></a>
               </li>
-              <li class="list-group-item tab-in-progress" ng-class="{ 'active': invoiceActive=='Completed'}">
+              <li class="list-group-item tab-overdue" ng-class="{ 'active': invoiceActive=='Overdue'}">
+                <a href="javascript:void(0)" ng-click="invcStatusRecord('Overdue')">
+                  Overdue <span class="badge bg-info">{{overdueInvcCount}}</span></a>
+              </li>
+              <li class="list-group-item tab-complete" ng-class="{ 'active': invoiceActive=='Completed'}">
                 <a href="javascript:void(0)" ng-click="invcStatusRecord('Completed')">
-                  Completed <span class="badge bg-info">{{completedInvcCount}}</span></a>
+                  Paid <span class="badge bg-info">{{completedInvcCount}}</span></a>
+              </li>
+              <li class="list-group-item tab-cancel" ng-class="{ 'active': invoiceActive=='Cancelled'}">
+                <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
+                  Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
               </li>
               <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': invoiceActive=='Irrecoverable'}">
                 <a href="javascript:void(0)" ng-click="invcStatusRecord('Irrecoverable')">
@@ -112,7 +124,7 @@
               <div class="table-responsive">
                 <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsJob">
                   <thead>
-                    <th> 
+                    <th>
                       #
                       <!-- <label style="margin-top:5px;">Check All &nbsp;&nbsp;</label>
                     <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall" 
@@ -130,9 +142,11 @@
                   <tbody>
                     <tr ng-repeat="invoiceL in invoiceListAll">
                       <td class="nowrap">
-                        <input type="checkbox" id="invoiceCheck{{$index}}" ng-click="checkInvoiceIds(invoiceL.invoice_id)" class="invoiceCheck{{invoiceL.invoice_id}}"  name="invoiceCheck{{$index}}" ng-model="checkor"
-                          ng-checked="checkdata=='invoicecheck'" />
-                        <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported" style="margin-left:10px;"></span>  
+                        <input type="checkbox" id="invoiceCheck{{$index}}"
+                          ng-click="checkInvoiceIds(invoiceL.invoice_id)" class="invoiceCheck{{invoiceL.invoice_id}}"
+                          name="invoiceCheck{{$index}}" ng-model="checkor" ng-checked="checkdata=='invoicecheck'" />
+                        <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported"
+                          style="margin-left:10px;"></span>
                         <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
                           style="display: none" ng-model="invoiceL.invoice_id" />
                       </td>
@@ -144,7 +158,7 @@
                           &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
                       </td>
                       <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
-                      <td> {{invoiceL.client_currency}} </td>
+                      <td>{{ invoiceL.client_currency }} </td>
                       <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                       <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                       <td>
@@ -160,9 +174,10 @@
                   </tbody>
                 </table>
               </div>
+              <!-- Loader  -->
+              <div loading-widget ng-show="showDataLoaderJob"></div>
             </div>
-            <!-- Loader  -->
-            <div loading-widget ng-show="showDataLoaderJob"></div>
+
 
           </div>
         </div>
@@ -229,7 +244,7 @@
               </thead>
               <tbody>
                 <tr id="Export_{{$index}}" ng-repeat="invoiceL in invoiceListAll">
-                <!-- <tr id="Export_{{$index}}" ng-repeat="invoiceL in getAllInvoice">   -->
+                  <!-- <tr id="Export_{{$index}}" ng-repeat="invoiceL in getAllInvoice">   -->
                   <td ng-bind="$index + 1"></td>
                   <td ng-bind="invoiceL.invoice_number"></td>
                   <td>{{invoiceL.clientCompanyName}}</td>
