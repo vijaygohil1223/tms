@@ -1,4 +1,14 @@
-  <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' " >
+<style>
+    .overview-list.projecttable .dataTables_wrapper {
+      margin-top: 10px;
+    }
+    .overviewli li.list-group-item a {
+      text-decoration: none;
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
+  </style>
+<div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' " >
   </div>
   <div layout="row">
     <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs" data-ng-include=" 'tpl/material.aside.html' ">
@@ -46,76 +56,89 @@
           </div>
 
            <div class="panel panel-default">
-                <div class="table-responsive">
-                    <div class="bg-light lter b-b wrapper-md">
-                        <h4 class="m-n font-thin">Unpaid/Partially Paid Invoices</h4>
-                    </div>
-                    <table  class="table table-striped b-t b-b table-bordered" datatable="ng">
+            <div class="col-sm-12">
+                <ul class="alt projectjobdv2 overviewli">
+                  <li class="list-group-item tab-due-today" ng-class="{ 'active': invoiceActive=='all'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('all')">
+                      All Invoices <span class="badge bg-info">{{allInvcCount}}</span></a>
+                  </li>
+                  <li class="list-group-item tab-requested" ng-class="{ 'active': invoiceActive=='Open'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
+                      Open <span class="badge bg-info">{{openInvcCount}}</span></a>
+                  </li>
+                  <li class="list-group-item tab-approved" ng-class="{ 'active': invoiceActive=='Approved' }">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Approved')">
+                      Approved <span class="badge bg-info">{{approvedInvcCount}}</span></a>
+                  </li>
+                  <!-- <li class="list-group-item tab-partPaid" ng-class="{ 'active': invoiceActive=='Part Paid'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Part Paid')">
+                      Part Paid <span class="badge bg-info">{{partPaidInvcCount}}</span></a>
+                  </li> -->
+                  <li class="list-group-item tab-overdue" ng-class="{ 'active': invoiceActive=='Overdue'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Overdue')">
+                      Overdue <span class="badge bg-info">{{overdueInvcCount}}</span></a>
+                  </li>
+                  <li class="list-group-item tab-complete" ng-class="{ 'active': invoiceActive=='Completed'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Completed')">
+                      Paid <span class="badge bg-info">{{completedInvcCount}}</span></a>
+                  </li>
+                  <li class="list-group-item tab-cancel" ng-class="{ 'active': invoiceActive=='Cancelled'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
+                      Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
+                  </li>
+                  <!-- <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': invoiceActive=='Irrecoverable'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Irrecoverable')">
+                      Irrecoverable <span class="badge bg-info">{{noRecoverInvcCount}}</span></a>
+                  </li> -->
+                </ul>
+                <div class="overview-list projecttable">
+                  <div class="table-responsive">
+                    <table class="table table-striped b-b" datatable="ng" id="externalUserList" dt-options="dtOptionsJob">
+                      <!-- <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList"> -->
                         <thead>
-                        <th>#</th>
-                        <th>Invoice number</th>
-                        <th>Freelancer name</th>
-                        <th>Company name</th>
-                        <th>Invoice status</th>
-                        <th>Action</th>
+                          <th>#</th>
+                          <th>Invoice number</th>
+                          <th>Company name</th>
+                          <th>Freelancer name</th>
+                          <th>Price</th>
+                          <th>Currency</th>
+                          <th>Creation Date</th>
+                          <th>Due Date</th>
+                          <th>Invoice status</th>
+                          <th>Action</th>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="invoiceL in invoiceUnpaid">
-                                <td ng-bind="$index + 1"></td>
-                                <td ng-bind="invoiceL.invoice_number"></td>
-                                <td ng-bind="invoiceL.freelanceName"></td>
-                                <td ng-bind="invoiceL.companyName"></td>
-                                <td >
-                                    <span ng-bind="invoiceL.invoice_status"></span>
-                                </td>
-                                <td>
-                                    <div class="trActiontitle">
-                                        <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i class="fa fa-eye" ></i></a>
-                                        <!-- </br>
-                                        <strong>View Payments</strong> -->
-                                    </div>
-                                </td>
-                            </tr>
+                          <tr ng-repeat="invoiceL in invoiceListAll">
+                            <td ng-bind="$index + 1"></td>
+                            <td ng-bind="invoiceL.invoice_number"></td>
+                            <td ng-bind="invoiceL.companyName"></td>
+                            <td ng-bind="invoiceL.freelanceName"></td>
+                            <td ng-bind="invoiceL.Invoice_cost"></td>
+                            <td ng-bind="invoiceL.freelance_currency"></td>
+                            <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                            <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                            <td>
+                              <span ng-bind="invoiceL.invoice_status"></span>
+                            </td>
+                            <td>
+                              <div class="trActiontitle">
+                                <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                                    class="fa fa-eye"></i></a>
+                              </div>
+                            </td>
+                          </tr>
                         </tbody>
-                    </table>
+                      </table>
+                  </div>
+                  <!-- Loader  -->
+                  <div loading-widget ng-show="showDataLoaderJob"></div>
                 </div>
+              </div>
+
+                
             </div>
 
-          <div class="panel panel-default">
-                <div class="table-responsive">
-                    <div class="bg-light lter b-b wrapper-md">
-                        <h4 class="m-n font-thin">Paid Invoices</h4>
-                    </div>
-                    <table  class="table table-striped b-t b-b table-bordered" datatable="ng">
-                        <thead>
-                        <th>#</th>
-                        <th>Invoice number</th>
-                        <th>Freelancer name</th>
-                        <th>Company name</th>
-                        <th>Invoice status</th>
-                        <th>Action</th>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="invoiceL in invoiceCompleted">
-                                <td ng-bind="$index + 1"></td>
-                                <td ng-bind="invoiceL.invoice_number"></td>
-                                <td ng-bind="invoiceL.freelanceName"></td>
-                                <td ng-bind="invoiceL.companyName"></td>
-                                <td >
-                                    <span ng-bind="invoiceL.invoice_status"></span>
-                                </td>
-                                <td>
-                                    <div class="trActiontitle">
-                                        <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i class="fa fa-eye" ></i></a>
-                                        <!-- </br>
-                                        <strong>View Payments</strong> -->
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
 
         </div>
       <!-- footer copy right -->
