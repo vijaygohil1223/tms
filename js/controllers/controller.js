@@ -15461,7 +15461,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     $scope.partPaidInvcCount++;
                 //     $scope.partPaidInvc.push(val);
                 // } 
-                if (val.invoice_status == 'Cancelled') {
+                if (val.invoice_status == 'Cancel') {
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
                 }
@@ -26906,7 +26906,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     $scope.partPaidInvcCount++;
                 //     $scope.partPaidInvc.push(val);
                 // } 
-                if (val.invoice_status == 'Cancelled') {
+                if (val.invoice_status == 'Cancel') {
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
                 }
@@ -27265,7 +27265,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.noRecoverInvcCount++;
                     $scope.irrecoverableInvc.push(val);
                 } 
-                if (val.invoice_status == 'Cancelled') {
+                if (val.invoice_status == 'Cancel') {
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
                 }
