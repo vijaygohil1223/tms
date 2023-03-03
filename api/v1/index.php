@@ -1980,6 +1980,12 @@ $app->get('/getFilestotal/:id', 'authenticate',function ($id) {
     $result = $item->getFilestotal($id);
     echoResponse(200, $result);
 });
+$app->post('/scoopStatusChange','authenticate', function () use($app) {
+    $item = new item ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $item->scoopStatusChange($data);
+    echoResponse($result ['status'], $result);
+});
 // ---------All Languages List ----------//
 $app->get('/allLanguages', 'authenticate',function () {
     $currency = new item ();

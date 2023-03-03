@@ -341,6 +341,29 @@ class item {
         return $return;
     }
 
+    public function scoopStatusChange($updateRec) {
+        $scoopId = json_decode($updateRec['scoop_id'], TRUE);
+        //print_r( $scoopId );
+        //print_r($updateRec);
+        
+        $result['all_update'] = 0;
+        foreach ($scoopId as $key => $value) {
+            //print_r($value);
+            $statusData['item_status'] = $updateRec['item_status'];
+            //print_r($statusData);
+            $this->_db->where("itemId", $value);
+            $id = $this->_db->update('tms_items', $statusData);
+            if($key == count($scoopId)-1 ){
+                $result['all_update'] = 1;
+            }
+        }
+        
+        $result['status'] = 200;
+        $result['msg'] = 'Record updated';
+
+        return $result;
+    }
+
     public function languagesGet() {
         $data = $this->_db->rawQuery("SELECT * FROM `tms_languages` WHERE is_active=1 ORDER BY `is_favourite`=1 DESC");
         return $data;

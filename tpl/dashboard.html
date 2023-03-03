@@ -313,6 +313,16 @@ td { font-size: 11px; } */
   div#dynamicAddAnchore tr td:first-child {
     white-space: nowrap;
   }
+  .statusbtn{
+    z-index: 1;
+    right: 450px;
+    margin-top: 60px;
+    position: absolute;
+  }
+  .statusbtn > a{padding: 6px 18px;}
+  .bootbox-body{
+    margin-bottom:100px;
+  }
 
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
@@ -380,6 +390,9 @@ td { font-size: 11px; } */
             <div class="row">
               <div class="col-md-12">
                 <div class="white_box panel panel-default mynewtabs" style="margin-bottom: 0;">
+                  <div class="col-sm-1 statusbtn" ng-if="(tabPermission | json) != '{}'">
+                    <a class="btn btn-info" ng-click="changeScoopStatus()">Change Status</a>
+                  </div>
                   <div class="col-sm-3 projectbranch d-flex" ng-if="(tabPermission | json) != '{}'">
                     <div style="width:190px;">
                       <input type="text" id="projectBranch" class="form-control" ng-model="project_branch"
@@ -406,6 +419,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -428,6 +442,9 @@ td { font-size: 11px; } */
                               </td>
                             </tr> -->
                             <tr ng-repeat="order in projectsDueToday">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -584,6 +601,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -602,6 +620,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsAssigned">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -763,6 +784,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -781,6 +803,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsInProgress">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -939,6 +964,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -957,6 +983,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsQaready">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -1115,6 +1144,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <th>Languages</th>
@@ -1131,6 +1161,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsQaready">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -1268,6 +1301,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <th>Languages</th>
@@ -1284,6 +1318,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsQaready">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -1421,6 +1458,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -1439,6 +1477,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsToBeDelivered">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -1597,6 +1638,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -1615,6 +1657,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsDelivered">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -1776,6 +1821,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -1794,6 +1840,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsOverdue">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -1956,6 +2005,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped projectlist" datatable="ng" dt-options="dtOptions">
                           <thead>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -1974,6 +2024,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsDueTomorrow">
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
                                   style="color:{{order.scoop_projectColor}}">
@@ -2131,7 +2184,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
-                            <th></th>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -2149,7 +2202,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsMyproj">
-                              <td>{{ order.itemId }}</td>
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -2310,7 +2365,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
-                            <th></th>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -2328,7 +2383,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsUpcoming">
-                              <td>{{ order.itemId }}</td>
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -2488,7 +2545,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
-                            <th></th>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -2506,7 +2563,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsApproved">
-                              <td>{{ order.itemId }}</td>
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -2666,7 +2725,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <table class="table table-striped" datatable="ng" dt-options="dtOptions">
                           <thead>
-                            <th></th>
+                            <th>#</th>
                             <th>Project Number</th>
                             <th>Customer</th>
                             <!-- <th>Account</th> -->
@@ -2684,7 +2743,9 @@ td { font-size: 11px; } */
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsAll">
-                              <td>{{ order.itemId }}</td>
+                              <td>
+                                <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />
+                              </td>
                               <td>
                                 <a href="javascript:void(0)"
                                   ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
@@ -3578,7 +3639,7 @@ td { font-size: 11px; } */
 
         $(".scrollNav ul.nav.nav-tabs").on('scroll', function () {
           $val = $(this).scrollLeft();
-          console.log('$val', $val)
+          //console.log('$val', $val)
           if ($(this).scrollLeft() + $(this).innerWidth() >= $(this)[0].scrollWidth) {
             $(".nav-next").hide();
           } else {
@@ -3591,10 +3652,10 @@ td { font-size: 11px; } */
             $(".nav-prev").show();
           }
         });
-        console.log('init-scroll: ' + $(".nav-next").scrollLeft());
+        //console.log('init-scroll: ' + $(".nav-next").scrollLeft());
         $(".nav-next").on("click", function () {
           $(".scrollNav ul.nav.nav-tabs").animate({ scrollLeft: '+=320' }, 200);
-          console.log('click scroll: ' + $(".nav-next").scrollLeft());
+          //console.log('click scroll: ' + $(".nav-next").scrollLeft());
 
         });
         $(".nav-prev").on("click", function () {

@@ -1458,7 +1458,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     /*Recent Activity Code End*/
 
-}).controller('dashboardController', function ($scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter) {
+}).controller('dashboardController', function ($scope, $window, $location, $compile, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userLoginID = $window.localStorage.getItem("session_iUserId");
     $window.localStorage.jobfolderId = " ";
@@ -2130,7 +2130,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    // ** Dashoboard Project start ** //
+    // ** Dashoboard Project TABS start ** //
     $scope.projBranchChange = false;
     // Tab view Project List
     $scope.projectsAll = [];
@@ -2529,6 +2529,70 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.branchRefresh = function () {
         //console.log('branchRefresh')
         $route.reload();
+    }
+
+    $scope.checkedIds = [];
+    // Remove Element from array
+    function arrayRemove(arr, value) { 
+        return arr.filter(function(ele){ 
+            return ele != value; 
+        });
+    }
+    $scope.checkScoopIds = function(id){
+        console.log('clickerd-id', id)
+        if(id){
+            let isChecked = $('.scoopCheck' + id).is(':checked') ? 'true' : 'false';
+            console.log('isChecked', isChecked)
+            if(isChecked == 'true'){
+                if(!$scope.checkedIds.includes(id))
+                    $scope.checkedIds.push(id);
+            }else
+                $scope.checkedIds = arrayRemove($scope.checkedIds, id);
+        }    
+        console.log('$scope.checkedIds', $scope.checkedIds)
+    }
+    $scope.changeScoopStatus = function () {
+        //$scope.checkedIds
+        $scope.selectedStatus = '';
+        var html = angular.element(
+            '<div class="col-sm-12">' +
+            '<div class="col-sm-6">'+
+            '<lable>Select scoop status <lable>'+
+            '<input type="text" id="scoopStatus" select2-scoop-detailitm-status name="selectedStatus" ng-model="selectedStatus" />'+
+            '</div></div>' +
+            '</div>' );
+
+        $compile(html)($scope);
+        var dialog = bootbox.dialog({
+            title: "Change scoop status",
+            message: html,
+            buttons: {
+                success: {
+                    label: "Save",
+                    onEscape: true,
+                    className: "btn-info",
+                    callback: function () {
+                        console.log('$scope.checkedIds=success', $scope.checkedIds)
+                        console.log('$scope.statusName',$scope.selectedStatus )
+                        let objStatus = {
+                            'scoop_id':JSON.stringify($scope.checkedIds),
+                            'item_status':$scope.selectedStatus.split(',')[0],
+                        }
+                        if($scope.checkedIds.length){
+                            rest.path = "scoopStatusChange";
+                            rest.post(objStatus).success(function (data) {
+                                console.log('data=update', data);
+                                if(data && data.all_update ==1){
+                                    notification('Status successfully updated', 'success');
+                                    $route.reload();
+                                }
+                            }).error(errorCallback);
+                        }    
+
+                    }
+                }
+            }
+        });
     }
 
     // Dynamic Dashboard tabs
@@ -9811,14 +9875,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.loginUserId = $window.localStorage.getItem("session_iUserId");
     $routeParams.userTypeId = 1;
     $window.localStorage.iUserId = $routeParams.id;
-    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.ContactPersonName = $window.localStorage.getItem("contactPersonId");
     $scope.user_Id = $window.localStorage.getItem("ShowuserId");
     $scope.uType = $window.localStorage.userType;
     $scope.currentUserName = $window.localStorage.currentUserName;
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
     $scope.overAllshow = true;
-
 
     $scope.changeUserStatus = function (currentStatus) {
         console.log("currentStatus", currentStatus);

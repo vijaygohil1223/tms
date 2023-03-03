@@ -3463,7 +3463,8 @@ app.directive('select2ScoopDetailitmStatus', function($http, rest, $timeout) {
                         data: indirect,
                         multiple:true,
                         //maximumSelectionSize:1,
-                        closeOnSelect:false
+                        closeOnSelect:true,
+                        //closeOnSelect:false
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){
