@@ -2589,13 +2589,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 rest.path = "scoopStatusChange";
                                 rest.post(objStatus).success(function (data) {
                                     console.log('data=update', data);
-                                    if(data && data.all_update ==1){
+                                    if(data && data.all_update == 1){
                                         notification('Status successfully updated', 'success');
                                         $route.reload();
                                     }
                                 }).error(errorCallback);
                             }    
-
                         }
                     }
                 }

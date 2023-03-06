@@ -356,6 +356,26 @@ class item {
             if($key == count($scoopId)-1 ){
                 $result['all_update'] = 1;
             }
+
+            // if scoop status Cancelled (status id = 9) all jobs will be cancel for that scoop
+            // scoop status Approved = 5 , jobs will get Invoice ready status 
+            $this->_db->where("itemId", $value);
+            $itemData = $this->_db->getOne('tms_items');
+            
+            $jobStatus = '';
+            $andWhere = "";
+            if ($updateRec['item_status'] == 9)
+                $jobStatus = 'Cancelled';
+            if ($updateRec['item_status'] == 5) {
+                $jobStatus = 'Invoice Ready';
+                $andWhere = " AND item_status NOT IN ('Cancelled','Canceled','Invoiced','Paid','Invoiced') ";
+            }    
+            if (isset($itemData['order_id']) && $jobStatus != '' ) {
+                $qry_up = "UPDATE tms_summmery_view SET item_status = '".$jobStatus."' WHERE order_id = '".$itemData['order_id']."' AND item_id = '".$itemData['item_number']."' ".$andWhere." ";
+                $this->_db->rawQuery($qry_up);
+            }
+            // End job status update
+
         }
         
         $result['status'] = 200;

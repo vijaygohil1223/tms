@@ -315,7 +315,7 @@ td { font-size: 11px; } */
   }
   .statusbtn{
     z-index: 1;
-    right: 450px;
+    right: 380px;
     margin-top: 60px;
     position: absolute;
   }
@@ -390,7 +390,7 @@ td { font-size: 11px; } */
             <div class="row">
               <div class="col-md-12">
                 <div class="white_box panel panel-default mynewtabs" style="margin-bottom: 0;">
-                  <div class="col-sm-1 statusbtn" ng-if="(tabPermission | json) != '{}'">
+                  <div class="col-sm-2 statusbtn" ng-if="(tabPermission | json) != '{}'">
                     <a class="btn btn-info" ng-click="changeScoopStatus()">Change Status</a>
                   </div>
                   <div class="col-sm-3 projectbranch d-flex" ng-if="(tabPermission | json) != '{}'">
