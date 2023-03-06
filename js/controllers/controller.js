@@ -2551,48 +2551,58 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
         console.log('$scope.checkedIds', $scope.checkedIds)
     }
-    $scope.changeScoopStatus = function () {
+    $scope.changeScoopStatus = function (scoopId,index) {
+        console.log('index', index)
+        console.log('scoopId', scoopId)
+        if(scoopId){
+            $("#scoopCheck"+index).prop('checked', true);
+            $scope.checkScoopIds(scoopId);
+        }
         //$scope.checkedIds
         $scope.selectedStatus = '';
-        var html = angular.element(
-            '<div class="col-sm-12">' +
-            '<div class="col-sm-6">'+
-            '<lable>Select scoop status <lable>'+
-            '<input type="text" id="scoopStatus" select2-scoop-detailitm-status name="selectedStatus" ng-model="selectedStatus" />'+
-            '</div></div>' +
-            '</div>' );
+        if($scope.checkedIds.length){
+            var html = angular.element(
+                '<div class="col-sm-12">' +
+                '<div class="col-sm-6">'+
+                '<lable>Select scoop status <lable>'+
+                '<input type="text" id="scoopStatus" select2-scoop-detailitm-status name="selectedStatus" ng-model="selectedStatus" />'+
+                '</div></div>' +
+                '</div>' );
 
-        $compile(html)($scope);
-        var dialog = bootbox.dialog({
-            title: "Change scoop status",
-            message: html,
-            buttons: {
-                success: {
-                    label: "Save",
-                    onEscape: true,
-                    className: "btn-info",
-                    callback: function () {
-                        console.log('$scope.checkedIds=success', $scope.checkedIds)
-                        console.log('$scope.statusName',$scope.selectedStatus )
-                        let objStatus = {
-                            'scoop_id':JSON.stringify($scope.checkedIds),
-                            'item_status':$scope.selectedStatus.split(',')[0],
+            $compile(html)($scope);
+            var dialog = bootbox.dialog({
+                title: "Change scoop status",
+                message: html,
+                buttons: {
+                    success: {
+                        label: "Save",
+                        onEscape: true,
+                        className: "btn-info",
+                        callback: function () {
+                            console.log('$scope.checkedIds=success', $scope.checkedIds)
+                            console.log('$scope.statusName',$scope.selectedStatus )
+                            let objStatus = {
+                                'scoop_id':JSON.stringify($scope.checkedIds),
+                                'item_status':$scope.selectedStatus.split(',')[0],
+                            }
+                            if($scope.checkedIds.length){
+                                rest.path = "scoopStatusChange";
+                                rest.post(objStatus).success(function (data) {
+                                    console.log('data=update', data);
+                                    if(data && data.all_update ==1){
+                                        notification('Status successfully updated', 'success');
+                                        $route.reload();
+                                    }
+                                }).error(errorCallback);
+                            }    
+
                         }
-                        if($scope.checkedIds.length){
-                            rest.path = "scoopStatusChange";
-                            rest.post(objStatus).success(function (data) {
-                                console.log('data=update', data);
-                                if(data && data.all_update ==1){
-                                    notification('Status successfully updated', 'success');
-                                    $route.reload();
-                                }
-                            }).error(errorCallback);
-                        }    
-
                     }
                 }
-            }
-        });
+            });
+        }else{
+            notification('Please select project scoop', 'information');
+        }    
     }
 
     // Dynamic Dashboard tabs
