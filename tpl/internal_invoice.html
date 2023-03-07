@@ -97,8 +97,9 @@
                           <th>Freelancer name</th>
                           <th>Price</th>
                           <th>Currency</th>
-                          <th>Creation Date</th>
-                          <th>Due Date</th>
+                          <th ng-click="dtExcelTable('create-date')">Creation Date</th>
+                          <th ng-click="dtExcelTable('due-date')">Due Date</th>
+                          <th ng-click="dtExcelTable('payment-date')">Payment Date</th>
                           <th>Invoice status</th>
                           <th>Action</th>
                         </thead>
@@ -119,6 +120,7 @@
                             <td ng-bind="invoiceL.freelance_currency"></td>
                             <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                             <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                            <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                             <td>
                               <span ng-bind="invoiceL.invoice_status"></span>
                             </td>
@@ -140,7 +142,7 @@
             </div>
             <!-- Invoice for export to excel -->
             <div class="table-responsive" id="exportable" style="display:none">
-              <table class="table m-b-none default footable-loaded footable">
+              <table class="table m-b-none default footable-loaded footable" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
                 <thead>
                   <th>#</th>
                   <th>Invoice number</th>
@@ -148,8 +150,9 @@
                   <th>Freelancer name</th>
                   <th>Price</th>
                   <th>Currency</th>
-                  <th>Creation Date</th>
-                  <th>Due Date</th>
+                  <th id="crExdate">Creation Date</th>
+                  <th id="dueExdate">Due Date</th>
+                  <th id="paymentExdate">Payment Date</th>
                   <th>Invoice status</th>
                 </thead>
                 <tbody>
@@ -162,6 +165,7 @@
                     <td ng-bind="invoiceL.freelance_currency"></td>
                     <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                    <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                     <td ng-show="invoiceStatus[{{$index}}]">
                       <span ng-bind="invoiceL.invoice_status"></span>
                     </td>

@@ -130,12 +130,13 @@
                     <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall" 
                         ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" /> -->
                     </th>
-                    <th>Invoice number</th>
+                    <th >Invoice number</th>
                     <th>Company name</th>
                     <th>Price</th>
                     <th>Currency</th>
-                    <th>Creation Date</th>
-                    <th>Due Date</th>
+                    <th ng-click="dtExcelTable('create-date')">Creation Date</th>
+                    <th ng-click="dtExcelTable('due-date')" id="dueDateFld">Due Date</th>
+                    <th ng-click="dtExcelTable('payment-date')" id="paymentDateFld">Payment Date</th>
                     <th>Invoice Status</th>
                     <th>Action</th>
                   </thead>
@@ -154,13 +155,14 @@
                       <td>
                         {{ invoiceL.clientCompanyName }}
                         <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
-                          title="Comment" class="trActionIcon">
+                        title="Comment" class="trActionIcon">
                           &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
                       </td>
                       <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
                       <td>{{ invoiceL.client_currency }} </td>
                       <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                       <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                      <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                       <td>
                         <span ng-bind="invoiceL.invoice_status"></span>
                       </td>
@@ -183,63 +185,19 @@
         </div>
 
         <div class="panel panel-default">
-          <div class="table-responsive" style="display:none;">
-            <div class="bg-light lter b-b wrapper-md">
-              <h4 class="m-n font-thin">Paid Invoices</h4>
-            </div>
-            <table class="table table-striped b-t b-b table-bordered" datatable="ng">
-              <thead>
-                <th># </th>
-                <th>Invoice number</th>
-                <th>Company name</th>
-                <th>Price</th>
-                <th>Currency</th>
-                <th>Creation Date</th>
-                <th>Due Date</th>
-                <th>Invoice Status</th>
-                <th>Action</th>
-              </thead>
-              <tbody>
-                <tr ng-repeat="invoiceL in invoiceCompleted">
-                  <td>#</td>
-                  <td ng-bind="invoiceL.invoice_number"></td>
-                  <td>
-                    {{invoiceL.clientCompanyName}}
-                    <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
-                      title="Comment" class="trActionIcon">
-                      &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
-                  </td>
-                  <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
-                  <td> {{invoiceL.client_currency}} </td>
-                  <td>{{ invoiceL.created_date | globalDtFormat }}</td>
-                  <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
-                  <td>
-                    <span ng-bind="invoiceL.invoice_status"></span>
-                  </td>
-                  <td>
-                    <div class="trActiontitle">
-                      <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
-                          class="fa fa-eye"></i></a>
-                      <!-- </br>
-                                        <strong>View Payments</strong> -->
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
+          
           <!-- Invoice for export to excel -->
           <div class="table-responsive" id="exportable" style="display: none">
-            <table class="table m-b-none default footable-loaded footable">
+            <table class="table m-b-none default footable-loaded footable" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
               <thead>
                 <th>#</th>
                 <th>Invoice number</th>
                 <th>Company name</th>
                 <th>Price</th>
                 <th>Currency</th>
-                <th>Creation Date</th>
-                <th>Due Date</th>
+                <th id="crExdate">Creation Date</th>
+                <th id="dueExdate">Due Date</th>
+                <th id="paymnetExdate">Payment Date</th>
                 <th>Invoice status</th>
               </thead>
               <tbody>
@@ -252,6 +210,7 @@
                   <td>{{invoiceL.client_currency}} </td>
                   <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                   <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                  <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                   <td>
                     <span ng-bind="invoiceL.invoice_status"></span>
                   </td>

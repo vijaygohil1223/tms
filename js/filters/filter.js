@@ -38,7 +38,9 @@ app.filter('dateFormat', function() {
 });
 app.filter('globalDtFormat', function($window) {
     return function(input) {
-       return moment(input).format($window.localStorage.getItem('global_dateFormat'));
+       let momnt = moment(input).format($window.localStorage.getItem('global_dateFormat'));
+       let momntDt = momnt != 'Invalid date' ? momnt : ''; 
+       return momntDt;
     }
 });
 app.filter('dateFormat1', function() {

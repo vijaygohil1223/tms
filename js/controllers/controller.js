@@ -15689,6 +15689,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return ele != value; 
         });
     }
+
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id){
         //var result = arrayRemove(array, 6);
@@ -15726,9 +15727,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         
     }
 
+    $scope.dtExcelTable = function(type){
+        if(type=='create-date')    
+            $("#crExdate").trigger( "click" );
+        if(type=='due-date')    
+            $("#dueExdate").trigger( "click" );
+        if(type=='payment-date')    
+            $("#paymentExdate").trigger( "click" );        
+    }
     //Linguist Invoice export to excel
     $scope.exportData = function () {
-        console.log('$scope.checkedIds=excel', $scope.checkedIds)
+        $("#exportable .dt-loading" ).remove();
         if($scope.checkedIds.length > 0)
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
         console.log('$scope.getAllInvoice', $scope.getAllInvoice)
@@ -27489,8 +27498,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         
     }
 
+    $scope.dtExcelTable = function(type){
+        if(type=='create-date')    
+            $("#crExdate").trigger( "click" );
+        if(type=='due-date')    
+            $("#dueExdate").trigger( "click" );
+        if(type=='payment-date')    
+            $("#paymentExdate").trigger( "click" );    
+    }
     //Invoice export to excel
     $scope.exportData = function () {
+        $("#exportable .dt-loading" ).remove();
         console.log('$scope.checkedIds=excel', $scope.checkedIds)
         console.log('$scope.invoiceListAll=before',$scope.invoiceListAll)
         if($scope.checkedIds.length > 0){
