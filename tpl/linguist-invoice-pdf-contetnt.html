@@ -1,0 +1,194 @@
+<div class="panel panel-default invoiceInput" id="pdfExport">
+    <div class="panel-body pdfnospace">
+        <div class="col-sm-12">
+            <!-- <div class="col-xs-12">
+                <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="80" height="80" style="border-radius: 100px;">
+            </div> -->
+
+            <div class="row">
+                <div class="row invoice-header">
+                    <div class="col-xs-6">
+                        <h1>Invoice</h1>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <!-- <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;"> -->
+                        <!-- <img ng-src="uploads/profilePic/{{invoiceDetail.freelancePic}}" width="70" height="70"
+                      style="border-radius: 100px;"> -->
+                        <h4 ng-bind="invoiceDetail.freelanceName"></h4>
+                        <p>
+                            {{invoiceDetail.freelanceAddress}} </br>
+                            {{freelanceZipcode}} , {{freelanceCity}} </br>
+                            {{freelanceCountry}} </br>
+                            Vat Number : <span>{{vatNo}}</span> </br>
+                            <!-- Email : {{invoiceDetail.freelanceEmail}} -->
+
+                        </p>
+
+                    </div>
+                </div>
+                <div class="row invoice-content1">
+                    <div class="col-xs-6">
+                        <!-- <img ng-src="uploads/logo/{{invoiceDetail.clientLogo}}" style="height: 100px;max-width:250px;"> -->
+                        <p>
+                            <strong>BILL TO:</strong> </br>
+                        </p>
+                        <p class="mb-0" style="font-size:20px;">
+                            <strong>SpellUp AS</strong></br>
+                        </p>
+                        <p>Ødegårdsveien 43J </br>
+                            Norway </br>
+                            NO930108995</P>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoice_number }}</strong></p>
+                        <br />
+                        <p>
+                            Invoice date: <br /><span
+                                ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span></br>
+                            Payment due date: <br />
+                            <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br />
+                        </p>
+                        <!-- <p style="color:#b6b0b0">BeConnected AS &#183; Sandakerveien 138 &#183; 0484 Oslo &#183; Norway
+                    </p>
+                    <p style="color:#b6b0b0"> Email: info@beconnected.no</p> -->
+                    </div>
+                </div>
+
+                <div class="col-xs-12 well"
+                    ng-if="invoiceDetail.custom_invoice_no!='' && invoiceDetail.custom_invoice_no != invoiceDetail.invoice_number"
+                    style="padding:10px;margin-bottom:10px;">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <strong>Linguist Invoice No</strong> : {{invoiceDetail.custom_invoice_no}}
+                        </div>
+                    </div>
+                </div>
+                <div class="invoice-content2">
+                    <table ng-init="invoiceLength = invoiceList.length - 1"
+                        ng-init="invL.item.subTotal = {}" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width:50px">#</th>
+                                <th style="width:100px">PO Number</th>
+                                <!-- <th>QUANTITY</th> -->
+                                <th style="width:150px">Job Description</th>
+                                <th style="width:100px">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="invL in invoiceList track by $index">
+                                <td style="width:50px">{{$index + 1}}</td>
+                                <td style="width:100px">{{invL.scoop_poNumber}}</td>
+                                <td style="width:150px">
+                                    {{invL.poNumber}} | {{invL.item_name}}
+                                </td>
+                                <td style="width:100px" class="nowrap">
+                                    {{invL.price_per_job}}
+                                    <!-- <input class="invoiceCal form-control itemVal_{{invL.jobId}}"
+                                    ng-show="editInvoiceField" type="text" ng-model="invL.price_per_job"
+                                    ng-disabled="editDisabled" id="invSubTotal{{$index}}"
+                                    ng-change="changeInvoiceField($index,$parent.$index,invL.price_per_job,'itemPrice')"
+                                    name="itemVal_{{invL.jobId}}" /> -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
+                                <td style="width:10%;" class="nowrap">
+                                    {{invoiceTotal}}
+                                    <!-- <input class="form-control" ng-show="editInvoiceField" type="text"
+                                    ng-model="invoiceTotal" ng-disabled="editDisabled"
+                                    ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
+                                    id="invSubtotal" /> -->
+                                </td>
+                            </tr>
+                            <tr class="tdborder" ng-if="taxValue > 0">
+                                <td colspan="3" class="text-right no-border nowrap"><strong>Tax
+                                        ({{taxPercentage}}%)</strong></td>
+                                <td class="nowrap">
+                                    <span>{{ taxValue | customNumber }} </span>
+                                    <!-- <input class="form-control" ng-show="editInvoiceField"
+                                    ng-disabled="editDisabled" type="text" ng-model="vat"
+                                    ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" /> -->
+                                </td>
+                            </tr>
+                            <!-- <tr>
+                            <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
+                            <td> 0.00</td>
+                        </tr> -->
+                            <!-- <tr class="tdborder">
+                            <td colspan="3" class="text-right no-border"><strong>Total </strong></td>
+                            <td style="white-space: nowrap;">
+                                {{grandJobTotal | customNumber}}
+                            </td>
+                        </tr> -->
+                            <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
+                                <td colspan="3" class="text-right no-border"><strong>Paid
+                                    </strong></td>
+                                <td style="width:10%;" class="nowrap">{{invoiceDetail.paid_amount |
+                                    customNumber}} </td>
+                            </tr>
+                            <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder nowrap">
+                                <td colspan="3" class="text-right no-border"><strong>Total Due
+                                        Amount</strong>
+                                </td>
+                                <td style="white-space: nowrap;">{{grandJobTotal -
+                                    invoiceDetail.paid_amount | customNumber}} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row invoice-footer">
+                    <div class="col-xs-6">
+                        <p ng-if="currencyPaymentMethod == 'Bank Transfer'">
+                            <!-- <span ng-bind="vBankInfo.payment_method" class="ng-binding"></span> -->
+                            Bank Name: <span ng-bind="vBankInfo.bank_name"></span> </br>
+                            Account Holder: <span ng-bind="vBankInfo.holder_name"
+                                class="ng-binding"></span> </br>
+                            IBAN: <span ng-bind="vBankInfo.iban"></span> </br>
+                            SWIFT: <span ng-bind="vBankInfo.bic"></span>
+                        </P>
+                        <p ng-if="currencyPaymentMethod == 'Paypal'">
+                            <span>Paypal Account</span> </br>
+                            <span ng-bind="vBankInfo.paypal_address" class="ng-binding"></span>
+
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <!-- <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;"> -->
+                        <h4>TOTAL</h4>
+                        <h3>
+                            {{currencyType}} {{grandJobTotal | customNumber}}
+                        </h3>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="toAddEleAfterDwonload" ng-show="viewBtn"></div>
+            <div ng-show="viewBtn">
+                <button id="btnPaid" ng-show="userRight==1" class="btn btn-info btnSave"
+                    ng-click="invoicePaid('invoice-form');"> Paid</button>
+                <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
+                    class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as
+                    cancel</button>
+                <!-- <button id="btnSave" ng-show="invoiceDetail.invoice_type!='save'"
+                    class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i
+                        class="fa fa-floppy-o" aria-hidden="true"></i> Save</button> -->
+                <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
+                    ng-click="save('invoice-form', 'draft');"> Draft</button>
+                <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
+                    ng-click="cancel();"> Cancel</button>
+                <button id="btnApproved" class="btn btn-success btnSave t1"
+                    ng-show="invoiceDetail.is_approved==1 && !isPdfdownload"
+                    ng-click="invoiceApproved('0');" ng-disabled="isDisabledApprvd"> Approved</button>
+                <button id="btnApproved" class="btn btn-warning btnSave t2"
+                    ng-show="invoiceDetail.is_approved==0 && !isPdfdownload"
+                    ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd"
+                    style="color: #454f59 !important;"> UnApproved</button>
+                <!-- <button id="editInvoiceSave2" class="btn btn-info btnSave" ng-hide="editDisabled"
+                    ng-click="editInvoiceLinguist(invoiceDetail.invoice_number)"><i
+                        class="fa fa-pencil"></i> Edit & Save </button> -->
+            </div>            
+        </div>
+    </div>
+</div>

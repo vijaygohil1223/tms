@@ -1,16 +1,25 @@
 <style>
-  .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
-    background-color: #f8f8f8;
-  }
   .line {
     background: #f1ecec;
     margin-bottom: 25px;
   }
+  .imgcenter {
+    margin: 0 auto;
+    width: max-content;
+  }
+  .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control { 
+    background-color: #f9f9f9; 
+  }
+
   .modal-dialog {
     width: 80%;
   }
   .modal-content{
     opacity: 0;
+  }
+  .pdfnospace{
+    padding-top: 0px; 
+    padding-bottom: 0px; 
   }
 </style>
 <div class="modal-header" >
@@ -26,12 +35,11 @@
     <div class="md-content">
       <div class="wrapper-md ng-scope">
         <!-- Invoice PDF content include -->
-        <div data-ng-include="'tpl/invoice-pdf-contetnt.html'"></div>
+        <div data-ng-include="'tpl/linguist-invoice-pdf-contetnt.html'"></div>
       </div>
     </div>
   </div>
 
   <div class="modal-footer">
     <button class="btn btn-info" ng-click="cancel()">Cancel</button>
-    <!-- <button class="btn btn-primary" ng-click="ok()">OK</button> -->
   </div>
