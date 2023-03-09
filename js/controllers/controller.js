@@ -16285,6 +16285,197 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+}).controller('invoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.is_disabled = false;
+    $scope.editInvoiceField = true;
+    $scope.editDisabled = false;
+    $scope.currencyType = 'EUR';
+    //$scope.noneCls = "none"
+    $scope.viewBtn = false;
+    $scope.vatTax = 0;
+    //change jobitem price module
+
+    $routeParams.id = items;
+
+    if ($routeParams.id) {
+        rest.path = "clientInvoiceViewOne/" + $routeParams.id;
+        rest.get().success(function (data) {
+            console.log('data', data)
+            $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            if ($scope.invoiceDetail.clientVatinfo) {
+                const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
+                $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
+            }
+            $scope.vatNo = '';
+            $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
+            if ($scope.invoiceDetail.companyAddressDtl) {
+                let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                angular.forEach(clientAddDetail, function (clientAddress, i) {
+                    if (clientAddress.id == 'address1_locality') {
+                        $scope.clientCity = clientAddress.value;
+                    }
+                    if (clientAddress.id == 'address1_administrative_area_level_1') {
+                        $scope.clientState = clientAddress.value;
+                    }
+                    if (clientAddress.id == 'address1_country') {
+                        $scope.clientCountry = clientAddress.value;
+                    }
+                    if (clientAddress.id == 'address1_postal_code') {
+                        $scope.clientZipcode = clientAddress.value;
+                    }
+                })
+            }
+            rest.path = "customerpriceAll/1";
+            rest.get().success(function (dataPrice) {
+                console.log('dataPrice', dataPrice)
+                dataPrice.filter( (el) =>{
+                    if(el.resource_id == $scope.invoiceDetail.clientId){
+                        //$scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
+                    }
+                })
+            }) 
+            $scope.currencyType = $scope.invoiceDetail && $scope.invoiceDetail.client_currency.includes(',') ?  $scope.invoiceDetail.client_currency.split(',')[0] : 'EUR';
+            $scope.invoiceDetail.tax_rate = $scope.invoiceDetail.tax_rate ? $scope.invoiceDetail.tax_rate : 0; 
+            $scope.vatTax = $scope.invoiceDetail.tax_rate;
+            $scope.vatAmount = 0;
+            //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
+            rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
+            rest.get().success(function (dataUser) {
+                //$scope.userData = dataUser.userData;
+                $scope.userPaymentData = dataUser.userPaymentData;
+                //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
+                //$scope.currencyType = vBankInfo.currency_code;
+
+                //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
+                $scope.currencyPaymentMethod = 'Bank Transfer';
+                $scope.vBankInfo.currency_code = 'EUR';
+                //$scope.currencyType = '€ ';
+                if ($scope.currencyPaymentMethod == 'Bank Transfer') {
+                    $timeout(function () {
+                        $("#Bank").prop('checked', true);
+                    }, 100);
+                } else {
+                    $timeout(function () {
+                        $("#Paypal").prop('checked', true);
+                    }, 100);
+                }
+                $scope.invoiceDetail.payment = $scope.currencyPaymentMethod;
+
+            }).error(errorCallback);
+
+            $scope.invoiceList = data;
+            console.log('$scope.invoiceList =>', $scope.invoiceList)
+
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
+
+            //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            //$scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
+
+            console.log('$scope.invoiceDetail.freelancePhone', $scope.invoiceDetail.freelancePhone)
+            if($scope.invoiceDetail.freelancePhone){
+                var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
+                var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
+                $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
+            }
+
+            if($scope.invoiceDetail.companyPhone){
+                var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
+                var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
+                $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
+            }
+
+            //$scope.vat = $scope.invoiceDetail.vat ? $scope.invoiceDetail.vat : 0;
+            //$scope.invoiceTotal = $scope.invoiceDetail.item_total ? $scope.invoiceDetail.item_total : 0;
+            $scope.invoiceTotal = 0;
+            var invoiceTotal = $scope.invoiceTotal;
+            $scope.grandTotal = 0;
+            angular.forEach($scope.invoiceList, function (val, i) {
+                //console.log('val', val)
+                if (val.item) {
+                    var itemTotal = 0;
+                    angular.forEach(val.item, function (v, i2) {
+                        //$scope.invoiceTotal += v.itemTotal;
+                        itemTotal += v.itemTotal;
+                    })
+                    //$scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(itemTotal);
+                }
+                
+                $scope.invoiceTotal += parseFloat(val.scoop_value);
+                $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
+                $scope.invoiceList[i].item.priceWithTax = parseFloat(val.scoop_value);
+            })
+            //$scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
+            $scope.vatAmount = taxRateAmountCalc(parseFloat($scope.invoiceTotal), $scope.vatTax);
+            $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vatAmount);
+            //$scope.grandTotal = parseFloat($scope.invoiceTotal);
+            $scope.invoiceList[0].Invoice_cost = $scope.grandTotal;
+            //$scope.invoiceList[0].Invoice_cost = $scope.invoiceTotal;
+            $scope.totalDue = $scope.invoiceList[0].Invoice_cost - $scope.invoiceList[0].paid_amount;
+            
+            $scope.invoiceTotal = (invoiceTotal.toString().includes(',')) ? $scope.invoiceTotal : $filter('customNumber')($scope.invoiceTotal);
+            //$scope.vat = $filter('customNumber')($scope.vat);
+            if($scope.invoiceList[0].paid_amount > 0){
+                $scope.dueAmountText = 'DUE AMOUNT'; 
+            }
+
+            if ($scope.invoiceDetail.invoice_status == 'Irrecoverable') {
+                angular.element('#irrecoverable').addClass('btn-danger');
+                angular.element('#irrecoverable').removeClass('btn-info');
+                $scope.is_disabled = true;
+            }
+            if ( ['Complete','Paid','Part Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
+                $scope.editDisabled = true;
+            }
+            // 
+            $scope.reminderBtnHideShow = false;
+            $timeout(function () {
+                var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
+                console.log('newPaydueDate', newPaydueDate)
+                if (($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')) {
+                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
+                        $scope.reminderBtnHideShow = true;
+                    }
+                }
+                // print invoice after all data load    
+                $scope.printIt($scope.invoiceDetail.invoice_number);
+            }, 500);
+
+        }).error(errorCallback);
+    }
+
+    $scope.printIt = function (invoiceNo) {
+        console.log('invoiceNo', invoiceNo)
+        let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
+        angular.element('.invoiceInput input').addClass('invoiceInputborder');
+        //$scope.noneCls = "";
+
+        kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
+            group.options.set("font", "12px DejaVu Sans");
+            // group.options.set("pdf", {
+            //     margin: {
+            //         left: "40mm",
+            //         top: "0mm",
+            //         right: "40mm",
+            //         bottom: "0mm"
+            //     }
+            // });
+            kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
+        });
+        $timeout(function () {
+            $scope.cancel();
+            //angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+        }, 500);
+        
+    }
+
+    $scope.cancel = function () {
+        $uibModalInstance.close();
+    }
 
 }).controller('invoiceAmountController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $uibModalInstance, items, $filter) {
     $scope.closeAmount = true;
@@ -26822,7 +27013,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('freelanceInvoiceController', function ($scope, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $q, invoiceDuePeriodDays) {
+}).controller('freelanceInvoiceController', function ($scope, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $filter, $q, invoiceDuePeriodDays) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.search = function (search) {
@@ -26923,7 +27114,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceUnpaid = [];
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function (val, i) {
-
                 if (val.invoice_status == 'Complete') {
                     $scope.invoiceCompleted.push(val);
                 } else {
@@ -26962,6 +27152,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('$scope.lngstInvoiceListData-prmc', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
+                let paid_date = $filter('globalDtFormat')(val.paid_date);
+                val.paid_date = paid_date ? paid_date : '-'; 
+                
                 let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
                 var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
@@ -27520,8 +27713,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         setTimeout(() => {
             var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                
             });
-            saveAs(blob, "Client Invoice Report.xls");
+            saveAs(blob, "Client Invoice Report.xlsx");
             // on excel download add flag 1 (To display check mark)
             rest.path = 'clientInvoiceExcelStatus';
             rest.post($scope.checkedIds).success(function (data) {
@@ -27616,6 +27810,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please select status.', 'warning');
         }    
 
+    }
+
+    $scope.pdfInvoice = function (id) {
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/invoicePdf.html',
+            controller: 'invoicePdfController',
+            //size: '',
+            //width: 1000,
+            resolve: {
+                items: function () {
+                    return id;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+            $route.reload();
+        });
     }
 
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {

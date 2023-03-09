@@ -1,0 +1,41 @@
+<style>
+  .form-control[disabled],
+  .form-control[readonly],
+  fieldset[disabled] .form-control {
+    background-color: #f8f8f8;
+  }
+  .line {
+    background: #f1ecec;
+    margin-bottom: 25px;
+  }
+  .modal-dialog {
+    width: 80%;
+  }
+  .modal-content{
+    opacity: 0;
+  }
+</style>
+<div class="modal-header" >
+  <div class="modal-title">
+    <h4>Invoice Pdf</h4>
+    <a href="javascript:void(0);" ng-click="printIt(invoiceDetail.invoice_number)" class="btn btn-info btn-sm btn-rounded ng-scope"><i
+        class="fa fa-download"></i>&nbsp; Pdf </a>
+  </div>
+</div>
+<div class="modal-body ng-scope">
+  <div class="row">
+
+    <div class="md-content">
+      <div class="wrapper-md ng-scope">
+        
+        <!-- Invoice PDF content include -->
+        <div data-ng-include="'tpl/invoice-pdf-contetnt.html'"></div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-info" ng-click="cancel()">Cancel</button>
+    <!-- <button class="btn btn-primary" ng-click="ok()">OK</button> -->
+  </div>

@@ -104,6 +104,7 @@
                           <th>Currency</th>
                           <th>Creation Date</th>
                           <th>Due Date</th>
+                          <th>Payment Date</th>
                           <th>Invoice status</th>
                           <th>Action</th>
                         </thead>
@@ -117,6 +118,7 @@
                             <td ng-bind="invoiceL.freelance_currency"></td>
                             <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                             <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                            <td>{{ invoiceL.paid_date }}</td>
                             <td>
                               <span ng-bind="invoiceL.invoice_status"></span>
                             </td>
