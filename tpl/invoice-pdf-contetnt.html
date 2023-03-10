@@ -27,7 +27,7 @@
         </div>
 
         <div class="row invoice-content1">
-          <div class="col-xs-6">
+          <div class="col-xs-8">
             <p style="font-size:20px;">
               <strong ng-bind="invoiceDetail.clientCompanyName"></strong></br>
             </p>
@@ -39,11 +39,14 @@
               <!-- Phone: <span ng-bind="invoiceDetail.companyPhone"></span> -->
             </p>
           </div>
-          <div class="col-xs-6 text-right">
+          <div class="col-xs-4 text-right">
             <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoice_number }}</strong></p>
             <br />
             <p>
-              Invoice date: <br /><span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span></br>
+              Invoice date: <br />
+              <!-- <span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span> -->
+              <input class="invoiceCal headerInput  form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" />
+              </br>
               Payment due date: <br />
               <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br />
             </p>

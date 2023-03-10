@@ -1159,6 +1159,12 @@ table.customerPriceTable tbody [id^=priceLanguageID] tr.priceLPrice.rowactivate 
   margin: 0 auto;
   width: max-content;
 }
+.headerInput{
+  text-align:right;
+  padding-right: 1px;
+  height: 30px;
+  margin-bottom: -18px;
+}
 /* End Invoice style */
 
 /* Start  Dashboard tabs scrolling

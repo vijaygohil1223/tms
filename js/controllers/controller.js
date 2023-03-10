@@ -15866,6 +15866,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editDisabled = false;
     $scope.currencyType = 'EUR';
     $scope.viewBtn = true;
+    $scope.invoiceNumOfdays = 30;
     //$scope.noneCls = "none"
     $scope.invoicePaid = function (frmId) {
         var obj = {
@@ -16009,13 +16010,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $scope.invoiceList = data;
             console.log('$scope.invoiceList =>', $scope.invoiceList)
-
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
-
+            $scope.invoiceNumOfdays = data[0].number_of_days;
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].invoice_date, $scope.invoiceNumOfdays);
+            $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, 0));
+            
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             //$scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
 
-            console.log('$scope.invoiceDetail.freelancePhone', $scope.invoiceDetail.freelancePhone)
             if($scope.invoiceDetail.freelancePhone){
                 var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
                 var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
@@ -16043,14 +16044,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     })
                     //$scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(itemTotal);
                 }
-                //$scope.invoiceList[i].tax_rate = $scope.invoiceList[i].tax_rate ? $scope.invoiceList[i].tax_rate : 0;
-                //let amountTaxRate = taxRateAmountCalc(val.scoop_value, $scope.invoiceList[i].tax_rate);
-                //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
-                
-                //$scope.invoiceTotal += itemPriceTax;
-                //$scope.invoiceList[i].itemPriceTax = $filter('customNumber')(itemPriceTax);
-                //$scope.invoiceList[i].item.priceWithTax = itemPriceTax;
-                //$scope.invoiceList[i].scoop_value = $filter('customNumber')(val.scoop_value);
                 
                 $scope.invoiceTotal += parseFloat(val.scoop_value);
                 $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
@@ -16093,6 +16086,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
+    $scope.changeCreateDate = function(input){
+        if(input){
+            let dtInput = originalDateFormatNew(input);
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(dtInput, $scope.invoiceNumOfdays);
+            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+        }
+    }
+
     $scope.invoiceCancel = function (frmId) {
         var obj = {
             "invoice_status": "Cancel"
@@ -16109,6 +16110,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.upInvoiceData.item_total = $scope.invoiceTotal
         $scope.upInvoiceData.vat = $scope.vat
         $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;
+        $scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
         $scope.upInvoiceData.item = [];
         $scope.invoiceList.forEach(element => {
             const elItemID = element.itemId;
@@ -29782,6 +29784,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceList = [];
     $scope.currencyType = 'EUR';
+    $scope.invoiceNumOfdays = 30;
             
     //get data of invoice
     if ($cookieStore.get('invoiceScoopId').length) {
@@ -29869,9 +29872,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
 
             var date = new Date();
+            
+            $scope.invoiceNumOfdays = data[0].number_of_days;
+            
             //$scope.invoiceDetail.invoiceNumber = data[0].orderNumber + '_' + pad(data[0].invoiceCount + 1, 3);
             $scope.invoiceDetail.invoiceNumber = 'S-' + pad(data[0].invoiceCount + 1, 6);
             $scope.invoiceDetail.invoiceDate = date;
+            $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays(date, 0) );
             $scope.invoiceDetail.scoop_id = obj;
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, data[0].number_of_days);
             $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
@@ -29917,6 +29924,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
         });
+    }
+
+    $scope.changeCreateDate = function(input){
+        if(input){
+            let dtInput = originalDateFormatNew(input);
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(dtInput, $scope.invoiceNumOfdays);
+            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+        }
     }
 
     $scope.vat = 0;
@@ -29971,6 +29986,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.invoiceData.item_total = $scope.invoiceTotal;
         $scope.invoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal);
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
+
+        $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
         
         //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         // $scope.upInvoiceData.vat = $scope.vat

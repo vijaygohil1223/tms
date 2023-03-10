@@ -92,7 +92,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
+                                <td colspan="3" class="text-right"><strong>Subtotal Subtotal Subtotal</strong></td>
                                 <td style="width:10%;" class="nowrap">
                                     {{invoiceTotal}}
                                     <!-- <input class="form-control" ng-show="editInvoiceField" type="text"
@@ -102,8 +102,7 @@
                                 </td>
                             </tr>
                             <tr class="tdborder" ng-if="taxValue > 0">
-                                <td colspan="3" class="text-right no-border nowrap"><strong>Tax
-                                        ({{taxPercentage}}%)</strong></td>
+                                <td colspan="3" class="text-right no-border nowrap"><strong>Tax ({{taxPercentage}}%)</strong></td>
                                 <td class="nowrap">
                                     <span>{{ taxValue | customNumber }} </span>
                                     <!-- <input class="form-control" ng-show="editInvoiceField"
@@ -122,16 +121,14 @@
                             </td>
                         </tr> -->
                             <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
-                                <td colspan="3" class="text-right no-border"><strong>Paid
-                                    </strong></td>
+                                <td colspan="3" class="text-right no-border"><strong>Paid</strong></td>
                                 <td style="width:10%;" class="nowrap">{{invoiceDetail.paid_amount |
                                     customNumber}} </td>
                             </tr>
                             <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder nowrap">
-                                <td colspan="3" class="text-right no-border"><strong>Total Due
-                                        Amount</strong>
+                                <td colspan="3" class="text-right no-border"><strong>Total Due Amount</strong>
                                 </td>
-                                <td style="white-space: nowrap;">{{grandJobTotal -
+                                <td class="nowrap">{{grandJobTotal -
                                     invoiceDetail.paid_amount | customNumber}} </td>
                             </tr>
                         </tbody>
@@ -151,7 +148,6 @@
                         <p ng-if="currencyPaymentMethod == 'Paypal'">
                             <span>Paypal Account</span> </br>
                             <span ng-bind="vBankInfo.paypal_address" class="ng-binding"></span>
-
                     </div>
                     <div class="col-xs-6 text-right">
                         <!-- <img ng-src="uploads/tms_logo.png" style="border-radius: 100px;"> -->

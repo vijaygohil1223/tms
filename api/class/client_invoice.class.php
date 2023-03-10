@@ -210,7 +210,8 @@ class Client_invoice {
         $updata['value_date'] = date('Y-m-d H:i');
         $updata['Invoice_cost'] = $data['Invoice_cost'];
         $updata['item_total'] = $data['item_total'];
-        $updata['vat'] = $data['vat'];
+        $updata['invoice_date'] = $data['invoice_date'];
+        $updata['vat'] = isset($data['vat']) ? $data['vat'] : 0;
         if($id){
             $this->_db->where('invoice_id', $id);
     	    $up_id = $this->_db->update('tms_invoice_client',$updata);
@@ -631,7 +632,7 @@ class Client_invoice {
             $data['created_date'] = date('Y-m-d');
             $data['modified_date'] = date('Y-m-d');
             $data['value_date'] = date('Y-m-d');
-            $data['invoice_date'] = date('Y-m-d');
+            //$data['invoice_date'] = date('Y-m-d');
             $id = $this->_db->insert('tms_invoice_client', $data);
             if($id && $scoopData){
                 foreach($scoopData as $item){

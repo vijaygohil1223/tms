@@ -86,9 +86,7 @@
                       <br />
                       <p>
                         Invoice date: <br />
-                        <span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span>
-                        <!-- </br>
-                        <input class="invoiceCal form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="createDate" /> -->
+                        <input class="invoiceCal headerInput  form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" />
                         </br>
                         Payment due date: <br />
                         <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br />
@@ -133,7 +131,7 @@
                       <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
                         class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
                         <tr class="thfont">
-                          <th>({{$index + 1}})</th>
+                          <th>{{$index + 1}}</th>
                           <th>{{invL.po_number}}</th>
                           <th>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }} | {{invL.item_name}}</th>
                           <th>1</th>
