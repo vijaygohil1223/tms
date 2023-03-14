@@ -65,6 +65,7 @@
                           <strong>SpellUp AS</strong></br>
                         </p>
                         <p>Ødegårdsveien 43J </br>
+                          1911 Flateby </br>
                           Norway </br>
                           NO930108995</P>
                       </div>
@@ -72,7 +73,10 @@
                         <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoiceNumber }}</strong></p>
                         <br />
                         <p>
-                          Invoice date: <br /><span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span></br>
+                          Invoice date: <br />
+                          <!-- <span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span> -->
+                          <input class="invoiceCal headerInput  form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" />
+                          </br>
                           Payment due date: <br />
                           <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br />
                         </p>

@@ -103,7 +103,7 @@ class Freelance_invoice {
             $data['created_date'] = date('Y-m-d');
         	$data['modified_date'] = date('Y-m-d');
         	$data['value_date'] = date('Y-m-d');
-        	$data['invoice_date'] = date('Y-m-d');
+        	$data['invoice_date'] = (isset($data['invoice_date'])) ? $data['invoice_date'] : date('Y-m-d');
         	$id = $this->_db->insert('tms_invoice', $data);
             if($id && $jobData){
                 foreach($jobData as $item){
@@ -245,7 +245,7 @@ class Freelance_invoice {
         if(isset($data['paid_amount']) && $data['paid_amount'] == ' '){
             unset($data['paid_amount']);
         }
-        $data['modified_date'] = date('Y-m-d');
+        $data['modified_date'] = date('Y-m-d H:i:s');
     	$this->_db->where('invoice_id', $id);
     	$idd = $this->_db->update('tms_invoice', $data);
         // Update Job status When invoice status change to complete

@@ -160,7 +160,7 @@
                       </td>
                       <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
                       <td>{{ invoiceL.client_currency }} </td>
-                      <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                      <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                       <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
                       <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                       <td>
@@ -170,9 +170,8 @@
                         <div class="trActiontitle">
                           <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
                               class="fa fa-eye"></i></a>
-
-                         <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
-                          class="fa fa-download"></i></a>
+                          <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
+                              class="fa fa-download"></i></a>
                         </div>
                       </td>
                     </tr>

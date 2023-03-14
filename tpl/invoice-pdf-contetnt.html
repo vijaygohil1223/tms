@@ -45,7 +45,7 @@
             <p>
               Invoice date: <br />
               <!-- <span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span> -->
-              <input class="invoiceCal headerInput  form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" />
+              <input class="invoiceCal headerInput  form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" ng-disabled="editDisabled"/>
               </br>
               Payment due date: <br />
               <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br />
