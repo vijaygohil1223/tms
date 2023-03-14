@@ -27548,19 +27548,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 }).controller('invoiceCreateJobsController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
-    
-    $scope.InvoiceResult = [];
-    rest.path = 'freelanceJob/' + $window.localStorage.getItem("session_iUserId");
-    rest.get().success(function (data) {
-        //$scope.InvoiceResult = data;
-        $scope.InvoiceResult = data.filter(function (el) {
-                return el.item_status == 'Approved' || el.item_status == 'Invoice Ready' || el.item_status == 'Overdue';
-            });
-        console.log('$scope.InvoiceResult', $scope.InvoiceResult)
-                
-    });        
-    
+    console.log('$scope.userRight', $scope.userRight)
 
+    $scope.resourceDefault = $window.localStorage.getItem("session_iUserId");
+    $scope.resourceId = '0';
+    console.log('session_iUserId=', $scope.resourceId)
+    $scope.changeResource = function(resourceId){
+        console.log('resourceId', resourceId)
+        $scope.resourceId = $scope.userRight == 2 ? $scope.resourceDefault : resourceId.split(',').pop();
+        console.log('$scope.resourceId', $scope.resourceId)
+        
+        $scope.InvoiceResult = [];
+        rest.path = 'freelanceJob/' + $scope.resourceId;
+        rest.get().success(function (data) {
+            $scope.InvoiceResult = data;
+            $scope.InvoiceResult = data.filter(function (el) {
+                    return el.item_status == 'Approved' || el.item_status == 'Invoice ready' || el.item_status == 'Overdue';
+                });
+            console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+        });        
+    }
+    $scope.changeResource('0');
+    
     $scope.addInvoice = function (data) {
         console.log('addInvoice-data', data)
         var company = "";
@@ -29661,7 +29670,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
             $scope.invoiceNumOfdays = data[0].number_of_days;
             var date = new Date();
-            $scope.invoiceDetail.invoiceNumber = data[0].poNumber.split('_')[0] + '_' + data[0].jobCode + '_' + pad(data[0].invoiceCount + 1, 3);
+            //$scope.invoiceDetail.invoiceNumber = data[0].poNumber.split('_')[0] + '_' + data[0].jobCode + '_' + pad(data[0].invoiceCount + 1, 3);
+            $scope.invoiceDetail.invoiceNumber = 'S-' + pad(data[0].invoiceCount + 1, 6);
             $scope.invoiceDetail.custom_invoice_no = $scope.invoiceDetail.invoiceNumber;
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.job_id = obj;
@@ -29762,6 +29772,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 break;
         }
         $scope.invoiceData.freelance_id = $scope.invoiceDetail.freelanceId;
+        $scope.invoiceData.createdBy = $window.localStorage.getItem('session_iUserId');
         $scope.invoiceData.customer_id = $scope.invoiceDetail.clientId;
         $scope.invoiceData.job_id = JSON.stringify(obj);
         $scope.invoiceData.payment_type = $scope.invoiceDetail.payment;
