@@ -16842,11 +16842,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
 
+            //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            //$scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
+
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, data[0].number_of_days);
             $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
-            $scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
-
-            $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
-
+            
+            //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
+            $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')($scope.invoiceDetail.invoice_date);
 
             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
@@ -16894,7 +16897,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $routeParams.id = $routeParams.id;
                 rest.path = "invoiceStatusChange";
                 rest.put($scope.updtInvoiceCost).success(function (data) {
-                    $route.reload();
+                    //$route.reload();
                 });
             }
             if ($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid' || $scope.invoiceDetail.invoice_status == 'Part Paid') {
@@ -16915,6 +16918,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }).error(errorCallback);
     }
+    // Invoice create date change
+    $scope.changeCreateDate = function(input){
+        if(input){
+            let dtInput = originalDateFormatNew(input);
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(dtInput, $scope.invoiceNumOfdays);
+            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+        }
+    }
+
     $scope.upInvoiceData = {};
     $scope.editInvoiceLinguist = function (id) {
         //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
@@ -16990,7 +17002,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var btnDraft = angular.element('#btnDraft');
         var btnCancel = angular.element('#btnCancel');
         var btnApproved = angular.element('#btnApproved');
-
+        
         angular.element('#btnPaid').hide();
         angular.element('#btnMarkAsCancel').hide();
         angular.element('#btnSave').hide();
@@ -16999,6 +17011,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('#btnApproved').hide();
         angular.element('#editInvoiceSave').hide();
         angular.element('#editInvoiceSave2').hide();
+        angular.element('.btnSave').hide();
+
         $scope.isPdfdownload = true;
 
         kendo.drawing.drawDOM($("#exportable")).then(function (group) {
@@ -17024,14 +17038,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#btnApproved').show();
             angular.element('#editInvoiceSave').show();
             angular.element('#editInvoiceSave2').show();
+            angular.element('.btnSave').show();
             $scope.isPdfdownload = false;
 
-            /*
-            $("#toAddEleAfterDwonload").before(btnPaid);
-            $("#toAddEleAfterDwonload").before(btnMarkAsCancel);
-            $("#toAddEleAfterDwonload").before(btnSave);
-            $("#toAddEleAfterDwonload").before(btnDraft);
-            $("#toAddEleAfterDwonload").before(btnCancel);*/
         }, 1000);
         // angular.element('#btnPaid').show();
         // angular.element('#btnMarkAsCancel').show();
@@ -17061,6 +17070,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('#btnApproved').hide();
         angular.element('#editInvoiceSave').hide();
         angular.element('#editInvoiceSave2').hide();
+        angular.element('.btnSave').hide();
 
         kendo.drawing.drawDOM($("#exportable"))
             .then(function (group) {
@@ -17095,7 +17105,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#btnApproved').show();
                 angular.element('#editInvoiceSave').show();
                 angular.element('#editInvoiceSave2').show();
-
+                angular.element('.btnSave').show();
 
             });
     }

@@ -108,7 +108,10 @@ class Freelance_invoice {
             if($id && $jobData){
                 foreach($jobData as $item){
                     $jbupData['updated_date'] = date('Y-m-d H:i:s');
-                    $jbupData['total_price'] = $item['value'];
+                    if($item['value'])
+                        $jbupData['total_price'] = $item['value'];
+                    if(isset($data['invoice_type']) && $data['invoice_type'] == 'save')
+                        $jbupData['item_status'] = 'Invoiced';
                     $this->_db->where('job_summmeryId', $item['id']);
                     $scpstsId = $this->_db->update('tms_summmery_view', $jbupData);
                 }
@@ -247,9 +250,10 @@ class Freelance_invoice {
         }
         $data['modified_date'] = date('Y-m-d H:i:s');
     	$this->_db->where('invoice_id', $id);
-    	$idd = $this->_db->update('tms_invoice', $data);
+    	$upID = $this->_db->update('tms_invoice', $data);
+        
         // Update Job status When invoice status change to complete
-        if($idd && isset($data['invoice_status'])){
+        if($upID && isset($data['invoice_status'])){
             $this->_db->where('invoice_id', $id);
             $invoiceRecords = $this->_db->get('tms_invoice');
             if($data['invoice_status'] == 'Complete'){
@@ -262,15 +266,16 @@ class Freelance_invoice {
             }    
         }
         // only For changes status linguist
-        if(!$idd){
-            $this->_db->where('invoice_id', $id);
-            $status = $this->_db->get('tms_invoice');
-            if(count($status)> 0 ){
-                if($status[0]['invoice_status'] == $data['invoice_status'])
-                    $idd = $id;
-            }    
+        if(!$upID){
+            // $this->_db->where('invoice_id', $id);
+            // $status = $this->_db->get('tms_invoice');
+            // if(count($status) > 0 ){
+            //     if( $status[0]['invoice_status'] == $data['invoice_status'])
+            //         $upID = $id;
+            // }
+            $upID = $id;    
         }    
-        if($idd && isset($partPaymentInsert)) {
+        if($upID && isset($partPaymentInsert)) {
     		$request['status'] = 200;
     		$request['msg'] = "Successfully updated";
     	} else {
