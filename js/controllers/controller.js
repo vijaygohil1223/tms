@@ -627,6 +627,18 @@ function findCommonArrEle(arr1, arr2) {
     return arr1.some(item => arr2.includes(item))
 }
 
+function exportTableToExcel(id, fileName){
+    var wb = XLSX.utils.table_to_book(document.getElementById(id), {sheet:"Sheet JS"});
+    var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+    function s2ab(s) {
+                    var buf = new ArrayBuffer(s.length);
+                    var view = new Uint8Array(buf);
+                    for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                    return buf;
+    }
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), fileName+'.xlsx');
+}
+
 app.controller('loginController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope) {
     /*-------Check for login--------*/
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -15738,16 +15750,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //Linguist Invoice export to excel
     $scope.exportData = function () {
         $("#exportable .dt-loading" ).remove();
-        if($scope.checkedIds.length > 0)
+        if($scope.checkedIds.length > 0){
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+            $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+            console.log('$scope.invoiceListAll-', $scope.invoiceListAll)
+        }
         console.log('$scope.getAllInvoice', $scope.getAllInvoice)
         setTimeout(() => {
             console.log('$scope.getAllInvoice', $scope.getAllInvoice)
 
-            var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-            });
-            saveAs(blob, "Linguist Invoice Report.xls");
+            // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+            //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            // });
+            // saveAs(blob, "Linguist Invoice Report.xls");
+            exportTableToExcel('exportable2','Linguist Invoice Report')
+
             rest.path = 'freelanceInvoiceExcelStatus';
             rest.post($scope.checkedIds).success(function (data) {
                 if (data.status == 200) {
@@ -27975,11 +27992,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
         console.log('$scope.getAllInvoice', $scope.getAllInvoice)
         setTimeout(() => {
-            var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                
-            });
-            saveAs(blob, "Client Invoice Report.xlsx");
+            // var vEncodeHead = '<html><head><meta charset="UTF-8"></head><body>';
+            // var html = document.getElementById('exportable').innerHTML;
+            // var vEncodeHead2 = '</body></html>';
+            // var blob = new Blob([ vEncodeHead+html+vEncodeHead2 ], {
+            //     //type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            //     type: "application/vnd.ms-excel;charset=utf-8"
+                                
+            // });
+            // saveAs(blob, "Client Invoice Report.xlsx");
+            
+            // export excel file using sheetjs
+            exportTableToExcel('exportable2','Client Invoice Report')
+            
             // on excel download add flag 1 (To display check mark)
             rest.path = 'clientInvoiceExcelStatus';
             rest.post($scope.checkedIds).success(function (data) {

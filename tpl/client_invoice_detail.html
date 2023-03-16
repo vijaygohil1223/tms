@@ -190,7 +190,7 @@
           
           <!-- Invoice for export to excel -->
           <div class="table-responsive" id="exportable" style="display: none">
-            <table class="table m-b-none default footable-loaded footable" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
+            <table class="table m-b-none default footable-loaded footable" id="exportable2" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
               <thead>
                 <th>#</th>
                 <th>Invoice number</th>
@@ -207,7 +207,7 @@
                   <!-- <tr id="Export_{{$index}}" ng-repeat="invoiceL in getAllInvoice">   -->
                   <td ng-bind="$index + 1"></td>
                   <td ng-bind="invoiceL.invoice_number"></td>
-                  <td>{{invoiceL.clientCompanyName}}</td>
+                  <td style="font-weight: initial; font-size: initial;">{{invoiceL.clientCompanyName}}</td>
                   <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
                   <td>{{invoiceL.client_currency}} </td>
                   <td>{{ invoiceL.created_date | globalDtFormat }}</td>
