@@ -1946,6 +1946,12 @@ $app->get('/itemsNumberGet/:id', 'authenticate',function ($id) {
     echoResponse(200, $result);
 });
 
+$app->get('/checkItemPonumberExist/:id/:searchText', 'authenticate',function ($id,$searchText) {
+    $item = new item ();
+    $result = $item->checkItemPonumberExist($id, $searchText);
+    echoResponse(200, $result);
+});
+
 $app->post('/saveDirectory', 'authenticate',function () use($app) {
     $item = new item ();
     $data = json_decode($app->request->getBody(), TRUE);

@@ -2122,6 +2122,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsAll';
         rest.get().success(function (data) {
             $scope.jobListDelivered = data;
+            console.log('$scope.jobListDelivered', $scope.jobListDelivered)
         })
     }         
 
@@ -2154,6 +2155,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectsOverdue = [];
     $scope.projectsAssigned = [];
     $scope.projectsQaready = [];
+    $scope.projectsPmready = [];
+    $scope.projectsQaissue = [];
     $scope.projectsToBeDelivered = [];
     $scope.projectsDelivered = [];
     $scope.projectsApproved = [];
@@ -2170,6 +2173,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectsToBeDeliveredCount = 0;
     $scope.projectsDeliveredCount = 0;
     $scope.projectsQaReadyCount = 0;
+    $scope.projectsPmReadyCount = 0;
+    $scope.projectsQaIssueCount = 0;
     $scope.projectsApprovedCount = 0;
     $scope.projectsAssignedCount = 0;
     // -- new status for scoop item count based on status -- //
@@ -2197,6 +2202,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsOverdue = [];
                 $scope.projectsAssigned = [];
                 $scope.projectsQaready = [];
+                $scope.projectsPmready = [];
+                $scope.projectsQaissue = [];
                 $scope.projectsToBeDelivered = [];
                 $scope.projectsDelivered = [];
                 $scope.projectsApproved = [];
@@ -2213,6 +2220,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectsDeliveredCount = 0;
                 $scope.projectsApprovedCount = 0;
                 $scope.projectsQaReadyCount = 0;
+                $scope.projectsPmReadyCount = 0;
+                $scope.projectsQaIssueCount = 0;
                 $scope.projectsAssignedCount = 0;
                 // -- new status for scoop item count based on status -- //
                 $scope.projectLinguistCount = 0;
@@ -2465,27 +2474,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectLinguistCount++;
                 }
                 // QA Ready
-                if (val.itemStatusId == "10") {
-                    let isQaReady = true;
-                    if($scope.jobListDelivered.length > 0){
-                        let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.item_status != '4' );
-                        if(checkqaReady.length > 0)
-                            isQaReady = false;
-                    }
-                    if(isQaReady){
+                let isQaReady = false;
+                if($scope.jobListDelivered.length > 0){
+                    let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
+                    isQaReady = checkqaReady.length > 0 ? true : false;
+                }
+                if ( ([4,6,7,8,9].includes(val.itemStatusId)==false) && (val.itemStatusId == "10" || isQaReady)) {
+                    //if(isQaReady){
                         val.progrss_precentage = 75;
                         val.projectstatus_class = 'projectstatus_ready';
                         val.projectstatus_color = '#019788';
                         $scope.projectsQaready.push(val);
                         $scope.projectsQaReadyCount++;
-                    }    
+                    //}    
                 }
-                // Overdue
+                // QA issue
                 if (val.itemStatusId == "11") {
-                    $scope.projectOverdueCount++;
-                    val.projectstatus_class = 'projectstatus_overdue';
+                    $scope.projectsQaIssueCount++;
+                    $scope.projectsQaissue.push(val);
+                    val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#f44237';
                 }
+                // Overdue
+                // if (val.itemStatusId == "12") {
+                //     $scope.projectOverdueCount++;
+                //     val.projectstatus_class = 'projectstatus_overdue';
+                //     val.projectstatus_color = '#f44237';
+                // }
                 // val.DueDate - due Today
                 //let statusExistArr = ["Delivered","Approved","Invoiced","Paid"];
                 let statusExistArr = [4,5,6,7];
@@ -19465,6 +19480,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#curRate').text(data.currencyRate);
         });
     }
+    $scope.poNumberExist = false;
+    $scope.checkPoNumberExist = function (id, searchText) {
+        console.log('searchText', searchText)
+        console.log('id', id)
+        if(searchText.length > 1){
+            rest.path = 'checkItemPonumberExist/' + id +'/' + searchText;
+            rest.get().success(function (data) {
+                if(data){
+                    $scope.poNumberExist = true;
+                    $("<label for='po_number"+id+"' class='error' id='po_numberErr"+id+"' >PO number already exist.</label>").insertAfter("input#po_number"+id);
+                }else{
+                    $('#po_numberErr'+id).css('display','none');
+                    $scope.poNumberExist = false;
+                }
+            });
+        }else{
+            $('#po_numberErr'+id).css('display','none');
+            $scope.poNumberExist = false;
+        }
+    }
     $scope.workflowChange = false;
     $scope.changeWorkflow = function (id) {
         console.log('id', id)
@@ -19474,9 +19509,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isAllScoopUpdated = false;
     $scope.jobi = {};
     $scope.saveitems = function (formId, formIndex) {
+        
         if (angular.element('#item-form' + formId).valid()) {
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
+                    // single item save (same Po Number exist) 
+                    //if(!$scope.isAllScoopUpdated){
+                        angular.element(document.getElementById('po_number'+$scope.itemList[formIndex].itemId)).triggerHandler('change');
+                        $scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
+                        if($scope.poNumberExist){
+                            notification('PO number already exist.','warning')
+                            return false;
+                        }    
+                    //}
                     var formIdAllSave = $scope.isAllScoopUpdated ? $scope.itemList[0].itemId : formId;
                     var formIndexNew = $scope.isAllScoopUpdated ? 0 : formIndex;
                     
@@ -19787,7 +19832,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //  delete $scope.itemList.item_status_name;
                     if($scope.isAllScoopUpdated){
                         $scope.itemList[formIndex].project_type = $scope.itemList[0].project_type; 
-                        $scope.itemList[formIndex].po_number = $scope.itemList[0].po_number; 
+                        //$scope.itemList[formIndex].po_number = $scope.itemList[0].po_number; 
                         $scope.itemList[formIndex].item_status = $scope.itemList[0].item_status; 
                         $scope.itemList[formIndex].project_pricelist = $scope.itemList[0].project_pricelist; 
                         $scope.itemList[formIndex].place_of_delivery = $scope.itemList[0].place_of_delivery; 
@@ -19910,6 +19955,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$(".scoopall").attr('required', '');
         angular.forEach($scope.itemList, function (val, index) {
             //debugger
+            angular.element(document.getElementById('po_number'+val.itemId)).triggerHandler('change');
             $scope.isAllScoopUpdated = true; 
             $('#project_type'+val.itemId).removeAttr('required');
             $('#upcomingDate'+val.itemId).removeAttr('required');

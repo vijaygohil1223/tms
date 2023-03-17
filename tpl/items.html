@@ -401,7 +401,7 @@
                                                                <input type="text" class="form-control"
                                                                   id="po_number{{it.itemId}}"
                                                                   name="po_number{{it.itemId}}"
-                                                                  ng-model="it.po_number" />
+                                                                  ng-model="it.po_number" ng-change="checkPoNumberExist(it.itemId,it.po_number)" />
                                                             </div>
                                                          </div>
                                                          <div class="col-sm-12">
