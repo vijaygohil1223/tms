@@ -395,7 +395,7 @@ class item {
     }
 
     public function checkItemPonumberExist($id, $searchText){
-        $data = $this->_db->rawQuery("SELECT itemId FROM `tms_items` WHERE itemId ='".$id."' AND po_number='".$searchText."' ");
+        $data = $this->_db->rawQuery("SELECT itemId FROM `tms_items` WHERE itemId != '".$id."' AND po_number='".$searchText."' ");
         return $this->_db->count;
     }
 
