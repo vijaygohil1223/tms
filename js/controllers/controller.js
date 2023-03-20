@@ -19483,20 +19483,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.poNumberExist = false;
     $scope.checkPoNumberExist = function (id, searchText) {
         console.log('searchText', searchText)
-        console.log('id', id)
         if(searchText.length > 1){
             rest.path = 'checkItemPonumberExist/' + id +'/' + searchText;
             rest.get().success(function (data) {
                 if(data){
                     $scope.poNumberExist = true;
-                    $("<label for='po_number"+id+"' class='error' id='po_numberErr"+id+"' >PO number already exist.</label>").insertAfter("input#po_number"+id);
+                    angular.element("#po_numberErr" + id).text('PO number already exist');
+                    $('#po_numberErr'+id).css('display','block');
                 }else{
-                    $('#po_numberErr'+id).css('display','none');
+                    //$('#po_numberErr'+id).css('display','none');
+                    angular.element("#po_numberErr" + id).text('');
                     $scope.poNumberExist = false;
                 }
             });
         }else{
-            $('#po_numberErr'+id).css('display','none');
+            angular.element("#po_numberErr" + id).text('');
+            //$('#po_numberErr'+id).css('display','none');
             $scope.poNumberExist = false;
         }
     }
@@ -19508,15 +19510,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.isAllScoopUpdated = false;
     $scope.jobi = {};
+
     $scope.saveitems = function (formId, formIndex) {
-        
+        // check PoNumber Exist call fun
+        $scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
+
         if (angular.element('#item-form' + formId).valid()) {
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
                     // single item save (same Po Number exist) 
                     //if(!$scope.isAllScoopUpdated){
-                        angular.element(document.getElementById('po_number'+$scope.itemList[formIndex].itemId)).triggerHandler('change');
-                        $scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
+                        //angular.element(document.getElementById('po_number'+$scope.itemList[formIndex].itemId)).triggerHandler('change');
+                        //$scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
                         if($scope.poNumberExist){
                             notification('PO number already exist.','warning')
                             return false;
@@ -31088,6 +31093,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('$scope.jobchainoption', $scope.jobchainoption)
     }).error(errorCallback)
 
+    $scope.poNumberExist = false;
+    $scope.checkPoNumberExist = function (id, searchText) {
+        console.log('searchText', searchText)
+        if(searchText.length > 1){
+            rest.path = 'checkItemPonumberExist/' + id +'/' + searchText;
+            rest.get().success(function (data) {
+                if(data){
+                    $scope.poNumberExist = true;
+                    angular.element("#po_numberErr" + id).text('PO number already exist');
+                    $('#po_numberErr'+id).css('display','block');
+                }else{
+                    //$('#po_numberErr'+id).css('display','none');
+                    angular.element("#po_numberErr" + id).text('');
+                    $scope.poNumberExist = false;
+                }
+            });
+        }else{
+            angular.element("#po_numberErr" + id).text('');
+            //$('#po_numberErr'+id).css('display','none');
+            $scope.poNumberExist = false;
+        }
+    }
+
     $scope.workflowChange = false;
     $scope.changeWorkflow = function (id) {
         console.log('id', id)
@@ -31097,10 +31125,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //*****------- Update project scoop start-------****//
     $scope.jobi = {};
     $scope.saveitems = function (formId, formIndex) {
+        // check PoNumber Exist call fun
+        $scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
+
         if (angular.element('#item-form' + formId).valid()) {
             if ($scope.order_id) {
                 if ($scope.itemList[formIndex].itemId) {
                     console.log('itemId = first', $scope.itemList[formIndex].itemId)
+
+                    if($scope.poNumberExist){
+                        notification('PO number already exist.','warning')
+                        return false;
+                    }
                     // if empty language pair
                     var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
                     var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();

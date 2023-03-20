@@ -285,7 +285,8 @@
                                                             <label>PO number</label>
                                                             <input type="text" class="form-control"
                                                                id="po_number{{it.itemId}}" name="po_number{{it.itemId}}"
-                                                               ng-model="it.po_number" />
+                                                               ng-model="it.po_number" ng-change="checkPoNumberExist(it.itemId,it.po_number)" />
+                                                            <label for="po_number{{it.itemId}}" class="error" id="po_numberErr{{it.itemId}}"></label>   
                                                          </div>
                                                       </div>
                                                       <div class="col-sm-12">
