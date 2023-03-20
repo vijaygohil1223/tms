@@ -12424,10 +12424,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var fromLangugageChar = language.split('>')[0].trim().substr(0, 3).toUpperCase();
             var toLangugageChar = language.split('>')[1].trim().substr(0, 3).toUpperCase();
             var newLanguage = fromLangugageChar + '>' + toLangugageChar;
-            let specializationTxt = specialization.length>0 ? specialization[0].text : specialization.text
+            let specializationTxt = specialization.length > 0 ? specialization[0].text : specialization.text
             if(!specializationTxt)
                 specializationTxt = '';
-            $scope.customerPrice.price_name = $scope.customerPrice.price_name + newLanguage + ' | ' + specializationTxt;
+            var txt1 = $scope.customerPrice.price_name.split(' | ');
+            //$scope.customerPrice.price_name = $scope.customerPrice.price_name + newLanguage + ' | ' + specializationTxt;
+            $scope.customerPrice.price_name = txt1[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
+        
         } else {
             var customerPriceName = angular.element('#customerPriceName').val();
             var oldName = customerPriceName.split('|');
@@ -12439,6 +12442,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if(!specializationTxt)
                 specializationTxt = '';
             $scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
+            console.log('customerPriceName=2', customerPriceName)
         }
     }
 
