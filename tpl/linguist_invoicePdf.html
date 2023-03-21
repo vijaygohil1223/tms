@@ -15,7 +15,7 @@
     width: 80%;
   }
   .modal-content{
-    /* opacity: 0; */
+    opacity: 0;
   }
   .pdfnospace{
     padding-top: 0px; 
@@ -31,15 +31,16 @@
 </div>
 <div class="modal-body ng-scope">
   <div class="row">
-
     <div class="md-content">
       <div class="wrapper-md ng-scope">
+        <!-- Directive linguist pdf html-->
+        <linguist-invoice-pdftemplate></linguist-invoice-pdftemplate>
         <!-- Invoice PDF content include -->
-        <div data-ng-include="'tpl/linguist-invoice-pdf-contetnt.html'"></div>
+        <!-- <div data-ng-include="'tpl/linguist-invoice-pdf-content.html'"></div> -->
       </div>
     </div>
   </div>
-
   <div class="modal-footer">
     <button class="btn btn-info" ng-click="cancel()">Cancel</button>
   </div>
+</div>  

@@ -6740,3 +6740,17 @@ app.directive('ngSidebarHideshow', function () {
 
     };
 });
+// client invoice pdf html file
+app.directive('invoicePdftemplate', function () {
+    return {
+        restrict: 'EA', // Default in 1.3+
+        templateUrl: 'tpl/invoice-pdf-content.html',
+    };
+});
+// linguist invoice pdf html file
+app.directive('linguistInvoicePdftemplate', function () {
+    return {
+        restrict: 'EA', // Default in 1.3+
+        templateUrl: 'tpl/linguist-invoice-pdf-content.html',
+    };
+});

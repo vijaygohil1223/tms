@@ -17344,7 +17344,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
 
         $timeout(function () {
-           // $scope.cancel();
+           $scope.cancel();
         }, 1000);
     
     }
