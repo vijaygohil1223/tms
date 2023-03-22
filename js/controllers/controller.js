@@ -2748,10 +2748,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             });
             //$timeout(function () {
-
                 /* All jobs list for widget */
                 $scope.alljobsWidget = $scope.allJobsData;
-
                 //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
                 if ($scope.jobsListAll) {
                     $scope.jobsListAll = $scope.jobsListAll.sort(function (a, b) {
@@ -2787,7 +2785,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         return deferred.promise;
     };
-    
       
     $scope.alljobsWidget = [];
     $scope.isoverviewJobs = false;
@@ -2813,12 +2810,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.jobsListAll = $scope.inProgerss;
         }
         if ($scope.jobstatusFilter == 'DueToday') {
-            $scope.jobsListAll = $scope.inProgerss;
-        }
-        if ($scope.jobstatusFilter == 'DueTomorrow') {
-            $scope.jobsListAll = $scope.inProgerss;
-        }
-        if ($scope.jobstatusFilter == 'DueToday') {
             $scope.jobsListAll = $scope.jobDueToday;
         }
         if ($scope.jobstatusFilter == 'DueTomorrow') {
@@ -2831,12 +2822,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.showDataLoaderJob = false;
     };
 
-
     $scope.jobList_tabFilter()
         .then(function (invoicePromiseData) {
             $scope.jobstatusRecord('jobs', '');
 
     });
+
+    // Jobs tabs section
 
 
     // $scope.jobstatusRecord = function(jobStatus) {
