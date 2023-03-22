@@ -6754,3 +6754,20 @@ app.directive('linguistInvoicePdftemplate', function () {
         templateUrl: 'tpl/linguist-invoice-pdf-content.html',
     };
 });
+
+app.directive('dScrollHorizontally', function () {
+    return {
+        restrict: 'EA',
+        link: function(scope, element, attrs) {    
+          scope.scrollToRight = function(){
+            element[0].children[0].scrollLeft += Number(attrs.dScrollHorizontally); 
+            
+            $(".scrollNav ul.nav.nav-tabs .nav-prev").css("display","block");
+          }
+          scope.scrollToLeft = function(){
+             element[0].children[0].scrollLeft -= Number(attrs.dScrollHorizontally); 
+          }
+          
+        }
+      };
+});
