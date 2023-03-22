@@ -2660,191 +2660,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } */
 
-    /* overview display */
-    $scope.isoverviewProject = false;
-    //Getting Jobs from getJobsFromTmsSummeryView
-    $scope.scoopjobstatusRecord = function (statusType, scoopjobStatus) {
-        if (scoopjobStatus) {
-            $scope.scoopjobStatusFilter = scoopjobStatus;
-            $scope.isoverviewProject = true;
-            //console.log('scoppppp detail');
-        } else {
-            //$scope.scoopjobStatusFilter = 'all';
-            $scope.scoopjobStatusFilter = '';
-        }
-        $scope.scoopjobStatus = $scope.scoopjobStatus == scoopjobStatus ? '' : scoopjobStatus;
+    /* Jobs section */
+    $scope.jobList_tabFilter = function () {
+        var deferred = $q.defer();
 
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function (data) {
             $scope.dashboardJobList = data;
-            //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
-            var allscoopJobsData = [];
-            // --------- Scoop status data --------//
-            var scoopAssigned = [];
-            var scoopProgress = [];
-            var scoopLinguist = [];
-            var scoopQaReady = [];
-            var scoopTobedelivered = [];
-            var scoopDelivered = [];
-            var scoopApproved = [];
-            var scoopInvoiced = [];
-            var scoopPaid = [];
-            var scoopWithoutInvoice = [];
-            var scoopCancelled = [];
-            // --------- Scoop status Count --------//
-            $scope.scoopAlljobsCount = 0;
-
-            $scope.scoopAssignedCount = 0;
-            $scope.scoopProgressCount = 0;
-            $scope.scoopLinguistCount = 0;
-            $scope.scoopQaReadyCount = 0;
-            $scope.scoopTobedeliveredCount = 0;
-            $scope.scoopDeliveredCount = 0;
-            $scope.scoopApprovedCount = 0;
-            $scope.scoopInvoicedCount = 0;
-            $scope.scoopPaidCount = 0;
-            $scope.scoopWithoutInvoiceCount = 0;
-            $scope.scoopCancelledCount = 0;
-
-
-            angular.forEach($scope.dashboardJobList, function (val, i) {
-                val.item_id = pad(val.item_id, 3);
-
-                if (val.ItemLanguage) {
-                    val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
-                }
-
-                allscoopJobsData.push(val);
-                // --- scoop array data -- //
-                if (val.scoopitem_status == "To be Assigned") {
-                    scoopAssigned.push(val);
-                    $scope.scoopAssignedCount++;
-                } else if (val.scoopitem_status == 'In Progress') {
-                    scoopProgress.push(val);
-                    $scope.scoopProgressCount++;
-                } else if (val.scoopitem_status == 'Completed by linguist') {
-                    scoopLinguist.push(val);
-                    $scope.scoopLinguistCount++;
-                } else if (val.scoopitem_status == 'QA Ready') {
-                    scoopQaReady.push(val);
-                    $scope.scoopQaReadyCount++;
-                } else if (val.scoopitem_status == 'To be Delivered') {
-                    scoopTobedelivered.push(val);
-                    $scope.scoopTobedeliveredCount++;
-                } else if (val.scoopitem_status == 'Delivered') {
-                    scoopDelivered.push(val);
-                    $scope.scoopDeliveredCount++;
-                } else if (val.scoopitem_status == 'Approved') {
-                    scoopApproved.push(val);
-                    $scope.scoopApprovedCount++;
-                } else if (val.scoopitem_status == 'Invoiced') {
-                    scoopInvoiced.push(val);
-                    $scope.scoopInvoicedCount++;
-                } else if (val.scoopitem_status == 'Paid') {
-                    scoopPaid.push(val);
-                    $scope.scoopPaidCount++;
-                } else if (val.scoopitem_status == 'Without invoice') {
-                    scoopWithoutInvoice.push(val);
-                    $scope.scoopWithoutInvoiceCount++;
-                } else if (val.scoopitem_status == 'Cancelled') {
-                    scoopCancelled.push(val);
-                    $scope.scoopCancelledCount++;
-                }
-
-            });
-            $scope.scoopAlljobsCount = $scope.dashboardJobList.length;
-
-            $timeout(function () {
-                // scoop Array //
-                $scope.scoopAlljobsCount = $scope.dashboardJobList.length;
-
-                switch ($scope.scoopjobStatusFilter) {
-                    case 'all':
-                        $scope.scoopjobsListAll = allscoopJobsData;
-                        break;
-                    case 'scoopAssigned':
-                        $scope.scoopjobsListAll = scoopAssigned;
-                        break;
-                    case 'scoopProgress':
-                        $scope.scoopjobsListAll = scoopProgress;
-                        break;
-                    case 'scoopLinguist':
-                        $scope.scoopjobsListAll = scoopLinguist;
-                        break;
-                    case 'scoopQaReady':
-                        $scope.scoopjobsListAll = scoopQaReady;
-                        break;
-                    case 'scoopTobedelivered':
-                        $scope.scoopjobsListAll = scoopTobedelivered;
-                        break;
-                    case 'scoopDelivered':
-                        $scope.scoopjobsListAll = scoopDelivered;
-                        break;
-                    case 'scoopApproved':
-                        $scope.scoopjobsListAll = scoopApproved;
-                        break;
-                    case 'scoopInvoiced':
-                        $scope.scoopjobsListAll = scoopInvoiced;
-                        break;
-                    case 'scoopPaid':
-                        $scope.scoopjobsListAll = scoopPaid;
-                        break;
-                    case 'scoopWithoutInvoice':
-                        $scope.scoopjobsListAll = scoopWithoutInvoice;
-                        break;
-                    case 'scoopCancelled':
-                        $scope.scoopjobsListAll = scoopCancelled;
-                        break;
-                    // default:
-                    //     break;
-                }
-
-                //console.log('scoop = jobsListAll', $scope.scoopjobsListAll);
-            }, 200);
-
-        }).error(errorCallback);
-    };
-
-    $scope.scoopjobstatusRecord('scoop', '');
-
-    $scope.alljobsWidget = [];
-    $scope.isoverviewJobs = false;
-    $scope.jobstatusRecord = function (statusType, jobStatus) {
-        if (jobStatus) {
-            $scope.jobstatusFilter = jobStatus;
-            $scope.isoverviewJobs = true;
-            $scope.jobsListAll = [];
-            $scope.showDataLoaderJob = true;
-        } else {
-            //$scope.jobstatusFilter = 'all';
-            $scope.jobstatusFilter = '';
-        }
-        $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
-
-        rest.path = 'getJobsFromTmsSummeryView';
-        rest.get().success(function (data) {
-            $scope.dashboardJobList = data;
-            console.log('$scope.dashboardJobList', $scope.dashboardJobList)
+            console.log('dashboardJobList=Jobs', $scope.dashboardJobList)
             
-            var allJobsData = [];
-            var Requested = [];
-            var NewJob = [];
-            var inProgerss = [];
-            var readyToBeDelivered = [];
-            var delivered = [];
-            var completed = [];
-            var pendingPo = [];
-            var jobDueToday = [];
-            var jobDueTomorrow = [];
-            var jobOverDue = [];
+            $scope.allJobsData = [];
+            $scope.requested = [];
+            $scope.jobNew = [];
+            $scope.inProgerss = [];
+            $scope.readyToBeDelivered = [];
+            $scope.delivered = [];
+            $scope.completed = [];
+            $scope.pendingPo = [];
+            $scope.jobDueToday = [];
+            $scope.jobDueTomorrow = [];
+            $scope.jobOverDue = [];
 
             // -- Job count -- //
-            var jobRequestesCount = 0;
-            var jobInProgressCount = 0;
-            var jobDueTodayCount = 0;
-            var jobDueTomorrowCount = 0;
-            var jobOverDueCount = 0;
-            var jobTobeDileveredCount = 0;
+            $scope.jobRequestesCount = 0;
+            $scope.jobInProgressCount = 0;
+            $scope.jobDueTodayCount = 0;
+            $scope.jobDueTomorrowCount = 0;
+            $scope.jobOverDueCount = 0;
+            $scope.jobTobeDileveredCount = 0;
 
             angular.forEach($scope.dashboardJobList, function (val, i) {
                 val.item_id = pad(val.item_id, 3);
@@ -2865,87 +2708,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 trgLang =  targetData.sourceLang; */
 
                 if (val.po_number.length < 1) {
-                    pendingPo.push(val);
+                    $scope.pendingPo.push(val);
                 }
-                allJobsData.push(val);
+                $scope.allJobsData.push(val);
                 if (val.item_status == 'In preparation') {
                 //if (val.item_status == 'New') {
-                        NewJob.push(val);
+                        $scope.jobNew.push(val);
                 } else if (val.item_status == 'Requested') {
-                    Requested.push(val);
-                    jobRequestesCount++;
+                    $scope.requested.push(val);
+                    $scope.jobRequestesCount++;
                 } else if (val.item_status == 'In-progress' || val.item_status == 'Ongoing') {
-                    inProgerss.push(val);
-                    jobInProgressCount++;
+                    $scope.inProgerss.push(val);
+                    $scope.jobInProgressCount++;
                 } else if (val.item_status == 'Ready to be Delivered') {
-                    readyToBeDelivered.push(val);
-                    jobTobeDileveredCount++;
+                    $scope.readyToBeDelivered.push(val);
+                    $scope.jobTobeDileveredCount++;
                 } else if (val.item_status == 'Completed') {
-                    completed.push(val);
+                    $scope.completed.push(val);
                 }
 
                 //Due date counts for jobs
-                    
                 if( ! ['Delivered','Completed','Paid','Invoice Ready','Invoice Accepted','Invoiced'].indexOf(val.item_status) > -1 ){
                     if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
-                        jobDueToday.push(val);
-                        jobDueTodayCount++;
+                        $scope.jobDueToday.push(val);
+                        $scope.jobDueTodayCount++;
                     }
                     if (val.due_date.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
-                        jobDueTomorrow.push(val);
-                        jobDueTomorrowCount++;
+                        $scope.jobDueTomorrow.push(val);
+                        $scope.jobDueTomorrowCount++;
                     }
                     const dateToday = dateFormat(new Date()).split(".").reverse().join("-");
                     if (val.due_date.split(' ')[0] < dateToday) {
                         if( ['In preparation','Requested','Assigned-waiting','Waiting','In-progress','Ongoing'].indexOf(val.item_status) > -1 ){
-                            jobOverDue.push(val);
-                            jobOverDueCount++;
+                            $scope.jobOverDue.push(val);
+                            $scope.jobOverDueCount++;
                         }
                     }
                 }    
 
             });
-            $timeout(function () {
-                $scope.inProgerss = inProgerss;
-                $scope.jobNew = NewJob;
-                $scope.readyToBeDelivered = readyToBeDelivered;
-                $scope.delivered = delivered;
-                $scope.completed = completed;
-                $scope.pendingPo = pendingPo;
-
-                $scope.jobRequestesCount = jobRequestesCount;
-                $scope.jobInProgressCount = jobInProgressCount;
-                $scope.jobDueTodayCount = jobDueTodayCount;
-                $scope.jobDueTomorrowCount = jobDueTomorrowCount;
-                $scope.jobOverDueCount = jobOverDueCount;
+            //$timeout(function () {
 
                 /* All jobs list for widget */
-                $scope.alljobsWidget = allJobsData;
+                $scope.alljobsWidget = $scope.allJobsData;
 
-                if ($scope.jobstatusFilter == 'all') {
-                    $scope.jobsListAll = allJobsData;
-                }
-                if ($scope.jobstatusFilter == 'Requested') {
-                    $scope.jobsListAll = Requested;
-                }
-                if ($scope.jobstatusFilter == 'inProgress') {
-                    $scope.jobsListAll = inProgerss;
-                }
-                if ($scope.jobstatusFilter == 'DueToday') {
-                    $scope.jobsListAll = inProgerss;
-                }
-                if ($scope.jobstatusFilter == 'DueTomorrow') {
-                    $scope.jobsListAll = inProgerss;
-                }
-                if ($scope.jobstatusFilter == 'DueToday') {
-                    $scope.jobsListAll = jobDueToday;
-                }
-                if ($scope.jobstatusFilter == 'DueTomorrow') {
-                    $scope.jobsListAll = jobDueTomorrow;
-                }
-                if ($scope.jobstatusFilter == 'Overdue') {
-                    $scope.jobsListAll = jobOverDue;
-                }
                 //const sortedActivities = jobOverDue.sort((a, b) => new Date(a.due_date) - new Date(b.due_date) )
                 if ($scope.jobsListAll) {
                     $scope.jobsListAll = $scope.jobsListAll.sort(function (a, b) {
@@ -2971,12 +2777,67 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 /* End */
 
 
-            }, 2000);
+            //}, 2000);
 
-        }).error(errorCallback);
+            deferred.resolve($scope.dashboardJobList);
+
+        }).error(function () {
+            deferred.reject();
+        });    
+
+        return deferred.promise;
+    };
+    
+      
+    $scope.alljobsWidget = [];
+    $scope.isoverviewJobs = false;
+    $scope.jobstatusRecord = function (statusType, jobStatus) {
+        if (jobStatus) {
+            $scope.jobstatusFilter = jobStatus;
+            $scope.isoverviewJobs = true;
+            $scope.jobsListAll = [];
+            $scope.showDataLoaderJob = true;
+        } else {
+            //$scope.jobstatusFilter = 'all';
+            $scope.jobstatusFilter = '';
+        }
+        $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
+
+        if ($scope.jobstatusFilter == 'all') {
+            $scope.jobsListAll = $scope.allJobsData;
+        }
+        if ($scope.jobstatusFilter == 'Requested') {
+            $scope.jobsListAll = $scope.requested;
+        }
+        if ($scope.jobstatusFilter == 'inProgress') {
+            $scope.jobsListAll = $scope.inProgerss;
+        }
+        if ($scope.jobstatusFilter == 'DueToday') {
+            $scope.jobsListAll = $scope.inProgerss;
+        }
+        if ($scope.jobstatusFilter == 'DueTomorrow') {
+            $scope.jobsListAll = $scope.inProgerss;
+        }
+        if ($scope.jobstatusFilter == 'DueToday') {
+            $scope.jobsListAll = $scope.jobDueToday;
+        }
+        if ($scope.jobstatusFilter == 'DueTomorrow') {
+            $scope.jobsListAll = $scope.jobDueTomorrow;
+        }
+        if ($scope.jobstatusFilter == 'Overdue') {
+            $scope.jobsListAll = $scope.jobOverDue;
+        }
+
+        $scope.showDataLoaderJob = false;
     };
 
-    $scope.jobstatusRecord('jobs', '');
+
+    $scope.jobList_tabFilter()
+        .then(function (invoicePromiseData) {
+            $scope.jobstatusRecord('jobs', '');
+
+    });
+
 
     // $scope.jobstatusRecord = function(jobStatus) {
     //     console.log('jobStatus',jobStatus);
