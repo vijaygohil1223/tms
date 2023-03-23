@@ -12774,15 +12774,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($.trim(params.term) === '') {
                 return data;
             }
-            if (typeof data.children === 'undefined') {
-                console.log('data.children', data.children)
-              //return null;
-            }
+            // if (typeof data.children === 'undefined') {
+            //     console.log('data.children', data.children)
+            //   //return null;
+            // }
             var filteredChildren = [];
             $.each(data, function (id, data2) {
+                console.log('data2', data2)
                 $.each(data2.children, function (idx, child) {
-                    if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0) {
-                        console.log('child.text', child.text)
+                    console.log('child', child)
+                    //if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0) {
+                    if (child.text.toUpperCase().includes(params.term.toUpperCase()) ) {
+                            //console.log('child.text', child.text)
                         filteredChildren.push(child);
                         console.log('filteredChildren=loop', filteredChildren)
                     }
@@ -12793,6 +12796,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //   var result = Object.keys(modifiedData).map((key) => [Number(key), modifiedData[key]]);
             //   console.log('result',result);
               modifiedData.children = filteredChildren;
+              console.log('filteredChildren', filteredChildren)
+              console.log('modifiedData', modifiedData)
               return modifiedData;
             }
             return data;
@@ -12815,7 +12820,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                     return !areChildrenAllSelected ? group : null;
                 });
-                //selectableGroups = matchStart({'term':'Words Proofreading 100%'},selectableGroups)
+                //selectableGroups = matchStart({'term':'proof'},selectableGroups)
+                //console.log('selectableGroups', selectableGroups)
                 options.callback({ results: selectableGroups });
             }
         }).on('select2-selecting', function (e) {
