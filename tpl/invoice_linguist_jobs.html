@@ -36,6 +36,7 @@
                     <th>Due Date</th>
                     <th>status</th>
                     <th>Price</th>
+                    <th>Currency</th>
                   </tr>
                 </thead>
                 <tbody ng-init="invLen = InvoiceResult.length - 1" ng-repeat="invoiceL in InvoiceResult  track by $index">
@@ -55,6 +56,7 @@
                       &nbsp;{{invoiceL.item_status}}
                     </td>
                     <td ng-bind="invoiceL.total_price | customNumber"></td>
+                    <td ng-bind="invoiceL.freelance_currency"></td>
                   </tr>
                 </tbody>
               </table>

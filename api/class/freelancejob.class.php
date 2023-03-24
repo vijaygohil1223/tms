@@ -17,11 +17,12 @@ class freelanceJob {
     
     public function freelanceJobget($id) {
     	$this->_db->join('tms_general tg', 'tsv.order_id = tg.order_id', 'INNER');
+    	$this->_db->join('tms_users tu', 'tsv.resource = tu.iUserId', 'LEFT');
     	$this->_db->where('tsv.resource', $id);
     	$this->_db->where("tsv.item_id !='0'");
     	//$this->_db->where("tsv.item_status", array('Requested','Assigned-waiting','In-progress','Delivered','Approved','Invoice Accepted'),"IN");
     	$this->_db->where("tsv.item_status", array('Requested','Waiting','In-progress','Ongoing','Delivered','Completed','Approved','Invoice Ready','Invoice Accepted'),"IN");
-    	$data = $this->_db->get('tms_summmery_view tsv', null, 'tg.order_no,tsv.job_no,tsv.job_code,tsv.item_status,tsv.description,tsv.job_summmeryId, tsv.due_date,tsv.order_id,tsv.item_id,tsv.po_number AS poNumber, tsv.total_price, tg.company_code');
+    	$data = $this->_db->get('tms_summmery_view tsv', null, 'tg.order_no,tsv.job_no,tsv.job_code,tsv.item_status,tsv.description,tsv.job_summmeryId, tsv.due_date,tsv.order_id,tsv.item_id,tsv.po_number AS poNumber, tsv.total_price, tg.company_code,  tu.freelance_currency');
 
         foreach ($data as $key => $value) {
             if($value['order_id']){

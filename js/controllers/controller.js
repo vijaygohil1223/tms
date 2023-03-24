@@ -11068,7 +11068,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveUserProfileExternal = function (formId, ContactPersonId, noNext) {
         //$scope.isDobValid = dobIsValid($.trim(dtDobInput.val()))
-              
         if (ContactPersonId == 'translation') {
             $window.localStorage.setItem("contactPersonId", 'translation');
         } else {
@@ -11191,8 +11190,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $('#iMobile').intlTelInput("setNumber", FinalMobileNum);
                     }, 100);
 
-                    let is_available =  JSON.parse($scope.userprofiledata.is_available);
+                    let is_available =  $scope.userprofiledata.is_available ? JSON.parse($scope.userprofiledata.is_available) : [];
                     if(is_available.length){
+                        console.log('is_available.length', is_available.length)
                         let abscentArr = is_available.filter(function(item) {
                             item.dateFrom = moment(item.dateFrom).format($scope.dateFormatGlobal);
                             item.dateTo = moment(item.dateTo).format($scope.dateFormatGlobal);
@@ -11312,7 +11312,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $('#iMobile').intlTelInput("setNumber", FinalMobileNum);
                     }, 100);
                     
-                    let is_available =  JSON.parse($scope.userprofiledata.is_available);
+                    //let is_available =  JSON.parse($scope.userprofiledata.is_available);
+                    let is_available =  $scope.userprofiledata.is_available ? JSON.parse($scope.userprofiledata.is_available) : [];
                     if(is_available.length){
                         let abscentArr = is_available.filter(function(item) {
                             item.dateFrom = moment(item.dateFrom).format($scope.dateFormatGlobal);
@@ -27531,6 +27532,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.InvoiceResult = data;
             $scope.InvoiceResult = data.filter(function (el) {
+                    el.freelance_currency = el.freelance_currency ? el.freelance_currency.split(',')[0] : 'EUR';
                     return el.item_status == 'Approved' || el.item_status == 'Invoice ready' || el.item_status == 'Overdue';
                 });
             console.log('$scope.InvoiceResult', $scope.InvoiceResult)
