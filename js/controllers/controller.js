@@ -13288,7 +13288,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $timeout(function () {
                                 $route.reload();
                             }, 200);
-                            $location.path('/user/2');
+                            //$location.path('/user/2');
                         }).error(errorCallback);
                     } else {
                         notification('Please create User', 'warning');
