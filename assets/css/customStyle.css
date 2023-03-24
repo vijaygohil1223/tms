@@ -24,6 +24,8 @@ body{padding-top: 62px;}
 .mb-0, .pb-0{
     margin-bottom: 0px !important;
 }
+.mr10 { margin-right: 10px; }
+.ml10 { margin-left: 10px; }
 .pb-15{
   padding-bottom: 15px !important;
 }

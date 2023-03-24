@@ -3503,9 +3503,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // withOption('scrollCollapse', true).
         withOption('dom', 'tfrilp');
 
-    $scope.dtOptionsJob2 = DTOptionsBuilder.newOptions().
-        withOption('responsive', true).
-        withOption('pageLength', 25);
+    // $scope.dtOptionsJob2 = DTOptionsBuilder.newOptions().
+    //     withOption('responsive', true).
+    //     withOption('pageLength', 25);
 
     $scope.modalOpen = false;
     // After Linguist login
@@ -3539,6 +3539,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
     //console.log('$scope.modalOpen', $scope.modalOpen);
+
+    $scope.changeProjectTabs = function(className){
+        console.log('className', className)
+        $window.localStorage.setItem("projectActiveTab", className);
+    }
+    $scope.lastProjectTabs = function(){
+        let projectActiveTab = $window.localStorage.getItem("projectActiveTab");
+        $scope.changeProjectTabs(projectActiveTab);
+        if(!projectActiveTab || projectActiveTab != 'due-today' )
+            angular.element('.'+projectActiveTab+' > a ').triggerHandler('click');
+    }    
+    setTimeout(() => {
+        $scope.lastProjectTabs();
+        $window.localStorage.setItem("projectActiveTab", '');
+    }, 1500);
 
 
 }).controller('usertypeController', function ($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
@@ -11051,7 +11066,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
     };
 
-    $scope.saveUserProfileExternal = function (formId, ContactPersonId) {
+    $scope.saveUserProfileExternal = function (formId, ContactPersonId, noNext) {
         //$scope.isDobValid = dobIsValid($.trim(dtDobInput.val()))
               
         if (ContactPersonId == 'translation') {
@@ -11153,12 +11168,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     var frell = data.userData.freelancer;
                     $window.localStorage.setItem("contactUserId", data.userData.iUserId);
-                    if (frell == 'freelancer') {
-                        //$location.path('/calender');
-                        $location.path('/properties');
-                    } else {
-                        $location.path('/user-contact-person');
-                    }
+                    if(!noNext){
+                        if (frell == 'freelancer') {
+                            //$location.path('/calender');
+                            $location.path('/properties');
+                        } else {
+                            $location.path('/user-contact-person');
+                        }
+                    }else{
+                        notification('Updated successfully...', 'success')
+                        $route.reload();
+                    }    
                 }).error(function (data) {
                     var flagTitle = JSON.parse($scope.userprofiledata.iMobile).countryTitle;
                     var flagClass = JSON.parse($scope.userprofiledata.iMobile).countryFlagClass;
@@ -11267,12 +11287,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("contactUserId", data.userData.iUserId);
                     $scope.UserId = $window.localStorage.setItem("priceListClientId", data.iUserId);
                     var frell = data.userData.freelancer;
-                    if (frell == 'freelancer') {
-                        //$location.path('/calender');
-                        $location.path('/properties');
-                    } else {
-                        $location.path('/user-contact-person');
-                    }
+                    
+                    if(!noNext){
+                        if (frell == 'freelancer') {
+                            //$location.path('/calender');
+                            $location.path('/properties');
+                        } else {
+                            $location.path('/user-contact-person');
+                        }
+                    }else{
+                        $location.path('/user-profile/'+$window.localStorage.iUserId);
+                    }    
+                        
                 }).error(function (data) {
                     var flagTitle = JSON.parse($scope.userprofiledata.iMobile).countryTitle;
                     var flagClass = JSON.parse($scope.userprofiledata.iMobile).countryFlagClass;
@@ -12803,6 +12829,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return data;
           }
 
+
         $('#priceUnit').select2({
             multiple: true,
             allowClear: true,
@@ -13221,7 +13248,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $timeout(function () {
                             $route.reload();
                         }, 200);
-                        $location.path('/user/2');
+                        //$location.path('/user/2');
                     }).error(errorCallback);
                 } else {
                     if ($routeParams.id != '' && $routeParams.id != undefined) {
