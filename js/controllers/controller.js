@@ -2787,7 +2787,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     // static 
-    $scope.jobsTabArr = [ {id:1, tabName:'Requested', jobsListAll:[]}, {id:2, tabName:'inProgress', jobsListAll:[]}, {id:3, tabName:'DueToday', jobsListAll:[]}, {id:4, tabName:'DueTomorrow', jobsListAll:[]}, {id:5, tabName:'Overdue', jobsListAll:[]}  ]
+    $scope.jobsTabArr = [ {id:1, tabName:'Requested', jobsListAll:[]}, {id:2, tabName:'inProgress', jobsListAll:[] }, {id:3, tabName:'DueToday', jobsListAll:[]}, {id:4, tabName:'DueTomorrow', jobsListAll:[]}, {id:5, tabName:'Overdue', jobsListAll:[]}  ]
       
     $scope.alljobsWidget = [];
     $scope.isoverviewJobs = false;
@@ -2798,8 +2798,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.jobsListAll = [];
             $scope.showDataLoaderJob = true;
         } else {
-            $scope.jobstatusFilter = 'all';
-            //$scope.jobstatusFilter = '';
+            //$scope.jobstatusFilter = 'all';
+            $scope.jobstatusFilter = '';
         }
         $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
 
@@ -13146,7 +13146,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
-    $scope.savePaymentdirect = function (formId, type) {
+    $scope.savePaymentdirect = function (formId, type, isSavebtn) {
         
         if($scope.payment.tax_id){
             $scope.payment.country_code = $scope.payment.tax_id.substring(0, 2).toUpperCase();
@@ -13184,9 +13184,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
                         rest.path = "saveLog";
                         rest.post($scope.logMaster).success(function (data) { });
-                        //log file end
+                        //log file end 
                         notification('saved successfully', 'success');
-                        $location.path('/login-detail');
+                        if(!isSavebtn){
+                            $location.path('/login-detail');
+                        }
+                        
                     }).error(errorCallback);
                 } else {
                     if ($routeParams.id != '' && $routeParams.id != undefined) {
@@ -13208,7 +13211,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             rest.path = "saveLog";
                             rest.post($scope.logMaster).success(function (data) { });
                             notification('saved successfully', 'success');
-                            $location.path('/login-detail');
+                            if(!isSavebtn){
+                                $location.path('/login-detail');
+                            }
+                            //$location.path('/login-detail');
                         }).error(errorCallback);
                         /*notification('saved successfully', 'success');
                         $location.path('/login-detail');*/
@@ -14400,8 +14406,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }        
     }    
 
-    $scope.saveClientProfile = function (formId) {
-
+    $scope.saveClientProfile = function (formId, isSavebtn) {
+        //debugger
         if (angular.element("#" + formId).valid()) {
             //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
                 if ($scope.info.iClientId) {
@@ -14504,7 +14510,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.path = "saveLog";
                     rest.post($scope.logMaster).success(function (data) { });
                     //log file end
-                    $location.path('/contact-person');
+                    if(isSavebtn){
+                        notification('Updated successfully', 'success');
+                        //$location.path('/edit-client/'+$scope.Edited_id);
+                    }else{
+                        $location.path('/contact-person');
+                    }
                     $route.reload();
                 }).error(errorCallback);
             } else {
@@ -14607,7 +14618,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("contactclientIdNew", data.iClientId);
                     $window.localStorage.setItem("priceListClientId", data.iClientId);
                     $window.localStorage.setItem("currentUserName", data.clientData.vUserName);
-                    $location.path('/contact-person');
+                    if(isSavebtn){
+                        console.log('succes', isSavebtn)
+                        notification('Created successfully', 'success');
+                        //$location.path('/edit-client/'+$scope.Edited_id);
+                    }else{
+                        $location.path('/contact-person');
+                    }
                     $route.reload();
                 }).error(errorCallback);
             }

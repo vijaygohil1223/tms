@@ -395,22 +395,22 @@ div.dataTables_length select{margin: 0 5px;}
   .projecttable .nav-tabs>li.active.tab-to-be-delivered::after{
     background-color: #3B9C9C !important;    
   } */
-  .projecttable .nav-tabs>li.active.tab-due-tomorrow,
+  /* .projecttable .nav-tabs>li.active.tab-due-tomorrow,
   .projecttable .nav-tabs>li.active.tab-due-tomorrow::before,
   .projecttable .nav-tabs>li.active.tab-due-tomorrow::after
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow.active,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow.active::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-due-tomorrow.active::after  {
-    /* background-color: #98AFC7 !important;     */
-  }
+    background-color: #98AFC7 !important;    
+  } */
   /* .white_box .projectjobdv2.overviewli .list-group-item.active, .list-group-item.active:hover,
   .white_box .projectjobdv2.overviewli .list-group-item.active::before,
   .white_box .projectjobdv2.overviewli .list-group-item.active::after{
     background-color: #7F58AF !important;    
   } */
-  .white_box .projectjobdv2.overviewli .list-group-item.active span.badge.bg-info{
-    /* background-color: #64C5EB; */
-  }
+  /* .white_box .projectjobdv2.overviewli .list-group-item.active span.badge.bg-info{
+    background-color: #64C5EB;
+  } */
     /* .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active,
     .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active::before,
     .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue.active::after  {
@@ -467,11 +467,11 @@ div.dataTables_length select{margin: 0 5px;}
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
-  .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested,
+  /* .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-requested::after{
-    /* background-color: #64c5eb; */
-  }
+    background-color: #64c5eb;
+  } */
   /* .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress::before,
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-in-progress::after{
@@ -492,12 +492,12 @@ div.dataTables_length select{margin: 0 5px;}
   .white_box .projectjobdv2.overviewli li.list-group-item.tab-overdue::after{
     background-color: #64c5eb;
   } */
-  .white_box .projectjobdv2.overviewli li.list-group-item > a{
-    /* color: #000 !important; */
-  }
-  .white_box .projectjobdv2.overviewli li.list-group-item.active:not(.tab-requested) > a{
-    /* color: #fff !important; */
-  }
+  /* .white_box .projectjobdv2.overviewli li.list-group-item > a{
+    color: #000 !important;
+  } */
+  /* .white_box .projectjobdv2.overviewli li.list-group-item.active:not(.tab-requested) > a{
+    color: #fff !important;
+  } */
   .page_dashboard .page_content_wrapper .white_box_wrapper .white_box .btn_create-project,
   .page_dashboard .page_content_wrapper .pagination > .active > a,
   .page_dashboard .page_content_wrapper .white_box_wrapper .rightBox-group .box .bg-info,

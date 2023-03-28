@@ -130,8 +130,12 @@
                                                         ng-click="savePayment('payment_form','1');">Save</a>
 
                                                     <a ng-if="uType == '2'" class="btn btn-info pull-right"
-                                                        ng-click="savePaymentdirect('payment_form','2');">Save & Next <i
-                                                            class="fa fa-angle-right"></i></a>
+                                                    ng-click="savePaymentdirect('payment_form','2');" style="margin-left: 5px;"> Save & Next
+                                                    <i class="fa fa-angle-right"></i> </a> 
+                                                    <a ng-if="uType == '2'" class="btn btn-info pull-right"
+                                                    ng-click="savePaymentdirect('payment_form','2',1);"> Save 
+                                                    <!-- <i class="fa fa-angle-right"></i> --> </a>
+                                                       
                                                 </div>
                                             </div>
                                         </div>
