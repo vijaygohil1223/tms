@@ -289,7 +289,7 @@ div.dataTables_length select{margin: 0 5px;}
   }
 
   .projecttable .nav-tabs>li>a,.overviewli>li>a {
-    padding: 0 !important;
+    padding: 10px 0 !important;
     background-color: transparent !important;
     color: #9290a8 !important;
     border: none;

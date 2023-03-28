@@ -324,6 +324,8 @@ td { font-size: 11px; } */
     margin-bottom:100px;
   }
 
+  .overviewli .list-group-item.active a {padding-bottom: 0px !important;}
+
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
     .sidenav {
@@ -3074,6 +3076,7 @@ td { font-size: 11px; } */
                   </div>
                 </div>
               </div>
+
               <div class="col-md-12 chid-tables">
                 <div class="box">
                   <div class="white_box panel panel-default pb-15">
@@ -3108,10 +3111,8 @@ td { font-size: 11px; } */
                     </ul>
                     <!-- Jobs List based on status -->
                     <div class="overview-list projecttable" ng-show="isoverviewJobs">
-                      <div class="table-responsive">
-                        <!-- <h4 class="" style="float: left;position: relative;top: 25px;margin-left: 5px;">New Jobs</h4> -->
-                        <table class="table table-striped b-b" id="jobAllTbl"  datatable="ng" dt-options="dtOptionsJob">
-                          <!-- <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsJob">   -->
+                      <div ng-show="n.tabName == jobstatusFilter" ng-repeat="n in jobsTabArr" id="jobtab_{{n.id}}" class="table-responsive">
+                        <table class="table table-striped b-b" datatable="ng" dt-options="dtOptionsJob">
                           <thead>
                             <tr>
                               <th>#</th>
@@ -3132,7 +3133,7 @@ td { font-size: 11px; } */
                             </tr>
                           </thead>
                           <tbody>
-                            <tr ng-repeat="jList in jobsListAll">
+                            <tr ng-repeat="jList in n.jobsListAll">
                               <td>{{$index + 1}}</td>
                               <!-- <td>{{jList.item_id}}</td> -->
                               <td style="white-space:nowrap;"><a href="javascript:void(0);"
@@ -3235,53 +3236,13 @@ td { font-size: 11px; } */
                       </div>
                     </div>
                     <div loading-widget ng-show="showDataLoaderJob">
-                    </div>
-                    <!-- Job List For Status New END -->
+                  </div>
+                  <!-- Job List For Status New END -->
                   </div>
                 </div>
               </div>
 
-              <!-- <div class="col-sm-3 rightBox-group">
-                <div class="box">
-                  <div class="white_box panel panel-default">
-                    <div class="panel-heading">
-                      <div class="clearfix">
-                        <div class="clear">
-                          <div class="h4">National Holidays</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="panel-heading wrapper b-b b-light">
-                      <a><span class="holidayTab1" ng-click="holidayStatus('Upcoming')"
-                          style="padding: 11px">Upcoming</span></a>
-                      <a><span class="holidayTab2" ng-click="holidayStatus('Ongoing')"
-                          style="padding: 11px">Ongoing</span></a>
-                    </div>
-                    <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
-                      <li class="list-group-item" ng-hide="holidayShow" ng-repeat="upcome in upcommingList">
-                        <span ng-bind="upcome.date">28 Nov 2016</span> |
-                        <span class="pull-right label bg-primary inline m-t-sm" ng-bind="upcome.holidayStatus">National
-                          holiday</span>
-                        <span ng-bind="upcome.holidayName">Damon Parker</span>
-                      </li>
-                      <li class="list-group-item" ng-show="holidayShow" ng-repeat="ongoing in ongoingList">
-                        <span ng-bind="ongoing.date">28 Nov 2016</span> |
-                        <span class="pull-right label bg-primary inline m-t-sm" ng-bind="ongoing.holidayStatus">National
-                          holiday</span>
-                        <span href ng-bind="ongoing.holidayName">Damon Parker</span>
-                      </li>
-                      <md-progress-linear id="holidaysLoading" style="width: 50%; margin-left: 24%; margin-top: 48%"
-                        md-mode="indeterminate" class="m-b"></md-progress-linear>
-                      <span style="padding: 45px" ng-if="!upcommingList.length">No upcomming holiday</span>
-                    </ul>
-                    <div class="panel-footer" style="background: #e6e9ef">
-                      <span class="pull-right badge bg-info" ng-hide="holidayShow" ng-bind="upLength">32</span>
-                      <span class="pull-right badge bg-info" ng-show="holidayShow" ng-bind="onLength">32</span>
-                      <span>&nbsp;</span>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
+
             </div>
           </div>
         </div>

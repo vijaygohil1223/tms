@@ -2785,6 +2785,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         return deferred.promise;
     };
+
+    // static 
+    $scope.jobsTabArr = [ {id:1, tabName:'Requested', jobsListAll:[]}, {id:2, tabName:'inProgress', jobsListAll:[]}, {id:3, tabName:'DueToday', jobsListAll:[]}, {id:4, tabName:'DueTomorrow', jobsListAll:[]}, {id:5, tabName:'Overdue', jobsListAll:[]}  ]
       
     $scope.alljobsWidget = [];
     $scope.isoverviewJobs = false;
@@ -2795,36 +2798,45 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.jobsListAll = [];
             $scope.showDataLoaderJob = true;
         } else {
-            //$scope.jobstatusFilter = 'all';
-            $scope.jobstatusFilter = '';
+            $scope.jobstatusFilter = 'all';
+            //$scope.jobstatusFilter = '';
         }
         $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
 
-        if ($scope.jobstatusFilter == 'all') {
-            $scope.jobsListAll = $scope.allJobsData;
+        switch($scope.jobstatusFilter){
+            case 'all':
+                $scope.jobsListAll = $scope.allJobsData;
+                break;
+            case 'Requested':
+                angular.element('#jobAllTbl_'+jobStatus).show();
+                $scope.jobsListAll = $scope.requested;
+                $scope.jobsTabArr[0].jobsListAll = $scope.requested
+                break;    
+            case 'inProgress':
+                $scope.jobsListAll = $scope.inProgerss;
+                $scope.jobsTabArr[1].jobsListAll = $scope.inProgerss
+                break;
+            case 'DueToday':
+                $scope.jobsListAll = $scope.jobDueToday;
+                $scope.jobsTabArr[2].jobsListAll = $scope.jobDueToday
+                break;             
+            case 'DueTomorrow':
+                $scope.jobsListAll = $scope.jobDueTomorrow;
+                $scope.jobsTabArr[3].jobsListAll = $scope.jobDueTomorrow
+                break;
+            case 'Overdue':
+                $scope.jobsListAll = $scope.jobOverDue;
+                $scope.jobsTabArr[4].jobsListAll = $scope.jobOverDue
+                console.log('$scope.jobsListAll=>inn', $scope.jobsListAll)
+                break;         
         }
-        if ($scope.jobstatusFilter == 'Requested') {
-            $scope.jobsListAll = $scope.requested;
-        }
-        if ($scope.jobstatusFilter == 'inProgress') {
-            $scope.jobsListAll = $scope.inProgerss;
-        }
-        if ($scope.jobstatusFilter == 'DueToday') {
-            $scope.jobsListAll = $scope.jobDueToday;
-        }
-        if ($scope.jobstatusFilter == 'DueTomorrow') {
-            $scope.jobsListAll = $scope.jobDueTomorrow;
-        }
-        if ($scope.jobstatusFilter == 'Overdue') {
-            $scope.jobsListAll = $scope.jobOverDue;
-        }
-
+        
         $scope.showDataLoaderJob = false;
     };
 
     $scope.jobList_tabFilter()
         .then(function (invoicePromiseData) {
-            $scope.jobstatusRecord('jobs', '');
+            //$scope.jobstatusRecord('jobs', '');
 
     });
 
@@ -3499,8 +3511,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             "sSearch": '<i class="fa fa-search searchicn" aria-hidden="true"></i> _INPUT_ ',
             "sSearchPlaceholder": "Search",
         }).
+        withOption('columnDefs', {
+            "defaultContent": "-",
+            "targets": "_all"
+        }).
         //withOption('pageLength', 25).
         // withOption('scrollCollapse', true).
+        //withOption('retrieve', true).
         withOption('dom', 'tfrilp');
 
     // $scope.dtOptionsJob2 = DTOptionsBuilder.newOptions().
@@ -3540,6 +3557,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     //console.log('$scope.modalOpen', $scope.modalOpen);
 
+    // on edit/update stay on same tabs
     $scope.changeProjectTabs = function(className){
         console.log('className', className)
         $window.localStorage.setItem("projectActiveTab", className);
@@ -3551,9 +3569,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('.'+projectActiveTab+' > a ').triggerHandler('click');
     }    
     setTimeout(() => {
-        $scope.lastProjectTabs();
-        $window.localStorage.setItem("projectActiveTab", '');
+        let getprojectActiveTab = $window.localStorage.getItem("projectActiveTab");
+        if(getprojectActiveTab)
+            $scope.lastProjectTabs();
+            setTimeout( () => {
+                $window.localStorage.setItem("projectActiveTab", '');
+            },100)
     }, 1500);
+    // END on edit/update stay on same tabs
 
 
 }).controller('usertypeController', function ($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
