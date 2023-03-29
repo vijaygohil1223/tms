@@ -971,6 +971,7 @@ array(
 
     public function userProfileNumberGet($id) {
         $this->_db->where('iFkUserTypeId',$id);
+        $this->_db->where('iResourceNumber', '', '!=');
         $this->_db->orderBy("iUserId","Desc");
         $data = $this->_db->get('tms_users',1);
         if($data) {
