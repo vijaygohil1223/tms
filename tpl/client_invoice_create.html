@@ -152,7 +152,9 @@
                           </th>
                         </tr>
                         <tr ng-if="$index == invoiceLength" class="nowrap">
-                          <td colspan="5" class="text-right"><strong>Sub Total</strong></td>
+                          <td colspan="5" class="text-right">
+                            <strong>Sub Total</strong>
+                          </td>
                           <td style="width:9%;">
                             <!-- {{invoiceTotal | customNumber}} -->
                             {{ invoiceTotal }}
@@ -164,26 +166,8 @@
                             <span ng-if="vatAmount">{{vatAmount | customNumber}}</span>
                             <span ng-if="!vatAmount">0</span>
                           </td>
-                        </tr>    
-                        <!-- <tr ng-if="$index == invoiceLength">
-                          <td colspan="3" class="text-right no-border"><strong>Tax</strong></td>
-                          <td>{{currencyType}}0.00</td>
-                        </tr> -->
-                        <!-- <tr ng-if="$index == invoiceLength" class="tdborder">
-                          <td colspan="5" class="text-right no-border"><strong>Vat Tax</strong></td>
-                          <td>
-                            <input type="text" class="form-control" ng-model="vat"
-                              ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" />
-                          </td>
-                        </tr> -->
-                        <!-- <tr ng-if="$index == invoiceLength" class="tdborder">
-                          <td colspan="5" class="text-right no-border"><strong>Total</strong></td>
-                          <td>
-                            <span> <strong> {{grandTotal | customNumber}} </strong> </span> -->
-                        <!-- <span ng-if="!invoiceLength" id="invoiceTotal"> {{invL.item.subTotal | customNumber}}</span> -->
-                        <!-- <span ng-if="invoiceLength" id="invoiceTotal"> {{invL.item.subTotal * (invoiceLength + 1) | customNumber}}</span> -->
-                        <!-- </td>
-                        </tr> -->
+                        </tr>  
+                        
                       </tbody>
                     </table>
                   </div>  

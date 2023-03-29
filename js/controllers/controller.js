@@ -3567,13 +3567,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.changeProjectTabs(projectActiveTab);
         if(!projectActiveTab || projectActiveTab != 'due-today' )
             angular.element('.'+projectActiveTab+' > a ').triggerHandler('click');
+        else    
+            $window.localStorage.setItem("projectActiveTab", '');
     }    
     setTimeout(() => {
         let getprojectActiveTab = $window.localStorage.getItem("projectActiveTab");
         if(getprojectActiveTab)
             $scope.lastProjectTabs();
             setTimeout( () => {
-                $window.localStorage.setItem("projectActiveTab", '');
+                //$window.localStorage.setItem("projectActiveTab", '');
             },100)
     }, 1500);
     // END on edit/update stay on same tabs
@@ -13957,7 +13959,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.path = "saveLog";
                     rest.post($scope.logMaster).success(function (data) { });
                     //log file end
-                    $location.path('/client/2');
+                    notification('Updated successfully', 'success');
+                    //$location.path('/client/2');
                     $route.reload();
                 }).error(errorCallback);
             } else {
@@ -13979,8 +13982,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
                     rest.path = "saveLog";
                     rest.post($scope.logMaster).success(function (data) { });
-
-                    $location.path('/client/2');
+                    notification('Created successfully', 'success');
+                    if(data.iClientId)
+                        $location.path('/edit-indirect/'+data.iClientId);
+                    //$location.path('/client/2');
                     $route.reload();
                 }).error(errorCallback);
             }
