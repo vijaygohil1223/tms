@@ -12822,20 +12822,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }, 2000);
 
 
-        var test11 = $scope.pricesArray; 
-        var matchSelect2Arr = test11.filter(x => {
-            let child = [];
-            var test = x.children.filter(c => {
-                if (c.text.toUpperCase().indexOf((options.term).toUpperCase()) == 0) {
-                    child.push(c)
-                    return true;
-                }    
-            })
-            if(test.length){
-                x.children = child;
-                return x;
-            }
-        });
+        function matchSearch(arr, term){
+            console.log('term', term)
+            console.log('arr', arr)
+            var matchSelect2Arr = arr.filter(x => {
+                let child = [];
+                var test = x.children.filter(c => {
+                    if (c.text.toUpperCase().includes((term).toUpperCase()) ) {
+                        child.push(c)
+                        return true;
+                    }    
+                })
+                if(test.length){
+                    x.children = child;
+                    return x;
+                }
+                console.log('test', test)
+                    
+            });
+            console.log('matchSelect2Arr', matchSelect2Arr)
+            return matchSelect2Arr;
+        }    
 
 
         $('#priceUnit').select2({
@@ -12847,21 +12854,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var selectedIds = options.element.select2('val');
                 console.log('selectedIds', selectedIds)
                 var selectableGroups = $.map(this.data, function (group) {
+                    //console.log('this.data', group)
                     var areChildrenAllSelected = true;
                     $.each(group.children, function (i, child) {
                         if (selectedIds.indexOf(child.id) < 0) {
                             // Search condition - options.term
-                            if(child.text.toUpperCase().includes((options.term).toUpperCase())){
+                            //if(child.text.toUpperCase().includes((options.term).toUpperCase())){
                                 areChildrenAllSelected = false;
                                 return false; // Short-circuit $.each()
-                            }
+                            //}
                         }
                     });
                     return !areChildrenAllSelected ? group : null;
                 });
                 
                 //options.matcher(matchStart(options, $scope.pricesArray))
+                if(options.term.length > 2 ){
+                   let matchArr = matchSearch(selectableGroups, options.term)
+                   selectableGroups = matchArr; 
+                   console.log('matchArr', matchArr)
+                }else{
+                    selectableGroups =  $scope.pricesArray;
+                }
                 options.callback({ results: selectableGroups });
+                console.log('selectableGroups', selectableGroups)
             },
             //matcher: matchStart,
             
