@@ -3578,7 +3578,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$window.localStorage.setItem("projectActiveTab", '');
             },100)
     }, 1500);
-    // END on edit/update stay on same tabs
+    // END - edit/update project scoop stay on same tabs
 
 
 }).controller('usertypeController', function ($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
@@ -12822,38 +12822,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }, 2000);
 
 
-        function matchStart(params, data) {
-            if ($.trim(params.term) === '') {
-                return data;
+        var test11 = $scope.pricesArray; 
+        var matchSelect2Arr = test11.filter(x => {
+            let child = [];
+            var test = x.children.filter(c => {
+                if (c.text.toUpperCase().indexOf((options.term).toUpperCase()) == 0) {
+                    child.push(c)
+                    return true;
+                }    
+            })
+            if(test.length){
+                x.children = child;
+                return x;
             }
-            // if (typeof data.children === 'undefined') {
-            //     console.log('data.children', data.children)
-            //   //return null;
-            // }
-            var filteredChildren = [];
-            $.each(data, function (id, data2) {
-                console.log('data2', data2)
-                $.each(data2.children, function (idx, child) {
-                    console.log('child', child)
-                    //if (child.text.toUpperCase().indexOf(params.term.toUpperCase()) == 0) {
-                    if (child.text.toUpperCase().includes(params.term.toUpperCase()) ) {
-                            //console.log('child.text', child.text)
-                        filteredChildren.push(child);
-                        console.log('filteredChildren=loop', filteredChildren)
-                    }
-                });
-            });
-            if (filteredChildren.length) {
-              var modifiedData = $.extend({}, data, true);
-            //   var result = Object.keys(modifiedData).map((key) => [Number(key), modifiedData[key]]);
-            //   console.log('result',result);
-              modifiedData.children = filteredChildren;
-              console.log('filteredChildren', filteredChildren)
-              console.log('modifiedData', modifiedData)
-              return modifiedData;
-            }
-            return data;
-          }
+        });
 
 
         $('#priceUnit').select2({
@@ -12863,20 +12845,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             data: $scope.pricesArray,
             query: function (options) {
                 var selectedIds = options.element.select2('val');
+                console.log('selectedIds', selectedIds)
                 var selectableGroups = $.map(this.data, function (group) {
                     var areChildrenAllSelected = true;
                     $.each(group.children, function (i, child) {
                         if (selectedIds.indexOf(child.id) < 0) {
-                            areChildrenAllSelected = false;
-                            return false; // Short-circuit $.each()
+                            // Search condition - options.term
+                            if(child.text.toUpperCase().includes((options.term).toUpperCase())){
+                                areChildrenAllSelected = false;
+                                return false; // Short-circuit $.each()
+                            }
                         }
                     });
                     return !areChildrenAllSelected ? group : null;
                 });
-                //selectableGroups = matchStart({'term':'proof'},selectableGroups)
-                //console.log('selectableGroups', selectableGroups)
+                
+                //options.matcher(matchStart(options, $scope.pricesArray))
                 options.callback({ results: selectableGroups });
-            }
+            },
+            //matcher: matchStart,
+            
         }).on('select2-selecting', function (e) {
             var $select = $(this);
             if (e.val == '') {

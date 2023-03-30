@@ -1848,6 +1848,7 @@ app.directive('select2LanguagesData', function($http, rest, $timeout) {
     }
 
 });
+// single language selection
 app.directive('select2MultipleLanguagesData', function($http, rest, $timeout) {
     return {
         restrict: 'EA',
@@ -1882,6 +1883,34 @@ app.directive('select2MultipleLanguagesData', function($http, rest, $timeout) {
                             }
                         });
                     }    
+                });
+            }).error(function(data, error, status) {});
+        }
+    }
+
+});
+//-------  multiple language selection -----------//
+app.directive('select2MultipleLanguages', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            //rest.path = 'activelanguageGet';
+            rest.path = 'languagesGet';
+            rest.get().success(function(data) {
+                var users = [];
+                $.each(data, function(key, value) {
+                    var obj = {
+                        'id': value.title,
+                        'text': value.title
+                    };
+                    users.push(obj);
+                });
+                element.select2({
+                    allowClear: true,
+                    data: users,
+                    multiple: true,
+                    closeOnSelect:true
                 });
             }).error(function(data, error, status) {});
         }
