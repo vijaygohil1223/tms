@@ -12796,6 +12796,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.masterChildDropDown = function () {
         $scope.pricesArray = [];
+        $scope.pricesArrayAll = [];
+        $scope.pricesArrayAllNew = [];
         $timeout(function () {
             angular.forEach($scope.masterPrice, function (val, i) {
                 var obj1 = {
@@ -12808,37 +12810,87 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
 
             angular.forEach($scope.masterPrice, function (v, i) {
+                var newObj1 = {
+                    id: '',
+                    text: v.name,
+                    children: []
+                }
+                var newObj2 = {
+                    id: '',
+                    text: v.name,
+                    children: []
+                }
+                $scope.pricesArrayAll.push(newObj1);
+                $scope.pricesArrayAllNew.push(newObj2);
                 angular.forEach($scope.childPrice, function (val1, i1) {
                     if (v.master_price_id == val1.master_price_id) {
                         var obj2 = {
                             id: val1.child_price_id,
                             text: val1.name
                         }
+                        var newObjchild1 = {
+                            id: val1.child_price_id,
+                            text: val1.name
+                        }
+                        var newObjchild2 = {
+                            id: val1.child_price_id,
+                            text: val1.name
+                        }
                         $scope.pricesArray[i].children.push(obj2);
+                        $scope.pricesArrayAll[i].children.push(newObjchild1);
+                        $scope.pricesArrayAllNew[i].children.push(newObjchild2);
                     }
                 })
             })
-
         }, 2000);
+
+        function filterPriceArr(arrF, term){
+            var fPriceArr = [];
+            angular.forEach(arrF, function (v, i) {
+                var newObj1 = {
+                    id: '',
+                    text: v.text,
+                    children: []
+                }
+                fPriceArr.push(newObj1);
+                angular.forEach(v.children, function (val, i1) {
+                    if (val.text.toUpperCase().includes((term).toUpperCase()) ) {    
+                        var obj2 = {
+                            id: val.id,
+                            text: val.text
+                        }
+                        fPriceArr[i].children.push(obj2);
+                    }
+                })
+                if(fPriceArr[i].children.length)
+                console.log('fPriceArr', fPriceArr)
+            })
+            return fPriceArr;
+        }
 
 
         function matchSearch(arr, term){
             console.log('term', term)
             console.log('arr', arr)
-            var matchSelect2Arr = arr.filter(x => {
+            var newArr = $scope.pricesArrayAllNew;
+            console.log('newArr', newArr)
+            console.log('arr===2', arr)
+            
+            var matchSelect2Arr = newArr.filter(x => {
+                console.log('x-pa', x)
                 let child = [];
-                var test = x.children.filter(c => {
+                var childFlt = x.children.filter(c => {
+                    console.log('c-inn', c)
                     if (c.text.toUpperCase().includes((term).toUpperCase()) ) {
                         child.push(c)
                         return true;
                     }    
                 })
-                if(test.length){
+                if(childFlt.length){
                     x.children = child;
                     return x;
                 }
-                console.log('test', test)
-                    
+                
             });
             console.log('matchSelect2Arr', matchSelect2Arr)
             return matchSelect2Arr;
@@ -12852,9 +12904,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             data: $scope.pricesArray,
             query: function (options) {
                 var selectedIds = options.element.select2('val');
-                console.log('selectedIds', selectedIds)
+                //console.log('selectedIds', selectedIds)
                 var selectableGroups = $.map(this.data, function (group) {
-                    //console.log('this.data', group)
                     var areChildrenAllSelected = true;
                     $.each(group.children, function (i, child) {
                         if (selectedIds.indexOf(child.id) < 0) {
@@ -12868,16 +12919,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     return !areChildrenAllSelected ? group : null;
                 });
                 
-                //options.matcher(matchStart(options, $scope.pricesArray))
-                if(options.term.length > 2 ){
-                   let matchArr = matchSearch(selectableGroups, options.term)
-                   selectableGroups = matchArr; 
-                   console.log('matchArr', matchArr)
+                if((options.term).trim().length > 0 ){
+                   //options.matcher(matchSearch(selectableGroups, (options.term).trim() ))
+                   //let matchArr = matchSearch(selectableGroups, (options.term).trim() )
+                   var matchArr = filterPriceArr($scope.pricesArray, (options.term).trim() )
+                   var matchSelect2Arr = matchArr.filter(x => { if(x.children.length) return x } )     
+                   console.log('matchSelect2Arr', matchSelect2Arr)
+                   selectableGroups = matchSelect2Arr; 
+                   //console.log('matchArr', matchArr)
                 }else{
-                    selectableGroups =  $scope.pricesArray;
+                    selectableGroups =  $scope.pricesArrayAll;
                 }
-                options.callback({ results: selectableGroups });
                 console.log('selectableGroups', selectableGroups)
+                    
+                options.callback({ results: selectableGroups });
             },
             //matcher: matchStart,
             
