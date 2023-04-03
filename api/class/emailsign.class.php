@@ -77,8 +77,9 @@ class emailsign {
 
 	    public function deleteSign($id,$image) {
 	    	// $return['status'] = 422;
-      //       $return['msg'] = 'Name already exists.'; 
-	    	$this->_db->where('sign_id',$id);
+      		// $return['msg'] = 'Name already exists.'; 
+			  
+			$this->_db->where('sign_id',$id);
 	    	$row = $this->_db->getOne('tms_email_sign');
 	    	if($row['is_active'] == 1){
 	    		$return['status'] = 422;
@@ -87,7 +88,9 @@ class emailsign {
 	    	else{
 	    		$path = "../../uploads/attatchment/";
 		    	$images = glob($path.$image);
+				//file_exists($path.$image);
 		    	if($images){
+				if(file_exists($path.$image))			
 		    		unlink($path.$image);
 		    	}
 		    	$this->_db->where('sign_id',$id);

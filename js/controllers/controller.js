@@ -12878,7 +12878,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     x.children = child;
                     return x;
                 }
-                
             });
             console.log('matchSelect2Arr', matchSelect2Arr)
             return matchSelect2Arr;
@@ -12896,11 +12895,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var areChildrenAllSelected = true;
                     $.each(group.children, function (i, child) {
                         if (selectedIds.indexOf(child.id) < 0) {
-                            // Search condition - options.term
-                            //if(child.text.toUpperCase().includes((options.term).toUpperCase())){
-                                areChildrenAllSelected = false;
-                                return false; // Short-circuit $.each()
-                            //}
+                            areChildrenAllSelected = false;
+                            return false; // Short-circuit $.each()
                         }
                     });
                     return !areChildrenAllSelected ? group : null;
@@ -23872,6 +23868,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.deletesign = function (id, image) {
+        var image = image ? image : 0;
         bootbox.confirm("Are you sure you want to delete?", function (result) {
             if (result == true) {
                 rest.path = 'deleteSign/' + id + '/' + image;
