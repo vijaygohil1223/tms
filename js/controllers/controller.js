@@ -12797,31 +12797,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.masterChildDropDown = function () {
         $scope.pricesArray = [];
         $scope.pricesArrayAll = [];
-        $scope.pricesArrayAllNew = [];
         $timeout(function () {
-            angular.forEach($scope.masterPrice, function (val, i) {
+            // angular.forEach($scope.masterPrice, function (val, i) {
+            //     var obj1 = {
+            //         id: '',
+            //         text: val.name,
+            //         children: []
+            //     }
+            //     $scope.pricesArray.push(obj1);
+            // })
+            angular.forEach($scope.masterPrice, function (v, i) {
                 var obj1 = {
                     id: '',
-                    text: val.name,
+                    text: v.name,
                     children: []
                 }
-
                 $scope.pricesArray.push(obj1);
-            })
 
-            angular.forEach($scope.masterPrice, function (v, i) {
                 var newObj1 = {
                     id: '',
                     text: v.name,
                     children: []
                 }
-                var newObj2 = {
-                    id: '',
-                    text: v.name,
-                    children: []
-                }
                 $scope.pricesArrayAll.push(newObj1);
-                $scope.pricesArrayAllNew.push(newObj2);
                 angular.forEach($scope.childPrice, function (val1, i1) {
                     if (v.master_price_id == val1.master_price_id) {
                         var obj2 = {
@@ -12832,13 +12830,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             id: val1.child_price_id,
                             text: val1.name
                         }
-                        var newObjchild2 = {
-                            id: val1.child_price_id,
-                            text: val1.name
-                        }
                         $scope.pricesArray[i].children.push(obj2);
                         $scope.pricesArrayAll[i].children.push(newObjchild1);
-                        $scope.pricesArrayAllNew[i].children.push(newObjchild2);
                     }
                 })
             })
@@ -12853,7 +12846,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     children: []
                 }
                 fPriceArr.push(newObj1);
-                angular.forEach(v.children, function (val, i1) {
+                angular.forEach(v.children, function (val, i2) {
                     if (val.text.toUpperCase().includes((term).toUpperCase()) ) {    
                         var obj2 = {
                             id: val.id,
@@ -12868,15 +12861,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return fPriceArr;
         }
 
-
         function matchSearch(arr, term){
             console.log('term', term)
             console.log('arr', arr)
-            var newArr = $scope.pricesArrayAllNew;
-            console.log('newArr', newArr)
-            console.log('arr===2', arr)
-            
-            var matchSelect2Arr = newArr.filter(x => {
+            var matchSelect2Arr = arr.filter(x => {
                 console.log('x-pa', x)
                 let child = [];
                 var childFlt = x.children.filter(c => {
@@ -12895,7 +12883,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('matchSelect2Arr', matchSelect2Arr)
             return matchSelect2Arr;
         }    
-
 
         $('#priceUnit').select2({
             multiple: true,
