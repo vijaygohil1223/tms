@@ -322,6 +322,17 @@
                         href="javascript:void(0);" ng-click="edit(activity.log_type_id)" class="text-info"
                         ng-bind="activity.log_title"></a>
                     </span>
+                    <!-- For Project Scoop -->
+                    <span class="text-muted">
+                      <a ng-if="activity.log_status == 'project_scoop' && activity.log_type == 'delete'"
+                        href="javascript:void(0);" ng-click="edit(activity.log_type_id)" class="text-info"
+                        ng-bind="activity.log_title"></a>
+                    </span>
+                    <span class="text-muted">
+                      <a ng-if="activity.log_status == 'project_scoop' && activity.log_type != 'delete'"
+                        href="javascript:void(0);" ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, '')" class="text-info"
+                        ng-bind="activity.log_title"></a>
+                    </span>
 
                     <!-- For External Resource -->
                     <span class="text-muted">

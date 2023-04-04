@@ -1470,6 +1470,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     /*Recent Activity Code End*/
 
+    // activity project
+    $scope.edit = function (id) {
+        //console.log('activity-id', id)
+        if (id) {
+            rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function (data) {
+                if (data.userName != null) {
+                    $scope.orderdata = data;
+
+                    $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
+                    $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
+                    $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
+
+                    $window.localStorage.orderNo = $scope.orderdata.order_number;
+                    $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+                    $window.localStorage.orderID = id;
+                    $window.localStorage.iUserId = id;
+                    $window.localStorage.userType = 3;
+                    $window.localStorage.currentUserName = data.vClientName;
+                    $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject", "false");
+
+                    $location.path('/general/'+data.order_id);
+                    $window.localStorage.orderBlock = 1;
+                    $timeout(function () {
+                        $scope.cancel();
+                    }, 500);
+                } else {
+                    notification('Information not available', 'warning');
+                }
+            }).error(errorCallback);
+        }
+    };
+
 }).controller('dashboardController', function ($scope, $window, $location, $compile, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userLoginID = $window.localStorage.getItem("session_iUserId");
@@ -1711,12 +1747,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //Project Get From DashBoard Recent Activity
     $scope.edit = function (id) {
-        console.log('activity-id', id)
+        //console.log('activity-id', id)
         if (id) {
             rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
                 if (data.userName != null) {
                     $scope.orderdata = data;
+
                     $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
                     $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
                     $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
@@ -1728,8 +1765,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.userType = 3;
                     $window.localStorage.currentUserName = data.vClientName;
                     $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject", "false");
+
                     $location.path('/general/'+data.order_id);
                     $window.localStorage.orderBlock = 1;
+                    $timeout(function () {
+                        $scope.cancel();
+                    }, 500);
                 } else {
                     notification('Information not available', 'warning');
                 }
@@ -3559,7 +3603,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // on edit/update stay on same tabs
     $scope.changeProjectTabs = function(className){
-        console.log('className', className)
+        //console.log('className', className)
         $window.localStorage.setItem("projectActiveTab", className);
     }
     $scope.lastProjectTabs = function(){
@@ -19835,10 +19879,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.workflowChange = false;
                         //log file start
                         $scope.logMaster = {};
-                        $scope.logMaster.log_title = $scope.projectOrderName;
+                        //$scope.logMaster.log_title = $scope.projectOrderName;
+                        $scope.logMaster.log_title = $scope.projectOrderName +'-'+ $scope.itemList[formIndex].item_number.toString().padStart(3, '0');
                         $scope.logMaster.log_type_id = $scope.itemList[formIndex].order_id;
+                        $scope.logMaster.task_id = $scope.itemList[formIndex].itemId;
                         $scope.logMaster.log_type = "update";
-                        $scope.logMaster.log_status = "project";
+                        $scope.logMaster.log_status = "project_scoop";
                         $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
                         rest.path = "saveLog";
                         rest.post($scope.logMaster).success(function (data) { });

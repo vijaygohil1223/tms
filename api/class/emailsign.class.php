@@ -90,13 +90,13 @@ class emailsign {
 		    	$images = glob($path.$image);
 				//file_exists($path.$image);
 		    	if($images){
-				if(file_exists($path.$image))			
-		    		unlink($path.$image);
+					if(file_exists($path.$image))			
+						unlink($path.$image);
 		    	}
 		    	$this->_db->where('sign_id',$id);
 		    	$data = $this->_db->delete('tms_email_sign');
 		    	$return['status'] = 200;
-            	$return['msg'] = 'Successfully detelted';
+            	$return['msg'] = 'Successfully deleted';
 		    }
 		    return $return;
 	    	
