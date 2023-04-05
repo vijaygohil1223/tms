@@ -20,7 +20,7 @@
                         <div class="col-md-6 p-0">
                             <div ng-repeat="activity in activityList  | limitTo:activityLimit">
                                 <div class="media">
-                                    <span class="pull-left m-r-xs"> <span class=""><i class="glyphicon glyphicon-stats icon text-primary-dker"></i></span> </span>
+                                    <span class="pull-left m-r-xs"> <span class=""><i class="glyphicon glyphicon-check icon text-primary-dker"></i></span> </span>
                                     <div class="media-body">
                                     <div class="pull-right text-center text-muted">
                                         <strong class="h4">{{dateDate[$index]}}</strong><br>
@@ -31,14 +31,16 @@
    
                                 <a href class="h4" ng-if="activity.log_status == 'direct_cli' && activity.log_type == 'delete'" href="javascript:void(0);" class="text-info" ng-bind="activity.log_title"></a>
                                     
-                                   <!-- For Project -->
+                                <!-- For Project -->
                                 <a href class="h4" ng-if="activity.log_status == 'project' && activity.log_type == 'delete'" href="javascript:void(0);" ng-click="edit(activity.log_type_id)" class="text-info" ng-bind="activity.log_title"></a>
-
                                 <a href class="h4" ng-if="activity.log_status == 'project' && activity.log_type != 'delete'" href="javascript:void(0);" ng-click="edit(activity.log_type_id)" class="text-info" ng-bind="activity.log_title"></a>
+
+                                <!-- For Project Scoop -->
+                                <a href class="h4" ng-if="activity.log_status == 'project_scoop' && activity.log_type == 'delete'" href="javascript:void(0);" ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, '')" class="text-info" ng-bind="activity.log_title"></a>
+                                <a href class="h4" ng-if="activity.log_status == 'project_scoop' && activity.log_type != 'delete'" href="javascript:void(0);" ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, '')" class="text-info" ng-bind="activity.log_title"></a>
                                     
-                                   <!-- For External Resource --> 
+                                <!-- For External Resource --> 
                                 <a href class="h4" ng-if="activity.log_status == 'external_res' && activity.log_type == 'delete'" href="javascript:void(0);" class="text-info" ng-bind="activity.log_title"></a>
-   
                                 <a href class="h4" ng-if="activity.log_status == 'external_res' && activity.log_type != 'delete'" href="#/viewExternal/{{activity.log_type_id}}" class="text-info" ng-bind="activity.log_title"></a>
                                     
                                 <!-- For Task #/job-summery-details/{{activity.task_id}}-->
