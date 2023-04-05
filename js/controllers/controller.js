@@ -19956,10 +19956,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.post($scope.item).success(function (data) {
                         //log file start 
                         $scope.logMaster = {};
-                        $scope.logMaster.log_title = $scope.projectOrderName;
+                        //$scope.logMaster.log_title = $scope.projectOrderName;
+                        $scope.logMaster.log_title = $scope.projectOrderName +'-'+ $scope.item.item_number.toString().padStart(3, '0');
+                        $scope.logMaster.task_id = $scope.item.itemId;
                         $scope.logMaster.log_type_id = $scope.item.order_id;
                         $scope.logMaster.log_type = "update";
-                        $scope.logMaster.log_status = "project";
+                        $scope.logMaster.log_status = "project_scoop";
                         $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
                         rest.path = "saveLog";
                         rest.post($scope.logMaster).success(function (data) { });
@@ -31451,10 +31453,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                         //log file start
                         $scope.logMaster = {};
-                        $scope.logMaster.log_title = $scope.projectOrderName;
+                        //$scope.logMaster.log_title = $scope.projectOrderName;
+                        $scope.logMaster.log_title = $scope.projectOrderName +'-'+ $scope.itemList[formIndex].item_number.toString().padStart(3, '0');
                         $scope.logMaster.log_type_id = $scope.itemList[formIndex].order_id;
+                        $scope.logMaster.task_id = $scope.itemList[formIndex].itemId;
                         $scope.logMaster.log_type = "update";
-                        $scope.logMaster.log_status = "project";
+                        $scope.logMaster.log_status = "project_scoop";
                         $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
                         rest.path = "saveLog";
                         rest.post($scope.logMaster).success(function (data) { });
@@ -31467,7 +31471,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     });
                 } else {
-
+                    // nothing in popup
                 }
             } else {
                 //notification('Please Create project First', 'information');
