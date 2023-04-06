@@ -12612,14 +12612,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.path = 'customerpriceAll/' + data.LastIsertedData.price_id;
                     rest.get().success(function (data) {
                         var newdata = data;
-                        console.log('newdata', newdata)
-                        console.log('$scope.ExternalPricelistId', $scope.ExternalPricelistId)
-                        console.log('$scope.customerPrice.resource_id', $scope.customerPrice.resource_id)
-                
-                        
-                        newdata = data.filter( function (fdt) {
-                            // $scope.ExternalPricelistId
-                            return fdt.resource_id == $scope.customerPrice.resource_id;  
+                        newdata = data.filter( function (data) {
+                            //$scope.ExternalPricelistId
+                            return data.resource_id == $scope.customerPrice.resource_id;  
                         });
 
                         console.log('var-newdata=>after', newdata)
@@ -12745,7 +12740,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //$scope.ExternalPricelistId - before used variable issue;  
                             return data.resource_id == $scope.customerPrice.resource_id;  
                         });
-                        angular.forEach(data, function (val, i) {
+                        console.log('newdata=after', newdata)
+                        angular.forEach(newdata, function (val, i) {
                             obj.push({
                                 'id': val.price_list_id,
                                 'text': val.price_name
