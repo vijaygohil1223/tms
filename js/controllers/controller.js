@@ -2172,17 +2172,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Tabs permission array
     //$scope.tabPermission = { "due_today": true, "to_be_assigned": true, "in_progress": true, "qa_ready": true, "to_be_delivered": true, "due_tomorrow": true, "delivered": true, "my_projects": true };
+    var tabPermission = { "due_today": true, "assigned": true, "ongoing": true, "qa_ready": true, "qa_issue": true, "pm_ready": true, "delivery": true, "completed": true, "overdue": true, "due_tomorrow": true, "my_project": true, "upcoming": true, "approved": true, "all": true };
     $scope.tabPermission = {};
     // User data with postion for widget box
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
+            console.log('data---tabs', data)
             $scope.vResourcePosition = data.vResourcePosition;
             //-- Permission to show tabs --//
-            if(data.tabPermission)
-                $scope.tabPermission = JSON.parse(data.tabPermission) 
-            else
-                $('.btn_create-project').css('top','15px')
+            if($window.localStorage.getItem("session_iUserId") == 1){
+                $scope.tabPermission = tabPermission;
+            }else{ 
+                if(data.tabPermission)
+                    $scope.tabPermission = JSON.parse(data.tabPermission) 
+                else
+                    $('.btn_create-project').css('top','15px')
+            }        
             console.log('$scope.tabPermission',$scope.tabPermission)
         });
     }
@@ -12606,9 +12612,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.path = 'customerpriceAll/' + data.LastIsertedData.price_id;
                     rest.get().success(function (data) {
                         var newdata = data;
-                        newdata = data.filter( function (data) {
-                            return data.resource_id == $scope.ExternalPricelistId;  
+                        console.log('newdata', newdata)
+                        console.log('$scope.ExternalPricelistId', $scope.ExternalPricelistId)
+                        console.log('$scope.customerPrice.resource_id', $scope.customerPrice.resource_id)
+                
+                        
+                        newdata = data.filter( function (fdt) {
+                            // $scope.ExternalPricelistId
+                            return fdt.resource_id == $scope.customerPrice.resource_id;  
                         });
+
+                        console.log('var-newdata=>after', newdata)
                         angular.forEach(newdata, function (val, i) {
                             obj.push({
                                 'id': val.price_list_id,
@@ -12728,7 +12742,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.get().success(function (data) {
                         var newdata = data;
                         newdata = data.filter( function (data) {
-                            return data.resource_id == $scope.ExternalPricelistId;  
+                            //$scope.ExternalPricelistId - before used variable issue;  
+                            return data.resource_id == $scope.customerPrice.resource_id;  
                         });
                         angular.forEach(data, function (val, i) {
                             obj.push({
