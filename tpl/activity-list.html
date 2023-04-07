@@ -17,7 +17,58 @@
                 <div class="col-md-12 p-0">
                     <div class="panel panel-default">
                         <div class="panel-body" ui-jq="slimScroll" ui-options="{height:'100%', size:'8px'}">
+                            <div class="col-sm-12">
+                                <table class="table table-striped b-t b-b table-bordered" datatable="ng">
+                                    <thead>
+                                      <th>#</th>
+                                      <th>Job chain name</th>
+                                      <th>Job chain status</th>
+                                      <th>Creator</th>
+                                      <!-- <th>Description</th> -->
+                                    </thead>
+                                    <tbody>
+                                      <tr ng-repeat="activity in activityList">
+                                        <td ng-bind="$index + 1"></td>
+                                        <td>
+                                            <!-- For Direct Client -->
+                                            <a href ng-if="activity.log_status == 'direct_cli' && activity.log_type != 'delete'" href="#/viewdirect/{{activity.log_type_id}}"  ng-bind="activity.log_title"></a>
+                                            <a href ng-if="activity.log_status == 'direct_cli' && activity.log_type == 'delete'" href="javascript:void(0);"  ng-bind="activity.log_title"></a>
+                                            <!-- For Project -->
+                                            <a href ng-if="activity.log_status == 'project' && activity.log_type == 'delete'" href="javascript:void(0);" ng-click="edit(activity.log_type_id)"  ng-bind="activity.log_title"></a>
+                                            <a href ng-if="activity.log_status == 'project' && activity.log_type != 'delete'" href="javascript:void(0);" ng-click="edit(activity.log_type_id)"  ng-bind="activity.log_title"></a>
+                                            <!-- For Project Scoop -->
+                                            <a href ng-if="activity.log_status == 'project_scoop' && activity.log_type == 'delete'" href="javascript:void(0);" ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, '')"  ng-bind="activity.log_title"></a>
+                                            <a href ng-if="activity.log_status == 'project_scoop' && activity.log_type != 'delete'" href="javascript:void(0);" ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, '')"  ng-bind="activity.log_title"></a>
+                                            <!-- For External Resource --> 
+                                            <a href ng-if="activity.log_status == 'external_res' && activity.log_type == 'delete'" href="javascript:void(0);"  ng-bind="activity.log_title"></a>
+                                            <a href ng-if="activity.log_status == 'external_res' && activity.log_type != 'delete'" href="#/viewExternal/{{activity.log_type_id}}"  ng-bind="activity.log_title"></a>
+                                            <!-- For Task #/job-summery-details/{{activity.task_id}}-->
+                                            <a href ng-if="activity.log_status == 'task' && activity.log_type != 'delete'" href="javascript:void(0);" ng-click="goToJob(activity.task_id,activity.log_type_id)"  ng-bind="activity.log_title"></a>
+                                            <a href ng-if="activity.log_status == 'task' && activity.log_type == 'delete'" href="javascript:void(0);"  ng-bind="activity.log_title"></a></span>
+                                            <!-- For Indirect Client -->
+                                            <a href  ng-if="activity.log_status == 'indirect_cli' && activity.log_type == 'delete'" href="javascript:void(0);"  ng-bind="activity.log_title"></a></span>
+                                            <a href ng-if="activity.log_status == 'indirect_cli' && activity.log_type != 'delete'" href="#/viewindirect/{{activity.log_type_id}}"  ng-bind="activity.log_title"></a></span>
+                                            <!-- For Internal Resource -->
+                                            <a href  ng-if="activity.log_status == 'internal_res' && activity.log_type == 'delete'" href="javascript:void(0);"  ng-bind="activity.log_title"></a></span>
+                                            <a href ng-if="activity.log_status == 'internal_res' && activity.log_type != 'delete'" href="#/viewinternal/{{activity.log_type_id}}"  ng-bind="activity.log_title"></a></span>
+                                        </td>
+                                        <td>
+                                            <small class="block"> <span ng-if="activity.log_type != 'add'"><span ng-bind="activity.log_type | capitalize"></span>d</span><span ng-if="activity.log_type == 'add'"><span ng-bind="activity.log_type | capitalize"></span>ed</span>
+                                                <span >in {{activity.log_status.split('_')[0] | capitalize}}
+                                                    <span  ng-if="activity.log_status.split('_')[0] == 'indirect' || activity.log_status.split('_')[0] == 'direct'">Clients</span>
+                                                    <span  ng-if="activity.log_status.split('_')[0] == 'internal' || activity.log_status.split('_')[0] == 'external'">Resources</span>
+                                                </span> 
+                                            </small>
+                                        </td>
+                                        <td>{{dateDate[$index]}}</td>
+                                        <!-- <td ng-bind="jobL.description"></td> -->
+                                        
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                            </div>    
                         <div class="col-md-6 p-0">
+                            
                             <div ng-repeat="activity in activityList  | limitTo:activityLimit">
                                 <div class="media">
                                     <span class="pull-left m-r-xs"> <span class=""><i class="glyphicon glyphicon-check icon text-primary-dker"></i></span> </span>
