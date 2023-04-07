@@ -12616,8 +12616,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //$scope.ExternalPricelistId
                             return data.resource_id == $scope.customerPrice.resource_id;  
                         });
-
-                        console.log('var-newdata=>after', newdata)
                         angular.forEach(newdata, function (val, i) {
                             obj.push({
                                 'id': val.price_list_id,
@@ -12740,7 +12738,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //$scope.ExternalPricelistId - before used variable issue;  
                             return data.resource_id == $scope.customerPrice.resource_id;  
                         });
-                        console.log('newdata=after', newdata)
                         angular.forEach(newdata, function (val, i) {
                             obj.push({
                                 'id': val.price_list_id,
@@ -24400,9 +24397,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         $scope.creator = $scope.name;
         $scope.jobchain.creator = $scope.creator;
-
         rest.path = 'jobChainsave';
         rest.post($scope.jobchain).success(function (data) {
+            console.log('data', data)
             $window.localStorage.chainediteId = data
             $location.path("/job-chain");
         }).error(errorCallback);
@@ -24492,6 +24489,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
+    // 
+    
     $scope.saveJob = function (jobId) {
         if (angular.element("#" + jobId).valid()) {
             //console.log("jobId", jobId);return;
@@ -24622,7 +24621,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }).error(errorCallback);
                     }
                     notification('Record updated successfully.', 'success');
-                    $location.path('/newjob');
+                    //$location.path('/newjob');
+                    setTimeout( () => {
+                        $route.reload();
+                    },200)
+                    
                     scrollBodyToTop();
                 }).error(errorCallback);
 
@@ -24631,11 +24634,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
-    if ($window.localStorage.chainediteId) {
+    if ($window.localStorage.chainediteId != 'false') {
         rest.path = 'jobChingetOne/' + $window.localStorage.chainediteId;
         rest.get().success(function (data) {
+            console.log('data', data)
             $scope.jobchain = data;
-            $scope.customerJob = JSON.parse(data.customer);
+            $scope.customerJob = data.customer ? JSON.parse(data.customer) : '';
             if ($scope.customerJob.length != undefined) {
                 $scope.jobcustomerCount = $scope.customerJob.length;
             } else {
