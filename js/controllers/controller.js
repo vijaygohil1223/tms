@@ -35347,6 +35347,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $timeout(function () {
                     $scope.dateDate[i] = recentDate;
+                    val.recentDayAgo = recentDate;
                 }, 100);
 
             });
@@ -35356,4 +35357,48 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     /*Recent Activity Code End*/
+
+    // Search
+    $scope.activityListFltr = [];
+    $scope.filterActivity = function(formid){
+        console.log('search.scoope', $scope.search)
+        if($scope.search.length){
+            $scope.activityListFltr = $scope.activityList.filter( (obj)=> {
+                return obj.log_status == $scope.search.logStatus;
+            });
+        }
+        
+        var todayDate = new Date();
+        var dateStart = ''
+        var dateEnd = ''
+        if ($scope.search.dueDateFrom) {
+            var dueDateFrom = originalDateFormatNew($scope.search.dueDateFrom);
+            dueDateFrom = moment(dueDateFrom).format('YYYY-MM-DD');
+            dateStart = new Date(dueDateFrom);
+            
+            $scope.activityListFltr = $scope.activityList.filter( (obj)=> {
+                return dateStart < new Date(obj.modified_date) ;
+            }); 
+            console.log('$scope.activityList', $scope.activityListFltr)
+        }
+        if ($scope.search.dueDateTo) {
+            var dueDateTo = originalDateFormatNew($scope.search.dueDateTo);
+            dueDateTo = moment(dueDateTo).format('YYYY-MM-DD');
+            dateEnd = new Date(dueDateTo);
+            
+            $scope.activityListFltr = $scope.activityList.filter( (obj)=> {
+                if($scope.search.dueDateFrom)
+                    return dateStart <= new Date(obj.modified_date) && dateEnd >= new Date(obj.modified_date);
+                else($scope.search.dueDateFrom)
+                    return dateEnd > new Date(obj.modified_date);
+            });
+            console.log('$scope.activityList', $scope.activityListFltr)
+        }    
+            
+    }
+
+    $scope.refresh = function(){
+        $route.reload();
+    }
+
 });
