@@ -16,24 +16,24 @@
             <div class="wrapper-md ng-scope">
                 <div class="col-md-12 p-0">
                     <div class="panel panel-default">
-                        <div class="panel-body" ui-jq="slimScroll" ui-options="{height:'100%', size:'8px'}">
+                        <div class="panel-body">
                             <form id="filterForm">
                                 <div class="col-sm-12">
                                     <div class="col-sm-6">
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label style="font-weight:bold;">Select due date from :</label>
+                                                <label style="font-weight:bold;">Select date from :</label>
                                                 <input type="text" class="form-control" id="dueDateFrom" ng-datepicker
-                                                    name="dueDateFrom" ng-model="search.dueDateFrom"
-                                                    onkeydown="return false" placeholder="Start">
+                                                    name="dueDateFrom" ng-model="dueDateFrom"
+                                                    onkeydown="return false" placeholder="From Date">
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label style="font-weight:bold;">Select due date to :</label>
+                                                <label style="font-weight:bold;">Select date to :</label>
                                                 <input type="text" class="form-control" id="dueDateTo" ng-datepicker
-                                                    name="dueDateTo" ng-model="search.dueDateTo"
-                                                    onkeydown="return false"  placeholder="To">
+                                                    name="dueDateTo" ng-model="dueDateTo"
+                                                    onkeydown="return false" placeholder="To Date">
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -41,11 +41,11 @@
                                                 <label style="font-weight:bold;">Log Type</label>
                                                 <select class="form-control m-b" name="logStatus"
                                                     ng-model="search.logStatus">
-                                                    <option value="internal_res">Internal Resource</option>
-                                                    <option value="external_res">External Resource</option>
                                                     <option value="project">Project</option>
                                                     <option value="project_scoop">Project Scoop</option>
                                                     <option value="task">Jobs</option>
+                                                    <option value="internal_res">Internal Resource</option>
+                                                    <option value="external_res">External Resource</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -58,7 +58,7 @@
                                 </div>
                                 <a class="btn btn-info" ng-click="filterActivity('filterForm');"
                                     style="margin-left:3%">Filter</a>
-                                    <a class="btn btn-info" ng-click="refresh()"
+                                <a class="btn btn-info" ng-click="refresh()"
                                     style="margin-left:3%">Refresh</a>    
                             </form>
 
@@ -73,8 +73,9 @@
                                 <table class="table table-striped b-t b-b table-bordered" datatable="ng">
                                     <thead>
                                         <th>#</th>
-                                        <th>Name</th>
+                                        <th>Project</th>
                                         <th>Action</th>
+                                        <th>Created By</th>
                                         <th>Date</th>
                                         <th>Days ago</th>
                                         <!-- <th>Description</th> -->
@@ -158,6 +159,7 @@
                                                     </span>
                                                 </small>
                                             </td>
+                                            <td>{{activity.vFirstName}} &nbsp; {{activity.vFirstName}}</td>
                                             <td>{{ activity.modified_date | dateFormatDisplayFront }}</td>
                                             <td>{{ activity.recentDayAgo }}</td>
                                             <!-- <td>{{dateDate[$index]}}</td> -->

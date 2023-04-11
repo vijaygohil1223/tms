@@ -35360,7 +35360,68 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Search
     $scope.activityListFltr = [];
-    $scope.filterActivity = function(formid){
+    $scope.search = {}; 
+    $scope.filterActivity = function (frmId) {
+        console.log('frmId', frmId)
+        if (jQuery.isEmptyObject($scope.search) && !$scope.dueDateFrom && !$scope.dueDateTo) {
+            notification('Please select option to filter statement.', 'warning');
+            return false;
+        } else {
+            if ($scope.dueDateFrom && !$scope.dueDateTo) {
+                notification('You have to select both dates.', 'warning');
+                return false;
+            } else if (!$scope.dueDateFrom && $scope.dueDateTo) {
+                notification('You have to select both dates.', 'warning');
+                return false;
+            }
+            if ($scope.dueDateFrom) {
+                $scope.search.dueDateFrom = originalDateFormatNew($scope.dueDateFrom);
+                $scope.search.dueDateFrom = moment($scope.search.dueDateFrom).format('YYYY-MM-DD');
+            }
+
+            if ($scope.dueDateTo) {
+                $scope.search.dueDateTo = originalDateFormatNew($scope.dueDateTo);
+                $scope.search.dueDateTo = moment($scope.search.dueDateTo).format('YYYY-MM-DD');
+            }
+
+            rest.path = 'activityLogGetAll';
+            rest.post($scope.search).success(function (data) {
+                console.log('data', data)
+                $scope.activityListFltr = data;
+                var color = ['success', 'warning', 'info', 'primary'];
+                var date = new Date();
+                var count = 0;
+
+                angular.forEach(data, function (val, i) {
+                    //set activity side line color
+                    if (count == color.length) {
+                        count = 0;
+                    }
+                    $scope.activityList[i].color = color[count];
+                    count++;
+                    //set recent activity date
+                    var a = date;
+                    var b = new Date(val.modified_date);
+                    var days = daydiff(b, a); // 1 day
+                    switch (days) {
+                        case 0:
+                            var recentDate = "Today " + timeFormat(val.modified_date);
+                            break;
+                        case 1:
+                            var recentDate = "Yesterday " + timeFormat(val.modified_date);
+                            break;
+                        default:
+                            var recentDate = days + " days ago.";
+                    }
+                    $timeout(function () {
+                        $scope.dateDate[i] = recentDate;
+                        val.recentDayAgo = recentDate;
+                    }, 100);
+                });
+            })
+        }
+    }        
+    $scope.filterActivity2 = function(formid){
         console.log('search.scoope', $scope.search)
         if($scope.search.length){
             $scope.activityListFltr = $scope.activityList.filter( (obj)=> {

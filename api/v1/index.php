@@ -3227,6 +3227,12 @@ $app->get('/recentActivityGet/:id','authenticate', function($id) {
     $result = $log->recentActivityGet($id);
     echoResponse(200, $result);
 });
+$app->post('/activityLogGetAll', function () use($app) {
+    $log = new Log_master ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $log->activityLogFilter($data);
+    echoResponse(200, $result);
+});
 
 //-----------------invoice due master manage----------------//
 $app->post('/saveInvoicePeriod','authenticate', function () use($app) {

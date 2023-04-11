@@ -55,4 +55,21 @@ class log_master {
         $data = $this->_db->rawQuery("SELECT * FROM tms_log_master WHERE created_by = $id AND log_title !='' ORDER BY modified_date DESC");
         return $data;
     }
+
+	public function activityLogFilter($filterParams) {
+    	$this->_db->join('tms_users tu', 'tu.iUserId=lg.created_by','INNER');
+        if(isset($filterParams['dueDateFrom']) && isset($filterParams['dueDateTo'])){
+            $Frm = $filterParams['dueDateFrom'].' '.'00:00:00';
+            $To = $filterParams['dueDateTo'].' '.'00:00:00';
+            $this->_db->where('lg.modified_date', Array ($Frm,$To),'BETWEEN');
+        }
+        if(isset($filterParams['logStatus'])){
+            $logStatus = $filterParams['logStatus'];
+            $this->_db->where('lg.log_status','%'.$logStatus.'%', 'like');
+        }
+		$this->_db->orderBy('lg.modified_date','DESC');
+		$data = $this->_db->get('tms_log_master lg', null, 'lg.*, tu.vFirstName, tu.vLastName');
+		return $data;
+	}	
+
 }
