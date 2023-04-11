@@ -60,7 +60,7 @@ class log_master {
     	$this->_db->join('tms_users tu', 'tu.iUserId=lg.created_by','INNER');
         if(isset($filterParams['dueDateFrom']) && isset($filterParams['dueDateTo'])){
             $Frm = $filterParams['dueDateFrom'].' '.'00:00:00';
-            $To = $filterParams['dueDateTo'].' '.'00:00:00';
+            $To = $filterParams['dueDateTo'].' '.'23:59:59';
             $this->_db->where('lg.modified_date', Array ($Frm,$To),'BETWEEN');
         }
         if(isset($filterParams['logStatus'])){
