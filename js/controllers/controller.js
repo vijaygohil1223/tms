@@ -1203,10 +1203,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.disableSearch = true;
+    $scope.projectScoop = [];
 
     rest.path = 'getJobsFromTmsSummeryView';
     rest.get().success(function (data) {
         $rootScope.SearchJobList = data;
+
+        rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+        rest.get().success(function (data) {
+            $scope.projectScoop = data;
+        })
 
         rest.path = "dashboardOrderGet";
         rest.get().success(function (data) {
@@ -1215,6 +1221,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             var orders = [];
             $timeout(function () {
+                angular.forEach($scope.projectScoop, function (scoopData) {
+                    orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
+                });
+
                 angular.forEach($scope.projectData, function (ordersData) {
                     orders.push(ordersData.orderNumber);
                 });
@@ -1245,12 +1255,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return false;
         } else {
             $scope.isJobSearch = false;
-            if( ($scope.selectedOrder).split('_').length > 1){
-                if(($scope.selectedOrder).split(/_(.*)/s)[1].toString().length > 4)
+            if( ($scope.selectedOrder).split('_').length > 1 ){
+                if(($scope.selectedOrder).split(/_(.*)/s)[1].toString().length > 4 && ($scope.selectedOrder).split('-').pop().length != 3)
                     $scope.isJobSearch = true;
             }
             if ($scope.isJobSearch) {
-            //if ($scope.selectedOrder.includes('_')) {    
+                //if ($scope.selectedOrder.includes('_')) {    
                 var isMatch = true;
                 angular.forEach($rootScope.SearchJobList, function (jobsData) {
                     if (isMatch) {
@@ -1290,7 +1300,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }).error(errorCallback);
                 }
-            } else {
+            } else if(($scope.selectedOrder).split('-').pop().length == 3 && ($scope.selectedOrder).split(/-(.*)/s)[0].toString().length > 4 ) {
+                var isMatchScoop = true;
+                if( ($scope.selectedOrder).split('-').pop().length == 3){
+                    if( ($scope.selectedOrder).split(/-(.*)/s)[0].toString().length > 4){
+                        console.log('$toString()', ($scope.selectedOrder).split(/-(.*)/s)[0].toString() )
+                        angular.forEach($scope.projectScoop, function (scoopData) {
+                            if (isMatchScoop) {
+                                if (scoopData.orderNumber === ($scope.selectedOrder).split(/-(.*)/s)[0].toString() ) {
+                                    $scope.goToScoop = scoopData.orderId;
+                                    $scope.scoopId = scoopData.itemId;
+                                    isMatchScoop = false;
+                                }
+                            }
+                        });
+                        if ($scope.goToScoop == undefined) {
+                            notification('Nothing found..', 'warning');
+                        } else {
+                            if ($scope.goToScoop) {
+                                var viewType = $scope.scoopId; 
+                                $window.localStorage.orderID = $scope.goToScoop;
+                                var modalInstance = $uibModal.open({
+                                    templateUrl: 'tpl/scoopViewdetailPopup.html',
+                                    controller: 'viewScoopPopupController',
+                                    size: '',
+                                    resolve: {
+                                        items: function () {
+                                            return {scoop_id: viewType, order_id:$scope.goToScoop };
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }else{    
+
                 var isMatch = true;
                 angular.forEach($scope.projectData, function (ordersData) {
                     if (isMatch) {
