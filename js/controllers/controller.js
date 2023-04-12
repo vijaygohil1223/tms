@@ -1204,27 +1204,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.disableSearch = true;
     $scope.projectScoop = [];
-
+    var orders = [];
+    
+    rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+    rest.get().success(function (data) {
+        $scope.projectScoop = data;
+        angular.forEach($scope.projectScoop, function (scoopData) {
+            orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
+        });
+    })        
     rest.path = 'getJobsFromTmsSummeryView';
     rest.get().success(function (data) {
         $rootScope.SearchJobList = data;
 
-        rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
-        rest.get().success(function (data) {
-            $scope.projectScoop = data;
-        })
+        
 
         rest.path = "dashboardOrderGet";
         rest.get().success(function (data) {
             // remove same project orderNumber
             $scope.projectData = UniqueArraybyId(data, 'orderNumber'); 
             
-            var orders = [];
             $timeout(function () {
-                angular.forEach($scope.projectScoop, function (scoopData) {
-                    orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
-                });
-
+                
                 angular.forEach($scope.projectData, function (ordersData) {
                     orders.push(ordersData.orderNumber);
                 });
