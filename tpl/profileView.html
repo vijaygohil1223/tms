@@ -4,8 +4,8 @@
 }
 .modal-dialog {
     width: 90%;
-    top: -30px;
-    left: 133px;
+    /* top: -30px;
+    left: 133px; */
 }
 
 .tagsinput {
@@ -19,8 +19,8 @@
 }
 
 .bolck {
-    float: left;
-    width: 97%;
+    /* float: left; */
+    width: 100%;
     /*padding: 15px;*/
     background: #fff;
 }
@@ -36,21 +36,40 @@
 <div class="bolck">
     <form id="disp">
         <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="margin-right:50px" ng-click="cancel()">×</button>
             <h3 class="modal-title">{{info.vUserName}}'s Profile</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">×</button>
         </div>
-        <div class="panel-body" style="height:530px !important">
+        <div class="panel-body">
             <div class="col-sm-12">
                 <div class="wrapper-md ng-scope">
                     <div class="panel panel-default">
                         <div class="panel-body" style="background:#e4e7ea;">
-                            <div class="col-sm-12">
+                            <!-- <div class="col-sm-12">
                                 <div class="col-sm-2" style="margin-right: 10px;">
                                     <img ng-src="uploads/logo/{{info.vLogo}}" style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
                                 </div>
                                 <div class="col-sm-3">
                                     <span class="profileTitleh" ng-bind="info.vUserName"></span>
                                     <span class="profileTitle">I am a client</span>
+                                </div>
+                            </div> -->
+                            <div class="col-sm-12">
+                                <div class="col-sm-2" style="margin-right: 10px;">
+                                    <img ng-src="uploads/logo/{{info.vLogo}}" ng-if="info.vLogo" style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
+                                    <img ng-src="assets/img/blank.png" ng-if="!info.vLogo" style="width:175px;border: 7px solid #fff;padding: 8px;height:150px">
+                                </div>
+                                <div class="col-sm-8">
+                                    <div>
+                                        <span class="profileTitleh" ng-bind="info.vUserName"></span>
+                                    </div>
+                                    <div>
+                                        <span class="profileTitle">I am a client</span>
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <div class="">
+                                        <a class="btn btn-info" href="#/edit-client/{{info.iClientId}}" title="edit" style="margin-left:0px;margin-top: 50px;"><i class="glyph-icon fa-edit-white" style="margin-right:5px"></i>Edit</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +131,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="panel panel-default panel-labeled" style="height:350px;">
+                            <div class="panel panel-default panel-labeled" >
                                 <div class="panel-body">
                                     <h4 style="text-align: center;color: #636e7a;">Address</h4>
                                     <table class="table table-striped b-t b-b table-bordered">
@@ -146,27 +165,35 @@
                 </div>
                 <div class="col-md-12">
                     <div class="row">
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="panel panel-default panel-labeled" style="height: 165px;">
                                 <div class="panel-body">
                                     <h4 style="text-align: center;color: #636e7a;">Other Information</h4>
                                     <table class="table table-striped b-t b-b table-bordered">
                                         <tbody>
-                                            <!-- <tr>
-                    <td><span class="TblSpan">Project Coordinator</span></td>
-                    <td><span ng-bind="info.vProjectCoordinator"></span></td>
-                </tr>
-                <tr>
-                    <td><span class="TblSpan">Project Manager</span></td>
-                    <td><span ng-bind="info.vProjectManager"></span></td>
-                </tr>
-                <tr>
-                    <td><span class="TblSpan">QA Specialist</span></td>
-                    <td><span ng-bind="info.vQASpecialist"></span></td>
-                </tr> -->
                                             <tr>
                                                 <td><span class="TblSpan">PO Format</span></td>
                                                 <td><span ng-bind="info.tPoInfo"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="col-md-6">
+                            <div class="panel panel-default panel-labeled">
+                                <div class="panel-body">
+                                    <h4 style="text-align: center;color: #636e7a;">Contact Person</h4>
+                                    <table class="table table-striped b-t b-b table-bordered">
+                                        <thead>
+                                        <tbody>
+                                            <tr ng-repeat="c in contactlist">
+                                                <td ng-bind="{{$index + 1}}"></td>
+                                                <td>{{c.vFirstName}}&nbsp;{{c.vLastName}}</td>
+                                                <td style="word-break: break-word; display: inline-flex;">{{c.vEmail}} <a href="javascript:void(0)" style="margin-left: 5px;" ng-click="generalEmail(c.vEmail)"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></td>
+                                            </tr>
+                                            <tr ng-show="!contactlist.length">
+                                                <td colspan="4" ng-bind="dataNotFound"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -203,32 +230,7 @@
                 </div>
                 <div class="col-md-12">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="panel panel-default panel-labeled">
-                                <div class="panel-body">
-                                    <h4 style="text-align: center;color: #636e7a;">Contact Person</h4>
-                                    <table class="table table-striped b-t b-b table-bordered">
-                                        <thead>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <!-- <th>Department</th> -->
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="c in contactlist">
-                                                <td ng-bind="{{$index + 1}}"></td>
-                                                <td>{{c.vFirstName}}&nbsp;{{c.vLastName}}</td>
-                                                <td style="word-break: break-word; display: inline-flex;">{{c.vEmail}} <a href="javascript:void(0)" style="margin-left: 5px;" ng-click="generalEmail(c.vEmail)"><i class="fa fa-envelope-o" aria-hidden="true"></i></a></td>
-                                                <!-- <td ng-bind="c.vDepartment"></td> -->
-                                            </tr>
-                                            <tr ng-show="!contactlist.length">
-                                                <td colspan="4" ng-bind="dataNotFound"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="col-md-6">
                             <div class="panel panel-default panel-labeled">
                                 <div class="panel-body">
@@ -245,7 +247,7 @@
                                                 <td>{{client.vEmail}}
                                                     <!-- <a href="javascript:void(0)" ng-click="generalEmail(client.vEmail)"><i class="fa fa-envelope-o" aria-hidden="true"></i></a> --></td>
                                                 <td>
-                                                    <a href="http://{{client.vWebsite}}" style="color:#4ba0c3" target="_blank">{{client.vWebsite}}</a>
+                                                    <a href="http://{{client.vWebsite}}" style="color:#4ba0c3" target="_blank">{{client.vWebsite | limitTo:50}}</a>
                                                 </td>
                                             </tr>
                                             <tr ng-show="!clientlist1.length">
@@ -259,9 +261,10 @@
                     </div>
                 </div>
             </div>
+            <div class="pull-right">
+                <button class="btn btn-info" ng-click="cancel()"> Cancel</button>
+            </div>
         </div>
     </form>
-    <div class="pull-right">
-        <button class="btn btn-info" style="margin-right:50px" ng-click="cancel()"><span class="glyph-icon fa-times"></span> Cancel</button>
-    </div>
+    
 </div>

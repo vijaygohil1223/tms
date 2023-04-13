@@ -14254,6 +14254,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }, 100);
 
+    //$uibModalInstance.dismiss('cancel');
+    //$uibModalInstance.close();
+
     $timeout(function () {
         $scope.UpdateClientName = $window.localStorage.getItem("ShowuserName");
         $scope.showEditedByName = false;
@@ -14297,9 +14300,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification("Please delete from last record", "warning");
         }
     }
-    if ($window.localStorage.iUserId != '' && $window.localStorage.iUserId != undefined) {
-        $routeParams.id = $window.localStorage.iUserId;
-    }
+
+    console.log('$rootScope', $rootScope)
+    // if ($window.localStorage.iUserId != '' && $window.localStorage.iUserId != undefined) {
+    //     $routeParams.id = $window.localStorage.iUserId;
+    // }
 
     // Europe country form json file
     // api - https://restcountries.com/v3.1/region/europe
@@ -14313,7 +14318,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     });
     $scope.stateOptional = '';
 
-
+    console.log('$routeParams.id', $routeParams.id)
+        
     if ($routeParams.id != '' && $routeParams.id != undefined) {
         $window.localStorage.iUserId = $routeParams.id;
         rest.path = 'client';
@@ -18716,6 +18722,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }).error(function(data, error, status) {});
         });
     };
+
+    $scope.clientContactPopup = function (clientId) {
+        let clientName = $('#s2id_clientId1 .select2-search-choice > div').text();;
+        const obj = {
+            iClientId : clientId,
+            clientName : clientName
+        }
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/add_clientcontact_popup.html',
+            controller: 'clientContactPopupController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return obj;
+                }
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+            console.log('selectedItem', selectedItem)
+            // debugger;
+            $scope.selected = selectedItem;
+            $routeParams.id = clientId;
+            rest.path = 'contact';
+            rest.model().success(function (data) {
+                var cont = [];
+                angular.forEach(data.data, function (val, i) {
+                    cont.push({
+                        'id': val.iContactId,
+                        'text': val.vFirstName + ' ' + val.vLastName
+                    });
+                });
+
+                angular.element('#conatct-person').select2({
+                    allowClear: true,
+                    data: cont
+                });
+            }).error(errorCallback);
+
+        });
+    };
     
 }).controller('accountPopupController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -18770,7 +18817,62 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
-       
+    };
+    
+}).controller('clientContactPopupController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    
+    $scope.contact = {};
+    $scope.contact.iClientId = items.iClientId;
+    console.log('items', items)
+    
+    $scope.currentUserName = items.clientName;
+    
+    $scope.saveContact = function (formId, id) {
+        console.log('id', id)
+        if (angular.element("#" + formId).valid()) {
+            //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
+            var countryCodeData = angular.element('#iphone').parent().find('.selected-flag').attr('title');
+            var countryClass = angular.element('#iphone').parent().find('.selected-flag').find('.iti-flag').attr('class');
+            var mobile = angular.element('#iphone').val();
+            var countryObj = {
+                "countryTitle": countryCodeData,
+                "countryFlagClass": countryClass,
+                "mobileNumber": mobile
+            }
+            // [_site_admin_email]
+            $scope.contact.vPhone = JSON.stringify(countryObj);
+            
+            if ($scope.contact.iClientId) {
+                rest.path = 'contactsave';
+                rest.post($scope.contact).success(function (data) {
+                    //log file start 
+                    $scope.logMaster = {};
+                    $scope.logMaster.log_title = $scope.currentUserName;
+                    $scope.logMaster.log_type_id = $scope.contact.iClientId;
+                    $scope.logMaster.log_type = "update - client contact";
+                    $scope.logMaster.log_status = "direct_cli";
+                    $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                    rest.path = "saveLog";
+                    rest.post($scope.logMaster).success(function (data) { });
+                    //log file end
+                    $scope.selected = {
+                        item: 'Saved'
+                    };
+                    $uibModalInstance.close($scope.selected.item);
+                    //$scope.cancel();
+                }).error(errorCallback);
+            } else {
+                notification('Please create User', 'warning');
+                //$route.reload();
+            }
+            
+        } 
+        
+    };
+    
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
     };
 
 }).controller('profileViewController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
@@ -18779,6 +18881,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
         rest.path = 'viewdirectdataget/' + $routeParams.id;
         rest.get().success(function (data) {
+            console.log('data', data)
             $scope.info = data;
             /*rest.path = 'getTaxName/' + $scope.info.vTextType;
             rest.get().success(function(data) {
@@ -18794,13 +18897,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var CountryCode = JSON.parse(data.vPhone).countryTitle;
             var displayCode = '(+' + CountryCode.split('+')[1] + ')';
             $scope.info.vPhone = displayCode + ' ' + JSON.parse(data.vPhone).mobileNumber;
-            if (data.Invoice != " ") {
+            if (data.Invoice) {
                 angular.forEach(JSON.parse(data.Invoice), function (val, i) {
                     angular.element('#' + val.selectInvoice).text(val.invoice);
                 });
             }
 
-            $scope.email = JSON.parse(data.Invoice);
+            $scope.email = data.Invoice ? JSON.parse(data.Invoice) : '';
             $scope.address1 = JSON.parse(data.address1Detail);
             $scope.address2 = JSON.parse(data.address2Detail);
         }).error(errorCallback);
@@ -18833,18 +18936,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = 'PriceListDirectEditgetone/' + $routeParams.id;
         rest.get().success(function (data) {
+            console.log('data===', data)
             $scope.price = data;
-            var currency = data.currancy_id.split(',');
-            $scope.currencySymbole = currency[1];
-            $scope.currencyCode = currency[0];
-            $scope.translate = JSON.parse(data['translation']);
-            $scope.proofreading = JSON.parse(data['proofreading']);
-            $scope.tep = JSON.parse(data['tep']);
+            if(data){
+                var currency = (data && data.currancy_id) ? data.currancy_id.split(',') : 'EUR,€';
+                $scope.currencySymbole = currency[1];
+                $scope.currencyCode = currency[0];
+                $scope.translate = JSON.parse(data['translation']);
+                $scope.proofreading = JSON.parse(data['proofreading']);
+                $scope.tep = JSON.parse(data['tep']);
+            }
         })
     }
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
+    $scope.editClient = function(id){
+        $location.path('/edit-client/'+id)
+    }
+
 }).controller('generalmsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.generalMsg;

@@ -86,9 +86,9 @@
                                             <div class="panel-body p-0 projectDetailsbox">
                                                 <div class="form-group">
                                                     <div class="left">
-                                                        <label>Client</label>
-                                                        <input type="text" select2-client class="form-control" name="client" ng-model="customer.client" ng-change="getContact(customer.client, 'conatct-person')" required ng-hide="customerField" />
-                                                        <input type="text" select2-client class="form-control" name="client" ng-model="customer.client" ng-change="getContact(customer.client, 'conatct-person')" readonly ng-show="customerField" />
+                                                        <label>Client </label> <a ng-if="customer.client" href="#/edit-client/{{customer.client}}" title="edit"><i class="fa fa-pencil"></i></a>
+                                                        <input type="text" select2-client class="form-control" name="client" id="clientId1" ng-model="customer.client" ng-change="getContact(customer.client, 'conatct-person')" required ng-hide="customerField" />
+                                                        <input type="text" select2-client class="form-control" name="client" id="clientId2" ng-model="customer.client" ng-change="getContact(customer.client, 'conatct-person')" readonly ng-show="customerField" />
                                                     </div>
                                                     <div class="right">
                                                         <div ng-if="customer.client">
@@ -101,7 +101,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="left">
-                                                        <label>Contact Person</label>
+                                                        <label>Contact Person</label> <span > <a ng-if="customer.client" ng-click="clientContactPopup(customer.client)" style="margin-left:10px;padding:5px 5px;"><i class="fa fa-plus"></i> </a></span>
                                                         <input type="text" id="conatct-person" class="form-control" name="contact" ng-model="customer.contact" ng-disabled="!customer.client" required/>
                                                     </div>
                                                     <div class="right">
@@ -110,7 +110,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <div class="left">
-                                                        <label>Account</label> <span > <a ng-click="accountPopup()" style="margin-left:15px;padding:5px 5px;"><i class="fa fa-plus"></i> </a></span>
+                                                        <label>Account</label> <span > <a ng-click="accountPopup()" style="margin-left:10px;padding:5px 5px;"><i class="fa fa-plus"></i> </a></span>
                                                         <input type="text" select2-indirect class="form-control" name="indirect_customer" id="indirect_customer" ng-model="customer.indirect_customer" ng-change="AccountChange()" required />
                                                     </div>
                                                     <div class="right"></div>
