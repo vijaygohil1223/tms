@@ -639,7 +639,7 @@ class Client_invoice {
                     $scpData['updated_date'] = date('Y-m-d H:i:s');
                     $scpData['total_amount'] = $item['value'];
                     $scpData['total_price'] = $item['value'];
-                    //$scpData['item_status'] = '6'; // status id Invoiced = 6
+                    $scpData['item_status'] = '6'; // status id Invoiced = 6
                     $this->_db->where('itemId', $item['id']);
                     $scpstsId = $this->_db->update('tms_items', $scpData);
                 }
