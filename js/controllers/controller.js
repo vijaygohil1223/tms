@@ -759,7 +759,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.userprofiledata = {};
     $scope.userprofiledata.freelancer = 'freelancer';
-    console.log('sign-iup');
+    //console.log('sign-iup');
 
     $scope.isValidMobileNumber = false;
             
@@ -873,7 +873,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'getdateFormatByIuserId/1';
     rest.get().success(function (data) {
         if (data) {
-            console.log('data', data)
+            //console.log('data', data)
             if (data.dateSeparator == '/') {
                 $window.localStorage.setItem("global_dateFormat", data.dateformat);
                 $window.localStorage.setItem("dtSeparator", data.dateSeparator);
@@ -901,11 +901,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.saveUserSignUp = function (formId, ContactPersonId) {
-        console.log('formId', formId)
+        //('formId', formId)
                 
         if (angular.element("#" + formId).valid() ) {
             $scope.userprofiledata.iEditedBy = 0;
-            console.log('$scope.userprofiledata', $scope.userprofiledata)
+            //console.log('$scope.userprofiledata', $scope.userprofiledata)
             $scope.userprofiledata.eUserStatus = 2; // New User signup
             $scope.userprofiledata.is_available = '';
             
@@ -1157,7 +1157,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.uId = $window.localStorage.getItem("session_iUserId");
         $scope.menuAccess = $window.localStorage.getItem("session_menuAccess");
         $scope.menuAccess = $scope.menuAccess ? JSON.parse($scope.menuAccess) : [];
-        console.log('$scope.menuAccess', $scope.menuAccess)
+        //console.log('$scope.menuAccess', $scope.menuAccess)
         
         $scope.logout = function () {
             angular.forEach(["session_iUserId", "auth", "session_iFkUserTypeId", "session_vEmailAddress", "session_password", "internalUserEdit", "internalUserAdd", "jobRecentEdit", "jobRecentAdd", "session_holidayCountry", "generalEdit", "editInternalUser"], function (key) {
@@ -1217,8 +1217,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
         $rootScope.SearchJobList = data;
 
-        
-
         rest.path = "dashboardOrderGet";
         rest.get().success(function (data) {
             // remove same project orderNumber
@@ -1229,7 +1227,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.forEach($scope.projectData, function (ordersData) {
                     orders.push(ordersData.orderNumber);
                 });
-
                 angular.forEach($rootScope.SearchJobList, function (jdata) {
                     orders.push(jdata.po_number);
                 });
@@ -2212,7 +2209,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsAll';
         rest.get().success(function (data) {
             $scope.jobListDelivered = data;
-            console.log('$scope.jobListDelivered', $scope.jobListDelivered)
+            //console.log('$scope.jobListDelivered', $scope.jobListDelivered)
         })
     }         
 
@@ -2224,7 +2221,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            console.log('data---tabs', data)
+            //console.log('data---tabs', data)
             $scope.vResourcePosition = data.vResourcePosition;
             //-- Permission to show tabs --//
             if($window.localStorage.getItem("session_iUserId") == 1){
@@ -2235,7 +2232,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 else
                     $('.btn_create-project').css('top','15px')
             }        
-            console.log('$scope.tabPermission',$scope.tabPermission)
+            //console.log('$scope.tabPermission',$scope.tabPermission)
         });
     }
 
@@ -2415,28 +2412,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }    
                     
                 //  ----linguist List----- / 
-                //$scope.jobLinguist = [];
-                // if($cookieStore.get('session_iUserId') != undefined){
-                //     rest.path = 'jobsummeryGet/' + val.orderId;
-                //     rest.get().success(function(data) {
-                //         //$scope.jobLinguist = data;
-                //         angular.forEach(data, function(val2, i2) {
-                //             if(val2 && val2.resource){
-                //                 if(val.orderId == val2.order_id && val.item_number == val2.item_id){
-                //                     $scope.jobLinguist.push(val2);
-                //                 }
-                //             }
-                //         });    
-
-                //         $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
-                //         val.jobLinguist = $scope.jobLinguist;
-                //         $scope.jobLinguist = [];    
-                //     });
-                // }
+                
                 val.jobLinguist = [];
-                if (val.linguist.length > 0) {
-                    val.jobLinguist = UniqueArraybyId(val.linguist, 'resources');
-                }
+                // if (val.linguist.length > 0) {
+                //     val.jobLinguist = UniqueArraybyId(val.linguist, 'resources');
+                // }
+                if(val.linguistName){
+                    let linguistId = (val.linguistId).toString().split(',');
+                    var lngstArr = [];
+                    (val.linguistName).split(',').forEach((ele,i) => {
+                        lngstArr.push( { resources: linguistId[i], vUserName: ele } )    
+                    });
+                    val.jobLinguist = lngstArr;
+                }   
 
                 if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
                     val.pm_name = val.sub_pm_name
@@ -2451,25 +2439,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // }
                 
                 val.price_currency = val.client_currency && val.client_currency.includes(',') ? val.client_currency.split(',')[0] : 'EUR';
-                
-                
               
                 // Comment read unRead
                 var cmtcolor = '#0190d8';
                 var is_comment = 0;
                 var comment_id = 0;
-                if (val.comment.length > 0) {
-                    var is_comment = $scope.projectData[i].comment[0].comment_status;
-                }
-                if (val.comment_id.length > 0) {
-                    var comment_id = $scope.projectData[i].comment_id[0].comment_id;
-                }
-                //var comment_id = $scope.projectData[i].comment_id[0].comment_id;
-                //if (comment_id > 0 && is_comment > 0) {
-                if (is_comment > 0) {
+                // if (val.comment.length > 0) {
+                //     var is_comment = $scope.projectData[i].comment[0].comment_status;
+                // }
+
+                if (val.comment_status > 0) {
                     cmtcolor = '#d30c39';
                 }
-                if (is_comment == 0) {
+                if (val.comment_status == 0) {
                     cmtcolor = '#67bb0a';
                 }
                 val.comment = cmtcolor;
@@ -3404,7 +3386,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let currentDatestr = new Date(); 
 
                 currentDatestr = currentDatestr.toISOString().split('T')[0];
-                console.log('currentDatestr', currentDatestr)
+                //console.log('currentDatestr', currentDatestr)
                 let cDate1 = new Date();
                 let cDate = cDate1.setHours(0, 0, 0, 0);
 
@@ -3412,7 +3394,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(x.is_available){
                         let isAailable = JSON.parse(x.is_available);
                         if(isAailable.length){
-                            console.log('isAailable', isAailable)
+                            //console.log('isAailable', isAailable)
                             const isFound = isAailable.filter( dt => {
                                 if(Date.parse(dt.dateFrom) >= cDate || Date.parse(dt.dateTO) <= cDate ){
                                     return true
@@ -18850,7 +18832,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.logMaster = {};
                     $scope.logMaster.log_title = $scope.currentUserName;
                     $scope.logMaster.log_type_id = $scope.contact.iClientId;
-                    $scope.logMaster.log_type = "update - client contact";
+                    $scope.logMaster.log_type = "update - contact created";
                     $scope.logMaster.log_status = "direct_cli";
                     $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
                     rest.path = "saveLog";
