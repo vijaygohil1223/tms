@@ -1209,6 +1209,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
     rest.get().success(function (data) {
         $scope.projectScoop = data;
+        console.log('$scope.projectScoop', $scope.projectScoop)
         angular.forEach($scope.projectScoop, function (scoopData) {
             orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
         });
@@ -1217,10 +1218,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
         $rootScope.SearchJobList = data;
 
-        rest.path = "dashboardOrderGet";
-        rest.get().success(function (data) {
+        //rest.path = "dashboardOrderGet";
+        //rest.get().success(function (data) {
             // remove same project orderNumber
-            $scope.projectData = UniqueArraybyId(data, 'orderNumber'); 
+            $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber'); 
             
             $timeout(function () {
                 
@@ -1234,7 +1235,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.disableSearch = false;
             }, 100);
 
-        });
+        //});
     }).error(errorCallback);
 
 
