@@ -159,7 +159,8 @@ class Client_invoice {
                 //$this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
                 $this->_db->join('tms_payment tp', 'tp.iClientId = tci.iClientId AND tp.iType = 2', 'LEFT');
                 $this->_db->join('tms_tax tx', 'tp.tax_rate = tx.tax_id', 'LEFT');
-                $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
+                //$this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
+                $this->_db->join('tms_client_contact tcc','tcc.iContactId = tcu.contact', 'INNER');
                 $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tci.invoice_no_of_days, tci.client_currency, tcc.vEmail as companycontactEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tx.tax_percentage as tax_rate, ti.po_number');
                 
                 //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
