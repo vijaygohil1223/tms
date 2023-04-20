@@ -184,6 +184,12 @@
                                                         </div>
                                                     </div> -->
                                                     <div class="col-sm-12">
+                                                        <div class="col-sm-4 pl-0" style="margin-top: -20px;">
+                                                            <div class="form-group">
+                                                                <label>Invoice Email</label>
+                                                                <input type="email" id="vInvoiceEmail" class="form-control" name="vInvoiceEmail" ng-model="info.vInvoiceEmail" placeholder="Invoice Email" />
+                                                            </div>
+                                                        </div>
                                                         <div class="col-sm-4">
                                                             <div class="form-group">
                                                                 <div class="col-sm-4">
@@ -199,10 +205,9 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-sm-8">
-                                                                    <label>Select Logo</label> <input type="file"
-                                                                        ng-model="info.vLogo"
-                                                                        ng-file-select="onFileSelect($files)">
-                                                                        <!--  ng-required='!imageSrc && !info.vLogo'  -->
+                                                                    <label>Select Logo</label> 
+                                                                    <input type="file" ng-model="info.vLogo" ng-file-select="onFileSelect($files)">
+                                                                    <!--  ng-required='!imageSrc && !info.vLogo'  -->
                                                                 </div>
                                                             </div>
                                                         </div>

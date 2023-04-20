@@ -1209,7 +1209,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
     rest.get().success(function (data) {
         $scope.projectScoop = data;
-        console.log('$scope.projectScoop', $scope.projectScoop)
+        //console.log('$scope.projectScoop', $scope.projectScoop)
         angular.forEach($scope.projectScoop, function (scoopData) {
             orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
         });
@@ -16266,7 +16266,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
                             'freelanceName': $scope.invoiceDetail.freelanceName,
                             'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                            'companycontactEmail': $scope.invoiceDetail.companycontactEmail,
+                            'companycontactEmail': $scope.invoiceDetail.vInvoiceEmail ? $scope.invoiceDetail.vInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
                             'outstanding_reminder': 0,
                         };
                         rest.path = 'sendClientInvoiceMail';
@@ -16366,7 +16366,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
                     'freelanceName': $scope.invoiceDetail.freelanceName,
                     'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                    'companycontactEmail': $scope.invoiceDetail.companycontactEmail,
+                    'companycontactEmail': $scope.invoiceDetail.vInvoiceEmail ? $scope.invoiceDetail.vInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
                     'outstanding_reminder': 1,
                 };
                 rest.path = 'sendClientInvoiceMail';
@@ -28139,25 +28139,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewcontactdirectEdit/' + id;
         rest.get().success(function (data) {
             $scope.contactlist = data;
+            console.log('$scope.contactlist', $scope.contactlist)
             const email = ($scope.contactlist.length > 0) ? $scope.contactlist[0].vEmail : '';
             $scope.msgEmailSubject = invoiceNo;
-            if (id != undefined && id != " " && id != null) {
-                $window.localStorage.generalMsg = email;
-                var modalInstance = $uibModal.open({
-                    animation: $scope.animationsEnabled,
-                    templateUrl: 'tpl/generalmsg.html',
-                    controller: 'generalmsgController',
-                    size: '',
-                    scope: $scope,
-                    resolve: {
-                        items: function () {
-                            return $scope.msgEmailSubject;
-                        }
-                    }
-                });
-            } else {
-                notification('Please Add Email', 'warning');
-            }
+            // if (id != undefined && id != " " && id != null) {
+            //     $window.localStorage.generalMsg = email;
+            //     var modalInstance = $uibModal.open({
+            //         animation: $scope.animationsEnabled,
+            //         templateUrl: 'tpl/generalmsg.html',
+            //         controller: 'generalmsgController',
+            //         size: '',
+            //         scope: $scope,
+            //         resolve: {
+            //             items: function () {
+            //                 return $scope.msgEmailSubject;
+            //             }
+            //         }
+            //     });
+            // } else {
+            //     notification('Please Add Email', 'warning');
+            // }
         }).error(errorCallback);
 
     };
