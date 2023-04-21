@@ -380,10 +380,9 @@ class contactPerMsg {
             $emailImageData = " ";
         }
         
+        $encoded_content = " ";
         if(isset($data['file'])) {
-            $encoded_content = $this->uploadimage($data['file']);
-        } else {
-            $encoded_content = " ";
+            //$encoded_content = $this->uploadimage($data['file']);
         }
 
         if (isset($data['data']['cc'])) {
@@ -420,9 +419,37 @@ class contactPerMsg {
         if ($encoded_content != '') {
             //$this->_mailer->AddAttachment($encoded_content);
         }
+
+        $attachments = '';
+        if(isset($data['file'])){
+            $file_content = explode("base64,",$data['file']);
+            $fileContentType = explode(';',explode(':',$file_content[0])[1]);
+            $fileContentType = $fileContentType[0];
+            $fileType = explode('/',$fileContentType);
+            $fileType = $fileType[1];
+            
+            $fileName = 'download-file.'.$fileType;   
+            if($fileContentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                $fileName = 'download-file.docx';
+            if($fileContentType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                $fileName = 'download-file.xls';
+            
+            // Array for mailjet
+            if ($file_content != '') {
+                $allFileContent = ''; 
+                if(is_array($file_content)){
+                    $allFileContent = sizeof($file_content)>1 ? $file_content[1] : '';
+                    $attachments =  [[
+                        'ContentType' => $fileContentType,
+                        'Filename' => $fileName,
+                        'Base64Content' => $allFileContent
+                    ]]; 
+                }
+            }
+        }    
         // mailjet function
         $send_fn = new functions();
-        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $message, $encoded_content);
+        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $message, $attachments);
         
         if ($response && $response['status']==200) { //output success or failure messages
             $result['status'] = 200;

@@ -12016,6 +12016,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveContact = function (formId, id) {
         console.log('id', id)
+        console.log('$scope.contact',$scope.contact)
         if (angular.element("#" + formId).valid()) {
             //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             var countryCodeData = angular.element('#iphone').parent().find('.selected-flag').attr('title');
@@ -16266,7 +16267,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
                             'freelanceName': $scope.invoiceDetail.freelanceName,
                             'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                            'companycontactEmail': $scope.invoiceDetail.vInvoiceEmail ? $scope.invoiceDetail.vInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
+                            'companycontactEmail': $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
                             'outstanding_reminder': 0,
                         };
                         rest.path = 'sendClientInvoiceMail';
@@ -16366,7 +16367,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
                     'freelanceName': $scope.invoiceDetail.freelanceName,
                     'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                    'companycontactEmail': $scope.invoiceDetail.vInvoiceEmail ? $scope.invoiceDetail.vInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
+                    'companycontactEmail': $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
                     'outstanding_reminder': 1,
                 };
                 rest.path = 'sendClientInvoiceMail';
@@ -28139,26 +28140,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewcontactdirectEdit/' + id;
         rest.get().success(function (data) {
             $scope.contactlist = data;
-            console.log('$scope.contactlist', $scope.contactlist)
-            const email = ($scope.contactlist.length > 0) ? $scope.contactlist[0].vEmail : '';
+            let invoiceEmail = $scope.contactlist.filter( (el)=> el.is_client_invoice == 1 ) 
+            invoiceEmail = invoiceEmail.length > 0 ? invoiceEmail[0].vEmail : ($scope.contactlist.length > 0) ? $scope.contactlist[0].vEmail : '' ;
             $scope.msgEmailSubject = invoiceNo;
-            // if (id != undefined && id != " " && id != null) {
-            //     $window.localStorage.generalMsg = email;
-            //     var modalInstance = $uibModal.open({
-            //         animation: $scope.animationsEnabled,
-            //         templateUrl: 'tpl/generalmsg.html',
-            //         controller: 'generalmsgController',
-            //         size: '',
-            //         scope: $scope,
-            //         resolve: {
-            //             items: function () {
-            //                 return $scope.msgEmailSubject;
-            //             }
-            //         }
-            //     });
-            // } else {
-            //     notification('Please Add Email', 'warning');
-            // }
+            if (id != undefined && id != " " && id != null) {
+                $window.localStorage.generalMsg = invoiceEmail;
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'tpl/generalmsg.html',
+                    controller: 'generalmsgController',
+                    size: '',
+                    scope: $scope,
+                    resolve: {
+                        items: function () {
+                            return $scope.msgEmailSubject;
+                        }
+                    }
+                });
+            } else {
+                notification('Please Add Email', 'warning');
+            }
         }).error(errorCallback);
 
     };
