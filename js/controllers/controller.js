@@ -759,8 +759,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.userprofiledata = {};
     $scope.userprofiledata.freelancer = 'freelancer';
-    //console.log('sign-iup');
-
+    
     $scope.isValidMobileNumber = false;
             
     /* Mobile Validation START */
@@ -873,7 +872,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'getdateFormatByIuserId/1';
     rest.get().success(function (data) {
         if (data) {
-            //console.log('data', data)
             if (data.dateSeparator == '/') {
                 $window.localStorage.setItem("global_dateFormat", data.dateformat);
                 $window.localStorage.setItem("dtSeparator", data.dateSeparator);
@@ -905,7 +903,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
         if (angular.element("#" + formId).valid() ) {
             $scope.userprofiledata.iEditedBy = 0;
-            //console.log('$scope.userprofiledata', $scope.userprofiledata)
             $scope.userprofiledata.eUserStatus = 2; // New User signup
             $scope.userprofiledata.is_available = '';
             
@@ -1024,50 +1021,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.setItem("dtSeparator", '.'); // Default
 
     let fullUrl = $location.absUrl();
-    console.log('fullUrl', fullUrl)
     $scope.baseURL = fullUrl.split('#')[0];
-    console.log('baseURL', $scope.baseURL)
     let queryString = fullUrl.split('/').pop();
-    console.log('queryString', queryString)
     var encodedUrl = atob(queryString);
     let paramsName = encodedUrl.split('&')
-    console.log(encodedUrl);
     $scope.jobId = 0;
     $scope.UserId = 0;
     $scope.accept = 0;
     $scope.reject = 0;
-    console.log('paramsName', paramsName)
     
     $scope.jobDetails = {};
     $scope.jobDetails.resourceId = 0;
     if(paramsName.length > 0){
         let paramsJob = paramsName[0].split('=') 
-        console.log('paramsJob', paramsJob)
         if(paramsJob[0] =='jobId'){
             $scope.jobId = paramsJob[1];
             $scope.jobDetails.jobId = $scope.jobId; 
         }
         if(paramsName.length > 1){
             let paramsUser = paramsName[1].split('=') 
-            console.log('paramsUser', paramsUser)
             if(paramsUser[0] =='userId'){
                 $scope.userId = paramsUser[1];
                 $scope.jobDetails.resourceId = $scope.userId;
-                console.log('$scope.userId', $scope.userId)
             }
         }
         if(paramsName.length > 2){
             let paramsAccept = paramsName[2].split('=') 
-            console.log('paramsAccept', paramsAccept)
             if(paramsAccept[0] =='accept'){
                 $scope.accept = paramsAccept[1];
                 $scope.jobDetails.jobAccept = 1;
-                console.log('$scope.accept', $scope.accept)
             }
             if(paramsAccept[0] == 'reject'){
                 $scope.reject = paramsAccept[1];
                 $scope.jobDetails.jobAccept = 0;
-                console.log('$scope.accept', $scope.accept)
                 //notification('You have rejected the Job.', 'warning');
             }
         }
@@ -1076,10 +1062,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if($scope.jobDetails.jobId){
             rest.path = 'getOneJobsummury/'+ $scope.jobDetails.jobId;
             rest.get().success(function (data) {
-                console.log('response-data', data)
                 if (data) {
                     if(data.accept > '0' ){
-                        console.log('if part == $scope.jobDetails ', $scope.jobDetails)
                         
                         if($scope.jobDetails.jobAccept == 1 && data.accept == $scope.jobDetails.resourceId){
                             $('#responseMsg').text('Already, You have accepted the job');
@@ -1091,10 +1075,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             notification(msgText);
                         }
                     }else{
-                        console.log('else part  == $scope.jobDetails ', $scope.jobDetails)
                         rest.path = 'jobAccept';
                         rest.post($scope.jobDetails).success(function (data) {
-                            console.log('data-updated', data)
                             if(data && data.jobAccept == 1){
                                 notification('You have accepted the job', 'success');
                                 $('#responseMsg').text('You have accepted the job');
@@ -1111,7 +1093,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             });
         }    
-        console.log('$scope.jobDetails', $scope.jobDetails)
     }
         
     
@@ -1157,7 +1138,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.uId = $window.localStorage.getItem("session_iUserId");
         $scope.menuAccess = $window.localStorage.getItem("session_menuAccess");
         $scope.menuAccess = $scope.menuAccess ? JSON.parse($scope.menuAccess) : [];
-        //console.log('$scope.menuAccess', $scope.menuAccess)
         
         $scope.logout = function () {
             angular.forEach(["session_iUserId", "auth", "session_iFkUserTypeId", "session_vEmailAddress", "session_password", "internalUserEdit", "internalUserAdd", "jobRecentEdit", "jobRecentAdd", "session_holidayCountry", "generalEdit", "editInternalUser"], function (key) {
@@ -1209,7 +1189,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
     rest.get().success(function (data) {
         $scope.projectScoop = data;
-        //console.log('$scope.projectScoop', $scope.projectScoop)
         angular.forEach($scope.projectScoop, function (scoopData) {
             orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
         });
@@ -1240,7 +1219,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.searchProject = function (selectedValue) {
-        console.log('selectedValue', selectedValue)
         $scope.selectedOrder = selectedValue;
         var txtValue = angular.element('#selectedOrder').val()
 
@@ -1303,7 +1281,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var isMatchScoop = true;
                 if( ($scope.selectedOrder).split('-').pop().length == 3){
                     if( ($scope.selectedOrder).split(/-(.*)/s)[0].toString().length > 4){
-                        console.log('$toString()', ($scope.selectedOrder).split(/-(.*)/s)[0].toString() )
+                        
                         angular.forEach($scope.projectScoop, function (scoopData) {
                             if (isMatchScoop) {
                                 if (scoopData.orderNumber === ($scope.selectedOrder).split(/-(.*)/s)[0].toString() ) {
@@ -1516,7 +1494,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // activity project
     $scope.edit = function (id) {
-        //console.log('activity-id', id)
+        
         if (id) {
             rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
@@ -1573,7 +1551,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function (data) {
             $scope.dashboardJobList = data;
-            //console.log("$scope.dashboardJobList", $scope.dashboardJobList);
+            
             var Requested = [];
             var NewJob = [];
             var inProgerss = [];
@@ -1791,7 +1769,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //Project Get From DashBoard Recent Activity
     $scope.edit = function (id) {
-        //console.log('activity-id', id)
+        
         if (id) {
             rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
@@ -2107,7 +2085,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.goToProjectViewdetail = function (viewType) {
-        //console.log('viewType', viewType)
+        
         if (viewType) {
             var modalInstance = $uibModal.open({
                 //animation: $scope.animationsEnabled,
@@ -2125,8 +2103,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.goToScoopViewdetail = function (viewType, orderId, event) {
-        //console.log('orderId', orderId)
-        //console.log('$event',event)
+        
         if(event.ctrlKey && orderId){
             rest.path = 'order/' + orderId + '/' + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
@@ -2200,7 +2177,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'childPriceitemget';
         rest.get().success(function (data) {
             $scope.childPrice = data;
-            //console.log("$scope.childPrice", $scope.childPrice);
+            
         }).error(errorCallback);
     }
 
@@ -2210,7 +2187,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsAll';
         rest.get().success(function (data) {
             $scope.jobListDelivered = data;
-            //console.log('$scope.jobListDelivered', $scope.jobListDelivered)
+            
         })
     }         
 
@@ -2222,7 +2199,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            //console.log('data---tabs', data)
+            
             $scope.vResourcePosition = data.vResourcePosition;
             //-- Permission to show tabs --//
             if($window.localStorage.getItem("session_iUserId") == 1){
@@ -2233,7 +2210,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 else
                     $('.btn_create-project').css('top','15px')
             }        
-            //console.log('$scope.tabPermission',$scope.tabPermission)
+            
         });
     }
 
@@ -2284,8 +2261,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.allProjectListing = function () {
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            console.log('data', data)
-
+            
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
                 $scope.projectsAll = [];
@@ -2335,7 +2311,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach($scope.projectData, function (val, i) {
                 val.progrss_precentage = -1;
                 //$scope.projectsAll = $scope.projectData;
-                //console.log('$scope.projectsAll==',$scope.projectsAll);
                 //var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
                 if (val.itemsSourceLang) {
@@ -2594,7 +2569,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.projectsDueTomorrow.push(val);
                         $scope.projectsDueTomorrowCount++;
                     }
-                    //console.log('$scope.dateToday=before', $scope.dateToday)
                     if (scoopDueDate.split(' ')[0] < $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsOverdue.push(val);
                         $scope.projectsOverdueCount++;
@@ -2607,8 +2581,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $scope.showDataLoader = false;
             });
-            //console.log("allproj", $scope.projectsAll);
-            console.log('data.length', data.length)
             if(data.length == 0)
                 $scope.showDataLoader = false;
 
@@ -2620,10 +2592,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.projBranchChange = true;
         $scope.projectBranch = {};
         $scope.projectBranch = angular.element('#projectBranch').select2('data');
-        console.log('$scope.projectBranch', $scope.projectBranch)
         //var projBranchVal = $scope.projectBranch.length > 0 ? $scope.projectBranch[0].id : 'RWS22';
         var projBranchVal = $scope.projectBranch ? $scope.projectBranch.id : '';
-        console.log('projBranchVal', projBranchVal)
         $window.localStorage.projectBranch = projBranchVal;
         if (projBranchVal) {
             //$route.reload();
@@ -2633,7 +2603,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     $scope.branchRefresh = function () {
-        //console.log('branchRefresh')
         $route.reload();
     }
 
@@ -2645,21 +2614,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     $scope.checkScoopIds = function(id){
-        console.log('clickerd-id', id)
         if(id){
             let isChecked = $('.scoopCheck' + id).is(':checked') ? 'true' : 'false';
-            console.log('isChecked', isChecked)
             if(isChecked == 'true'){
                 if(!$scope.checkedIds.includes(id))
                     $scope.checkedIds.push(id);
             }else
                 $scope.checkedIds = arrayRemove($scope.checkedIds, id);
         }    
-        console.log('$scope.checkedIds', $scope.checkedIds)
     }
     $scope.changeScoopStatus = function (scoopId,index) {
-        console.log('index', index)
-        console.log('scoopId', scoopId)
         if(scoopId){
             $("#scoopCheck"+index).prop('checked', true);
             $scope.checkScoopIds(scoopId);
@@ -2685,8 +2649,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         onEscape: true,
                         className: "btn-info",
                         callback: function () {
-                            console.log('$scope.checkedIds=success', $scope.checkedIds)
-                            console.log('$scope.statusName',$scope.selectedStatus )
                             let objStatus = {
                                 'scoop_id':JSON.stringify($scope.checkedIds),
                                 'item_status':$scope.selectedStatus.split(',')[0],
@@ -2694,7 +2656,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if($scope.checkedIds.length){
                                 rest.path = "scoopStatusChange";
                                 rest.post(objStatus).success(function (data) {
-                                    console.log('data=update', data);
                                     if(data && data.all_update == 1){
                                         notification('Status successfully updated', 'success');
                                         $route.reload();
@@ -2746,7 +2707,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getJobsFromTmsSummeryView';
         rest.get().success(function (data) {
             $scope.dashboardJobList = data;
-            console.log('dashboardJobList=Jobs', $scope.dashboardJobList)
             
             $scope.allJobsData = [];
             $scope.requested = [];
@@ -2906,7 +2866,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             case 'Overdue':
                 $scope.jobsListAll = $scope.jobOverDue;
                 $scope.jobsTabArr[4].jobsListAll = $scope.jobOverDue
-                console.log('$scope.jobsListAll=>inn', $scope.jobsListAll)
                 break;         
         }
         
@@ -2923,7 +2882,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     // $scope.jobstatusRecord = function(jobStatus) {
-    //     console.log('jobStatus',jobStatus);
     //     if(jobStatus == 'inProgerss'){
     //         $scope.jobstatusFilter = 'inProgerss';
     //         $scope.jobNew = delivered;
@@ -2950,7 +2908,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
     $scope.namePrezip = function (name) {
-        //console.log('namee',name);
         $window.localStorage.setItem('itemClientName', name);
     }
     $scope.orderCheck = function (id, eID, inPrepare) {
@@ -3075,7 +3032,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // freelance job wise data get
     if ($cookieStore.get('session_iUserId') && $window.localStorage.session_iUserId && $scope.userRight == 2) {
-        //console.log('freelanceJob call before login', $cookieStore.get('session_iUserId'));
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
             $scope.jobList = data;
@@ -3124,7 +3080,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.pageChanged = function () {
                 var startPos = ($scope.page - 1) * 10;
                 //$scope.displayItems = $scope.totalItems.slice(startPos, startPos + 3);
-                //console.log($scope.page);
             };
 
         }).error(errorCallback);
@@ -3140,11 +3095,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // $scope.totalItems = $scope.jobList.length;
         // $scope.entryLimit = 8; // items per page
         // $scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
-        // console.log('$scope.noOfPages', $scope.noOfPages)
-
+        
         // $scope.$watch('In_progress', function (newVal, oldVal) {
         //     $scope.filtered = filterFilter($scope.jobList, newVal);
-        //     console.log('$scope.filtered', $scope.filtered)
         //     $scope.totalItems = $scope.filtered.length;
         //     $scope.noOfPages = Math.ceil($scope.totalItems / $scope.entryLimit);
         //     $scope.currentPage = 1;
@@ -3387,7 +3340,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let currentDatestr = new Date(); 
 
                 currentDatestr = currentDatestr.toISOString().split('T')[0];
-                //console.log('currentDatestr', currentDatestr)
                 let cDate1 = new Date();
                 let cDate = cDate1.setHours(0, 0, 0, 0);
 
@@ -3395,7 +3347,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(x.is_available){
                         let isAailable = JSON.parse(x.is_available);
                         if(isAailable.length){
-                            //console.log('isAailable', isAailable)
                             const isFound = isAailable.filter( dt => {
                                 if(Date.parse(dt.dateFrom) >= cDate || Date.parse(dt.dateTO) <= cDate ){
                                     return true
@@ -3445,7 +3396,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
         const currentDatestr = new Date();
         const currentDate = currentDatestr.toISOString().split('T')[0];
-        console.log('currentDate', currentDate)
         if ($scope.vResourcePosition == 2) {
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId"));
             //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
@@ -3458,8 +3408,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId"));
             //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
         }
-        //console.log('$scope.upProjDeliveries', $scope.projectsAll)
-
+        
     }, 1500);
 
     $scope.jobDiscussion = (orderId) => {
@@ -3606,7 +3555,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.modalOpen = false;
     // After Linguist login
     $scope.projectJobdetail = function (jobId) {
-        //console.log('popid-jobId', jobId)
         scrollBodyToTop();
         //$location.path('/job-summery-details/' + id);
         $routeParams.id = jobId;
@@ -3631,14 +3579,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         modalInstance.result.finally(function (selectedItem) {
             $scope.modalOpen = false;
         });
-        //console.log('$scope.modalOpen', $scope.modalOpen)
-
+    
     }
-    //console.log('$scope.modalOpen', $scope.modalOpen);
-
+    
     // on edit/update stay on same tabs
     $scope.changeProjectTabs = function(className){
-        //console.log('className', className)
         $window.localStorage.setItem("projectActiveTab", className);
     }
     $scope.lastProjectTabs = function(){
@@ -3719,7 +3664,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             start = moment(start).format('YYYY-MM-DD');
             end = moment(end).format('YYYY-MM-DD');
             if (end < start) {
-                //console.log('true');
                 $scope.calendar.event_enddate = "";
                 notification('Lowest date not allowed', "warning");
                 angular.element('#endDate').val('');
@@ -3835,11 +3779,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("parentId", " ");
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
-    console.log('$scope.DetailId', $scope.DetailId)
-
-    console.log('$window.localStorage.orderID',$window.localStorage.orderID )
+    
     $window.localStorage.jobfolderId = $routeParams.id;
-    console.log('$routeParams.id', $routeParams.id)
     $window.localStorage.pId = " ";
     $window.localStorage.jobstatusName = " ";
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
@@ -3849,7 +3790,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'customerpriceAll/' + 2;  //2 for external userID
         rest.get().success(function (data) {
             $scope.priceList = data;
-            console.log('$scope.priceList', $scope.priceList)
         });
     }
 
@@ -3885,7 +3825,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.sendPO = function(type){
         let poFilenamePdf = $scope.jobdetail.po_number ? 'PO_' +$scope.jobdetail.po_number +'.pdf' : 'purchase_order.pdf'; 
         $scope.poTempate = true;
-        console.log('$scope.poTempate', $scope.poTempate)
         if(type == 'Download'){
             setTimeout(() => {
                 kendo.drawing.drawDOM($("#downloadPO")).then(function (group) {
@@ -3918,7 +3857,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         };
                         rest.path = 'sendPurchaseOrderLinguist';
                         rest.post($scope.invoicemailDetail).success(function (data) {
-                            console.log('sendPurchaseOrderLinguist=data', data)
                             if (data.status == 200) {
                                 notification('Purchase order has been sent successfully', 'success');
                                 $scope.poTempate = false; 
@@ -3939,7 +3877,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'childPriceitemget';
         rest.get().success(function (data) {
             $scope.childPrice = data;
-            console.log('$scope.childPrice', $scope.childPrice)
             $scope.exChildPriceArr = [];
             deferredCh.resolve($scope.childPrice);
         }).error( function(){
@@ -3950,10 +3887,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Linguist Price list fetching
     $scope.changeLinguistPrice = function(resourceId, specializationArr, langPair){
-        console.log('specializationArr', specializationArr)
-        console.log('resourceId', resourceId)
-        console.log('langPair-2', langPair)
-        console.log('id', resourceId)
         if(resourceId > 0){
             let clientPricelist = $scope.customerpriceAll.filter((e) => e.resource_id == resourceId )
             if(clientPricelist){
@@ -3965,7 +3898,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //     if(val.child_price_id == x.childPriceId){
                                 //         if(val.itemId == item_id){
                                 //             $scope.exChildPriceArr[i].rate = x.basePrice; 
-                                //             console.log('$scope.newchildPriceArr-'+item_id, $scope.newchildPriceArr)
                                 //         }
                                 //     }
                                 //     return x;
@@ -3977,7 +3909,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         var spclFound = false; 
                                     const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
                                     if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
-                                        console.log('match', val.child_price_id)
                                         $scope.exChildPriceArr[i].rate = x.basePrice;  
                                     }
                                     return x;
@@ -3998,7 +3929,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //                 var spclFound = false; 
                 //             const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
                 //             if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
-                //                 console.log('match', val.child_price_id)
                 //                 $scope.exChildPriceArr[i].rate = x.basePrice;  
                 //             }
                 //             return x;
@@ -4020,7 +3950,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'viewExternalget/' + resID;
             rest.get().success(function (data) {
                 $scope.resourceDetail = data;
-                console.log('$scope.resourceDetail=='+resID, $scope.resourceDetail)
             if ($scope.resourceDetail.address1Detail) {
                 let resourceAddDetail = JSON.parse($scope.resourceDetail.address1Detail);
                 angular.forEach(resourceAddDetail, function (resourceAddress, i) {
@@ -4051,7 +3980,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
-            console.log('$scope.jobdetail?', $scope.jobdetail)
             $scope.jobdetail.ItemLanguage = '';
             var srcLang = 'English (US)';
             var trgLang = 'English (US)';
@@ -4061,13 +3989,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var targetData = JSON.parse(data.target_lang);
                 srcLang = sourceData.sourceLang;
                 trgLang = targetData.sourceLang;
-                console.log('srcLang', srcLang);
             });
 
             //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             //var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
             $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
-            console.log('$scope.jobdetail.ItemLanguage', $scope.jobdetail.ItemLanguage);
             $scope.dueDate = $scope.jobdetail.due_date;
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
 
@@ -4086,7 +4012,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             $scope.clientCurrency = $scope.jobdetail.freelance_currency ? $scope.jobdetail.freelance_currency.split(',')[0] : 'EUR'; 
 
-            console.log('$scope.itemPriceUni-', $scope.itemPriceUni);
             /*if (isNaN(Date.parse($scope.jobdetail.due_date))) {
                 $timeout(function() {
                     var date = new Date();
@@ -4100,7 +4025,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }*/
             // service - 
             $scope.resourceDetailFn($scope.jobdetail.resource);
-            console.log('$scope.jobdetail.resource', $scope.jobdetail.resource)
             
             $scope.lngPriceList = [];
             var resource_id_csv = $scope.jobdetail.resource;
@@ -4119,7 +4043,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
                     var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
                     
-                    console.log('langPair', $scope.jobdetail.ItemLanguage)
                     $scope.changeLinguistPrice(res_id, projSpecialization, $scope.jobdetail.ItemLanguage);
                     //var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
                     var newPriceList = priceList.filter(function (priceList) { 
@@ -4131,12 +4054,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
 
                     $scope.lngPriceList = [];
-                    console.log('$scope.priceList-usersList-', $scope.priceList);
-
+        
                     angular.forEach(newPriceList, function (val, i) {
                         var langList = JSON.parse(val.price_language);
                         const price = JSON.parse(val.price_basis);
-                        console.log('lang', langList[0].languagePrice);
                         angular.forEach(langList, function (val2, i2) {
                             //$scope.jobdetail.ItemLanguage = angular.element('#sourceLang').text;
                             if ($scope.jobdetail.ItemLanguage == val2.languagePrice) {
@@ -4158,7 +4079,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var priceList = $scope.priceList.filter(function (priceList) { return priceList.resource_id == resource_id_csv; });
                 //var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
                 var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
-                console.log('projSpecialization', projSpecialization)
+                
                 //var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
                 var newPriceList = priceList.filter(function (priceList) { 
                         if(!priceList.specialization)
@@ -4167,8 +4088,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         return findCommonArrEle(projSpecialization, priceSpc)
                     });
                 //var projSpecialization = $scope.jobdetail.proj_specialization.toString();
-                //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization.toString()); console.log('isSpclzExist',isSpclzExist);  return priceList.resource_id == resource_id_csv && isSpclzExist; });
-                console.log('newPriceList-in', newPriceList)
+                //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist; });
                 //$scope.lngPriceList = [];
                 angular.forEach(newPriceList, function (val, i) {
                     var langList = JSON.parse(val.price_language);
@@ -4184,7 +4104,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                 });
                 var lngPriceList = $scope.lngPriceList;
-                console.log('$scope.lngPriceList=job=', $scope.lngPriceList)
 
                 // import CSV
                 $scope.csvData = [];
@@ -4192,7 +4111,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var percent = 0;
                 var csvColmnArr = ['Repetition', '101%', '100%', '95%-99%', '85%-94%', '75%-84%', '50%-74%', 'No match', '(New)', 'New'];
                 $scope.getFile = function (files) {
-                    console.log('files', files);
                     if (!files)
                         $scope.csvProgress = false;
                     $scope.csvFilename = files.name;
@@ -4204,7 +4122,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         download: true,
                         delimiter: "',','\t',';'",
                         complete: function (results, files, err) {
-                            console.log('results', results)
                             var csv = results.data;
                             if (csv[7]["Repetition"])
                                 var numindex = 0;
@@ -4213,7 +4130,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var Isnumpattern = /^[0-9,\.\? ]+$/;
                             var isError = false;
                             lngPriceList = $scope.lngPriceList;
-                            console.log('lngPriceList', lngPriceList)
                             angular.forEach(csv, function (val, i) {
                                 //if(csvColmnArr.includes(val[0]) ){
                                 if (i > 8 && Isnumpattern.test(val[2])) {
@@ -4371,7 +4287,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
-            console.log('$scope.jobdetail=single', data)
+            
             //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
             var due_timeval = $scope.jobdetail.due_date.split(" ")[1];
             var due_timeval = due_timeval.substring(0, 5);
@@ -4392,8 +4308,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var deferredIl = $q.defer();
                 rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
                 rest.get().success(function (data) {
-                    console.log('data=itemss', data)
-
+                    
                     var sourceData = JSON.parse(data.source_lang);
                     var targetData = JSON.parse(data.target_lang);
                     var srcLang = sourceData.sourceLang;
@@ -4413,7 +4328,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             rest.path = 'getOrderSingle/' + data[0].order_id ;
             rest.get().success(function (data) {
-                console.log('data=general', data)
                 //$scope.jobdetail.genSpecialization = data.specialization;
                 $scope.scoopSpecializationArr = (data.specialization.toString()).split(',');
             });
@@ -4487,25 +4401,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             $cookieStore.put('editJobact', data[0]);
             
-            console.log('data[0]', data[0])
-
             var newitemData = data[0];
-            console.log('newitemData', newitemData)
+            
             // ----->>>>  Price List Linguist <<<<---------
             $scope.childPriceAll().then((chData) => {
                 //newitemData.forEach( function(eleVal, index, arr){
-                    console.log('specilall', $scope.scoopSpecializationArr)
                     
                     $scope.exChildPriceArr = $scope.childPrice;
-                    console.log('newchildPriceArr', $scope.exChildPriceArr)
-                    console.log('$scope.customerpriceAll', $scope.customerpriceAll)
                     $scope.exCustPriceAll().then((prData) => {
                         let resourceId = newitemData.resource ? newitemData.resource : 0; 
                         
-                        console.log('prData', prData)
                         $scope.promiseItemLang().then( (lang) => {
                             var langPair = $scope.jobdetail.ItemLanguage;
-                            console.log('langPair-get', langPair)
                     
                             $scope.changeLinguistPrice(resourceId, $scope.scoopSpecializationArr, langPair)
                         });
@@ -4543,7 +4450,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'childPriceitemget';
     rest.get().success(function (data) {
         $scope.childPrice = data;
-        //console.log("$scope.childPrice", $scope.childPrice);
     }).error(errorCallback);
     // Change job price
     $scope.itemPriceUni = [];
@@ -4623,11 +4529,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // end job price
 
     $scope.savejobDetail = function (formId) {
-        console.log('$cookieStore.get',$cookieStore.get('editJobact'))
         if ($routeParams.id) {
             $scope.jobdetail.due_date = angular.element('#duedate').val();
-            console.log('$scope.jobdetail.due_date-get', $scope.jobdetail.due_date)
-
+            
             $scope.jobdetail.description = $scope.jobdetail.jobDesc;
             delete $scope.jobdetail['jobDesc'];
 
@@ -4652,7 +4556,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         work_id: workId,
                         work_name: workName
                     });
-                console.log('insertid',i);
             }*/
             $scope.work_instruction = JSON.stringify(obj);
             $scope.jobdetail.work_instruction = $scope.work_instruction;
@@ -4684,13 +4587,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.jobdetail.due_date = originalDateFormatNew($scope.jobdetail.due_date);
             //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format('YYYY-MM-DD HH:mm:ss');
             $scope.jobdetail.due_date = $scope.jobdetail.due_date.split(' ')[0].split('.').reverse().join('-');
-            //console.log('$scope.jobdetail.due_date',$scope.jobdetail.due_date);
             $scope.jobdetail.due_date = $scope.jobdetail.due_date;
             var due_timevl1 = angular.element('#due_time').val();
-            //console.log('due_timevl1',due_timevl1);
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
-            console.log('date-time-ckk',$scope.jobdetail.due_date);
-
+            
             // this field used in tabel join for csv pay calculation
             if ($scope.jobdetail.project_type_name)
                 delete $scope.jobdetail.project_type_name;
@@ -4756,7 +4656,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var due_timeval_e = $scope.jobdetail.due_date.split(" ")[1];
                     var due_timeval_e = due_timeval_e.substring(0, 5);
                     $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($window.localStorage.getItem('global_dateFormat'));
-                    console.log('$scope.jobdetail.due_date', $scope.jobdetail.due_date)
                     angular.element('#due_time').val(due_timeval_e);
                 }
             });
@@ -5078,7 +4977,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $route.reload();
                                 }, 100);
                             }*/
-                            //console.log('return from main api', data);
                         }).error(errorCallback);
                     }
                 }
@@ -5362,13 +5260,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     if ($window.localStorage.getItem("parentId") != " ") {
         var id = $window.localStorage.getItem("parentId");
-        console.log('id', id)
         var externalResourceUserId = null;
         rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
         //rest.path = 'filefolderGet/' + id + '/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.displayfolder = data;
-            console.log('$scope.displayfolder', $scope.displayfolder)
             // $scope.headerfilename(id);
             $timeout(function () {
                 $scope.displayfolder = data;
@@ -5471,8 +5367,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                                     /*if(val.childfile){
                                         angular.forEach(val.childfile,function(val2,i2){
-                                            //console.log(val2.name);
-                                            //console.log('childdata',val2);
                                             var prntId = 1;
                                             if(val2.ext!=''){
                                                 var fimg2 = val2.name;
@@ -5503,8 +5397,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     }*/
                                 })
                                 // files download
-                                //console.log('fileUrls',fileUrls);
-                                //console.log('folder-data',folderArr);
                                 var file_count = 0;
                                 fileUrls.forEach(function (url) {
                                     JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
@@ -5520,8 +5412,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             }*/
                                             zipdwnld.folder(folders.folderurl_dir);
                                         });
-                                        //console.log('folder',folderName);
-
+                                        
                                         file_count++;
                                         if (data != null) {
                                             //zipdwnld.file(folderName+url.file_name, data,  {binary:true});
@@ -5764,7 +5655,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.menuOptionsFolder.splice(0, 1);
                 }
 
-                console.log('$routeParams', $routeParams)
                 if ($window.localStorage.jobFoldertype == 'source' && $scope.userRight == 1) {
                     let urlName = document.URL.substring(document.URL.lastIndexOf('/') + 1);
                     if($routeParams.id != 'target'){
@@ -5773,15 +5663,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
 
-
             }, 200);
         }).error(errorCallback);
     } else {
         rest.path = 'fileManagerGet';
         rest.get().success(function (data) {
             $scope.displayfolder = data;
-            console.log('$scope.displayfolder-all', $scope.displayfolder)
-            console.log('$routeParams', $routeParams)
+            
             //Change ItemFolder Name to item001 -> Files-001
             angular.forEach($scope.displayfolder, function (val, i) {
                 if (val.item_id != 0) {
@@ -5800,7 +5688,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($routeParams.id == 'source' || $routeParams.id == 'target'){
                 if($window.localStorage.orderID == null){
                     $scope.displayfolder = [];  
-                    console.log('$window.localStorage.orderID=>innnn', $window.localStorage.orderID)
                 }
             }
 
@@ -5821,7 +5708,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     /*$scope.foldertree = function(id) {
-        console.log('iddd==',id);
         $('.ftr'+id).hide();                
     }*/
     //nested file
@@ -6154,11 +6040,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     if ($window.localStorage.ItemFolderid) {
-        //console.log('itemfolderid',$window.localStorage.ItemFolderid);
         $window.localStorage.setItem("scoopFolderRoot", $window.localStorage.ItemFolderid);
         //$interval($scope.getScoopItemFileCount,1000);            
     }
-
 
     $scope.chkfilesize = 0;
     $scope.chkfiletotal = [];
@@ -6275,7 +6159,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $route.reload();
                                 }, 100);
                             }
-                            //console.log('return from main api', data);
                         }).error(errorCallback);
                     }
                 }
@@ -6292,7 +6175,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     fileReader.readAsDataUrl(files[i], $scope).then(function (result) {
                         var data = result;
                         var txt = $(".ajax-file-upload-filename:contains('" + files[i].name + "')");
-                        //console.log('txt',txt);
                         var fileExtension = files[i].name.substr((files[i].name.lastIndexOf('.') + 1));
                         if (txt) {
                             var fullTxt = $(".ajax-file-upload-filename:contains('" + files[i].name + "')").text();
@@ -6648,11 +6530,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
 
             rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
-            console.log('id', id);
             rest.get().success(function (data) {
                 $timeout(function () {
                     $scope.displayfolder = data;
-                    //console.log('$scope.displayfolder', $scope.displayfolder)
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function (val, i) {
                         $scope.displayfolder[i].countchild = val.categories.length;
@@ -6743,7 +6623,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 if (smenu == 100) {
                                     clearInterval(setintrvlMenu);
                                 }
-                                //console.log(smenu);
                                 ++smenu;
                                 //event.preventDefault();
                                 //event.stopImmediatePropagation();  
@@ -6813,12 +6692,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             //zipdwnld.folder(foldername);
                                         }
 
-                                        //console.log(val.childfile);
                                         /*if(val.childfile){
                                             angular.forEach(val.childfile,function(val2,i2){
                                                 var prntId = 1;
                                                 if(fmid == val2.fmanager_id){
-                                                    //console.log('foldername-'+fmid,foldername);
                                                 }
                                                 if(val2.ext!=''){
                                                     var fimg2 = val2.name;
@@ -6852,8 +6729,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                                     })
 
-                                    //console.log('fileUrls',fileUrls);
-                                    //console.log('folderArr',folderArr);
                                     // files download
                                     var file_count = 0;
                                     fileUrls.forEach(function (url) {
@@ -6872,11 +6747,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 }*/
                                                 zipdwnld.folder(folders.folderurl_dir);
                                             });
-                                            //console.log('folder',folderName);
-
                                             file_count++;
                                             if (data != null) {
-                                                //console.log('count',file_count);
                                                 zipdwnld.file(url.folderurl_dir + url.file_name, data, { binary: true });
 
                                                 if (file_count == fileUrls.length) {
@@ -6986,7 +6858,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.menuOptionsFiles = [
                         ['Download', function ($itemScope) {
                             if ($scope.menuRclkID) {
-                                //console.log('subdownload',$scope.menuRclkID);
                                 var fileID = $scope.menuRclkID;
                                 var fileName = $scope.menuRclkName;
                             } else {
@@ -6995,9 +6866,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                             /*var a = document.createElement('a');
                             document.body.appendChild(a);
-                            console.log('download=filename',$scope.menuRclkName);
-                            console.log('atag',a);
-                        
+                            
                             a.download = fileName;
                             a.href = $("#download" + fileID).attr('href');
                             a.click();*/
@@ -7612,7 +7481,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             if ($scope.orderReport.itemDuedate) {
                 $scope.orderReport.itemDuedateStart = originalDateFormatNew($scope.orderReport.itemDuedate);
-                console.log('$scope.orderReport.itemDuedateStart', $scope.orderReport.itemDuedateStart)
             }
             if ($scope.orderReport.endItemDuedate) {
                 $scope.orderReport.itemDuedateEnd = originalDateFormatNew($scope.orderReport.endItemDuedate);
@@ -7622,7 +7490,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // rest.get().success(function(data) {
             rest.path = 'statusorderReportFilter';
             rest.post($scope.orderReport).success(function (data) {
-                console.log('data', data)
                 $scope.statusResult = data['data'];
 
                 $scope.Dateobject = Dateobject;
@@ -8373,12 +8240,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         } else {
             $scope.clReportTotal = 0;
             
-            console.log('$scope.orderReport', $scope.orderReport)
             // rest.path = 'statusorderReportFind';
             // rest.get().success(function(data) {
             rest.path = 'projectStatistics';
             rest.post($scope.orderReport).success(function (data) {
-                console.log('data', data)
                 $scope.statusResult = data['data'];
                 $scope.Dateobject = Dateobject;
                 
@@ -8514,16 +8379,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //Linguist report find
     $scope.linguistReportsearch = function (frmId, eID) {
-        console.log('frmId', frmId)
+        
         if ($scope.linguistReport == undefined || $scope.linguistReport == null || $scope.linguistReport == "") {
             notification('Please Select option', 'information');
         } else {
             $scope.clReportTotal = 0;
-            console.log('$scope.linguistReport', $scope.linguistReport)
+            
             rest.path = 'projectStatisticsLinguist';
             rest.post($scope.linguistReport).success(function (data) {
                 $scope.linguistResult = data['data'];
-                console.log('$scope.linguistResult', $scope.linguistResult)
+                
             })
             //scrollToId(eID)
         }
@@ -8606,7 +8471,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
     rest.get().success(function (data) {
         $scope.ProjreportsData = data;
-        console.log('$scope.ProjreportsData', $scope.ProjreportsData)
         angular.forEach(data, function (val, i) {
             if (val.totalAmount) {
                 $scope.allProjectAmt += val.totalAmount;
@@ -8637,7 +8501,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Project/scoop added for today
                 if (val.orderDate.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
                     $scope.currentDayAmt += val.totalAmount;
-                    console.log('$scope.currentDayAmt', $scope.currentDayAmt)
                 }
 
             }
@@ -8654,7 +8517,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
                 $scope.statusResult = data;
-                console.log('$scope.statusResult', $scope.statusResult)
                 // angular.forEach(data, function(val, i) {
                 // })
             });
@@ -8853,7 +8715,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'getJobsFromTmsSummeryView';
     rest.get().success(function (data) {
         $scope.jobReportdata = data;
-        console.log('$scope.jobReportdata----', $scope.jobReportdata)
+        
         angular.forEach(data, function (val, i) {
             if (val.total_price) {
                 //$scope.preparationJobAmt += val.totalAmount;            
@@ -8903,7 +8765,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'getJobsFromTmsSummeryView';
             rest.get().success(function (data) {
                 $scope.jobstatusResult = data;
-                console.log("$scope.jobstatusResult ==>", $scope.jobstatusResult);
                 // Search amount Total Job
                 $scope.totalJobHide = true;
                 $scope.jobSearchTotal = function (jobstatusResult) {
@@ -8923,7 +8784,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         switch (action) {
             case "itemStatus":
                 $scope.totalJobtHide = false;
-                console.log('$scope.totalJobtHide', $scope.totalJobtHide)
                 if ($scope.orderReport != undefined) {
                     $scope.totalProjectHide = false;
                     $scope.orderReport.itemStatus = '';
@@ -9032,7 +8892,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
             $scope.invoiceList = data;
-            console.log("$scope.invoiceList", $scope.invoiceList);
             angular.forEach(data, function (val, i) {
                 allPayCostAmt += val.Invoice_cost;
                 if (val.paid_amount)
@@ -9115,7 +8974,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "viewAllClientInvoice/save/" + session_iUserId;
         rest.get().success(function (data) {
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList-client', $scope.invoiceList)
             angular.forEach(data, function (val, i) {
                 allPayCostRecvbl += val.Invoice_cost;
                 if (val.paid_amount)
@@ -9435,7 +9293,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'user/' + $routeParams.id;
     rest.get().success(function (data) {
         $scope.userlist = data.data;
-        console.log('$scope.userlist', $scope.userlist)
     }).error(errorCallback);
 
     $window.localStorage.iUserId = "";
@@ -9524,14 +9381,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.changeUserStatus = function (currentStatus) {
-        console.log("currentStatus", currentStatus);
-
+        
         if (currentStatus == 3) {
             currentStatus = 4;
         } else if (currentStatus != 3) {
             currentStatus = 3;
         }
-        console.log("currentStatus", currentStatus);
         //return false;
 
         var data = {
@@ -9551,7 +9406,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewExternalget/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.userprofiledata = data;
-            console.log('$scope.userprofiledata', $scope.userprofiledata)
+            
             var CountryCode = JSON.parse(data.iMobile).countryTitle;
             var displayCode = '(+' + CountryCode.split('+')[1] + ')';
             $scope.userprofiledata.iMobile = displayCode + ' ' + JSON.parse(data.iMobile).mobileNumber;
@@ -9615,7 +9470,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.userprofiledata.vEmailAddress){
                 rest.path = 'sendAcountActivationlink'
                 rest.post($scope.userprofiledata).success(function (result) {
-                    console.log('result', result)
                     if(result.status == 200){
                         notification('Activation link has been sent successfully!','success')
                     }else{
@@ -9731,13 +9585,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
 
         $scope.ok = function (formid, message) {
-            console.log('message', message)
+            
             var data = {
                 "file": $scope.attachementfile,
                 "data": message
             };
-            console.log('data-mail', data)
-
+            
             if (angular.element("#" + formid).valid()) {
                 angular.element('.signimgdata').remove();
                 $routeParams.id = $window.localStorage.getItem("messageClientId");
@@ -9891,14 +9744,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.overAllshow = true;
 
     $scope.changeUserStatus = function (currentStatus) {
-        console.log("currentStatus", currentStatus);
-
+        
         if (currentStatus == 3) {
             currentStatus = 4;
         } else if (currentStatus != 3) {
             currentStatus = 3;
         }
-        console.log("currentStatus", currentStatus);
         //return false;
 
         var data = {
@@ -10074,8 +9925,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.loginUserName = $window.localStorage.getItem("session_vUserName");
     $scope.newResource = function (frmId, jobID) {
-        console.log("jobID", jobID);
-        console.log("frmId", frmId);
+        
         var fromDate = $('#StartDate').val();
         var toDate = $('#endDate').val();
         if (!fromDate || !toDate) {
@@ -10086,7 +9936,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         fromDate = moment(originalDateFormatNew(fromDate)).format('YYYY-MM-DD');
         toDate = moment(originalDateFormatNew(toDate)).format('YYYY-MM-DD');
         $scope.rate.period = fromDate + '^' + toDate;
-        //console.log("fromDate", fromDate);return false;
         if ($window.localStorage.iUserId) {
             if (angular.element('#' + frmId).valid()) {
                 if ($scope.rate.period != undefined) {
@@ -10203,7 +10052,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewExternalget/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.viewExternalCommunicational = data;
-            console.log("$scope.viewExternalCommunicational", $scope.viewExternalCommunicational);
             //Display Mobile Number
             var CountryCode = JSON.parse(data.iMobile).countryTitle;
             var displayCode = '(+' + CountryCode.split('+')[1] + ')';
@@ -10247,7 +10095,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.viewExternalCommunicational.vEmailAddress){
                 rest.path = 'sendAcountActivationlink'
                 rest.post($scope.viewExternalCommunicational).success(function (result) {
-                    console.log('result', result)
                     if(result.status == 200){
                         notification('Activation link has been sent successfully!','success')
                     }else{
@@ -10569,8 +10416,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'customerpriceAll/' + 2;
     rest.get().success(function (data) {
         $scope.priceListAll = data;
-        console.log('$scope.priceListAll', $scope.priceListAll)
-        console.log('$window.localStorage.iUserId', $window.localStorage.iUserId)
+        
         $scope.lngstPriceList = data.filter( function (data) {
             if(data.price_currency)
                 data.price_currency = (data.price_currency.toString()).split(',')[0];     
@@ -10580,7 +10426,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }).error(function () {});
 
     $scope.goToPricelist = function(id){
-        console.log('detail==id', id)
         if(id){
             $rootScope.parentPriceId = id;
             let extUserName = $scope.viewExternalCommunicational ? $scope.viewExternalCommunicational.vFirstName + ' ' + $scope.viewExternalCommunicational.vLastName : '';
@@ -10601,7 +10446,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.setItem("contactUserId", $routeParams.id);
     angular.element('.help-block').css('display', 'none');
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
-    console.log('$scope.dateFormatGlobal', $scope.dateFormatGlobal)
+    
     $scope.dtSeparator = $window.localStorage.getItem('dtSeparator');
     $scope.dateFormatD = moment($scope.toDayDate).format($window.localStorage.getItem('global_dateFormat'));
     $scope.existMenu = [];
@@ -10627,12 +10472,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $timeout(function () {
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
-                    console.log('validNum');
+                    
                     $scope.isValidMobileNumber = true;
                     validMsg.removeClass("hide");
                     $('#error-msg').addClass('hide');
                 } else {
-                    console.log('invalidNum');
+                    
                     $scope.isValidMobileNumber = false;
                     $('#error-msg').removeClass('hide');
                 }
@@ -10673,9 +10518,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //         const dobVal = $.trim(dtDobInput.val());
     //         if(dobVal.length > 0){
     //             var dobValid = dobIsValid(dobVal)
-    //             console.log('dobValid', dobValid)
+    //             
     //             if(dobValid){
-    //                 console.log('dobValid--in', dobValid)
+    //             
     //                 $('#error-msg-dob').addClass('hide');
     //             }else{
     //                 $('#error-msg-dob').removeClass('hide');
@@ -10729,12 +10574,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.cityTimezone = function (id) {
-        console.log('id-city', id)
+        
         if(id){
             var city = id.split(',')[0];
             rest.path = "cityTimeZoneget/" + city;
             rest.get().success(function (data) {
-                console.log('data', data)
+                
                 if (data != false) {
                     if ($scope.userprofiledata == undefined || $scope.userprofiledata == null || $scope.userprofiledata == "") {
                         $scope.userprofiledata = {};
@@ -10759,7 +10604,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return response.json();
             })
             .then(function (data) {
-                console.log('location-data', data)
+                
                 if (data.results && data.results.length > 0) {
                     /* $scope.vCity1 = data.results[0].city;
                     $scope.vState1 = data.results[0].state;
@@ -10829,7 +10674,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
               })));
             if(resDate)
                 userLastJob = moment(resDate).format($scope.dateFormatGlobal);
-            //console.log('userLastJob', userLastJob )
+            
         });    
     }    
 
@@ -10841,7 +10686,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     })
     .then(function (data) {
         $scope.europeCountry = data;
-        //console.log('$scope.europeCountry', $scope.europeCountry)
     });
     $scope.stateOptional = '';
 
@@ -10849,7 +10693,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getProfile';
         rest.model().success(function (data) {
             $scope.userprofiledata = data;
-            console.log('$scope.userprofiledata', $scope.userprofiledata)
             $window.localStorage.iUserId = data.iUserId;
             $window.localStorage.setItem("externalPricelistId", data.iUserId);
             $window.localStorage.currentUserName = data.vFirstName + " " + data.vLastName;
@@ -10877,7 +10720,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }    
                 if(data.menu_access){
                     const menu_access = Object.keys(JSON.parse(data.menu_access))
-                    console.log('menu_access', menu_access)
                     angular.element('#menu_access').val(menu_access).trigger('change');
                 }    
             }, 100);
@@ -10899,8 +10741,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             else
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
             
-                console.log('$scope.userprofiledata.dtBirthDate', $scope.userprofiledata.dtBirthDate)
-            
             $scope.userprofiledata.dtLast_job = userLastJob;
             if ($scope.userprofiledata.dtLast_job == 'Invalid date')
                 $scope.userprofiledata.dtLast_job = '';
@@ -10910,21 +10750,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.multipleDateArr = is_available;
                 if(is_available.length){
                     let abscentArr = is_available.filter(function(item) {
-                        console.log('item-cont', item)
+                        
                         if(item.dateFrom.split('-').length > 2){
                             //const abFormatDate = moment(item).format($scope.dateFormatGlobal + ' HH:mm');
                             item.dateFrom = moment(item.dateFrom).format($scope.dateFormatGlobal);
                             item.dateTo = moment(item.dateTo).format($scope.dateFormatGlobal);
-                            console.log('$scope.dateFormatGlobal', item)
+                            
                             $scope.abscentDateArr.push(item)
                             return item;
                         }
                         //return datestring;
                     });
-                    console.log('abscentArr', abscentArr)
                         
                     //$scope.userprofiledata.is_available = abscentArr.toString();    
-                    //console.log('$scope.userprofiledata.is_available', $scope.userprofiledata.is_available)
+                    
                     //abscentDateArr
                 }    
             }
@@ -10936,12 +10775,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // }
             if (data.address1Detail) {
                 angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
-                    //console.log('add-1val', val)
                     angular.element('#' + val.id).val(val.value);
                     if(val.id == "address1_country"){
                         setTimeout(() => {
                             let euCountryEdt = $scope.europeCountry.filter(e => e.name.toLowerCase() === val.value.toLowerCase()).length > 0 ? true :false;
-                            //console.log('$scope.europeCountry', $scope.europeCountry)
                             if(euCountryEdt){
                                 $scope.stateOptional = '(Optional)';
                                 $('#address1_administrative_area_level_1').removeAttr('required');
@@ -10976,7 +10813,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'userProfileNumber/' + $window.localStorage.getItem("useriResourceType");
         rest.get().success(function (data) {
             $scope.userprofiledata.iResourceNumber = pad(data, 4);
-            console.log('$scope.userprofiledata.iResourceNumber', $scope.userprofiledata.iResourceNumber)
         });
 
         //$scope.userprofiledata.vPassword = makeid();
@@ -11114,13 +10950,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //$scope.abscentDateArr = [];
     $scope.abDate = '';
     $scope.addAbsDate = function(abDate, abDateTo){
-        console.log('abDateTo', abDateTo)
-        console.log('abDate', abDate)
         if(abDate){
             var abDateTo =  abDateTo ? abDateTo : abDate;
             //let date1 = moment(abDate).format('YYYY-MM-DD')
             let date1 = moment(abDate,$scope.dateFormatGlobal).format('YYYY-MM-DD');
-            console.log('date1=before', date1)
             //let date2 = moment(abDateTo).format('YYYY-MM-DD')
             let date2 = moment(abDateTo,$scope.dateFormatGlobal).format('YYYY-MM-DD');
             
@@ -11133,7 +10966,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 multiDay : multiDay,
             }
             $scope.abscentDateArr.push(obj);
-            console.log('$scope.abscentDateArr', $scope.abscentDateArr)
         }
         $scope.abDate = '';
         $scope.abDateTo = '';
@@ -11154,8 +10986,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($window.localStorage.iUserId != '' && $window.localStorage.iUserId != undefined) {
         $routeParams.id = $window.localStorage.iUserId;
     }
-
-
 
     // ----------------save image section ------------------//
     $scope.getFile = function (file) {
@@ -11192,7 +11022,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var abscentDateArr = $scope.abscentDateArr;
                 var abscentArr = abscentDateArr.map(function(item) {
                     item.dateFrom = moment(item.dateFrom, $scope.dateFormatGlobal).format('YYYY-MM-DD')
-                    console.log('item.dateFrom', item.dateFrom)
                     item.dateTo = moment(item.dateTo, $scope.dateFormatGlobal).format('YYYY-MM-DD')
                     
                     return item;
@@ -11296,7 +11125,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     let is_available =  $scope.userprofiledata.is_available ? JSON.parse($scope.userprofiledata.is_available) : [];
                     if(is_available.length){
-                        console.log('is_available.length', is_available.length)
+                        
                         let abscentArr = is_available.filter(function(item) {
                             item.dateFrom = moment(item.dateFrom).format($scope.dateFormatGlobal);
                             item.dateTo = moment(item.dateTo).format($scope.dateFormatGlobal);
@@ -11336,7 +11165,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
                 var mobile = angular.element('#iMobile').val();
-                console.log('mobile', mobile)
+                
                 var phone = angular.element('#iphone').val();
 
                 var countryObj = {
@@ -11408,8 +11237,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var flagClass = JSON.parse($scope.userprofiledata.iMobile).countryFlagClass;
                     var Ccode = flagClass.split(' ')[1];
                     var CcodeNum = flagTitle.split(':')[1].trim();
-                    console.log('CcodeNum', CcodeNum)
-
+                    
                     var FinalMobileNum = CcodeNum + JSON.parse($scope.userprofiledata.iMobile).mobileNumber;
 
                     $timeout(function () {
@@ -11436,7 +11264,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.selectedNodes = [];
     const nestedMenuFlat = (arr) => {
         const result = arr.map(row => {
-            console.log('row', row)
+            
             if(row){
                 let obj = {
                     id : row.id,
@@ -11460,8 +11288,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.selectedNodes = [];
         if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             if ($scope.userprofiledata.iUserId) {
-                console.log('$scope.userprofiledata.iUserId', $scope.userprofiledata.iUserId)
-                console.log('$scope.userprofiledata', $scope.userprofiledata)
                 
                 //$scope.userprofiledata.menu_access = JSON.stringify($scope.selectedNodes);
                 
@@ -11470,7 +11296,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     $scope.selectedNodes.push(entry);
                 //     entry.children.forEach(function(childrenEntry) { // was missing a )
                 //       $scope.selectedNodes.push(childrenEntry);
-                //       console.log('childrenEntry',$scope.selectedNodes);
                 //     })
                 // })
                 
@@ -11489,7 +11314,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
                 var mobile = angular.element('#iMobile').val();
-                console.log('mobile', mobile)
+                
                 var phone = angular.element('#iphone').val();
                 
                 var countryObj = {
@@ -11500,7 +11325,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
 
                 var mobileData = JSON.stringify(countryObj);
-                console.log('mobileData', mobileData)
+                
                 $scope.userprofiledata.iMobile = mobileData;
                 
                 $scope.userprofiledata.vPhoneNumber = phone;
@@ -11516,7 +11341,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 // Flat Array for sidebar Menu
                 //nestedMenuFlat($scope.nodes);
-                //console.log('selectedNodes',$scope.selectedNodes )
+                
                 if($scope.superAdmin){
                     var menuInput = angular.element('#menu_access').select2('data');
                     let menuArr = {};
@@ -11726,7 +11551,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         notification('File Manager not available for this resource.', 'warning');
                     }
                 }
-                console.log("data", data);
+                
             }).error(errorCallback);
         }
     };
@@ -11777,7 +11602,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.countryChange = function (country) {
-        console.log('country', country)
+        
         let countryName =  angular.element("#address1_country").val()
         let euCountry = $scope.europeCountry.filter(e => e.name.toLowerCase() === countryName.toLowerCase()).length > 0 ? true :false;
         if(euCountry){
@@ -11812,16 +11637,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.nodes = [];
     rest.path = 'getTreeMenu';
     rest.get().success(function (data) {
-        console.log('data', data)
+        
         $scope.nodes = Object.values(data).filter( function(el) {
             return el;    
         });
-
-        console.log($scope.existMenu)
         
         $scope.nodes = nestedMap($scope.nodes)
-        console.log('$scope.nodes', $scope.nodes)
-        //console.log(nestedMap($scope.nodes));
+
     });     
     
     
@@ -11851,12 +11673,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $timeout(function () {
                 if ($.trim(telInput.val())) {
                     if (telInput.intlTelInput("isValidNumber")) {
-                        console.log('validNum');
+                        
                         $scope.isValidMobileNumber = true;
                         validMsg.removeClass("hide");
                         $('#error-msg').addClass('hide');
                     } else {
-                        console.log('invalidNum');
+                        
                         //$scope.isValidMobileNumber = false;
                         $scope.isValidMobileNumber = true;
                         $('#error-msg').removeClass('hide');
@@ -11998,7 +11820,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'editcontact/' + id;
         rest.get().success(function (data) {
             $scope.contact = data;
-            console.log('contact-edittt-list', $scope.contact)
+            
             var flagTitle = JSON.parse(data.vPhone).countryTitle;
             var flagClass = JSON.parse(data.vPhone).countryFlagClass;
             var Ccode = flagClass.split(' ')[1];
@@ -12015,8 +11837,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.saveContact = function (formId, id) {
-        console.log('id', id)
-        console.log('$scope.contact',$scope.contact)
+        
         if (angular.element("#" + formId).valid()) {
             //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             var countryCodeData = angular.element('#iphone').parent().find('.selected-flag').attr('title');
@@ -12050,8 +11871,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 if ($routeParams.id) {
                     $scope.contact.iClientId = $routeParams.id;
-                    console.log('$scope.contact=second', $scope.contact)
-
+                    
                     rest.path = 'contactsave';
                     rest.post($scope.contact).success(function (data) {
                         //log file start 
@@ -12116,7 +11936,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($scope.userRight == 2) {
         $window.localStorage.userType = 1;
         $scope.uType = 1;
-        console.log('in cond $scope.uType', $scope.uType)
     }
     if ($scope.currentUserName == 'undefined undefined') {
         $scope.currentUserName = 'undefined';
@@ -12427,7 +12246,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if(!specializationTxt)
                 specializationTxt = '';
             $scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
-            console.log('customerPriceName=2', customerPriceName)
         }
     }
 
@@ -12599,7 +12417,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
 
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
-                    //console.log('basePriceUnit', $('#basePriceUnit' + i).text().trim())
                     var childPriceId = angular.element('#childPriceId' + i).val().trim();
                     var masterPriceId = angular.element('#masterPriceId' + i).val().trim();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
@@ -12865,7 +12682,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         /* rest.path = 'prtype';
         rest.get().success(function(data) {
             $scope.projectType = data;
-            console.log('$scope.projectType', $scope.projectType)
+            
         }).error(errorCallback); */
 
         rest.path = 'masterPriceGetdata';
@@ -12937,20 +12754,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         fPriceArr[i].children.push(obj2);
                     }
                 })
-                if(fPriceArr[i].children.length)
-                console.log('fPriceArr', fPriceArr)
+                
+                
             })
             return fPriceArr;
         }
 
         function matchSearch(arr, term){
-            console.log('term', term)
-            console.log('arr', arr)
+            
             var matchSelect2Arr = arr.filter(x => {
-                console.log('x-pa', x)
+                
                 let child = [];
                 var childFlt = x.children.filter(c => {
-                    console.log('c-inn', c)
+                    
                     if (c.text.toUpperCase().includes((term).toUpperCase()) ) {
                         child.push(c)
                         return true;
@@ -12961,7 +12777,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     return x;
                 }
             });
-            console.log('matchSelect2Arr', matchSelect2Arr)
+            
             return matchSelect2Arr;
         }    
 
@@ -12972,7 +12788,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             data: $scope.pricesArray,
             query: function (options) {
                 var selectedIds = options.element.select2('val');
-                //console.log('selectedIds', selectedIds)
+                
                 var selectableGroups = $.map(this.data, function (group) {
                     var areChildrenAllSelected = true;
                     $.each(group.children, function (i, child) {
@@ -12989,13 +12805,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                    //let matchArr = matchSearch(selectableGroups, (options.term).trim() )
                    var matchArr = filterPriceArr($scope.pricesArray, (options.term).trim() )
                    var matchSelect2Arr = matchArr.filter(x => { if(x.children.length) return x } )     
-                   console.log('matchSelect2Arr', matchSelect2Arr)
+                   
                    selectableGroups = matchSelect2Arr; 
-                   //console.log('matchArr', matchArr)
+                   
                 }else{
                     selectableGroups =  $scope.pricesArrayAll;
                 }
-                console.log('selectableGroups', selectableGroups)
                     
                 options.callback({ results: selectableGroups });
             },
@@ -13018,7 +12833,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.basePriceAdd = function () {
         var selectedPrices = $('#priceUnit').val();
-        console.log('selectedPrices', selectedPrices)
+        
         if (!$scope.priceBasiList.length || $scope.priceBasiList == undefined) {
             $scope.priceBasiList = [];
         }
@@ -13032,7 +12847,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             if (check) {
                 var selectedPricesArray = selectedPrices.split(',')
-                console.log("selectedPricesArray", selectedPricesArray);
+                
                 angular.forEach(selectedPricesArray, function (val, i) {
                     rest.path = 'childpriceGetOne/' + val;
                     rest.get().success(function (data) {
@@ -13083,7 +12898,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //$('#priceUnit').val('');
                                 $("#priceUnit").select2("val", "");
                             }else{
-                                console.log(data.name);
+                            
                             }
                         })*/
                     }).error(errorCallback);
@@ -13092,10 +12907,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 rest.path = 'childpriceGetOne/' + selectedPrices;
                 rest.get().success(function (data) {
-                    console.log('data', data)
+                    
                     //var prType = $scope.projectType.filter(x => x.master_price_id  == data.service )
                     var prType = $scope.projectType.filter(x => x.master_price_id == data.master_price_id)
-                    console.log('$scope.projectType', $scope.projectType)
                     var projType = prType.length > 0 ? prType[0].code + ' - ' : '';
 
                     var exists = false;
@@ -13157,7 +12971,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // /
         },
         stop: function (e, ui) {
-            console.log('priceBasiList-swaping-internal', $scope.priceBasiList)
             $scope.priceBasiList = $scope.priceBasiList
         }
     };
@@ -13193,7 +13006,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = 'getuserpayment/' + $routeParams.id + '/' + $window.localStorage.userType;
         rest.get().success(function (data) {
-            console.log('data-daaa-payment', data)
+            
             if (data == null) {
                 $scope.paymentData = {};
                 $scope.payment = {};
@@ -13233,7 +13046,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoicePeriodDays = 30;
     rest.path = "getAllInvoicePeriod";
     rest.get().success(function (data) {
-        //console.log('data', data)
+        
         $scope.dueperiodList = data;
         if ($scope.dueperiodList.length > 0) {
             $scope.invoicePeriodDays = $scope.dueperiodList[0].number_of_days;
@@ -13242,7 +13055,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }).error(errorCallback);
 
     if ($scope.clientId != " " && $scope.userRight != 2) {
-        console.log('$scope.clientId', $scope.clientId)
+        
         $routeParams.id = $scope.clientId;
         rest.path = 'getClientpayment/' + $routeParams.id;
         rest.get().success(function (data) {
@@ -13256,7 +13069,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (data.vPaymentInfo) {
                     $scope.payment = JSON.parse(data.vPaymentInfo);
                 }
-                console.log('called -2')
+                
                 //$scope.vatCount($scope.payment);
                 if (data.vBankInfo) {
                     $scope.bank = JSON.parse(data.vBankInfo);
@@ -13264,7 +13077,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 rest.path = 'client/' + $routeParams.id;
                 rest.get().success(function (dataCl) {
-                    console.log('dataCl', dataCl)
+                    
                     if(dataCl)
                         $scope.paymentData.invoice_no_of_days = dataCl.invoice_no_of_days
                 });
@@ -13297,7 +13110,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.payament_data.vBankInfo = JSON.stringify($scope.bank);
                     
                     $scope.payament_data.tax_rate = $scope.paymentData.tax_rate ? $scope.paymentData.tax_rate : 0;
-                    console.log('$scope.payament_data.tax_rate', $scope.payament_data.tax_rate)
+                    
                     $scope.payament_data.invoice_no_of_days = $scope.paymentData.invoice_no_of_days 
 
                     rest.path = 'paymentdirectUpdate/' + $routeParams.id + '/' + $window.localStorage.userType;
@@ -13387,7 +13200,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.payament_data.iUserId = $window.localStorage.iUserId;
                     $scope.payament_data.tax_rate = $scope.paymentData.tax_rate ? $scope.paymentData.tax_rate : 0;
 
-                    //console.log("$scope.payament_data", $scope.payament_data);return false;
                     rest.path = 'paymentsave/' + $routeParams.id + '/' + $window.localStorage.userType;
                     rest.post($scope.payament_data).success(function (data) {
                         //log file start 
@@ -13427,7 +13239,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.payament_data.tax_rate = $scope.paymentData.tax_rate ? $scope.paymentData.tax_rate : 0;
 
                         rest.path = 'paymentsave';
-                        //console.log("$scope.payament_data", $scope.payament_data);return false;
                         rest.post($scope.payament_data).success(function (data) {
                             //log file start 
                             $scope.logMaster = {};
@@ -13461,7 +13272,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //LU26375245
     //vat number api
     $scope.vatCount = function (payment) {
-        console.log("payment-vat", payment);
         if (payment == 'paymentDataNotAvailble') {
             angular.element('#vatLoader').css('display', 'none');
             return false;
@@ -13480,7 +13290,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         payment.country_code = payment.tax_id.substring(0, 2).toUpperCase();
         payment.tax_id = payment.tax_id.substring(2, 15);
         if (payment.country_code && payment.tax_id) {
-            console.log('payment', payment)
+            
             rest.path = "getVatcount/" + payment.country_code + '/' + payment.tax_id;
             rest.get().success(function (data) {
                 $scope.payment.tax_id = payment.country_code + payment.tax_id;
@@ -13489,9 +13299,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     if (data) {
                         if (data.data) {
-                            console.log('data.data', data.data)
                             $scope.payment.tax_id = (payment.tax_id).includes(payment.country_code) ? payment.tax_id : payment.country_code + payment.tax_id;
-                            console.log('$scope.payment.tax_id', $scope.payment.tax_id)
                             //$scope.vatList = data.data.substring(20550, 21550);
                             $scope.vatList = data.data;
                             // var part = str.substring( str.lastIndexOf(":") + 1, str.lastIndexOf(";") );
@@ -13536,9 +13344,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 } else {
                     //if (data.data != null && data.data != undefined && data.data != '' && data.data.status != 400) {
 
-                    console.log('vat data', data)
+                    
                     $scope.vatnorwayData = data.data;
-                    console.log('$scope.vatnorwayData', $scope.vatnorwayData)
+                    
                     if ($scope.vatnorwayData != null && $scope.vatnorwayData != '' && $scope.vatnorwayData.data.valid == true && $scope.vatnorwayData.code != 400) {
                         var response = '';
                         response += '<div id="true" style="display:none">true</div>';
@@ -13615,7 +13423,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     if ($scope.notRootParamsId) {
-        console.log('called -1')
         $scope.vatCount('paymentDataNotAvailble');
     }
     //vat edit 
@@ -13725,7 +13532,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.deleteIndirect = function (id, clientName) {
-        console.log('id', id)
+        
         bootbox.confirm("Are you sure you want to delete?", function (result) {
             if (result == true) {
                 rest.path = 'deleteClientindirect/' + id;
@@ -13818,8 +13625,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewdirectdataget/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.info = data;
-            console.log('$scope.info', $scope.info)
-
+            
             // rest.path = 'getTaxName/' + $scope.info.vTextType;
             // rest.get().success(function(data) {
             //     $scope.info.vTextType = data.tax_name;
@@ -13891,7 +13697,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.hideShowPassField = function ($index) {
-        console.log("$index", $index);
+        
         if ($('#passShow' + $index).hasClass('hiddenField')) {
             $('#passShow' + $index).removeClass('hiddenField');
         } else {
@@ -14131,7 +13937,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.directoryIndirectFolder = function (frmId, iClientIdIndirect) {
-        console.log("iClientIdIndirect", iClientIdIndirect);
+        
         var id;
         if (iClientIdIndirect == 'undefined' || iClientIdIndirect == undefined) {
             notification('Please create account.', 'warning');
@@ -14154,7 +13960,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             rest.path = 'client_indirect_update/' + id;
             rest.get().success(function (data) {
-                console.log("data", data);
+                
                 if (!data) {
                     notification('Please create resource.', 'warning');
                 } else {
@@ -14285,7 +14091,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    console.log('$rootScope', $rootScope)
+    
     // if ($window.localStorage.iUserId != '' && $window.localStorage.iUserId != undefined) {
     //     $routeParams.id = $window.localStorage.iUserId;
     // }
@@ -14298,11 +14104,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     })
     .then(function (data) {
         $scope.europeCountry = data;
-        //console.log('$scope.europeCountry-TIME', $scope.europeCountry)
+        
     });
     $scope.stateOptional = '';
 
-    console.log('$routeParams.id', $routeParams.id)
         
     if ($routeParams.id != '' && $routeParams.id != undefined) {
         $window.localStorage.iUserId = $routeParams.id;
@@ -14311,8 +14116,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.imgshow = true;
             $scope.isNewClient = false;
             $scope.info = data;
-            console.log('$scope.info', $scope.info)
-
+            
             $window.localStorage.clientnamec = $scope.info.vUserName;
             $window.localStorage.clientnotice = $scope.info.tMemo;
             $window.localStorage.setItem("priceListClientId", $scope.info.iClientId);
@@ -14350,12 +14154,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             if (data.address1Detail) {
                 angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
-                    //console.log('add-1val', val)
+                    
                     angular.element('#' + val.id).val(val.value);
                     if(val.id == "address1_country"){
                         setTimeout(() => {
                             let euCountryEdt = $scope.europeCountry.filter(e => e.name.toLowerCase() === val.value.toLowerCase()).length > 0 ? true :false;
-                            console.log('$scope.europeCountry', $scope.europeCountry)
                             if(euCountryEdt){
                                 $scope.stateOptional = '(Optional)';
                                 $('#address1_administrative_area_level_1').removeAttr('required');
@@ -14500,7 +14303,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var city = $('#address1_locality').val();
             rest.path = "cityTimeZoneget/" + city;
             rest.get().success(function (data) {
-                console.log('data', data)
+                
                 if (data != false) {
                     // if ($scope.info == undefined || $scope.info == null || $scope.info == "") {
                     //     $scope.info = {};
@@ -14519,7 +14322,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // .then(function(response) { 
         //     return response.json(); })
         // .then(function(data) {
-        //     console.log('data', data)
         //     if(data.results && data.results.length > 0){
         //         $scope.vCity1 = data.results[0].city;
         //         $scope.vState1 = data.results[0].state;
@@ -14529,7 +14331,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // });
     }
     $scope.countryChange = function (country) {
-        console.log('country', country)
+        
         let countryName =  angular.element("#address1_country").val()
         let euCountry = $scope.europeCountry.filter(e => e.name.toLowerCase() === countryName.toLowerCase()).length > 0 ? true :false;
         if(euCountry){
@@ -14726,8 +14528,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $scope.info.vCodeRights = $scope.info.vCodeRights;
                 $scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
-                console.log('$scope.info.tPoInfo', $scope.info.tPoInfo)
-
+                
                 $scope.info.dtCreationDate = $filter('globalDtFormat')($scope.info.dtCreationDate);
                 $scope.info.dtCreationDate = originalDateFormatNew($scope.info.dtCreationDate);
                 $scope.info.dtCreationDate = moment($scope.info.dtCreationDate).format('YYYY-MM-DD HH:mm:ss');
@@ -14735,9 +14536,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'clientsave';
                 $scope.info.vClientNumber = $scope.info.vClientNumber.replace(/^0+/, '');
 
-                //console.log("$scope.info", $scope.info);return false;
                 rest.post($scope.info).success(function (data) {
-                    console.log("dataCC", data.clientData.vUserName);
                     $window.localStorage.iUserId = data.iClientId;
                     //log file start 
                     $scope.logMaster = {};
@@ -14754,7 +14553,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("priceListClientId", data.iClientId);
                     $window.localStorage.setItem("currentUserName", data.clientData.vUserName);
                     if(isSavebtn){
-                        console.log('succes', isSavebtn)
                         notification('Created successfully', 'success');
                         //$location.path('/edit-client/'+$scope.Edited_id);
                     }else{
@@ -14802,7 +14600,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         notification('File Manager not available for this client.', 'warning');
                     }
                 }
-                console.log("data", data);
+                
             }).error(errorCallback);
         }
         /*if (angular.element('#' + frmId).valid()) {
@@ -15169,13 +14967,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // rest.path = 'statusJobReportFind';
             // rest.get().success(function(data) {
             //     $scope.statusResult = data;
-            //     console.log("$scope.statusResult", $scope.statusResult);
+            
             // })
             rest.path = 'statusJobReportFilter';
             rest.post($scope.jobReport).success(function (data) {
-                console.log('$scope.jobReport', $scope.jobReport)
                 $scope.statusResult = data;
-                console.log('$scope.statusResult', $scope.statusResult)
             })
             scrollToId(eID);
         }
@@ -15204,7 +15000,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     //search data action
     $scope.statusAction = function (action) {
-        console.log('action', action)
+        
         switch (action) {
             case "Change status to":
                 var jobStatus = angular.element('#jobStatusdata').val();
@@ -15539,18 +15335,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.getData = function () {
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
-            //console.log(invoiceDuePeriodDays);
+            
             $scope.invoiceList = data;
             $scope.getAllInvoice = data;
             allInvoiceListArr = data;
-            //console.log("$scope.invoiceList", $scope.invoiceList);
+            
             $scope.invoiceStatus = [];
             for (var i = 0; i < data.length; i++) {
                 $scope.invoiceStatus[i] = true;
                 data[i].freelance_currency = data[i].freelance_currency ? data[i].freelance_currency.split(',')[0] : 'EUR'; 
-                //console.log('data[i]',data[i].created_date)
+                
                 const invoice_duedate = TodayAfterNumberOfDays(data[i].created_date, invoiceDuePeriodDays);
-                //console.log('invoice_duedate', invoice_duedate)
+                
                 var ckey = $scope.invoiceList.length;
                 if (ckey > 0)
                     $scope.invoiceList[i].invoice_duedate = invoice_duedate;
@@ -15598,7 +15394,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
-            console.log('$scope.lngstInvoiceListData-prmc', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
@@ -15649,7 +15444,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.invcStatusRecord = function (invcStatus) {
-        console.log('invcStatus', invcStatus)
+        
         if (invcStatus) {
             $scope.invcstatusFilter = invcStatus;
             //$scope.invoiceListAll = [];
@@ -15764,11 +15559,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         } else {
             $scope.invoice = {};
             $scope.invoice.invoice_status = status;
-            console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
+            
             $scope.invoice.paid_amount = " ";
             $routeParams.id = statusId;
 
-            console.log('$scope.invoice', $scope.invoice)
             rest.path = "invoiceStatusChange";
             rest.put($scope.invoice).success(function (data) {
                 $route.reload();
@@ -15786,16 +15580,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id){
         //var result = arrayRemove(array, 6);
-        console.log('clickerd-id', id)
         if(id){
             if(id == 'all'){
                 let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
-                console.log('isCheckedAll', isCheckedAll)
                 if(isCheckedAll == 'true'){
                     $("input[id^=invoiceCheck]:checkbox").prop("checked", true);
                     for (var i = 0; i < angular.element('[id^=invoiceCheck]').length; i++) {
                         var invoiceselected = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
-                        console.log('invoiceselected', invoiceselected)
                         if (invoiceselected == 'true') {
                             var invoiceIds = angular.element('#invoiceCheckData' + i).val();
                             $scope.checkedIds.push(invoiceIds.toString());
@@ -15809,14 +15600,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }else{
                 let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
-                console.log('isChecked', isChecked)
                 if(isChecked == 'true')
                     $scope.checkedIds.push(id.toString());
                 else
                     $scope.checkedIds = arrayRemove($scope.checkedIds, id);
             }        
         }    
-        console.log('$scope.checkedIds', $scope.checkedIds)
                         
     }
 
@@ -15834,12 +15623,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if($scope.checkedIds.length > 0){
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
             $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
-            console.log('$scope.invoiceListAll-', $scope.invoiceListAll)
         }
-        console.log('$scope.getAllInvoice', $scope.getAllInvoice)
         setTimeout(() => {
-            console.log('$scope.getAllInvoice', $scope.getAllInvoice)
-
+        
             // var blob = new Blob([document.getElementById('exportable').innerHTML], {
             //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             // });
@@ -15865,7 +15651,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //search data action
     $scope.statusAction = function (action) {
-        console.log('action', action)
         var invoiceStatus = angular.element('#invoiceStatusdata').val();
         const inStatus = invoiceStatus.split(',')
 
@@ -15877,7 +15662,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
                 if (invoiceselect == 'true') {
                     var invoiceId = angular.element('#invoiceCheckData' + i).val();
-                    console.log('invoiceId', invoiceId)
                     totalChecked++;
                     $scope.invoice = {};
                     $scope.invoice.invoice_status = (inStatus.length > 0) ? inStatus[1] : invoiceStatus;
@@ -15905,11 +15689,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $route.reload();
                         });
                     } else {
-                        console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
                         $routeParams.id = invoiceId;
                         rest.path = "invoiceStatusChange";
                         rest.put($scope.invoice).success(function (data) {
-                            console.log('data', data)
                             if (i == invoiceCheckLength) {
                                 if(data.status ==200){
                                     successMsg++;
@@ -16020,7 +15802,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // }
         if (type == 'invoiceTotal') {
             $scope.invoiceTotal = numberFormatCommaToPoint(itemVal);
-            console.log('$scope.invoiceTotal', $scope.invoiceTotal)
+            
             $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
         }
         if (type == 'itemPrice') {
@@ -16039,9 +15821,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
-            console.log('data', data)
+            
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
@@ -16067,7 +15849,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             rest.path = "customerpriceAll/1";
             rest.get().success(function (dataPrice) {
-                console.log('dataPrice', dataPrice)
+                
                 dataPrice.filter( (el) =>{
                     if(el.resource_id == $scope.invoiceDetail.clientId){
                         //$scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
@@ -16107,7 +15889,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }).error(errorCallback);
 
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList =>', $scope.invoiceList)
+            
             $scope.invoiceNumOfdays = data[0].number_of_days;
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].invoice_date, $scope.invoiceNumOfdays);
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, 0));
@@ -16133,7 +15915,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var invoiceTotal = $scope.invoiceTotal;
             $scope.grandTotal = 0;
             angular.forEach($scope.invoiceList, function (val, i) {
-                //console.log('val', val)
+                
                 if (val.item) {
                     var itemTotal = 0;
                     angular.forEach(val.item, function (v, i2) {
@@ -16173,7 +15955,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.reminderBtnHideShow = false;
             $timeout(function () {
                 var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
-                console.log('newPaydueDate', newPaydueDate)
+                
                 if (($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')) {
                     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
                         $scope.reminderBtnHideShow = true;
@@ -16213,14 +15995,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceList.forEach(element => {
             const elItemID = element.itemId;
             const elIntemVal = $('input[name=itemVal_' + element.itemId).val();
-            console.log('elIntemVal', elIntemVal)
+            
             $scope.upInvoiceData.item.push({
                 'id': elItemID,
                 'value': numberFormatCommaToPoint(elIntemVal)
             })
         });
 
-        console.log('$scope.upInvoiceData',$scope.upInvoiceData )
         rest.path = 'saveEditedInvoice';
         rest.put($scope.upInvoiceData).success(function (data) {
             if (data) {
@@ -16235,11 +16016,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if ($scope.invoiceD == undefined || $scope.invoiceD == null || $scope.invoiceD == "") {
             $scope.invoiceData = {};
         }
-        console.log('$scope.invoiceD=', $scope.invoiceD)
+        
         rest.path = "clientInvoiceUpdate/" + $routeParams.id;
         rest.get().success(function (updatedata) {
-            console.log('updatedata-after-suc', updatedata)
-            console.log('$scope.invoiceDetail-suc', $scope.invoiceDetail);
+            
             if (updatedata) {
                 // Hide button from page
                 angular.element('#btnPaid').hide();
@@ -16251,7 +16031,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#editInvoiceSave').hide();
                 angular.element('.invoiceInput input').addClass('invoiceInputborder');
 
-                console.log('Invoice Edit Detrail', $scope.invoiceDetail)
                 kendo.drawing.drawDOM($("#pdfExport"))
                     .then(function (group) {
                         // Render the result as a PDF file
@@ -16272,7 +16051,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         };
                         rest.path = 'sendClientInvoiceMail';
                         rest.post($scope.invoicemailDetail).success(function (data) {
-                            console.log('sendClientInvoiceMail=data', data)
+                            
                             if (data.status == 200) {
                                 notification('Invoice has been sent successfully', 'success');
                                 //setTimeout(() => {
@@ -16401,8 +16180,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $scope.invoiceDetail.invoice_id;
         rest.path = "invoiceStatusIrrecoverable";
         rest.put(dtObj).success(function (data) {
-            console.log('irecorecaravle-data', data)
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             $route.reload();
         });
     }
@@ -16423,9 +16200,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
-            console.log('data', data)
+            
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
@@ -16451,7 +16227,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             rest.path = "customerpriceAll/1";
             rest.get().success(function (dataPrice) {
-                console.log('dataPrice', dataPrice)
+                
                 dataPrice.filter( (el) =>{
                     if(el.resource_id == $scope.invoiceDetail.clientId){
                         //$scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
@@ -16491,15 +16267,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }).error(errorCallback);
 
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList =>', $scope.invoiceList)
-
+            
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].invoice_date, data[0].number_of_days);
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(data[0].invoice_date)
 
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             //$scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
 
-            console.log('$scope.invoiceDetail.freelancePhone', $scope.invoiceDetail.freelancePhone)
             if($scope.invoiceDetail.freelancePhone){
                 var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
                 var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
@@ -16518,7 +16292,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var invoiceTotal = $scope.invoiceTotal;
             $scope.grandTotal = 0;
             angular.forEach($scope.invoiceList, function (val, i) {
-                //console.log('val', val)
+                
                 if (val.item) {
                     var itemTotal = 0;
                     angular.forEach(val.item, function (v, i2) {
@@ -16558,7 +16332,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.reminderBtnHideShow = false;
             $timeout(function () {
                 var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, $scope.invoiceDetail.number_of_days)
-                console.log('newPaydueDate', newPaydueDate)
+                
                 if (($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')) {
                     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
                         $scope.reminderBtnHideShow = true;
@@ -16572,7 +16346,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.printIt = function (invoiceNo) {
-        console.log('invoiceNo', invoiceNo)
+        
         let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
         //$scope.noneCls = "";
@@ -16604,9 +16378,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.closeAmount = true;
     $scope.currencySymbol = items.Currency;
     $scope.totalAmount = items.Invoice_cost;
-    console.log("$scope.totalAmount", $scope.totalAmount);
+    
     $scope.amountToPaid = items.paid_amount;
-    console.log("$scope.amountToPaid", $scope.amountToPaid);
+    
     if (items.paid_amount == 0) {
         $scope.dueAmount = items.Invoice_cost;
     } else {
@@ -16686,9 +16460,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.closeAmount = true;
     $scope.currencySymbol = items.Currency;
     $scope.totalAmount = items.Invoice_cost;
-    console.log("$scope.totalAmount", $scope.totalAmount);
+    
     $scope.amountToPaid = items.paid_amount;
-    console.log("$scope.amountToPaid", $scope.amountToPaid);
+    
     if (items.paid_amount == 0) {
         $scope.dueAmount = items.Invoice_cost;
     } else {
@@ -16737,7 +16511,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
 
                 var date = $filter('date')(new Date(), 'yyyy/MM/dd');
-                console.log('date', date)
+                
                 $scope.inv.paid_date = date;
                 $scope.inv.partPaid = $scope.inv.paid_amount;
                 $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
@@ -16835,8 +16609,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail- Invoice show', $scope.invoiceDetail)
-
+            
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             $scope.vatNo = '';
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
@@ -16860,7 +16633,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.freelanceCity = $scope.freelanceCountry = $scope.freelanceZipcode = $scope.freelanceState = '';
             if ($scope.invoiceDetail.freelanceAddressDetail) {
                 let freelanceAddDetail = JSON.parse($scope.invoiceDetail.freelanceAddressDetail);
-                console.log('freelanceAddDetail', freelanceAddDetail)
+                
                 angular.forEach(freelanceAddDetail, function (freelanceAddress, i) {
                     if (freelanceAddress.id == 'address1_locality') {
                         $scope.freelanceCity = freelanceAddress.value;
@@ -16896,7 +16669,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     //$scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
                     $scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
-                    console.log('$scope.currencyType', $scope.currencyType)
+                    
                     //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.currencyPaymentMethod = $scope.vBankInfo.payment_method;
                 }
@@ -16936,8 +16709,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.currencyType = ($scope.invoiceDetail.freelance_currency).toString().includes(',') ? ($scope.invoiceDetail.freelance_currency).split(',')[0] : 'EUR';
 
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList-paid-amount', $scope.invoiceList[0].paid_amount)
-
+            
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
 
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
@@ -16960,11 +16732,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.grandTotal = 0;
             $scope.grandJobTotal = 0;
             $scope.vat = $scope.invoiceDetail.vat ? $scope.invoiceDetail.vat : 0;
-            console.log('$scope.vat-bfr', $scope.vat)
+            
             $scope.invoiceTotal = $scope.invoiceDetail.job_total ? $scope.invoiceDetail.job_total : 0;
             var invoiceTotal = $scope.invoiceTotal;
-            console.log('$scope.invoiceTotal', $scope.invoiceTotal)
-
+            
             angular.forEach($scope.invoiceList, function (val, i) {
                 if (val.item) {
                     angular.forEach(val.item, function (v, i) {
@@ -16980,7 +16751,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
 
             let taxRate = $scope.invoiceList[0].tax_percentage ? $scope.invoiceList[0].tax_percentage : 0;
-            console.log('taxRate', taxRate)
+            
             let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
             $scope.taxValue = amountTaxRate;
             $scope.taxPercentage = taxRate;
@@ -16991,7 +16762,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             if ($scope.grandJobTotal > $scope.invoiceDetail.Invoice_cost) {
                 $scope.updtInvoiceCost = { 'Invoice_cost': $scope.grandJobTotal, 'is_update': 1 };
-                //console.log('$scope.updtInvoiceCost', $scope.updtInvoiceCost)
+                
                 $routeParams.id = $routeParams.id;
                 rest.path = "invoiceStatusChange";
                 rest.put($scope.updtInvoiceCost).success(function (data) {
@@ -17068,7 +16839,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $scope.invoiceDetail.invoice_id;
         rest.path = "invoiceStatusApproved";
         rest.put(obj).success(function (data) {
-            console.log('data', data)
             $location.path("/invoice-data");
         });
     }
@@ -17222,8 +16992,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail- Invoice show', $scope.invoiceDetail)
-
+            
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             $scope.vatNo = '';
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
@@ -17247,7 +17016,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.freelanceCity = $scope.freelanceCountry = $scope.freelanceZipcode = $scope.freelanceState = '';
             if ($scope.invoiceDetail.freelanceAddressDetail) {
                 let freelanceAddDetail = JSON.parse($scope.invoiceDetail.freelanceAddressDetail);
-                console.log('freelanceAddDetail', freelanceAddDetail)
+                
                 angular.forEach(freelanceAddDetail, function (freelanceAddress, i) {
                     if (freelanceAddress.id == 'address1_locality') {
                         $scope.freelanceCity = freelanceAddress.value;
@@ -17283,7 +17052,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     //$scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
                     $scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
-                    console.log('$scope.currencyType', $scope.currencyType)
+                    
                     //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.currencyPaymentMethod = $scope.vBankInfo.payment_method;
                 }
@@ -17315,8 +17084,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.currencyType = ($scope.invoiceDetail.freelance_currency).toString().includes(',') ? ($scope.invoiceDetail.freelance_currency).split(',')[0] : 'EUR';
 
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList-paid-amount', $scope.invoiceList[0].paid_amount)
-
+            
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
 
             $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
@@ -17334,11 +17102,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.grandTotal = 0;
             $scope.grandJobTotal = 0;
             $scope.vat = $scope.invoiceDetail.vat ? $scope.invoiceDetail.vat : 0;
-            console.log('$scope.vat-bfr', $scope.vat)
+            
             $scope.invoiceTotal = $scope.invoiceDetail.job_total ? $scope.invoiceDetail.job_total : 0;
             var invoiceTotal = $scope.invoiceTotal;
-            console.log('$scope.invoiceTotal', $scope.invoiceTotal)
-
+            
             angular.forEach($scope.invoiceList, function (val, i) {
                 if (val.item) {
                     angular.forEach(val.item, function (v, i) {
@@ -17354,7 +17121,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
 
             let taxRate = $scope.invoiceList[0].tax_percentage ? $scope.invoiceList[0].tax_percentage : 0;
-            console.log('taxRate', taxRate)
+            
             let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
             $scope.taxValue = amountTaxRate;
             $scope.taxPercentage = taxRate;
@@ -17365,7 +17132,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             if ($scope.grandJobTotal > $scope.invoiceDetail.Invoice_cost) {
                 $scope.updtInvoiceCost = { 'Invoice_cost': $scope.grandJobTotal, 'is_update': 1 };
-                //console.log('$scope.updtInvoiceCost', $scope.updtInvoiceCost)
                 $routeParams.id = $routeParams.id;
                 rest.path = "invoiceStatusChange";
                 rest.put($scope.updtInvoiceCost).success(function (data) {
@@ -17433,7 +17199,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     const loc = $location.absUrl().split('/');
     $scope.statementType = function (type) {
-        console.log(`${type} cliecked`);
+        
     }
 
     if ($scope.userRight == '2') {
@@ -17634,9 +17400,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.remiderPayCount = 0;
 
     const loc = $location.absUrl().split('/');
-    console.log('$location.absUrl()=', $location.absUrl())
+    
     $scope.statementType = function (type) {
-        console.log(`${type} =cliecked`);
+        
     }
 
     if ($scope.userRight == '2') {
@@ -17912,12 +17678,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         notification('Please create project.', 'warning');
         return false;
     }
-    console.log('$scope.routeOrderID', $scope.routeOrderID)
+    
     $scope.routeOrderID = '';
     //if ($window.localStorage.orderID)
         //$scope.routeOrderID = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
     $scope.routeOrderID = ($routeParams.id) ? $routeParams.id : '';
-    console.log('$scope.routeOrderID', $scope.routeOrderID)
+    
     $scope.orderUrlID = $scope.routeOrderID ? '/'+$scope.routeOrderID : '';
     
     $window.localStorage.setItem("parentId", " ");
@@ -18038,17 +17804,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //customer
     //if ($window.localStorage.orderID) {
     if($scope.routeOrderID){        
-        console.log('EDIT offfff')
-
-        console.log('$window.localStorage.orderID', $window.localStorage.orderID)
+        
         //rest.path = 'customer/' + $window.localStorage.orderID;
         $routeParams.id = ($routeParams.id) ? $routeParams.id : $window.localStorage.orderID;
-        console.log('$routeParams.id', $routeParams.id)
-
+        
         rest.path = 'customer/' + $routeParams.id;
         rest.get().success(function (res) {
             $scope.customer = res;
-            console.log('$scope.customer===>general', $scope.customer)
+            
             if (res) {
                 rest.path = 'client/' + $scope.customer.client;
                 rest.get().success(function (cData) {
@@ -18061,7 +17824,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'general/' + $routeParams.id + '/' + $scope.customer.client;
                 rest.get().success(function (data) {
                     $scope.general = data;
-                    console.log('$scope.general--', $scope.general)
+                    
                     $scope.projectOrderName = data.order_no;
                     $window.localStorage.setItem('projectOrderName', data.order_no);
                     angular.element('#order_number_id').val(data.order_no);
@@ -18162,7 +17925,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }).error(errorCallback);
     } else {
-        console.log('EDIT eleee')
+        
         $scope.order = [];
         if ($scope.order == "" || $scope.order == null || $scope.order == undefined) {
             $scope.order = {};
@@ -18173,7 +17936,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $window.localStorage.iUserId = data.order_id;
             $window.localStorage.orderID = data.order_id;
             $scope.routeOrderID = data.order_id;
-            console.log('$scope.routeOrderID', $scope.routeOrderID)
+            
             $window.localStorage.userType = 3;
             //$route.reload(); //hide to create project multitab in browser 
         }).error(errorCallback);
@@ -18201,7 +17964,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = 'orderdataget/' + id;
         rest.get().success(function (data) {
-            console.log('is it orderno-data', data)
+            
             $scope.orderNumber(data);
         }).error(errorCallback);
 
@@ -18410,7 +18173,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $routeParams.id = $scope.customer.c_id;
                         rest.path = 'customer';
                         rest.put($scope.customer).success(function (data) {
-                            //console.log('data', data)
+                            
                             if (data.indirectData) {
                                 $timeout(function () {
                                     $window.localStorage.setItem('indirectCustomerName', data.indirectData.vUserName)
@@ -18463,16 +18226,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     $window.localStorage.orderNumber = $scope.general.order_no;
                     $scope.routeOrderID = $scope.routeOrderID ? $scope.routeOrderID : $window.localStorage.orderID;
-                    console.log('$scope.routeOrderID', $scope.routeOrderID)
+                    
                     $scope.general.order_id = $scope.routeOrderID;
                     
                     $scope.general.project_status = $scope.proStatusData.pr_status_id;
                     $scope.general.project_createdBy = $window.localStorage.getItem('session_iUserId');
-                    //console.log('$scope.general-bfotrrre', $scope.general)
+                    
                         
                     rest.path = 'general';
                     rest.post($scope.general).success(function (data) {
-                        //console.log('$scope.general-inn', data)
+                        
                         $window.localStorage.setItem('tmpOrderId', data.order_data.order_id);
                         $scope.tmpOrderId = data.order_data.order_id;
                         //log file start 
@@ -18497,7 +18260,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $timeout(function () {
 
                         if ($scope.customer.c_id) {
-                            //console.log('$scope.customer.c_id-iff', $scope.customer.c_id)
+                            
                             $window.localStorage.ContactPerson = $scope.customer.contact;
                             $window.localStorage.clientproCustomerName = $scope.customer.client;
                             $routeParams.id = $scope.customer.c_id;
@@ -18506,7 +18269,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                             }).error(errorCallback);
                         } else {
-                            //console.log('$scope.customer.contact--else')
+                            
                             $window.localStorage.ContactPerson = $scope.customer.contact;
                             $window.localStorage.clientproCustomerName = $scope.customer.client;
                             $scope.project_coordinator = angular.element('#projectCoordinator').val();
@@ -18530,7 +18293,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $routeParams.id = $scope.routeOrderID;
                             rest.path = 'order';
                             rest.put($scope.or).success(function (data) {
-                                //console.log('$scope.or', $scope.or)
+                                
                                 $window.localStorage.iUserId = data.order_id;
                                 $window.localStorage.userType = 3;
                             }).error(errorCallback);
@@ -18564,7 +18327,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // }
 
                     $timeout(function () {
-                        //console.log('$scope.tmpOrderId', $scope.tmpOrderId)
+                        
                         if($scope.tmpOrderId)
                             $location.path('/items/'+$scope.tmpOrderId);
                         else
@@ -18651,7 +18414,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.AccountChange = () => {
         var account = angular.element('#indirect_customer').select2('data');
-        console.log("account", account);
+        
         $scope.indirectCustomerName = account.text;
         $window.localStorage.setItem('indirectCustomerName', account.text);
     }
@@ -18725,7 +18488,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
         modalInstance.result.then(function (selectedItem) {
-            console.log('selectedItem', selectedItem)
+            
             // debugger;
             $scope.selected = selectedItem;
             $routeParams.id = clientId;
@@ -18808,12 +18571,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.contact = {};
     $scope.contact.iClientId = items.iClientId;
-    console.log('items', items)
     
     $scope.currentUserName = items.clientName;
     
     $scope.saveContact = function (formId, id) {
-        console.log('id', id)
+        
         if (angular.element("#" + formId).valid()) {
             //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             var countryCodeData = angular.element('#iphone').parent().find('.selected-flag').attr('title');
@@ -18865,7 +18627,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
         rest.path = 'viewdirectdataget/' + $routeParams.id;
         rest.get().success(function (data) {
-            console.log('data', data)
+            
             $scope.info = data;
             /*rest.path = 'getTaxName/' + $scope.info.vTextType;
             rest.get().success(function(data) {
@@ -18920,7 +18682,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = 'PriceListDirectEditgetone/' + $routeParams.id;
         rest.get().success(function (data) {
-            console.log('data===', data)
+            
             $scope.price = data;
             if(data){
                 var currency = (data && data.currancy_id) ? data.currancy_id.split(',') : 'EUR,€';
@@ -19019,8 +18781,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.routeOrderID = $routeParams.id ? $routeParams.id : $window.localStorage.orderID;
     $scope.orderUrlID = $scope.routeOrderID ? '/'+$scope.routeOrderID : '';
     
-    console.log('$scope.routeOrderID', $scope.routeOrderID)
-    console.log('localStorage.orderID=', $window.localStorage.orderID)
     
     $window.localStorage.jobitStatus = " ";
     $scope.EditedBy = $window.localStorage.getItem('sessionProjectEditedBy');
@@ -19036,7 +18796,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $timeout(function () {
         $scope.projectOrderName = $window.localStorage.getItem('projectOrderName');
-        console.log('$scope.projectOrderName', $scope.projectOrderName)
+        
         $scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
     }, 500);
     $scope.clientpriceList = {};
@@ -19046,7 +18806,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (res) {
         $scope.customer = res;
         $scope.price_ClientID = $scope.customer.client;
-        console.log('$scope.customer', $scope.customer)
+        
     })
 
     if ($window.localStorage.clientproCustomerName) {
@@ -19134,7 +18894,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'childPriceitemget';
             rest.get().success(function (data) {
                 $scope.childPrice = data;
-                console.log('$scope.childPrice', $scope.childPrice)
+                
                 deferredCh.resolve($scope.childPrice);
             }).error( function(){
                 deferredCh.reject();
@@ -19144,10 +18904,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         // Client Price list fetching
         $scope.changeClientPrice = function(priceId, item_id, specializationArr, langPair){
-            console.log('langPair', langPair)
-            console.log('item_id', item_id)
-            console.log('id', priceId)
-            console.log('$scope.testClientList',$scope.newchildPriceArr )
+            
             if(priceId > 0){
                 let clientPricelist = $scope.customerpriceAll.filter((e) => e.price_list_id == priceId )
                 if(clientPricelist){
@@ -19158,7 +18915,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         if(val.child_price_id == x.childPriceId){
                                             if(val.itemId == item_id){
                                                 $scope.newchildPriceArr[item_id][newi].rate = x.basePrice; 
-                                                console.log('$scope.newchildPriceArr-'+item_id, $scope.newchildPriceArr)
+                                                
                                             }
                                         }
                                         return x;
@@ -19175,10 +18932,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if(val.child_price_id == x.childPriceId){
                                 const spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
                                 const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
-                                //console.log('lngPairFound', lngPairFound)
-                                //console.log('spclFound', spclFound)
+                                
                                 if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
-                                    console.log('match', val.child_price_id)
                                     $scope.newchildPriceArr[item_id][i].rate = x.basePrice;  
                                 }
                                 return x;
@@ -19247,8 +19002,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $('#filescount' + id).text($scope.Filestotal);
             }).error(errorCallback);
             // files couunt end
-            console.log('filecount', $scope.Filestotal);
-
+            
             return false;
         }, false);
 
@@ -19275,8 +19029,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             count = 0;
         }
         var id = $window.localStorage.getItem("scoopfolderId");
-        //console.log('scoopid',id);
-        //console.log('scoop-foldercount',count);
+        
         //$('#sourceCount-'+id).text(count);
         //$('#filescount'+id).text(count);
     }
@@ -19295,7 +19048,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.$on('pls.onLanguageChanged', function (evt, lang) {
-        console.log('lang', lang)
+        
         lang.id = lang.id.replace(/[0-9]/g, '');
         var eleId = evt.targetScope.id.replace(/\D/g, '');
         if (lang.id == 'plsSourceLang') {
@@ -19318,7 +19071,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var source = angular.element('#source_lang' + eleId).text();
         var target = angular.element('#target_lang' + eleId).text();
         
-        console.log("evt.targetScope.id", evt.targetScope.id);
         if ($scope.itemList[itemIndex].item_number) {
             var item_number = pad($scope.itemList[itemIndex].item_number, 3);
         } else {
@@ -19347,7 +19099,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
         $scope.stLangPair = source + ' > ' + target;
-        console.log('$scope.stLangPair', $scope.stLangPair)
+        
         // Client price list base on language
         $scope.changeClientPrice(0, eleId, $scope.scoopSpecializationArr, $scope.stLangPair)
     });
@@ -19355,11 +19107,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.plsModel = {
         languages40: allLanguages,
     };
-    //console.log('$scope.plsModel',$scope.plsModel.languages40);
     $timeout(function () {
         if ($scope.plsModel) {
             angular.forEach($scope.plsModel.languages40, function (val, i) {
-                //console.log('title',val.title);
+                
                 if (val.is_favourite == 1) {
                     $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
                     $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
@@ -19426,8 +19177,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             itemPrice = 0;
         //itemPrice = numberFormatCommaToPoint(itemPrice);
         itemPrice = CommaToPoint4Digit(itemPrice);
-        console.log('itemPrice', itemPrice)
-    
+        
         if (itemPrice == '')
             itemPrice = 0;
 
@@ -19470,7 +19220,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.numOfScoopItems = newscoop.split(',')[1];
             $('.scoopText input').attr("placeholder", "");
         }
-        console.log('newscoop', newscoop);
+        
         var noItemVal = $scope.numOfScoopItems;
         if (!noItemVal) {
             $('#numOfItems').parent().parent().addClass('has-error');
@@ -19517,7 +19267,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             rest.path = 'getIndirectClient/' + data.indirect_customer;
             rest.get().success(function (data) {
-                console.log('data', data)
+                
                 $scope.indirectCustomer = data.vUserName;
 
                 if($scope.item == undefined)
@@ -19609,7 +19359,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $scope.order_id;
         rest.path = 'contactPerson';
         rest.model().success(function (data) {
-            console.log('data=>customer', data)
+            
             var cor = [];
             var man = [];
             angular.forEach(data, function (val, i) {
@@ -19652,7 +19402,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.poNumberExist = false;
     $scope.checkPoNumberExist = function (id, searchText) {
-        console.log('searchText', searchText)
+        
         if(searchText.length > 1){
             rest.path = 'checkItemPonumberExist/' + id +'/' + searchText;
             rest.get().success(function (data) {
@@ -19674,9 +19424,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.workflowChange = false;
     $scope.changeWorkflow = function (id) {
-        console.log('id', id)
         $scope.workflowChange = true; 
-        console.log('$scope.workflowChange', $scope.workflowChange)
     }
     $scope.isAllScoopUpdated = false;
     $scope.jobi = {};
@@ -19700,8 +19448,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var formIdAllSave = $scope.isAllScoopUpdated ? $scope.itemList[0].itemId : formId;
                     var formIndexNew = $scope.isAllScoopUpdated ? 0 : formIndex;
                     
-                    console.log('formIdAllSave', formIdAllSave)
-                    console.log('itemId = first', $scope.itemList[formIndex].itemId)
                     var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
                     var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
                     if(!srcLang || !trgLang){
@@ -19776,8 +19522,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             return false;
                         } else {
                             if ($scope.jobi.jobSummery && $scope.workflowChange || ($scope.isAllScoopUpdated && $scope.workflowChange) ) {
-                                console.log('$scope.jobi.jobSummery=>', $scope.jobi.jobSummery)
-                                console.log('$scope.workflowChange', $scope.workflowChange)
+                                
                                 // gettingName of selected workflow job chain
                                 
                                 $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formIdAllSave).find(':selected').text();
@@ -19792,12 +19537,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     rest.get().success(function (data) {
                                         $scope.itemdata = data;
                                         $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
-                                        console.log('$scope.jobitem.item_id='+$scope.itemList[formIndex].itemId, $scope.jobitem.item_id)
+                                        
                                         if ($scope.jobitem.item_id) {
                                             rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.routeOrderID;
                                             rest.get().success(function (data) {
                                                 $scope.iData = data;
-                                                console.log('$scope.iData- item-jobs-', $scope.iData)
+                                                
                                                 var contact_person = [];
                                                 var job_id = [];
                                                 var order_id = [];
@@ -19870,8 +19615,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     }).error(errorCallback);
                                 } else {
                                     var chainId = $scope.itemList[formIndex].item_number;
-                                    console.log('chainId', chainId)
-
+                                    
                                     // gettingName of selected workflow job chain
                                     $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName'+formIdAllSave).find(':selected').text();
                                     if (chainId != undefined  && $scope.workflowChange) {
@@ -19967,11 +19711,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(hasKeySpclz)    
                         delete $scope.itemList[formIndex].specialization;
                     
-                    console.log('due_date-before=->'+$scope.itemList[formIndex].itemId ,$scope.itemList[formIndex].due_date )
+                    
                     $scope.itemList[formIndexNew].itemId ,$scope.itemList[formIndexNew].due_date;
                     if($scope.isAllScoopUpdated && formIndex != 0 ){    
                         $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndexNew].due_date).format("YYYY-MM-DD HH:mm");
-                        console.log('due_date-after=->'+$scope.itemList[formIndexNew].itemId ,$scope.itemList[formIndex].due_date )
+                    
                     }else{
                         $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
                         $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
@@ -19995,7 +19739,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     if($scope.isAllScoopUpdated && formIndex != 0 && $scope.itemList[formIndexNew].heads_up == 1){    
                         $scope.itemList[formIndex].upcomingDate = $scope.itemList[formIndexNew].upcomingDate;
-                        console.log('upcomingDate-all'+formIndex, $scope.itemList[formIndex].upcomingDate)
+                        
                         if(! isNaN(Date.parse($scope.itemList[formIndexNew].upcomingDate))){
                             $scope.itemList[formIndex].start_date = $scope.itemList[formIndexNew].upcomingDate;
                         }
@@ -20040,7 +19784,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //$route.reload();
                                 
                         if(!$scope.isAllScoopUpdated){
-                            console.log('single scoop'+ $scope.itemList[formIndex].itemId,$scope.isAllScoopUpdated)
                             notification('Item successfully updated.', 'success');
                         }else{
                             if( $scope.itemList[$scope.itemList.length-1].itemId == $scope.itemList[formIndex].itemId ){
@@ -20078,7 +19821,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var itemPrice = angular.element('#itemPrice' + i).val();
                         var itemTotal1 = angular.element('#itemTotal' + i).text();
                         var itemTotal = numberFormatCommaToPoint(itemTotal1);
-                        console.log('pricelist', pricelist);
+                        
                         itemPriceUnit.push({
                             'quantity': quantity,
                             'pricelist': pricelist,
@@ -20140,21 +19883,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $('#upcomingDate'+val.itemId).removeAttr('required');
             //$('#EmailSub'+val.itemId).removeAttr('required');
             //$scope.workflowChange = false;
-            console.log('$scope.workflowChange-before'+index, $scope.workflowChange)
             if($scope.itemList[0].heads_up == 1 && index != 0)
                 $('#headsup'+val.itemId).click();
             if($scope.itemList[0].heads_up != 1 )    
                 $('#upcomingDate'+val.itemId).css('display','none');    
 
             let selectedWorkflow = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();
-            console.log('selectedWorkflow=before='+val.itemId, selectedWorkflow)
+            
             if($('#jobchainName'+val.itemId).find(':selected').val() == 'select' && selectedWorkflow != 'select' ){
                 $scope.workflowChange = true;
                 $('#jobchainName'+val.itemId).find('option').val(selectedWorkflow).trigger('click');
             }else{
                 $scope.workflowChange = $scope.workflowChange ? $scope.workflowChange : false;
             }
-            console.log('$scope.workflowChange-After-'+index, $scope.workflowChange)
             
             $scope.saveitems(val.itemId, index);
         
@@ -20198,10 +19939,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         })
                     })
                     //newArr2[eleVal.itemId] = Object.assign({}, ...newArr1)
-                    console.log('newArr2-MAP', searchedPrice)
+                    
                     $scope.newchildPriceArr[eleVal.itemId] = searchedPrice;
-                    console.log('newchildPriceArr', $scope.newchildPriceArr)
-                    console.log('$scope.customerpriceAll', $scope.customerpriceAll)
+                    
                     $scope.custPriceAll().then((prData) => {
                         if(searchedPrice && $scope.newchildPriceArr[eleVal.itemId] && eleVal.project_pricelist)
                             $scope.changeClientPrice(eleVal.project_pricelist, eleVal.itemId)
@@ -20218,7 +19958,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //getClient By OrderId while edit item
                 rest.path = 'customer/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
-                    console.log('data-customer', data)
+                    
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
@@ -20243,22 +19983,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                         });
                     })
-                    //console.log('$scope.joboption',$scope.joboption);
+                    
                     var jobChainoption = $scope.jobchainoption;
-                    console.log('jobChainoption', jobChainoption)
+                    
 
                     var chaintext = val.attached_workflow.split('jobChain -');
-                    //console.log('jobtext', jobtext[1])
+                    
                     var chainworkflow = jobChainoption.filter(x => x.job_name == chaintext[1]).map(x => x.job_chain_id);
-                    //console.log('workflow', workflow);
+                    
                     if (chainworkflow.length > 0)
                         $('#jobchainName' + val.itemId).val('c' + chainworkflow);
 
                     var joboption = $scope.joboption;
                     var jobtext = val.attached_workflow.split('SingleJob -');
-                    //console.log('jobtext', jobtext[1])
+                    
                     var jobworkflow = joboption.filter(x => x.service_name + ' (' + x.job_code + ')' == jobtext[1]).map(x => x.job_id);
-                    //console.log('workflow', workflow);
+                    
                     if (jobworkflow.length > 0)
                         $('#jobchainName' + val.itemId).val('j' + jobworkflow);
 
@@ -20282,7 +20022,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
                     //$scope.itemList[i].start_date = moment($scope.itemList[i].start_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
                     
-                    //console.log('$scope.itemList[i].start_date', $scope.itemList[i].start_date)
+                    
                     if( isNaN(Date.parse($scope.itemList[i].upcomingDate)) )
                         $scope.itemList[i].upcomingDate = '';
                     else
@@ -20291,7 +20031,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     if ($scope.itemList[i].due_date) {
                         var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
-                        //console.log('vt=',new_due_date.split(" ")[0]);
                         //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
                         var due_timevl = new_due_date.split(" ")[1];
                         $scope.itemList[i].due_date = moment($scope.itemList[i].due_date).format($window.localStorage.getItem('global_dateFormat'));
@@ -20311,11 +20050,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
                     var sourceField = angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale");
-                    console.log('sourceField', sourceField)
-
+                    
                     var targetField = angular.element("#plsTargetLang" + val.itemId).children("a.pls-selected-locale");
                     var sourceImg = sourceField.children('img');
-                    console.log('sourceImg', sourceImg)
                     var targetImg = targetField.children('img');
 
                     angular.element("#plsSourceLang" + val.itemId).children("a.pls-selected-locale").text('');
@@ -20365,7 +20102,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $routeParams.id = val.itemId;
                     rest.path = 'itemsjobStatusGet/' + $routeParams.id + '/' + $scope.routeOrderID;
                     rest.get().success(function (data) {
-                        console.log("data", data);
                         if (!data) {
                             $('#noJobNew' + val.itemId).text('false');
                         } else {
@@ -20429,9 +20165,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     
-    console.log('$scope.newchildPriceArr=1', $scope.newchildPriceArr)
     $scope.getItems();
-
 
     $scope.getitemsId = function (id, eID) {
         angular.element('[id^=totalItem_]').remove();
@@ -20539,7 +20273,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var targetImg = targetField.children('img').after(targetData.sourceLang);
             }
 
-            console.log("data", data);
             if (data.price) {
                 $scope.itemPriceUni = JSON.parse(data.price);
             }
@@ -20575,7 +20308,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     return el;
             })
             $scope.itemJobs = itemJobs;
-            console.log('$scope.itemJobs', $scope.itemJobs)
         });    
     }
 
@@ -20589,8 +20321,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(itemJobsExist.length){
             deleteMessage = "Jobs are available in the scoop. You can not delete.";
         }
-        console.log('itemJobsExist', itemJobsExist)
-
+        
         bootbox.confirm(deleteMessage, function (result) {
             deleteMessage = '';
             if (result == true) {
@@ -20752,7 +20483,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
         rest.path = 'getClientIndirectClient/' + $routeParams.id;
         rest.get().success(function (data) {
-            console.log('data-indirecrtData', data)
+            
             if (data.order_number) {
                 $scope.indirectCustomerName = data.indirect_customer ? data.indirect_customer : $window.localStorage.getItem('indirectCustomerName');
                 $scope.projectOrderData = data;
@@ -20936,7 +20667,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.resource = resourceId;
         $scope.jobd.resource = $scope.resource;
         $routeParams.id = sumId;
-        console.log('$scope.jobd', $scope.jobd)
+        
 
         rest.path = 'jobSummeryJobDetailsUpdate';
         rest.put($scope.jobd).success(function (data) {
@@ -20961,13 +20692,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobitList = [];
-            console.log('$scope.jobitList', $scope.jobitList)
+            
 
             angular.forEach(data, function (val, i) {
-                //console.log('job-val',val);
-
+            
                 /* var newSourceLang1 = newSourceLang.sourceLang
-                console.log('newSourceLang', newSourceLang1)
                 var newTargetLang = angular.toJson(val.target_lang);
                  */
                 if (val.due_date != null) {
@@ -21028,12 +20757,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         JobFolders.addEventListener("beforeunload", function () {
             var id1 = $window.localStorage.getItem("jobFolderRoot");
             var type1 = $window.localStorage.getItem("jobFoldertype");
-            console.log('type1', type1)
+            
             var externalResourceUserId1 = null;
             var count;
             rest.path = 'filefolderGet/' + id1 + '/' + type1 + '/' + externalResourceUserId1;
             rest.get().success(function (data) {
-                console.log('data -folder', data)
                 count = data.length;
                 if (!count) {
                     count = 0;
@@ -21341,7 +21069,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.itemjobList = data;
-            console.log('$scope.itemjobList', $scope.itemjobList);
+            
         }).error(errorCallback);
         rest.path = 'jobDetailLanguageGet/' + $routeParams.id;
         rest.get().success(function (data) {
@@ -21367,7 +21095,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function (data1) {
             $scope.itemLength = data1;
-            console.log('$scope.itemLength', $scope.itemLength);
+            
             rest.path = 'jobsummeryGet/' + $routeParams.id;
             rest.get().success(function (data) {
 
@@ -21386,7 +21114,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemListFinal.push($scope.itemList.filter(function (e1, i1) {
                             return e1.item_id == e.item_number;
                         }));
-                        console.log('$scope.itemListFinal',$scope.itemList);
+                        
                     });
 
                     angular.forEach($scope.itemList, function (val, i) {
@@ -21462,7 +21190,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             profitMargin = '0,00' + "%";
                             var marginloss = 1;
                         }
-                        //console.log('jobAmount',jobAmount);
 
                         angular.element('#profitMargin' + $scope.itemjobList[i].item_number).text(profitMargin);
                         if (marginloss) {
@@ -21929,7 +21656,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             case "Change Status to":
                 var setItemStatus = $('#setItemStatus').val();
-                console.log('setItemStatus', setItemStatus)
+                
                 if (setItemStatus == 0) {
                     notification('Please select status.', 'warning');
                     $('#s2id_setItemStatus').css('border', '1px solid red');
@@ -22096,7 +21823,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.edit = function (jobId) {
-        console.log('jobId', jobId)
+        
         scrollBodyToTop();
         //$location.path('/job-summery-details/' + id);
         $routeParams.id = jobId;
@@ -22214,7 +21941,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $scope.master_job_id = $scope.itemdata.job_id;
 
                                 if ($scope.iData != null) {
-                                    console.log('$scope.iData', $scope.iData)
+                                    
                                     //$scope.contact_person = $scope.iData.contact_person;
                                     $scope.contact_person = $scope.iData.manager;
                                     $scope.due_date = $scope.iData.due_date;
@@ -22254,9 +21981,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     var newlangIns = newLag[0].newSourceLang + ' > ' + newLag[0].newTargetLang;
                                     $scope.jobitem.ItemLanguage = newlangIns;
                                 }
-                                console.log('$scope.jobitem', $scope.jobitem)
-                                    
-
+                                
                                 rest.path = 'jobSummarySave';
                                 rest.post($scope.jobitem).success(function (data) {
                                     if (data) {
@@ -22404,7 +22129,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.saveJobSorting = function () {
         rest.path = "saveSortedJobsData";
         rest.post($scope.itemListFinal).success(function (data) {
-            console.log('$scope.itemListFinal==orderchange', $scope.itemListFinal)
+            
             //
             if (data.status == 200) {
                 notification(data.msg, 'success');
@@ -22500,7 +22225,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var projectTeam = [];
     rest.path = 'contactPerson';
     rest.model().success(function (data) {
-        console.log('contactperson-data', data);
+        
         angular.forEach(data, function (val, i) {
             if (val.vResourcePosition == 3) {
                 angular.element('#coordinatorIcon').html(val.vUserName);
@@ -22561,7 +22286,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             // }
         }
-        //console.log('$scope.generaldata',$scope.general);
     }).error(errorCallback);
 
     $scope.projectPriceChat = 0;
@@ -22569,20 +22293,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             angular.forEach(data, function (val, i) {
-                //console.log('total_price',val.total_price);
+                
                 if (val.total_price) {
                     $scope.projectPriceChat += val.total_price;
                 }
             });
-            //console.log('alltotal',$scope.projectPriceChat);
-
+            
         });
 
         //-- project Team Users --//
         $scope.teamArray = [];
         rest.path = "users";
         rest.get().success(function (data) {
-            // console.log("datadata",data);
             angular.forEach(data.data, function (val, i) {
                 //if(val.iUserId != loginid && val.freelancer == 'freelancer' ){
                 if (val.iUserId != loginid) {
@@ -22733,7 +22455,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         // if (file_type == 'image' || file_type == 'video') {
                         //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                         // }
-                        //console.log(val.content)
+                        
                         if (val.content) {
                             $('li[data-id=' + dataId + ']').find('.content').html(val.content);
                         }
@@ -22787,7 +22509,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var msgRead_id = val.read_id;
 
                         if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
-                            //console.log('msgRead_id',msgRead_id);
+                            
                         } else {
                             var cmtObj = {
                                 id: val.id,
@@ -22810,7 +22532,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     $(".comment-wrapper").each(function (i, v) {
                         /*var dateTime = $(this).find('time')[0].innerText;
-                        console.log(dateTime);
+                        
                         //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
                         dateTime = moment(dateTime).format('DD-MM-YYYY');
                         $(this).find('time')[0].innerText = dateTime;*/
@@ -22824,10 +22546,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 }, 1500);
                 commentsArray = data;
-                console.log('commentsArray=', commentsArray);
+                
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
-                //console.log('usercommentsArr=before',usercommentsArr.length);
-
+                
             }).error(errorCallback);
 
 
@@ -22843,7 +22564,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "users";
         //$timeout(function () {
         rest.get().success(function (data) {
-            console.log("datadata", data);
             angular.forEach(data.data, function (val, i) {
                 var uObj = {
                     id: val.iUserId,
@@ -22855,14 +22575,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
 
         }).error(errorCallback);
-        // console.log('discussion-usersArray',$scope.usersArray);
+        
         //}, 100);
         // emoji text
         $scope.emojitext = [];
         /*rest.path = "emojitext";
         $timeout(function() {
             rest.get().success(function(data) {
-                //console.log("emojidata",data);
+                
                     angular.forEach(data, function(val, i) {
                         var eObj = {
                             id              : val.id,
@@ -22911,7 +22631,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$timeout(function() {
             rest.path = "discussionCommentread";
             rest.put($scope.commentReadArray).success(function (res) {
-                //console.log('res',res);
                 if (res.status == 1) {
                     jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                 }
@@ -22970,14 +22689,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.get().success(function (data) {
                             var NewcommentsArray = data;
                             var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
-                            //console.log('newUsercommentsArr',newUserCommentsArr.length);
-                            //console.log('NewcommentsArray=L',NewcommentsArray.length);
                             var cmtArr = [];
                             var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
                             var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
-                            //console.log('cmtArr',cmtArr.length);
                             // --- update read id //
                             $scope.newCommentReadArray = [];
                             if (cmtArr) {
@@ -22988,10 +22704,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     }
                                     $scope.newCommentReadArray.push(newCmtObj);
                                     if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                        console.log('cmtArr-' + cmti, $scope.newCommentReadArray);
+                                        
                                         rest.path = "discussionCommentread";
                                         rest.put($scope.newCommentReadArray).success(function (res) {
-                                            //console.log('res',res);
+                                            
                                             if (res.status == 1) {
                                                 //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                                             }
@@ -23000,14 +22716,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 });
                             }
                             //if( (NewcommentsArray.length > commentsArray.length && ) )
-                            //console.log('new cmtArr.length',newcmtArr.length);
+                            
                             var arrayNotload = $('#comment-list').find(' > li').length;
                             if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
-                                //console.log('we are in');
                                 $('#comment-list').find(' > li[data-id^=c]').hide();
                                 rest.path = "discussionCommentread";
                                 rest.put($scope.commentReadArray).success(function (res) {
-                                    //console.log('res',res);
                                     if (res.status == 1) {
                                         jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                                     }
@@ -23031,7 +22745,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 usercommentsArr = [];
                             }
                         });
-                        //console.log('usercommentsArr=after',usercommentsArr.length);
+                        
                         //interval
                         var urlExist = window.location.href;
                         if (!(urlExist.includes('#/discussion/'))) {
@@ -23113,7 +22827,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     pingsvalue[index] = Object.keys(data.pings)[index];
                 });
             }
-            console.log('alldata', data);
+            
             data.pings = pingsvalue.toString();
             rest.path = "discussionOrder";
             rest.post(data).success(function (info) {
@@ -23658,11 +23372,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.user.vholiday_country = JSON.stringify($scope.countryListHoliday); //country;
             }
 
-            //console.log("$scope.countryListHoliday.length", $scope.countryListHoliday.length);return false;
             rest.path = "saveuserprofile";
             rest.put($scope.user).success(function (data) {
                 notification('Updated successfully.', 'success');
-                console.log("data", data);
             });
             if ($scope.countryListHoliday.length == 0) {
                 $cookieStore.remove("session_holidayCountry");
@@ -23699,7 +23411,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         })
         $scope.countryListHoliday = obj;
-        console.log($scope.countryListHoliday);
+        
     }
 
 }).controller('PropertyController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
@@ -24140,7 +23852,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.saveTemplate = function (formId) {
         if (angular.element("#" + formId).valid()) {
-            //console.log("$scope.emailTplData", $scope.emailTplData);return false;
+            
             if (!$scope.emailTplData.template_content || $('#emailTpl').find('textarea').prev().html() === '<br>') {
                 notification('Please enter template detail.', 'warning');
                 return false;
@@ -24178,7 +23890,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $route.reload();
                     }).error(errorCallback);
                 }
-                console.log("tplForm");
+                
                 $timeout(function () {
                     scrollToId('tplForm');
                 }, 500);
@@ -24208,7 +23920,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.tplDel = function (id) {
-        // console.log("id", id);return false;
+        
         bootbox.confirm("Are you sure you want to delete this template?", function (result) {
             if (result == true) {
                 rest.path = 'deleteEmailTemplate/' + id;
@@ -24355,13 +24067,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }).error(errorCallback);
 
     $scope.getType = function (id, eID) {
-        console.log('eID', eID)
-        console.log('id', id)
+        
         $routeParams.id = id;
         rest.path = 'jobStatus';
         rest.model().success(function (data) {
             $scope.jb_status = data;
-            console.log('$scope.jb_status', $scope.jb_status)
+            
         }).error(errorCallback);
         scrollToId(eID);
     }
@@ -24539,7 +24250,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.jobchain.creator = $scope.creator;
         rest.path = 'jobChainsave';
         rest.post($scope.jobchain).success(function (data) {
-            console.log('data', data)
+            
             $window.localStorage.chainediteId = data
             $location.path("/job-chain");
         }).error(errorCallback);
@@ -24633,7 +24344,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.saveJob = function (jobId) {
         if (angular.element("#" + jobId).valid()) {
-            //console.log("jobId", jobId);return;
+            
             $scope.job_chain = [];
             if ($scope.job_chain == "" || $scope.job_chain == null || $scope.job_chain == undefined) {
                 $scope.job_chain = {};
@@ -24733,10 +24444,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.jobchain.customer = JSON.stringify($scope.customer);
                 var creator = name;
                 $scope.jobchain.creator = creator;
-                //console.log("$scope.jobchain", $scope.jobchain);return;
+                
                 $routeParams.id = $scope.jobchain.job_chain_id;
-                console.log('$scope.jobchain',$scope.jobchain)
-
+                
                 rest.path = 'jobChainupdate';
                 rest.put($scope.jobchain).success(function (data) {
 
@@ -24777,7 +24487,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($window.localStorage.chainediteId != 'false') {
         rest.path = 'jobChingetOne/' + $window.localStorage.chainediteId;
         rest.get().success(function (data) {
-            console.log('data', data)
+            
             $scope.jobchain = data;
             $scope.customerJob = data.customer ? JSON.parse(data.customer) : '';
             if ($scope.customerJob.length != undefined) {
@@ -24881,7 +24591,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
 
-        /*console.log("$scope.showSortBox", $scope.showSortBox);
+        /*
         if($scope.showSortBox == false){
             $scope.showSortBox = true;
         }else{
@@ -25259,7 +24969,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.save = function (frmId) {
-        console.log('frmId', frmId)
+        
         if (angular.element('#' + frmId).valid()) {
             var setPriceLanguage = angular.element('.setPriceLanguage').text();
             if (setPriceLanguage == 'Change prices') {
@@ -25286,8 +24996,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
                     var basePrice = numberFormatCommaToPoint(angular.element('#basePrice' + i).val().trim());
-                    console.log('basePrice-B', basePrice)
-
+                    
                     var standardTime = angular.element('.standardTime' + i).text().trim();
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
@@ -25355,8 +25064,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var basePriceUnit = angular.element('#basePriceUnit' + i).text().trim();
                     //var basePrice = angular.element('#basePrice' + i).val().trim();
                     var basePrice = numberFormatCommaToPoint(angular.element('#basePrice' + i).val().trim());
-                    console.log('basePrice-A', basePrice)
-
+                    
                     var standardTime = angular.element('.standardTime' + i).text().trim();
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
@@ -26447,7 +26155,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cPersonMsg = data;
         $scope.cPersonMsg.vEmailAddress = $window.localStorage.generalMsg;
         $scope.cPersonMsg.msgEmailSubject = $scope.msgEmailSubject;
-        console.log('$window.localStorage.msgSubject', $window.localStorage.msgSubject)
+        
         $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>';
     }).error(errorCallback);
 
@@ -26562,7 +26270,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if($window.localStorage.ResourceMsg){
         rest.path = 'jobResourceMsg/' + $window.localStorage.ResourceMsg;
         rest.get().success(function (data) {
-            console.log('data', data)
+            
             $scope.cPersonMsg2 = data.data;
             //$scope.cPersonMsg.vUserName = data.data.vUserName;
             $scope.cPersonMsg.vEmailAddress = data.data.iUserId; 
@@ -26573,7 +26281,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.ok = function (frmId, message) {
 
-        console.log('$scope.cPersonMsg', $scope.cPersonMsg)
         var data = {
             "id": items,
             "file": $scope.attachementfile,
@@ -26600,8 +26307,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //     $location.path('/dashboard');
     // }
 
-    console.log('we are here from acceot job')
-
+    
     $window.localStorage.setItem("global_dateFormat", 'DD.MM.YYYY'); // Default
     $window.localStorage.setItem("dtSeparator", '.'); // Default
 
@@ -26609,7 +26315,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'getdateFormatByIuserId/1';
     rest.get().success(function (data) {
         if (data) {
-            console.log('data', data)
+            
             if (data.dateSeparator == '/') {
                 $window.localStorage.setItem("global_dateFormat", data.dateformat);
                 $window.localStorage.setItem("dtSeparator", data.dateSeparator);
@@ -26765,10 +26471,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.ok = function (formId) {
         var init;
         var fin;
-        console.log("$scope.chain", $scope.chain);
+        
         rest.path = 'masterjobGet/' + $scope.chain.insert_job;
         rest.get().success(function (data) {
-            console.log("data", data);
+            
             var a = data.service_name + ' (' + data.job_code + ')';
             var b = a.split("(").pop();
             init = a.indexOf('(');
@@ -26864,8 +26570,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.imgshow = true;
             $scope.isNewClient = false;
             $scope.info = data;
-            console.log("$scope.info", $scope.info);
-
+            
             //Address Fields
             $scope.vCity1 = JSON.parse(data.address1Detail)[1].value;
             $scope.state1 = JSON.parse(data.address1Detail)[2].value;
@@ -27654,7 +27359,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getAllInvoiceByUserId/save/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
-            console.log('$scope.lngstInvoiceListData-prmc', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 let paid_date = $filter('globalDtFormat')(val.paid_date);
@@ -27708,7 +27412,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.invcStatusRecord = function (invcStatus) {
-        console.log('invcStatus', invcStatus)
+        
         if (invcStatus) {
             $scope.invcstatusFilter = invcStatus;
             //$scope.invoiceListAll = [];
@@ -27772,7 +27476,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.searchPonumber = items[0].searchPonumber;
 
     $scope.addInvoice = function (data) {
-        console.log('addInvoice-data', data)
+        
         var company = "";
         var flag = 0;
         var array = [];
@@ -27808,15 +27512,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 }).controller('invoiceCreateJobsController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
-    console.log('$scope.userRight', $scope.userRight)
-
+    
     $scope.resourceDefault = $window.localStorage.getItem("session_iUserId");
     $scope.resourceId = '0';
-    console.log('session_iUserId=', $scope.resourceId)
+    
     $scope.changeResource = function(resourceId){
-        console.log('resourceId', resourceId)
+        
         $scope.resourceId = $scope.userRight == 2 ? $scope.resourceDefault : resourceId.split(',').pop();
-        console.log('$scope.resourceId', $scope.resourceId)
         
         $scope.InvoiceResult = [];
         rest.path = 'freelanceJob/' + $scope.resourceId;
@@ -27826,13 +27528,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     el.freelance_currency = el.freelance_currency ? el.freelance_currency.split(',')[0] : 'EUR';
                     return el.item_status == 'Approved' || el.item_status == 'Invoice ready' || el.item_status == 'Overdue';
                 });
-            console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+            
         });        
     }
     $scope.changeResource('0');
     
     $scope.addInvoice = function (data) {
-        console.log('addInvoice-data', data)
+        
         var company = "";
         var flag = 0;
         var array = [];
@@ -27873,7 +27575,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.InvoiceResult = data.filter(function (el) {
                     return el.itemStatus == 'Approved';
                 });
-                console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+                
                 $scope.searchOrderNumber = search;
                 var obj = [];
                 obj.push({
@@ -27964,7 +27666,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.invoicePeriod = data;
             $scope.invoicePeriod = $scope.invoicePeriod.number_of_days ? $scope.invoicePeriod.number_of_days : 30;
-            console.log('$scope.invoicePeriod', $scope.invoicePeriod)
+            
         }).error(errorCallback);
     }
     $scope.getInvoicePeriod();
@@ -27976,7 +27678,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (invoices) {
             $scope.getAllInvoice = invoices;
             allInvoiceListArr = invoices;
-            console.log('invoices', invoices)
+            
             //get of invoice due period
             $scope.invoiceUnpaid = [];
             $scope.invoiceCompleted = [];
@@ -28026,7 +27728,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
-            console.log('$scope.clientInvoiceListData-prmc', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : $scope.invoicePeriod
@@ -28077,7 +27778,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.invcStatusRecord = function (invcStatus) {
-        console.log('invcStatus', invcStatus)
+        
         if (invcStatus) {
             $scope.invcstatusFilter = invcStatus;
             //$scope.invoiceListAll = [];
@@ -28173,16 +27874,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id){
         //var result = arrayRemove(array, 6);
-        console.log('clickerd-id', id)
+        
         if(id){
             if(id == 'all'){
                 let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
-                console.log('isCheckedAll', isCheckedAll)
+                
                 if(isCheckedAll == 'true'){
                     $("input[id^=invoiceCheck]:checkbox").prop("checked", true);
                     for (var i = 0; i < angular.element('[id^=invoiceCheck]').length; i++) {
                         var invoiceselected = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
-                        console.log('invoiceselected', invoiceselected)
+                        
                         if (invoiceselected == 'true') {
                             var invoiceIds = angular.element('#invoiceCheckData' + i).val();
                             $scope.checkedIds.push(parseInt(invoiceIds));
@@ -28196,14 +27897,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }else{
                 let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
-                console.log('isChecked', isChecked)
+                
                 if(isChecked == 'true')
                     $scope.checkedIds.push(id);
                 else
                     $scope.checkedIds = arrayRemove($scope.checkedIds, id);
             }        
         }    
-        console.log('$scope.checkedIds', $scope.checkedIds)
                         
     }
 
@@ -28218,14 +27918,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //Invoice export to excel
     $scope.exportData = function () {
         $("#exportable .dt-loading" ).remove();
-        console.log('$scope.checkedIds=excel', $scope.checkedIds)
-        console.log('$scope.invoiceListAll=before',$scope.invoiceListAll)
+        
         if($scope.checkedIds.length > 0){
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
             $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
-            console.log('$scope.invoiceListAll-', $scope.invoiceListAll)
         }    
-        console.log('$scope.getAllInvoice', $scope.getAllInvoice)
         setTimeout(() => {
             // var vEncodeHead = '<html><head><meta charset="UTF-8"></head><body>';
             // var html = document.getElementById('exportable').innerHTML;
@@ -28260,28 +27957,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //search data action
     $scope.statusAction = function (action) {
-        console.log('action', action)
+        
         var invoiceStatus = angular.element('#invoiceStatusdata').val();
-        console.log('invoiceStatus', invoiceStatus)
-
-        console.log('checkData-length', angular.element('[id^=invoiceCheckData]').length)
+        
         var i, j, totalChecked, successMsg;
         i = j = totalChecked = successMsg = 0;
         if(invoiceStatus != ''){
             for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
                 var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
                 const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
-                //console.log('invoiceCheckLength-1', invoiceCheckLength-1)
-                console.log('invoiceselect', invoiceselect)
-                //console.log('i', i)
+                
                 if (invoiceselect == 'true') {
                     var invoiceId = angular.element('#invoiceCheckData' + i).val();
-                    console.log('invoiceId', invoiceId)
                     totalChecked++;
                     $scope.invoice = {};
                     //const inStatus = invoiceStatus.split(',')
                     $scope.invoice.invoice_status = invoiceStatus;
-                    console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
+                    
                     //$scope.invoice.paid_amount = " ";
                     $scope.invoice.is_update = 'is_update';
                     const getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return getAllInvoice.invoice_id == invoiceId });
@@ -28306,13 +27998,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $route.reload();
                         });
                     } else {
-                        console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
-
+                        
                         $routeParams.id = invoiceId;
                         rest.path = "clientInvoiceStatusChange";
                         rest.put($scope.invoice).success(function (data) {
                             if (i == invoiceCheckLength) {
-                                console.log('invoiceCheckLength-1-inside', invoiceCheckLength - 1)
+                                
                                 successMsg++;
                                 $route.reload();
                             }
@@ -28361,14 +28052,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.InvoiceResult = items[0].InvoiceList;
     $scope.searchOrderNumber = items[0].searchOrderNumber;
     $scope.addInvoice = function (data) {
-        console.log('data', data)
+        
         var client = "";
         var flag = 0;
         var array = [];
 
         angular.forEach(data, function (val, i) {
             if (val.SELECTED == 1) {
-                console.log('val.SELECTED', val.SELECTED)
+                
                 if (!client) {
                     client = val.contactName;
                 }
@@ -28405,7 +28096,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = "getClientInvoicelistAll";
     rest.get().success(function (data) {
         $scope.allInvoice = data;
-        console.log('$scope.allInvoice', $scope.allInvoice)
+        
         $scope.allInvoice.filter( function (allInvoice) {
             let scoopIds = JSON.parse(allInvoice.scoop_id);
                 if(scoopIds){
@@ -28418,7 +28109,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             $scope.InvoiceResult = data;
-            console.log('$scope.InvoiceResult+>', $scope.InvoiceResult)
+            
             $scope.InvoiceResult = data.filter(function (el) {
                 el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
                 // status Approved = 5 id
@@ -28437,21 +28128,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             return 0;
             });
-            console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+            
         })    
     
     })    
 
 
     $scope.addInvoice = function (data) {
-        console.log('data', data)
+        
         var client = "";
         var flag = 0;
         var array = [];
 
         angular.forEach(data, function (val, i) {
             if (val.SELECTED == 1) {
-                console.log('val.SELECTED', val.SELECTED)
+                
                 if (!client) {
                     client = val.contactName;
                 }
@@ -28497,7 +28188,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var ItemcodeNumber = angular.element('#companyCode').text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
         // start to get downloaded folder name with client name
-        console.log('popupfl-orderID', $window.localStorage.orderID);
+        
         rest.path = 'customer/' + $window.localStorage.orderID;
         rest.get().success(function (res) {
             $scope.customer = res;
@@ -28549,8 +28240,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.jobdetail.price) {
                 $scope.jobdetail.price = JSON.parse(data[0].price);
             }
-            //console.log('$scope.jobdetail-linguis',$scope.jobdetail);
-
+            
             //page redirect job discussion
             $scope.jobDiscussionRedirect = data[0].order_id
             $window.localStorage.jobOrderId = data[0].order_id;
@@ -28636,9 +28326,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         if ($scope.job.item_status) {
             $routeParams.id;
-            //console.log("$scope.job.item_status", $scope.job.item_status);return false;
+            
             rest.path = 'acceptJobStatus';
-            //console.log("$scope.job", $scope.job);return false;
             rest.put($scope.job).success(function (data) {
                 if (data.status == 200 && data.emailSend == 'true') {
                     if ($scope.job.item_status == 'Delivered') {
@@ -28706,7 +28395,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var ItemcodeNumber = angular.element('#companyCode').text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
         // start to get downloaded folder name with client name
-        console.log('$window.localStorage.orderID', $window.localStorage.orderID);
+        
         rest.path = 'customer/' + $window.localStorage.orderID;
         rest.get().success(function (res) {
             $scope.customer = res;
@@ -28751,7 +28440,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
-            console.log('$scope.jobdetail', $scope.jobdetail)
+            
             var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
             $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
@@ -28759,8 +28448,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.jobdetail.price) {
                 $scope.jobdetail.price = JSON.parse(data[0].price);
             }
-            //console.log('$scope.jobdetail-linguis',$scope.jobdetail);
-
+            
             //page redirect job discussion
             $scope.jobDiscussionRedirect = data[0].order_id
             $window.localStorage.jobOrderId = data[0].order_id;
@@ -28777,7 +28465,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             if ($scope.jobdetail.work_instruction) {
                 $scope.wrInstruct = JSON.parse($scope.jobdetail.work_instruction);
-                console.log('$scope.wrInstruct', $scope.wrInstruct)
+                
                 $scope.wrInstructEmpty = jQuery.isEmptyObject($scope.wrInstruct);
             }
 
@@ -28798,7 +28486,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //getting freelancer payment information data
             rest.path = "getUserDataById/" + $scope.jobdetail.resource;
             rest.get().success(function (dataUser) {
-                console.log('dataUser-detail', dataUser)
+                
                 $scope.vBankInfo = JSON.parse(dataUser.userPaymentData.vBankInfo);
                 $scope.currencyCodeDisplay = $scope.vBankInfo.currency_code;
             }).error(errorCallback);
@@ -28817,7 +28505,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 work_name: value.work_name,
                 work_checked: work_checked,
             });
-            console.log('value', value)
+            
         });
         $scope.wiUpdate = JSON.stringify(workObj);
         rest.path = 'jobSummeryWorkinstructUpdate';
@@ -28869,9 +28557,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         if ($scope.job.item_status) {
             $routeParams.id;
-            //console.log("$scope.job.item_status", $scope.job.item_status);return false;
+            
             rest.path = 'acceptJobStatus';
-            //console.log("$scope.job", $scope.job);return false;
             rest.put($scope.job).success(function (data) {
                 if (data.status == 200 && data.emailSend == 'true') {
                     if ($scope.job.item_status == 'Delivered' || $scope.job.item_status == 'Completed') {
@@ -28919,12 +28606,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
         $scope.login_userid = $window.localStorage.getItem("session_iUserId");
 
-        console.log('$routeParams.id', $routeParams.id);
-        console.log('$scope.DetailId', $scope.jobDiscussionRedirect)
+        
         rest.path = 'viewProjectCustomerDetail';
         rest.model().success(function (data) {
             $scope.customer = data;
-            console.log('$scope.customer', $scope.customer)
+            
             $window.localStorage.clientproCustomerName = $scope.customer.client;
             $window.localStorage.ContactPerson = $scope.customer.contact;
             $routeParams.ClientIdd = data['client'];
@@ -28954,14 +28640,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 });
                 $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
-                console.log('$scope.jobLinguist', $scope.jobLinguist);
+                
 
             });
         }
         var projectTeam = [];
         rest.path = 'contactPerson';
         rest.model().success(function (data) {
-            console.log('contactperson-data', data);
+            
             angular.forEach(data, function (val, i) {
                 if (val.vResourcePosition == 3) {
                     angular.element('#coordinatorIcon').html(val.vUserName);
@@ -28986,8 +28672,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
         rest.get().success(function (data) {
             $scope.general = data;
-            console.log('$scope.general', $scope.general);
-            console.log('$scope.jobDiscussionRedirect-generl', $scope.jobDiscussionRedirect)
+            
             //$scope.general.order_date = $scope.general.order_date;
             //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
             //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
@@ -29026,14 +28711,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 // }
             }
-            //console.log('$scope.generaldata',$scope.general);
+            
         }).error(errorCallback);
 
         //-- project Team Users --//
         $scope.teamArray = [];
         rest.path = "users";
         rest.get().success(function (data) {
-            // console.log("datadata",data);
+            
             angular.forEach(data.data, function (val, i) {
                 //if(val.iUserId != loginid && val.freelancer == 'freelancer' ){
                 if (val.iUserId != loginid) {
@@ -29047,13 +28732,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'itemsGet/' + $scope.jobDiscussionRedirect;
             rest.get().success(function (data) {
                 angular.forEach(data, function (val, i) {
-                    //console.log('total_price',val.total_price);
+                
                     if (val.total_price) {
                         $scope.projectPriceChat += val.total_price;
                     }
                 });
-                //console.log('alltotal',$scope.projectPriceChat);
-
+                
             });
 
 
@@ -29089,8 +28773,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                 rest.get().success(function (data) {
                     setTimeout(function () {
-                        console.log('data-repeating - timeout', data);
-                        console.log('loginIDDtimeout', loginid);
+                        
                         //var setintrvlMenu = setInterval(function() {
                         angular.forEach(data, function (val, i) {
                             var dataId = val.id;
@@ -29189,7 +28872,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             // if (file_type == 'image' || file_type == 'video') {
                             //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                             // }
-                            //console.log(val.content)
+                            
                             if (val.content) {
                                 $('li[data-id=' + dataId + ']').find('.content').html(val.content);
                             }
@@ -29230,7 +28913,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var msgRead_id = val.read_id;
 
                             if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
-                                //console.log('msgRead_id',msgRead_id);
+                                
                             } else {
                                 var cmtObj = {
                                     id: val.id,
@@ -29262,8 +28945,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     }, 1500);
                     commentsArray = data;
-                    console.log('commentsArray=', commentsArray);
-
+                    
                 }).error(errorCallback);
 
                 //return deferred.promise;
@@ -29273,12 +28955,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
         if ($routeParams.id) {
-            console.log('$scope.jobDiscussionRedirect', $scope.jobDiscussionRedirect)
+            
             $scope.usersArray = [];
             rest.path = "users";
             //$timeout(function () {
             rest.get().success(function (data) {
-                // console.log("datadata",data);
                 angular.forEach(data.data, function (val, i) {
                     var uObj = {
                         id: val.iUserId,
@@ -29290,7 +28971,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
 
             }).error(errorCallback);
-            // console.log('discussion-usersArray',$scope.usersArray);
+            
             //}, 100);
             // emoji text
             $scope.emojitext = [];
@@ -29331,7 +29012,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$timeout(function() {
                 rest.path = "discussionCommentread";
                 rest.put($scope.commentReadArray).success(function (res) {
-                    //console.log('res',res);
+                    
                     if (res.status == 1) {
                         jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
                     }
@@ -29383,7 +29064,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if ($scope.jobDiscussionRedirect) {
 
                             var newLoginidArr = commentsArray.filter(function (commentsArray) { return commentsArray.user_id != loginid });
-                            console.log('newLoginidArr-BEFORE', newLoginidArr.length)
                             //var usercommentsArrLen = usercommentsArr.length ;
                             var usercommentsArrLen = newLoginidArr.length;
 
@@ -29393,16 +29073,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     var NewcommentsArray = data;
                                     // other side user send message
                                     var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
-                                    //console.log('newUsercommentsArr',newUserCommentsArr.length);
-                                    //console.log('NewcommentsArray=L',NewcommentsArray.length);
                                     // FOR read unread comments
                                     var cmtArr = [];
                                     var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-                                    // console.log('cmtArr', cmtArr)
-
+                                    
                                     var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
-                                    //console.log('cmtArr',cmtArr.length);
                                     // --- update read id //
                                     $scope.newCommentReadArray = [];
                                     if (cmtArr) {
@@ -29413,10 +29089,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             }
                                             $scope.newCommentReadArray.push(newCmtObj);
                                             if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                                //console.log('cmtArr-'+cmti, $scope.newCommentReadArray);   
                                                 rest.path = "discussionCommentread";
                                                 rest.put($scope.newCommentReadArray).success(function (res) {
-                                                    //console.log('res',res);
                                                     if (res.status == 1) {
                                                         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                                                     }
@@ -29425,8 +29099,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         });
                                     }
                                     //if( (NewcommentsArray.length > commentsArray.length && ) )
-                                    //console.log('new cmtArr.length',newcmtArr.length);
-
+                                    
                                     var arrayNotload = $('#comment-list').find(' > li').length;
 
                                     //if(newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)){
@@ -29438,7 +29111,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         $('#comment-list').find(' > li[data-id^=c]').hide();
                                         rest.path = "discussionCommentread";
                                         rest.put($scope.commentReadArray).success(function (res) {
-                                            //console.log('res',res);
                                             if (res.status == 1) {
                                                 jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
                                             }
@@ -29461,7 +29133,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         // end script
                                     }
                                 });
-                                // console.log('usercommentsArr=after',usercommentsArr.length);
+                                
                             }, 5000);
                         }
 
@@ -29519,7 +29191,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             pingsvalue[index] = Object.keys(data.pings)[index];
                         });
                     }
-                    console.log('alldata', data);
+                    
                     data.pings = pingsvalue.toString();
                     rest.path = "discussionOrder";
                     rest.post(data).success(function (info) {
@@ -29672,7 +29344,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.freelanceCity = $scope.freelanceCountry = $scope.freelanceZipcode = $scope.freelanceState = '';
             if ($scope.invoiceDetail.freelanceAddressDetail) {
                 let freelanceAddDetail = JSON.parse($scope.invoiceDetail.freelanceAddressDetail);
-                console.log('freelanceAddDetail', freelanceAddDetail)
+                
                 angular.forEach(freelanceAddDetail, function (freelanceAddress, i) {
                     if (freelanceAddress.id == 'address1_locality') {
                         $scope.freelanceCity = freelanceAddress.value;
@@ -29709,7 +29381,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
                     $scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
-                    console.log('$scope.currencyType', $scope.currencyType)
+                    
                     //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.currencyPaymentMethod = $scope.vBankInfo.payment_method;
                 }
@@ -29740,7 +29412,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
 
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
-            //console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
+            
             $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
@@ -29764,7 +29436,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getInvoicePartPayments/" + $routeParams.id;
         rest.get().success(function (partPayments) {
             $scope.partPaymentList = partPayments;
-            console.log("$scope.partPaymentList", $scope.partPaymentList);
+            
         });
     }
     $scope.getInvoicePartPayments();
@@ -29839,7 +29511,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "invoiceCreate";
         rest.post($scope.invoiceLt).success(function (data) {
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail?=', $scope.invoiceDetail)
+            
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
@@ -29866,7 +29538,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.freelanceCity = $scope.freelanceCountry = $scope.freelanceZipcode = $scope.freelanceState = '';
             if ($scope.invoiceDetail.freelanceAddressDetail) {
                 let freelanceAddDetail = JSON.parse($scope.invoiceDetail.freelanceAddressDetail);
-                console.log('freelanceAddDetail', freelanceAddDetail)
+                
                 angular.forEach(freelanceAddDetail, function (freelanceAddress, i) {
                     if (freelanceAddress.id == 'address1_locality') {
                         $scope.freelanceCity = freelanceAddress.value;
@@ -29886,21 +29558,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.currencyPaymentMethod == 'Bank Transfer'
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
-                console.log('dataUser', dataUser)
+                
                 $scope.userPaymentData = dataUser.userPaymentData;
                 if (dataUser.userPaymentData && dataUser.userPaymentData.vPaymentInfo) {
                     let vpaymentInfo = JSON.parse(dataUser.userPaymentData.vPaymentInfo);
                     $scope.vatNo = vpaymentInfo.tax_id;
                     $scope.taxPercentage = dataUser.userPaymentData.tax_percentage ? dataUser.userPaymentData.tax_percentage : 0;
-                    console.log('dataUser.userPaymentData.tax_percentage', dataUser.userPaymentData.tax_percentage)
+                    
                 }
-                //console.log('$scope.userPaymentData', $scope.userPaymentData)
+                
                 if ($scope.userPaymentData && $scope.userPaymentData.vBankInfo) {
                     //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     //$scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
                     $scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
-                    //console.log('$scope.currencyType', $scope.currencyType)
                     //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.currencyPaymentMethod = $scope.vBankInfo.payment_method;
                 }
@@ -29952,8 +29623,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays(date, 0));
             
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList', $scope.invoiceList)
-
+            
             $scope.vat = 0;
             $scope.invoiceTotal = 0;
             $scope.grandTotal = 0;
@@ -29972,7 +29642,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             })
             let taxRate = $scope.invoiceList[0].tax_percentage ? $scope.invoiceList[0].tax_percentage : 0;
-            console.log('taxRate', taxRate)
+            
             let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
             $scope.taxValue = amountTaxRate;
             //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
@@ -30104,9 +29774,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceLt.id = obj;
         rest.path = "clientInvoiceCreate";
         rest.post($scope.invoiceLt).success(function (data) {
-            console.log('$scope.invoiceLt', data)
+            
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail=>1', $scope.invoiceDetail)
+            
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
@@ -30133,11 +29803,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             rest.path = "customerpriceAll/1";
             rest.get().success(function (dataPrice) {
-                console.log('dataPrice', dataPrice)
+                
                 dataPrice.filter( (el) =>{
                     if(el.resource_id == $scope.invoiceDetail.clientId){
                         //$scope.currencyType = el.price_currency.includes(',') ?  el.price_currency.split(',')[0] : 'EUR';
-                        //console.log('scope.currencyType', $scope.currencyType)
+                        
                     }
                 })
             })    
@@ -30150,7 +29820,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
                 $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
                 //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
-                console.log('$scope.currencyType', $scope.currencyType)
+                
                 //$scope.currencyType = vBankInfo.currency_code;
 
                 $scope.currencyPaymentMethod = 'Bank Transfer';
@@ -30189,9 +29859,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.scoop_id = obj;
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, data[0].number_of_days);
             $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList', $scope.invoiceList)
+            
 
             // $scope.grandTotal = 0;
             // angular.forEach($scope.invoiceList, function(val, i) {
@@ -30206,7 +29876,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceTotal = 0;
             $scope.grandTotal = 0;
             angular.forEach($scope.invoiceList, function (val, i) {
-                //console.log('val', val)
                 if (val.item) {
                     var itemTotal = 0;
                     angular.forEach(val.item, function (v, i2) {
@@ -30342,7 +30011,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
@@ -30389,8 +30058,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }).error(errorCallback);
 
             $scope.invoiceList = data;
-            console.log('$scope.invoiceList', $scope.invoiceList)
-
+            
             $scope.grandTotal = 0;
             angular.forEach($scope.invoiceList, function (val, i) {
                 if (val.item) {
@@ -30401,14 +30069,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
 
             $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
-            console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
+            
             $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
             $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
 
             var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
-            console.log('mobileNo1', mobileNo1)
+            
             var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
 
@@ -30435,7 +30103,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getClientInvoicePartPayments/" + $routeParams.id;
         rest.get().success(function (partPayments) {
             $scope.partPaymentList = partPayments;
-            console.log("$scope.partPaymentList", $scope.partPaymentList);
         });
     }
     $scope.getInvoicePartPayments();
@@ -30550,7 +30217,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
         rest.get().success(function (data) {
             $scope.general = data;
-            console.log("$scope.general", $scope.general);
+            
             // $scope.properties = JSON.parse($scope.general.properties);
             var properties = [];
             if ($scope.general.properties) {
@@ -30709,7 +30376,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
         rest.get().success(function (data) {
             $scope.general = data;
-            console.log("$scope.general", $scope.general);
+            
             // $scope.properties = JSON.parse($scope.general.properties);
             var properties = [];
             if ($scope.general.properties) {
@@ -30764,7 +30431,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.addProjectInvoice = function (data) {
-        console.log('data-createinvoice', data)
+        
         var client = "";
         var flag = 0;
         var array = [];
@@ -30781,8 +30448,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }
         });
-        console.log('arraty-selected', array)
-
+        
         if (flag != 1 && array.length) {
             $scope.cancel();
             $cookieStore.put('invoiceScoopId', array);
@@ -30937,7 +30603,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'childPriceitemget';
             rest.get().success(function (data) {
                 $scope.childPrice = data;
-                console.log('$scope.childPrice', $scope.childPrice)
+                
                 deferredCh.resolve($scope.childPrice);
             }).error( function(){
                 deferredCh.reject();
@@ -30947,11 +30613,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         // Client Price list fetching
         $scope.changeClientPrice = function(priceId, item_id, specializationArr, langPair){
-            console.log('specializationArr', specializationArr)
-            console.log('langPair', langPair)
-            console.log('item_id', item_id)
-            console.log('id', priceId)
-            console.log('$scope.testClientList',$scope.newchildPriceArr )
+            
             if(priceId > 0){
                 let clientPricelist = $scope.customerpriceAll.filter((e) => e.price_list_id == priceId )
                 if(clientPricelist){
@@ -30962,7 +30624,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         if(val.child_price_id == x.childPriceId){
                                             if(val.itemId == item_id){
                                                 $scope.newchildPriceArr[item_id][newi].rate = x.basePrice; 
-                                                console.log('$scope.newchildPriceArr-'+item_id, $scope.newchildPriceArr)
                                             }
                                         }
                                         return x;
@@ -30980,10 +30641,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if(val.child_price_id == x.childPriceId){
                                 const spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
                                 const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
-                                console.log('lngPairFound', lngPairFound)
-                                //console.log('spclFound', spclFound)
+                                
                                 if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
-                                    console.log('match', val.child_price_id)
+                                    
                                     $scope.newchildPriceArr[item_id][i].rate = x.basePrice;  
                                 }
                                 return x;
@@ -31055,8 +30715,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $('#filescount' + id).text($scope.Filestotal);
             }).error(errorCallback);
             // files couunt end
-            console.log('filecount', $scope.Filestotal);
-
+            
             return false;
         }, false);
 
@@ -31083,8 +30742,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             count = 0;
         }
         var id = $window.localStorage.getItem("scoopfolderId");
-        //console.log('scoopid',id);
-        //console.log('scoop-foldercount',count);
+        
         //$('#sourceCount-'+id).text(count);
         //$('#filescount'+id).text(count);
     }
@@ -31123,7 +30781,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         var source = angular.element('#source_lang' + eleId).text();
         var target = angular.element('#target_lang' + eleId).text();
-        console.log("evt.targetScope.id", evt.targetScope.id);
+        
         if ($scope.itemList[itemIndex].item_number) {
             var item_number = pad($scope.itemList[itemIndex].item_number, 3);
         } else {
@@ -31162,7 +30820,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $timeout(function () {
         if ($scope.plsModel) {
             angular.forEach($scope.plsModel.languages40, function (val, i) {
-                //console.log('title',val.title);
                 if (val.is_favourite == 1) {
                     $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
                     $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
@@ -31191,7 +30848,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var smPromise = new Promise((resolve, reject) => {
                 $scope.itemPriceUni[id].forEach((element, indx, array) => {
                     let elVal = $scope.itemPriceUni[id][indx].itemTotal;
-                    console.log('elVal', elVal)
+                    
                     elVal = (elVal != 0 || elVal != '') ? CommaToPoint4Digit(elVal) : 0;
                     var subTtl = parseFloat(elVal);
                     grandTotal += isNaN(subTtl) ? 0 : subTtl;
@@ -31274,12 +30931,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'masterJobchainget/' + $scope.order_id;
     rest.get().success(function (data) {
         $scope.jobchainoption = data;
-        console.log('$scope.jobchainoption', $scope.jobchainoption)
+        
     }).error(errorCallback)
 
     $scope.poNumberExist = false;
     $scope.checkPoNumberExist = function (id, searchText) {
-        console.log('searchText', searchText)
+        
         if(searchText.length > 1){
             rest.path = 'checkItemPonumberExist/' + id +'/' + searchText;
             rest.get().success(function (data) {
@@ -31302,9 +30959,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.workflowChange = false;
     $scope.changeWorkflow = function (id) {
-        console.log('id', id)
         $scope.workflowChange = true; 
-        console.log('$scope.workflowChange', $scope.workflowChange)
     }
     //*****------- Update project scoop start-------****//
     $scope.jobi = {};
@@ -31315,8 +30970,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (angular.element('#item-form' + formId).valid()) {
             if ($scope.order_id) {
                 if ($scope.itemList[formIndex].itemId) {
-                    console.log('itemId = first', $scope.itemList[formIndex].itemId)
-
+                    
                     if($scope.poNumberExist){
                         notification('PO number already exist.','warning')
                         return false;
@@ -31412,7 +31066,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.order_id;
                                             rest.get().success(function (data) {
                                                 $scope.iData = data;
-                                                console.log('$scope.iData- item-jobs-', $scope.iData)
                                                 var contact_person = [];
                                                 var job_id = [];
                                                 var order_id = [];
@@ -31648,7 +31301,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var cont = [];
 
             var newitemData = data;
-            console.log('newitemData', newitemData)
+            
             // ----->>>>  Price List Client <<<<---------
             //$scope.custPriceAll().then((chData) => {
             $scope.childPriceAll().then((chData) => {
@@ -31673,10 +31326,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         })
                     })
                     //newArr2[eleVal.itemId] = Object.assign({}, ...newArr1)
-                    console.log('newArr2-MAP', searchedPrice)
+                    
                     $scope.newchildPriceArr[eleVal.itemId] = searchedPrice;
-                    console.log('newchildPriceArr', $scope.newchildPriceArr)
-                    console.log('$scope.customerpriceAll', $scope.customerpriceAll)
+                    
                     $scope.custPriceAll().then((prData) => {
                         if(searchedPrice && $scope.newchildPriceArr[eleVal.itemId] && eleVal.project_pricelist)
                             $scope.changeClientPrice(eleVal.project_pricelist, eleVal.itemId)
@@ -31693,7 +31345,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //getClient By OrderId while edit item
                 rest.path = 'customer/' + val.order_id;
                 rest.get().success(function (data) {
-                    console.log('custom-data', data)
+                    
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
@@ -31717,24 +31369,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                         });
                     })
-                    //console.log('$scope.joboption',$scope.joboption);
+                    
                     var jobChainoption = $scope.jobchainoption;
-                    console.log('$scope.jobchainoption', $scope.jobchainoption)
-
+                    
                     var chaintext = val.attached_workflow.split('jobChain -');
-                    //console.log('jobtext', jobtext[1])
+                    
                     var chainworkflow = jobChainoption.filter(x => x.job_name == chaintext[1]).map(x => x.job_chain_id);
-                    //console.log('workflow', workflow);
+                    
                     if (chainworkflow.length > 0)
                         $('#jobchainName' + val.itemId).val('c' + chainworkflow);
 
                     var joboption = $scope.joboption;
-                    console.log('$scope.joboption', $scope.joboption)
-                    console.log('joboption', joboption)
+                    
                     var jobtext = val.attached_workflow.split('SingleJob -');
-                    //console.log('jobtext', jobtext[1])
+                    
                     var jobworkflow = joboption.filter(x => x.service_name + ' (' + x.job_code + ')' == jobtext[1]).map(x => x.job_id);
-                    //console.log('workflow', workflow);
+                    
                     if (jobworkflow.length > 0)
                         $('#jobchainName' + val.itemId).val('j' + jobworkflow);
 
@@ -31751,9 +31401,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.itemPriceUni[val.itemId][j].itemTotal = numberFormatComma($scope.itemPriceUni[val.itemId][j].itemTotal);
                         }
                     }
-                    //console.log('dttt=',$scope.itemPriceUni[val.itemId][0].itemTotal);
-                    //console.log('length=',$scope.itemPriceUni[val.itemId].length);
-
+                    
                     if( isNaN(Date.parse($scope.itemList[i].start_date)) )
                         $scope.itemList[i].start_date = moment($scope.itemList[i].created_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
                     else
@@ -31767,7 +31415,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     if ($scope.itemList[i].due_date) {
                         var new_due_date = moment($scope.itemList[i].due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
-                        //console.log('vt=',new_due_date.split(" ")[0]);
                         //var due_timevl = $scope.itemList[i].due_date.split(" ")[1];
                         var due_timevl = new_due_date.split(" ")[1];
                         $scope.itemList[i].due_date = moment($scope.itemList[i].due_date).format($window.localStorage.getItem('global_dateFormat'));
@@ -31896,7 +31543,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Project Detail ---  ---   
     if ($routeParams.id) {
-        console.log('$routeParams.id', items)
         $routeParams.id;
         rest.path = 'viewProjectCustomerDetail';
         rest.model().success(function (data) {
@@ -31968,8 +31614,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 if (data.userName != null) {
                     $scope.orderdata = data;
-                    console.log('$scope.orderdata', $scope.orderdata)
-
+                    
                     $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
                     $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
                     $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
@@ -32156,8 +31801,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.resource = resourceId;
         $scope.jobd.resource = $scope.resource;
         $routeParams.id = sumId;
-        console.log('$scope.jobd', $scope.jobd)
-
+        
         rest.path = 'jobSummeryJobDetailsUpdate';
         rest.put($scope.jobd).success(function (data) {
             $route.reload();
@@ -32175,15 +31819,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // DataTables configurable options
     $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('scrollY', '100%').withOption('scrollX', '100%').withOption('scrollCollapse', true).withOption('paging', false).withOption('paging', false).withOption('paging', false);
 
-    console.log('$routeParams.id==>',$routeParams.id)
+    
     if ($routeParams.id) {
         $scope.item = $routeParams.id;
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
-            console.log('data-multi', data)
             
             $scope.itemjobList = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.item_number);
-            console.log('$scope.itemjobList', $scope.itemjobList);
         }).error(errorCallback);
         rest.path = 'jobDetailLanguageGet/' + $routeParams.id;
         rest.get().success(function (data) {
@@ -32223,7 +31865,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemListJob = d;
                     } else {
                         $scope.itemListJob = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_id == $scope.item_number);
-                        console.log('$scope.itemListJob==2', $scope.itemListJob)
+                        
                         //$scope.itemListJob = data;
                     }
 
@@ -32232,8 +31874,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             return e1.item_id == e.item_number;
                         }));
                     });
-
-                    console.log('$scope.itemListFinal',$scope.itemListFinal)
 
                     angular.forEach($scope.itemListJob, function (val, i) {
                         if (val.job_summmeryId) {
@@ -32303,7 +31943,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             profitMargin = '0,00' + "%";
                             var marginloss = 1;
                         }
-                        //console.log('jobAmount',jobAmount);
 
                         angular.element('#profitMargin' + $scope.itemjobList[i].item_number).text(profitMargin);
                         if (marginloss) {
@@ -32385,7 +32024,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (type1) {
                     if (type1 == 'source') {
                         $('#sourceCount-' + id).text(count);
-                        console.log('count-soutrce-'+id, count)
+                        
                     }
                     if (type1 == 'target') {
                         $('#targetCount-' + id).text(count);
@@ -32407,7 +32046,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         var type = $window.localStorage.getItem("jobFoldertype");
         var id = $window.localStorage.getItem("jobfolderId");
-        //console.log('testid',id);
+        
         if (type) {
             if (type == 'source') {
                 $('#sourceCount-' + id).text(count);
@@ -32485,7 +32124,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     return el;
             })
             $scope.itemJobs = itemJobs;
-            console.log('$scope.itemJobs', $scope.itemJobs)
+            
         });    
     }
 
@@ -32500,7 +32139,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             deleteMessage = "Jobs are available in the scoop. You can not delete.";
             $(".bootbox-confirm [data-bb-handler|='confirm']").hide()
         }
-        console.log('itemJobsExist', itemJobsExist)
+        
         $scope.cancel();
         bootbox.confirm(deleteMessage, function (result) {
             deleteMessage = '';
@@ -32520,7 +32159,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
         // if (confirm('Are you sure you want to save this thing into the database?')) {
-        // console.log('Thing was saved to the database.');
+        
         // } else {
         // }
     }
@@ -32581,8 +32220,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.jobsumResource = function (resourceName, jobSummeryId) {
-        /*console.log("jobSummeryId", jobSummeryId);
-        console.log("resourceName", resourceName);return false*/
+        
         rest.path = 'jobsummeryResourceMail/' + resourceName + '/' + jobSummeryId;
         rest.get().success(function (data) {
             notification('Mail send successfully', 'success');
@@ -32688,13 +32326,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'propertyByType/1' ;
     rest.get().success(function (data) {
         $scope.propertyList = data;
-        console.log('$scope.propertyList', $scope.propertyList)
+        
     });    
     $scope.jobReport = {};
     $scope.jobReport.resourceType = 'external';
 
     $scope.chnageResourceType = function(type){
-        console.log('type', type)
         if(type){
             $scope.jobReport = {};
             $scope.jobReport.resourceType = type;
@@ -32708,7 +32345,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (Object.keys($scope.jobReport).length < 2) {
                     notification('Please Select option', 'information');
             } else {
-                console.log('$scope.jobReport', $scope.jobReport)
+                
                 rest.path = 'searchExternalResource';
                 rest.get().success(function (data) {
 
@@ -32798,7 +32435,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     if($scope.jobReport.specialization){
                         temp_data = temp_data.filter((obj) => {
-                            //console.log('obj', obj.specialization)
                             if(obj.specialization){
                                 let spclz = obj.specialization.toString();
                                 if (spclz.split(',').includes($scope.jobReport.specialization)) {
@@ -32873,25 +32509,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     });
                     //$scope.statusResult = data;
-                    console.log('data', data)
+                    
                     $scope.statusResult = Object.keys($scope.jobReport).length > 0 ? UniqueArraybyId(temp_data, 'iUserId') : {};
-                    console.log('$scope.statusResult', $scope.statusResult)
                 })
-                console.log('$scope.jobReport.resourceType', $scope.jobReport.resourceType)
                 scrollToId(eID);
             }
         }
 
         if($scope.jobReport.resourceType == 'internal'){
             
-            console.log('$scope.jobReport', $scope.jobReport)
             if (Object.keys($scope.jobReport).length < 2) {
                     notification('Please Select option', 'information');
             }else{
                 rest.path = 'user/1';
                 rest.get().success(function (data) {
                     $scope.userlist = data.data;
-                    console.log('$scope.userlist', $scope.userlist)
                 
                     let temp_internal = $scope.userlist;
                     if($scope.jobReport.resourceName){
@@ -32911,7 +32543,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         temp_internal = temp_internal.filter((obj)=> {
                             let vResourcePosition = obj.vResourcePosition.toString().split(',')
                             if( vResourcePosition.includes($scope.jobReport.vResourcePosition) ){
-                                console.log('vResourcePosition', vResourcePosition)
                                 return obj;
                             }
                         });
@@ -32950,7 +32581,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var objC;
                     //$scope.internalResult = Object.keys($scope.jobReport).length > 0 ? UniqueArraybyId(temp_internal, 'iUserId') : {};
                     $scope.internalResult = temp_internal;
-                    console.log('internalResult', $scope.internalResult)
                 })
                 scrollToId(eID);
             }    
@@ -32963,7 +32593,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.show_value = true;
         rest.path = 'propertyvalues/' + id ;
         rest.get().success(function (data) {
-            console.log('data', data)
+            
             var valueData = [];
             angular.forEach(data, function (value, key) {
                 var obj = {
@@ -32984,13 +32614,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'masterPriceitemgetFromPriceList';
     rest.get().success(function (data) {
         $scope.masterPrice = data;
-        console.log("$scope.masterPrice", $scope.masterPrice);
+        
     }).error(errorCallback);
 
     rest.path = 'childPriceitemget';
     rest.get().success(function (data) {
         $scope.childPrice = data;
-        console.log('$scope.childPrice', $scope.childPrice)
+        
     }).error(errorCallback);
     $scope.masterChildDropDown = function() {
         $scope.pricesArray = [];
@@ -33005,7 +32635,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
             angular.forEach($scope.masterPrice, function (v, i) {
                 angular.forEach($scope.childPrice, function (val1, i1) {
-                    //console.log('$scope.childPrice', $scope.childPrice)
+                    
                     if (v.master_price_id == val1.master_price_id) {
                         var obj2 = {
                             id: val1.child_price_id,
@@ -33024,7 +32654,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             data: $scope.pricesArray,
             query: function (options) {
                 var selectedIds = options.element.select2('val');
-                console.log("selectedIds", selectedIds);
+                
                 var selectableGroups = $.map(this.data, function (group) {
                     var areChildrenAllSelected = true;
                     $.each(group.children, function (i, child) {
@@ -33308,7 +32938,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getdateFormatById/' + id;
         rest.get().success(function (data) {
             $scope.dateModel = data;
-            console.log('$scope.dateModel', $scope.dateModel)
+            
             $scope.dateFormatD = data.dateformat;
             $('#dateFormat').select2('data', { id: data.select2_val, text: data.dateformat });
             $('#dateFormat').val(data.select2_val).trigger('change');
@@ -33417,7 +33047,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $.each(separatorArray, function (i, val) {
                 if (go) {
                     var contains = $scope.dateFormatD.includes(val);
-                    console.log('$scope.dateFormatD', $scope.dateFormatD)
+                    
                     if (contains) {
                         $scope.prevSeparator = val;
                         go = false;
@@ -33870,7 +33500,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'getJobsFromTmsSummeryView';
     rest.get().success(function (data) {
         $scope.dashboardJobList = data;
-        console.log("$scope.dashboardJobList", $scope.dashboardJobList);
+        
         angular.forEach($scope.dashboardJobList, function (val, i) {
             val.item_id = pad(val.item_id, 3);
             if ($scope.jobDisplayType == 'Requested') {
@@ -34243,14 +33873,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             });
             $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
-            console.log('$scope.jobLinguist', $scope.jobLinguist);
-
+            
         });
     }
     var projectTeam = [];
     rest.path = 'contactPerson';
     rest.model().success(function (data) {
-        console.log('contactperson-data', data);
+        
         angular.forEach(data, function (val, i) {
             if (val.vResourcePosition == 3) {
                 angular.element('#coordinatorIcon').html(val.vUserName);
@@ -34275,7 +33904,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
     rest.get().success(function (data) {
         $scope.general = data;
-        console.log('$scope.general', $scope.general);
+        
         //$scope.general.order_date = $scope.general.order_date;
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
         //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
@@ -34314,7 +33943,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             // }
         }
-        //console.log('$scope.generaldata',$scope.general);
+        
     }).error(errorCallback);
 
     $scope.projectPriceChat = 0;
@@ -34322,12 +33951,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             angular.forEach(data, function (val, i) {
-                //console.log('total_price',val.total_price);
+                
                 if (val.total_price) {
                     $scope.projectPriceChat += val.total_price;
                 }
             });
-            //console.log('alltotal',$scope.projectPriceChat);
+            
 
         });
 
@@ -34335,7 +33964,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.teamArray = [];
         rest.path = "users";
         rest.get().success(function (data) {
-            // console.log("datadata",data);
+            
             angular.forEach(data.data, function (val, i) {
                 //if(val.iUserId != loginid && val.freelancer == 'freelancer' ){
                 if (val.iUserId != loginid) {
@@ -34486,7 +34115,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         // if (file_type == 'image' || file_type == 'video') {
                         //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                         // }
-                        //console.log(val.content)
+                        
                         if (val.content) {
                             $('li[data-id=' + dataId + ']').find('.content').html(val.content);
                         }
@@ -34536,7 +34165,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var msgRead_id = val.read_id;
 
                         if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
-                            //console.log('msgRead_id',msgRead_id);
+                            //
                         } else {
                             var cmtObj = {
                                 id: val.id,
@@ -34560,7 +34189,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     deferred.resolve(promises);
                     $(".comment-wrapper").each(function (i, v) {
                         /*var dateTime = $(this).find('time')[0].innerText;
-                        console.log(dateTime);
+                        
                         //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
                         dateTime = moment(dateTime).format('DD-MM-YYYY');
                         $(this).find('time')[0].innerText = dateTime;*/
@@ -34574,10 +34203,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 }, 1500);
                 commentsArray = data;
-                console.log('commentsArray=', commentsArray);
+                
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
-                //console.log('usercommentsArr=before',usercommentsArr.length);
-
+                
             }).error(errorCallback);
 
             //return deferred.promise;
@@ -34594,7 +34222,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "users";
         //$timeout(function () {
         rest.get().success(function (data) {
-            // console.log("datadata",data);
             angular.forEach(data.data, function (val, i) {
                 var uObj = {
                     id: val.iUserId,
@@ -34606,14 +34233,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
 
         }).error(errorCallback);
-        // console.log('discussion-usersArray',$scope.usersArray);
+
         //}, 100);
         // emoji text
         $scope.emojitext = [];
         /*rest.path = "emojitext";
         $timeout(function() {
             rest.get().success(function(data) {
-                //console.log("emojidata",data);
+                
                     angular.forEach(data, function(val, i) {
                         var eObj = {
                             id              : val.id,
@@ -34662,7 +34289,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$timeout(function() {
             rest.path = "discussionCommentread";
             rest.put($scope.commentReadArray).success(function (res) {
-                //console.log('res',res);
+                
                 if (res.status == 1) {
                     jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                 }
@@ -34722,15 +34349,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             rest.get().success(function (data) {
                                 var NewcommentsArray = data;
                                 var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
-                                //console.log('newUsercommentsArr',newUserCommentsArr.length);
-                                //console.log('NewcommentsArray=L',NewcommentsArray.length);
+                                
                                 // FOR read unread comments
                                 var cmtArr = [];
                                 var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
                                 var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
-                                //console.log('cmtArr',cmtArr.length);
                                 // --- update read id //
                                 $scope.newCommentReadArray = [];
                                 if (cmtArr) {
@@ -34741,10 +34366,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         }
                                         $scope.newCommentReadArray.push(newCmtObj);
                                         if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                            //console.log('cmtArr-'+cmti, $scope.newCommentReadArray);   
+                                               
                                             rest.path = "discussionCommentread";
                                             rest.put($scope.newCommentReadArray).success(function (res) {
-                                                //console.log('res',res);
                                                 if (res.status == 1) {
                                                     //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                                                 }
@@ -34759,12 +34383,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $('#comment-list').find(' > li[data-id^=c]').hide();
                                     rest.path = "discussionCommentread";
                                     rest.put($scope.commentReadArray).success(function (res) {
-                                        //console.log('res',res);
+                                        
                                         if (res.status == 1) {
                                             jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                                         }
                                     });
-                                    //console.log('we are working');
+                                    
                                     $scope.commentsArrayAll();
                                     success(NewcommentsArray);
 
@@ -34785,7 +34409,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     // end script
                                 }
                             });
-                            //console.log('usercommentsArr=after',usercommentsArr.length);
+                            
                         }, 5000);
                     }
 
@@ -34856,7 +34480,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         pingsvalue[index] = Object.keys(data.pings)[index];
                     });
                 }
-                console.log('alldata', data);
+                
                 data.pings = pingsvalue.toString();
                 rest.path = "discussionOrder";
                 rest.post(data).success(function (info) {
@@ -35026,7 +34650,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         res = arr1.filter(el => {
 
             return arr2.find(element => {
-                //console.log('element', element)
+                
                 let element2 = element.trim();
                 if (element2 === el.value_name) {
                     return resIds.push(el.value_id);
@@ -35061,7 +34685,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var percent = 0;
     $scope.csvFieds = []
     $scope.getFile = function (files) {
-        console.log('files', files);
+        
         if (!files)
             $scope.csvProgress = false;
         $scope.csvFilename = files.name;
@@ -35075,9 +34699,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //skipEmptyLines: true,
             encoding: "utf-8",
             complete: function (results, files, err) {
-                console.log('results', results)
+                
                 var csv = results.data;
-                console.log('csv', csv[0])
                 var numindex = 0;
                 $scope.csvData = [];
                 var gtotal = 0;
@@ -35085,7 +34708,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var isError = false;
                 $scope.csvFieds = csv[0];
                 $scope.csvData = csv;
-                console.log('$scope.csvData', $scope.csvData)
                 angular.forEach(csv, function (val, i) {
                     var dtCreationDate = '0000-00-00';
                     var dtLast_job = '0000-00-00';
@@ -35115,7 +34737,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if (val[10]) {
                             var all_eml = (val[10]).split(';')
                             if (all_eml.length > 1) {
-                                console.log('all_eml', all_eml)
                                 var email1 = all_eml[0];
                                 var email2 = all_eml[1];
                             } else {
@@ -35155,7 +34776,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             "country_code": countryCode,
                             "tax_type": val[21]
                         }
-                        //console.log('paymentObj',paymentObj)
                         //filterByReference - find specialization value exist in main array.
                         var specializationArr = '';
                         if (val[30]) {
@@ -35193,7 +34813,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (uName.length == 2) {
                                 firstName = uName[0];
                                 lastName = uName[1];
-                                console.log('lastName', lastName)
                             }
                         }
                         var obj = {
@@ -35250,7 +34869,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
 
                 });
-                console.log('$scope.csvDataInsrt', $scope.csvDataInsrt);
+                
                 //$scope.csvData = [];      
             }
         });
@@ -35262,7 +34881,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.csvFieds[0] == 'Plunet Number' && $scope.csvFieds[2] == 'State' && $scope.csvFieds[3] == 'Website' && $scope.csvFieds[4] == 'Country' && $scope.csvFieds[5] == 'City' && $scope.csvFieds[6] == 'ZIP Code'){
                 rest.path = 'savelinguistCsvProfile';
                 rest.post($scope.csvDataInsrt).success(function (data) {
-                    console.log('data', data)
                     notification('Record inserted successfully.', 'success');
                     $route.reload();
                 }).error(errorCallback);
@@ -35300,23 +34918,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         })
         //$scope.linguistPriceList = data;
-        console.log('$scope.linguistPriceList', $scope.linguistPriceList)
+        
     }) 
     
     $scope.filterLinguist = function (qty) {
         var scoopPrice = '';   
         $scope.scoopQtyPrice = 0 // price per quatity
         $scope.itemQuantity = 0;
-        console.log('qty', qty)
+        
         if(items){
-            //console.log('items', items)
             rest.path = 'itemsGet/' + items.order_id;
             rest.get().success(function (data) {
                 angular.forEach(data, function (val, i) {
                     if(val.item_number == items.item_number){
                         if(val.price)
                             var scoopPrice = JSON.parse(val.price); 
-                        console.log('scoopprice', scoopPrice)
                         if(scoopPrice.length){
                             angular.forEach(scoopPrice, function (v) {
                                 if(v.quantity)
@@ -35332,29 +34948,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             'language' : sl.sourceLang + ' > ' + tl.sourceLang 
                         }
                         $scope.scoopQtyPrice = parseFloat(val.total_price) / $scope.itemQuantity;
-                        console.log('scoopQtyPrice', $scope.scoopQtyPrice)
+                        
                         //$scope.itemList.push(objData); 
                         $scope.itemList = JSON.parse(val.price); 
                     }
                 })
                 $scope.itemQuantity = qty ? qty : $scope.itemQuantity; 
-                console.log('$scope.itemList', $scope.itemList)
+                
                 $scope.subLinguist = [];
                 $scope.exArr = [];
                 $scope.userIdArr = [];
                 angular.forEach($scope.linguistPriceList, function (val, i) {
-                    console.log('val', val)
                     var qPrice = 0;
                     $scope.qTotPrice = 0;
                     const isPrice = val.price_basis.filter(lngEl => {
-                        console.log('element', lngEl)
+                        
                         const isFound = $scope.itemList.filter(el => {
-                            console.log('inn=elll', el)
+                            
                             if (el.pricelist == lngEl.basePriceUnit) {
-                                console.log('mache' ,el.pricelist)
+                                
                                 var qPrice = parseFloat(lngEl.basePrice) / lngEl.baseQuentity
                                 $scope.qTotPrice += parseFloat(qPrice)
-                                //console.log('$scope.qTotPrice', $scope.qTotPrice)
+                                
                                 const tObj = {
                                     'priceName': el.pricelist,
                                     'scoop_qty': el.quantity,
@@ -35370,36 +34985,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         });
                         return false;
                     });
-                    console.log('scoopQtyPrice', $scope.scoopQtyPrice)
+                    
                     if( $scope.scoopQtyPrice != 0 && ($scope.qTotPrice < $scope.scoopQtyPrice) ){
-                        //console.log('inn')
                         const pObj = {
                             resource_id : val.resource_id,
                             price : $scope.qTotPrice
                         }
                         $scope.subLinguist.push(pObj); 
                     }
-                    console.log('$scope.subLinguist', $scope.subLinguist)
                 })
-                console.log('$scope.exArr', $scope.exArr)
                 var notExist = $scope.exArr.reduce((c, { resource_id: key }) => (c[key] = (c[key] || 0) + 1, c), {});
-                console.log('counts',notExist);
                 angular.forEach(notExist, function (countItem, resID) {
-                    console.log('resID = count', resID + '=' + countItem)
                     angular.forEach($scope.itemList, function (val, i) {
                         if(countItem < $scope.itemList.length){
                             $scope.exArr.filter(b1 => {
                                 if((b1.resource_id==resID) && (val.pricelist !== b1.priceName)){
-                                    console.log('valll-inn', val)
                                     var vPrice = parseFloat(val.itemTotal) / parseInt(val.quantity)
                                     $scope.subLinguist = $scope.subLinguist.map(objE => {
-                                        console.log('objE=>', objE)
                                         if (objE.resource_id == resID) {
                                           return {...objE, price: objE.price + vPrice};
                                         }
                                         return objE;
                                       });
-                                      console.log('updated=newArr', $scope.subLinguist)
                                     return b1;
                                 }
                                 return false;
@@ -35416,17 +35023,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     subLinguist.sort(sorter);
                 };
                 lngSort(subLinguist);
-                console.log('subLinguist', subLinguist)
                 //UniqueArraybyId(subLinguist,'resource_id');
-                console.log('$scope.userlist', $scope.userlist)
                 
                 rest.path = 'user/' + 2;
                 rest.get().success(function (data) {
                     $scope.userlist = data.data;
-                    console.log('$scope.userlist', $scope.userlist)
                     if($scope.userlist){
                         $scope.cheapLinguist = $scope.userlist.filter(a => subLinguist.some(b => a.iUserId === b.resource_id));
-                        console.log('$scope.cheapLinguist', $scope.cheapLinguist)
                     }
                 }).error(errorCallback);
                 
@@ -35492,8 +35095,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }, 100);
 
             });
-            console.log('$scope.activityList', $scope.activityList);
-            console.log('$scope.dateDate', $scope.dateDate);
 
         });
     }
@@ -35503,7 +35104,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.activityListFltr = [];
     $scope.search = {}; 
     $scope.filterActivity = function (frmId) {
-        console.log('frmId', frmId)
         if (jQuery.isEmptyObject($scope.search) && !$scope.dueDateFrom && !$scope.dueDateTo) {
             notification('Please select option to filter statement.', 'warning');
             return false;
@@ -35527,7 +35127,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             rest.path = 'activityLogGetAll';
             rest.post($scope.search).success(function (data) {
-                console.log('data', data)
+
                 $scope.activityListFltr = data;
                 var color = ['success', 'warning', 'info', 'primary'];
                 var date = new Date();
@@ -35563,7 +35163,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }        
     $scope.filterActivity2 = function(formid){
-        console.log('search.scoope', $scope.search)
+        
         if($scope.search.length){
             $scope.activityListFltr = $scope.activityList.filter( (obj)=> {
                 return obj.log_status == $scope.search.logStatus;
@@ -35581,7 +35181,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.activityListFltr = $scope.activityList.filter( (obj)=> {
                 return dateStart < new Date(obj.modified_date) ;
             }); 
-            console.log('$scope.activityList', $scope.activityListFltr)
+            
         }
         if ($scope.search.dueDateTo) {
             var dueDateTo = originalDateFormatNew($scope.search.dueDateTo);
@@ -35594,7 +35194,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 else($scope.search.dueDateFrom)
                     return dateEnd > new Date(obj.modified_date);
             });
-            console.log('$scope.activityList', $scope.activityListFltr)
+            
         }    
             
     }

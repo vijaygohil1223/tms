@@ -1,8 +1,7 @@
 <style type="text/css">
-    .nav-pills.nav-wizard>>ul>li {
+    .nav-pills.nav-wizard>ul>li {
         border-right: 78px solid #eef5fa !important;
     }
-
     .hrght {
         float: right;
         color: red;
@@ -150,9 +149,7 @@
                                                 <button class="btn btn-info pull-right"
                                                     ng-click="saveContact('contact-form',1);" style="margin-left:5px"><i
                                                         class="fa fa-floppy-o" aria-hidden="true"></i> Add</button>
-                                                <a class="btn btn-info pull-right"
-                                                    ng-click="saveContact('contact-form',2);">Add & Next <i
-                                                        class="fa fa-angle-right"></i></a>
+                                                <a class="btn btn-info pull-right" ng-click="saveContact('contact-form',2);">Add & Next <i class="fa fa-angle-right"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -182,10 +179,11 @@
                                     <a href="skype:{{c.vSkype}}?chat">{{c.vSkype}}</a>
                                 </td>
                                 <!-- <td ng-bind="c.vActive"></td> -->
-                                <td><a href="javascript:void(0);" ng-click="editContact(c.iContactId);"><i
-                                            class="glyph-icon fa-edit"></i></a> <a href="javascript:void(0)"
-                                        ng-click="deleteContact(c.iContactId)"><i
-                                            class="iconDelete glyph-icon fa-times"></i></a></td>
+                                <td>
+                                    <a href="javascript:void(0);" ng-click="editContact(c.iContactId);">
+                                    <i class="glyph-icon fa-edit"></i></a> <a href="javascript:void(0)" ng-click="deleteContact(c.iContactId)">
+                                    <i class="iconDelete glyph-icon fa-times"></i></a>
+                                </td>
                             </tr>
                             <tr ng-show="contactDirectEmpty">
                                 <td colspan="4">No records found</td>
