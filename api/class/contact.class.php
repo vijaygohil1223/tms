@@ -64,11 +64,16 @@ class contact {
     }
 
     public function saveContact($info) {
-
         $info['dtCreatedDate'] = date('Y-m-d H:i:s');
         $info['dtUpdatedDate'] = date('Y-m-d H:i:s');
         $id = $this->_db->insert('tms_client_contact', $info);
         if ($id) {
+            // if current invoice email set as default other will be 0 
+            if($info['is_client_invoice'] && $info['is_client_invoice']==1){
+                $this->_db->where('iClientId', $info['iClientId']);
+                $this->_db->where('iContactId', $id, '!=');
+                $this->_db->update('tms_client_contact', array('is_client_invoice' => 0) );
+            }
             $return['status'] = 200;
             $return['msg'] = 'Inserted Successfully.';
         } else {
@@ -100,11 +105,17 @@ class contact {
     }
     
     public function updateContact($id, $info) {
-
         $info['dtUpdatedDate'] = date('Y-m-d H:i:s');
         $this->_db->where('iContactId', $id);
-        $id = $this->_db->update('tms_client_contact', $info);
-        if ($id) {
+        $update = $this->_db->update('tms_client_contact', $info);
+        if ($update) {
+            // if current invoice email set as default other will be 0 
+            if($info['is_client_invoice'] && $info['is_client_invoice']==1){
+                $this->_db->where('iClientId', $info['iClientId']);
+                $this->_db->where('iContactId', $id, '!=');
+                $this->_db->update('tms_client_contact', array('is_client_invoice' => 0) );
+            }    
+            
             $return['status'] = 200;
             $return['msg'] = 'Updated Successfully.';
         } else {
