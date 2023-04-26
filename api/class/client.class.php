@@ -566,11 +566,9 @@ array(
         $this->_db->where('client', $id);
         $cuData = $this->_db->getOne('tms_customer');
         
-
         $this->_db->where('order_id', $cuData['order_id']);
         $orData = $this->_db->getOne('tms_order');
         
-
         $this->_db->where('order_id', $orData['order_id']);
         $geData = $this->_db->getOne('tms_general');
         
@@ -597,7 +595,7 @@ array(
 
             $id = self::deleteclientfield('iClientId', $id, 'tms_client');
 
-            self::deleteclientfield('client', $id, 'tms_customer');
+            //self::deleteclientfield('client', $id, 'tms_customer');
 
             self::deleteclientfield('iUserId', $id, 'tms_directclientlogin');
 

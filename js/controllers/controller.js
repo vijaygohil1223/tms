@@ -1541,58 +1541,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.jobstatusName = " ";
     $window.localStorage.countSt = " ";
     $window.localStorage.setItem("projectBranch", " ");
-    $scope.showDataLoader = true;
-    $scope.showDataLoaderJob = true;
+    $scope.showDataLoader = false;
+    $scope.showDataLoaderJob = false;
     $scope.proejctsToDisplay = [];
     $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
                 
     //Getting Jobs from getJobsFromTmsSummeryView
-    $scope.getJobList = function () {
-        rest.path = 'getJobsFromTmsSummeryView';
-        rest.get().success(function (data) {
-            $scope.dashboardJobList = data;
+    // $scope.getJobList = function () {
+    //     rest.path = 'getJobsFromTmsSummeryView';
+    //     rest.get().success(function (data) {
+    //         $scope.dashboardJobList = data;
             
-            var Requested = [];
-            var NewJob = [];
-            var inProgerss = [];
-            var readyToBeDelivered = [];
-            var delivered = [];
-            var completed = [];
-            var pendingPo = [];
-            // ---- new added status ----- //
+    //         var Requested = [];
+    //         var NewJob = [];
+    //         var inProgerss = [];
+    //         var readyToBeDelivered = [];
+    //         var delivered = [];
+    //         var completed = [];
+    //         var pendingPo = [];
+    //         // ---- new added status ----- //
 
-            // -- Job count -- //
-            var jobRequestesCount = 0;
-            var jobInProgressCount = 0;
-            var jobDueTodayCount = 0;
-            var jobDueTomorrowCount = 0;
-            var jobOverDueCount = 0;
+    //         // -- Job count -- //
+    //         var jobRequestesCount = 0;
+    //         var jobInProgressCount = 0;
+    //         var jobDueTodayCount = 0;
+    //         var jobDueTomorrowCount = 0;
+    //         var jobOverDueCount = 0;
 
-            $timeout(function () {
-                $scope.inProgerss = inProgerss;
-                $scope.jobNew = NewJob;
-                $scope.readyToBeDelivered = readyToBeDelivered;
-                $scope.delivered = delivered;
-                $scope.completed = completed;
-                $scope.pendingPo = pendingPo;
+    //         $timeout(function () {
+    //             $scope.inProgerss = inProgerss;
+    //             $scope.jobNew = NewJob;
+    //             $scope.readyToBeDelivered = readyToBeDelivered;
+    //             $scope.delivered = delivered;
+    //             $scope.completed = completed;
+    //             $scope.pendingPo = pendingPo;
 
-                $scope.jobRequestesCount = jobRequestesCount;
-                $scope.jobInProgressCount = jobInProgressCount;
-                $scope.jobDueTodayCount = jobDueTodayCount;
-                $scope.jobDueTomorrowCount = jobDueTomorrowCount;
-                $scope.jobOverDueCount = jobOverDueCount;
+    //             $scope.jobRequestesCount = jobRequestesCount;
+    //             $scope.jobInProgressCount = jobInProgressCount;
+    //             $scope.jobDueTodayCount = jobDueTodayCount;
+    //             $scope.jobDueTomorrowCount = jobDueTomorrowCount;
+    //             $scope.jobOverDueCount = jobOverDueCount;
 
-                // $scope.jobTobeAssignedCount = jobTobeAssignedCount;
-                // $scope.jobTobeDileveredCount = jobTobeDileveredCount;
-                // $scope.jobDileveredCount = jobDileveredCount;
-                // $scope.jobApprovedCount = jobApprovedCount;
-                // $scope.jobInvoicedCount = jobInvoicedCount;
-                // $scope.jobPaidCount = jobPaidCount;
-                // $scope.jobWithoutInvoicedCount = jobWithoutInvoicedCount;
-
-            }, 200);
-        }).error(errorCallback);
-    };
+    //         }, 200);
+    //     }).error(errorCallback);
+    // };
     //$scope.getJobList();
 
     $scope.jobDiscussion = (orderId) => {
@@ -3289,6 +3281,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.upLength = $scope.upcommingList.length;
                 $scope.onLength = $scope.ongoingList.length;
             }).error(errorCallback);
+            
         })
         //return false;
     }
@@ -30526,6 +30519,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
 }).controller('viewScoopPopupController', function (allLanguages, $scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance, $cookieStore, $interval, DTOptionsBuilder, $filter, $q) {
+    //debugger
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $routeParams.id = items ? items.order_id : 0;
     $scope.order_id = items ? items.order_id : 0;
@@ -30534,6 +30528,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.newchildPriceArr = [];
     
     if ($scope.order_id) {
+        console.log('items-popup',items)
         //getting ProjectOrderName and indirect clint name
         rest.path = 'getClientIndirectClient/' + $scope.order_id;
         rest.get().success(function (data) {
