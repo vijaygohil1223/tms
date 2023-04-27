@@ -1126,7 +1126,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.superAdmin = $window.localStorage.getItem("session_superAdmin");
-    
     if ($cookieStore.get('session_iUserId') != undefined) {
         $scope.session_iUserId = $window.localStorage.session_iUserId;
         $scope.session_eUserStatus = $window.localStorage.session_eUserStatus;
@@ -1182,40 +1181,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
 
-    $scope.disableSearch = true;
+    //$scope.disableSearch = true;
+    $scope.disableSearch = false;
     $scope.projectScoop = [];
     var orders = [];
-    
-    rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
-    rest.get().success(function (data) {
-        $scope.projectScoop = data;
-        angular.forEach($scope.projectScoop, function (scoopData) {
-            orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
-        });
-    })        
-    rest.path = 'getJobsFromTmsSummeryView';
-    rest.get().success(function (data) {
-        $rootScope.SearchJobList = data;
+    $scope.isApiCalled = true;    
+    $scope.searchScoopFilter = function(){
+        console.log('called')
+        if($scope.isApiCalled){
+        rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+        rest.get().success(function (data) {
+            $scope.projectScoop = data;
+            angular.forEach($scope.projectScoop, function (scoopData) {
+                orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
+            });
+        })        
+        rest.path = 'getJobsFromTmsSummeryView';
+        rest.get().success(function (data) {
+            $rootScope.SearchJobList = data;
 
-        //rest.path = "dashboardOrderGet";
-        //rest.get().success(function (data) {
-            // remove same project orderNumber
-            $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber'); 
-            
-            $timeout(function () {
+            //rest.path = "dashboardOrderGet";
+            //rest.get().success(function (data) {
+                // remove same project orderNumber
+                $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber'); 
                 
-                angular.forEach($scope.projectData, function (ordersData) {
-                    orders.push(ordersData.orderNumber);
-                });
-                angular.forEach($rootScope.SearchJobList, function (jdata) {
-                    orders.push(jdata.po_number);
-                });
-                $scope.orderNames = orders;
-                $scope.disableSearch = false;
-            }, 100);
+                $timeout(function () {
+                    
+                    angular.forEach($scope.projectData, function (ordersData) {
+                        orders.push(ordersData.orderNumber);
+                    });
+                    angular.forEach($rootScope.SearchJobList, function (jdata) {
+                        orders.push(jdata.po_number);
+                    });
+                    $scope.orderNames = orders;
+                    console.log('$scope.orderNames', $scope.orderNames)
+                    $scope.disableSearch = false;
+                }, 100);
 
-        //});
-    }).error(errorCallback);
+            //});
+        }).error(errorCallback);
+
+        $scope.isApiCalled = false;
+        }
+
+    }
 
 
     $scope.searchProject = function (selectedValue) {
@@ -1450,46 +1459,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     //recent activity
-    if ($cookieStore.get('session_iUserId')) {
-        $scope.dateDate = [];
-        rest.path = "recentActivityGet/" + $cookieStore.get('session_iUserId');
-        rest.get().success(function (data) {
-            $scope.activityList = data;
-            var color = ['success', 'warning', 'info', 'primary'];
-            var date = new Date();
-            var count = 0;
+    $scope.openNav = function(){
+        $scope.activityList = [];
+        if ($cookieStore.get('session_iUserId')) {
+            console.log('calledddd')
+            $scope.dateDate = [];
+            rest.path = "recentActivityGet/" + $cookieStore.get('session_iUserId');
+            rest.get().success(function (data) {
+                $scope.activityList = data;
+                var color = ['success', 'warning', 'info', 'primary'];
+                var date = new Date();
+                var count = 0;
 
-            angular.forEach(data, function (val, i) {
-                //set activity side line color
-                if (count == color.length) {
-                    count = 0;
-                }
+                angular.forEach(data, function (val, i) {
+                    //set activity side line color
+                    if (count == color.length) {
+                        count = 0;
+                    }
 
-                $scope.activityList[i].color = color[count];
-                count++;
+                    $scope.activityList[i].color = color[count];
+                    count++;
 
-                //set recent activity date
-                var a = date;
-                var b = new Date(val.modified_date);
-                var days = daydiff(b, a); // 1 day
+                    //set recent activity date
+                    var a = date;
+                    var b = new Date(val.modified_date);
+                    var days = daydiff(b, a); // 1 day
 
-                switch (days) {
-                    case 0:
-                        var recentDate = "Today " + timeFormat(val.modified_date);
-                        break;
-                    case 1:
-                        var recentDate = "Yesterday " + timeFormat(val.modified_date);
-                        break;
-                    default:
-                        var recentDate = days + " days ago.";
-                }
+                    switch (days) {
+                        case 0:
+                            var recentDate = "Today " + timeFormat(val.modified_date);
+                            break;
+                        case 1:
+                            var recentDate = "Yesterday " + timeFormat(val.modified_date);
+                            break;
+                        default:
+                            var recentDate = days + " days ago.";
+                    }
 
-                $timeout(function () {
-                    $scope.dateDate[i] = recentDate;
-                }, 100);
+                    $timeout(function () {
+                        $scope.dateDate[i] = recentDate;
+                    }, 100);
+                });
             });
-        });
-    }
+        }
+    }    
     /*Recent Activity Code End*/
 
     // activity project
@@ -1541,8 +1554,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.jobstatusName = " ";
     $window.localStorage.countSt = " ";
     $window.localStorage.setItem("projectBranch", " ");
-    $scope.showDataLoader = false;
-    $scope.showDataLoaderJob = false;
+    $scope.showDataLoader = true;
+    $scope.showDataLoaderJob = true;
     $scope.proejctsToDisplay = [];
     $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
                 
@@ -1901,145 +1914,145 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     // Admin wise data get
     if ($scope.userRight == 1) {
-        rest.path = "dashboardOrderGet";
-        rest.get().success(function (data) {
-            // pagination
-            $scope.filteredTodos = [], $scope.currentPage = 1, $scope.numPerPage = 10, $scope.maxSize = 5;
-            $scope.filteredTodos = data;
-            $scope.makeTodos = function () {
-                $scope.todos = [];
-                angular.forEach($scope.filteredTodos, function (val, i) {
-                    //$scope.todos.push({ , done:false});
-                });
-            }
+        // rest.path = "dashboardOrderGet";
+        // rest.get().success(function (data) {
+        //     // pagination
+        //     $scope.filteredTodos = [], $scope.currentPage = 1, $scope.numPerPage = 10, $scope.maxSize = 5;
+        //     $scope.filteredTodos = data;
+        //     $scope.makeTodos = function () {
+        //         $scope.todos = [];
+        //         angular.forEach($scope.filteredTodos, function (val, i) {
+        //             //$scope.todos.push({ , done:false});
+        //         });
+        //     }
 
-            $scope.makeTodos();
+        //     $scope.makeTodos();
 
-            $scope.$watch('currentPage + numPerPage', function () {
-                var begin = (($scope.currentPage - 1) * $scope.numPerPage),
-                    end = begin + $scope.numPerPage;
-                $scope.adminOrderData = $scope.filteredTodos.slice(begin, end);
+        //     $scope.$watch('currentPage + numPerPage', function () {
+        //         var begin = (($scope.currentPage - 1) * $scope.numPerPage),
+        //             end = begin + $scope.numPerPage;
+        //         $scope.adminOrderData = $scope.filteredTodos.slice(begin, end);
 
-                $scope.projectInProgerss = 0;
-                $scope.projectDilevered = 0;
-                $scope.DueDateTodayCount = 0;
-                $scope.DueDateTomorrowCount = 0;
-                $scope.dueDayAfterTomorrowCount = 0;
-                $scope.overDueDateCount = 0;
-                $scope.headsUp = 0;
+        //         $scope.projectInProgerss = 0;
+        //         $scope.projectDilevered = 0;
+        //         $scope.DueDateTodayCount = 0;
+        //         $scope.DueDateTomorrowCount = 0;
+        //         $scope.dueDayAfterTomorrowCount = 0;
+        //         $scope.overDueDateCount = 0;
+        //         $scope.headsUp = 0;
 
-                angular.forEach($scope.filteredTodos, function (val, i) {
-                    if (val.projectStatus == 4) {
-                        $scope.projectInProgerss++;
-                    }
-                    $scope.projectInProgerss = $scope.projectInProgerss;
+        //         angular.forEach($scope.filteredTodos, function (val, i) {
+        //             if (val.projectStatus == 4) {
+        //                 $scope.projectInProgerss++;
+        //             }
+        //             $scope.projectInProgerss = $scope.projectInProgerss;
 
-                    if (val.projectStatus == 11) {
-                        $scope.projectDilevered++;
-                    }
-                    $scope.projectDilevered = $scope.projectDilevered;
+        //             if (val.projectStatus == 11) {
+        //                 $scope.projectDilevered++;
+        //             }
+        //             $scope.projectDilevered = $scope.projectDilevered;
 
-                    if(val.DueDate){
-                        if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
-                            $scope.DueDateTomorrowCount++;
-                        }
-                        $scope.DueDateTomorrowCount = $scope.DueDateTomorrowCount;
+        //             if(val.DueDate){
+        //                 if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)) {
+        //                     $scope.DueDateTomorrowCount++;
+        //                 }
+        //                 $scope.DueDateTomorrowCount = $scope.DueDateTomorrowCount;
 
-                        if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 2)) {
-                            $scope.dueDayAfterTomorrowCount++;
-                        }
-                        $scope.dueDayAfterTomorrowCount = $scope.dueDayAfterTomorrowCount;
+        //                 if (val.DueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 2)) {
+        //                     $scope.dueDayAfterTomorrowCount++;
+        //                 }
+        //                 $scope.dueDayAfterTomorrowCount = $scope.dueDayAfterTomorrowCount;
 
-                        if (val.DueDate.split(' ')[0] == dateFormat(new Date())) {
-                            $scope.DueDateTodayCount++;
-                        }
-                        $scope.DueDateTodayCount = $scope.DueDateTodayCount;
+        //                 if (val.DueDate.split(' ')[0] == dateFormat(new Date())) {
+        //                     $scope.DueDateTodayCount++;
+        //                 }
+        //                 $scope.DueDateTodayCount = $scope.DueDateTodayCount;
 
-                        if (val.DueDate.split(' ')[0].split(".").reverse().join("-") < dateFormat(new Date()).split(".").reverse().join("-")) {
-                            $scope.overDueDateCount++;
-                        }
-                        $scope.overDueDateCount = $scope.overDueDateCount;
-                    }    
+        //                 if (val.DueDate.split(' ')[0].split(".").reverse().join("-") < dateFormat(new Date()).split(".").reverse().join("-")) {
+        //                     $scope.overDueDateCount++;
+        //                 }
+        //                 $scope.overDueDateCount = $scope.overDueDateCount;
+        //             }    
                     
 
-                    if (val.heads_up == 1) {
-                        $scope.headsUp++;
-                    }
-                    $scope.headsUp = $scope.headsUp;
-                });
+        //             if (val.heads_up == 1) {
+        //                 $scope.headsUp++;
+        //             }
+        //             $scope.headsUp = $scope.headsUp;
+        //         });
 
-                var go;
-                $scope.OverdueFilter = function (id, eID) {
-                    eID = "projectScroll";
-                    //angular.element('.DashboardTask').css('margin-top', '-20%');
-                    $scope.dateOverdue = $filter('dateLessThenToday')($scope.adminOrderData, today);
-                    scrollToId(eID);
-                    angular.element('#exportable').hide();
-                    angular.element('#exportable1').show();
-                    angular.element('#exportExport1').show();
-                    angular.element('#exportExport').hide();
-                    angular.element('.DashboardTask').css('margin-top', '-5%');
-                }
-            });
+        //         var go;
+        //         $scope.OverdueFilter = function (id, eID) {
+        //             eID = "projectScroll";
+        //             //angular.element('.DashboardTask').css('margin-top', '-20%');
+        //             $scope.dateOverdue = $filter('dateLessThenToday')($scope.adminOrderData, today);
+        //             scrollToId(eID);
+        //             angular.element('#exportable').hide();
+        //             angular.element('#exportable1').show();
+        //             angular.element('#exportExport1').show();
+        //             angular.element('#exportExport').hide();
+        //             angular.element('.DashboardTask').css('margin-top', '-5%');
+        //         }
+        //     });
 
-            var order = {
-                // all: 0,
-                inpreparation: 0,
-                assignedwaiting: 0,
-                inprogress: 0,
-                overdue: 0,
-                delivered: 0,
-                approved: 0,
-                duetoday: 0,
-                duetommorow: 0,
-                duetoday: 0,
-                duedayaftertomorrow: 0
-            };
+        //     var order = {
+        //         // all: 0,
+        //         inpreparation: 0,
+        //         assignedwaiting: 0,
+        //         inprogress: 0,
+        //         overdue: 0,
+        //         delivered: 0,
+        //         approved: 0,
+        //         duetoday: 0,
+        //         duetommorow: 0,
+        //         duetoday: 0,
+        //         duedayaftertomorrow: 0
+        //     };
 
-            //count status
-            angular.forEach(data, function (val, i) {
-                if (val.DueDate != "") { }
-                if (val.itemStatus == 'In preparation') {
-                    order.inpreparation += 1;
-                }
-                if (val.itemStatus == 'Assigned-waiting' || val.itemStatus == 'Waiting') {
-                    order.assignedwaiting += 1;
-                }
-                if (val.itemStatus == 'In-progress' || val.itemStatus == 'Ongoing') {
-                    order.inprogress += 1;
-                }
-                /*if (val.itemStatus == 'Overdue') {
-                    order.overdue += 1;
-                }*/
-                if (val.itemStatus == 'Delivered' || val.itemStatus == 'Completed') {
-                    order.delivered += 1;
-                }
-                if (val.itemStatus == 'Approved'  || val.itemStatus == 'Invoice Ready' ) {
-                    order.approved += 1;
-                }
-                /*if (val.DueDate == dayAftertomorrow) {
-                    order.duedayaftertomorrow += 1;
-                }*/
-                /*if (val.DueDate == tomorrow) {
-                    order.duetommorow += 1;
-                }*/
-                /*if (val.DueDate == today) {
-                    order.duetoday += 1;
-                }*/
-            });
+        //     //count status
+        //     angular.forEach(data, function (val, i) {
+        //         if (val.DueDate != "") { }
+        //         if (val.itemStatus == 'In preparation') {
+        //             order.inpreparation += 1;
+        //         }
+        //         if (val.itemStatus == 'Assigned-waiting' || val.itemStatus == 'Waiting') {
+        //             order.assignedwaiting += 1;
+        //         }
+        //         if (val.itemStatus == 'In-progress' || val.itemStatus == 'Ongoing') {
+        //             order.inprogress += 1;
+        //         }
+        //         /*if (val.itemStatus == 'Overdue') {
+        //             order.overdue += 1;
+        //         }*/
+        //         if (val.itemStatus == 'Delivered' || val.itemStatus == 'Completed') {
+        //             order.delivered += 1;
+        //         }
+        //         if (val.itemStatus == 'Approved'  || val.itemStatus == 'Invoice Ready' ) {
+        //             order.approved += 1;
+        //         }
+        //         /*if (val.DueDate == dayAftertomorrow) {
+        //             order.duedayaftertomorrow += 1;
+        //         }*/
+        //         /*if (val.DueDate == tomorrow) {
+        //             order.duetommorow += 1;
+        //         }*/
+        //         /*if (val.DueDate == today) {
+        //             order.duetoday += 1;
+        //         }*/
+        //     });
 
-            //count status display
-            var obj = [];
-            angular.forEach(order, function (val, i) {
-                obj.push({ name: i, y: val });
-                angular.element('#ap_' + i).text(val);
-            });
+        //     //count status display
+        //     var obj = [];
+        //     angular.forEach(order, function (val, i) {
+        //         obj.push({ name: i, y: val });
+        //         angular.element('#ap_' + i).text(val);
+        //     });
 
-            //$scope.jobChart(obj);
+        //     //$scope.jobChart(obj);
 
-            $scope.adminEmpty = jQuery.isEmptyObject(data);
+        //     $scope.adminEmpty = jQuery.isEmptyObject(data);
 
-        });
+        // });
     }
 
     $scope.goToProjectList = function (viewType) {
