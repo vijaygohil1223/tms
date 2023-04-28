@@ -1459,10 +1459,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     //recent activity
+    $scope.openNavCalled = true; // api call one time    
+    $scope.activityList = [];
     $scope.openNav = function(){
-        $scope.activityList = [];
-        if ($cookieStore.get('session_iUserId')) {
-            console.log('calledddd')
+        if ($cookieStore.get('session_iUserId') && $scope.openNavCalled) {
             $scope.dateDate = [];
             rest.path = "recentActivityGet/" + $cookieStore.get('session_iUserId');
             rest.get().success(function (data) {
@@ -1500,7 +1500,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.dateDate[i] = recentDate;
                     }, 100);
                 });
+
+                $scope.openNavCalled = false;
             });
+        
         }
     }    
     /*Recent Activity Code End*/
@@ -2222,91 +2225,54 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // ** Dashoboard Project TABS start ** //
     $scope.projBranchChange = false;
     // Tab view Project List
-    $scope.projectsAll = [];
-    $scope.projectsMyproj = [];
-    $scope.projectsUpcoming = [];
-    $scope.projectsInProgress = [];
-    $scope.projectsDueToday = [];
-    $scope.projectsDueTomorrow = [];
-    $scope.projectsOverdue = [];
-    $scope.projectsAssigned = [];
-    $scope.projectsQaready = [];
-    $scope.projectsPmready = [];
-    $scope.projectsQaissue = [];
-    $scope.projectsToBeDelivered = [];
-    $scope.projectsDelivered = [];
-    $scope.projectsApproved = [];
-    $scope.projectsCompletedByLng = [];
-    $scope.projectsToDisplay = [];
-
-    $scope.projectsAllCount = 0;
-    $scope.projectsMyprojCount = 0;
-    $scope.projectsUpcomingCount = 0;
-    $scope.projectsInprogressCount = 0;
-    $scope.projectsDueTodayCount = 0;
-    $scope.projectsDueTomorrowCount = 0;
-    $scope.projectsOverdueCount = 0;
-    $scope.projectsToBeDeliveredCount = 0;
-    $scope.projectsDeliveredCount = 0;
-    $scope.projectsQaReadyCount = 0;
-    $scope.projectsPmReadyCount = 0;
-    $scope.projectsQaIssueCount = 0;
-    $scope.projectsApprovedCount = 0;
-    $scope.projectsAssignedCount = 0;
-    // -- new status for scoop item count based on status -- //
-    $scope.projectLinguistCount = 0;
-    $scope.projectDileveredCount = 0;
-    $scope.projectApprovedCount = 0;
-    $scope.projectInvoicedCount = 0;
-    $scope.projectPaidCount = 0;
-    $scope.projectWithoutInvoicedCount = 0;
-    $scope.projectCancelledCount = 0;
-    $scope.projectOverdueCount = 0;
 
     $scope.allProjectListing = function () {
+        $scope.projectsAll = [];
+        $scope.projectsMyproj = [];
+        $scope.projectsUpcoming = [];
+        $scope.projectsInProgress = [];
+        $scope.projectsDueToday = [];
+        $scope.projectsDueTomorrow = [];
+        $scope.projectsOverdue = [];
+        $scope.projectsAssigned = [];
+        $scope.projectsQaready = [];
+        $scope.projectsPmready = [];
+        $scope.projectsQaissue = [];
+        $scope.projectsToBeDelivered = [];
+        $scope.projectsDelivered = [];
+        $scope.projectsApproved = [];
+        $scope.projectsCompletedByLng = [];
+        $scope.projectsToDisplay = [];
+
+        $scope.projectsAllCount = 0;
+        $scope.projectsMyprojCount = 0;
+        $scope.projectsUpcomingCount = 0;
+        $scope.projectsInprogressCount = 0;
+        $scope.projectsDueTodayCount = 0;
+        $scope.projectsDueTomorrowCount = 0;
+        $scope.projectsOverdueCount = 0;
+        $scope.projectsToBeDeliveredCount = 0;
+        $scope.projectsDeliveredCount = 0;
+        $scope.projectsQaReadyCount = 0;
+        $scope.projectsPmReadyCount = 0;
+        $scope.projectsQaIssueCount = 0;
+        $scope.projectsApprovedCount = 0;
+        $scope.projectsAssignedCount = 0;
+        // -- new status for scoop item count based on status -- //
+        $scope.projectLinguistCount = 0;
+        $scope.projectDileveredCount = 0;
+        $scope.projectApprovedCount = 0;
+        $scope.projectInvoicedCount = 0;
+        $scope.projectPaidCount = 0;
+        $scope.projectWithoutInvoicedCount = 0;
+        $scope.projectCancelledCount = 0;
+        $scope.projectOverdueCount = 0;
+
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
-                $scope.projectsAll = [];
-                $scope.projectsMyproj = [];
-                $scope.projectsInProgress = [];
-                $scope.projectsDueToday = [];
-                $scope.projectsDueTomorrow = [];
-                $scope.projectsOverdue = [];
-                $scope.projectsAssigned = [];
-                $scope.projectsQaready = [];
-                $scope.projectsPmready = [];
-                $scope.projectsQaissue = [];
-                $scope.projectsToBeDelivered = [];
-                $scope.projectsDelivered = [];
-                $scope.projectsApproved = [];
-                $scope.projectsCompletedByLng = [];
-                $scope.projectsToDisplay = [];
-
-                $scope.projectsAllCount = 0;
-                $scope.projectsMyprojCount = 0;
-                $scope.projectsInprogressCount = 0;
-                $scope.projectsDueTodayCount = 0;
-                $scope.projectsDueTomorrowCount = 0;
-                $scope.projectsOverdueCount = 0;
-                $scope.projectsToBeDeliveredCount = 0;
-                $scope.projectsDeliveredCount = 0;
-                $scope.projectsApprovedCount = 0;
-                $scope.projectsQaReadyCount = 0;
-                $scope.projectsPmReadyCount = 0;
-                $scope.projectsQaIssueCount = 0;
-                $scope.projectsAssignedCount = 0;
-                // -- new status for scoop item count based on status -- //
-                $scope.projectLinguistCount = 0;
-                $scope.projectDileveredCount = 0;
-                $scope.projectApprovedCount = 0;
-                $scope.projectInvoicedCount = 0;
-                $scope.projectPaidCount = 0;
-                $scope.projectWithoutInvoicedCount = 0;
-                $scope.projectCancelledCount = 0;
-                $scope.projectOverdueCount = 0;
                 // filter data based on branch
                 //$scope.projectData = data.filter(pd => pd.project_branch == $window.localStorage.projectBranch)
                 $scope.projectData = data.filter( pd => pd.orderNumber.startsWith($window.localStorage.projectBranch) )
@@ -2354,18 +2320,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectData[i].scoop_price = JSON.parse(val.scoop_price);
                     if($scope.childPrice.length){
                         angular.forEach(val.scoop_price, function(pval, i) {
-                                const isFound = $scope.childPrice.filter(element => {
-                                    if (element.name == pval.pricelist) {
-                                        return element.unit;
-                                    }
-                                    return false;
-                                });
-                                if(isFound.length){
-                                    if(isFound[0].unit == 'Words') 
-                                        scoopWords += parseInt(pval.quantity)
-                                    if(isFound[0].unit == 'Hours') 
-                                        scoopHours += parseInt(pval.quantity)
+                            const isFound = $scope.childPrice.filter(element => {
+                                if (element.name == pval.pricelist) {
+                                    return element.unit;
                                 }
+                                return false;
+                            });
+                            if(isFound.length){
+                                if(isFound[0].unit == 'Words') 
+                                    scoopWords += parseInt(pval.quantity)
+                                if(isFound[0].unit == 'Hours') 
+                                    scoopHours += parseInt(pval.quantity)
+                            }
+
                         });
                         if( scoopWords > 0){
                             if(scoopWords > 0 && scoopWords < 2000)
