@@ -1187,26 +1187,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var orders = [];
     $scope.isApiCalled = true;    
     $scope.searchScoopFilter = function(){
-        console.log('called')
         if($scope.isApiCalled){
-        rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
-        rest.get().success(function (data) {
-            $scope.projectScoop = data;
-            angular.forEach($scope.projectScoop, function (scoopData) {
-                orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
-            });
-        })        
-        rest.path = 'getJobsFromTmsSummeryView';
-        rest.get().success(function (data) {
-            $rootScope.SearchJobList = data;
-
-            //rest.path = "dashboardOrderGet";
-            //rest.get().success(function (data) {
-                // remove same project orderNumber
-                $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber'); 
+            //rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+            rest.path = "searchProjectHeader/" + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function (data) {
+                $scope.projectScoop = data.scoopData;
+                $rootScope.SearchJobList = data.jobData;
                 
-                $timeout(function () {
+                angular.forEach($scope.projectScoop, function (scoopData) {
+                    orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
+                });
+
+                $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber'); 
                     
+                $timeout(function () {
                     angular.forEach($scope.projectData, function (ordersData) {
                         orders.push(ordersData.orderNumber);
                     });
@@ -1214,18 +1208,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         orders.push(jdata.po_number);
                     });
                     $scope.orderNames = orders;
-                    console.log('$scope.orderNames', $scope.orderNames)
+                    //console.log('$scope.orderNames', $scope.orderNames)
                     $scope.disableSearch = false;
+                    
+                    $scope.isApiCalled = false;
                 }, 100);
 
-            //});
-        }).error(errorCallback);
+            })        
+            //rest.path = 'getJobsFromTmsSummeryView';
+            //rest.get().success(function (data) {
+                //$rootScope.SearchJobList = data;
 
-        $scope.isApiCalled = false;
+                //rest.path = "dashboardOrderGet";
+                //rest.get().success(function (data) {
+                    // remove same project orderNumber
+                    // $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber'); 
+                    
+                    // $timeout(function () {
+                        
+                    //     angular.forEach($scope.projectData, function (ordersData) {
+                    //         orders.push(ordersData.orderNumber);
+                    //     });
+                    //     angular.forEach($rootScope.SearchJobList, function (jdata) {
+                    //         orders.push(jdata.po_number);
+                    //     });
+                    //     $scope.orderNames = orders;
+                    //     //console.log('$scope.orderNames', $scope.orderNames)
+                    //     $scope.disableSearch = false;
+                    // }, 100);
+
+                //});
+                //$scope.isApiCalled = false;
+            //}).error(errorCallback);
+            
         }
 
     }
-
 
     $scope.searchProject = function (selectedValue) {
         $scope.selectedOrder = selectedValue;

@@ -2945,6 +2945,12 @@ $app->get('/dashboardProjectsOrderGet/:id', function ($id) use ($app) {
     echoResponse(200, $result);
 });
 
+$app->get('/searchProjectHeader/:id', function ($id) use ($app) {
+    $dashboard = new dashboard ();
+    $result = $dashboard->searchProjectHeader($id);
+    echoResponse(200, $result);
+});
+
 //---------------Resource asserts------------------//
 $app->post('/resourceAssets', 'authenticate',function () use($app) {
     $assets = new asserts ();
