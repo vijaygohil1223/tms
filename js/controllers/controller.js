@@ -1193,7 +1193,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 $scope.projectScoop = data.scoopData;
                 $rootScope.SearchJobList = data.jobData;
-                
                 angular.forEach($scope.projectScoop, function (scoopData) {
                     orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
                 });
@@ -1211,10 +1210,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //console.log('$scope.orderNames', $scope.orderNames)
                     $scope.disableSearch = false;
                     
-                    $scope.isApiCalled = false;
+                    
                 }, 100);
 
-            })        
+            }).error(function () {
+                $scope.isApiCalled = true;     
+            });   
+            $scope.isApiCalled = false;     
             //rest.path = 'getJobsFromTmsSummeryView';
             //rest.get().success(function (data) {
                 //$rootScope.SearchJobList = data;
@@ -1244,6 +1246,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
     }
+
 
     $scope.searchProject = function (selectedValue) {
         $scope.selectedOrder = selectedValue;
