@@ -1210,7 +1210,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //console.log('$scope.orderNames', $scope.orderNames)
                     $scope.disableSearch = false;
                     
-                    
                 }, 100);
 
             }).error(function () {
@@ -1578,7 +1577,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.jobstatusName = " ";
     $window.localStorage.countSt = " ";
     $window.localStorage.setItem("projectBranch", " ");
-    $scope.showDataLoader = true;
+    $scope.showDataLoader = false;
     $scope.showDataLoaderJob = true;
     $scope.proejctsToDisplay = [];
     $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
@@ -30655,6 +30654,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //currency update
         rest.path = 'orderCurrencyMatch/' + $scope.order_id;
         rest.get().success(function (data) {
+            console.log('data-currency', data)
             if (data.currency) {
                 var cur = JSON.parse(data.currency);
 
