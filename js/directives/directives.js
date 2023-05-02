@@ -6784,6 +6784,30 @@ app.directive('linguistInvoicePdftemplate', function () {
         templateUrl: 'tpl/linguist-invoice-pdf-content.html',
     };
 });
+app.directive('materialHeaderTemplate', function () {
+    return {
+        restrict: 'EA', // Default in 1.3+
+        templateUrl: 'tpl/material.header.html',
+    };
+});
+app.directive('materialAsideTemplate', function () {
+    return {
+        restrict: 'EA', // Default in 1.3+
+        templateUrl: 'tpl/material.aside.html',
+    };
+});
+app.directive('copyrightTemplate', function () {
+    return {
+        restrict: 'EA', // Default in 1.3+
+        templateUrl: 'tpl/copyRight.html',
+    };
+});
+app.directive('materialNavTemplate', function () {
+    return {
+        restrict: 'EA', // Default in 1.3+
+        templateUrl: 'tpl/material.nav.html',
+    };
+});
 
 app.directive('dScrollHorizontally', function () {
     return {
