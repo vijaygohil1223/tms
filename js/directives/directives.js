@@ -5867,12 +5867,12 @@ app.directive('loading',   ['$http' ,function ($http)
                         if(elm){
                             var url = elm[0].baseURI;
                             if(url){
-                                // if(url.includes("#/discussion/")){
-                                //     elm.hide();
-                                // }
-                                // if(url.includes("#/dashboard1")){
-                                //     elm.hide();
-                                // }
+                                if(url.includes("#/discussion/")){
+                                    elm.hide();
+                                }
+                                if(url.includes("#/dashboard1")){
+                                    elm.hide();
+                                }
                             }else{
                                 elm.show();        
                             }
