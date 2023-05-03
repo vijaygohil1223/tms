@@ -1581,7 +1581,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.showDataLoaderJob = true;
     $scope.proejctsToDisplay = [];
     $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
-                
+
     //Getting Jobs from getJobsFromTmsSummeryView
     // $scope.getJobList = function () {
     //     rest.path = 'getJobsFromTmsSummeryView';

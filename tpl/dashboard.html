@@ -100,6 +100,10 @@ td { font-size: 11px; } */
     font-weight: normal;
   }
 
+  .tab-due-today{
+    margin-left:19px;
+  }
+
   .labeltitle {
     white-space: nowrap;
   }
@@ -328,7 +332,18 @@ td { font-size: 11px; } */
     margin-bottom:100px;
   }
   .overviewli .list-group-item.active a {padding-bottom: 0px !important;}
-  
+
+  /* Tab header fix */
+  .tabfx > .nav.nav-tabs{
+    position: fixed;
+    z-index: 1000;
+    margin-top: -20px;
+    width: 1091px;
+  }
+  .tabfx .dataTables_filter, .tabfx .tab-pane{
+    padding-top: 40px;
+  }
+
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
     .sidenav {
@@ -3495,9 +3510,36 @@ td { font-size: 11px; } */
 <script>
   
   setTimeout(() => {
-    //    $(window).trigger("resize");    
 
     $(document).ready(function () {
+
+      document.addEventListener('scroll', function (event) {
+          let tabWidth = $('#dynamicAddAnchore').width();
+          let leftWidth = $('.app-aside-hide').length ? '20px' : '240px';
+
+          let scoopHt = $('#dynamicAddAnchore').height();
+          let wnCoord = document.getElementById('dynamicAddAnchore').getBoundingClientRect();
+          let wnHt = Math.abs(wnCoord.top) + 100;
+          console.log('wnHt',wnHt)
+          console.log('scoopHt',scoopHt)
+
+          if(wnHt > scoopHt){
+            $('.projecttable.tab_dashboard').removeClass('tabfx')
+            $('.nav-next-fx').css({'position': 'absolute', 'right': '0'})
+            $('.nav-prev-fx').css({'position': 'absolute', 'left': '0'})
+          }else{
+            $('.tab_dashboard').addClass('tabfx')
+            $('.nav-next.arrow').addClass('nav-next-fx')
+            $('.nav-prev.arrow').addClass('nav-prev-fx')
+            //$('.tabfx > .nav.nav-tabs').css({'position': 'fixed','z-index': '1000','margin-top': '-20px','width': tabWidth})
+            //$('.tabfx .tab-pane').css({'padding-top': '30px'})
+            //$('.tabfx .dataTables_filter').css({'padding-top': '40px'})
+            $('.nav-next-fx').css({'position': 'fixed', 'right': '34px'})
+            $('.nav-prev-fx').css({'position': 'fixed', 'left': leftWidth})
+          }
+          
+      }, true /*Capture event*/);
+
       (function ($) {
 
         // $(".scrollNav ul.nav.nav-tabs").on('scroll', function () {
@@ -3571,6 +3613,5 @@ td { font-size: 11px; } */
   .panel-heading+.list-group .list-group-item {
     border-right-width: 1px;
   }
-
 
 </style>
