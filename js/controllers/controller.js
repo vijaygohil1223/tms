@@ -1578,7 +1578,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.countSt = " ";
     $window.localStorage.setItem("projectBranch", " ");
     $scope.showDataLoader = true;
-    $scope.showDataLoaderJob = true;
+    $scope.showDataLoaderJob = false;
     $scope.proejctsToDisplay = [];
     $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
 
@@ -2823,6 +2823,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.alljobsWidget = [];
     $scope.isoverviewJobs = false;
     $scope.jobstatusRecord = function (statusType, jobStatus) {
+        $scope.showDataLoaderJob = true;
         if (jobStatus) {
             $scope.jobstatusFilter = jobStatus;
             $scope.isoverviewJobs = true;

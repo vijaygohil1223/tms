@@ -3513,14 +3513,19 @@ td { font-size: 11px; } */
 
     $(document).ready(function () {
 
-      function headerFix(){
-        let tabWidth = $('#dynamicAddAnchore').width();
+      $( ".addactive" ).on( "click", function() {
+        setTimeout(() => {
+          let leftWidth1 = $('.app-aside-hide').length ? '20px' : '240px';
+          $('.nav-prev-fx').css({'position':'fixed', 'left':leftWidth1})
+        }, 50);
+          
+      });
+      document.addEventListener('scroll', function (event) {
+          let tabWidth = $('#dynamicAddAnchore').width();
           let leftWidth = $('.app-aside-hide').length ? '20px' : '240px';
-
           let scoopHt = $('#dynamicAddAnchore').height();
           let wnCoord = document.getElementById('dynamicAddAnchore').getBoundingClientRect();
           let wnHt = Math.abs(wnCoord.top) + 100;
-
           if(wnCoord.top > 0 || wnHt > scoopHt){
             if($('.tabfx').length){
               $('.projecttable.tab_dashboard').removeClass('tabfx')
@@ -3537,15 +3542,7 @@ td { font-size: 11px; } */
             //$('.tabfx .dataTables_filter').css({'padding-top': '40px'})
             $('.nav-next-fx').css({'position': 'fixed', 'right': '34px'})
             $('.nav-prev-fx').css({'position': 'fixed', 'left': leftWidth})
-          }
-      }
-
-      $( ".addactive" ).on( "click", function() {
-        //console.log( '$( this ).text()' );
-        //headerFix();
-      });
-      document.addEventListener('scroll', function (event) {
-        headerFix();  
+          }  
       }, true /*Capture event*/);
 
       (function ($) {
