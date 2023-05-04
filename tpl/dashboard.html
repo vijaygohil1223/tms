@@ -3513,15 +3513,9 @@ td { font-size: 11px; } */
 
     $(document).ready(function () {
 
-      $( ".addactive" ).on( "click", function() {
-        setTimeout(() => {
-          let leftWidth1 = $('.app-aside-hide').length ? '20px' : '240px';
-          $('.nav-prev-fx').css({'position':'fixed', 'left':leftWidth1})
-        }, 50);
-          
-      });
-      document.addEventListener('scroll', function (event) {
-          let tabWidth = $('#dynamicAddAnchore').width();
+      const dashboardMenuFix = () => {
+        let tabWidth = $('#dynamicAddAnchore').width();
+        console.log('tabWidth',tabWidth)
           let leftWidth = $('.app-aside-hide').length ? '20px' : '240px';
           let scoopHt = $('#dynamicAddAnchore').height();
           let wnCoord = document.getElementById('dynamicAddAnchore').getBoundingClientRect();
@@ -3542,7 +3536,22 @@ td { font-size: 11px; } */
             //$('.tabfx .dataTables_filter').css({'padding-top': '40px'})
             $('.nav-next-fx').css({'position': 'fixed', 'right': '34px'})
             $('.nav-prev-fx').css({'position': 'fixed', 'left': leftWidth})
-          }  
+          }
+      }
+
+      $( ".addactive" ).on( "click", function() {
+        dashboardMenuFix();
+        $('#dynamicAddAnchore .nav.nav-tabs').css({'width': $('#dynamicAddAnchore').width()})
+        setTimeout(() => {
+          let leftWidth1 = $('.app-aside-hide').length ? '20px' : '240px';
+          if($('.tabfx').length){
+            $('.nav-prev-fx').css({'position':'fixed', 'left':leftWidth1})
+          }
+        }, 50);
+          
+      });
+      document.addEventListener('scroll', function (event) {
+        dashboardMenuFix();
       }, true /*Capture event*/);
 
       (function ($) {
