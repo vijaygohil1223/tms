@@ -69,7 +69,7 @@ class contact {
         $id = $this->_db->insert('tms_client_contact', $info);
         if ($id) {
             // if current invoice email set as default other will be 0 
-            if($info['is_client_invoice'] && $info['is_client_invoice']==1){
+            if(isset($info['is_client_invoice']) && $info['is_client_invoice']==1){
                 $this->_db->where('iClientId', $info['iClientId']);
                 $this->_db->where('iContactId', $id, '!=');
                 $this->_db->update('tms_client_contact', array('is_client_invoice' => 0) );
