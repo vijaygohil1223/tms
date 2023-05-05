@@ -12230,7 +12230,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 specializationTxt = '';
             var txt1 = $scope.customerPrice.price_name.split(' | ');
             //$scope.customerPrice.price_name = $scope.customerPrice.price_name + newLanguage + ' | ' + specializationTxt;
-            $scope.customerPrice.price_name = txt1[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
+            //$scope.customerPrice.price_name = txt1[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
+            // no need specialization
+            $scope.customerPrice.price_name = txt1[0].trim() + ' | ' + newLanguage ;
         
         } else {
             var customerPriceName = angular.element('#customerPriceName').val();
@@ -12242,7 +12244,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let specializationTxt = specialization.length > 0 ? specialization[0].text : specialization.text
             if(!specializationTxt)
                 specializationTxt = '';
-            $scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
+            //$scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
+            // no need specialisation
+            $scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage;
         }
     }
 
