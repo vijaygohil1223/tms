@@ -12201,11 +12201,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     });
 
     $scope.removePriceLanguage = function (id) {
-        if (angular.element('[id^=priceLanguageID]').length - 1 == id) {
-            angular.element('#priceLanguageID' + id).remove();
-        } else {
-            notification('Delete from last record', 'warning');
-        }
+        if($scope.priceLanguageList.length)
+            $scope.priceLanguageList.splice(id, 1);
+        
+        // if (angular.element('[id^=priceLanguageID]').length - 1 == id) {
+        //     angular.element('#priceLanguageID' + id).remove();
+        // } else {
+        //     notification('Delete from last record', 'warning');
+        // }
     }
 
     $scope.sendPriceLanguage = function (id) {

@@ -4741,35 +4741,38 @@ app.directive('languagePriceList', function($http, rest, $timeout, $compile, $lo
                 if (jQuery.inArray(scope.item.source_lang)) {
                     var source = scope.item.source_lang.split(',');
                 }
-
                 if (jQuery.inArray(scope.item.source_lang)) {
                     var target = scope.item.target_lang.split(',');
                 }
-
-                var sourceLength = source.length;
-                var targetLength = target.length;
-
-                var j = 0;
-                var obj = [];
-
-                if (angular.element('[id^=priceLanguageID]').length != 0) {
-                    var count = angular.element('[id^=priceLanguageID]').length;
-                } else {
-                    var count = 0;
-                }
-
-                for (var i = 0; i < targetLength; i++) {
-                    if (i % sourceLength == 0) {
-                        j = 0;
+                if(scope.item.source_lang && scope.item.target_lang){
+                    let lng = {
+                        languagePrice : source + ' > ' + target
                     }
-                    // var data = '<tr class="priceLPrice"><td>'+source[j]+' > '+target[i]+'</td></tr>';
-                    // obj.push(data);<td><a><i class="fa fa-caret-right" aria-hidden="true" ng-click="sendPriceLanguage(' + count + ')"></i></a></td>
-                    var wrap = angular.element('<tr class="priceLPrice" style="cursor:pointer" id="priceLanguageID' + count + '" ng-click="sendPriceLanguage(' + count + ')"><td class="priceLanguage' + count + '">' + source[j] + ' > ' + target[i] + '</td><td><a><i class="iconDelete glyph-icon fa-times" ng-click="removePriceLanguage(' + count + ')"></i></a></td>/tr>');
-                    var wrapc = $compile(wrap)(scope)
-                    $('.itemList').before(wrapc);
-                    j++;
-                    count++;
+                    scope.priceLanguageList.push(lng);
                 }
+                // var sourceLength = source.length;
+                // var targetLength = target.length;
+                // var j = 0;
+                // var obj = [];
+
+                // if (angular.element('[id^=priceLanguageID]').length != 0) {
+                //     var count = angular.element('[id^=priceLanguageID]').length;
+                // } else {
+                //     var count = 0;
+                // }
+
+                // for (var i = 0; i < targetLength; i++) {
+                //     if (i % sourceLength == 0) {
+                //         j = 0;
+                //     }
+                //     // var data = '<tr class="priceLPrice"><td>'+source[j]+' > '+target[i]+'</td></tr>';
+                //     // obj.push(data);<td><a><i class="fa fa-caret-right" aria-hidden="true" ng-click="sendPriceLanguage(' + count + ')"></i></a></td>
+                //     /* var wrap = angular.element('<tr class="priceLPrice" style="cursor:pointer" id="priceLanguageID' + count + '" ng-click="sendPriceLanguage(' + count + ')"><td class="priceLanguage' + count + '">' + source[j] + ' > ' + target[i] + '</td><td><a><i class="iconDelete glyph-icon fa-times" ng-click="removePriceLanguage(' + count + ')"></i></a></td>/tr>');
+                //     var wrapc = $compile(wrap)(scope)
+                //     $('.itemList').before(wrapc); */
+                //     j++;
+                //     count++;
+                // }
 
                 $('#source_lang').select2('val', '');
                 $('#targetLanguage').select2('val', '');

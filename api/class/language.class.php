@@ -123,6 +123,7 @@ class language {
 
     //------------------- Language Translation -----------------//
     public function languagesGetAll() {
+        $this->_db->where('is_active','1');
         $results = $this->_db->get('tms_languages');
         return $results;
     }
