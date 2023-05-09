@@ -4744,11 +4744,20 @@ app.directive('languagePriceList', function($http, rest, $timeout, $compile, $lo
                 if (jQuery.inArray(scope.item.source_lang)) {
                     var target = scope.item.target_lang.split(',');
                 }
+                if(!scope.priceLanguageList.length)
+                    scope.priceLanguageList = []
                 if(scope.item.source_lang && scope.item.target_lang){
                     let lng = {
                         languagePrice : source + ' > ' + target
                     }
                     scope.priceLanguageList.push(lng);
+                }
+                if(scope.priceLanguageList.length ==1){
+                    if($('#customerPriceName').val().split('|').length > 1 && $('#customerPriceName').val().split('|')[1].trim() == '' ){
+                        setTimeout(() => {
+                            $('#priceLanguageID0').click();
+                        }, 1000); 
+                    }
                 }
                 // var sourceLength = source.length;
                 // var targetLength = target.length;

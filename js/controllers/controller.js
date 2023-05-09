@@ -12245,7 +12245,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if(!specializationTxt)
                 specializationTxt = '';
             //$scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage + ' | ' + specializationTxt;
-            // no need specialisation
+            //no need specialisation
             $scope.customerPrice.price_name = oldName[0].trim() + ' | ' + newLanguage;
         }
     }
@@ -12370,6 +12370,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (setPriceLanguage == 'Change prices') {
                 if (angular.element('[id^=priceLanguageID]').length > 0) {
                     if ($scope.customerPrice.price_list_id && angular.element('#customerPriceName').length < 0) {
+                        
                         $('#priceLanguageID0').css('border', '1px solid red');
                         $('#priceLanguageID0').addClass('face');
 
@@ -12378,8 +12379,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('#priceLanguageID0').css('border', '0px solid red');
                         }, 3000);
 
-                        notification('Please set language', 'warning');
-                        return false;
+                        //notification('Please set language', 'warning');
+                        //return false;
                     }
                 } else {
                     $('.itemList').css('border', '1px solid red');
