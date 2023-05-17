@@ -23,12 +23,16 @@ class client {
     }
 
     public function getClientId($id) {
-        $this->_db->where("iClientId", $id);
-        $results = $this->_db->getOne('tms_client');
-        $user = new users();
-        $userData = $user->getUserUsingId($results['created_id']);
-        $results['created_id'] = $userData['vUserName'];
-        return $results;
+        if(isset($id) && $id != 'undefined' ){
+         $this->_db->where("iClientId", $id);
+         $results = $this->_db->getOne('tms_client');
+         if($results){
+            $user = new users();
+            $userData = $user->getUserUsingId($results['created_id']);
+            $results['created_id'] = $userData['vUserName'];
+         }
+         return $results;
+        }
     }
 
     public function client_indirect_update($id) {
@@ -140,18 +144,27 @@ class client {
         $this->_db->update('tms_client', array(
             'iEditedBy' => 0
         ));
+        $return ['status'] = 200;
+        $return ['msg'] = 'Ok';
+        return $return;
     }
 
     public function indirect_UpdateClient_id($id) {
         $data ['iEditedBy'] = 0;
         $this->_db->where('iEditedBy', $id);
         $id = $this->_db->update('tms_client_indirect', $data);
+        $return ['status'] = 200;
+        $return ['msg'] = 'Ok';
+        return $return;
     }
 
     public function updateClientId($data) {
         $info ['iEditedBy'] = 0;
         $this->_db->where('iClientId', $data);
         $id = $this->_db->update('tms_client_indirect', $info);
+        $return ['status'] = 200;
+        $return ['msg'] = 'Ok';
+        return $return;
     }
 
     public function clientIddata($id, $info) {
@@ -651,31 +664,31 @@ array(
     public function viewdirectdataget($id) {
         $user = new users();
         $id = self::getallclient('iClientId', $id);
-
-        if (isset($id['vProjectCoordinator'])) {
+        
+        if (isset($id['vProjectCoordinator']) && $id['vProjectCoordinator']) {
             $coordinator = $user->getUserAllfile('iUserId', $id['vProjectCoordinator']);
             $id['vProjectCoordinator'] = $coordinator['vUserName'];
         }
-        if (isset($id['vProjectManager'])) {
+        if (isset($id['vProjectManager']) && $id['vProjectManager']) {
             $manager = $user->getUserAllfile('iUserId', $id['vProjectManager']);
             $id['vProjectManager'] = $manager['vUserName'];
         }
-        if (isset($id['vQASpecialist'])) {
+        if (isset($id['vQASpecialist']) && $id['vQASpecialist']) {
             $QAspecialist = $user->getUserAllfile('iUserId', $id['vQASpecialist']);
             $id['vQASpecialist'] = $QAspecialist['vUserName'];
         }
-        if (isset($id['iBussinessDeveloper'])) {
+        if (isset($id['iBussinessDeveloper']) && $id['iBussinessDeveloper']) {
             $this->_db->where('iUserId', $id['iBussinessDeveloper']);
             $data = $this->_db->getone('tms_users');
             $id['iBussinessDeveloper'] = $data['vUserName'];
         }
-        if (isset($id['vStatus'])) {
+        if (isset($id['vStatus']) && $id['vStatus']) {
             $this->_db->where('status_type', 2);
             $this->_db->where('status_id', $id['vStatus']);
             $data = $this->_db->getone('tms_user_status');
             $id['vStatus'] = $data['status_name'];
         }
-        if(isset($id['vCodeRights'])){
+        if(isset($id['vCodeRights']) && $id['vCodeRights']){
             $substr = substr($id["vCodeRights"], 0, 3);
             $business_unit	 = $this->_db->rawQuery("SELECT name FROM tms_centers WHERE abbrivation = '".$substr."'");
             if(count($business_unit)){

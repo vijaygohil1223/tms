@@ -193,7 +193,7 @@ class jobs_detail
 
             $data['job_id'] = $id;
 
-            $data['parent_id'] = $getfolder['fmanager_id'];
+            $data['parent_id'] = isset($getfolder['fmanager_id']) ? $getfolder['fmanager_id'] : 0;
 
             $data['created_date'] = date('Y-m-d H:i:s');
 
@@ -1902,7 +1902,7 @@ class jobs_detail
 
                 $resourceName = $this->_db->getOne('tms_users');
 
-                $data[$key]['resource'] = $resourceName['vUserName'];
+                $data[$key]['resource'] = $resourceName ? $resourceName['vUserName'] : '';
             }
 
             if ($value['contact_person']) {

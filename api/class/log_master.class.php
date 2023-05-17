@@ -16,7 +16,8 @@ class log_master {
     	$this->_db->where('log_type', $log_type);
     	$this->_db->where('created_by', $created);
     	$data = $this->_db->getOne('tms_log_master');
-    	return $data['log_id'];
+    	if($data)
+			return $data['log_id'];
     }
 
     public function logTaskMatch($log_type, $taskId, $typeId, $type, $created) {
@@ -26,7 +27,8 @@ class log_master {
     	$this->_db->where('log_type', $log_type);
     	$this->_db->where('created_by', $created);
     	$data = $this->_db->getOne('tms_log_master');
-    	return $data['log_id'];
+    	if($data)
+			return $data['log_id'];
     }
 
     public function saveLog($data) {

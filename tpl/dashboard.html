@@ -310,22 +310,38 @@ td { font-size: 11px; } */
     text-align: center;
   }
 
-  .projectbranch {
+  /* .projectbranch {
     float: right;
     z-index: 1;
     position: absolute;
     right: 120px;
     margin-top: 58px;
-  }
+  } */
 
   div#dynamicAddAnchore tr td:first-child {
     white-space: nowrap;
   }
-  .statusbtn{
+  /* .statusbtn{
     z-index: 1;
     right: 380px;
     margin-top: 60px;
     position: absolute;
+  } */
+  .rside{
+    position: absolute;
+    top: 55px;
+    right: 160px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    font-size: 13px;
+    padding: 0 15px;
+    transition: .2s ease-in-out;
+    z-index: 1;
+  }
+  .statusbtn{
+    margin-right: 25px;
   }
   .statusbtn > a{padding: 6px 18px;}
   .bootbox-body{
@@ -410,17 +426,19 @@ td { font-size: 11px; } */
             <div class="row">
               <div class="col-md-12">
                 <div class="white_box panel panel-default mynewtabs" style="margin-bottom: 0;">
-                  <div class="col-sm-2 statusbtn" ng-if="(tabPermission | json) != '{}'">
-                    <a class="btn btn-info" ng-click="changeScoopStatus()">Change Status</a>
-                  </div>
-                  <div class="col-sm-3 projectbranch d-flex" ng-if="(tabPermission | json) != '{}'">
-                    <div style="width:190px;">
-                      <input type="text" id="projectBranch" class="form-control" ng-model="project_branch"
-                        name="projectBranch" ng-change="projectBranchchange(projectBranch)"
-                        placeholder="Business Unit" />
+                  <div class="rside">
+                    <div class="statusbtn" ng-if="(tabPermission | json) != '{}'">
+                      <a class="btn btn-info" ng-click="changeScoopStatus()">Change Status</a>
                     </div>
-                    <a class="glyphicon glyphicon-refresh" ng-click="branchRefresh()" style="margin: 10px 0 0 8px;"></a>
-                  </div>
+                    <div class="projectbranch d-flex" ng-if="(tabPermission | json) != '{}'">
+                      <div style="width:190px;">
+                        <input type="text" id="projectBranch" class="form-control" ng-model="project_branch"
+                          name="projectBranch" ng-change="projectBranchchange(projectBranch)"
+                          placeholder="Business Unit" />
+                      </div>
+                      <a class="glyphicon glyphicon-refresh" ng-click="branchRefresh()" style="margin: 10px 0 0 8px;"></a>
+                    </div>
+                  </div>  
                   <a href="javascript:void(0);" ng-click="createProject()" ng-if="userRight == 1"
                     class="btn_create-project btn btn-info pull-right btn-sm btn-rounded"><i
                       class="fa fa-plus"></i>&nbsp; Create Project</a>

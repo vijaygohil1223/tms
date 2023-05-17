@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_DEPRECATED);
 require '.././libs/Slim/Slim.php';
 require_once '../includes/include.php';
 require_once 'dbHelper.php';

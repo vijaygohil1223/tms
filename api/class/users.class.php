@@ -738,8 +738,11 @@ array(
         $path = "../../uploads/profilePic/";
         if($image != '' || $image == 'blank.png'){
             $images = glob($path.$image);
+            // if(file_exists($path.$image)){
+            //     unlink($path.$image);
+            // }
             if($images){
-                unlink($path.$image);
+                @unlink($path.$image);
             }
         }
         $this->_db->where('iUserId', $id);
@@ -761,8 +764,7 @@ array(
             $return['status'] = 422;
             $return['msg'] = 'Not Deleted.';
         }
-
-        // return $return;
+        return $return;
     }
 
     public function internalResourceCheck($info) {
@@ -796,6 +798,9 @@ array(
     public function userUpdate_Byid($id) {
         $this->_db->where('iEditedBy', $id);
         $this->_db->update('tms_users', array('iEditedBy' => '0'));
+        $result['status'] = 200;
+        $msg = 'Ok';
+        return $result;
     }
 
     public function messageUserOneget($id) {
@@ -821,25 +826,25 @@ array(
         if(isset($data['vResourceType'])){
             $this->_db->where('iTypeId', $data['vResourceType']);
             $id = $this->_db->getone('tms_user_type');
-            $data['vResourceType'] = $id['vType'];
+            $data['vResourceType'] = isset($id['vType']) ? $id['vType'] : '';
         }
         if(isset($data['vResourcePosition'])){
             $this->_db->where('position_id', $data['vResourcePosition']);
             $id = $this->_db->getone('tms_user_position');
-            $data['vResourcePositionName'] = $id['position_name'];
+            $data['vResourcePositionName'] = isset($id['position_name']) ? $id['position_name'] : '';
         }
         if(isset($data['eUserStatus'])) {
             $this->_db->where('status_id', $data['eUserStatus']);
             $id = $this->_db->getone('tms_user_status');
-            $data['eUserStatusName'] = $id['status_name'];
+            $data['eUserStatusName'] = isset($id['status_name']) ? $id['status_name'] : '';
         }
         if(isset($data['created_by'])) {
             $created = self::getUserAllfile('iUserId',$data['created_by']);
-            $data['createdBy'] = $created['vUserName'];
+            $data['createdBy'] = isset($created['vUserName']) ? $created['vUserName'] : '';
         }
         if(isset($data['modified_by'])) {
             $modified = self::getUserAllfile('iUserId',$data['modified_by']);
-            $data['modifiedBy'] = $modified['vUserName'];
+            $data['modifiedBy'] = isset($modified['vUserName']) ? $modified['vUserName'] : '';
         }
         return $data;
     }

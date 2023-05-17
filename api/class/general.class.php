@@ -34,9 +34,9 @@ class general {
         if($client_id){
             $this->_db->where("iClientId", $client_id);
             $client_data = $this->_db->getOne('tms_client');
-            $results['vProjectCoordinator'] = $client_data['vProjectCoordinator'];
-            $results['vProjectManager'] = $client_data['vProjectManager'];
-            $results['vQASpecialist'] = $client_data['vQASpecialist'];
+            $results['vProjectCoordinator'] = isset($client_data['vProjectCoordinator']) ? $client_data['vProjectCoordinator'] : '';
+            $results['vProjectManager'] = isset($client_data['vProjectManager']) ? $client_data['vProjectManager'] : '';
+            $results['vQASpecialist'] = isset($client_data['vQASpecialist']) ? $client_data['vQASpecialist'] : '';
         }
         return $results;
     }
@@ -122,7 +122,7 @@ class general {
         if(isset($results['project_type'])){
             $this->_db->where('pr_type_id',$results['project_type']);
             $data = $this->_db->getone('tms_project_type');
-            $results['project_type'] = $data['project_name'];
+            $results['project_type'] = isset($data['project_name']) ? $data['project_name'] : '';
         }
         if(isset($results['project_status'])){
             $this->_db->where('pr_status_id',$results['project_status']);

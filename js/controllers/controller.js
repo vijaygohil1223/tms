@@ -17946,34 +17946,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.getContact = function (id, element) {
-        $window.localStorage.setItem('directClientIdStore', id);
-        $routeParams.id = id;
-        rest.path = 'contact';
-        rest.model().success(function (data) {
-            var cont = [];
-            angular.forEach(data.data, function (val, i) {
-                var obj = {
-                    'id': val.iContactId,
-                    'text': val.vFirstName + ' ' + val.vLastName
-                };
-                cont.push(obj);
-            });
-            angular.element('#' + element).select2({
-                allowClear: true,
-                data: cont
-            });
-        }).error(errorCallback);
+        console.log('id-client', id)
+        if(id != undefined){
+            $window.localStorage.setItem('directClientIdStore', id);
+            $routeParams.id = id;
+            rest.path = 'contact';
+            rest.model().success(function (data) {
+                var cont = [];
+                angular.forEach(data.data, function (val, i) {
+                    var obj = {
+                        'id': val.iContactId,
+                        'text': val.vFirstName + ' ' + val.vLastName
+                    };
+                    cont.push(obj);
+                });
+                angular.element('#' + element).select2({
+                    allowClear: true,
+                    data: cont
+                });
+            }).error(errorCallback);
 
-        rest.path = 'orderdataget/' + id;
-        rest.get().success(function (data) {
-            
-            $scope.orderNumber(data);
-        }).error(errorCallback);
+            rest.path = 'orderdataget/' + id;
+            rest.get().success(function (data) {
+                
+                $scope.orderNumber(data);
+            }).error(errorCallback);
 
-        rest.path = 'client/' + $scope.customer.client;
-        rest.get().success(function (cData) {
-            $scope.directClientData = cData
-        }).error(function (data, error, status) { });
+            rest.path = 'client/' + $scope.customer.client;
+            rest.get().success(function (cData) {
+                $scope.directClientData = cData
+            }).error(function (data, error, status) { });
+        }    
 
     };
 
@@ -18800,7 +18803,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.projectOrderName = $window.localStorage.getItem('projectOrderName');
         
         $scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
-    }, 500);
+    }, 1000);
     $scope.clientpriceList = {};
     $scope.customer = {};
     $scope.price_ClientID = 0;

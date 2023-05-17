@@ -283,13 +283,11 @@ class order {
     
 
     public function orderdataget($id){
-
-    	$this->_db->where('iClientId',$id);
-
-    	$data = $this->_db->getone('tms_client');
-
-    	return $data['vCodeRights'];
-
+        if(isset($id) && $id != 'undefined' ){
+    	 $this->_db->where('iClientId',$id);
+    	 $data = $this->_db->getone('tms_client');
+    	 return $data['vCodeRights'];
+        }
     }
 
     
