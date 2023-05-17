@@ -151,7 +151,9 @@
                         <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
                           style="display: none" ng-model="invoiceL.invoice_id" />
                       </td>
-                      <td ng-bind="invoiceL.invoice_number"></td>
+                      <td>
+                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View"> {{ invoiceL.invoice_number }} </a>
+                      </td>
                       <td>
                         {{ invoiceL.clientCompanyName }}
                         <a href="javascript:void(0)" ng-click="generalEmail(invoiceL.clientId,invoiceL.invoice_number)"
@@ -168,8 +170,8 @@
                       </td>
                       <td>
                         <div class="trActiontitle">
-                          <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
-                              class="fa fa-eye"></i></a>
+                          <!-- <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                              class="fa fa-eye"></i></a> -->
                           <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
                               class="fa fa-download"></i></a>
                         </div>
