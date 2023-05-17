@@ -697,11 +697,11 @@ array(
                 $id['vCodeRights_name'] = $id['vCodeRights'];
             }
         }
-        if (isset($id['created_id'])) {
+        if (isset($id['created_id']) && $id['created_id']) {
             $created = $user->getUserAllfile('iUserId', $id['created_id']);
             $id['createdBy'] = $created['vUserName'];
         }
-        if (isset($id['modified_id'])) {
+        if (isset($id['modified_id']) && $id['modified_id']) {
             $modified = $user->getUserAllfile('iUserId', $id['modified_id']);
             $id['modifiedBy'] = $modified['vUserName'];
         }

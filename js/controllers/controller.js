@@ -27531,7 +27531,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.InvoiceResult = data;
             $scope.InvoiceResult = data.filter(function (el) {
                     el.freelance_currency = el.freelance_currency ? el.freelance_currency.split(',')[0] : 'EUR';
-                    return el.item_status == 'Approved' || el.item_status == 'Invoice ready' || el.item_status == 'Overdue';
+                    let jbStatus = el.item_status.toLowerCase();
+                    return jbStatus == 'approved' || jbStatus == 'invoice ready' || jbStatus == 'overdue';
                 });
             
         });        
