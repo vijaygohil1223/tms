@@ -31,7 +31,7 @@ class Tax {
         return $return;
     }
     public function getAlltax() {
-        $this->_db->where('is_active',1);
+        //$this->_db->where('is_active',1);
         $data = $this->_db->get('tms_tax');
         return $data; 
     }
