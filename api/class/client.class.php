@@ -579,17 +579,20 @@ array(
         $this->_db->where('client', $id);
         $cuData = $this->_db->getOne('tms_customer');
         
-        $this->_db->where('order_id', $cuData['order_id']);
-        $orData = $this->_db->getOne('tms_order');
-        
-        $this->_db->where('order_id', $orData['order_id']);
-        $geData = $this->_db->getOne('tms_general');
-        
-        
+        if($cuData){
+            $this->_db->where('order_id', $cuData['order_id']);
+            $orData = $this->_db->getOne('tms_order');
+
+            if($orData){
+                $this->_db->where('order_id', $orData['order_id']);
+                $geData = $this->_db->getOne('tms_general');
+            }
+        }
+
         $cuData = false;
         $orData = false;
         $geData = false;
-
+    
         if($cuData || $orData || $geData){
             return false;
         }else{
@@ -597,7 +600,6 @@ array(
             if($image != 'blank.png'){
                 $images = glob($path . $image);
                 if ($images) {
-                    $image;
                     unlink($path . $image);
                 } else {
                     $image;

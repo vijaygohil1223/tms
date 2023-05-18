@@ -24254,9 +24254,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.jobchain.creator = $scope.creator;
         rest.path = 'jobChainsave';
         rest.post($scope.jobchain).success(function (data) {
-            
-            $window.localStorage.chainediteId = data
-            $location.path("/job-chain");
+            console.log('data-saveee', data)
+            if(data && data.status ==200){
+                $window.localStorage.chainediteId = data.id
+                $location.path("/job-chain");
+            }
         }).error(errorCallback);
     }
 

@@ -67,21 +67,23 @@ class jobchain {
 	    }
 
 	    public function jobChainsave($data) {
-	    	$data['created_date'] = date('Y-m-d H:i:s');
+			$data['created_date'] = date('Y-m-d H:i:s');
 	    	$data['updated_date'] = date('Y-m-d H:i:s');
 	    	$id = $this->_db->insert('tms_job_chain', $data);
-	    	
+	    		    	
 	    	if ($id) {	
 	    		$this->_db->where('job_chain_id',1);
 	    		$this->_db->update('tms_new_job',array('job_chain_id'=>$id));
-	    		
+
+	    		$return['id'] = $id;
 	    		$return['status'] = 200;
 	    		$return['msg'] = 'Successfully Inserted.';
 	    	} else {
+	    		$return['id'] = 0;
 	    		$return['status'] = 422;
 	    		$return['msg'] = 'Not Saved.';
 	    	}
-	    	return $id;
+	    	return $return;
 	    }
 
 	    public function jobchainnameGet() {
@@ -253,6 +255,10 @@ class jobchain {
 			$sortField['sortedJobsJson'] = $data['sort'];
 			$this->_db->where('job_chain_id',$id);
 			$id = $this->_db->update('tms_job_chain', $sortField);
+
+			$return['status'] = 200;
+			$return['msg'] = 'Ok';	
+			return $return; 
 		}
 
 }
