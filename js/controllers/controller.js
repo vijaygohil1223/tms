@@ -7428,22 +7428,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.Currentyear = year.toString().substr(2, 2);
     //get contact person by customers
     $scope.getContact = function (id, element) {
-        $routeParams.id = id;
-        rest.path = 'contact';
-        rest.model().success(function (data) {
-            var cont = [];
-            angular.forEach(data.data, function (val, i) {
-                var obj = {
-                    'id': val.iContactId,
-                    'text': val.vFirstName + ' ' + val.vLastName
-                };
-                cont.push(obj);
-            });
-            angular.element('#' + element).select2({
-                allowClear: true,
-                data: cont
-            });
-        }).error(errorCallback);
+        if(id && id != undefined){
+            $routeParams.id = id;
+            rest.path = 'contact';
+            rest.model().success(function (data) {
+                var cont = [];
+                angular.forEach(data.data, function (val, i) {
+                    var obj = {
+                        'id': val.iContactId,
+                        'text': val.vFirstName + ' ' + val.vLastName
+                    };
+                    cont.push(obj);
+                });
+                angular.element('#' + element).select2({
+                    allowClear: true,
+                    data: cont
+                });
+            }).error(errorCallback);
+        }    
     };
 
     $scope.clReportTotal = 0;
@@ -8555,10 +8557,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }, 100);
                     })
                 })
-
             })
             //scrollToId(eID);
-            scrollToId(eID)
         }
     }
 
@@ -8768,7 +8768,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }, 0);
                 }
             })
-            scrollToId(eID);
+            //scrollToId(eID);
         }
     }
     // End Job search data
@@ -17946,8 +17946,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.getContact = function (id, element) {
-        console.log('id-client', id)
-        if(id != undefined){
+        if(id && id != undefined){
             $window.localStorage.setItem('directClientIdStore', id);
             $routeParams.id = id;
             rest.path = 'contact';

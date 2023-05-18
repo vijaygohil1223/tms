@@ -593,7 +593,8 @@ app.directive('select2InvoiceNumber', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'getInvoiceNumber';
+            let invoiceUrl = attrs.typeid == 1 ? 'getInvoiceNumberClient' : 'getInvoiceNumber'
+            rest.path = invoiceUrl;
             rest.get().success(function(data) {
                 var invoiceNumber = [];
                 $.each(data, function(key, value) {

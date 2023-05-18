@@ -19,8 +19,9 @@ class Client_invoice {
         return $this->_db->get($table);
     }
 
-    public function getInvoiceNumber() {
-		$invoiceData = self::get('tms_invoice');
+    public function getInvoiceNumberClient() {
+		//$invoiceData = self::get('tms_invoice');
+        $invoiceData = self::get('tms_invoice_client');
         return $invoiceData;
 	}
 
@@ -359,7 +360,8 @@ class Client_invoice {
     // Client statement page
     public function filterClientStatement($filterParams){
         //echo '<pre>'; print_r($filterParams); echo '</pre>';
-        $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','INNER');
+        //$this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','INNER');
+        $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','LEFT');
         $this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id','LEFT');
         if(isset($filterParams['dueDateFrom']) && isset($filterParams['dueDateTo'])){
 
@@ -384,6 +386,7 @@ class Client_invoice {
         }
         
         $data = $this->_db->get('tms_invoice_client tmInvoice', null,' tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date,tc.vUserName as companyName,tc.vCodeRights');
+        //echo $this->_db->getLastQuery();
         return $data;
     }
     /* Get All save invoice BY FreelancerId/UserId */
