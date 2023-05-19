@@ -1526,7 +1526,7 @@ $app->get('/taxList', 'authenticate',function () {
 });
 $app->get('/getTaxName/:id','authenticate', function ($id) {
     $tax = new tax ();
-    $result = $tax->getTaxById($id);;
+    $result = $tax->getTaxById($id);
     echoResponse(200, $result);
 });
 $app->post('/taxStatus','authenticate', function () use($app) {

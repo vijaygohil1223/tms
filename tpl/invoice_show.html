@@ -60,9 +60,9 @@
                                         <h4 ng-bind="invoiceDetail.freelanceName"></h4>
                                         <p>
                                             {{invoiceDetail.freelanceAddress}} </br>
-                                            {{freelanceZipcode}} , {{freelanceCity}} </br>
+                                            {{freelanceZipcode}}<span ng-if="freelanceCity"> , {{freelanceCity}}</span></br>
                                             {{freelanceCountry}} </br>
-                                            Vat Number : <span>{{vatNo}}</span> </br>
+                                            <span ng-if="vatNo">Vat Number: {{vatNo}} </span></br>
                                             <!-- Email : {{invoiceDetail.freelanceEmail}} -->
 
                                         </p>
