@@ -64,7 +64,8 @@ class orderstatussearch {
 				$this->_db->where('gen.project_status', $filterParams['projectStatus']);
 			}
 			if(isset($filterParams['projectType'])){
-				$this->_db->where('gen.project_type', $filterParams['projectType']);
+				//$this->_db->where('gen.project_type', $filterParams['projectType']);
+				$this->_db->where('its.project_type','%'.$filterParams['projectType'].'%', 'like');
 			} 
 			if(isset($filterParams['sourceLanguage'])){
 				$this->_db->where('its.source_lang','%"sourceLang":"'.$filterParams['sourceLanguage'].'"%', 'like');

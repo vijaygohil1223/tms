@@ -384,14 +384,14 @@
                                                     <th>#</th>
                                                     <th>Job Number</th>
                                                     <th>Status</th>
-                                                    <th>Contact persons</th>
+                                                    <th>Project Manager</th>
                                                     <th>Resource</th>
                                                     <th>
                                                         <!-- Customers -->Client
                                                     </th>
                                                     <th>Target language</th>
                                                     <th>Prices</th>
-                                                    <th>Scoop Status</th>
+                                                    <!-- <th>Scoop Status</th> -->
                                                 </thead>
                                                 <tbody>
                                                     <tr ng-repeat="result in statusRes=(statusResult)">
@@ -405,8 +405,11 @@
                                                                 name="orderCheckData{{$index}}" style="display: none;"
                                                                 ng-model="result.jobId">
                                                         </td>
-                                                        <td>{{result.orderNum}}_{{result.jobCode}}{{result.jobNo |
-                                                            numberFixedLen:3}}</td>
+                                                        <td>
+                                                            <a href="javascript:void(0)" ng-click="jobNoDetails(result.job_summmeryId)" class="summeryColor">
+                                                                {{result.orderNum}}_{{result.jobCode}}{{result.jobNo | numberFixedLen:3}}
+                                                            </a>
+                                                        </td>
                                                         <td ng-bind="result.jobStatus"></td>
                                                         <td><a href="#/viewinternal/{{result.contactPerson}}"
                                                                 class="summeryColor">{{result.contactPersonName}}</a>
@@ -424,7 +427,7 @@
                                                         <td ng-if="result.ItemLanguage">{{result.ItemLanguage}}</td>
                                                         <td ng-if="!result.ItemLanguage">--</td>
                                                         <td>{{ result.jobPrice | customNumber}}</td>
-                                                        <td>{{result.itemStatus}}</td>
+                                                        <!-- <td>{{result.itemStatus}}</td> -->
                                                     </tr>
                                                     <tr ng-show="!statusRes.length">
                                                         <td colspan="8" ng-bind="dataNotFound"></td>

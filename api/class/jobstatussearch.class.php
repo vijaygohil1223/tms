@@ -87,7 +87,7 @@ class jobstatussearch {
 			$this->_db->join('tms_users tu', 'tmv.resource = tu.iUserId','INNER');
 			$this->_db->join('tms_users tmu', 'tmv.contact_person = tmu.iUserId','INNER');
 			$this->_db->groupBy("tmv.job_summmeryId");
-			$data = $this->_db->get('tms_items ti', null,' tmv.ItemLanguage,tmv.job_no AS jobNo,tmv.job_code AS jobCode,tmu.iUserId AS contactPerson,tmu.vUserName AS contactPersonName, tmv.resource AS resource, tu.vUserName As resourceName,tc.vUserName AS customerName,tmv.company_code AS companyCode,tcu.client AS customer,tu.vResourceType AS serviceGroup,tg.project_type AS projectType,tmv.item_status AS jobStatus,ti.item_status AS itemStatus,tu.iFkUserTypeId AS orderTypes,tg.order_no AS orderNum,tmv.job_summmeryId AS jobId,tu.iFkUserTypeId AS ifkuserId, tmv.po_number AS poNumber, tmv.total_price as jobPrice');
+			$data = $this->_db->get('tms_items ti', null,'tmv.job_summmeryId, tmv.ItemLanguage, tmv.job_no AS jobNo,tmv.job_code AS jobCode,tmu.iUserId AS contactPerson,CONCAT(tmu.vFirstName, " ", tmu.vLastName) AS contactPersonName, tmv.resource AS resource, tu.vUserName As resourceName,tc.vUserName AS customerName,tmv.company_code AS companyCode,tcu.client AS customer,tu.vResourceType AS serviceGroup,tg.project_type AS projectType,tmv.item_status AS jobStatus,ti.item_status AS itemStatus,tu.iFkUserTypeId AS orderTypes,tg.order_no AS orderNum,tmv.job_summmeryId AS jobId,tu.iFkUserTypeId AS ifkuserId, tmv.po_number AS poNumber, tmv.total_price as jobPrice');
 			// echo $this->_db->getLastQuery();
 
 	    	return $data;

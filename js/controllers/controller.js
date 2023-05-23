@@ -1580,6 +1580,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.showDataLoader = true;
     $scope.showDataLoaderJob = false;
     $scope.proejctsToDisplay = [];
+    $window.localStorage.scoopReport = '';
     $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
 
     //Getting Jobs from getJobsFromTmsSummeryView
@@ -4551,6 +4552,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         work_name: workName
                     });
             }*/
+            $scope.jobdetail.item_status = $scope.jobdetail.item_status.split(',').pop()
+
             $scope.work_instruction = JSON.stringify(obj);
             $scope.jobdetail.work_instruction = $scope.work_instruction;
 
@@ -7377,7 +7380,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('orderstatusReportController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
+}).controller('orderstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
 
@@ -7457,11 +7460,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+
+   
+    // $scope.$on('$routeChangeStart', function (scope, next, current) {
+    //     console.log('current', current)
+    //     console.log('next', next)
+    //     if (next.$$route.controller != "orderstatusReportController") {
+    //         // Show here for your model, and do what you need**
+    //     }
+    // });
+    $scope.storeScoopOrders = function(){
+        $window.localStorage.scoopReport = JSON.stringify($scope.orderReport);
+    }
+    $rootScope.$on('$locationChangeSuccess', function() {
+        $rootScope.actualLocation = $location.path();
+    });        
+    $rootScope.$watch(function () {return $location.path()}, function (newLocation, oldLocation) {
+        if($rootScope.actualLocation === newLocation && $rootScope.actualLocation == '/Order-status-report') {
+            //alert('Why did you use history back?');
+            if($window.localStorage.scoopReport){
+                $scope.orderReport = JSON.parse($window.localStorage.scoopReport);
+                console.log('$scope.scoopReport', $scope.orderReport)
+                $scope.statusReportsearch('order-status-report','middle') 
+            }    
+        }
+    });
+
     //status oreder report find
     $scope.statusReportsearch = function (frmId, eID) {
         if ($scope.orderReport == undefined || $scope.orderReport == null || $scope.orderReport == "") {
             notification('Please Select option', 'information');
         } else {
+
             $scope.clReportTotal = 0;
             if ($scope.orderReport.startCreateDate) {
                 $scope.orderReport.createDateFrom = originalDateFormatNew($scope.orderReport.startCreateDate);
@@ -7487,7 +7517,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'statusorderReportFilter';
             rest.post($scope.orderReport).success(function (data) {
                 $scope.statusResult = data['data'];
-
+                console.log('$scope.statusResult', $scope.statusResult)
                 $scope.Dateobject = Dateobject;
                 //$scope.statusInfo = data['info'];
                 //$scope.statusProjectType = data['Typeinfo'];
@@ -7786,6 +7816,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //Display serach remove
     $scope.reseteSearch = function () {
+        $window.localStorage.scoopReport = '';
         $route.reload();
     }
 
@@ -8169,7 +8200,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 break;
         }
     }
-}).controller('projectStatisticsController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
+}).controller('projectStatisticsController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
 
@@ -8235,7 +8266,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please Select option', 'information');
         } else {
             $scope.clReportTotal = 0;
-            
+            $rootScope.reportInternalStatics = $scope.orderReport;
             // rest.path = 'statusorderReportFind';
             // rest.get().success(function(data) {
             rest.path = 'projectStatistics';
@@ -8252,10 +8283,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //Display serach remove
     $scope.reseteSearch = function () {
+        $scope.statusReportsearch = '';
         $route.reload();
     }
+
+    // call fn when back to page
+    if($rootScope.reportInternalStatics){
+        $scope.orderReport = $rootScope.reportInternalStatics;
+        $scope.statusReportsearch('order-status-report','middle')
+    }
+    
     //Display serach remove
     $scope.linguistReseteSearch = function () {
+        $rootScope.reportStaticsLinguist = '';
         $route.reload();
     }
 
@@ -8380,6 +8420,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please Select option', 'information');
         } else {
             $scope.clReportTotal = 0;
+            $rootScope.reportStaticsLinguist = $scope.linguistReport;
             
             rest.path = 'projectStatisticsLinguist';
             rest.post($scope.linguistReport).success(function (data) {
@@ -8388,6 +8429,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
             //scrollToId(eID)
         }
+    }
+
+    // back keep input selected when back to page
+    if($rootScope.reportStaticsLinguist){
+        $scope.linguistReport = $rootScope.reportStaticsLinguist;
+        $scope.linguistReportsearch('order-linguist-report','middle')
     }
 
     //select field clear
@@ -8510,9 +8557,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if ($scope.orderReport == undefined || $scope.orderReport == null || $scope.orderReport == "") {
             notification('Please Select option', 'information');
         } else {
+            if($scope.orderReport.itemStatusId)
+                $scope.orderReport.itemStatusId = parseInt($scope.orderReport.itemStatusId);
+
             rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
                 $scope.statusResult = data;
+                console.log('$scope.statusResult', $scope.statusResult)
                 // angular.forEach(data, function(val, i) {
                 // })
             });
@@ -8780,7 +8831,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.totalJobtHide = false;
                 if ($scope.orderReport != undefined) {
                     $scope.totalProjectHide = false;
-                    $scope.orderReport.itemStatus = '';
+                    //$scope.orderReport.itemStatus = '';
+                    $scope.orderReport.itemStatusId = '';
                     angular.element('#itemStatus').select2('val', '');
                     angular.forEach($scope.orderReport, function (value, key) {
                         if (value === "" || value === null) {
@@ -14908,7 +14960,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('jobstatusReportController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal) {
+}).controller('jobstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.clientnamec = "";
 
@@ -14945,6 +14997,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var year = $scope.date.getFullYear();
     $scope.Currentyear = year.toString().substr(2, 2);
 
+    
+    // $scope.storeScoopOrders = function(){
+    //     $window.localStorage.scoopReport = JSON.stringify($scope.orderReport);
+    // }
+    // $rootScope.$on('$locationChangeSuccess', function() {
+    //     $rootScope.jobLocation = $location.path();
+    // });        
+    // $rootScope.$watch(function () {return $location.path()}, function (newLocation, oldLocation) {
+
+    //     if($rootScope.jobLocation === newLocation && $rootScope.jobLocation == '/Jobs-status-report') {
+            
+    //         console.log('$rootScope.jobReport===',$rootScope.jobReport )
+    //         // if($rootScope.jobReport){
+    //         //     $rootScope.jobReport = $scope.jobReport;
+    //         //     console.log('$scope.scoopReport---AFTER', $scope.orderReport)
+    //         //     $scope.jobstatusReportsearch('job-status-report','middle')
+    //         // }    
+    //     }
+    // });
+    
     //Job report search start
     $scope.jobstatusReportsearch = function (frmId, eID) {
 
@@ -14954,6 +15026,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please Select option', 'information');
             $route.reload();
         } else {
+            //$window.localStorage.jobReport = JSON.stringify($scope.jobReport);
+            $rootScope.jobReport = $scope.jobReport
             if ($scope.jobReport.startCreateDate) {
                 $scope.jobReport.createDateFrom = originalDateFormatNew($scope.jobReport.startCreateDate);
             }
@@ -14973,6 +15047,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // })
             rest.path = 'statusJobReportFilter';
             rest.post($scope.jobReport).success(function (data) {
+                console.log('data', data)
                 $scope.statusResult = data;
             })
             scrollToId(eID);
@@ -14981,6 +15056,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.reseteSearch = function (frmId) {
         $route.reload();
+    }
+
+    // call fn when back to page
+    if($rootScope.jobReport){
+        $scope.jobstatusReportsearch('job-status-report','middle')
     }
 
     //serch data action
@@ -15092,8 +15172,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    // job popup
+    $scope.jobNoDetails = function (id) {
+        console.log('id', id)
+        //scrollBodyToTop();
+        //$location.path('job-summery-details/' + id);
+        $routeParams.id = id;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/jobEditPopup.html',
+            controller: 'jobSummeryDetailsController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            }
+        });
+    }
+
     //remove job search 
     $scope.clearCode = function (frmId, action) {
+        $rootScope.jobReport = '';
         switch (action) {
             case "companyCode":
                 if ($scope.jobReport != undefined) {
