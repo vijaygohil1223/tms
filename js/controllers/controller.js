@@ -19512,7 +19512,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 if(data){
                     $scope.poNumberExist = true;
-                    angular.element("#po_numberErr" + id).text('PO number already exist');
+                    angular.element("#po_numberErr" + id).text('PO number has been used before');
                     $('#po_numberErr'+id).css('display','block');
                 }else{
                     //$('#po_numberErr'+id).css('display','none');
@@ -19545,8 +19545,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //angular.element(document.getElementById('po_number'+$scope.itemList[formIndex].itemId)).triggerHandler('change');
                         //$scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
                         if($scope.poNumberExist){
-                            notification('PO number already exist.','warning')
-                            return false;
+                            notification('PO number has been used before.','warning')
+                            //return false;
                         }    
                     //}
                     var formIdAllSave = $scope.isAllScoopUpdated ? $scope.itemList[0].itemId : formId;
