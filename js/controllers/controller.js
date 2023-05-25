@@ -2353,7 +2353,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 if(isFound[0].unit == 'Hours') 
                                     scoopHours += parseInt(pval.quantity)
                             }
-
                         });
                         if( scoopWords > 0){
                             if(scoopWords > 0 && scoopWords < 2000)
@@ -2463,7 +2462,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 // To be Delivered - Delivery
                 if (val.itemStatusId == "3") {
-                    val.progrss_precentage = 100;
+                    val.progrss_precentage = 80;
                     val.projectstatus_class = 'projectstatus_tobedelivered';
                     val.projectstatus_color = '#c6d732';
                     $scope.projectsToBeDelivered.push(val);
@@ -2480,7 +2479,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 // Approved - Approved
                 if (val.itemStatusId == "5") {
-                    val.progrss_precentage = 100;
+                    val.progrss_precentage = 75;
                     $scope.projectsApprovedCount++;
                     $scope.projectsApproved.push(val);
                     val.projectstatus_class = 'projectstatus_approved';
@@ -19859,6 +19858,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemList[formIndex].item_status = $scope.itemList[0].item_status; 
                         $scope.itemList[formIndex].project_pricelist = $scope.itemList[0].project_pricelist; 
                         $scope.itemList[formIndex].place_of_delivery = $scope.itemList[0].place_of_delivery; 
+                        $scope.itemList[formIndex].item_email_subject = $scope.itemList[0].item_email_subject; 
                         $scope.itemList[formIndex].item_name = $scope.itemList[0].item_name; 
                     }    
                     
@@ -21332,8 +21332,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 })
 
                 $scope.checkAll = function (id) {
+                    console.log('id-all-clickedd', id)
                     switch (id) {
                         case "1":
+                            console.log('$scope.itemalldata', $scope.itemalldata)
+                                
                             if ($scope.itemalldata == true) {
                                 $scope.itemalldata = false;
                             } else {
@@ -21521,6 +21524,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     /*JobCheckBox Check/uncheck code END*/
+    // all check base on scoop
+    $scope.checkAlljobsScoop = function(scoopId){
+        let isChecked = $("#scoopJobs"+scoopId).prop("checked");
+        angular.forEach($scope.itemList, function (it) {
+            if(it.item_id == scoopId){
+                if(isChecked){
+                    $("#jobId-" + it.job_summmeryId).prop("checked", true);
+                    var obj = {
+                        'id': it.job_summmeryId
+                    }
+                    allitCheked.push(obj);
+                }else{
+                    $("#jobId-" + it.job_summmeryId).prop("checked", false);
+                    const indexOfObject = allitCheked.findIndex(object => {
+                        return object.id === it.job_summmeryId;
+                    });
+                    allitCheked.splice(indexOfObject, 1);
+                }
+                console.log('allitCheked', allitCheked)
+
+            }
+        });
+    }
+    
 
     $scope.selectionActionOption = function (action) {
 
@@ -21862,7 +21889,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.forEach(data, function (val, i) {
                         if (val.id) {
                             var assignResource = angular.element("#assigndataResource").val();
-                            $scope.resource = assignResource;
+                            $scope.resource = assignResource.split(',').pop().trim();
                             $scope.it.resource = $scope.resource;
                             $routeParams.id = val.id;
                             rest.path = 'jobselectContactNameupdate';
@@ -31046,13 +31073,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.poNumberExist = false;
     $scope.checkPoNumberExist = function (id, searchText) {
-        
         if(searchText.length > 1){
             rest.path = 'checkItemPonumberExist/' + id +'/' + searchText;
             rest.get().success(function (data) {
                 if(data){
                     $scope.poNumberExist = true;
-                    angular.element("#po_numberErr" + id).text('PO number already exist');
+                    angular.element("#po_numberErr" + id).text('PO number has been used before.');
                     $('#po_numberErr'+id).css('display','block');
                 }else{
                     //$('#po_numberErr'+id).css('display','none');
@@ -31082,8 +31108,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ($scope.itemList[formIndex].itemId) {
                     
                     if($scope.poNumberExist){
-                        notification('PO number already exist.','warning')
-                        return false;
+                        notification('PO number has been used before.','warning')
+                        //return false;
                     }
                     // if empty language pair
                     var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
