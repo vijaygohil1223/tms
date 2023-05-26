@@ -527,13 +527,12 @@ function numberFormatCommaToPoint(input) {
         return n1 + n2;
     }
 }
-function CommaToPoint4Digit(input) {
+function CommaToPoint4Digit(input, decN=0) {
     if (input == undefined || input == 0 || input == '') {
         return '';
     } else {
         var decNo = window.localStorage.getItem('DecimalNumber') ? window.localStorage.getItem('DecimalNumber') : 2;
-        var str = input.toString();
-        var numarray = str.split(',');
+        var numarray = input.toString().split(',');
         var a = new Array();
         a = numarray;
         var a1 = a[0];
@@ -544,8 +543,18 @@ function CommaToPoint4Digit(input) {
         } else {
             var n2 = '.' + a[1].slice(0, decNo);
         }
-        //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "");
         var n1 = a1.toString().replace(/\./g, "");
+        return n1 + n2;
+    }
+}
+function commaToPoint(input) {
+    if (input == undefined || input == 0 || input == '') {
+        return '';
+    } else {
+        var numarray = input.toString().split(',');
+        var n1 = '';
+        n1 = numarray[0].toString().replace(/\./g, "");
+        var n2 = numarray[1] ? '.' + numarray.pop() : '.00';
         return n1 + n2;
     }
 }
@@ -19279,7 +19288,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (quantity == '')
             itemPrice = 0;
         //itemPrice = numberFormatCommaToPoint(itemPrice);
+        const itemPrice22 = itemPrice;
+        console.log('commaToPoint(itemPrice)',commaToPoint(itemPrice22))
         itemPrice = CommaToPoint4Digit(itemPrice);
+        console.log('itemPrice', itemPrice)
         
         if (itemPrice == '')
             itemPrice = 0;
