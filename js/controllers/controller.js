@@ -10790,10 +10790,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $window.localStorage.setItem("contactPersonId", 'translation');
             }
             
-            if ($scope.userprofiledata.dtBirthDate == 'Invalid date' || $scope.userprofiledata.dtBirthDate == '1970-01-01 00:00:00' || $scope.userprofiledata.dtBirthDate == '0000-00-00 00:00:00' || $scope.userprofiledata.dtBirthDate == '0000-00-00')
+            //if ($scope.userprofiledata.dtBirthDate == 'Invalid date' || $scope.userprofiledata.dtBirthDate == '1970-01-01 00:00:00' || $scope.userprofiledata.dtBirthDate == '0000-00-00 00:00:00' || $scope.userprofiledata.dtBirthDate == '0000-00-00')
+            if( ['Invalid date','1970-01-01 00:00:00', '1970-01-01', '0000-00-00 00:00:00', '0000-00-00'].includes($scope.userprofiledata.dtBirthDate) )
                 $scope.userprofiledata.dtBirthDate = '';
             else
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
+
+                console.log('$scope.userprofiledata.dtBirthDate', $scope.userprofiledata.dtBirthDate)
             
             $scope.userprofiledata.dtLast_job = userLastJob;
             if ($scope.userprofiledata.dtLast_job == 'Invalid date')
@@ -11339,6 +11342,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return result;
     }
     $scope.saveUserProfileInternal = function (formId, redirectWithSave) {
+
         $scope.selectedNodes = [];
         if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
             if ($scope.userprofiledata.iUserId) {
@@ -11431,8 +11435,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 $scope.userprofiledata.dtBirthDate = angular.element('#dtBirthDate').val();
-                $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
-                $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
+                if($scope.userprofiledata.dtBirthDate){
+                    $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
+                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
+                }
                 
                 rest.path = 'saveuserprofileinternal';
                 rest.put($scope.userprofiledata).success(function (data) {
@@ -11445,8 +11451,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
 
                     //
-                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat'));
-
+                    $scope.userprofiledata.dtBirthDate = $scope.userprofiledata.dtBirthDate ? moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat')) : '';
+                    
                     //log file start 
                     $scope.logMaster = {};
                     $scope.logMaster.log_type_id = $routeParams.id;
@@ -11478,7 +11484,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }).error(function (data, error, status) { 
                     angular.element('#iMobile').val(mobile)
-                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat'));
+                    $scope.userprofiledata.dtBirthDate = $scope.userprofiledata.dtBirthDate ? moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat')) : '';
                 });
             } else {
                 /*delete $scope.userprofiledata["cPassword"];*/
@@ -11519,9 +11525,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("session_menuAccess", $scope.userprofiledata.menu_access);
                 
                 $scope.userprofiledata.dtBirthDate = angular.element('#dtBirthDate').val();
-                $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
-                $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
-
+                if($scope.userprofiledata.dtBirthDate){
+                    $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
+                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
+                }    
                 rest.path = 'saveuserprofileinternal';
                 rest.post($scope.userprofiledata).success(function (data) {
                     $window.localStorage.iUserId = data.iUserId;
@@ -11536,7 +11543,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.path = "saveLog";
                     rest.post($scope.logMaster).success(function (data) { });
                     //log file end
-                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat'));
+                    //$scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat'));
+                    $scope.userprofiledata.dtBirthDate = $scope.userprofiledata.dtBirthDate ? moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat')) : '';
+                    
                     var obj = [];
                     if ($cookieStore.get('internalUserEdit') != undefined) {
                         angular.forEach($cookieStore.get('internalUserEdit'), function (val, i) {
@@ -11570,7 +11579,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $location.path('/internal/' + data.iUserId);
                 }).error(function (data, error, status) { 
                     angular.element('#iMobile').val(mobile)
-                    $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat'));
+                    $scope.userprofiledata.dtBirthDate = $scope.userprofiledata.dtBirthDate ? moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat')) : '';
                 });
             }
         }

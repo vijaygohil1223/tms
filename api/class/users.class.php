@@ -242,7 +242,7 @@ class users {
             $user['org_pass'] = $user['vPassword'];
             $user['vPassword'] = md5($user['vPassword']);
             $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : ''; 
-            $user['dtBirthDate'] = (isset($user['dtBirthDate']) && $user['dtBirthDate'] != 'Invalid Date') ? date('Y-m-d', strtotime($user['dtBirthDate'])) : '0000-00-00';
+            $user['dtBirthDate'] = (isset($user['dtBirthDate']) && $user['dtBirthDate'] != 'Invalid Date' && $user['dtBirthDate'] != '') ? date('Y-m-d', strtotime($user['dtBirthDate'])) : NULL;
             $user['dtCreationDate'] = $user['dtCreationDate'];
             $user['dtCreatedDate'] = date('Y-m-d H:i:s');
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
@@ -405,7 +405,11 @@ class users {
                 }    
                 $user['vProfilePic'] = $this->uploadimage($user);
             }
-            $user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
+            
+            //$user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
+            $user['dtBirthDate'] = ($user['dtBirthDate'] == 'Invalid date' || $user['dtBirthDate'] == '') ? NULL : date('Y-m-d', strtotime($user['dtBirthDate']));
+            //$user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
+            
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
             unset($user['image']);
             
