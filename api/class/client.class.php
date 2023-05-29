@@ -350,7 +350,7 @@ class client {
                         $path = "../../uploads/logo/";
                         $images = glob($path . $image);
                         if ($images && $image) {
-                            unlink($path . $image);
+                            @unlink($path . $image);
                         } else {
                             $image = $data['vLogo'];
                         }

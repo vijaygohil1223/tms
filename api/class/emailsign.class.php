@@ -54,7 +54,7 @@ class emailsign {
 		    		$images = glob($path.$image);
 		    		if($images){
 		    			$data['sign_image'] = $data['sign_picture'];
-		    			unlink($path.$image);
+		    			@unlink($path.$image);
 		    		}else{
 		    			$image = $in['sign_picture'];
 		    		}

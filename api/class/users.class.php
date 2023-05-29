@@ -393,10 +393,10 @@ class users {
                     $this->_db->where('iUserId',$id);
                     $data = $this->_db->getOne('tms_users');
                     $image = $data['vProfilePic'];
-                    if(isset($image)){
+                    if(isset($data['vProfilePic']) && $data['vProfilePic'] ){
                         $path = "../../uploads/profilePic/";
                         $images = glob($path.$image);
-                        if($images){
+                        if(file_exists($path.$image)){
                             unlink($path.$image);
                         }else{
                             $image = $data['vProfilePic'];  
