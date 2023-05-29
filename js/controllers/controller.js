@@ -4475,7 +4475,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         quantity = CommaToPoint4Digit(quantity);
         if (quantity == '')
             itemPrice = 0;
-        itemPrice = CommaToPoint4Digit(itemPrice);
+        //itemPrice = CommaToPoint4Digit(itemPrice);
+        itemPrice = commaToPoint(itemPrice);
 
         if (itemPrice == '')
             itemPrice = 0;
@@ -12495,7 +12496,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var masterPriceId = angular.element('#masterPriceId' + i).val().trim();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
                     //basePrice = numberFormatCommaToPoint(basePrice);
-                    basePrice = CommaToPoint4Digit(basePrice);
+                    //basePrice = CommaToPoint4Digit(basePrice);
+                    basePrice = commaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
@@ -12615,7 +12617,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var masterPriceId = angular.element('#masterPriceId' + i).val();
                     var basePrice = angular.element('#basePrice' + i).val().trim();
                     //basePrice = numberFormatCommaToPoint(basePrice);
-                    basePrice = CommaToPoint4Digit(basePrice);
+                    //basePrice = CommaToPoint4Digit(basePrice);
+                    basePrice = commaToPoint(basePrice);
                     var standardTime = angular.element('.standardTime' + i).text().trim();
                     basePriceObj.push({
                         'baseQuentity': baseQuentity,
@@ -19300,10 +19303,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (quantity == '')
             itemPrice = 0;
         //itemPrice = numberFormatCommaToPoint(itemPrice);
-        const itemPrice22 = itemPrice;
-        console.log('commaToPoint(itemPrice)',commaToPoint(itemPrice22))
-        itemPrice = CommaToPoint4Digit(itemPrice);
-        console.log('itemPrice', itemPrice)
+        //itemPrice = CommaToPoint4Digit(itemPrice);
+        itemPrice = commaToPoint(itemPrice);
         
         if (itemPrice == '')
             itemPrice = 0;
@@ -31046,7 +31047,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         quantity = CommaToPoint4Digit(quantity);
         if (quantity == '')
             itemPrice = 0;
-        itemPrice = CommaToPoint4Digit(itemPrice);
+        //itemPrice = CommaToPoint4Digit(itemPrice);
+        itemPrice = commaToPoint(itemPrice);
 
         if (itemPrice == '')
             itemPrice = 0;
