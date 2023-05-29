@@ -9464,11 +9464,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var CountryCode = JSON.parse(data.iMobile).countryTitle;
             var displayCode = '(+' + CountryCode.split('+')[1] + ')';
             $scope.userprofiledata.iMobile = displayCode + ' ' + JSON.parse(data.iMobile).mobileNumber;
-            $scope.Age = getAge($scope.userprofiledata.dtBirthDate.split('-')[0],
-                $scope.userprofiledata.dtBirthDate.split('-')[1],
-                $scope.userprofiledata.dtBirthDate.split('-')[2]
-            );
-            $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat'));
+            console.log('$scope.userprofiledata.dtBirthDate', $scope.userprofiledata.dtBirthDate)
+            $scope.Age = '';
+            if(! ['0000-00-00', ''].includes($scope.userprofiledata.dtBirthDate))
+                $scope.Age = getAge($scope.userprofiledata.dtBirthDate.split('-')[0],
+                    $scope.userprofiledata.dtBirthDate.split('-')[1],
+                    $scope.userprofiledata.dtBirthDate.split('-')[2]
+                );
+            $scope.userprofiledata.dtBirthDate = (!['0000-00-00', ''].includes($scope.userprofiledata.dtBirthDate)) ? moment($scope.userprofiledata.dtBirthDate).format($window.localStorage.getItem('global_dateFormat')) : '';
         }).error(errorCallback);
     }
     $scope.deleteUser = function (id, image, userName, iFkUserTypeId) {

@@ -122,8 +122,8 @@
                                             <span style="color:#636e7b;font-weight:600;">Date of Birth</span>
                                         </td>
                                         <td>
-                                            <span ng-bind="userprofiledata.dtBirthDate | date:'dd.MM.yyyy'"></span>
-                                            <span> Age({{Age}})</span>
+                                            <span ng-if="userprofiledata.dtBirthDate && userprofiledata.dtBirthDate != '0000-00-00' " ng-bind="userprofiledata.dtBirthDate | date:'dd.MM.yyyy'"></span>
+                                            <span ng-if="Age"> Age({{Age}}) </span>
                                         </td>
                                     </tr>
                                 </tbody>
