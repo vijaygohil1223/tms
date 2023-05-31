@@ -20446,26 +20446,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (el.item_id == itemNnumber)
                 return el;
         })
-        var deleteMessage = "Are you sure you want to <b>DELETE</b> this scoop?";
-        if(itemJobsExist.length){
-            deleteMessage = "Jobs are available in the scoop. You can not delete.";
-        }
+        //var deleteMessage = "Are you sure you want to <b>DELETE</b> this scoop?";
+        //if(itemJobsExist.length){
+            let deleteInput = `<div class="checkbox" style="margin-top:20px"> <label class="i-checks i-checks-sm"> <input type='checkbox' name='scoopdelete${itemId}' id='scoopdelete${itemId}' value='1'> <i></i> Yes, I want to delete the scoop </label> </div>`;
+            //deleteMessage = "Jobs are available in the scoop. You can not delete.";
+            var deleteMessage = "<p> Are you sure you want to delete this scoop? </p><p> It might have jobs connected to it.</p> " + deleteInput;
+        //}
         
         bootbox.confirm(deleteMessage, function (result) {
             deleteMessage = '';
             if (result == true) {
-                rest.path = 'itemDelete/' + itemId + '/' + $scope.routeOrderID;
-                rest.get().success(function (data) {
-                    if (data.status == 422) {
-                        notification(data.msg, 'error');
-                    } else {
-                        var hideId = itemId.split('-')[0];
-                        $('#item-form' + hideId).hide('slow', function () { $('#item-form' + hideId).remove(); });
-                        $('#trRowId' + hideId).hide('slow', function () { $('#trRowId' + hideId).remove(); });
-                        notification('Scoop deleted successfully.', 'success');
-                        // /$route.reload();
-                    }
-                }).error(errorCallback);
+                if($('#scoopdelete'+itemId).is(':checked')){
+                    rest.path = 'itemDelete/' + itemId + '/' + $scope.routeOrderID;
+                    rest.get().success(function (data) {
+                        if (data.status == 422) {
+                            notification(data.msg, 'error');
+                        } else {
+                            var hideId = itemId.split('-')[0];
+                            $('#item-form' + hideId).hide('slow', function () { $('#item-form' + hideId).remove(); });
+                            $('#trRowId' + hideId).hide('slow', function () { $('#trRowId' + hideId).remove(); });
+                            notification('Scoop deleted successfully.', 'success');
+                            // /$route.reload();
+                        }
+                    }).error(errorCallback);
+                }else{
+                    notification('Scoop not deleted.', 'information');
+                }
+                
             }
         });
     }
@@ -32296,29 +32303,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (el.item_id == itemNnumber)
                 return el;
         })
-        var deleteMessage = "Are you sure you want to <b>DELETE</b> this scoop?";
-        if(itemJobsExist.length){
-            deleteMessage = "Jobs are available in the scoop. You can not delete.";
+        //var deleteMessage = "Are you sure you want to <b>DELETE</b> this scoop?";
+        //if(itemJobsExist.length){
+            let deleteInput = `<div class="checkbox" style="margin-top:20px; margin-bottom:-30px;"> <label class="i-checks i-checks-sm"> <input type='checkbox' name='scoopdelete${itemId}' id='scoopdelete${itemId}' value='1'> <i></i> Yes, I want to delete the scoop </label> </div>`;
+            //deleteMessage = "Jobs are available in the scoop. You can not delete.";
+            var deleteMessage = "<p> Are you sure you want to delete this scoop? </p> <p> It might have jobs connected to it.</p> " + deleteInput;
+        
             $(".bootbox-confirm [data-bb-handler|='confirm']").hide()
-        }
+        //}
         
         $scope.cancel();
+        bootbox.alert({
+            message: "This is an alert!",
+            className: "my-custom-alert",
+          });
         bootbox.confirm(deleteMessage, function (result) {
             deleteMessage = '';
             if (result == true) {
-                rest.path = 'itemDelete/' + itemId + '/' + $scope.order_id;
-                rest.get().success(function (data) {
-                    if (data.status == 422) {
-                        notification(data.msg, 'error');
-                    } else {
-                        var hideId = itemId.split('-')[0];
-                        $('#item-form' + hideId).hide('slow', function () { $('#item-form' + hideId).remove(); });
-                        $('#trRowId' + hideId).hide('slow', function () { $('#trRowId' + hideId).remove(); });
-                        notification('Scoop deleted successfully.', 'success');
-                        $route.reload();
-                    }
-                }).error(errorCallback);
+                if($('#scoopdelete'+itemId).is(':checked')){
+                    rest.path = 'itemDelete/' + itemId + '/' + $scope.order_id;
+                    rest.get().success(function (data) {
+                        if (data.status == 422) {
+                            notification(data.msg, 'error');
+                        } else {
+                            var hideId = itemId.split('-')[0];
+                            $('#item-form' + hideId).hide('slow', function () { $('#item-form' + hideId).remove(); });
+                            $('#trRowId' + hideId).hide('slow', function () { $('#trRowId' + hideId).remove(); });
+                            notification('Scoop deleted successfully.', 'success');
+                            $route.reload();
+                        }
+                    }).error(errorCallback);
+                
+                }else{
+                    notification('Scoop not deleted.', 'information');
+                }
             }
+
         });
         // if (confirm('Are you sure you want to save this thing into the database?')) {
         

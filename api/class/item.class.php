@@ -135,7 +135,7 @@ class item {
         $this->_db->where('item_id',$iNumber);
         $jobAvailable = $this->_db->get('tms_summmery_view');
         
-        if(!$jobAvailable){
+        //if(!$jobAvailable){
             $this->_db->where('itemId',$id);
             $data = $this->_db->getOne('tms_items');
             if($data) {
@@ -149,13 +149,19 @@ class item {
 
                 $this->_db->where('itemId',$id);
                 $data = $this->_db->delete('tms_items');
+
+                // Delete jobs
+                $this->_db->where('order_id',$orderId);
+                $this->_db->where('item_id',$iNumber);
+                $jobDelete = $this->_db->delete('tms_summmery_view');
+
             } else {
                 $data = 0;  
             }
-        }else{
-            $data['status'] = 422;
-            $data['msg'] = 'You can not delete because jobs available in this scoop.';
-        }    
+        // }else{
+        //     $data['status'] = 422;
+        //     $data['msg'] = 'You can not delete because jobs available in this scoop.';
+        // }    
         
         return $data; 
     }
