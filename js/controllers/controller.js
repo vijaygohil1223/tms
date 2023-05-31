@@ -32313,10 +32313,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //}
         
         $scope.cancel();
-        bootbox.alert({
-            message: "This is an alert!",
-            className: "my-custom-alert",
-          });
+
         bootbox.confirm(deleteMessage, function (result) {
             deleteMessage = '';
             if (result == true) {
