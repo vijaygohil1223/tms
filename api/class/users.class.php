@@ -243,7 +243,7 @@ class users {
             $user['vPassword'] = md5($user['vPassword']);
             $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : ''; 
             $user['dtBirthDate'] = (isset($user['dtBirthDate']) && $user['dtBirthDate'] != 'Invalid Date' && $user['dtBirthDate'] != '') ? date('Y-m-d', strtotime($user['dtBirthDate'])) : NULL;
-            $user['dtCreationDate'] = $user['dtCreationDate'];
+            $user['dtCreationDate'] = date('Y-m-d H:i:s'); /*$user['dtCreationDate']*/
             $user['dtCreatedDate'] = date('Y-m-d H:i:s');
             $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
             unset($user['image']);
@@ -268,7 +268,7 @@ class users {
                 //$jobDetail = new jobs_detail();
                 //$jobDetail->sendEmail($userEmail,$emailTemplateRegistration['template_subject'],$html);
                 // mailjet send mail
-                $to_name = $user['vFirstName'].$user['vLastName'];
+                $to_name = $user['vFirstName'].' '.$user['vLastName'];
                 $send_fn = new functions();
                 $response = $send_fn->send_email_smtp($userEmail, $to_name, $cc='', $bcc='', $emailTemplateRegistration['template_subject'], $html, $attachments='');
                 // End mailjet
@@ -343,7 +343,8 @@ class users {
                 }
                 
                 //Sending registation email to users email address
-                $userName = $user['vUserName'];
+                //$userName = $user['vUserName'];
+                $userName = $user['vFirstName'].' '.$user['vLastName'];
                 $registrationLink = ACTIVATION_URL.'#/activation/'.$activationToken;
                 $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 
@@ -826,6 +827,7 @@ array(
     }
     
     public function viewExternalget($id) {
+
         $data = self::getUserAllfile('iUserId',$id);
         if(isset($data['vResourceType'])){
             $this->_db->where('iTypeId', $data['vResourceType']);
@@ -836,6 +838,10 @@ array(
             $this->_db->where('position_id', $data['vResourcePosition']);
             $id = $this->_db->getone('tms_user_position');
             $data['vResourcePositionName'] = isset($id['position_name']) ? $id['position_name'] : '';
+
+            //$this->_db->where("position_id", explode(',',$data['vResourcePosition']), 'IN');
+            //$res = $this->_db->get('tms_user_position');
+            
         }
         if(isset($data['eUserStatus'])) {
             $this->_db->where('status_id', $data['eUserStatus']);
