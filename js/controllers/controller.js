@@ -11348,8 +11348,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.saveUserProfileInternal = function (formId, redirectWithSave) {
 
         $scope.selectedNodes = [];
-        if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
-            if ($scope.userprofiledata.iUserId) {
+        if (angular.element("#" + formId).valid()) {
+        //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
+                if ($scope.userprofiledata.iUserId) {
                 
                 //$scope.userprofiledata.menu_access = JSON.stringify($scope.selectedNodes);
                 
@@ -11495,10 +11496,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // --------address only -----------------//
                 $scope.userprofiledata.image = $scope.imageSrc;
                 $scope.userprofiledata.created_by = $window.localStorage.session_iUserId;
+                
                 var countryCodeData = angular.element('#iMobile').parent().find('.selected-flag').attr('title');
                 var countryClass = angular.element('#iMobile').parent().find('.selected-flag').find('.iti-flag').attr('class');
-
-
                 var mobile = angular.element('#iMobile').val();
                 var phone = angular.element('#iphone').val();
 

@@ -250,7 +250,8 @@ class users {
             $id = $this->_db->insert(TBL_USERS, $user);
             if ($id) {
                 //Sending registation email to users email address
-                $userName = $user['vUserName'];
+                //$userName = $user['vUserName'];
+                $userName = $user['vFirstName'].' '.$user['vLastName'] ;
                 $registrationLink = ACTIVATION_URL.'#/activation/'.$activationToken;
                 $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 $userEmail = $user['vEmailAddress'];
