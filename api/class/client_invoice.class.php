@@ -419,16 +419,20 @@ class Client_invoice {
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
         $pdfFileName = $data['invoiceno'].'.pdf';
+        $invoiceDue = isset($data['invoiceDue']) ? $data['invoiceDue'] : '';
+        $this->_db->where('template_id',14);
+        $emailTemplateInvoice = $this->_db->getOne('tms_email_templates');
+        $search_array = array("[INVOICENO]", "[PAYDUE]");
+        $replace_array = array($data['invoiceno'], $invoiceDue );
 
-        $body = "<p> Hello ".$data['clientCompanyName']." </p>";
-        $body .= "<p>Please see the attached invoice : <b>" .$data['invoiceno']. "</b> </p>";
-        $body .= "<p> From :TMS </p>";
-        //$body .= "welcome to <img src=\"cid:id1\"></br>";
-        $body .= "Email: " .$data['freelanceEmail']. "</p>";
+        $body = str_replace($search_array, $replace_array, $emailTemplateInvoice['template_content']);
+        //$body = "<p> Hello ".$data['clientCompanyName']." </p>";
+        //$body .= "<p>Please see the attached invoice : <b>" .$data['invoiceno']. "</b> </p>";
+        //$body .= "Email: " .$data['freelanceEmail']. "</p>";
         
         $attachments = '';
         $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
-        $to_name = 'TMS';
+        $to_name = ' ';
         //$to = 'anil.kanhasoft@gmail.com';
         $to = $data['companycontactEmail'];
 
@@ -474,7 +478,7 @@ class Client_invoice {
                 // End Update status in scoop table
 
                 $result['status'] = 200;
-                $result['msg'] = 'Thank you for your email';
+                $result['msg'] = 'Success';
                 return $result;
             } else {
                 $result['status'] = 422;

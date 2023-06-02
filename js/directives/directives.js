@@ -5661,6 +5661,9 @@ app.directive('select2EmailTplCat', function($http, rest, $timeout, $log) {
                 },{
                     id: '8',
                     text: 'Send Job Request'
+                },{
+                    id: '9',
+                    text: 'Invoice'
                 }
             ];
             /*var tplCat = [{

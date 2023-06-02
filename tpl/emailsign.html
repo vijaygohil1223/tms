@@ -196,13 +196,17 @@
                                 <td ng-bind="$index + 1"></td>
                                 <td>{{tpl.template_name}}</td>
                                 <td>{{tpl.template_subject}}</td>
-                                <td ng-if="tpl.template_category == '1'">Accepted job by resource</td>
-                                <td ng-if="tpl.template_category == '2'">Job rejected by resource</td>
-                                <td ng-if="tpl.template_category == '3'">Reset Password</td>
-                                <td ng-if="tpl.template_category == '4'">Registration email</td>
-                                <td ng-if="tpl.template_category == '5'">Overdue job</td>
-                                <td ng-if="tpl.template_category == '6'">Job Delivery</td>
-                                <td ng-if="tpl.template_category == '8'">Send Job Request</td>
+                                <td>
+                                    <span ng-if="tpl.template_category == '1'">Accepted job by resource</span>
+                                    <span ng-if="tpl.template_category == '2'">Job rejected by resource</span>
+                                    <span ng-if="tpl.template_category == '3'">Reset Password</span>
+                                    <span ng-if="tpl.template_category == '4'">Registration email</span>
+                                    <span ng-if="tpl.template_category == '5'">Overdue job</span>
+                                    <span ng-if="tpl.template_category == '6'">Job Delivery</span>
+                                    <span ng-if="tpl.template_category == '8'">Send Job Request</span>
+                                    <span ng-if="tpl.template_category == '9'">Invoice</span>
+                                </td>
+
                                 <td ng-if="tpl.is_active == '1'">
                                     <span class="label bg-success" title="active">Active</span>
                                 </td>
