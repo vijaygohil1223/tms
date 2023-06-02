@@ -420,7 +420,7 @@ class Client_invoice {
         $bin = base64_decode($pdf_content[1], true);
         $pdfFileName = $data['invoiceno'].'.pdf';
         $invoiceDue = isset($data['invoiceDue']) ? $data['invoiceDue'] : '';
-        $this->_db->where('template_id',14);
+        $this->_db->where('template_id',12);
         $emailTemplateInvoice = $this->_db->getOne('tms_email_templates');
         $search_array = array("[INVOICENO]", "[PAYDUE]");
         $replace_array = array($data['invoiceno'], $invoiceDue );
