@@ -26,6 +26,9 @@ body{padding-top: 62px;}
 }
 .mr10 { margin-right: 10px; }
 .ml10 { margin-left: 10px; }
+.mt-15{
+  margin-top: 15px !important;
+}
 .pb-15{
   padding-bottom: 15px !important;
 }

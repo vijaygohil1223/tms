@@ -19891,8 +19891,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.itemList[formIndex].start_date = $scope.itemList[formIndexNew].upcomingDate;
                         }
                     }
+
                     
+                    console.log('checksubPm',$scope.checksubPm[formIndex] )
+                    $scope.itemList[formIndex].subPm = $scope.checksubPm[formIndex] ? ($scope.itemList[formIndex].subPm).toString().split(',').pop() : ''; 
                     
+                    $scope.itemList[formIndex].manager = ($scope.itemList[formIndex].manager).toString().split(',').pop();     
+                    $scope.itemList[formIndex].coordinator = ($scope.itemList[formIndex].coordinator).toString().split(',').pop();     
+                
                     // const hasKeyStsName = 'item_status_name' in $scope.itemList;
                     // if(hasKeyStsName)    
                     //  delete $scope.itemList.item_status_name;
@@ -20049,6 +20055,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         })
     }    
+    // substitute pm,cm,qa 
+    $scope.checksubPm = [];
+    $scope.checksubPc = [];
+    $scope.checksubQa = [];
 
     $scope.getItems = function () {
         var popitemList = [];
@@ -20106,12 +20116,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //getClient By OrderId while edit item
                 rest.path = 'customer/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
+                    console.log('data-itemsss', data)
                     
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
-                    
+
                     $scope.custPriceAll().then((prData) => {
                         let customerpriceFltr =  $scope.customerpriceAll ;
                         //angular.element('#currency'+ val.itemId).text('Eur');
@@ -20154,8 +20165,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //$('#jobchainName' + val.itemId).attr('disabled',true);
                     }
 
-                    $scope.itemList[i].manager = data.project_manager;
-                    $scope.itemList[i].coordinator = data.project_coordinator;
+                    if($scope.itemList[i].subPm)
+                        $scope.checksubPm[i] = 1;
+                    if($scope.customer.sub_pc)
+                        $scope.checksubPc[i] = 1;
+                    if($scope.customer.sub_qa)
+                        $scope.checksubQa[i] = 1;
+
+                    console.log('$scope.itemList', $scope.itemList)
+                    $scope.itemList[i].manager = $scope.itemList[i].manager ? $scope.itemList[i].manager : data.project_manager;
+                    $scope.itemList[i].coordinator = $scope.itemList[i].coordinator ? $scope.itemList[i].coordinator : data.project_coordinator;
+                    //$scope.itemList[i].qaSpecialist = $scope.itemList[i].qaSpecialist ? $scope.itemList[i].qaSpecialist : data.QA_specialist;
+                    
                     if (val.price) {
 
                         $scope.itemPriceUni[val.itemId] = JSON.parse(val.price);

@@ -500,10 +500,19 @@
                                                                      <div class="form-group">
                                                                         <label class="control-label ">Project
                                                                            Manager</label>
+                                                                           <label class="i-checks i-checks-sm checksubPm[$index]" style="margin-left: 10px;">
+                                                                              <input type="checkbox" name="checksubPm" ng-true-value="1" ng-false-value="0" ng-model="checksubPm[$index]" ng-checked="it.subPm[$index] != 0 && it.subPm[$index] " class="ng-pristine ng-untouched ng-valid">
+                                                                              <i></i>
+                                                                           </label><label class="no-wrap m-0 checksub">Substitute</label>
+                                                                        
                                                                         <input type="text" id="manager{{it.itemId}}"
                                                                            class="form-control ProManager"
                                                                            name="vProjectManager" select2-manager
-                                                                           ng-model="it.manager" disabled />
+                                                                           ng-model="it.manager" />
+                                                                        
+                                                                        <div ng-if="checksubPm[$index]" class="mt-15">
+                                                                           <input type="text" id="subPM{{it.itemId}}" class="form-control" name="subPM{{it.itemId}}" select2-manager ng-model="it.subPm" required />
+                                                                        </div>
                                                                      </div>
                                                                   </td>
                                                                   <td>
