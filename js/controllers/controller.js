@@ -2550,6 +2550,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#f44237';
                 }
+                // PM Ready
+                if (val.itemStatusId == "12") {
+                    val.progrss_precentage = 75;
+                    $scope.projectsPmReadyCount++;
+                    $scope.projectsPmready.push(val);
+                    val.projectstatus_class = 'projectstatus_ready';
+                    val.projectstatus_color = '#f44237';
+                }
                 // Overdue
                 // if (val.itemStatusId == "12") {
                 //     $scope.projectOverdueCount++;
@@ -16200,6 +16208,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         });
     }
+
+    rest.path = "emailTemplateGetAll" ;
+    rest.get().success(function (data) {
+        //console.log('data', data[0])
+        //$scope.emailTemplate = $.parseHTML( data[0].template_content )
+        //$scope.emailTemplate = data[0].template_content
+
+    })
+
 
     $scope.printIt = function (number) {
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
