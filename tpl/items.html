@@ -486,25 +486,27 @@
                                                                <tr>
                                                                   <td class="pl-0">
                                                                      <div class="form-group">
-                                                                        <label class="control-label">Project
-                                                                           Coordinator</label>
-                                                                        <input type="text"
-                                                                           class="form-control ProCoordinator"
-                                                                           name="Coordinator"
-                                                                           id="coordinator{{it.itemId}}"
-                                                                           select2-coordinator ng-model="it.coordinator"
-                                                                           disabled />
+                                                                        <label class="control-label">Project Coordinator</label>
+                                                                        <label class="i-checks i-checks-sm checksubPc[$index]" style="margin-left: 10px;">
+                                                                           <input type="checkbox" name="checksubPc" ng-true-value="1" ng-false-value="0" ng-model="checksubPc[$index]" ng-checked="it.subPc && it.subPc != 0" class="ng-pristine ng-untouched ng-valid">
+                                                                           <i></i>
+                                                                        </label><label class="no-wrap m-0 checksub">Substitute</label>   
+                                                                        <input type="text" class="form-control ProCoordinator" name="Coordinator" id="coordinator{{it.itemId}}" select2-coordinator ng-model="it.coordinator" />
+
+                                                                        <div ng-if="checksubPc[$index]" class="mt-15">
+                                                                           <input type="text" id="subPc{{it.itemId}}" class="form-control" name="subPc{{it.itemId}}" select2-coordinator ng-model="it.subPc" required />
+                                                                        </div>   
                                                                      </div>
                                                                   </td>
                                                                   <td>
                                                                      <div class="form-group">
-                                                                        <label class="control-label ">Project
-                                                                           Manager</label>
-                                                                           <label class="i-checks i-checks-sm checksubPm[$index]" style="margin-left: 10px;">
-                                                                              <input type="checkbox" name="checksubPm" ng-true-value="1" ng-false-value="0" ng-model="checksubPm[$index]" ng-checked="it.subPm[$index] != 0 && it.subPm[$index] " class="ng-pristine ng-untouched ng-valid">
-                                                                              <i></i>
-                                                                           </label><label class="no-wrap m-0 checksub">Substitute</label>
-                                                                        
+                                                                        <label class="control-label ">Project Manager</label>
+                                                                        <label class="i-checks i-checks-sm checksubPm[$index]" style="margin-left: 10px;">
+                                                                           <input type="checkbox" name="checksubPm" ng-true-value="1" ng-false-value="0" ng-model="checksubPm[$index]" ng-checked="it.subPm && it.subPm != 0" class="ng-pristine ng-untouched ng-valid">
+                                                                           <i></i>
+                                                                        </label>
+                                                                        <label class="no-wrap m-0 checksub">Substitute</label>
+                                                                     
                                                                         <input type="text" id="manager{{it.itemId}}"
                                                                            class="form-control ProManager"
                                                                            name="vProjectManager" select2-manager
@@ -518,11 +520,16 @@
                                                                   <td>
                                                                      <div class="form-group">
                                                                         <label class="control-label">QA Specialist</label>
-                                                                        <input type="text"
-                                                                           class="form-control QA_specialist"
-                                                                           name="Coordinator" select2-qaspa
-                                                                           id="QA_specialist{{it.itemId}}" ng-model="QA_specialist"
-                                                                           disabled />
+                                                                        <label class="i-checks i-checks-sm checksubQa[$index]" style="margin-left: 10px;">
+                                                                           <input type="checkbox" name="checksubQa" ng-true-value="1" ng-false-value="0" ng-model="checksubQa[$index]" ng-checked="it.subQa && it.subQa != 0" class="ng-pristine ng-untouched ng-valid">
+                                                                           <i></i>
+                                                                        </label>
+                                                                        <label class="no-wrap m-0 checksub">Substitute</label>
+                                                                        <input type="text" class="form-control QA_specialist" name="Coordinator" select2-qaspa id="QA_specialist{{it.itemId}}" ng-model="it.qaSpecialist" />
+                                                                        
+                                                                        <div ng-if="checksubQa[$index]" class="mt-15">
+                                                                           <input type="text" id="subPM{{it.itemId}}" class="form-control" name="subPM{{it.itemId}}" select2-qaspa ng-model="it.subQa" required />
+                                                                        </div>   
                                                                      </div>
                                                                   </td>
                                                                </tr>

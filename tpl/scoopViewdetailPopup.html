@@ -2,9 +2,11 @@
    .modal-dialog {
       width: 80%;
    }
-   .clientSelect2 .select2-chosen{
+
+   .clientSelect2 .select2-chosen {
       max-width: 225px;
    }
+
    .bootbox-body {
       font-size: 16px;
    }
@@ -15,7 +17,7 @@
       <div>
          <a href="javascript:void(0);" ng-click="editProjectDetail(order_id)"
             class="btn btn-info btn-sm btn-rounded ng-scope"><i class="fa fa-pencil"></i>&nbsp; Edit Project</a>
-         <button class="btn btn-info" ng-click="cancel()"> <i class="fa fa-close"></i> </button>   
+         <button class="btn btn-info" ng-click="cancel()"> <i class="fa fa-close"></i> </button>
       </div>
    </div>
 </div>
@@ -42,29 +44,33 @@
                            <div class="row">
                               <div class="col-sm-12">
                                  <div class="panel panel-default">
-                                    <div class="panel-heading font-bold d-flex justify-space-between" style="font-weight:initial;">
-                                           <div>
-                                             <div class="input-group">
-                                                <span id="itemCode" class="itemCode{{it.itemId}} input-group-addon"
-                                                ng-bind="projectOrderName" style="border-right:none;padding-right:0;"></span>
-                                                <span class="input-group-addon" style="border-left: none; padding-left: 0;">-{{it.item_number | numberFixedLen:3}}</span>
-                                                <input type="text" class="form-control" name="item_name"
-                                                   ng-model="it.item_name" id="item_name{{it.itemId}}" style="min-width:350px;">
-                                             </div>
+                                    <div class="panel-heading font-bold d-flex justify-space-between"
+                                       style="font-weight:initial;">
+                                       <div>
+                                          <div class="input-group">
+                                             <span id="itemCode" class="itemCode{{it.itemId}} input-group-addon"
+                                                ng-bind="projectOrderName"
+                                                style="border-right:none;padding-right:0;"></span>
+                                             <span class="input-group-addon"
+                                                style="border-left: none; padding-left: 0;">-{{it.item_number |
+                                                numberFixedLen:3}}</span>
+                                             <input type="text" class="form-control" name="item_name"
+                                                ng-model="it.item_name" id="item_name{{it.itemId}}"
+                                                style="min-width:350px;">
                                           </div>
-                                           <div class="d-flex">
-                                             <span style="margin-top: 6px; margin-right: 12px;">Scoop start date</span>
-                                             <input ng-datetimepicker1 id="start_date{{it.itemId}}" type="text"
-                                                class="form-control start-date" name="start_date{{it.itemId}}"
-                                                ng-model="it.start_date" required onkeydown="return false"
-                                                readonly="" style="width: auto;"/>
-                                          </div>
-                                          <a href="javascript:void(0)"
-                                             ng-click="deleteItemsId(it.itemId,it.item_number)" title="delete"
-                                             style="padding:8px 10px;">
-                                             <i class="iconDelete glyph-icon fa-times"></i>
-                                          </a>
                                        </div>
+                                       <div class="d-flex">
+                                          <span style="margin-top: 6px; margin-right: 12px;">Scoop start date</span>
+                                          <input ng-datetimepicker1 id="start_date{{it.itemId}}" type="text"
+                                             class="form-control start-date" name="start_date{{it.itemId}}"
+                                             ng-model="it.start_date" required onkeydown="return false" readonly=""
+                                             style="width: auto;" />
+                                       </div>
+                                       <a href="javascript:void(0)" ng-click="deleteItemsId(it.itemId,it.item_number)"
+                                          title="delete" style="padding:8px 10px;">
+                                          <i class="iconDelete glyph-icon fa-times"></i>
+                                       </a>
+                                    </div>
                                     <div class="panel-body p-0">
                                        <div class="col-sm-12 p-0">
                                           <table class="pl-0 pr-0 table m-b-none default footable-loaded footable">
@@ -109,7 +115,8 @@
                                                                   <input type="text" class="form-control"
                                                                      name="itemQuantity" id="itemQuantity{{it.itemId}}"
                                                                      ng-change="changeItemField(it.itemId,$index,$parent.$index)"
-                                                                     ng-model="it1.quantity" allow-decimal-comma-number />
+                                                                     ng-model="it1.quantity"
+                                                                     allow-decimal-comma-number />
                                                                </div>
                                                             </div>
                                                             <div class="col-sm-4" style="margin-top:1%;">
@@ -157,9 +164,9 @@
                                                             <div class="col-sm-2">
                                                                <div class="form-group">
                                                                   <!-- <label class="control-label">Total amount</label>  -->
-                                                                  <input type="text" allow-decimal-comma-number class="form-control"
-                                                                     name="Quantity" id="Quantity{{it.itemId}}"
-                                                                     ng-model="quantity"
+                                                                  <input type="text" allow-decimal-comma-number
+                                                                     class="form-control" name="Quantity"
+                                                                     id="Quantity{{it.itemId}}" ng-model="quantity"
                                                                      placeholder="Quantity" />
                                                                </div>
                                                             </div>
@@ -173,7 +180,8 @@
                                                                         <option value="0">--Please Select--</option>
                                                                         <optgroup ng-repeat="master in masterPrice"
                                                                            label="{{master.name}}">
-                                                                           <option ng-repeat="child in newchildPriceArr[it.itemId] track by $index"
+                                                                           <option
+                                                                              ng-repeat="child in newchildPriceArr[it.itemId] track by $index"
                                                                               ng-if="child.master_price_id == master.master_price_id"
                                                                               value="{{child.name}},{{child.rate}}">
                                                                               {{child.name}}</option>
@@ -249,17 +257,25 @@
                                                             <label class="control-label">Price List:</label>
                                                             <input select2-client-price type="text" class="form-control"
                                                                name="project_pricelist" ng-model="it.project_pricelist"
-                                                               id="project_pricelist{{it.itemId}}" ng-change="changeClientPrice(it.project_pricelist, it.itemId)">
+                                                               id="project_pricelist{{it.itemId}}"
+                                                               ng-change="changeClientPrice(it.project_pricelist, it.itemId)">
                                                          </div>
                                                       </div>
                                                       <div class="col-sm-12">
                                                          <div class="form-group">
                                                             <span>Upcoming Date</span>
-                                                            <label class="i-checks i-checks-sm" style="margin-top: 7px;">
-                                                               <input type="checkbox" name="heads_up" ng-true-value="1" ng-false-value="0" ng-model="it.heads_up" ng-checked="it.heads_up == 1">
+                                                            <label class="i-checks i-checks-sm"
+                                                               style="margin-top: 7px;">
+                                                               <input type="checkbox" name="heads_up" ng-true-value="1"
+                                                                  ng-false-value="0" ng-model="it.heads_up"
+                                                                  ng-checked="it.heads_up == 1">
                                                                <i></i>
                                                             </label>
-                                                            <input ng-datetimepicker1 id="upcomingDate" type="text" class="form-control start-date" name="upcomingDate" ng-model="it.upcomingDate" required onkeydown="return false" ng-if="it.heads_up == 1" autocomplete="off"/>
+                                                            <input ng-datetimepicker1 id="upcomingDate" type="text"
+                                                               class="form-control start-date" name="upcomingDate"
+                                                               ng-model="it.upcomingDate" required
+                                                               onkeydown="return false" ng-if="it.heads_up == 1"
+                                                               autocomplete="off" />
                                                          </div>
                                                       </div>
                                                       <div class="col-sm-6">
@@ -276,7 +292,7 @@
                                                          <div class="form-group">
                                                             <label>Due Time</label>
                                                             <input timepicker1 id="due_time{{$index}}" type="text"
-                                                            class="form-control" name="due_time" ng-model="due_time"
+                                                               class="form-control" name="due_time" ng-model="due_time"
                                                                required onkeydown="return true" allowtimefrmt />
                                                          </div>
                                                       </div>
@@ -285,8 +301,10 @@
                                                             <label>PO number</label>
                                                             <input type="text" class="form-control"
                                                                id="po_number{{it.itemId}}" name="po_number{{it.itemId}}"
-                                                               ng-model="it.po_number" ng-change="checkPoNumberExist(it.itemId,it.po_number)" />
-                                                            <label for="po_number{{it.itemId}}" class="error" id="po_numberErr{{it.itemId}}"></label>   
+                                                               ng-model="it.po_number"
+                                                               ng-change="checkPoNumberExist(it.itemId,it.po_number)" />
+                                                            <label for="po_number{{it.itemId}}" class="error"
+                                                               id="po_numberErr{{it.itemId}}"></label>
                                                          </div>
                                                       </div>
                                                       <div class="col-sm-12">
@@ -370,31 +388,87 @@
                                                                   <div class="form-group">
                                                                      <label class="control-label">Project
                                                                         Coordinator</label>
+                                                                     <label
+                                                                        class="i-checks i-checks-sm checksubPc[$index]"
+                                                                        style="margin-left: 10px;">
+                                                                        <input type="checkbox" name="checksubPc"
+                                                                           ng-true-value="1" ng-false-value="0"
+                                                                           ng-model="checksubPc[$index]"
+                                                                           ng-checked="it.subPc && it.subPc != 0"
+                                                                           class="ng-pristine ng-untouched ng-valid">
+                                                                        <i></i>
+                                                                     </label><label
+                                                                        class="no-wrap m-0 checksub">Substitute</label>
                                                                      <input type="text"
                                                                         class="form-control ProCoordinator"
                                                                         name="Coordinator" id="coordinator{{it.itemId}}"
-                                                                        select2-coordinator ng-model="it.coordinator"
-                                                                        disabled />
+                                                                        select2-coordinator ng-model="it.coordinator" />
+                                                                     <div ng-if="checksubPc[$index]" class="mt-15">
+                                                                        <input type="text" id="subPc{{it.itemId}}"
+                                                                           class="form-control"
+                                                                           name="subPc{{it.itemId}}" select2-coordinator
+                                                                           ng-model="it.subPc" required />
+                                                                     </div>
                                                                   </div>
                                                                </td>
                                                                <td>
                                                                   <div class="form-group">
                                                                      <label class="control-label ">Project
                                                                         Manager</label>
+                                                                     <label
+                                                                        class="i-checks i-checks-sm checksubPm[$index]"
+                                                                        style="margin-left: 10px;">
+                                                                        <input type="checkbox" name="checksubPm"
+                                                                           ng-true-value="1" ng-false-value="0"
+                                                                           ng-model="checksubPm[$index]"
+                                                                           ng-checked="it.subPm && it.subPm != 0"
+                                                                           class="ng-pristine ng-untouched ng-valid">
+                                                                        <i></i>
+                                                                     </label>
+                                                                     <label
+                                                                        class="no-wrap m-0 checksub">Substitute</label>
+
                                                                      <input type="text" id="manager{{it.itemId}}"
                                                                         class="form-control ProManager"
                                                                         name="vProjectManager" select2-manager
-                                                                        ng-model="it.manager" disabled />
+                                                                        ng-model="it.manager" />
+
+                                                                     <div ng-if="checksubPm[$index]" class="mt-15">
+                                                                        <input type="text" id="subPM{{it.itemId}}"
+                                                                           class="form-control"
+                                                                           name="subPM{{it.itemId}}" select2-manager
+                                                                           ng-model="it.subPm" required />
+                                                                     </div>
                                                                   </div>
                                                                </td>
                                                                <td>
                                                                   <div class="form-group">
                                                                      <label class="control-label">QA Specialist</label>
+                                                                     <label
+                                                                        class="i-checks i-checks-sm checksubQa[$index]"
+                                                                        style="margin-left: 10px;">
+                                                                        <input type="checkbox" name="checksubQa"
+                                                                           ng-true-value="1" ng-false-value="0"
+                                                                           ng-model="checksubQa[$index]"
+                                                                           ng-checked="it.subQa && it.subQa != 0"
+                                                                           class="ng-pristine ng-untouched ng-valid">
+                                                                        <i></i>
+                                                                     </label>
+                                                                     <label
+                                                                        class="no-wrap m-0 checksub">Substitute</label>
+
                                                                      <input type="text"
                                                                         class="form-control QA_specialist"
                                                                         name="Coordinator" select2-qaspa
-                                                                        id="QA_specialist{{it.itemId}}" ng-model="QA_specialist"
-                                                                        disabled />
+                                                                        id="QA_specialist{{it.itemId}}"
+                                                                        ng-model="it.qaSpecialist" />
+                                                                     <div ng-if="checksubQa[$index]" class="mt-15">
+                                                                        <input type="text" id="subPM{{it.itemId}}"
+                                                                           class="form-control"
+                                                                           name="subPM{{it.itemId}}" select2-qaspa
+                                                                           ng-model="it.subQa" required />
+                                                                     </div>
+
                                                                   </div>
                                                                </td>
                                                             </tr>
@@ -510,7 +584,7 @@
                                           <td style="width:15%;">
                                              <label class="d-flex align-center"
                                                 ng-hide="it.job_summmeryId==id || job[{{$index}}]">
-                                                
+
                                                 <!-- <div class="job-table-status btn inpreprartionColor"
                                                    ng-if="it.item_status == 'In preparation'"></div>
                                                 <div class="job-table-status btn requestedColor"
@@ -543,20 +617,37 @@
                                                    ng-if="it.item_status == 'Completed'"></div>
                                                 <div class="job-table-status btn rdyToDeliverColor"
                                                    ng-if="it.item_status == 'Ready to be Delivered'"></div> -->
-                                                
-                                                <div class="job-table-status btn inpreprartionColor" ng-if="it.item_status == 'In preparation'"></div>
-                                                <div class="job-table-status btn requestedColor" ng-if="it.item_status == 'Requested'"></div>
-                                                <div class="job-table-status btn assignedwaitongColor" ng-if="it.item_status == 'Assigned-waiting' || it.item_status == 'Waiting'"></div>
-                                                <div class="job-table-status btn inprogressColor" ng-if="it.item_status == 'In-progress' || it.item_status == 'Ongoing'"></div>
-                                                <div class="job-table-status btn overdueColor" ng-if="it.item_status == 'Overdue'"></div>
-                                                <div class="job-table-status btn deliveredColor" ng-if="it.item_status == 'Delivered' || it.item_status == 'Completed' "></div>
-                                                <div class="job-table-status btn approvedColor" ng-if="it.item_status == 'Approved' || it.item_status == '' "></div>
-                                                <div class="job-table-status btn invoicecreatedColor" ng-if="it.item_status == 'Invoice created'"></div>
-                                                <div class="job-table-status btn invoiceckedColor" ng-if="it.item_status == 'Invoice checked'"></div>
-                                                <div class="job-table-status btn invoiceacceptedColor" ng-if="it.item_status == 'Invoice Accepted' || it.item_status == 'Invoiced' "></div>
-                                                <div class="job-table-status btn paidColor" ng-if="it.item_status == 'Paid'"></div>
-                                                <div class="job-table-status btn canceledColor" ng-if="it.item_status == 'Canceled' || it.item_status == 'Cancelled'"></div>
-                                                   
+
+                                                <div class="job-table-status btn inpreprartionColor"
+                                                   ng-if="it.item_status == 'In preparation'"></div>
+                                                <div class="job-table-status btn requestedColor"
+                                                   ng-if="it.item_status == 'Requested'"></div>
+                                                <div class="job-table-status btn assignedwaitongColor"
+                                                   ng-if="it.item_status == 'Assigned-waiting' || it.item_status == 'Waiting'">
+                                                </div>
+                                                <div class="job-table-status btn inprogressColor"
+                                                   ng-if="it.item_status == 'In-progress' || it.item_status == 'Ongoing'">
+                                                </div>
+                                                <div class="job-table-status btn overdueColor"
+                                                   ng-if="it.item_status == 'Overdue'"></div>
+                                                <div class="job-table-status btn deliveredColor"
+                                                   ng-if="it.item_status == 'Delivered' || it.item_status == 'Completed' ">
+                                                </div>
+                                                <div class="job-table-status btn approvedColor"
+                                                   ng-if="it.item_status == 'Approved' || it.item_status == '' "></div>
+                                                <div class="job-table-status btn invoicecreatedColor"
+                                                   ng-if="it.item_status == 'Invoice created'"></div>
+                                                <div class="job-table-status btn invoiceckedColor"
+                                                   ng-if="it.item_status == 'Invoice checked'"></div>
+                                                <div class="job-table-status btn invoiceacceptedColor"
+                                                   ng-if="it.item_status == 'Invoice Accepted' || it.item_status == 'Invoiced' ">
+                                                </div>
+                                                <div class="job-table-status btn paidColor"
+                                                   ng-if="it.item_status == 'Paid'"></div>
+                                                <div class="job-table-status btn canceledColor"
+                                                   ng-if="it.item_status == 'Canceled' || it.item_status == 'Cancelled'">
+                                                </div>
+
                                                 <span class="jStatus">
                                                    <span class="joStatus">{{it.item_status}}</span>
                                                    <span class="jAuto none">{{it.auto_status}}</span>
