@@ -2345,17 +2345,17 @@ app.directive('select2CenterClient', function($http, rest, $timeout, $log) {
     return {
         restrict: 'EA',
         require: 'ngModel',
-        link: function(scope, element, ngModel) {
+        link: function(scope, element, attrs, ngModel) {
             rest.path = 'centerClientGet';
             rest.get().success(function(data) {
                 var lang = [];
-
                 angular.forEach(data, function(value, key) {
-
+                    
                     var orLen = JSON.parse(value.order_number)[0].value.length;
                     var curntYear = JSON.parse(value.order_number)[0].value.substr((orLen-5), 2);
+                    let idCenter = attrs.centerid == 1 ? value.center_id + '-' + value.abbrivation + curntYear : value.abbrivation + curntYear
                     var obj = {
-                        'id': value.abbrivation + curntYear,
+                        'id': idCenter,
                         'text': value.name
                     };
                     lang.push(obj);
@@ -6792,6 +6792,18 @@ app.directive('invoicePdftemplate', function () {
         restrict: 'EA', // Default in 1.3+
         templateUrl: 'tpl/invoice-pdf-content.html',
     };
+});
+app.directive('clientinvoicepdfTemplate2', function () {
+    return {
+        restrict: 'E',
+        scope: {
+          templateName: '=' // Bind the template name to a scope variable
+        },
+        templateUrl: function(elem, attrs) {
+          // Return the dynamic template URL based on the templateName scope variable
+          return 'tpl/' + attrs.templateName + '.html';
+        }
+      };
 });
 // linguist invoice pdf html file
 app.directive('linguistInvoicePdftemplate', function () {

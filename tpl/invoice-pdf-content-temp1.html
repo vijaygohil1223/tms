@@ -1,0 +1,170 @@
+<style>
+  .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    background-color: #f8f8f8;
+  }
+  .line{
+    background: #f1ecec;
+    margin-bottom: 25px;
+  }
+</style>
+
+<div class="panel panel-default invoiceInput" id="pdfExport">
+  <div class="panel-body" style="padding-top:0;">
+    
+    <div class="col-sm-12">
+      <div class="row">
+        <div class="row invoice-header">
+          <div class="col-xs-6">
+            <h1>Invoice</h1>
+          </div>
+          <div class="col-xs-6 text-right">
+            <h4>{{invoiceSettingData.company_name}}</h4>
+            <p>{{invoiceSettingData.address1}} </br>
+              {{invoiceSettingData.postcode}} {{invoiceSettingData.city}} </br>
+              {{invoiceSettingData.country}} </br>
+              {{invoiceSettingData.vat_number}}</P>
+          </div>
+        </div>
+
+        <div class="row invoice-content1">
+          <div class="col-xs-8">
+            <p style="font-size:20px;">
+              <strong ng-bind="invoiceDetail.clientCompanyName"></strong></br>
+            </p>
+            <p class="mb-0">
+              {{invoiceDetail.companyAddress}}</br>
+              {{clientZipcode}}<span ng-if="clientCity"> , {{clientCity}}</span></br>
+              {{clientCountry}}</br>
+              <span ng-if="invoiceDetail.clientVatinfo">Vat Number: {{invoiceDetail.clientVatinfo}}</span>  </br>
+              <!-- Phone: <span ng-bind="invoiceDetail.companyPhone"></span> -->
+            </p>
+          </div>
+          <div class="col-xs-4 text-right">
+            <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoice_number }}</strong></p>
+            <br />
+            <p>
+              Invoice date: <br />
+              <!-- <span ng-bind="invoiceDetail.invoice_date | globalDtFormat"></span> -->
+              <input class="headerInput  form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" ng-disabled="editDisabled"/>
+              </br>
+              Payment due date: <br />
+              <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span><br />
+            </p>
+          </div>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="invoice-content2">  
+          <table ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+            class="table table-striped" id="InvoiceTbl">
+            <thead>
+              <tr>
+                <th>ITEMS</th>
+                <th>PO Number</th>
+                <th>DESCRIPTION</th>
+                <th>QUANTITY</th>
+                <th style="width:18%;">PRICE</th>
+                <th>AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+              class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
+              <tr class="thfont">
+                <th>{{$index + 1}}</th>
+                <th>{{invL.po_number}}</th>
+                <th>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }}</th>
+                <th>1</th>
+                <th>
+                  <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal"
+                    id="invSubTotal{{$index}}"
+                    ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
+                    name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled"/>
+                </th>
+                <!-- <th>
+                  <span ng-if="invL.tax_rate">{{invL.tax_rate | customNumber}}%</span>
+                  <span ng-if="!invL.tax_rate">{{'0.00' | customNumber}}%</span>
+                </th> -->
+                <th class="nowrap">
+                  <!-- {{invL.item.subTotal | customNumber }}  -->
+                  <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
+                  <!-- {{ invL.itemPriceTax }} -->
+                  <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }}</span>
+                </th>
+              </tr>
+              <tr ng-if="$index == invoiceLength">
+                <td colspan="5" class="text-right">
+                  <strong>Sub Total</strong>
+                </td>
+                <td style="width:10%;" class="nowrap">
+                  {{invoiceTotal}} </td>
+                  <!-- <input class="form-control" ng-show="editInvoiceField" type="text" ng-model="invoiceTotal"
+                  ng-disabled="editDisabled" ng-change="changeInvoiceField($index,$parent.$index,invoiceTotal,'invoiceTotal')"
+                    id="invSubtotal" /> -->
+              </tr>
+              <tr ng-if="$index == invoiceLength && vatTax>0">
+                <td colspan="5" class="text-right"><strong>{{vatTax | customNumber}}% Tax</strong></td>
+                <td style="width:9%;" class="nowrap"> 
+                  <span ng-if="vatAmount">{{vatAmount | customNumber}}</span>
+                  <span ng-if="!vatAmount">0</span>
+                </td>
+              </tr>
+
+              <tr ng-if="$index == invoiceLength && invL.paid_amount > 0" class="tdborder">
+                <td colspan="5" class="text-right no-border"><strong>Paid</strong></td>
+                <td style="width:10%;"> {{invL.paid_amount | customNumber}}</td>
+              </tr>
+              <tr ng-if="$index == invoiceLength && invL.paid_amount > 0" class="tdborder">
+                <td colspan="5" class="text-right no-border"><strong>Total Due Amount</strong></td>
+                <td style="width:10%;"> {{totalDue | customNumber}} </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>  
+        <div class="row invoice-footer">
+          <div class="col-xs-6">
+            <p>Bank Name: <span ng-bind="vBankInfo.bank_name"></span> </br>
+              Account Holder: <span ng-bind="vBankInfo.holder_name"></span> </br>
+              IBAN: <span ng-bind="vBankInfo.iban"></span> </br>
+              SWIFT: <span ng-bind="vBankInfo.swift_bic"></span> </P>
+          </div>
+          <div class="col-xs-6 text-right">
+            <!-- <h4>TOTAL <span ng-bind="dueAmountText"></span></h4> -->
+            <!-- <h3>{{currencyType}} {{totalDue | customNumber}}</h3> -->
+            <h4>TOTAL</h4>
+            <h3>{{currencyType}} {{grandTotal | customNumber}}</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="imgcenter">
+            <img src="{{invoiceSettingData.logo_url}}" class="img-full" alt="SpellUp" style="max-height: 50px; max-width: 100%; width: auto;">
+          </div>
+        </div>
+
+      <div id="toAddEleAfterDwonload" ng-show="viewBtn"></div>
+      <div class="row" style="margin-top:20px;" ng-show="viewBtn">
+        <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft'"
+          class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
+        <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
+          class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as cancel</button>
+        <button id="btnSave"
+          ng-show="invoiceDetail.invoice_type!='save' || invoiceDetail.is_invoice_sent!=1 && invoiceDetail.invoice_status!='Complete'"
+          class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-envelope"
+            aria-hidden="true"></i>&nbsp; To be sent</button>
+        <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
+          ng-click="save('invoice-form', 'draft');"> Draft</button>
+        <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="cancel();">
+          Cancel</button>
+        <button id="irrecoverable" class="btn btn-info btnSave" ng-show="reminderBtnHideShow"
+          ng-click="isIrrecoverableInvoice();"> Irrecoverable </button>
+        <button id="editInvoiceSave" class="btn btn-info invcBtn btnSave" ng-hide="editDisabled"  
+          ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i class="fa fa-pencil"></i> Edit & Save </button>
+      </div> 
+          
+      </div>
+
+  </div>
+</div>
+
+</div>

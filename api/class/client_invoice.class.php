@@ -727,5 +727,15 @@ class Client_invoice {
         $data = $this->_db->get('tms_invoice_client');
         return $data;
     }
-
+    // Invoice Design template
+    public function clientInvoiceDesignType() {
+        $data = $this->_db->getOne('tms_invoice_setting');
+        return $data;
+    }
+    // Invoice setting data
+    public function getClientInvoiceSetting() {
+        $data = $this->_db->get('tms_invoice_setting');
+        return $data;
+    }
+    
 }

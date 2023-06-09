@@ -1,0 +1,365 @@
+<style>
+  .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    background-color: #f8f8f8;
+  }
+  .line{
+    background: #f1ecec;
+    margin-bottom: 25px;
+  }
+
+/* Invoice design 2 */
+.panel-heading-img{
+  float: right;
+}
+.address-title{
+  color: #808080;
+}
+.header-tr-border{
+  background-color: #bebebe;
+}
+table.table.table-bordered.table-condensed-second {
+  margin: 0px;
+  margin-top: 10px;
+  background-color: #d9d9d9 !important;
+}
+table.table.table-bordered.table-condensed-second tbody tr:nth-of-type(odd) td {
+    background: #d9d9d9 !important;
+}
+.table-condensed-second tbody tr {
+    background: #d9d9d9 !important;
+}
+.invoice {
+  width: 780px !important;
+  margin: 10px auto;
+  font-family: Khmer UI, serif;
+
+  margin-left: -15px;
+}
+.invoice .panel-heading {
+  background-color: #fff !important;
+  border-color: #fff !important;
+}
+.invoice .invoice-header {
+  padding: 25px 25px 15px;
+}
+.invoice .invoice-header h1 {
+margin: 0;
+}
+.invoice .invoice-header .media .media-body {
+font-size: 0.9em;
+margin: 0;
+}
+.invoice .invoice-body {
+border-radius: 10px;
+padding: 25px 60px;
+background: #fff;
+}
+.dl-horizontal {
+margin: 0;
+line-height: 1.2;
+padding: 12px;
+} 
+.panel-body-image{
+text-align: center;
+}
+.panel-body-image img {
+width: 200px;
+height: 100px;
+}
+.invoice-heading{
+font-size: 18px;
+}
+.invoice-purchase-side dd {
+display: flex;
+justify-content: space-between;
+padding: 5px;
+}
+.table-data-txt {
+font-size: 14px;
+}
+tbody, td, tfoot, th, thead, tr {
+border-style: unset !important;
+}
+.panel-body.table-payment-title {
+margin-top: 50px;
+}
+.list-unstyled li a {
+  font-weight: 600;
+  text-decoration: none;
+  color: #000082;
+}
+.list-unstyled-one p , .list-unstyled-two {
+  list-style-type: none;
+  margin: 0px;
+}
+.list-unstyled-one a{
+  font-size:18px;
+  text-decoration: none;
+}
+.list-unstyled-two a {
+  font-size: 18px;
+  color: #000;
+}
+p.panel-title-footer-end {
+  text-align: end;
+}
+p.panel-titlefooter-start ,p.panel-title-footer-end {
+  padding-top: 10px;
+}
+.panel-default-btn{
+  float: right;
+}
+a.invoice-print-btn {
+  padding: 8px 20px;
+  border:1px solid #dee2e6;
+  border-radius: 6px;
+  text-transform: uppercase;
+  background: #fff;
+  color: #000;
+  text-decoration: none;
+}
+a.invoice-download-btn {
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border: none ;
+  border-radius: 6px;
+  background: #000082;
+  color: #fff;
+  text-decoration: none;
+}
+.invoice-header-total {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #dee2e6;
+}
+td.table-data-text {
+  padding:0px 10px !important;
+}
+.dl-horizontal dd {
+    margin-left: auto;
+}
+.invoice .table > tbody > tr > th, .table > tfoot > tr > th, .invoice .table > tbody > tr > td, .table > tfoot > tr > td {
+    /* padding: initial; */
+}
+.invoice .panel{
+  margin-bottom: initial !important;
+}
+.invoice .panel-body {
+   padding-left: initial !important;
+} 
+.invoice .panel > .panel-body + .table{
+  border-top: none;
+}
+.inv-footer .table-data-text{
+  color: #808080;
+}
+.copytext{
+  text-align: center;
+  margin-top: 10px;
+  color: #808080;
+}
+.pb-0{ padding-bottom: 0px; }
+.mb-d{margin-bottom: 2px;}
+.table-condensed-second > tbody > tr > td { padding-bottom: 3px !important; padding-bottom: 3px !important; }
+.line1{ border-top: 1px solid rgb(223, 98, 67); width: 33.33%;}
+.line2{ border-top: 1px solid rgb(170 145 211); width: 33.33%;}
+.line3{ border-top: 1px solid rgb(123, 199, 123); width: 33.33%;}
+.invoice input {
+    padding-left: 2px;
+    height: 30px;
+}
+</style>
+
+<div class="panel panel-default invoiceInput" >
+  <div class="panel-body" style="padding-top:0;">
+   
+    <div class="col-sm-12" id="pdfExport">
+      <div class="container invoice">
+          <div class="invoice-body">
+              <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="panel panel-default ">
+                          <div class="panel-heading-img"> <img src="{{invoiceSettingData.logo_url}}" alt="Logo" srcset=""> </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <p class="address-title"> <span>{{invoiceSettingData.company_name}} &middot; </span> <span>{{invoiceSettingData.address1}} &middot; </span> <span>{{invoiceSettingData.postcode}}</span> <span>{{invoiceSettingData.city}} &middot; </span>  <span>{{invoiceSettingData.country}}</span> </p>
+                          </div>
+
+                          <div class="panel-body" style="padding-top: 0px;">
+                              <dl class="dl-horizontal">
+                                  <dd style="margin-bottom: 8px;"><strong> {{invoiceDetail.clientCompanyName}} </strong></dd>
+                                  <dd> {{invoiceDetail.companyAddress}} </dd>
+                                  <dd> {{clientZipcode}} <span ng-if="clientCity">{{clientCity}}</span></dd>
+                                  <dd>{{clientCountry}}</dd>
+                                  <dd ng-if="invoiceDetail.clientVatinfo"> {{invoiceDetail.clientVatinfo}} </dd>
+                          </div>
+                          <div class="panel-body" style="padding-top: 0px;">
+                            <!-- <dl class="dl-horizontal"> -->
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_info==2">
+                                  <p class="mb-d"><strong>Contact</strong></p>
+                                  {{invoiceDetail.freelanceName}}
+                                </div>
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_info==2">
+                                  <p class="mb-d"><strong>Telephone</strong></p>{{invoiceDetail.freelancePhone}}
+                                </div>
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_info==2">
+                                  <p class="mb-d"><strong>Email</strong></p> {{invoiceDetail.freelanceEmail}}
+                                </div>
+                                <div class="col-sm-3">
+                                  <p class="mb-d"><strong>Date</strong></p> 
+                                  <input class="form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" ng-disabled="editDisabled" />
+                                </div>
+                                
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="panel panel-default invoice-header-height">
+                      <div class="panel-body">
+                          <dl class="dl-horizontal">
+                              <dd class="invoice-heading"><strong>Invoice {{ invoiceDetail.invoice_number }}</strong></dd>
+                      </div>
+                      <table class="table table-bordered table-condensed">
+                          <thead>
+                              <tr class="header-tr-border">
+                                  <th style="width:50%;">Project</th>
+                                  <th style="width:30%;"> PO Number</th>
+                                  <th style="width:20%;">Price in {{currencyType}} </th>
+                              </tr>
+                          </thead>
+                          <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+                          class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
+                            <tr class="thfont">
+                              <td class="table-data-txt"> {{invL.po_number}}</td>
+                              <td class="table-data-txt"> {{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }}</td>
+                              <td class="table-data-txt"> 
+                                <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled"/>
+                              </td>
+                            </tr> 
+                            <!-- <tr ng-if="$index == invoiceLength">
+                              <td colspan="2">
+                                <strong>Sub Total</strong>
+                              </td>
+                              <td class="nowrap">
+                                {{invoiceTotal}} </td>
+                            </tr>
+                            <tr ng-if="$index == invoiceLength && vatTax>0">
+                              <td colspan="2"><strong>{{vatTax | customNumber}}% Tax</strong></td>
+                              <td class="nowrap"> 
+                                <span ng-if="vatAmount">{{vatAmount | customNumber}}</span>
+                                <span ng-if="!vatAmount">0</span>
+                              </td>
+                            </tr>  -->
+                              
+                          </tbody>
+                      </table>
+                      <table class="table table-bordered table-condensed-second" ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}">
+                          <tbody>
+                              <tr>
+                                  <td class="table-data-txt" colspan="2"> Subtotal excl. TAX </td>
+                                  <td class="table-data-txt" style="width:20%;"> {{invoiceTotal}} </td>
+                              </tr>
+                              <tr>
+                                  <td class="table-data-txt" colspan="2"> {{vatTax | customNumber}} % TAX </td>
+                                  <td class="table-data-txt"> {{vatAmount | customNumber}}</td>
+                              </tr>
+                              <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
+                                  <td class="table-data-txt" colspan="2"> Paid </td>
+                                  <td class="table-data-txt"> {{invL.paid_amount | customNumber}}</td>
+                              </tr>
+                              <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
+                                <td class="table-data-txt" colspan="2"> Total Due Amount</td>
+                                <td class="table-data-txt"> {{totalDue | customNumber}} </td>
+                              </tr>
+                              <tr>
+                                  <td class="table-data-txt" colspan="2"> <strong>Total Price</strong> </td>
+                                  <td class="table-data-txt" style="border-top:1px solid #000; border-bottom:1px solid #000;">  <strong> {{grandTotal | customNumber}} </strong> </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                      <div class="row">
+                          <div class="col-lg-12 col-md-12 col-sm-12">
+                              <div class="panel panel-default">
+                                  <div class="panel-body">
+                                      <dl class="dl-horizontal">
+                                          <dd>{{ invoiceSettingData.description }} </dd>
+                                          <dd>Payment for this invoice is due by <span ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span>. </dd><br>
+                                          <dd><strong>Payment details:</strong> </dd>
+                                          <dd>Bank Name: <span ng-bind="vBankInfo.bank_name"></span></dd>
+                                          <dd>Bank Address: <span ng-bind="vBankInfo.address"></span></dd>
+                                          <dd>Account holder: <span ng-bind="vBankInfo.holder_name"></span></dd>
+                                          <dd>IBAN: <span ng-bind="vBankInfo.iban"></span></dd>
+                                          <dd>SWIFT: <span ng-bind="vBankInfo.swift_bic"></span></dd>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="d-flex">
+                        <div class="line1"> </div>
+                        <div class="line2"> </div>
+                        <div class="line3"> </div>
+                      </div>
+                      <table class="table table-bordered table-condensed inv-footer" style="margin-top: 10px;">
+                          <tbody>
+                              <tr>
+                                  <td class="table-data-text"> <strong>{{ invoiceSettingData.company_name }}</strong> </td>
+                                  <td class="table-data-text"> </td>
+                                  <td class="table-data-text"> <strong> VAT NUMBER:</strong> </td>
+                              </tr>
+                              <tr>
+                                  <td class="table-data-text"> {{ invoiceSettingData.address1 }} </td>
+                                  <td class="table-data-text"> Email:<a href="mailto:{{invoiceSettingData.work_email}}"> {{ invoiceSettingData.work_email }}</a> </td>
+                                  <td class="table-data-text">Foretaksregisteret: </td>
+                              </tr>
+                              <tr>
+                                  <td class="table-data-text"> {{ invoiceSettingData.postcode }} {{ invoiceSettingData.city }} </td>
+                                  <td class="table-data-text"> <span ng-if="invoiceSettingData.server_info==2"> Web: {{ invoiceSettingData.web_address }}</span> </td>
+                                  <td class="table-data-text">{{ invoiceSettingData.vat_number }}</td>
+                              </tr>
+                              <tr>
+                                  <td class="table-data-text"> {{ invoiceSettingData.country }} </td>
+                                  <td class="table-data-text"> </td>
+                                  <td class="table-data-text"> </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                      <div>
+                          <p class="copytext" > {{ invoiceSettingData.copyright_text }} </p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm-12">
+      <div class="row">
+        <div id="toAddEleAfterDwonload" ng-show="viewBtn"></div>
+        <div class="row" style="margin-top:20px;" ng-show="viewBtn">
+          <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft'"
+            class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
+          <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
+            class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as cancel</button>
+          <button id="btnSave"
+            ng-show="invoiceDetail.invoice_type!='save' || invoiceDetail.is_invoice_sent!=1 && invoiceDetail.invoice_status!='Complete'"
+            class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-envelope"
+              aria-hidden="true"></i>&nbsp; To be sent</button>
+          <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
+            ng-click="save('invoice-form', 'draft');"> Draft</button>
+          <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info" ng-click="cancel();">
+            Cancel</button>
+          <button id="irrecoverable" class="btn btn-info btnSave" ng-show="reminderBtnHideShow"
+            ng-click="isIrrecoverableInvoice();"> Irrecoverable </button>
+          <button id="editInvoiceSave" class="btn btn-info invcBtn btnSave" ng-hide="editDisabled"  
+            ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i class="fa fa-pencil"></i> Edit & Save </button>
+        </div>    
+    </div>
+  </div>
+
+</div>
+</div>

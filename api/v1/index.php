@@ -3464,6 +3464,16 @@ $app->get('/getInvoiceNumberClient','authenticate', function () use($app) {
     $result = $invoice->getInvoiceNumberClient();
     echoResponse(200, $result);
 });
+$app->get('/clientInvoiceDesignType','authenticate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->clientInvoiceDesignType();
+    echoResponse(200, $result);
+});
+$app->get('/clientInvoiceSetting/','authenticate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getClientInvoiceSetting();
+    echoResponse(200, $result);
+});
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {
     $userposition = new userposition ();

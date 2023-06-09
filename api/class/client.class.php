@@ -358,6 +358,16 @@ class client {
                 }
                 $info ['vLogo'] = $this->uploadimage($info);
             }
+
+            // not needed
+            // if(isset($info['vCodeRights']) && $info['vCodeRights'] ){
+            //     $vcodeRights = $info['vCodeRights'];
+            //     $abbrivation = (strlen($vcodeRights) == 2) ? $vcodeRights : ((strlen($vcodeRights) > 3) ? substr($vcodeRights, 0, -2) : substr($vcodeRights, 0, -1) );
+            //     $this->_db->where('abbrivation', $abbrivation);
+            //     $center = $this->_db->getOne('tms_centers');
+            //     if($center)
+            //         $info['vCenterid'] = $center['center_id'];
+            // }
             
             $info ['dtCreatedDate'] = date('Y-m-d H:i:s');
             $info ['dtUpdatedDate'] = date('Y-m-d H:i:s');

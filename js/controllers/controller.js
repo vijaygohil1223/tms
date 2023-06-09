@@ -723,8 +723,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }).error(errorCallback);
 
+                    // Invoice design page type
+                    rest.path = 'clientInvoiceDesignType';
+                    rest.get().success(function (data) {
+                        console.log('data-desing', data)
+                        if (data) {
+                            $window.localStorage.setItem("invoiceDesignType", data.invoice_design);
+                        } else {
+                            $window.localStorage.setItem("invoiceDesignType", 1);
+                        }
+                    }).error(errorCallback);
+
                     $location.path('/dashboard1');
                 }).error(errorCallback, $('#loginSpin').hide());
+
             }, 1500);
         }
     };
@@ -14121,6 +14133,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.setItem("clientpricelistdataId", " ");
     $scope.dateFormatGlobal = $window.localStorage.getItem("global_dateFormat");
     $scope.isValidMobileNumber = false;
+
     $timeout(function () {
         if ($window.localStorage.iUserId.length > 0) {
             $scope.redirectToClientViewId = '#/viewdirect/' + $window.localStorage.iUserId;
@@ -14176,7 +14189,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    
     // if ($window.localStorage.iUserId != '' && $window.localStorage.iUserId != undefined) {
     //     $routeParams.id = $window.localStorage.iUserId;
     // }
@@ -14209,6 +14221,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#vProjectManager').select2('data', { id: $scope.info.vProjectManager });
             angular.element('#vQASpecialist').select2('data', { id: $scope.info.vQASpecialist });
             angular.element('#currencyCode').select2('data', { text: $scope.info.client_currency.split(',')[0] });
+
+            if($scope.info.vCenterid){
+                //$scope.info.vCodeRights = $scope.info.vCenterid + '-' + $scope.info.vCodeRights;
+                // 
+                rest.path = 'centergetOne/'+$scope.info.vCenterid;
+                rest.get().success(function (centerdata) {
+                    if(centerdata){
+                        var orLen = JSON.parse(centerdata.order_number)[0].value.length;
+                        let abrFormt = JSON.parse(centerdata.order_number)[0].value.substr((orLen-5), 2);
+                        let idCenter = centerdata.center_id + '-' + centerdata.abbrivation + abrFormt; 
+                        $scope.info.vCodeRights = idCenter; 
+                    }
+                })
+
+            }
+            
 
             angular.element('#projectBranch').select($scope.info.project_branch);
             setTimeout(() => {
@@ -14512,8 +14540,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.info.iEditedBy = 0;
                 }
 
-                if(($scope.info.vCodeRights).includes(',')){
-                    $scope.info.vCodeRights = ($scope.info.vCodeRights).split(',').pop();
+                // update client ceter id and split codeRight 
+                $scope.info.vCodeRights = ($scope.info.vCodeRights).split(',').pop();
+                //const isNumber = /^\d+$/.test(str);
+                if(($scope.info.vCodeRights).includes('-')){
+                    const parts = ($scope.info.vCodeRights).split('-');
+                    $scope.info.vCenterid = parts.shift();
+                    $scope.info.vCodeRights = parts.join('-');
                 }
 
                 //$scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
@@ -14611,7 +14644,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.info.address1Detail = JSON.stringify(address1);
                 $scope.info.address2Detail = JSON.stringify(address2);
 
-                $scope.info.vCodeRights = $scope.info.vCodeRights;
+                // update client ceter id and split codeRight 
+                $scope.info.vCodeRights = ($scope.info.vCodeRights).split(',').pop();
+                //const isNumber = /^\d+$/.test(str);
+                if(($scope.info.vCodeRights).includes('-')){
+                    const parts = ($scope.info.vCodeRights).split('-');
+                    $scope.info.vCenterid = parts.shift();
+                    $scope.info.vCodeRights = parts.join('-');
+                }
+
                 $scope.info.tPoInfo = $scope.info.vUserName.split(' ').join('-').toLowerCase() + '-' + pad($scope.info.vClientNumber, 3)
                 
                 $scope.info.dtCreationDate = $filter('globalDtFormat')($scope.info.dtCreationDate);
@@ -15881,6 +15922,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.viewBtn = true;
     $scope.invoiceNumOfdays = 30;
     //$scope.noneCls = "none"
+    
+    // invoice setting Data
+    $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
+    $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+    
+    
     $scope.invoicePaid = function (frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -15950,8 +15997,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#invSubtotal').val($scope.invoiceTotal);
         }
     }
+    $scope.invoiceSettingData = [];
 
     if ($routeParams.id) {
+        rest.path = "clientInvoiceSetting";
+        rest.get().success(function (settingData) {
+            console.log('staticData', settingData)
+            if(settingData)
+                $scope.invoiceSettingData = settingData[0];
+
+                console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
+        })
+
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             
@@ -29967,6 +30024,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceList = [];
     $scope.currencyType = 'EUR';
     $scope.invoiceNumOfdays = 30;
+
+    $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
+    $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+
+    // invoice setting Data
+    rest.path = "clientInvoiceSetting";
+    rest.get().success(function (settingData) {
+        console.log('staticData', settingData)
+        if(settingData)
+            $scope.invoiceSettingData = settingData[0];
+
+            console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
+    })
             
     //get data of invoice
     if ($cookieStore.get('invoiceScoopId').length) {
@@ -29981,6 +30051,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.post($scope.invoiceLt).success(function (data) {
             
             $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
@@ -30059,6 +30130,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             //$scope.invoiceDetail.invoiceNumber = data[0].orderNumber + '_' + pad(data[0].invoiceCount + 1, 3);
             $scope.invoiceDetail.invoiceNumber = 'S-' + pad(data[0].invoiceCount + 1, 6);
+            $scope.invoiceDetail.invoice_number = $scope.invoiceDetail.invoiceNumber; 
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays(date, 0) );
             $scope.invoiceDetail.scoop_id = obj;
