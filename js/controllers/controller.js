@@ -9,6 +9,7 @@ var errorCallback = function (data) {
 
 //Notification message function
 function notification(msg, type) {
+    //var msg = msg ? msg : "Something went wrong";
     //#themes mint, sunset, relax, nest, metroui, semanticui, light, bootstrap-v3, bootstrap-v4
     var n = new Noty({
         theme: 'bootstrap-v4',
@@ -14664,6 +14665,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 rest.post($scope.info).success(function (data) {
                     $window.localStorage.iUserId = data.iClientId;
+                    
                     //log file start 
                     $scope.logMaster = {};
                     $scope.logMaster.log_type_id = data.iClientId;
@@ -14678,11 +14680,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("contactclientIdNew", data.iClientId);
                     $window.localStorage.setItem("priceListClientId", data.iClientId);
                     $window.localStorage.setItem("currentUserName", data.clientData.vUserName);
+                    
+                    notification('Created successfully', 'success');
                     if(isSavebtn){
-                        notification('Created successfully', 'success');
                         //$location.path('/edit-client/'+$scope.Edited_id);
+                        if(data.iClientId)
+                            $location.path('/edit-client/'+data.iClientId);
                     }else{
-                        $location.path('/contact-person');
+                        if(data.iClientId)
+                            $location.path('/edit-client/'+data.iClientId);
+                        //$location.path('/contact-person');
                     }
                     $route.reload();
                 }).error(errorCallback);
@@ -16000,15 +16007,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceSettingData = [];
 
     if ($routeParams.id) {
-        rest.path = "clientInvoiceSetting";
-        rest.get().success(function (settingData) {
-            console.log('staticData', settingData)
-            if(settingData)
-                $scope.invoiceSettingData = settingData[0];
-
-                console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
-        })
-
+        
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             
@@ -16152,6 +16151,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
             }, 500);
+
+            // invoice setting Data - invoice address based on selected business unit
+            rest.path = "clientInvoiceSetting";
+            rest.get().success(function (settingData) {
+                console.log('staticData', settingData)
+                if(settingData){
+                    $scope.invoiceSettingData = settingData[0];
+                    console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
+                    if($scope.invoiceDetail.vCenterid && $scope.invoiceSettingData.server_no === 2){
+                        let invoiceSettingFltr = settingData.filter( (elData) => (elData.branch_center_id.toString().split(',')).includes($scope.invoiceDetail.vCenterid.toString())  );
+                        console.log('$scope.invoiceSettingData==2', $scope.invoiceSettingData)
+                        if(invoiceSettingFltr.length > 0)
+                            $scope.invoiceSettingData = invoiceSettingFltr[0]; 
+                    }
+                }
+                //$scope.invoiceDesignType = $scope.invoiceSettingData.server_no > 1 ? 2 : 1;
+                //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+            })
 
         }).error(errorCallback);
     }
@@ -16398,6 +16415,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $routeParams.id = items;
 
+    $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
+    $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+
     if ($routeParams.id) {
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
@@ -16542,6 +16562,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // print invoice after all data load    
                 $scope.printIt($scope.invoiceDetail.invoice_number);
             }, 500);
+
+            // invoice setting Data - invoice address based on selected business unit
+            rest.path = "clientInvoiceSetting";
+            rest.get().success(function (settingData) {
+                console.log('staticData', settingData)
+                if(settingData){
+                    $scope.invoiceSettingData = settingData[0];
+                    if($scope.invoiceDetail.vCenterid && $scope.invoiceSettingData.server_no === 2){
+                        let invoiceSettingFltr = settingData.filter( (elData) => (elData.branch_center_id.toString().split(',')).includes($scope.invoiceDetail.vCenterid.toString())  );
+                        console.log('$scope.invoiceSettingData==2', $scope.invoiceSettingData)
+                        if(invoiceSettingFltr.length > 0)
+                            $scope.invoiceSettingData = invoiceSettingFltr[0]; 
+                    }
+                }
+                //$scope.invoiceDesignType = $scope.invoiceSettingData.server_no > 1 ? 2 : 1;
+                //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+            })
 
         }).error(errorCallback);
     }
@@ -30028,16 +30065,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
 
-    // invoice setting Data
-    rest.path = "clientInvoiceSetting";
-    rest.get().success(function (settingData) {
-        console.log('staticData', settingData)
-        if(settingData)
-            $scope.invoiceSettingData = settingData[0];
-
-            console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
-    })
-            
     //get data of invoice
     if ($cookieStore.get('invoiceScoopId').length) {
         var obj = [];
@@ -30175,6 +30202,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.grandTotal = $scope.invoiceTotal + parseFloat($scope.vatAmount);
             $scope.invoiceTotal = $filter('customNumber')($scope.invoiceTotal);
 
+            // invoice setting Data - invoice address based on selected business unit
+            rest.path = "clientInvoiceSetting";
+            rest.get().success(function (settingData) {
+                console.log('staticData', settingData)
+                if(settingData){
+                    $scope.invoiceSettingData = settingData[0];
+                    if($scope.invoiceDetail.vCenterid && $scope.invoiceSettingData.server_no === 2){
+                        let invoiceSettingFltr = settingData.filter( (elData) => (elData.branch_center_id.toString().split(',')).includes($scope.invoiceDetail.vCenterid.toString())  );
+                        console.log('$scope.invoiceSettingData==2', $scope.invoiceSettingData)
+                        if(invoiceSettingFltr.length > 0)
+                            $scope.invoiceSettingData = invoiceSettingFltr[0]; 
+                    }
+                }
+                //$scope.invoiceDesignType = $scope.invoiceSettingData.server_no > 1 ? 2 : 1;
+                //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+            })
 
         });
     }

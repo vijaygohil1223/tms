@@ -160,9 +160,10 @@ td.table-data-text {
 .pb-0{ padding-bottom: 0px; }
 .mb-d{margin-bottom: 2px;}
 .table-condensed-second > tbody > tr > td { padding-bottom: 3px !important; padding-bottom: 3px !important; }
-.line1{ border-top: 1px solid rgb(223, 98, 67); width: 33.33%;}
-.line2{ border-top: 1px solid rgb(170 145 211); width: 33.33%;}
-.line3{ border-top: 1px solid rgb(123, 199, 123); width: 33.33%;}
+.line1{ border-top: 1px solid #ea7227; width: 25%;}
+.line2{ border-top: 1px solid #e63132; width: 25%;}
+.line3{ border-top: 1px solid #4c9acc; width: 25%;}
+.line4{ border-top: 1px solid #5fc752; width: 25%;}
 .invoice input {
     padding-left: 2px;
     height: 30px;
@@ -199,14 +200,14 @@ td.table-data-text {
                           </div>
                           <div class="panel-body" style="padding-top: 0px;">
                             <!-- <dl class="dl-horizontal"> -->
-                                <div class="col-sm-3" ng-if="invoiceSettingData.server_info==2">
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
                                   <p class="mb-d"><strong>Contact</strong></p>
                                   {{invoiceDetail.freelanceName}}
                                 </div>
-                                <div class="col-sm-3" ng-if="invoiceSettingData.server_info==2">
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
                                   <p class="mb-d"><strong>Telephone</strong></p>{{invoiceDetail.freelancePhone}}
                                 </div>
-                                <div class="col-sm-3" ng-if="invoiceSettingData.server_info==2">
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
                                   <p class="mb-d"><strong>Email</strong></p> {{invoiceDetail.freelanceEmail}}
                                 </div>
                                 <div class="col-sm-3">
@@ -235,8 +236,8 @@ td.table-data-text {
                           <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
                           class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
                             <tr class="thfont">
-                              <td class="table-data-txt"> {{invL.po_number}}</td>
                               <td class="table-data-txt"> {{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }}</td>
+                              <td class="table-data-txt"> {{invL.po_number}}</td>
                               <td class="table-data-txt"> 
                                 <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled"/>
                               </td>
@@ -303,6 +304,7 @@ td.table-data-text {
                         <div class="line1"> </div>
                         <div class="line2"> </div>
                         <div class="line3"> </div>
+                        <div class="line4"> </div>
                       </div>
                       <table class="table table-bordered table-condensed inv-footer" style="margin-top: 10px;">
                           <tbody>
@@ -318,7 +320,7 @@ td.table-data-text {
                               </tr>
                               <tr>
                                   <td class="table-data-text"> {{ invoiceSettingData.postcode }} {{ invoiceSettingData.city }} </td>
-                                  <td class="table-data-text"> <span ng-if="invoiceSettingData.server_info==2"> Web: {{ invoiceSettingData.web_address }}</span> </td>
+                                  <td class="table-data-text"> <span ng-if="invoiceSettingData.server_no==2"> Web: {{ invoiceSettingData.web_address }}</span> </td>
                                   <td class="table-data-text">{{ invoiceSettingData.vat_number }}</td>
                               </tr>
                               <tr>
@@ -329,7 +331,7 @@ td.table-data-text {
                           </tbody>
                       </table>
                       <div>
-                          <p class="copytext" > {{ invoiceSettingData.copyright_text }} </p>
+                          <p class="copytext" > <spam style="font-family:Arial Unicode MS;"> &copy; </spam> {{ invoiceSettingData.copyright_text }} </p>
                       </div>
                   </div>
               </div>
