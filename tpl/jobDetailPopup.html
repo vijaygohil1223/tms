@@ -432,7 +432,7 @@ li.seperatordate.comment {
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label><strong>Due Date:</strong></label>
-                                                            <span>{{jobdetail.due_date | globalDtFormat}}</span>
+                                                            <span>{{jobdetail.due_date | dateFormat2}}</span>
                                                             <input  ng-upcomming-date type="text" class="form-control none" id="duedate" name="due_date" ng-model="jobdetail.due_date" readonly/>
                                                         </div>
                                                     </div>
@@ -451,6 +451,13 @@ li.seperatordate.comment {
                                                             <a href="javascript:void(0)"  ng-click="jobsumemailResource(jobdetail.contact_person)"><span class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a>
                                                         </div>
                                                     </div>
+                                                    <div class="col-sm-6">
+                                                      <div class="form-group">
+                                                          <label><strong>Description:</strong> </label>
+                                                          <span>{{jobdetail.jobDesc}}</span>
+                                                      </div>
+                                                  </div>
+                                                    
                                                     <div class="col-sm-12">
                                                         <div class="col-sm-6">
                                                             <a style="padding:2px" href="javascript:void(0);" ng-click="popupOpenFilemanager('#/filemanager/source')"><span class="orderin"></span>Download &nbsp;(<span class="sourceC" id="proDetailSourceCount"></span>)</a>

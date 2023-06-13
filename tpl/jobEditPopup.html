@@ -330,7 +330,7 @@
                                                     <div class="left">
                                                         <label>Comment</label>
                                                         <textarea class="form-control" name="description"
-                                                            ng-model="jobdetail.jobDesc" style="resize: none;"
+                                                            ng-model="jobdetail.jobDesc"
                                                             required></textarea>
                                                     </div>
                                                 </div>
@@ -758,92 +758,397 @@
                                 </div> -->
                 </form>
             </div>
-            <div id="downloadPO" class="invoiceInput">
-                <div ng-show="poTempate">
-                    <div class="row poTempate">
-                        <div class="row invoice-header">
-                            <div class="col-xs-6">
-                                <h1>Purchase Order</h1>
+            <!-- Purchase order pdf start -->
+            <div >
+                <div id="downloadPO" class="invoiceInput">
+                    <div ng-show="poTempate">
+                        <div class="row poTempate">
+                            <div class="row invoice-header">
+                                <div class="col-xs-6">
+                                    <h1>Purchase Order</h1>
+                                </div>
+                                <div class="col-xs-6 text-right">
+                                    <h4>SpellUp AS</h4>
+                                    <p>Ødegårdsveien 43J </br>
+                                        1911 Flateby </br>
+                                        Norway </br>
+                                        NO930108995</P>    
+                                </div>
                             </div>
-                            <div class="col-xs-6 text-right">
-                                <h4>SpellUp AS</h4>
-                                <p>Ødegårdsveien 43J </br>
-                                    1911 Flateby </br>
-                                    Norway </br>
-                                    NO930108995</P>    
-                            </div>
-                        </div>
 
-                        <div class="row invoice-content1">
-                            <div class="col-xs-6">
-                                <p>
-                                    <strong>Issued to:</strong> </br>
-                                </p>
-                                <p class="mb-0" style="font-size:20px;">
-                                    <span>{{resourceDetail.vFirstName}} {{resourceDetail.vLastName}}</span></br>
-                                </p>
-                                <p>
-                                    {{resourceDetail.vAddress1}} </br>
-                                    {{resourceZipcode}}<span ng-if="resourceCity">, {{resourceCity}}</span></br>
-                                    {{resourceCountry}}</br>
-                                    <span ng-if="resourceVatinfo">Vat Number : {{resourceVatinfo}}</span> </br>
-                                </p>
+                            <div class="row invoice-content1">
+                                <div class="col-xs-6">
+                                    <p>
+                                        <strong>Issued to:</strong> </br>
+                                    </p>
+                                    <p class="mb-0" style="font-size:20px;">
+                                        <span>{{resourceDetail.vFirstName}} {{resourceDetail.vLastName}}</span></br>
+                                    </p>
+                                    <p>
+                                        {{resourceDetail.vAddress1}} </br>
+                                        {{resourceZipcode}}<span ng-if="resourceCity">, {{resourceCity}}</span></br>
+                                        {{resourceCountry}}</br>
+                                        <span ng-if="resourceVatinfo">Vat Number : {{resourceVatinfo}}</span> </br>
+                                    </p>
+                                </div>
+                                <div class="col-xs-6 text-right">
+                                    <p class="h4"> <strong>PO #{{jobdetail.po_number}} <!-- {{purchaseDetail.purchaseOrderNo }}--> </strong></p>
+                                    <br />
+                                    <p>
+                                        PO date: <br /><span ng-bind="purchaseDetail.purchaseOrderDate | globalDtFormat"></span></br>
+                                        <strong>Project Name:</strong> <br />
+                                        <span ng-bind="jobdetail.projectName"></span>
+                                    </p>
+                                </div>
                             </div>
-                            <div class="col-xs-6 text-right">
-                                <p class="h4"> <strong>PO #{{jobdetail.po_number}} <!-- {{purchaseDetail.purchaseOrderNo }}--> </strong></p>
-                                <br />
-                                <p>
-                                    PO date: <br /><span ng-bind="purchaseDetail.purchaseOrderDate | globalDtFormat"></span></br>
-                                    <strong>Project Name:</strong> <br />
-                                    <span ng-bind="jobdetail.projectName"></span>
-                                </p>
-                            </div>
-                        </div>
 
-                        <div class="line"></div>
-                        <div class="invoice-content2">
-                            <table ng-init="invoiceLength = itemPriceUni[jobdetail.job_summmeryId].length - 1"
-                                class="table table-striped" id="InvoiceTbl">
-                                <thead>
-                                    <tr>
-                                        <th>ITEMS</th>
-                                        <th>DESCRIPTION</th>
-                                        <th>QUANTITY</th>
-                                        <th>PRICE</th>
-                                        <th>AMOUNT</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="table table-striped bg-white b-a">
-                                    <tr class="thfont" ng-repeat="invL in itemPriceUni[jobdetail.job_summmeryId] track by $index">
-                                        <th>{{$index + 1}}</th>
-                                        <th> {{ invL.pricelist }}</th>
-                                        <th>{{invL.quantity}}</th>
-                                        <th style="white-space:nowrap;"> {{ invL.itemPrice }} </th>
-                                        <th> {{ invL.itemTotal }}</th>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4" style="text-align:right !important;">Subtotal:</td>
-                                        <td>{{ jobdetail.total_price | NumbersCommaformat }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row invoice-footer">
-                            <div class="col-xs-12 text-right">
-                                <h4>TOTAL</h4>
-                                <h3>{{clientCurrency}} {{jobdetail.total_price | NumbersCommaformat}}</h3>
+                            <div class="line"></div>
+                            <div class="invoice-content2">
+                                <table ng-init="invoiceLength = itemPriceUni[jobdetail.job_summmeryId].length - 1"
+                                    class="table table-striped" id="InvoiceTbl">
+                                    <thead>
+                                        <tr>
+                                            <th>ITEMS</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>QUANTITY</th>
+                                            <th>PRICE</th>
+                                            <th>AMOUNT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table table-striped bg-white b-a">
+                                        <tr class="thfont" ng-repeat="invL in itemPriceUni[jobdetail.job_summmeryId] track by $index">
+                                            <th>{{$index + 1}}</th>
+                                            <th> {{ invL.pricelist }}</th>
+                                            <th>{{invL.quantity}}</th>
+                                            <th style="white-space:nowrap;"> {{ invL.itemPrice }} </th>
+                                            <th> {{ invL.itemTotal }}</th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" style="text-align:right !important;">Subtotal:</td>
+                                            <td>{{ jobdetail.total_price | NumbersCommaformat }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                        <div class="row" style="margin-bottom: 15px !important;">
-                            <div class="imgcenter" style="margin: 0 auto;width: 170px;">
-                                <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="SpellUp"
-                                    style="max-height: 50px; max-width: 100%; width: auto;">
+                            <div class="row invoice-footer">
+                                <div class="col-xs-12 text-right">
+                                    <h4>TOTAL</h4>
+                                    <h3>{{clientCurrency}} {{jobdetail.total_price | NumbersCommaformat}}</h3>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom: 15px !important;">
+                                <div class="imgcenter" style="margin: 0 auto;width: 170px;">
+                                    <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="SpellUp"
+                                        style="max-height: 50px; max-width: 100%; width: auto;">
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
-            </div>
+                <div class="po none">
+                    <style>
+                        .invoiceheader{
+                            padding: 0 15px;;
+                        }
+                        .panel-heading-img{
+                        float: right;
+                        }
+                        .address-title{
+                        color: #808080;
+                        }
+                        .header-tr-border{
+                        background-color: #bebebe;
+                        }
+                        table.table.table-bordered.table-condensed-second {
+                        margin: 0px;
+                        margin-top: 10px;
+                        background-color: #d9d9d9 !important;
+                        }
+                        table.table.table-bordered.table-condensed-second tbody tr:nth-of-type(odd) td {
+                            background: #d9d9d9 !important;
+                        }
+                        .table-condensed-second tbody tr {
+                            background: #d9d9d9 !important;
+                        }
+                        .invoice {
+                        width: 816px !important;
+                        margin: 10px auto;
+                        font-family: Khmer UI, serif;
+                        margin-left: -15px;
+                        }
+                        .invoice .panel-heading {
+                            background-color: #fff !important;
+                            border-color: #fff !important;
+                        }
+                        .invoice .invoice-header {
+                            padding: 25px 25px 15px;
+                        }
+                        .invoice .invoice-header h1 {
+                            margin: 0;
+                        }
+                        .invoice .invoice-header .media .media-body {
+                            font-size: 0.9em;
+                            margin: 0;
+                        }
+                        .invoice .invoice-body {
+                            border-radius: 10px;
+                            padding-top: 25px;
+                            padding-bottom: 25px;
+                            background: #fff;
+                        }
+                        .invoice-content{
+                            padding-left: 60px;
+                            padding-right: 60px;
+                        }
+                        .dl-horizontal {
+                            margin: 0;
+                            line-height: 1.2;
+                            padding: 12px;
+                        } 
+                        .panel-body-image{
+                        text-align: center;
+                        }
+                        .panel-body-image img {
+                        width: 200px;
+                        height: 100px;
+                        }
+                        .invoice-heading{
+                        font-size: 18px;
+                        }
+                        .invoice-purchase-side dd {
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 5px;
+                        }
+                        .table-data-txt {
+                        font-size: 14px;
+                        }
+                        tbody, td, tfoot, th, thead, tr {
+                        border-style: unset !important;
+                        }
+                        .panel-body.table-payment-title {
+                        margin-top: 50px;
+                        }
+                        .list-unstyled li a {
+                        font-weight: 600;
+                        text-decoration: none;
+                        color: #000082;
+                        }
+                        .list-unstyled-one p , .list-unstyled-two {
+                        list-style-type: none;
+                        margin: 0px;
+                        }
+                        .list-unstyled-one a{
+                        font-size:18px;
+                        text-decoration: none;
+                        }
+                        .list-unstyled-two a {
+                        font-size: 18px;
+                        color: #000;
+                        }
+                        p.panel-title-footer-end {
+                        text-align: end;
+                        }
+                        p.panel-titlefooter-start ,p.panel-title-footer-end {
+                        padding-top: 10px;
+                        }
+                        .panel-default-btn{
+                        float: right;
+                        }
+                        a.invoice-print-btn {
+                        padding: 8px 20px;
+                        border:1px solid #dee2e6;
+                        border-radius: 6px;
+                        text-transform: uppercase;
+                        background: #fff;
+                        color: #000;
+                        text-decoration: none;
+                        }
+                        a.invoice-download-btn {
+                        text-transform: uppercase;
+                        padding: 8px 20px;
+                        border: none ;
+                        border-radius: 6px;
+                        background: #000082;
+                        color: #fff;
+                        text-decoration: none;
+                        }
+                        .invoice-header-total {
+                        margin-bottom: 20px;
+                        border-bottom: 1px solid #dee2e6;
+                        }
+                        td.table-data-text {
+                        padding:0px 10px !important;
+                        }
+                        .dl-horizontal dd {
+                            margin-left: auto;
+                        }
+                        .invoice .panel{
+                        margin-bottom: initial !important;
+                        }
+                        .invoice .panel-body {
+                        padding-left: initial !important;
+                        } 
+                        .invoice .panel > .panel-body + .table{
+                        border-top: none;
+                        }
+                        .inv-footer .table-data-text, .fontszsm, .copytext{
+                            font-size: 12px;
+                            color: #808080;
+                        }
+                        .copytext{
+                            text-align: center;
+                            margin-top: 10px;
+                        }
+                        .pb-0{ padding-bottom: 0px; }
+                        .mb-d{margin-bottom: 2px;}
+                        .txtalign {text-align: right !important;}
+                        .txtcenter {text-align: center !important;}
+                        .tbldd dd {margin-bottom: 5px;}
+                        .table-condensed-second > tbody > tr > td { padding-bottom: 3px !important; padding-bottom: 3px !important; }
+                        .line1{ border-top: 1px solid #ea7227; width: 25%;}
+                        .line2{ border-top: 1px solid #e63132; width: 25%;}
+                        .line3{ border-top: 1px solid #4c9acc; width: 25%;}
+                        .line4{ border-top: 1px solid #5fc752; width: 25%;}
+                    </style>
+                    <div class="container invoice">
+                        <div class="invoice-body">
+                            <div class="invoiceheader">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <div class="panel panel-default ">
+                                            <div class="panel-heading-img"> <img src="assets/img/invoice_logo.png" alt="Logo" srcset=""> </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="invoice-content">
+                                <div class="row">
+                                    <div class="col-sm-12" style="padding-left:0px;">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <p class="address-title"> <span>Dosina Translations AS &middot; </span> <span>Munthes gate 42 &middot; </span> <span>0260</span> <span>Oslo &middot; </span>  <span>Norway</span> </p>
+                                            </div>
+                
+                                            <div class="panel-body" style="padding-top: 0px;">
+                                                <dl class="dl-horizontal">
+                                                    <dd style="margin-bottom: 8px;"><strong> [NAME2][NAME1] </strong></dd>
+                                                    <dd> [STREET1][STREET2] </dd>
+                                                    <dd> [POSTCODE] <span>[CITY]</span></dd>
+                                                    <dd> [COUNTRY] </dd>
+                                            </div>
+                                            <div class="panel-body" style="padding-top: 0px;">
+                                            <!-- <dl class="dl-horizontal"> -->
+                                                <div class="col-sm-4">
+                                                    <p class="mb-d"><strong>Project Manager</strong></p>
+                                                    [PROJECT-MANAGER]
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <p class="mb-d"><strong>Email</strong></p> [EMAIL]
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <p class="mb-d"><strong>Date</strong></p> 
+                                                    [ORDERDATE]
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="panel panel-default invoice-header-height">
+                                        <div class="panel-body">
+                                            <dl class="dl-horizontal" style="padding: 0 15px;">
+                                                <dd class="invoice-heading"><strong>Purchase Order | [JOBNO] </strong></dd>
+                                        </div>
+                                    </div>
+                                </div>        
+                                <div class="row">
+                                    <div class="panel panel-default invoice-header-height">
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                                <div class="panel panel-default">
+                                                    <div class="col-sm-12" style="margin-bottom: 15px;">
+                                                        <p>Thank you so much for helping us with the following project:</p>
+                                                     </div>
+                                                </div>        
+                                                <div class="panel panel-default">
+                                                    <div class="panel-body">
+                                                        <dl class="dl-horizontal tbldd">
+                                                            <dd> <strong> Project: </strong> [PROJECTNAME] </dd>
+                                                            <dd> <strong> Client: </strong> [INDIRECT-CUSTOMER] </dd>
+                                                            <dd> <strong> Task: </strong> [TASKNAME] </dd>
+                                                            <dd> <strong> Languages: </strong> [LANGUAGES] </dd>
+                                                            <dd> <strong> Instructions: </strong> [INSTRUCTIONS] </dd>
+                                                            <dd> <strong> Deadline: </strong> <span style="color:red"> [DEADLINE] </span> </dd>
+                                                            <dd> <strong> Company to invoice: </strong> Dosina Translations AS </dd>
+                                                            <dd> <strong> Word Count: </strong> [WORD-COUNT] </dd>
+                                                            <dd> <strong> Total: </strong> [TOTALPRICE] </dd>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>        
+                                <div class="row">
+                                    <div class="panel panel-default invoice-header-height" style="text-align:center;">
+                                        <p class="fontszsm"> 
+                                        Please make sure to state the following project number [JOBNO] on your invoice and remember to invoice the following company: Dosina Translations AS.
+                                        Please send all invoices to accounting@dosinatranslations.no </p>
+                                        <p class="fontszsm"> 
+                                        Please also note that all work done for Dosina Translations AS are regulated under the same conditions as you have agreed with BeConnected,
+                                        including signed NDA and Service Agreement.
+                                        </p>
+                                    </div>
+                                </div>  
+                            </div> 
+                            <div class="invoicefooter">
+                                <div class="row">
+                                    <div class="panel panel-default invoice-header-height" style="margin: 0 15px;">        
+                                        <div class="d-flex">
+                                        <div class="line1"> </div>
+                                        <div class="line2"> </div>
+                                        <div class="line3"> </div>
+                                        <div class="line4"> </div>
+                                        </div>
+                                        <table class="table table-bordered table-condensed inv-footer" style="margin-top: 10px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="table-data-text"> <strong> Dosina Translations AS </strong> </td>
+                                                    <td class="table-data-text"> </td>
+                                                    <td class="table-data-text txtalign"> <strong> VAT NUMBER:</strong> </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="table-data-text"> Munthes gate 42 </td>
+                                                    <td class="table-data-text txtcenter"> Email:<a href="mailto:accounting@dosinatranslations.no"> accounting@dosinatranslations.no </a> </td>
+                                                    <td class="table-data-text txtalign">Foretaksregisteret: </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="table-data-text"> 0260 Oslo </td>
+                                                    <td class="table-data-text">  </td>
+                                                    <td class="table-data-text txtalign">NO922694788</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="table-data-text"> Norway </td>
+                                                    <td class="table-data-text"> </td>
+                                                    <td class="table-data-text"> </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div>
+                                            <p class="copytext" > <spam style="font-family:Arial Unicode MS;"> &copy; </spam> Dosina Translations AS 2019. All rights reserved. </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+
+                </div>
+            </div> 
+            <!-- End Purchase order pdf  -->
+
         </div>
 
         <!-- </section> -->

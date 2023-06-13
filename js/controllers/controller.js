@@ -652,6 +652,7 @@ function exportTableToExcel(id, fileName){
 app.controller('loginController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope) {
     /*-------Check for login--------*/
     if ($cookieStore.get('session_iUserId') != undefined) {
+        console.log('login!!!')
         $location.path('/dashboard');
     }
 
@@ -727,7 +728,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // Invoice design page type
                     rest.path = 'clientInvoiceDesignType';
                     rest.get().success(function (data) {
-                        console.log('data-desing', data)
                         if (data) {
                             $window.localStorage.setItem("invoiceDesignType", data.invoice_design);
                         } else {

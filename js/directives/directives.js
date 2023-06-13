@@ -6157,7 +6157,6 @@ app.directive('jobWorkInstruction3', ['$compile', function($compile) { // inject
                     var strD1 = 1; 
                     //var strD2 = test.substring(CommaIndex + 1); 
                     var strD2 = test;
-                    console.log('test',test);
                     var strD = test.split(',');
                     var i;
                     

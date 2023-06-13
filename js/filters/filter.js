@@ -64,9 +64,10 @@ app.filter('dateFormat2', function($window) {
         + ((d.getMinutes()).toString().length > 1 ? (d.getMinutes()) : '0' + (d.getMinutes()));*/
     }
 });
-app.filter('dateFormatDisplayFront', function() {
+app.filter('dateFormatDisplayFront', function($window) {
     return function(input) {
         //console.log('input', input)
+
         var d = new Date(input);
         if( ! isNaN(Date.parse(d)) ){
             return (d.getDate().toString().length > 1 ? d.getDate() : '0' + d.getDate()) + "." +
