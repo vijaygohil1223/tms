@@ -2556,13 +2556,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.projectsQaReadyCount++;
                     //}    
                 }
-                // QA issue
-                if (val.itemStatusId == "11") {
-                    $scope.projectsQaIssueCount++;
-                    $scope.projectsQaissue.push(val);
-                    val.projectstatus_class = 'projectstatus_ready';
-                    val.projectstatus_color = '#f44237';
-                }
                 // PM Ready
                 if (val.itemStatusId == "12") {
                     val.progrss_precentage = 75;
@@ -2571,6 +2564,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#f44237';
                 }
+                // QA issue
+                if (val.itemStatusId == "13") {
+                    $scope.projectsQaIssueCount++;
+                    $scope.projectsQaissue.push(val);
+                    val.projectstatus_class = 'projectstatus_ready';
+                    val.projectstatus_color = '#f44237';
+                }
+                
                 // Overdue
                 // if (val.itemStatusId == "12") {
                 //     $scope.projectOverdueCount++;
@@ -3844,6 +3845,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return deferred.promise;
     };
 
+  // Function to replace variables in the HTML template
+  function replaceVariables(template, data) {
+    return template.replace(/\[(.*?)\]/g, (match, variable) => {
+      return data[variable] || '';
+    });
+  }
+
+  // Sample data
+const myData = {
+    NAME1: 'Anil',
+    NAME2: 'Nadiya',
+    STREET1: 'Chandkheda',
+    STREET2: 'Ahmedabad'
+};
+
+    $scope.emailTemplate = '';
+    rest.path = "emailTemplateGetAll" ;
+    rest.get().success(function (data) {
+        let emailTemplate = data.find( (templt)=> templt.template_id ==15);
+        console.log('$scope.emailTemplate', emailTemplate)
+        if(emailTemplate)
+            $scope.emailTemplate = replaceVariables(emailTemplate.template_content, myData)
+            $('#emailTemplate').append($scope.emailTemplate);
+    })
 
     $scope.poTempate = false;
     $scope.sendPO = function(type){
@@ -4850,8 +4875,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($window.localStorage.jobFoldertype == 'target') {
         $scope.hideuploadBtn = ($scope.userRight == 2) ? false : true;
     }
-    if($routeParams.id == 'target' && $scope.userRight == 1)
-        $scope.hideuploadBtn = true;
+    if($routeParams.id == 'target' && $scope.userRight == 1){
+        //$scope.hideuploadBtn = true;
+    }
 
     //project root get display front
     if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
@@ -16283,15 +16309,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    rest.path = "emailTemplateGetAll" ;
-    rest.get().success(function (data) {
-        //console.log('data', data[0])
-        //$scope.emailTemplate = $.parseHTML( data[0].template_content )
-        //$scope.emailTemplate = data[0].template_content
-
-    })
-
-
+    
     $scope.printIt = function (number) {
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
         //$scope.noneCls = "";

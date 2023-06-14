@@ -137,6 +137,17 @@
     .invoice-footer p {
         margin-top: 10px;
     }
+
+    /* Purchase order  */
+
+    .templatepopup {
+        /* display: none; */
+        opacity: 0;
+        position: fixed;
+        left: -80%;
+        bottom: 0;
+    }
+    /* purchase order css end */
     
 </style>
 <div class="bolck">
@@ -759,7 +770,7 @@
                 </form>
             </div>
             <!-- Purchase order pdf start -->
-            <div >
+            <div class="templatepopup">
                 <div id="downloadPO" class="invoiceInput">
                     <div ng-show="poTempate">
                         <div class="row poTempate">
@@ -844,305 +855,11 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
+                <!-- Design 2 for beconnected and dosina server -->
+                <div class="po" id="downloadPO2" ng-show="poTempate">
+                    <div id="emailTemplate">
 
-                <div class="po none">
-                    <style>
-                        .invoiceheader{
-                            padding: 0 15px;;
-                        }
-                        .panel-heading-img{
-                        float: right;
-                        }
-                        .address-title{
-                        color: #808080;
-                        }
-                        .header-tr-border{
-                        background-color: #bebebe;
-                        }
-                        table.table.table-bordered.table-condensed-second {
-                        margin: 0px;
-                        margin-top: 10px;
-                        background-color: #d9d9d9 !important;
-                        }
-                        table.table.table-bordered.table-condensed-second tbody tr:nth-of-type(odd) td {
-                            background: #d9d9d9 !important;
-                        }
-                        .table-condensed-second tbody tr {
-                            background: #d9d9d9 !important;
-                        }
-                        .invoice {
-                        width: 816px !important;
-                        margin: 10px auto;
-                        font-family: Khmer UI, serif;
-                        margin-left: -15px;
-                        }
-                        .invoice .panel-heading {
-                            background-color: #fff !important;
-                            border-color: #fff !important;
-                        }
-                        .invoice .invoice-header {
-                            padding: 25px 25px 15px;
-                        }
-                        .invoice .invoice-header h1 {
-                            margin: 0;
-                        }
-                        .invoice .invoice-header .media .media-body {
-                            font-size: 0.9em;
-                            margin: 0;
-                        }
-                        .invoice .invoice-body {
-                            border-radius: 10px;
-                            padding-top: 25px;
-                            padding-bottom: 25px;
-                            background: #fff;
-                        }
-                        .invoice-content{
-                            padding-left: 60px;
-                            padding-right: 60px;
-                        }
-                        .dl-horizontal {
-                            margin: 0;
-                            line-height: 1.2;
-                            padding: 12px;
-                        } 
-                        .panel-body-image{
-                        text-align: center;
-                        }
-                        .panel-body-image img {
-                        width: 200px;
-                        height: 100px;
-                        }
-                        .invoice-heading{
-                        font-size: 18px;
-                        }
-                        .invoice-purchase-side dd {
-                        display: flex;
-                        justify-content: space-between;
-                        padding: 5px;
-                        }
-                        .table-data-txt {
-                        font-size: 14px;
-                        }
-                        tbody, td, tfoot, th, thead, tr {
-                        border-style: unset !important;
-                        }
-                        .panel-body.table-payment-title {
-                        margin-top: 50px;
-                        }
-                        .list-unstyled li a {
-                        font-weight: 600;
-                        text-decoration: none;
-                        color: #000082;
-                        }
-                        .list-unstyled-one p , .list-unstyled-two {
-                        list-style-type: none;
-                        margin: 0px;
-                        }
-                        .list-unstyled-one a{
-                        font-size:18px;
-                        text-decoration: none;
-                        }
-                        .list-unstyled-two a {
-                        font-size: 18px;
-                        color: #000;
-                        }
-                        p.panel-title-footer-end {
-                        text-align: end;
-                        }
-                        p.panel-titlefooter-start ,p.panel-title-footer-end {
-                        padding-top: 10px;
-                        }
-                        .panel-default-btn{
-                        float: right;
-                        }
-                        a.invoice-print-btn {
-                        padding: 8px 20px;
-                        border:1px solid #dee2e6;
-                        border-radius: 6px;
-                        text-transform: uppercase;
-                        background: #fff;
-                        color: #000;
-                        text-decoration: none;
-                        }
-                        a.invoice-download-btn {
-                        text-transform: uppercase;
-                        padding: 8px 20px;
-                        border: none ;
-                        border-radius: 6px;
-                        background: #000082;
-                        color: #fff;
-                        text-decoration: none;
-                        }
-                        .invoice-header-total {
-                        margin-bottom: 20px;
-                        border-bottom: 1px solid #dee2e6;
-                        }
-                        td.table-data-text {
-                        padding:0px 10px !important;
-                        }
-                        .dl-horizontal dd {
-                            margin-left: auto;
-                        }
-                        .invoice .panel{
-                        margin-bottom: initial !important;
-                        }
-                        .invoice .panel-body {
-                        padding-left: initial !important;
-                        } 
-                        .invoice .panel > .panel-body + .table{
-                        border-top: none;
-                        }
-                        .inv-footer .table-data-text, .fontszsm, .copytext{
-                            font-size: 12px;
-                            color: #808080;
-                        }
-                        .copytext{
-                            text-align: center;
-                            margin-top: 10px;
-                        }
-                        .pb-0{ padding-bottom: 0px; }
-                        .mb-d{margin-bottom: 2px;}
-                        .txtalign {text-align: right !important;}
-                        .txtcenter {text-align: center !important;}
-                        .tbldd dd {margin-bottom: 5px;}
-                        .table-condensed-second > tbody > tr > td { padding-bottom: 3px !important; padding-bottom: 3px !important; }
-                        .line1{ border-top: 1px solid #ea7227; width: 25%;}
-                        .line2{ border-top: 1px solid #e63132; width: 25%;}
-                        .line3{ border-top: 1px solid #4c9acc; width: 25%;}
-                        .line4{ border-top: 1px solid #5fc752; width: 25%;}
-                    </style>
-                    <div class="container invoice">
-                        <div class="invoice-body">
-                            <div class="invoiceheader">
-                                <div class="row">
-                                    <div class="col-lg-12 col-md-12 col-sm-12">
-                                        <div class="panel panel-default ">
-                                            <div class="panel-heading-img"> <img src="assets/img/invoice_logo.png" alt="Logo" srcset=""> </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="invoice-content">
-                                <div class="row">
-                                    <div class="col-sm-12" style="padding-left:0px;">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <p class="address-title"> <span>Dosina Translations AS &middot; </span> <span>Munthes gate 42 &middot; </span> <span>0260</span> <span>Oslo &middot; </span>  <span>Norway</span> </p>
-                                            </div>
-                
-                                            <div class="panel-body" style="padding-top: 0px;">
-                                                <dl class="dl-horizontal">
-                                                    <dd style="margin-bottom: 8px;"><strong> [NAME2][NAME1] </strong></dd>
-                                                    <dd> [STREET1][STREET2] </dd>
-                                                    <dd> [POSTCODE] <span>[CITY]</span></dd>
-                                                    <dd> [COUNTRY] </dd>
-                                            </div>
-                                            <div class="panel-body" style="padding-top: 0px;">
-                                            <!-- <dl class="dl-horizontal"> -->
-                                                <div class="col-sm-4">
-                                                    <p class="mb-d"><strong>Project Manager</strong></p>
-                                                    [PROJECT-MANAGER]
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <p class="mb-d"><strong>Email</strong></p> [EMAIL]
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <p class="mb-d"><strong>Date</strong></p> 
-                                                    [ORDERDATE]
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="panel panel-default invoice-header-height">
-                                        <div class="panel-body">
-                                            <dl class="dl-horizontal" style="padding: 0 15px;">
-                                                <dd class="invoice-heading"><strong>Purchase Order | [JOBNO] </strong></dd>
-                                        </div>
-                                    </div>
-                                </div>        
-                                <div class="row">
-                                    <div class="panel panel-default invoice-header-height">
-                                        <div class="row">
-                                            <div class="col-lg-12 col-md-12 col-sm-12">
-                                                <div class="panel panel-default">
-                                                    <div class="col-sm-12" style="margin-bottom: 15px;">
-                                                        <p>Thank you so much for helping us with the following project:</p>
-                                                     </div>
-                                                </div>        
-                                                <div class="panel panel-default">
-                                                    <div class="panel-body">
-                                                        <dl class="dl-horizontal tbldd">
-                                                            <dd> <strong> Project: </strong> [PROJECTNAME] </dd>
-                                                            <dd> <strong> Client: </strong> [INDIRECT-CUSTOMER] </dd>
-                                                            <dd> <strong> Task: </strong> [TASKNAME] </dd>
-                                                            <dd> <strong> Languages: </strong> [LANGUAGES] </dd>
-                                                            <dd> <strong> Instructions: </strong> [INSTRUCTIONS] </dd>
-                                                            <dd> <strong> Deadline: </strong> <span style="color:red"> [DEADLINE] </span> </dd>
-                                                            <dd> <strong> Company to invoice: </strong> Dosina Translations AS </dd>
-                                                            <dd> <strong> Word Count: </strong> [WORD-COUNT] </dd>
-                                                            <dd> <strong> Total: </strong> [TOTALPRICE] </dd>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>        
-                                <div class="row">
-                                    <div class="panel panel-default invoice-header-height" style="text-align:center;">
-                                        <p class="fontszsm"> 
-                                        Please make sure to state the following project number [JOBNO] on your invoice and remember to invoice the following company: Dosina Translations AS.
-                                        Please send all invoices to accounting@dosinatranslations.no </p>
-                                        <p class="fontszsm"> 
-                                        Please also note that all work done for Dosina Translations AS are regulated under the same conditions as you have agreed with BeConnected,
-                                        including signed NDA and Service Agreement.
-                                        </p>
-                                    </div>
-                                </div>  
-                            </div> 
-                            <div class="invoicefooter">
-                                <div class="row">
-                                    <div class="panel panel-default invoice-header-height" style="margin: 0 15px;">        
-                                        <div class="d-flex">
-                                        <div class="line1"> </div>
-                                        <div class="line2"> </div>
-                                        <div class="line3"> </div>
-                                        <div class="line4"> </div>
-                                        </div>
-                                        <table class="table table-bordered table-condensed inv-footer" style="margin-top: 10px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="table-data-text"> <strong> Dosina Translations AS </strong> </td>
-                                                    <td class="table-data-text"> </td>
-                                                    <td class="table-data-text txtalign"> <strong> VAT NUMBER:</strong> </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="table-data-text"> Munthes gate 42 </td>
-                                                    <td class="table-data-text txtcenter"> Email:<a href="mailto:accounting@dosinatranslations.no"> accounting@dosinatranslations.no </a> </td>
-                                                    <td class="table-data-text txtalign">Foretaksregisteret: </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="table-data-text"> 0260 Oslo </td>
-                                                    <td class="table-data-text">  </td>
-                                                    <td class="table-data-text txtalign">NO922694788</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="table-data-text"> Norway </td>
-                                                    <td class="table-data-text"> </td>
-                                                    <td class="table-data-text"> </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <div>
-                                            <p class="copytext" > <spam style="font-family:Arial Unicode MS;"> &copy; </spam> Dosina Translations AS 2019. All rights reserved. </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>    
-                        </div>
                     </div>
 
                 </div>

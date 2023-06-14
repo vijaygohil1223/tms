@@ -566,10 +566,10 @@
                                           <!-- <td>
                                                         <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">{{it.description}}</label>
                                                     </td> -->
-                                          <td>
+                                          <td class="nowrap">
                                              <label ng-hide="it.job_summmeryId==id || job[{{$index}}]"
                                                 ng-if="it.due_date!='0000-00-00 00:00:00'">{{it.due_date|
-                                                globalDtFormat}}</label>
+                                                 dateFormat2}}</label>
                                           </td>
                                           <td>
                                              <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">
