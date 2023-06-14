@@ -464,13 +464,13 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads Up</th>
+                            <!-- <th>Heads Up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -549,9 +549,15 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1">{{ order.upcomingDate | dateFormatDisplayFront }}</span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -607,23 +613,23 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                 </a>
-                              </td>
+                              </td> -->
                             </tr>
                           </tbody>
                         </table>
@@ -645,13 +651,13 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -728,10 +734,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -787,23 +799,23 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x  cmtclr{{order.orderId}}"></i>
                                 </a>
-                              </td>
+                              </td> -->
                               <!-- <td>
                                 <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
                               </td> -->
@@ -828,13 +840,13 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -911,10 +923,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -970,23 +988,18 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
                               </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
-                              </td>
+                              
                             </tr>
                           </tbody>
                         </table>
@@ -1008,13 +1021,13 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -1091,10 +1104,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -1150,23 +1169,18 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
                               </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
-                              </td>
+                              
                             </tr>
                           </tbody>
                         </table>
@@ -1187,13 +1201,14 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
+                            
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsQaissue">
@@ -1261,10 +1276,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -1307,23 +1328,18 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
                               </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
-                              </td>
+                              
                             </tr>
                           </tbody>
                         </table>
@@ -1344,13 +1360,14 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
+                            
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in projectsPmready">
@@ -1418,10 +1435,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -1464,22 +1487,16 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                             </tr>
                           </tbody>
@@ -1502,13 +1519,13 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -1585,10 +1602,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -1644,22 +1667,16 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                             </tr>
                           </tbody>
@@ -1682,13 +1699,13 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -1765,11 +1782,17 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
-                              </td>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
+                              </td>  
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
@@ -1824,22 +1847,16 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x  cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                               <!-- <td>
                                 <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
@@ -1865,13 +1882,13 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -1948,10 +1965,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -2007,22 +2030,16 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x  cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                               <!-- <td>
                                 <a href="javascript:void(0)" ng-click="editProject(order.orderId)" title="Edit" class=""><i class="fa fa-ellipsis-h fa-1x"></i></a>
@@ -2049,13 +2066,13 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads up</th>
+                            <!-- <th>Heads up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -2130,10 +2147,16 @@ td { font-size: 11px; } */
                                   style="white-space:nowrap;">{{liguist.vUserName}} </span>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -2189,22 +2212,16 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                             </tr>
                           </tbody>
@@ -2228,12 +2245,12 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads Up</th>
+                            <!-- <th>Heads Up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -2312,10 +2329,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -2371,21 +2394,15 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                             </tr>
                           </tbody>
@@ -2409,12 +2426,12 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads Up</th>
+                            <!-- <th>Heads Up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -2493,10 +2510,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -2552,21 +2575,15 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                             </tr>
                           </tbody>
@@ -2589,12 +2606,12 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads Up</th>
+                            <!-- <th>Heads Up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -2673,10 +2690,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -2732,21 +2755,15 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                             </tr>
                           </tbody>
@@ -2769,12 +2786,12 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th>Linguist</th>
-                            <th>Heads Up</th>
+                            <!-- <th>Heads Up</th> -->
+                            <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <th>Status</th>
+                            <!-- <th>Status</th> -->
                             <th>Price</th>
-                            <th>Comment</th>
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
@@ -2853,10 +2870,16 @@ td { font-size: 11px; } */
                                   {{liguist.vUserName}} </div>
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.heads_up===1"> {{ order.upcomingDate | dateFormatDisplayFront }}
                                 </span>
                                 <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
                               </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
@@ -2912,21 +2935,15 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td>
+                              </td> -->
                               <td>
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
-                              </td>
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
                               </td>
                             </tr>
                           </tbody>
