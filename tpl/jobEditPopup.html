@@ -147,6 +147,16 @@
         left: -80%;
         bottom: 0;
     }
+    #emailTemplateText{
+        /* display: none; */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+    }
     /* purchase order css end */
     
 </style>
@@ -504,8 +514,11 @@
                                     <div class="panel-heading font-bold d-flex justify-space-between">
                                         <h4>Payment to linguist</h4>
                                         <div>
-                                            <a ng-click="sendPO('SendOrder')" class="btn btn-info">Send PO</a>
-                                            <a ng-click="sendPO('Download')" class="btn btn-info">
+                                            <!-- <a ng-click="sendPO('SendOrder')" class="btn btn-info">Send PO</a> -->
+                                            <!-- <a ng-click="sendPO('Download')" class="btn btn-info">
+                                                <i class="fa fa-download"></i> PO</a> -->
+                                            <a ng-click="sendPoPopup('SendOrder')" class="btn btn-info" ng-disabled="!jobdetail.resource">Send PO</a>
+                                            <a ng-click="sendPoPopup('Download')" class="btn btn-info" ng-disabled="!jobdetail.resource">
                                                 <i class="fa fa-download"></i> PO</a>
                                         </div>
                                     </div>
@@ -857,11 +870,10 @@
                     </div>
                 </div>
                 <!-- Design 2 for beconnected and dosina server -->
-                <div class="po" id="downloadPO2" ng-show="poTempate">
-                    <div id="emailTemplate">
-
+                <div class="po" id="downloadPO2">
+                    <div id="emailTemplate" ng-show="poTempate">
+                        <!-- Pdf Content Dynamic -->
                     </div>
-
                 </div>
             </div> 
             <!-- End Purchase order pdf  -->

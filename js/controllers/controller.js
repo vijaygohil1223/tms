@@ -559,6 +559,12 @@ function commaToPoint(input) {
         return n1 + n2;
     }
 }
+  // Function to replace variables in the HTML template
+  function replaceVariables(template, data) {
+    return template.replace(/\[(.*?)\]/g, (match, variable) => {
+      return data[variable] || '';
+    });
+  }
 // to download zip file
 function fileUrlExists(url) {
     var http = new XMLHttpRequest();
@@ -3800,7 +3806,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-}).controller('jobSummeryDetailsController', function ($interval, $uibModalInstance, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams, $q) {
+}).controller('jobSummeryDetailsController', function ($interval, $uibModalInstance, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams, $q, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("parentId", " ");
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
@@ -3845,51 +3851,46 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return deferred.promise;
     };
 
-  // Function to replace variables in the HTML template
-  function replaceVariables(template, data) {
-    return template.replace(/\[(.*?)\]/g, (match, variable) => {
-      return data[variable] || '';
-    });
-  }
-
-  // Sample data
-const myData = {
-    NAME1: 'Anil',
-    NAME2: 'Nadiya',
-    STREET1: 'Chandkheda',
-    STREET2: 'Ahmedabad'
-};
-
+    // Start purchase order download/send po
+    // invoice setting Data - invoice address based on selected business unit
+    $scope.pdfExportID = '#downloadPO';
+    rest.path = "clientInvoiceSetting";
+    rest.get().success(function (settingData) {
+        console.log('staticData', settingData)
+        if(settingData){
+            $scope.invoiceSettingData = settingData[0];
+            console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
+            if([2,3].includes($scope.invoiceSettingData.server_no)){
+                $scope.pdfExportID = '#downloadPO2';            
+            }
+        }
+        //$scope.invoiceDesignType = $scope.invoiceSettingData.server_no > 1 ? 2 : 1;
+        //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+    })
     $scope.emailTemplate = '';
+    var emailTemplate = '';
+    var emailContentText = '';
+    // START Purchase order tempalate
     rest.path = "emailTemplateGetAll" ;
     rest.get().success(function (data) {
-        let emailTemplate = data.find( (templt)=> templt.template_id ==15);
-        console.log('$scope.emailTemplate', emailTemplate)
-        if(emailTemplate)
-            $scope.emailTemplate = replaceVariables(emailTemplate.template_content, myData)
-            $('#emailTemplate').append($scope.emailTemplate);
+        //setTimeout(() => {
+            emailTemplate = data.find( (templt) => templt.template_id == 15);
+            console.log('$scope.emailTemplate', emailTemplate)
+            emailContentText = data.find( (templt) => templt.template_id == 13);
+            //$scope.emailTemplateText =  $('#emailTemplateText').append(emailContentText.template_content);
+            if(emailContentText){
+                $scope.emailTemplateText =  emailContentText.template_content;  
+            }
+        //}, 3000);
     })
-
+    // END purchase order template
     $scope.poTempate = false;
     $scope.sendPO = function(type){
-        let poFilenamePdf = $scope.jobdetail.po_number ? 'PO_' +$scope.jobdetail.po_number +'.pdf' : 'purchase_order.pdf'; 
-        $scope.poTempate = true;
-        if(type == 'Download'){
-            setTimeout(() => {
-                kendo.drawing.drawDOM($("#downloadPO")).then(function (group) {
-                    //group.options.set("font", "8px DejaVu Sans");
-                    kendo.drawing.pdf.saveAs(group, poFilenamePdf);
-                });
-                setTimeout(() => {
-                    $scope.poTempate = false;  
-                }, 3000); 
-            }, 500);
-            
-        }
+        
         if(type == 'SendOrder'){    
             $scope.poTempate = true;
             setTimeout(() => {
-                kendo.drawing.drawDOM($("#downloadPO"))
+                    kendo.drawing.drawDOM($("#downloadPO"))
                     .then(function (group) {
                         // Render the result as a PDF file
                         return kendo.drawing.exportPDF(group, {
@@ -3902,23 +3903,122 @@ const myData = {
                             'purchaseOrderNo': $scope.purchaseDetail.purchaseOrderNo,
                             'resourceEmail': $scope.resourceDetail.vEmailAddress,
                             'poFilenamePdf': poFilenamePdf,
-                            'resourceName': $scope.resourceDetail.vFirstName + $scope.resourceDetail.vLastName
+                            'resourceName': $scope.resourceDetail.vFirstName +' '+ $scope.resourceDetail.vLastName
                         };
-                        rest.path = 'sendPurchaseOrderLinguist';
-                        rest.post($scope.invoicemailDetail).success(function (data) {
-                            if (data.status == 200) {
-                                notification('Purchase order has been sent successfully', 'success');
-                                $scope.poTempate = false; 
-                            }
-                        }).error(errorCallback);
+                        // rest.path = 'sendPurchaseOrderLinguist';
+                        // rest.post($scope.invoicemailDetail).success(function (data) {
+                        //     if (data.status == 200) {
+                        //         notification('Purchase order has been sent successfully', 'success');
+                        //         $scope.poTempate = false; 
+                        //     }
+                        // }).error(errorCallback);
 
                     });
-                }, 500);
+            }, 500);
         }        
         // setTimeout(() => {
         //     $scope.poTempate = false;  
         // }, 5000);    
+    }
+    $scope.sendPoPopup = function (type) {
+        // replace tempalte variable
+        const myData = {
+            NAME1: $scope.resourceDetail.vFirstName,
+            NAME2: $scope.resourceDetail.vLastName,
+            STREET1: $scope.resourceDetail.vAddress1,
+            STREET2: '',
+            POSTCODE: $scope.resourceDetail.resourceZipcode,
+            CITY: $scope.resourceCity,
+            COUNTRY: $scope.resourceDetail.vFirstName,
+            PROJECT_MANAGER: angular.element("#s2id_contactPerson .select2-search-choice").text().trim(),
+            EMAIL: '',
+            PHONENUMBER: '',
+            ORDERDATE: $filter('globalDtFormat')($scope.purchaseDetail.purchaseOrderDate),
+            JOBNO: $scope.jobdetail.po_number ? $scope.jobdetail.po_number : '' ,
+            PROJECTNAME: $scope.jobdetail.projectName,
+            INDIRECT_CUSTOMER: $scope.jobdetail.clientName,
+            TASKNAME: '',
+            LANGUAGES: $scope.jobdetail.ItemLanguage,
+            INSTRUCTIONS: $scope.jobdetail.jobDesc,
+            DEADLINE: ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date + ' ' + $('#due_time').val() : '',
+            COMPANYCODE_SHORT: '',
+            WORDCOUNT: '',
+            TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
+        };
+
+        if($scope.jobdetail.due_date)
+            console.log('$scope.jobdetail.due_date', $scope.jobdetail.due_date)
+
+        if(emailTemplate){
+            $scope.emailTemplate = replaceVariables(emailTemplate.template_content, myData)
+            $('#emailTemplate').append($scope.emailTemplate);
+        }
+
+        var poFilenamePdf = $scope.jobdetail.po_number ? 'PO_' +$scope.jobdetail.po_number +'.pdf' : 'purchase_order.pdf'; 
+        $scope.poTempate = true;
+        if(type == 'Download'){
+            setTimeout(() => {
+                kendo.drawing.drawDOM($($scope.pdfExportID)).then(function (group) {
+                    //group.options.set("font", "8px DejaVu Sans");
+                    kendo.drawing.pdf.saveAs(group, poFilenamePdf);
+                });
+                setTimeout(() => {
+                    $scope.poTempate = false;  
+                }, 3000); 
+            }, 500);
+            
+        }
+        
+        $scope.mailDetail = {
+            'pdfData': '',
+            'jobdetail':$scope.jobdetail,
+            'resourceDetail':$scope.resourceDetail,
+            'purchaseDetail':$scope.purchaseDetail,
+            'pdfData': 'data',
+            'purchaseOrderNo': $scope.purchaseDetail.purchaseOrderNo,
+            'resourceEmail': $scope.resourceDetail.vEmailAddress,
+            'poFilenamePdf': poFilenamePdf,
+            'resourceName': $scope.resourceDetail.vFirstName +' '+ $scope.resourceDetail.vLastName,
+            'deadline' : $scope.jobdetail.due_date + ' ' + $('#due_time').val(),
+        };
+        if(type == 'SendOrder'){ 
+            setTimeout(() => {
+                    kendo.drawing.drawDOM($($scope.pdfExportID))
+                    .then(function (group) {
+                        // Render the result as a PDF file
+                        return kendo.drawing.exportPDF(group, {
+                            //paperSize: "auto",
+                        });
+                    })
+                    .done(function (data) {
+                        $scope.mailDetail.pdfData = data;
+                        // rest.path = 'sendPurchaseOrderLinguist';
+                        // rest.post($scope.invoicemailDetail).success(function (data) {
+                        //     if (data.status == 200) {
+                        //         notification('Purchase order has been sent successfully', 'success');
+                        //         $scope.poTempate = false; 
+                        //     }
+                        // }).error(errorCallback);
+
+                        var modalInstance = $uibModal.open({
+                            animation: $scope.animationsEnabled,
+                            size: 'sm',
+                            templateUrl: 'tpl/po-invoice-mailpopup.html',
+                            controller: 'poInvoiceMailController',
+                            resolve: {
+                                items: function () {
+                                    return $scope.mailDetail;
+                                }
+                            }
+                        });
+
+                    });
+            }, 500);
+        }
+
     }    
+
+    // End Purchase order dowload/ send email pdf
 
     $scope.childPrice = [];
     $scope.childPriceAll = function (data) {        
@@ -4680,7 +4780,11 @@ const myData = {
             }
             delete $scope.jobdetail['ProjectDueDate'];
             delete $scope.jobdetail['freelance_currency'];
-
+            if ($scope.jobdetail.hasOwnProperty('clientName'))
+                delete $scope.jobdetail['clientName'];
+            if($scope.jobdetail.hasOwnProperty('vCenterid'))
+                delete $scope.jobdetail['vCenterid'];    
+            
             $routeParams.id;
             rest.path = 'jobSummeryJobDetailsUpdate';
             rest.put($scope.jobdetail).success(function (data) {
@@ -26553,7 +26657,99 @@ const myData = {
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
+}).controller('poInvoiceMailController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items, $filter) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.ResourceMsg;
 
+    console.log('details', items)
+    $scope.bccShow = function () {
+        $scope.bccshow = true;
+    }
+    $scope.ccHideShow = function () {
+        angular.element('#ccHideShow').toggleClass('none');
+    }
+    $scope.bccHideShow = function () {
+        angular.element('#bccHideShow').toggleClass('none');
+    }
+    $timeout(function () {
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(2)').prop('disabled', true);
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(3)').prop('disabled', true);
+        angular.element('.messText .btn-toolbar .btn-group:nth-child(4) button:nth-child(4)').prop('disabled', true);
+    }, 500);
+
+
+    $scope.getFile = function (file) {
+        fileReader.readAsDataUrl(file, $scope).then(function (result) {
+            $scope.fileAttatchName = file.name;
+            $scope.attachementfile = result;
+        });
+    };
+
+    $scope.cPersonMsg = [];
+    rest.path = "emailTemplateGetAll" ;
+    rest.get().success(function (data) {
+        $scope.cPersonMsg.name = items.resourceDetail.vFirstName + ' ' + items.resourceDetail.vLastName
+        $scope.cPersonMsg.vEmailAddress = items.resourceDetail.vEmailAddress 
+            var emailContentText = data.find( (templt) => templt.template_id == 13);
+            if(emailContentText){
+                const rplcData = {
+                    Name2: items.resourceDetail.vLastName,
+                    //ORDERDATE: $filter('globalDtFormat')(items.purchaseDetail.purchaseOrderDate),
+                    //JOBNO: items.jobdetail.po_number ? items.jobdetail.po_number : '' ,
+                    Item: items.jobdetail.projectName,
+                    JobService: items.jobdetail.po_number , // taskname
+                    IndirectCustomer : '',
+                    JobComment : items.jobdetail.jobDesc,
+                    DelivDeadline: (items.jobdetail.due_date != 'Invalid date') ? items.jobdetail.due_date + ' ' + $('#due_time').val() : '',
+                    CompanyCodeShort: '',
+                    Fee: '', // Word count
+                    Total: $filter('NumbersCommaformat')(items.jobdetail.total_price),
+                    DownloadURL : '',
+                    QuickJobLink: '',
+                };
+                $scope.emailTemplateText =  emailContentText.template_content;  
+                $scope.cPersonMsg.messageData = replaceVariables(emailContentText.template_content, rplcData);
+            }
+    })
+
+    $scope.ok = function (frmId, message) {
+        // var data = {
+        //     "file": $scope.attachementfile,
+        //     "data": message
+        // };
+        $scope.invoicemailDetail = {
+            'pdfData': items.pdfData,
+            'purchaseOrderNo': items.purchaseDetail.purchaseOrderNo,
+            'resourceEmail': items.resourceDetail.vEmailAddress,
+            'poFilenamePdf': items.poFilenamePdf,
+            'resourceName': items.resourceDetail.vFirstName +' '+ items.resourceDetail.vLastName,
+            'mailTextContent':$scope.cPersonMsg.messageData,
+            "file": $scope.attachementfile
+        };
+        console.log('$scope.invoicemailDetail', $scope.invoicemailDetail)
+
+        rest.path = 'sendPurchaseOrderLinguist';
+        rest.post($scope.invoicemailDetail).success(function (data) {
+            if (data.status == 200) {
+                notification('Purchase order has been sent successfully', 'success');
+                $scope.poTempate = false; 
+            }
+        }).error(errorCallback);
+        // if (angular.element("#" + frmId).valid()) {
+        //     rest.path = 'sendjobResourceMsg';
+        //     rest.post(data).success(function (data) {
+        //         notification('Mail send successfully', 'success');
+        //     }).error(errorCallback);
+        //     $timeout(function () {
+        //         $uibModalInstance.close(data);
+        //         $route.reload();
+        //     }, 100);
+        // }
+    }
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
 }).controller('jobSendRequestController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.ResourceMsg;

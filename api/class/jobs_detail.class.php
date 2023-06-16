@@ -108,7 +108,7 @@ class jobs_detail
 
         $itemData = $this->_db->getone('tms_items');
 
-        $data['item_number'] = $itemData['item_number'];
+        $data['item_number'] = $itemData ? $itemData['item_number'] : '';
 
         if ($info) {
 
@@ -1054,7 +1054,7 @@ class jobs_detail
 
         //$this->_db->get('')
 
-        $qry = "select tsv.*,tsv.description As jobDesc,tg.due_date AS ProjectDueDate,tg.order_no AS company_code, tf.fmanager_id, CONCAT(ti.source_lang,'>',ti.target_lang) AS ItemLanguage, ti.item_name AS description, ti.project_type, tu.vUserName As userName,tpc.vUserName AS contactPerson, tg.project_name projectName,tg.specialization as proj_specialization,tpt.project_name as project_type_name, tpm.vUserName projectManager, tu.freelance_currency from tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_filemanager AS tf ON tsv.job_summmeryId = tf.job_id LEFT JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_proj_language AS tpl ON ti.item_language = tpl.pl_id LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person INNER JOIN tms_customer tc ON tc.order_id = tsv.order_id INNER JOIN tms_users tpm ON tpm.iUserId = tc.project_manager LEFT JOIN tms_project_type AS tpt ON ti.project_type = tpt.pr_type_id WHERE tsv.job_summmeryId = '" . $id . "'";
+        $qry = "select tsv.*,tsv.description As jobDesc,tg.due_date AS ProjectDueDate,tg.order_no AS company_code, tf.fmanager_id, CONCAT(ti.source_lang,'>',ti.target_lang) AS ItemLanguage, ti.item_name AS description, ti.project_type, tu.vUserName As userName,tpc.vUserName AS contactPerson, tg.project_name projectName,tg.specialization as proj_specialization,tpt.project_name as project_type_name, tpm.vUserName projectManager, tu.freelance_currency, tcl.vUserName as clientName, tcl.vCenterid  from tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_filemanager AS tf ON tsv.job_summmeryId = tf.job_id LEFT JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_proj_language AS tpl ON ti.item_language = tpl.pl_id LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person INNER JOIN tms_customer tc ON tc.order_id = tsv.order_id INNER JOIN tms_users tpm ON tpm.iUserId = tc.project_manager LEFT JOIN tms_project_type AS tpt ON ti.project_type = tpt.pr_type_id LEFT JOIN tms_client tcl ON tcl.iClientId = tc.client WHERE tsv.job_summmeryId = '" . $id . "'";
 
         $data = $this->_db->rawQuery($qry);
 
@@ -2214,14 +2214,18 @@ class jobs_detail
         //$pdfFileName = $data['purchaseOrderNo'].'.pdf';
         $pdfFileName = isset($data['poFilenamePdf']) ? $data['poFilenamePdf'] : 'purchase_order.pdf';
 
-        $body = "<p> Hello ".$data['resourceName']." </p>";
-        $body .= "<p>Please see the attached Purchased Order : <b>" .$pdfFileName. "</b> </p>";
-        $body .= "<p> From :SpellUp </p>";
+        $bodyTemp = "<p> Hello ".$data['resourceName']." </p>";
+        $bodyTemp .= "<p>Please see the attached Purchased Order : <b>" .$pdfFileName. "</b> </p>";
+        $bodyTemp .= "<p> From :SpellUp </p>";
+        $body = $bodyTemp;
+        if(isset($data['mailTextContent'])){
+            $body = $data['mailTextContent'];
+        }
         //$body .= "welcome to <img src=\"cid:id1\"></br>";
         
         $attachments = '';
         $subject = 'Purchase Order';
-        $to_name = 'SpellUp';
+        $to_name = '';
         //$to = 'anil.kanhasoft@gmail.com';
         $to = $data['resourceEmail'];
 

@@ -66,8 +66,9 @@ class attach_mailer {
 	// - validation of e-mail adresses
 	// - setting mail variables
 	// - setting boolean $valid_mail_adresses
-	function attach_mailer($name = "", $from, $to, $cc = "", $bcc = "", $subject = "") {
-		$this->valid_mail_adresses = true;
+	function __construct($name = "", $from, $to, $cc = "", $bcc = "", $subject = "") {
+	//function attach_mailer($name = "", $from, $to, $cc = "", $bcc = "", $subject = "") {
+			$this->valid_mail_adresses = true;
 		if (!$this->check_mail_address($to)) {
 			$this->msg[] = "Error, the \"mailto\" address is empty or not valid.";
 			$this->valid_mail_adresses = false;
