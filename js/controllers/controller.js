@@ -26720,7 +26720,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoicemailDetail = {
             'pdfData': items.pdfData,
             'purchaseOrderNo': items.purchaseDetail.purchaseOrderNo,
-            'resourceEmail': items.resourceDetail.vEmailAddress,
+            'resourceEmail': $scope.cPersonMsg.vEmailAddress ? $scope.cPersonMsg.vEmailAddress : items.resourceDetail.vEmailAddress,
             'poFilenamePdf': items.poFilenamePdf,
             'resourceName': items.resourceDetail.vFirstName +' '+ items.resourceDetail.vLastName,
             'mailTextContent':$scope.cPersonMsg.messageData,
