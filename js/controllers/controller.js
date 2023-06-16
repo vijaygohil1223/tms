@@ -26724,7 +26724,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'poFilenamePdf': items.poFilenamePdf,
             'resourceName': items.resourceDetail.vFirstName +' '+ items.resourceDetail.vLastName,
             'mailTextContent':$scope.cPersonMsg.messageData,
-            "file": $scope.attachementfile
+           // "file": $scope.attachementfile
         };
         console.log('$scope.invoicemailDetail', $scope.invoicemailDetail)
 
