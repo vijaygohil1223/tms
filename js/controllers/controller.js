@@ -3920,7 +3920,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //     $scope.poTempate = false;  
         // }, 5000);    
     }
+
     $scope.sendPoPopup = function (type) {
+
+        console.log('$scope.jobdetail', $scope.jobdetail)
         // replace tempalte variable
         const myData = {
             NAME1: $scope.resourceDetail.vFirstName,
@@ -5474,6 +5477,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     ['Download', function ($itemScope) {
                         var folderId = $itemScope.display.fmanager_id;
+                        console.log('folderId', folderId)
                         var ItemcodeNumber = $window.localStorage.ItemcodeNumber;
                         var ItemClient = $window.localStorage.ItemClient;
                         ItemcodeNumber = (ItemcodeNumber == undefined) ? "" : ItemcodeNumber + '_';
@@ -22823,7 +22827,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 iconClass = 'fa fa-file-' + file_format + '-o';
                             } else if (availableIcons.indexOf(file_type) > 0) {
                                 iconClass = 'fa fa-file-' + file_type + '-o';
-                            } else if (extName == 'docx') {
+                            } else if (extName == 'docx' || extName == 'rtf') {
                                 iconClass = 'fa fa-file-word-o';
                             } else if (extName == 'xlsx' || extName == 'xlsm') {
                                 iconClass = 'fa fa-file-excel-o';
@@ -26685,6 +26689,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
+    $scope.emailDetail = items;
+    var jobDetailUrl = downloadUrl = '';
+    if(items){
+        console.log('items', items)
+        var baseUrl = $location.absUrl().split('#')[0];
+        var jobDetailUrl = baseUrl + '#/project-job-detail/' + $window.btoa('jobdetailID='+items.jobdetail.job_summmeryId);
+        var downloadUrl = baseUrl + '#/job-download-file/' + $window.btoa('downloadID='+items.jobdetail.job_summmeryId);
+        console.log('jobDetailUrl', jobDetailUrl)
+    }
+
     $scope.cPersonMsg = [];
     rest.path = "emailTemplateGetAll" ;
     rest.get().success(function (data) {
@@ -26694,18 +26708,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if(emailContentText){
                 const rplcData = {
                     Name2: items.resourceDetail.vLastName,
-                    //ORDERDATE: $filter('globalDtFormat')(items.purchaseDetail.purchaseOrderDate),
-                    //JOBNO: items.jobdetail.po_number ? items.jobdetail.po_number : '' ,
                     Item: items.jobdetail.projectName,
                     JobService: items.jobdetail.po_number , // taskname
-                    IndirectCustomer : '',
+                    IndirectCustomer : items.jobdetail.clientName,
                     JobComment : items.jobdetail.jobDesc,
                     DelivDeadline: (items.jobdetail.due_date != 'Invalid date') ? items.jobdetail.due_date + ' ' + $('#due_time').val() : '',
                     CompanyCodeShort: '',
                     Fee: '', // Word count
                     Total: $filter('NumbersCommaformat')(items.jobdetail.total_price),
-                    DownloadURL : '',
-                    QuickJobLink: '',
+                    QuickJobLink : '<a href="'+jobDetailUrl+'" >'+jobDetailUrl +' </a>',
+                    DownloadURL: '<a href="'+downloadUrl+'" >'+downloadUrl +' </a>',
                 };
                 $scope.emailTemplateText =  emailContentText.template_content;  
                 $scope.cPersonMsg.messageData = replaceVariables(emailContentText.template_content, rplcData);
@@ -28688,12 +28700,110 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.pId = " ";
     $window.localStorage.setItem("parentId", " ");
 
+    // Email tempalate url 'jobdetailID' and 'downloadID'
+    console.log('$routeParams.id', $routeParams.id)
+    let routeParamsid = $window.atob($routeParams.id);
+    let routeID = (['jobdetailID','downloadID'].includes(routeParamsid.split('=')[0])) ? routeParamsid.split('=').pop() : $routeParams.id ;    
+    console.log('routeID', routeID)
+    $routeParams.id = routeID
+
     if ($scope.DetailId) {
         rest.path = 'jobitemsGet/' + $scope.DetailId;
         rest.get().success(function (data) {
             $scope.jobitList = data;
         })
     }
+    
+    // download file from email link
+    $scope.fieldDownloadFromEmailURL = function(folderId){
+        var tmsfolder = 'jobs';
+        if (folderId != undefined) {
+            $scope.showLoder = true;
+            rest.path = 'filemanagerfolderDownload/' + folderId;
+            rest.get().success(function (data) {
+                console.log('data', data)
+                $scope.downloadAllfile = data;
+                var zipdwnld = new JSZip();
+                var fileUrls = [];
+                var folderArr = [];
+                var fileIndex = 0;
+
+                angular.forEach($scope.downloadAllfile, function (val, i) {
+                    if (val.ext != '' ) {
+                        var fimg = val.name;
+                        var fimgUrl = "uploads/fileupload/" + fimg;
+                        if (fileUrlExists(fimgUrl)) {
+                            fileUrls.push({
+                                'parent_id': val.parent_id,
+                                'full_url': fimgUrl,
+                                'file_name': fimg,
+                                'folderurl_dir': val.folderurl,
+                            });
+                        }
+                    }
+                    var fmid = 0;
+                    if (val.ext == '' && (val.name !== '_in' && val.name !== '_out') ) {
+                        var foldername = val.name;
+                        var fmid = val.fmanager_id;
+                        folderArr.push({
+                            'fmanager_id': val.fmanager_id,
+                            'folder_name': val.name,
+                            'folderurl_dir': val.folderurl,
+                        });
+                    }
+                })
+                // files download
+                var file_count = 0;
+                fileUrls.forEach(function (url) {
+                    JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
+                        if (err) {
+                            throw err;
+                        }
+                        var folderName = '';
+                        folderArr.forEach(function (folders) {
+                            zipdwnld.folder(folders.folderurl_dir);
+                        });
+                        
+                        file_count++;
+                        if (data != null) {
+                            zipdwnld.file(url.folderurl_dir + url.file_name, data, { binary: true });
+                            if (file_count == fileUrls.length) {
+                                zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
+                                    saveAs(content, tmsfolder + ".zip");
+                                }).then(function () {
+                                    $scope.showLoder = false;
+                                    //$route.reload();
+                                });
+                                $timeout(function () {
+                                    $scope.showLoder = false;
+                                    //$route.reload();
+                                }, 10000);
+                            }
+                        }
+                    });
+                });
+                $timeout(function () {
+                    if (fileUrls.length == 0 && folderArr.length > 0) {
+                        folderArr.forEach(function (folders) {
+                            zipdwnld.folder(folders.folder_name);
+                            zipdwnld.folder(folders.folderurl_dir);
+                        });
+                        zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
+                            saveAs(content, tmsfolder + ".zip");
+                        }).then(function () {
+                            $scope.showLoder = false;
+                            //$route.reload();
+                        });
+                    }
+                }, 1000);
+
+            })
+            $timeout(function () {
+                $scope.showLoder = false;
+            }, 10000);
+        }
+    }    
+
 
     $scope.popupOpenFilemanager = function (id) {
         closeWindows();
@@ -28773,7 +28883,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.wrInstructEmpty = jQuery.isEmptyObject($scope.wrInstruct);
             }
 
-
             $scope.jobdetail.created_date = data[0].created_date;
 
             //count file
@@ -28786,6 +28895,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('.targteC').text(data.target);
                 }).error(errorCallback);
             }
+
+            if( (routeParamsid).includes('downloadID=') )
+                $scope.fieldDownloadFromEmailURL(data[0].fmanager_id)
+
 
             //getting freelancer payment information data
             rest.path = "getUserDataById/" + $scope.jobdetail.resource;
@@ -28875,6 +28988,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    // Work instruction tick mark
+    $scope.wiUpdate = [];
+    $scope.checkWorkInstruct = function (id) {
+        var workObj = [];
+        angular.forEach($scope.wrInstruct, function (value, key) {
+
+            var work_checked = $('#workcheck' + value.work_id).is(':checked');
+            workObj.push({
+                work_id: value.work_id,
+                work_name: value.work_name,
+                work_checked: work_checked,
+            });
+            
+        });
+        $scope.wiUpdate = JSON.stringify(workObj);
+        rest.path = 'jobSummeryWorkinstructUpdate';
+        rest.put($scope.wiUpdate).success(function (data) {
+
+        }).error(errorCallback);
+    }
+    
     //invoice of redirect
     $scope.projectInvoiceRedirect = function () {
         $location.path('/project-detail/' + $routeParams.id);
@@ -29330,12 +29464,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 var extFileName = extParts[extParts.length - 1];
                                 var extFileName = extFileName.split('?')[0];
                                 extName = extFileName.split('.')[1];
-
+                                
                                 if (availableIcons.indexOf(file_format) > 0) {
                                     iconClass = 'fa fa-file-' + file_format + '-o';
                                 } else if (availableIcons.indexOf(file_type) > 0) {
                                     iconClass = 'fa fa-file-' + file_type + '-o';
-                                } else if (extName == 'docx') {
+                                } else if (extName == 'docx' || extName == 'rtf') {
                                     iconClass = 'fa fa-file-word-o';
                                 } else if (extName == 'xlsx' || extName == 'xlsm') {
                                     iconClass = 'fa fa-file-excel-o';
@@ -34632,7 +34766,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 iconClass = 'fa fa-file-' + file_format + '-o';
                             } else if (availableIcons.indexOf(file_type) > 0) {
                                 iconClass = 'fa fa-file-' + file_type + '-o';
-                            } else if (extName == 'docx') {
+                            } else if (extName == 'docx'  || extName == 'rtf') {
                                 iconClass = 'fa fa-file-word-o';
                             } else if (extName == 'xlsx' || extName == 'xlsm') {
                                 iconClass = 'fa fa-file-excel-o';

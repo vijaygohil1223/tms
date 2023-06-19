@@ -466,7 +466,12 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             templateUrl: modulesPath + 'project_job_detail.html',
             controller: 'projectjobDetailController',
             activetab: 'project-job-detail',
-            role: '2'
+            role: ['1','2']    
+        }).when('/job-download-file/:id', {
+            templateUrl: modulesPath + 'project_job_detail.html',
+            controller: 'projectjobDetailController',
+            activetab: 'project-job-detail',
+            role: '2'    
         }).when('/project-detail/:id', {
             templateUrl: modulesPath + 'project_detail.html',
             controller: 'projectDetailController',

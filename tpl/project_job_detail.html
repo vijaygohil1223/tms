@@ -71,7 +71,7 @@
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
                                                         <label><strong>Due Date:</strong></label>
-                                                        <span>{{jobdetail.due_date | globalDtFormat}}</span>
+                                                        <span>{{jobdetail.due_date | dateFormat2}}</span>
                                                         <input  ng-upcomming-date type="text" class="form-control none" id="duedate" name="due_date" ng-model="jobdetail.due_date" readonly/>
                                                     </div>
                                                 </div>
@@ -86,8 +86,17 @@
                                                         <label><strong>Project Manager:</strong> </label>
                                                         <span>{{jobdetail.projectManager}}</span>
                                                         <span class="none"><input select2-contactsummery  type="text" class="form-control" name="contactPerson" ng-model="jobdetail.contactPerson" readonly/></span>
-                                                        <a href="#/discussion/{{jobDiscussionRedirect}}" ng-click="jobDiscussion();" title="Job Discussion"><span class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a>
-                                                        <!-- <a href="javascript:void(0)"  ng-click="jobsumemailResource(jobdetail.contact_person)"><span class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a> -->
+                                                        <!-- <a href="#/discussion/{{jobDiscussionRedirect}}" ng-click="jobDiscussion();" title="Job Discussion"><span class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a> -->
+                                                        <a href="javascript:void(0)"  ng-click="jobsumemailResource(jobdetail.contact_person)"><span class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <div class="left">
+                                                            <label><strong>Comment</strong></label>
+                                                            <p>{{jobdetail.jobDesc}}</p>
+                                                            
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
@@ -159,8 +168,8 @@
                                         </div>
                                     </div> -->
                                     <div class="col-sm-12">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading font-bold"><h4>Work Instructions</h4></div>
+                                        <div class="panel panel-default custm-table">
+                                            <div class="panel-heading font-bold"><h4>Work instructions</h4></div>
                                             <div class="panel-body">
                                                 <table  class="table m-b-none default footable-loaded footable">
                                                     <thead style="background-color:#3615a0;">
@@ -171,8 +180,11 @@
                                                     <tbody>
                                                         <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
                                                             <td class="none"><span id="work_id{{$index}}" ng-bind="war.work_id"><span></td>
-                                                            <td><span style="color:green;"><i class="fa fa-check" aria-hidden="true"></i> </span> &nbsp;&nbsp;<span id="work_name{{$index}}" ng-bind="war.work_name"><span></td>
-                                                            <td><span class="checkList"></span></td>
+                                                            <td>
+                                                                <!-- <span style="color:green;"> <i class="fa fa-check" aria-hidden="true"></i> </span> -->
+                                                                <span id="work_name{{$index}}" ng-bind="war.work_name"><span>
+                                                            </td>
+                                                            <td><span class="checkList"></span> <input type="checkbox" id="workcheck{{war.work_id}}" value="war.work_checked" ng-checked="war.work_checked == true" name="work_checked" ng-click="checkWorkInstruct(war.work_id)"> </td>
                                                         </tr>
                                                         <tr ng-show="wrInstructEmpty">
                                                             <td colspan="4" ng-bind="dataNotFound"></td>
@@ -183,7 +195,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
-                                        <div class="panel panel-default">
+                                        <div class="panel panel-default ">
                                             <div class="panel-heading font-bold"><h4>Payment</h4></div>
                                             <div class="panel-body">
                                                 <table  class="table m-b-none default footable-loaded footable">
@@ -215,7 +227,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-12 none">
                                         <div class="panel-footer" ng-if="jobdetail.item_status == 'Requested'">
                                             <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'accept');">Accept</a>
                                             <a class="btn btn-info" ng-click="acceptjobstatus(jobdetail.item_status,'reject');">Reject</a>

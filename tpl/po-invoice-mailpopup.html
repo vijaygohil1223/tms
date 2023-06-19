@@ -72,10 +72,10 @@
       <div class="col-md-9">
         <input type="email" class="form-control" name="Email Id" ng-model="cPersonMsg.vEmailAddress" required>
       </div>
-      <div class="classCcBcc">
+      <!-- <div class="classCcBcc">
         <a href="javascript:void(0);" style="padding:5px;" ng-click="ccHideShow()">Cc</a>
         <a href="javascript:void(0);" ng-click="bccHideShow()">Bcc</a>  
-      </div>
+      </div> -->
     </div><br><br>
     <div class="form-group none" id="ccHideShow">
       <label class="col-md-2 control-label">Cc:</label>
@@ -87,6 +87,12 @@
       <label class="col-md-2 control-label">Bcc:</label>
       <div class="col-md-10" style="margin-bottom: 15px;">
         <input select2-user-email class="form-control" type="text" ng-model="cPersonMsg.bcc" name="values" />
+      </div>
+    </div>
+    <div class="form-group" >
+      <label class="col-md-2 control-label">Attached pdf:</label>
+      <div class="col-md-10" style="margin-bottom: 15px;">
+        <span style="margin-top: 10px;"> {{ emailDetail.poFilenamePdf }} </span>
       </div>
     </div>
     <!-- <div class="form-group">

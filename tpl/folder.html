@@ -349,8 +349,8 @@ table {
                                display.ext == 'gif'||  
                                display.ext == 'jfif'||  
                                display.ext == 'svg'||  
-                               display.ext == 'webp'||  
-                               display.ext == 'bmp'  
+                               display.ext == 'webp' ||  
+                               display.ext == 'bmp'    
                               "  
                style="background-image:url('uploads/fileupload/{{display.name}}') !important;" context-menu="menuOptionsFiles"><p>{{display.name}}</p></file>
 
@@ -363,7 +363,7 @@ table {
                {{display.name}}</p></file>
 
               <!-- doc&docx -->
-              <file extension="doc" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" ng-if="display.ext == 'doc' || display.ext =='docx'" class="doc" context-menu="menuOptionsFiles"><p>{{display.name}}</p></file>
+              <file extension="doc" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" ng-if="display.ext == 'doc' || display.ext =='docx' || display.ext =='rtf' " class="doc" context-menu="menuOptionsFiles"><p>{{display.name}}</p></file>
               
               <!-- Unknown extension Extra-->
               <file extension="msg" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" ng-if="display.ext == 'msg' " class="fileicon" context-menu="menuOptionsFiles">
