@@ -146,6 +146,15 @@
                                             ng-change="emailTplCatChange()" required>
                                     </div>
                                 </div>
+                                <!-- If category = purchase order -->
+                                <div class="col-sm-3" ng-if="emailTplData.template_category ==10">
+                                    <div class="form-group">
+                                        <label class="control-label">Business Unit</label>
+                                        <input select2-center-unit type="text" class="form-control" name="emailTplCat"
+                                            ng-model="emailTplData.center_unit_id" id="center_unit_id"
+                                            required>
+                                    </div>
+                                </div>
                                 <!-- <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label">Type</label>
@@ -205,6 +214,7 @@
                                     <span ng-if="tpl.template_category == '6'">Job Delivery</span>
                                     <span ng-if="tpl.template_category == '8'">Send Job Request</span>
                                     <span ng-if="tpl.template_category == '9'">Invoice</span>
+                                    <span ng-if="tpl.template_category == '10'">Purchase Order</span>
                                 </td>
 
                                 <td ng-if="tpl.is_active == '1'">

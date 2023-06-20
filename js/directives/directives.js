@@ -2390,6 +2390,42 @@ app.directive('select2CenterClient', function($http, rest, $timeout, $log) {
         }
     }
 });
+// multiple selection business unit
+app.directive('select2CenterUnit', function($http, rest, $timeout, $log) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModel) {
+            rest.path = 'centerClientGet';
+            rest.get().success(function(data) {
+                var lang = [];
+                angular.forEach(data, function(value, key) {
+                    
+                    //var orLen = JSON.parse(value.order_number)[0].value.length;
+                    //var curntYear = JSON.parse(value.order_number)[0].value.substr((orLen-5), 2);
+                    var obj = {
+                        'id': value.center_id,
+                        'text': value.name
+                    };
+                    lang.push(obj);
+                });
+
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: lang,
+                        multiple:true,
+                        //maximumSelectionSize:1,
+                        placeholder:'Business Unit',
+                        //closeOnSelect:true,
+                    })
+                }, 500);
+            }).error(function(data, error, status) {
+
+            });
+        }
+    }
+});
 
 app.directive('select2CompanyCode', function($http, rest, $timeout, $log) {
     return {
@@ -5664,6 +5700,9 @@ app.directive('select2EmailTplCat', function($http, rest, $timeout, $log) {
                 },{
                     id: '9',
                     text: 'Invoice'
+                },{
+                    id: '10',
+                    text: 'Purchase Order'
                 }
             ];
             /*var tplCat = [{

@@ -218,6 +218,7 @@ class Client_invoice {
         $updata['item_total'] = $data['item_total'];
         $updata['invoice_date'] = $data['invoice_date'];
         $updata['vat'] = isset($data['vat']) ? $data['vat'] : 0;
+        $updata['custom_invoice_number'] = isset($data['custom_invoice_number']) ? $data['custom_invoice_number'] : $data['invoice_number'];
         if($id){
             $this->_db->where('invoice_id', $id);
     	    $up_id = $this->_db->update('tms_invoice_client',$updata);

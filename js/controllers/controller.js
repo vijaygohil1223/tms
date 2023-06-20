@@ -4132,6 +4132,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
+            console.log('$scope.jobdetail', $scope.jobdetail)
             $scope.jobdetail.ItemLanguage = '';
             var srcLang = 'English (US)';
             var trgLang = 'English (US)';
@@ -16146,6 +16147,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             
             $scope.invoiceDetail = data[0];
+
+            $scope.invoiceDetail.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
+        
             
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
@@ -16327,10 +16331,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.upInvoiceData = {};
     $scope.editInvoiceClient = function (id) {
+        console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+
         $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         //$scope.upInvoiceData.item_total = $scope.invoiceTotal
         $scope.upInvoiceData.vat = $scope.vat
         $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;
+        $scope.upInvoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
         $scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
         $scope.upInvoiceData.item = [];
         $scope.invoiceList.forEach(element => {
@@ -16383,7 +16390,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.invoicemailDetail = {
                             'pdfData': data,
                             'invoice_id': $scope.invoiceDetail.invoice_id,
-                            'invoiceno': $scope.invoiceDetail.invoice_number,
+                            'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
                             'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
                             'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
                             'freelanceName': $scope.invoiceDetail.freelanceName,
@@ -16485,7 +16492,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.invoicemailDetail = {
                     'pdfData': data,
                     'invoice_id': $scope.invoiceDetail.invoice_id,
-                    'invoiceno': $scope.invoiceDetail.invoice_number,
+                    'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
                     'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
                     'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
                     'freelanceName': $scope.invoiceDetail.freelanceName,
@@ -30506,6 +30513,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.invoiceDetail.invoiceNumber = data[0].orderNumber + '_' + pad(data[0].invoiceCount + 1, 3);
             $scope.invoiceDetail.invoiceNumber = 'S-' + pad(data[0].invoiceCount + 1, 6);
             $scope.invoiceDetail.invoice_number = $scope.invoiceDetail.invoiceNumber; 
+            $scope.invoiceDetail.custom_invoice_number = $scope.invoiceDetail.invoice_number;
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays(date, 0) );
             $scope.invoiceDetail.scoop_id = obj;
@@ -30625,6 +30633,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.scoop_id = JSON.stringify(obj);
         $scope.invoiceData.payment_type = $scope.invoiceDetail.payment;
         $scope.invoiceData.invoice_number = $scope.invoiceDetail.invoiceNumber;
+        $scope.invoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number;
 
         $scope.invoiceData.vat = $scope.vat;
         //$scope.invoiceData.item_total = $scope.invoiceTotal;

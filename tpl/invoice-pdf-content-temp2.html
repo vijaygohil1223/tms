@@ -13,6 +13,7 @@
 }
 .address-title{
   color: #808080;
+  width: 410px;
 }
 .header-tr-border{
   background-color: #bebebe;
@@ -212,7 +213,7 @@ td.table-data-text {
                                 </div>
                                 <div class="col-sm-3">
                                   <p class="mb-d"><strong>Date</strong></p> 
-                                  <input class="form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" ng-disabled="editDisabled" />
+                                  <input class="form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" ng-disabled="editDisabled" style="margin-top: -3px;" />
                                 </div>
                                 
                           </div>
@@ -223,7 +224,11 @@ td.table-data-text {
                   <div class="panel panel-default invoice-header-height">
                       <div class="panel-body">
                           <dl class="dl-horizontal">
-                              <dd class="invoice-heading"><strong>Invoice {{ invoiceDetail.invoice_number }}</strong></dd>
+                              <dd class="invoice-heading">
+                                <div class="d-flex"> <strong>Invoice</strong> 
+                                  <input class="form-control" type="text" ng-model="invoiceDetail.custom_invoice_number" id="custom_invoice_number" name="custom_invoice_number" ng-disabled="editDisabled"  style="width: 150px; font-weight:bold;margin-left: 5px;margin-top: -3px;" />
+                                </div>
+                              </dd>
                       </div>
                       <table class="table table-bordered table-condensed">
                           <thead>
@@ -331,7 +336,7 @@ td.table-data-text {
                           </tbody>
                       </table>
                       <div>
-                          <p class="copytext" > <spam style="font-family:Arial Unicode MS;"> &copy; </spam> {{ invoiceSettingData.copyright_text }} </p>
+                          <p class="copytext" > <spam style="font-family:Arial;"> &copy; </spam> {{ invoiceSettingData.copyright_text }} </p>
                       </div>
                   </div>
               </div>
