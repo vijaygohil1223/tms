@@ -517,8 +517,8 @@
                                             <!-- <a ng-click="sendPO('SendOrder')" class="btn btn-info">Send PO</a> -->
                                             <!-- <a ng-click="sendPO('Download')" class="btn btn-info">
                                                 <i class="fa fa-download"></i> PO</a> -->
-                                            <a ng-click="sendPoPopup('SendOrder')" class="btn btn-info" ng-disabled="!jobdetail.resource">Send PO</a>
-                                            <a ng-click="sendPoPopup('Download')" class="btn btn-info" ng-disabled="!jobdetail.resource">
+                                            <a ng-click="sendPoPopup('SendOrder')" class="btn btn-info" ng-disabled="!sendPoBtn || !jobdetail.resource">Send PO</a>
+                                            <a ng-click="sendPoPopup('Download')" class="btn btn-info" ng-disabled="!sendPoBtn || !jobdetail.resource">
                                                 <i class="fa fa-download"></i> PO</a>
                                         </div>
                                     </div>

@@ -3853,20 +3853,53 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Start purchase order download/send po
     // invoice setting Data - invoice address based on selected business unit
-    $scope.pdfExportID = '#downloadPO';
-    rest.path = "clientInvoiceSetting";
-    rest.get().success(function (settingData) {
-        console.log('staticData', settingData)
-        if(settingData){
-            $scope.invoiceSettingData = settingData[0];
-            console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
-            if([2,3].includes($scope.invoiceSettingData.server_no)){
-                $scope.pdfExportID = '#downloadPO2';            
+    var poDesignTypeID = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1; 
+    $scope.pdfExportID = poDesignTypeID == '2' ? '#downloadPO2' : '#downloadPO';
+    $scope.dataReplaceArr = {};
+    $scope.sendPoBtn = false;
+    $scope.poSettingData = {};
+    
+    $scope.poSettingFn = function(centerID){
+        rest.path = "clientInvoiceSetting";
+        rest.get().success(function (settingData) {
+            console.log('staticData', settingData)
+            if(settingData){
+                // po button show hide
+                $scope.sendPoBtn = true;
+                // $scope.poSettingData = settingData[0];
+                // console.log('$scope.poSettingData', $scope.poSettingData)
+                // if([2,3].includes($scope.poSettingData.server_no)){
+                //     $scope.pdfExportID = '#downloadPO2';            
+                // }
+                if(centerID){
+                    $scope.poSettingData = settingData.find( (item) => {
+                        if((item.branch_center_id.toString().split(',')).includes(centerID.toString())){
+                            return item
+                        }
+                    })
+                }
+                if(!$scope.poSettingData){
+                    $scope.poSettingData = settingData[0];
+                }
+                $scope.dataReplaceArr.COMPANY_NAME = $scope.poSettingData.company_name;
+                $scope.dataReplaceArr.COMPANY_ADDRESS = $scope.poSettingData.address1;
+                $scope.dataReplaceArr.COMPANY_CITY = $scope.poSettingData.city;
+                $scope.dataReplaceArr.COMPANY_POSTCODE = $scope.poSettingData.postcode;
+                $scope.dataReplaceArr.COMPANY_COUNTRY =$scope.poSettingData.country;
+                $scope.dataReplaceArr.COMPANY_VAT_NUMBER = $scope.poSettingData.vat_number;
+                $scope.dataReplaceArr.CompanyCodeShort = $scope.poSettingData.company_short_code;
+                $scope.dataReplaceArr.COMPANY_COPYRIGHT_TEXT = $scope.poSettingData.copyright_text;
+                $scope.dataReplaceArr.COMPANY_EMAIL = $scope.poSettingData.work_email;
+                $scope.dataReplaceArr.COMPANY_WEB = $scope.poSettingData.web_address;
+
+                console.log('$scope.dataReplaceArr-tms', $scope.dataReplaceArr)
+
             }
-        }
-        //$scope.invoiceDesignType = $scope.invoiceSettingData.server_no > 1 ? 2 : 1;
-        //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
-    })
+            //$scope.invoiceDesignType = $scope.poSettingData.server_no > 1 ? 2 : 1;
+            //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+        })
+    }  
+
     $scope.emailTemplate = '';
     var emailTemplate = '';
     var emailContentText = '';
@@ -3885,47 +3918,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     })
     // END purchase order template
     $scope.poTempate = false;
-    $scope.sendPO = function(type){
-        
-        if(type == 'SendOrder'){    
-            $scope.poTempate = true;
-            setTimeout(() => {
-                    kendo.drawing.drawDOM($("#downloadPO"))
-                    .then(function (group) {
-                        // Render the result as a PDF file
-                        return kendo.drawing.exportPDF(group, {
-                            //paperSize: "auto",
-                        });
-                    })
-                    .done(function (data) {
-                        $scope.invoicemailDetail = {
-                            'pdfData': data,
-                            'purchaseOrderNo': $scope.purchaseDetail.purchaseOrderNo,
-                            'resourceEmail': $scope.resourceDetail.vEmailAddress,
-                            'poFilenamePdf': poFilenamePdf,
-                            'resourceName': $scope.resourceDetail.vFirstName +' '+ $scope.resourceDetail.vLastName
-                        };
-                        // rest.path = 'sendPurchaseOrderLinguist';
-                        // rest.post($scope.invoicemailDetail).success(function (data) {
-                        //     if (data.status == 200) {
-                        //         notification('Purchase order has been sent successfully', 'success');
-                        //         $scope.poTempate = false; 
-                        //     }
-                        // }).error(errorCallback);
-
-                    });
-            }, 500);
-        }        
-        // setTimeout(() => {
-        //     $scope.poTempate = false;  
-        // }, 5000);    
-    }
 
     $scope.sendPoPopup = function (type) {
 
         console.log('$scope.jobdetail', $scope.jobdetail)
         // replace tempalte variable
-        const myData = {
+        var dataReplaceArr = {
             NAME1: $scope.resourceDetail.vFirstName,
             NAME2: $scope.resourceDetail.vLastName,
             STREET1: $scope.resourceDetail.vAddress1,
@@ -3940,21 +3938,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             JOBNO: $scope.jobdetail.po_number ? $scope.jobdetail.po_number : '' ,
             PROJECTNAME: $scope.jobdetail.projectName,
             INDIRECT_CUSTOMER: $scope.jobdetail.clientName,
-            TASKNAME: '',
+            JOBSERVICE: $scope.jobdetail.project_type_name, 
             LANGUAGES: $scope.jobdetail.ItemLanguage,
             INSTRUCTIONS: $scope.jobdetail.jobDesc,
             DEADLINE: ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date + ' ' + $('#due_time').val() : '',
-            COMPANYCODE_SHORT: '',
             WORDCOUNT: '',
             TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
+            TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
         };
+        
+        Object.assign($scope.dataReplaceArr, dataReplaceArr);
+        console.log('$scope.dataReplaceArr', $scope.dataReplaceArr)
 
         if($scope.jobdetail.due_date)
             console.log('$scope.jobdetail.due_date', $scope.jobdetail.due_date)
 
         if(emailTemplate){
-            $scope.emailTemplate = replaceVariables(emailTemplate.template_content, myData)
-            $('#emailTemplate').append($scope.emailTemplate);
+            $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
+            if ($("#invoiceContent").length === 0) {
+                $('#emailTemplate').append($scope.emailTemplate);
+            }
+
         }
 
         var poFilenamePdf = $scope.jobdetail.po_number ? 'PO_' +$scope.jobdetail.po_number +'.pdf' : 'purchase_order.pdf'; 
@@ -3983,6 +3987,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'poFilenamePdf': poFilenamePdf,
             'resourceName': $scope.resourceDetail.vFirstName +' '+ $scope.resourceDetail.vLastName,
             'deadline' : $scope.jobdetail.due_date + ' ' + $('#due_time').val(),
+            'companyCodeShort': $scope.poSettingData ? $scope.poSettingData.company_short_code : '' 
         };
         if(type == 'SendOrder'){ 
             setTimeout(() => {
@@ -4018,6 +4023,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
             }, 500);
         }
+        // setTimeout(() => {
+        //     $scope.poTempate = false;  
+        // }, 5000);  
 
     }    
 
@@ -4133,6 +4141,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
             console.log('$scope.jobdetail', $scope.jobdetail)
+            // purchase order setting Data data fn 
+            $scope.poSettingFn($scope.jobdetail.vCenterid)
+            
             $scope.jobdetail.ItemLanguage = '';
             var srcLang = 'English (US)';
             var trgLang = 'English (US)';
@@ -4440,7 +4451,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
-            
+
             //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal+' '+'HH:mm');
             var due_timeval = $scope.jobdetail.due_date.split(" ")[1];
             var due_timeval = due_timeval.substring(0, 5);
@@ -26716,12 +26727,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 const rplcData = {
                     Name2: items.resourceDetail.vLastName,
                     Item: items.jobdetail.projectName,
-                    JobService: items.jobdetail.po_number , // taskname
+                    //JobService: items.jobdetail.po_number , // taskname
+                    JobService: items.jobdetail.project_type_name , // taskname
                     IndirectCustomer : items.jobdetail.clientName,
                     JobComment : items.jobdetail.jobDesc,
-                    DelivDeadline: (items.jobdetail.due_date != 'Invalid date') ? items.jobdetail.due_date + ' ' + $('#due_time').val() : '',
-                    CompanyCodeShort: '',
-                    Fee: '', // Word count
+                    DelivDeadline: (items.jobdetail.due_date != 'Invalid date') ? items.jobdetail.due_date + ' | ' + $('#due_time').val() : '',
+                    CompanyCodeShort: items.companyCodeShort,
+                    //Fee: '', // Word count
                     Total: $filter('NumbersCommaformat')(items.jobdetail.total_price),
                     QuickJobLink : '<a href="'+jobDetailUrl+'" >'+jobDetailUrl +' </a>',
                     DownloadURL: '<a href="'+downloadUrl+'" >'+downloadUrl +' </a>',
@@ -26752,6 +26764,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (data.status == 200) {
                 notification('Purchase order has been sent successfully', 'success');
                 $scope.poTempate = false; 
+                $uibModalInstance.dismiss('cancel');
             }
         }).error(errorCallback);
         // if (angular.element("#" + frmId).valid()) {

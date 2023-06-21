@@ -40,7 +40,10 @@
             </p>
           </div>
           <div class="col-xs-4 text-right">
-            <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoice_number }}</strong></p>
+            <div class="h4 d-flex" style="font-weight: bold;"> 
+              <p style="width: 140px; text-align: right; margin-right:2px;">INVOICE </p>
+              <input class="headerInput form-control" style="width:110px;font-size:18px;padding:0;margin-top:-3px;text-align: center;" type="text" ng-model="invoiceDetail.custom_invoice_number" name="custom_invoice_number" ng-disabled="editDisabled"/>
+            </div>
             <br />
             <p>
               Invoice date: <br />
