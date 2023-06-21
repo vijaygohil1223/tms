@@ -28228,6 +28228,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceUnpaid = [];
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function (val, i) {
+                val.invoice_number = val.custom_invoice_number ? val.custom_invoice_number : val.invoice_number; 
+                //console.log('val.invoice_number', val.invoice_number)
+                
                 var invoice_duedate = TodayAfterNumberOfDays(val.invoice_date, $scope.invoicePeriod);
 
                 val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
@@ -28275,6 +28278,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.clientInvoiceListData = data;
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
+                val.invoice_number = val.custom_invoice_number ? val.custom_invoice_number : val.invoice_number; 
                 let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : $scope.invoicePeriod
                 var invoice_duedate = TodayAfterNumberOfDays(val.invoice_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
