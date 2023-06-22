@@ -3920,17 +3920,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.poTempate = false;
 
     $scope.sendPoPopup = function (type) {
-
-        console.log('$scope.jobdetail', $scope.jobdetail)
+        let poDueDate = ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date : '';
+        let poDueDateTime = poDueDate ? poDueDate.split(' ')[0] + ' | ' + $('#due_time').val() : '';
         // replace tempalte variable
         var dataReplaceArr = {
             NAME1: $scope.resourceDetail.vFirstName,
             NAME2: $scope.resourceDetail.vLastName,
             STREET1: $scope.resourceDetail.vAddress1,
             STREET2: '',
-            POSTCODE: $scope.resourceDetail.resourceZipcode,
-            CITY: $scope.resourceCity,
-            COUNTRY: $scope.resourceDetail.vFirstName,
+            POSTCODE: $scope.resourceZipcode ? $scope.resourceZipcode : '',
+            CITY: $scope.resourceCity ? $scope.resourceCity : '',
+            COUNTRY: $scope.resourceCountry ? $scope.resourceCountry : '',
             PROJECT_MANAGER: angular.element("#s2id_contactPerson .select2-search-choice").text().trim(),
             EMAIL: '',
             PHONENUMBER: '',
@@ -3941,7 +3941,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             JOBSERVICE: $scope.jobdetail.project_type_name, 
             LANGUAGES: $scope.jobdetail.ItemLanguage,
             INSTRUCTIONS: $scope.jobdetail.jobDesc,
-            DEADLINE: ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date + ' ' + $('#due_time').val() : '',
+            DEADLINE: poDueDateTime,
             WORDCOUNT: '',
             TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
             TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
@@ -3950,15 +3950,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         Object.assign($scope.dataReplaceArr, dataReplaceArr);
         console.log('$scope.dataReplaceArr', $scope.dataReplaceArr)
 
-        if($scope.jobdetail.due_date)
-            console.log('$scope.jobdetail.due_date', $scope.jobdetail.due_date)
-
         if(emailTemplate){
             $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
             if ($("#invoiceContent").length === 0) {
                 $('#emailTemplate').append($scope.emailTemplate);
             }
-
         }
 
         var poFilenamePdf = $scope.jobdetail.po_number ? 'PO_' +$scope.jobdetail.po_number +'.pdf' : 'purchase_order.pdf'; 
@@ -3986,7 +3982,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'resourceEmail': $scope.resourceDetail.vEmailAddress,
             'poFilenamePdf': poFilenamePdf,
             'resourceName': $scope.resourceDetail.vFirstName +' '+ $scope.resourceDetail.vLastName,
-            'deadline' : $scope.jobdetail.due_date + ' ' + $('#due_time').val(),
+            'deadline' : poDueDateTime,
             'companyCodeShort': $scope.poSettingData ? $scope.poSettingData.company_short_code : '' 
         };
         if(type == 'SendOrder'){ 
@@ -4158,9 +4154,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             //var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
             $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
-            $scope.dueDate = $scope.jobdetail.due_date;
-            $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
 
+            $scope.dueDate = $scope.jobdetail.due_date;
+            //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
+            $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal);
+            if ($scope.jobdetail.due_date == '0000-00-00 00:00:00' || $scope.jobdetail.due_date == 'Invalid date') {
+                angular.element('#duedate').val('');
+            }
+            
             if ($scope.jobdetail.price) {
                 //$scope.itemPriceUni = JSON.parse($scope.jobdetail.price);
                 $scope.itemPriceUni[$scope.jobdetail.job_summmeryId] = JSON.parse($scope.jobdetail.price);
@@ -26731,7 +26732,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     JobService: items.jobdetail.project_type_name , // taskname
                     IndirectCustomer : items.jobdetail.clientName,
                     JobComment : items.jobdetail.jobDesc,
-                    DelivDeadline: (items.jobdetail.due_date != 'Invalid date') ? items.jobdetail.due_date + ' | ' + $('#due_time').val() : '',
+                    DelivDeadline: items.deadline,
                     CompanyCodeShort: items.companyCodeShort,
                     //Fee: '', // Word count
                     Total: $filter('NumbersCommaformat')(items.jobdetail.total_price),
