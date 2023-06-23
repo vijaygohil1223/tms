@@ -3816,6 +3816,35 @@ $app->delete('/bankDetails/:id','authenticate', function ($id) use($app) {
     echoResponse($result ['status'], $result);
 });
 // Emd Bank Details //
+// Start Invoice setting //
+$app->post('/invoiceSettings','authenticate', function () use($app) {
+    $invoiceSet = new invoicesetting ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoiceSet->save($data);
+    echoResponse($result ['status'], $result);
+});
+$app->put('/invoiceSettings/:id','authenticate', function ($id) use($app) {
+    $invoiceSet = new invoicesetting ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoiceSet->update($id, $data);
+    echoResponse($result ['status'], $result);
+});
+$app->get('/invoiceSettings/:id','authenticate', function ($id) use($app) {
+    $invoiceSet = new invoicesetting ();
+    $result = $invoiceSet->getTypeById($id);
+    echoResponse(200, $result);
+});
+$app->get('/invoiceSettings','authenticate', function () use($app) {
+    $invoiceSet = new invoicesetting ();
+    $result = $invoiceSet->getAll();
+    echoResponse(200, $result);
+});
+$app->delete('/invoiceSettings/:id','authenticate', function ($id) use($app) {
+    $invoiceSet = new invoicesetting ();
+    $result = $invoiceSet->delete($id);
+    echoResponse($result ['status'], $result);
+});
+// Emd invoice setting //
 $app->post('/savelinguistCsvProfile', 'authenticate',function () use($app) {
     $csv = new users ();
     $data = json_decode($app->request->getBody(), TRUE);

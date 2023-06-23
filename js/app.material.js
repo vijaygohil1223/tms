@@ -392,6 +392,12 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'signController',
             activetab: 'order-add',
             role: '1'
+        }).when('/invoice-settings', {
+            templateUrl: modulesPath + 'invoice-settings.html',
+            controller: 'invoiceSettingController',
+            activetab: 'invoice-settings',
+            role: '1'
+            
         }).when('/jobs-detail/:id', {
             templateUrl: modulesPath + 'jobs-detail.html',
             controller: 'jobDetailController',

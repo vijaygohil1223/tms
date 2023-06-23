@@ -316,7 +316,7 @@
   </li>
 
   <li
-    ng-class="{active: activetab == '/resourcetype' || activetab == '/resourcestatus' || activetab == '/currency' || activetab == '/to-do-lists' || activetab == '/property' || activetab == '/language'  || activetab == '/languages' || activetab == '/project-type' || activetab == '/customer-status' || activetab == '/tax-status' || activetab == '/item-status' || activetab == '/jobs' || activetab == '/services' || activetab == '/price1' || activetab == '/price2' || activetab == '/master-price' || activetab == '/child-price' || activetab == '/customer-types' || activetab == '/newjob' || activetab == '/business-units' || activetab == '/sign' || activetab == '/project-status' || activetab == '/knowledge_category' || activetab == '/knowledge_article' || activetab == '/customer-price-list' || activetab == '/resource-price-list' || activetab == '/rounding-price' || activetab == '/knowledge_news' || activetab == '/calendar-event-add' || activetab == '/funny-picture' || activetab == '/national-holiday' || activetab == '/invoice-due-period'  || activetab == '/work-instruction' || activetab == '/job-chain' || activetab == '/resource-position' || activetab == '/reported-images'|| activetab == '/resources' || activetab == '/dateformat' || activetab == '/decimal-separator'}"
+    ng-class="{active: activetab == '/resourcetype' || activetab == '/resourcestatus' || activetab == '/currency' || activetab == '/to-do-lists' || activetab == '/property' || activetab == '/language'  || activetab == '/languages' || activetab == '/project-type' || activetab == '/customer-status' || activetab == '/tax-status' || activetab == '/item-status' || activetab == '/jobs' || activetab == '/services' || activetab == '/price1' || activetab == '/price2' || activetab == '/master-price' || activetab == '/child-price' || activetab == '/customer-types' || activetab == '/newjob' || activetab == '/business-units' || activetab == '/sign' || activetab == '/project-status' || activetab == '/knowledge_category' || activetab == '/knowledge_article' || activetab == '/customer-price-list' || activetab == '/resource-price-list' || activetab == '/rounding-price' || activetab == '/knowledge_news' || activetab == '/calendar-event-add' || activetab == '/funny-picture' || activetab == '/national-holiday' || activetab == '/work-instruction' || activetab == '/job-chain' || activetab == '/resource-position' || activetab == '/reported-images'|| activetab == '/resources' || activetab == '/dateformat' || activetab == '/decimal-separator'}"
     ng-if="superAdmin == 1 || (adminRole==1 && menuAccess.admin)" class="sidebarArrow">
     <a href class="auto" md-ink-ripple>
       <i class="glyphicon glyphicon-th-large icon" style="color: #880e4f"></i>
@@ -528,7 +528,7 @@
       </li>
 
       <li
-        ng-class="{active: activetab == '/project-type' || activetab == '/project-status' || activetab == '/jobs' || activetab == '/newjob' || activetab == '/job-chain' || activetab == '/services' || activetab == '/master-price' || activetab == '/child-price' || activetab == '/customer-price-list' || activetab == '/resource-price-list' || activetab == '/rounding-price' || activetab == '/invoice-due-period' || activetab == '/work-instruction'}"
+        ng-class="{active: activetab == '/project-type' || activetab == '/project-status' || activetab == '/jobs' || activetab == '/newjob' || activetab == '/job-chain' || activetab == '/services' || activetab == '/master-price' || activetab == '/child-price' || activetab == '/customer-price-list' || activetab == '/resource-price-list' || activetab == '/rounding-price' || activetab == '/work-instruction'}"
         class="sidebarArrow">
         <a href="javascript:void(0)" md-ink-ripple>
           <span class="font-bol">Projects</span>
@@ -618,15 +618,14 @@
 
                     </li> -->
 
-          <li ng-class="{'active menuBg': activetab == '/invoice-due-period'}"
+          <!-- <li ng-class="{'active menuBg': activetab == '/invoice-due-period'}"
             ng-mouseover="menuHoverIn('invoiceDueMenu');" ng-mouseleave="menuHoverOut('invoiceDueMenu')">
             <a href="#/invoice-due-period" md-ink-ripple>
               <span class="font-bol underSubmenu">Invoice Due</span>
             </a>
-
             <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
               ng-click="addToFavouriteMenu($event);" id="invoiceDueMenu" title="Add to Favourite"></i>
-          </li>
+          </li> -->
 
           <li ng-class="{'active menuBg': activetab == '/banking-details'}"
             ng-mouseover="menuHoverIn('bankingDetailsMenu');" ng-mouseleave="menuHoverOut('bankingDetailsMenu')">
@@ -648,6 +647,30 @@
                         <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide" ng-click="addToFavouriteMenu($event);" id="workInstructionsMenu" title="Add to Favourite"></i>
 
                     </li> -->
+        </ul>
+      </li>
+
+      <li ng-class="{active: activetab == '/invoice-settings' || activetab == '/invoice-due-period'}" class="sidebarArrow">
+        <a href="javascript:void(0)" md-ink-ripple>
+          <span class="font-bol">Invoice</span>
+        </a>
+        <ul class="nav nav-sub dk">
+          <li ng-class="{'active menuBg': activetab == '/invoice-due-period'}"
+            ng-mouseover="menuHoverIn('invoiceDueMenu');" ng-mouseleave="menuHoverOut('invoiceDueMenu')">
+            <a href="#/invoice-due-period" md-ink-ripple>
+              <span class="font-bol underSubmenu">Invoice Due</span>
+            </a>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="invoiceDueMenu" title="Add to Favourite"></i>
+          </li>
+          <li ng-class="{'active menuBg': activetab == '/invoice-settings'}"
+            ng-mouseover="menuHoverIn('clientStatusMenu');" ng-mouseleave="menuHoverOut('clientStatusMenu')">
+            <a href="#/invoice-settings" md-ink-ripple>
+              <span class="font-bol underSubmenu">Invoice Settings</span>
+            </a>
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="clientStatusMenu" title="Add to Favourite"></i>
+          </li>
         </ul>
       </li>
 

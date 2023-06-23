@@ -4991,6 +4991,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.hideuploadBtn = false;
     if ($window.localStorage.jobFoldertype == 'source') {
         $scope.hideuploadBtn = ($scope.userRight == 2) ? true : false;
+        //$scope.hideuploadBtn = ($scope.userRight == 2) ? false : false;
     }
     if ($window.localStorage.jobFoldertype == 'target') {
         $scope.hideuploadBtn = ($scope.userRight == 2) ? false : true;
@@ -4999,6 +5000,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.hideuploadBtn = true;
     }
 
+    console.log('$window.localStorage.getItem("parentId")', $window.localStorage.getItem("parentId"))
+            
     //project root get display front
     if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
@@ -5010,8 +5013,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $window.localStorage.countSt == " " && $scope.userRight == '1') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
+            // For download popup source-target to display file-folder (Parent id will be change)  
             $routeParams.id = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
             rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
+            console.log('$window.localStorage.orderID', $window.localStorage.orderID)
+            console.log('$window.localStorage.jobfolderId', $window.localStorage.jobfolderId)
+            console.log('$window.localStorage.orderID', $window.localStorage.orderID)
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data[0].fmanager_id);
                 //setting variable for jobfilecounter
@@ -5025,8 +5032,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $scope.userRight == '2') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
+            // For download popup source-target to display file-folder (Parent id will be change)  
+            let routeParamsid = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
+            //rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
+            rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + routeParamsid;
             rest.get().success(function (data) {
+                console.log('data', data)
                 $window.localStorage.pId = data[0].fmanager_id;
                 $window.localStorage.setItem("parentId", data[0].fmanager_id);
 
@@ -5433,11 +5444,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     if ($window.localStorage.getItem("parentId") != " ") {
         var id = $window.localStorage.getItem("parentId");
+        console.log('id', id)
+        console.log('$routeParams.id', $routeParams.id)
+        console.log('externalResourceUserId', externalResourceUserId)
+
         var externalResourceUserId = null;
         rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
         //rest.path = 'filefolderGet/' + id + '/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.displayfolder = data;
+            console.log('$scope.displayfolder', $scope.displayfolder)
             // $scope.headerfilename(id);
             $timeout(function () {
                 $scope.displayfolder = data;
@@ -23711,6 +23727,68 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         bootbox.confirm("Are you sure you want to delete this row?", function (result) {
             if (result == true) {
                 rest.path = 'bankDetails/' + id;
+                rest.delete().success(function () {
+                    notification('Record deleted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        });
+    };
+
+    $scope.hoverIn = function () {
+        this.hoverEdit = true;
+    };
+
+    $scope.hoverOut = function () {
+        this.hoverEdit = false;
+    };
+}).controller('invoiceSettingController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    
+    rest.path = 'invoiceSettings';
+    rest.get().success(function (data) {
+        $scope.invoicesetInfoData = data;
+        console.log('$scope.invoicesetInfoData', $scope.invoicesetInfoData)
+        
+        $scope.invcPoSettingEmpty = jQuery.isEmptyObject(data);
+        
+    }).error(errorCallback);
+
+    $scope.getType = function (id, eID) {
+        $routeParams.id = id;
+        rest.path = 'invoiceSettings';
+        rest.model().success(function (data) {
+            // debugger;
+            $scope.invcPo = data;
+            //angular.element("#branch_center_id").select2('val', data.branch_center_id);
+            $('#branch_center_id').val(data.branch_center_id).trigger('change');
+        }).error(errorCallback);
+        scrollToId(eID);
+    }
+
+    $scope.save = function (formId) {
+        if (angular.element("#" + formId).valid()) {
+            if ($scope.invcPo.id) {
+                $routeParams.id = $scope.invcPo.id;
+                rest.path = 'invoiceSettings';
+                rest.put($scope.invcPo).success(function () {
+                    notification('Record updated successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            } else {
+                // rest.path = 'invoiceSettings';
+                // rest.post($scope.invcPo).success(function (data) {
+                //     notification('Record inserted successfully.', 'success');
+                //     $route.reload();
+                // }).error(errorCallback);
+            }
+        }
+    };
+
+    $scope.deleteModel = function (id) {
+        bootbox.confirm("Are you sure you want to delete this row?", function (result) {
+            if (result == true) {
+                rest.path = 'invoiceSettings/' + id;
                 rest.delete().success(function () {
                     notification('Record deleted successfully.', 'success');
                     $route.reload();
