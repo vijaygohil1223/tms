@@ -20546,6 +20546,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('#noJobNew' + val.itemId).text('true');
                         }
                         $scope.jobitemStatus = data;
+                        console.log('$scope.jobitemStatus', $scope.jobitemStatus)
                         var appr = [];
                         var other = [];
                         var newPercentArr = [];
@@ -20567,7 +20568,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                         });
                         var averagePercentage = calculateAveragePercentage(newPercentArr);
-
+                        
                         $scope.it = {};
                         $scope.total = appr.length + other.length;
                         $scope.divis = 100 / $scope.total;
@@ -20578,10 +20579,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if ($scope.percent == 100) {
                             if(! $('#sumimg'+i+' img').length)
                                 angular.element('#sumimg' + i).append('<img src="assets/img/wf_4.png" alt=""/> Completed /');
-                        } else if ($scope.percent < 100 && $scope.percent != 0) {
+                        } else if ($scope.percent < 100 && $scope.percent != 0 ) {
                             if(! $('#sumimg'+i+' img').length)
                                 angular.element('#sumimg' + i).append('<img src="assets/img/wf_3.png" alt=""/> Started /');
-                        } else if ($scope.percent == 0) {
+                        } else if ($scope.percent == 0 && $scope.jobitemStatus.length > 0) {
                             if(! $('#sumimg'+i+' img').length){
                                 //if($('#sumimg'+i+' img').attr('src') != 'assets/img/wf_1.png')
                                 angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
@@ -20591,6 +20592,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $('#noJob' + i).append('No jobs');
                             angular.element('#progress' + i).remove();
                             angular.element('#sumimg' + i).remove();
+                            angular.element('#itemPer' + i).text('');
+                            
                         }
                     }).error(errorCallback);
                 }
@@ -32351,6 +32354,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                         });
                         var averagePercentage = calculateAveragePercentage(newPercentArr);
+                        console.log('averagePercentage-B', averagePercentage)
                         $scope.it = {};
                         $scope.total = appr.length + other.length;
                         $scope.divis = 100 / $scope.total;
@@ -32362,12 +32366,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             angular.element('#sumimg' + i).append('<img src="assets/img/wf_4.png" alt=""/> Completed /');
                         } else if ($scope.percent < 100 && $scope.percent != 0) {
                             angular.element('#sumimg' + i).append('<img src="assets/img/wf_3.png" alt=""/> Started /');
-                        } else if ($scope.percent == 0) {
+                        } else if ($scope.percent == 0  && $scope.jobitemStatus.length > 0) {
                             angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
                         } else {
                             $('#noJob' + i).append('No jobs');
                             angular.element('#progress' + i).remove();
                             angular.element('#sumimg' + i).remove();
+                            angular.element('#itemPer' + i).remove();
                         }
                     }).error(errorCallback);
                 }
