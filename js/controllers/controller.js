@@ -2553,7 +2553,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
                     isQaReady = checkqaReady.length > 0 ? true : false;
                 }
-                if ( ([4,6,7,8,9].includes(val.itemStatusId)==false) && (val.itemStatusId == "10" || isQaReady)) {
+                if ( ([3,4,6,7,8,9,11,12,13].includes(val.itemStatusId)==false) && (val.itemStatusId == "10" || isQaReady)) {
                     //if(isQaReady){
                         val.progrss_precentage = 75;
                         val.projectstatus_class = 'projectstatus_ready';
@@ -2572,6 +2572,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 // QA issue
                 if (val.itemStatusId == "13") {
+                    val.progrss_precentage = 75;
                     $scope.projectsQaIssueCount++;
                     $scope.projectsQaissue.push(val);
                     val.projectstatus_class = 'projectstatus_ready';
@@ -5016,9 +5017,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // For download popup source-target to display file-folder (Parent id will be change)  
             $routeParams.id = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
             rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
-            console.log('$window.localStorage.orderID', $window.localStorage.orderID)
-            console.log('$window.localStorage.jobfolderId', $window.localStorage.jobfolderId)
-            console.log('$window.localStorage.orderID', $window.localStorage.orderID)
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data[0].fmanager_id);
                 //setting variable for jobfilecounter
@@ -20533,11 +20531,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.jobitemStatus = data;
                         var appr = [];
                         var other = [];
+                        var jobStatusList = ['Approved','Invoiced','Invoice Ready','Paid','Completed'];
                         angular.forEach(data, function (val, i) {
-                            if (val.item_status == 'Approved') {
+                            if (jobStatusList.includes(val.item_status)) {
                                 appr.push(val.item_status);
                             }
-                            if (val.item_status != 'Approved') {
+                            //if (val.item_status != 'Approved') {
+                            if (! jobStatusList.includes(val.item_status)) {
                                 other.push(val.item_status);
                             }
                         });
@@ -20558,8 +20558,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //if($('#sumimg'+i+' img').attr('src') != 'assets/img/wf_1.png')
                                 angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
                             }
-                            
-                            
                         } else {
                             if(! $('.jbClassDel' + val.itemId).text() )
                                 $('#noJob' + i).append('No jobs');
@@ -20568,6 +20566,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }).error(errorCallback);
                 }
+
                 rest.path = 'jobItemIconsetdata/' + val.item_number + '/' + $scope.routeOrderID;
                 rest.get().success(function (data) {
                     $scope.dueDate = data;
@@ -27015,11 +27014,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.jobitemStatus = data;
             var appr = [];
             var other = [];
+            var jobStatusList = ['Approved','Invoiced','Invoice Ready','Paid','Completed'];
             angular.forEach(data, function (val, i) {
-                if (val.item_status == 'Approved') {
+                //if (val.item_status == 'Approved') {
+                if (jobStatusList.includes(val.item_status)) {
                     appr.push(val.item_status);
                 }
-                if (val.item_status != 'Approved') {
+                if (! jobStatusList.includes(val.item_status)) {
                     other.push(val.item_status);
                 }
             });
@@ -32085,6 +32086,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             var data = data.filter(itemData => itemData.itemId == $scope.scoop_id);
             $scope.itemList = data;
+            console.log('$scope.itemList', $scope.itemList)
             $scope.TblItemList = data;  
             $scope.projectItemEmpty = jQuery.isEmptyObject(data);
             $scope.totalPrice = 0;
@@ -32287,12 +32289,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.jobitemStatus = data;
                         var appr = [];
                         var other = [];
+                        var jobStatusList = ['Approved','Invoiced','Invoice Ready','Paid','Completed'];
                         angular.forEach(data, function (val, i) {
                             //$scope.scoop_number = val.item_id;
-                            if (val.item_status == 'Approved') {
+                            //if (val.item_status == 'Approved') {
+                            if (jobStatusList.includes(val.item_status)) {
                                 appr.push(val.item_status);
                             }
-                            if (val.item_status != 'Approved') {
+                            //if (val.item_status != 'Approved') {
+                            if (! jobStatusList.includes(val.item_status)) {
                                 other.push(val.item_status);
                             }
                         });
