@@ -643,6 +643,22 @@ function findCommonArrEle(arr1, arr2) {
     return arr1.some(item => arr2.includes(item))
 }
 
+function calculateAveragePercentage(percentages) {
+    if(percentages.length ==0)
+        return 0;
+    var decimalValues = percentages.map(function(percentage) {
+      return percentage / 100;
+    });
+  
+    var sum = decimalValues.reduce(function(a, b) {
+      return a + b;
+    }, 0);
+  
+    var average = sum / decimalValues.length;
+  
+    return average * 100;
+}
+
 function exportTableToExcel(id, fileName){
     var wb = XLSX.utils.table_to_book(document.getElementById(id), {sheet:"Sheet JS"});
     var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
@@ -20519,6 +20535,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }*/
                 
                 $scope.totalPrice += val.total_amount;
+
                 if (val.itemId) {
                     $routeParams.id = val.itemId;
                     rest.path = 'itemsjobStatusGet/' + $routeParams.id + '/' + $scope.routeOrderID;
@@ -20531,6 +20548,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.jobitemStatus = data;
                         var appr = [];
                         var other = [];
+                        var newPercentArr = [];
                         var jobStatusList = ['Approved','Invoiced','Invoice Ready','Paid','Completed'];
                         angular.forEach(data, function (val, i) {
                             if (jobStatusList.includes(val.item_status)) {
@@ -20540,11 +20558,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (! jobStatusList.includes(val.item_status)) {
                                 other.push(val.item_status);
                             }
+                            if(['Ongoing'].includes(val.item_status)) {
+                                newPercentArr.push(20);
+                            }else if(jobStatusList.includes(val.item_status)){
+                                newPercentArr.push(100);
+                            }else{
+                                newPercentArr.push(0);
+                            }
                         });
+                        var averagePercentage = calculateAveragePercentage(newPercentArr);
+
                         $scope.it = {};
                         $scope.total = appr.length + other.length;
                         $scope.divis = 100 / $scope.total;
-                        $scope.percent = Math.ceil($scope.divis * appr.length);
+                        //$scope.percent = Math.ceil($scope.divis * appr.length);
+                        $scope.percent = Math.ceil(averagePercentage);
                         angular.element('#itemPer' + i).html($scope.percent);
                         angular.element('.itemPer' + i).val($scope.percent);
                         if ($scope.percent == 100) {
@@ -27023,10 +27051,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (! jobStatusList.includes(val.item_status)) {
                     other.push(val.item_status);
                 }
+                if (! jobStatusList.includes(val.item_status)) {
+                    other.push(val.item_status);
+                }
+                if(['Ongoing'].includes(val.item_status)) {
+                    newPercentArr.push(20);
+                }else if(jobStatusList.includes(val.item_status)){
+                    newPercentArr.push(100);
+                }else{
+                    newPercentArr.push(0);
+                }
             });
+            var averagePercentage = calculateAveragePercentage(newPercentArr);
+
             $scope.total = appr.length + other.length;
             $scope.divis = 100 / $scope.total;
-            $scope.percent = Math.ceil($scope.divis * appr.length);
+            //$scope.percent = Math.ceil($scope.divis * appr.length);
+            $scope.percent = Math.ceil(averagePercentage);
         }).error(errorCallback);
     }
 
@@ -32296,15 +32337,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (jobStatusList.includes(val.item_status)) {
                                 appr.push(val.item_status);
                             }
-                            //if (val.item_status != 'Approved') {
                             if (! jobStatusList.includes(val.item_status)) {
                                 other.push(val.item_status);
                             }
+                            if(['Ongoing'].includes(val.item_status)) {
+                                newPercentArr.push(20);
+                            }else if(jobStatusList.includes(val.item_status)){
+                                newPercentArr.push(100);
+                            }else{
+                                newPercentArr.push(0);
+                            }
                         });
+                        var averagePercentage = calculateAveragePercentage(newPercentArr);
                         $scope.it = {};
                         $scope.total = appr.length + other.length;
                         $scope.divis = 100 / $scope.total;
                         $scope.percent = Math.ceil($scope.divis * appr.length);
+                        $scope.percent = Math.ceil(averagePercentage);
                         angular.element('#itemPer' + i).html($scope.percent);
                         angular.element('.itemPer' + i).val($scope.percent);
                         if ($scope.percent == 100) {
