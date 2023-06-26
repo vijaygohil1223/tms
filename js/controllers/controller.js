@@ -27042,6 +27042,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.jobitemStatus = data;
             var appr = [];
             var other = [];
+            var newPercentArr = [];
             var jobStatusList = ['Approved','Invoiced','Invoice Ready','Paid','Completed'];
             angular.forEach(data, function (val, i) {
                 //if (val.item_status == 'Approved') {
@@ -32330,6 +32331,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.jobitemStatus = data;
                         var appr = [];
                         var other = [];
+                        var newPercentArr = [];
                         var jobStatusList = ['Approved','Invoiced','Invoice Ready','Paid','Completed'];
                         angular.forEach(data, function (val, i) {
                             //$scope.scoop_number = val.item_id;
