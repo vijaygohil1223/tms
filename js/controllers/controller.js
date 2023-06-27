@@ -2496,14 +2496,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsAssigned.push(val);
                     $scope.projectsAssignedCount++;
                 }
-                // In Progress - Ongoing
-                if (val.itemStatusId == "2") {
-                    val.progrss_precentage = 25;
-                    val.projectstatus_class = 'projectstatus_inprogress';
-                    val.projectstatus_color = '#fec106';
-                    $scope.projectsInProgress.push(val);
-                    $scope.projectsInprogressCount++;
-                }
+                
                 // To be Delivered - Delivery
                 if (val.itemStatusId == "3") {
                     val.progrss_precentage = 80;
@@ -2556,27 +2549,44 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_color = '#f44237';
                 }
                 // Completed by linguist
-                if (val.itemStatusId == "10") {
-                    val.progrss_precentage = 50;
-                    val.projectstatus_class = 'projectstatus_completed';
-                    val.projectstatus_color = '#ff9700';
-                    $scope.projectsCompletedByLng.push(val);
-                    $scope.projectLinguistCount++;
-                }
+                // if (val.itemStatusId == "10") {
+                //     val.progrss_precentage = 50;
+                //     val.projectstatus_class = 'projectstatus_completed';
+                //     val.projectstatus_color = '#ff9700';
+                //     $scope.projectsCompletedByLng.push(val);
+                //     $scope.projectLinguistCount++;
+                // }
                 // QA Ready
-                let isQaReady = false;
-                if($scope.jobListDelivered.length > 0){
-                    let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
-                    isQaReady = checkqaReady.length > 0 ? true : false;
-                }
-                if ( ([3,4,6,7,8,9,11,12,13].includes(val.itemStatusId)==false) && (val.itemStatusId == "10" || isQaReady)) {
-                    //if(isQaReady){
+                //let isQaReady = false;
+                // if($scope.jobListDelivered.length > 0){
+                //     let checkqaReady = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
+                //     isQaReady = checkqaReady.length > 0 ? true : false;
+                // }
+                //if ( ([1,3,4,5,6,7,8,9,11,12,13].includes(val.itemStatusId)==false) && (val.itemStatusId == "10" || isQaReady)) {
+                if ( ([2,10].includes(val.itemStatusId))) {
+                    console.log('scoopitemStatusId=', val.itemStatusId)
+                    var checkAllComplete = false;
+                    if($scope.jobListDelivered.length > 0){
+                        let scoopJobs = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number );
+                        if(scoopJobs.length){
+                            checkAllComplete = scoopJobs.every( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
+                        }
+                    }
+                    if(val.itemStatusId == "10" || checkAllComplete){
                         val.progrss_precentage = 75;
                         val.projectstatus_class = 'projectstatus_ready';
                         val.projectstatus_color = '#019788';
                         $scope.projectsQaready.push(val);
                         $scope.projectsQaReadyCount++;
-                    //}    
+                    }
+                    // In Progress - Ongoing
+                    if (val.itemStatusId == "2"  && checkAllComplete==false)  {
+                        val.progrss_precentage = 25;
+                        val.projectstatus_class = 'projectstatus_inprogress';
+                        val.projectstatus_color = '#fec106';
+                        $scope.projectsInProgress.push(val);
+                        $scope.projectsInprogressCount++;
+                    }    
                 }
                 // PM Ready
                 if (val.itemStatusId == "12") {
