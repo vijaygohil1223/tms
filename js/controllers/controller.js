@@ -20556,11 +20556,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('#noJobNew' + val.itemId).text('true');
                         }
                         $scope.jobitemStatus = data;
-                        console.log('$scope.jobitemStatus', $scope.jobitemStatus)
                         var appr = [];
                         var other = [];
                         var newPercentArr = [];
                         var jobStatusList = ['Approved','Invoiced','Invoice Ready','Paid','Completed'];
+                        // according to scoop status
                         angular.forEach(data, function (val, i) {
                             if (jobStatusList.includes(val.item_status)) {
                                 appr.push(val.item_status);
@@ -20583,7 +20583,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.total = appr.length + other.length;
                         $scope.divis = 100 / $scope.total;
                         //$scope.percent = Math.ceil($scope.divis * appr.length);
-                        $scope.percent = Math.ceil(averagePercentage);
+                        //$scope.percent = Math.ceil(averagePercentage);
+                        if([2].includes(val.item_status)) {
+                            $scope.percent = 20;
+                        }else if([3,5,6,10,11,12,13].includes(val.item_status)){
+                            $scope.percent = 50;
+                        }else if([4,7].includes(val.item_status)){
+                            $scope.percent = 100;
+                        }else{
+                            $scope.percent = 0;
+                        }
                         angular.element('#itemPer' + i).html($scope.percent);
                         angular.element('.itemPer' + i).val($scope.percent);
                         if ($scope.percent == 100) {
@@ -20598,8 +20607,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 angular.element('#sumimg' + i).append('<img src="assets/img/wf_1.png" alt=""/> Not started /');
                             }
                         } else {
-                            if(! $('.jbClassDel' + val.itemId).text() )
-                                $('#noJob' + i).append('No jobs');
+                            if(! $('.jbClassDel' + val.itemId).text() ){
+                                //$('#noJob' + i).append('No jobs');
+                                $('#noJob' + i).append('-');
+                            }
                             angular.element('#progress' + i).remove();
                             angular.element('#sumimg' + i).remove();
                             angular.element('#itemPer' + i).text('');
@@ -32368,8 +32379,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.it = {};
                         $scope.total = appr.length + other.length;
                         $scope.divis = 100 / $scope.total;
-                        $scope.percent = Math.ceil($scope.divis * appr.length);
-                        $scope.percent = Math.ceil(averagePercentage);
+                        //$scope.percent = Math.ceil($scope.divis * appr.length);
+                        //$scope.percent = Math.ceil(averagePercentage);
+                        if([2].includes(val.item_status)) {
+                            $scope.percent = 20;
+                        }else if([3,5,6,10,11,12,13].includes(val.item_status)){
+                            $scope.percent = 50;
+                        }else if([4,7].includes(val.item_status)){
+                            $scope.percent = 100;
+                        }else{
+                            $scope.percent = 0;
+                        }
                         angular.element('#itemPer' + i).html($scope.percent);
                         angular.element('.itemPer' + i).val($scope.percent);
                         if ($scope.percent == 100) {
