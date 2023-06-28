@@ -1359,12 +1359,12 @@ class jobs_detail
         $update = $this->_db->update('tms_summmery_view', $data);
 
         if($update && isset($data['order_id'])) {
-            $qry = "SELECT count(*) as count FROM tms_summmery_view WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_id']."' AND resource = '' ";
-            $res_exist = $this->_db->rawQuery($qry);
-            if ($res_exist && $res_exist[0]['count'] == 0) {
-                $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '".$data['order_id']."' AND item_number = '".$data['item_id']."' AND item_status = '1' ";
-                $this->_db->rawQuery($qry_up);
-            }
+            // $qry = "SELECT count(*) as count FROM tms_summmery_view WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_id']."' AND resource = '' ";
+            // $res_exist = $this->_db->rawQuery($qry);
+            // if ($res_exist && $res_exist[0]['count'] == 0) {
+            //     $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '".$data['order_id']."' AND item_number = '".$data['item_id']."' AND item_status = '1' ";
+            //     $this->_db->rawQuery($qry_up);
+            // }
         }
         
 
@@ -2242,18 +2242,15 @@ class jobs_detail
                     ]]; 
                 }
             }    
-        $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
             
-        if($mailResponse['status'] == 200) {
-                // if(isset($data['outstanding_reminder'])){
-                //     if($data['outstanding_reminder']==1)
-                //     $upData['reminder_sent'] = 1;
-                // }
-                // $upData['modified_date'] = date('Y-m-d');
-                // $upData['is_invoice_sent'] = 1;
-                // $this->_db->where('invoice_id', $data['invoice_id']);
-                // $this->_db->update('tms_invoice_client',$upData);
+            $send_fn = new functions();
+            $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
+            
+            if($mailResponse['status'] == 200) {
+                if(isset($data['order_id']) && isset($data['item_id'])) {
+                    $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '".$data['order_id']."' AND item_number = '".$data['item_id']."' AND item_status = '1' ";
+                    $this->_db->rawQuery($qry_up);
+                }
 
                 $result['status'] = 200;
                 $result['msg'] = 'Thank you for your email';

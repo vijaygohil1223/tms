@@ -3891,6 +3891,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (settingData) {
             console.log('staticData', settingData)
             if(settingData){
+                
                 // po button show hide
                 $scope.sendPoBtn = true;
                 // $scope.poSettingData = settingData[0];
@@ -4004,7 +4005,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'jobdetail':$scope.jobdetail,
             'resourceDetail':$scope.resourceDetail,
             'purchaseDetail':$scope.purchaseDetail,
-            'pdfData': 'data',
             'purchaseOrderNo': $scope.purchaseDetail.purchaseOrderNo,
             'resourceEmail': $scope.resourceDetail.vEmailAddress,
             'poFilenamePdf': poFilenamePdf,
@@ -5105,7 +5105,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             previewHeight: "35px",
             previewWidth: "35px",
             maxFileCount: 5,
-            maxFileSize: 15 * 1024 * 1024,
+            //maxFileSize: 15 * 1024 * 1024,
             showDelete: true,
             autoSubmit: false,
             uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
@@ -6276,7 +6276,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             previewHeight: "35px",
             previewWidth: "35px",
             maxFileCount: 5,
-            maxFileSize: 15 * 1024 * 1024,
+            //maxFileSize: 15 * 1024 * 1024,
             showDelete: true,
             autoSubmit: false,
             //serialize:false,
@@ -26838,14 +26838,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.emailDetail = items;
+    console.log('$scope.emailDetail', $scope.emailDetail)
     var jobDetailUrl = downloadUrl = '';
+
     if(items){
-        console.log('items', items)
+
+        
+        console.log('items.jobDetail.item_id', items.jobdetail.item_id)
         var baseUrl = $location.absUrl().split('#')[0];
         var jobDetailUrl = baseUrl + '#/project-job-detail/' + $window.btoa('jobdetailID='+items.jobdetail.job_summmeryId);
         var downloadUrl = baseUrl + '#/job-download-file/' + $window.btoa('downloadID='+items.jobdetail.job_summmeryId);
         console.log('jobDetailUrl', jobDetailUrl)
     }
+
 
     $scope.cPersonMsg = [];
     rest.path = "emailTemplateGetAll" ;
@@ -26885,6 +26890,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'poFilenamePdf': items.poFilenamePdf,
             'resourceName': items.resourceDetail.vFirstName +' '+ items.resourceDetail.vLastName,
             'mailTextContent':$scope.cPersonMsg.messageData,
+            'order_id': items.jobdetail.order_id ? items.jobdetail.order_id : '',
+            'item_id': items.jobdetail.item_id ? items.jobdetail.item_id : '',
            // "file": $scope.attachementfile
         };
         console.log('$scope.invoicemailDetail', $scope.invoicemailDetail)
@@ -26897,16 +26904,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $uibModalInstance.dismiss('cancel');
             }
         }).error(errorCallback);
-        // if (angular.element("#" + frmId).valid()) {
-        //     rest.path = 'sendjobResourceMsg';
-        //     rest.post(data).success(function (data) {
-        //         notification('Mail send successfully', 'success');
-        //     }).error(errorCallback);
-        //     $timeout(function () {
-        //         $uibModalInstance.close(data);
-        //         $route.reload();
-        //     }, 100);
-        // }
+
     }
 
     $scope.cancel = function () {
