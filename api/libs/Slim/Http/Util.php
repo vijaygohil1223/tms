@@ -55,14 +55,22 @@ class Util
      * @param  bool            $overrideStripSlashes
      * @return array|string
      */
+
     public static function stripSlashesIfMagicQuotes($rawData, $overrideStripSlashes = null)
     {
-        $strip = is_null($overrideStripSlashes) ? get_magic_quotes_gpc() : $overrideStripSlashes;
-        if ($strip) {
+        //$strip = is_null($overrideStripSlashes) ? self::get_magic_quotes_gpc() : $overrideStripSlashes;
+
+        if ($overrideStripSlashes) {
             return self::stripSlashes($rawData);
         } else {
             return $rawData;
         }
+    }
+
+    // deprecated in new php version - reinitialize the fn
+    public static function get_magic_quotes_gpc() 
+    {
+        return false;
     }
 
     /**

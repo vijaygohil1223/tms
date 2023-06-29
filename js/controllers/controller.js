@@ -3891,7 +3891,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (settingData) {
             console.log('staticData', settingData)
             if(settingData){
-                
+
                 // po button show hide
                 $scope.sendPoBtn = true;
                 // $scope.poSettingData = settingData[0];
@@ -4650,6 +4650,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var quantity = $scope.itemPriceUni[id][index].quantity;
         var itemPrice = $scope.itemPriceUni[id][index].itemPrice;
         var itemTtl = $scope.itemPriceUni[id][index].itemTotal;
+
+
+    $scope.$emit('dataEvent', $scope.itemPriceUni);
+    console.log('$scope.itemPriceUni-emit', $scope.itemPriceUni)
         
         if (!quantity) {
             quantity = 0;
@@ -20940,6 +20944,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         notification('Please create project.', 'warning');
         return false;
     }
+    $scope.$on('dataEvent', function(event, data) {
+        console.log('childData',data); // Access the data sent from the child controller
+      });
     if ($window.localStorage.orderID == undefined) {
         $location.path('/dashboard1');
         notification('Please create project.', 'warning');
