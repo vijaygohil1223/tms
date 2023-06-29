@@ -29383,6 +29383,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'acceptJobStatus';
             rest.put($scope.job).success(function (data) {
                 if (data.status == 200 && data.emailSend == 'true') {
+                    // Delevered status renamed as Completed
                     if ($scope.job.item_status == 'Delivered' || $scope.job.item_status == 'Completed') {
                         notification('job is delivered successfully and email sent to project manager.', 'success');
                     } else {

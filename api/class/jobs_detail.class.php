@@ -1646,68 +1646,46 @@ class jobs_detail
         if ($idd) {
 
             $this->_db->where('job_summmeryId', $id);
-
             $jobsData = $this->_db->getOne('tms_summmery_view');
 
-
-
             $this->_db->where('iUserId', $jobsData['resource']);
-
             $resourceData = $this->_db->getOne('tms_users');
 
-
-
             $this->_db->where('order_id', $jobsData['order_id']);
-
             $jobEmailData = $this->_db->getOne('tms_customer');
 
-
-
             $this->_db->where('iUserId', $jobEmailData['project_manager']);
-
             $proManagerEmail = $this->_db->getOne('tms_users');
-
-
 
             if ($data['item_status'] == 'Delivered' || $data['item_status'] == 'Completed') {
 
                 //Sending Email to manager after job is Delivered START
 
                 $jobNo = $jobsData['po_number'];
-
                 $jobDescription = $jobsData['description'];
-
                 $jobDeliverynote = '';
-
-
 
                 $this->_db->where('template_id', 10);
 
                 $emailTemplateAcceptJob = $this->_db->getOne('tms_email_templates');
-
                 $search_array = array("[JOBNO]", "[JOBDESCRIPTION]", '[DELIVERYNOTE]');
-
-
-
-
 
                 $replace_array = array($jobNo, $jobDescription, $jobDeliverynote);
 
-
-
                 $html = str_replace($search_array, $replace_array, $emailTemplateAcceptJob['template_content']);
-
-
 
                 $subject = $emailTemplateAcceptJob['template_subject'];
 
                 $to = $proManagerEmail['vEmailAddress'];
 
-
-
                 $mailSendStatus = $this->sendEmail($to, $subject, $html);
 
                 //Sending Email to manager after job is Delivered END
+                // Update status to QA Ready
+                if(isset($jobsData['order_id']) && isset($jobsData['item_id'])) {
+                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '".$jobsData['order_id']."' AND item_number = '".$jobsData['item_id']."' ";
+                    $this->_db->rawQuery($qry_up);
+                }
 
             } else {
 
