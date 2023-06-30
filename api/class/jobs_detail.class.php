@@ -693,13 +693,22 @@ class jobs_detail
         }
 
         if (isset($data['item_status'])) {
-            $data['updated_date'] = date('Y-m-d H:i:s');
 
+            $this->_db->where('job_summmeryId', $id);
+            $jobsData = $this->_db->getone('tms_summmery_view');
+
+            $data['updated_date'] = date('Y-m-d H:i:s');
             $this->_db->where('job_summmeryId', $id);
 
             $id = $this->_db->update('tms_summmery_view', $data);
 
+            
             if ($id) {
+                // Update scoop status to QA Ready
+                if(isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Completed' ) {
+                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '".$jobsData['order_id']."' AND item_number = '".$jobsData['item_id']."' AND item_status != '4' ";
+                    $this->_db->rawQuery($qry_up);
+                }
 
                 $return['status'] = 200;
 

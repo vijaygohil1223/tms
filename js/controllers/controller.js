@@ -1674,25 +1674,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     var objCenter = [];
-    rest.path = 'centerClientGet';
-    rest.get().success(function (data) {
-        angular.forEach(data, function (val, i) {
-            var orLen = JSON.parse(val.order_number)[0].value.length;
-            let curntYear = JSON.parse(val.order_number)[0].value.substr((orLen-5), 2);
-            objCenter.push({
-                'id': val.abbrivation + curntYear,
-                'text': val.name
+    if ($cookieStore.get('session_iUserId') != undefined) {
+        rest.path = 'centerClientGet';
+        rest.get().success(function (data) {
+            angular.forEach(data, function (val, i) {
+                var orLen = JSON.parse(val.order_number)[0].value.length;
+                let curntYear = JSON.parse(val.order_number)[0].value.substr((orLen-5), 2);
+                objCenter.push({
+                    'id': val.abbrivation + curntYear,
+                    'text': val.name
+                });
             });
+            $timeout(function () {
+                angular.element('#projectBranch').select2({
+                    allowClear: true,
+                    data: objCenter,
+                    placeholder:'Business Unit',
+                    multiple: false,
+                });
+            }, 500);
         });
-        $timeout(function () {
-            angular.element('#projectBranch').select2({
-                allowClear: true,
-                data: objCenter,
-                placeholder:'Business Unit',
-                multiple: false,
-            });
-        }, 500);
-    });
+    }    
 
     $scope.DtTblOption = {
         "dom": '<"pull-right"l><<t>p><"clear">'
@@ -3350,7 +3352,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })
         //return false;
     }
-    $scope.countryHolidayGet();
+    if ($cookieStore.get('session_iUserId') != undefined) {
+        $scope.countryHolidayGet();
+    }
     $timeout(function () {
         $('#holidaysLoading').addClass('hide');
     }, 200);
