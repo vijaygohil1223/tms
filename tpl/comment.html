@@ -331,7 +331,9 @@ li.seperatordate.comment {
                             <i class="fa fa-snowflake-o" aria-hidden="true"></i>
                             <label>Project Price</label>
                           </div>
-                          <span class="price">{{projectPriceChat | CurrencyNumbersCommaformat}}</span>
+                          <!-- <span class="price">{{projectPriceChat | CurrencyNumbersCommaformat}}  {{currencyName}}</span> -->
+                          <span class="price">{{projectPriceChat | filterCurrencyComma:currencyName }} </span>
+                          
                         </li>
                         <li class="userSection">
                           <span class="sec-title">Project Members:</span>

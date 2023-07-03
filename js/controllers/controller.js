@@ -10746,12 +10746,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $timeout(function () {
             if ($.trim(telInput.val())) {
                 if (telInput.intlTelInput("isValidNumber")) {
-                    
                     $scope.isValidMobileNumber = true;
                     validMsg.removeClass("hide");
                     $('#error-msg').addClass('hide');
                 } else {
-                    
                     $scope.isValidMobileNumber = false;
                     $('#error-msg').removeClass('hide');
                 }
@@ -22709,10 +22707,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
 
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
-
+    $scope.currencyName = 'EUR';
     rest.path = 'viewProjectCustomerDetail';
     rest.model().success(function (data) {
         $scope.customer = data;
+        console.log('$scope.customer', $scope.customer)
         $window.localStorage.clientproCustomerName = $scope.customer.client;
         $window.localStorage.ContactPerson = $scope.customer.contact;
         $routeParams.ClientIdd = data['client'];
@@ -22723,6 +22722,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.warn = false;
             }, 10000);
         }
+        if($scope.customer)
+           $scope.currencyName = $scope.customer.client_currency ? $scope.customer.client_currency.split(',')[0] : 'EUR';   
+           
     }).error(errorCallback);
 
     //$routeParams.id;
@@ -22746,20 +22748,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.model().success(function (data) {
         
         angular.forEach(data, function (val, i) {
-            if (val.vResourcePosition == 3) {
-                angular.element('#coordinatorIcon').html(val.vUserName);
-                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            const resPosition = val.vResourcePosition.toString().split(',')
+            const fullName = val.vFirstName + ' ' + val.vLastName
+            // index based on api (project_coordinator,project_manager QA_specialist)
+            if (i===0 && resPosition.includes('3') ) {
+                angular.element('#coordinatorIcon').html(fullName);
+                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
                 angular.element('.coordinatorIcon').html(coordpic);
-
-            } else if (val.vResourcePosition == 2) {
-                angular.element('#managerDesignation').html(val.vUserName);
-                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            } 
+            if (i===1 && resPosition.includes('2')) {
+                angular.element('#managerDesignation').html(fullName);
+                console.log('val', val)
+                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
                 angular.element('.managerIcon').html(managerpic);
-            } else if (val.vResourcePosition == 4) {
-                angular.element('#QASpecialist').html(val.vUserName);
-                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            } 
+            if (i===2 && resPosition.includes('4')) {
+                angular.element('#QASpecialist').html(fullName);
+                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
                 angular.element('.QAIcon').html(QApic);
             }
+            // if (val.vResourcePosition == 3) {
+            //     angular.element('#coordinatorIcon').html(val.vUserName);
+            //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            //     angular.element('.coordinatorIcon').html(coordpic);
+            // } else if (val.vResourcePosition == 2) {
+            //     angular.element('#managerDesignation').html(val.vUserName);
+            //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            //     angular.element('.managerIcon').html(managerpic);
+            // } else if (val.vResourcePosition == 4) {
+            //     angular.element('#QASpecialist').html(val.vUserName);
+            //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            //     angular.element('.QAIcon').html(QApic);
+            // }
         })
     }).error(errorCallback);
 
@@ -34747,7 +34767,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
-
+    
     rest.path = 'viewProjectCustomerDetail';
     rest.model().success(function (data) {
         $scope.customer = data;
@@ -34761,6 +34781,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.warn = false;
             }, 10000);
         }
+        if($scope.customer)
+            $scope.currencyName = $scope.customer.client_currency ? $scope.customer.client_currency.split(',')[0] : 'EUR';   
+
     }).error(errorCallback);
 
     //$routeParams.id;
@@ -34788,22 +34811,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.model().success(function (data) {
         
         angular.forEach(data, function (val, i) {
-            if (val.vResourcePosition == 3) {
-                angular.element('#coordinatorIcon').html(val.vUserName);
-                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            const resPosition = val.vResourcePosition.toString().split(',')
+            const fullName = val.vFirstName + ' ' + val.vLastName
+            // index based on api (project_coordinator,project_manager QA_specialist)
+            if (i===0 && resPosition.includes('3') ) {
+                angular.element('#coordinatorIcon').html(fullName);
+                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
                 angular.element('.coordinatorIcon').html(coordpic);
-
-            } else if (val.vResourcePosition == 2) {
-                angular.element('#managerDesignation').html(val.vUserName);
-                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            } 
+            if (i===1 && resPosition.includes('2')) {
+                angular.element('#managerDesignation').html(fullName);
+                console.log('val', val)
+                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
                 angular.element('.managerIcon').html(managerpic);
-
-            } else if (val.vResourcePosition == 4) {
-                angular.element('#QASpecialist').html(val.vUserName);
-                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+            } 
+            if (i===2 && resPosition.includes('4')) {
+                angular.element('#QASpecialist').html(fullName);
+                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
                 angular.element('.QAIcon').html(QApic);
-
             }
+            // if (val.vResourcePosition == 3) {
+            //     angular.element('#coordinatorIcon').html(val.vUserName);
+            //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
+            //     angular.element('.coordinatorIcon').html(coordpic);
+
+            // } else if (val.vResourcePosition == 2) {
+            //     angular.element('#managerDesignation').html(val.vUserName);
+            //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
+            //     angular.element('.managerIcon').html(managerpic);
+
+            // } else if (val.vResourcePosition == 4) {
+            //     angular.element('#QASpecialist').html(val.vUserName);
+            //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
+            //     angular.element('.QAIcon').html(QApic);
+
+            // }
         })
     }).error(errorCallback);
 

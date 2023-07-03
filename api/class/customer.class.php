@@ -280,6 +280,7 @@ class customer {
             $data = $client->getClientByField($results['client'],$field_name = "");
             $results['memo'] = $data[0]['tMemo']; 
             $results['client'] = $data[0]['vUserName'];
+            $results['client_currency'] = $data[0]['client_currency'];
         }
         if($results['contact']){
             $this->_db->where("iContactId", $results['contact']);
