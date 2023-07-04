@@ -100,7 +100,7 @@ class discussion {
         foreach ($data as $value) {
             $reead_id = "'".$value['read_id'].",'";    
             //$qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE id = " . $value['id'] ;
-            $qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE id = " . $value['id'] . " AND  FIND_IN_SET(".$value['read_id'].",read_id)=0 " ;
+            $qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE id = " . $value['id'] . " AND FIND_IN_SET(".$value['read_id'].",read_id)=0 " ;
 
             $this->_db->rawQuery($qry);
             $cmtval['status']=1;

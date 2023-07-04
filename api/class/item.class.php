@@ -126,11 +126,56 @@ class item {
         return $return;
     }
 
+    public function fileFolderDelete($id){
+        // Delete files folder from scoops jobs 
+        $externalResourceUserId = 'null';
+        $this->_db->where('item_id',$id);
+        $scoop = $this->_db->getOne('tms_filemanager');
+        if ($scoop) {
+            $filed = new filemanager();
+            $infoFolder = $filed->filefolderGet($scoop['fmanager_id'], $id, $externalResourceUserId);
+            $path = "../../uploads/fileupload/";
+            if ($infoFolder) {
+                foreach ($infoFolder as $key => $value) {
+                    if (isset($value['ext'])) {
+                        $images = glob($path . $value['name']);
+                        if ($images) {
+                            print_r($images);
+                            exit;
+                            unlink($path . $value['name']);
+                        }
+                        $in = $filed->filefolderGet($value['fmanager_id'], $id, $externalResourceUserId);
+                        foreach ($in as $key => $value) {
+                            if (isset($value['ext'])) {
+                                $images = glob($path . $value['name']);
+                                if ($images) {
+                                    unlink($path . $value['name']);
+                                }
+                            }
+                            $this->_db->where('parent_id', $value['parent_id']);
+                            $this->_db->delete('tms_filemanager');
+                        }
+                    }
+                    $this->_db->where('fmanager_id', $value['parent_id']);
+                    $this->_db->delete('tms_filemanager');
+                    
+                    $this->_db->where('parent_id', $value['parent_id']);
+                    $this->_db->delete('tms_filemanager');
+                }
+            }
+
+            $this->_db->where('item_id', $scoop['item_id']);
+            $this->_db->delete('tms_filemanager');
+        
+        }
+        return true;
+        // End file folder delete in filemanager
+    }
+
     public function itemDelete($idItem,$orderId) { 
         $id = explode('-',$idItem)[0];
         $iNumber = explode('-',$idItem)[1];
         
-
         $this->_db->where('order_id',$orderId);
         $this->_db->where('item_id',$iNumber);
         $jobAvailable = $this->_db->get('tms_summmery_view');
@@ -144,8 +189,9 @@ class item {
                 $this->_db->where('order_id',$orderId);
                 $this->_db->delete('tms_summmery_view');
 
-                $this->_db->where('item_id',$id);
-                $this->_db->delete('tms_filemanager');
+                // $this->_db->where('item_id',$id);
+                // $this->_db->delete('tms_filemanager');
+                $dltFlFolder = self::fileFolderDelete($id);
 
                 $this->_db->where('itemId',$id);
                 $data = $this->_db->delete('tms_items');
@@ -331,7 +377,18 @@ class item {
                     $fdata['parent_id'] = $info['fmanager_id'];
                     $fdata['created_date'] = date('Y-m-d H:i:s');
                     $fdata['updated_date'] = date('Y-m-d H:i:s');
-                    $ItemId = $this->_db->insert('tms_filemanager',$fdata);
+                    $fmid = $this->_db->insert('tms_filemanager',$fdata);
+
+                    if($fmid){
+                        $folderArr = array('Original Files','PO','QA Delivery','PM Delivery');
+                        foreach ($folderArr as $key => $value) {
+                            $fdata['order_id'] = '';
+                            $fdata['item_id'] = 0;
+                            $fdata['name'] = $value;
+                            $fdata['parent_id'] = $fmid;
+                            $this->_db->insert('tms_filemanager',$fdata);
+                        }
+                    }
                 }
             }
 

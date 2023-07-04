@@ -307,8 +307,6 @@ class jobs_detail
     public function jobitemDelete($id)
     {
 
-
-
         $invoiceAlreadyAdded = false;
 
         if ($id) {
