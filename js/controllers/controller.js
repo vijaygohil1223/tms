@@ -21030,16 +21030,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 Autocheck.push(i);
                 if (status == 'In preparation' && jobResource) {
-                    $scope.item_status = "Requested";
-                    $scope.jobdetail.jobnumber = jobnumber;
-                    $scope.jobdetail.jduedate = jduedate;
-                    $scope.jobdetail.jobEmail = jobEmail;
-                    $scope.jobdetail.item_status = $scope.item_status;
-                    $routeParams.id = summeryId;
-                    rest.path = 'jobSummeryDetailsUpdate';
-                    rest.put($scope.jobdetail).success(function (data) {
-                        $route.reload();
-                    }).error(errorCallback);
+                    // When we send request by email not when resource assign (send request button)
+                    // $scope.item_status = "Requested";
+                    // $scope.jobdetail.jobnumber = jobnumber;
+                    // $scope.jobdetail.jduedate = jduedate;
+                    // $scope.jobdetail.jobEmail = jobEmail;
+                    // $scope.jobdetail.item_status = $scope.item_status;
+                    // $routeParams.id = summeryId;
+                    // rest.path = 'jobSummeryDetailsUpdate';
+                    // rest.put($scope.jobdetail).success(function (data) {
+                    //     $route.reload();
+                    // }).error(errorCallback);
                 }
             } else if (auto == 'Auto' && status == 'Approved') {
                 temp.push(i + 1);
@@ -21080,16 +21081,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.jobdetail = {};
                 }
                 if (status == 'In preparation' && jobResource) {
-                    $scope.item_status = "Requested";
-                    $scope.jobdetail.jobnumber = jobnumber;
-                    $scope.jobdetail.jduedate = jduedate;
-                    $scope.jobdetail.jobEmail = jobEmail;
-                    $scope.jobdetail.item_status = $scope.item_status;
-                    $routeParams.id = summeryId;
-                    rest.path = 'jobSummeryDetailsUpdate';
-                    rest.put($scope.jobdetail).success(function (data) {
-                        $route.reload();
-                    }).error(errorCallback);
+                    // $scope.item_status = "Requested";
+                    // $scope.jobdetail.jobnumber = jobnumber;
+                    // $scope.jobdetail.jduedate = jduedate;
+                    // $scope.jobdetail.jobEmail = jobEmail;
+                    // $scope.jobdetail.item_status = $scope.item_status;
+                    // $routeParams.id = summeryId;
+                    // rest.path = 'jobSummeryDetailsUpdate';
+                    // rest.put($scope.jobdetail).success(function (data) {
+                    //     $route.reload();
+                    // }).error(errorCallback);
                 }
             }
         }
@@ -22828,11 +22829,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }).error(errorCallback);
 
     $scope.projectPriceChat = 0;
+    $scope.projectScoopStatus = 'Assign';
     if ($routeParams.id) {
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             angular.forEach(data, function (val, i) {
-                
+                console.log('items-data', data)
+                $scope.projectScoopStatus = val.item_status_name
                 if (val.total_price) {
                     $scope.projectPriceChat += val.total_price;
                 }
@@ -29496,22 +29499,40 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.model().success(function (data) {
             
             angular.forEach(data, function (val, i) {
-                if (val.vResourcePosition == 3) {
-                    angular.element('#coordinatorIcon').html(val.vUserName);
-                    var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                const resPosition = val.vResourcePosition.toString().split(',')
+                const fullName = val.vFirstName + ' ' + val.vLastName
+                // index based on api (project_coordinator,project_manager QA_specialist)
+                if (i===0 && resPosition.includes('3') ) {
+                    angular.element('#coordinatorIcon').html(fullName);
+                    var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
                     angular.element('.coordinatorIcon').html(coordpic);
-
-                } else if (val.vResourcePosition == 2) {
-                    angular.element('#managerDesignation').html(val.vUserName);
-                    var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                } 
+                if (i===1 && resPosition.includes('2')) {
+                    angular.element('#managerDesignation').html(fullName);
+                    console.log('val', val)
+                    var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
                     angular.element('.managerIcon').html(managerpic);
-
-                } else if (val.vResourcePosition == 4) {
-                    angular.element('#QASpecialist').html(val.vUserName);
-                    var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                } 
+                if (i===2 && resPosition.includes('4')) {
+                    angular.element('#QASpecialist').html(fullName);
+                    var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
                     angular.element('.QAIcon').html(QApic);
-
                 }
+                // if (val.vResourcePosition == 3) {
+                //     angular.element('#coordinatorIcon').html(val.vUserName);
+                //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.coordinatorIcon').html(coordpic);
+
+                // } else if (val.vResourcePosition == 2) {
+                //     angular.element('#managerDesignation').html(val.vUserName);
+                //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.managerIcon').html(managerpic);
+
+                // } else if (val.vResourcePosition == 4) {
+                //     angular.element('#QASpecialist').html(val.vUserName);
+                //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.QAIcon').html(QApic);
+                // }
             })
         }).error(errorCallback);
 
@@ -29575,11 +29596,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
 
         $scope.projectPriceChat = 0;
+        $scope.projectScoopStatus = 'Assign';
         if ($scope.jobDiscussionRedirect) {
             rest.path = 'itemsGet/' + $scope.jobDiscussionRedirect;
             rest.get().success(function (data) {
                 angular.forEach(data, function (val, i) {
-                
+                    $scope.projectScoopStatus = val.item_status_name
                     if (val.total_price) {
                         $scope.projectPriceChat += val.total_price;
                     }
@@ -34896,11 +34918,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }).error(errorCallback);
 
     $scope.projectPriceChat = 0;
+    $scope.projectScoopStatus = 'Assign'
     if ($routeParams.id) {
         rest.path = 'itemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             angular.forEach(data, function (val, i) {
-                
+                $scope.projectScoopStatus = val.item_status_name
                 if (val.total_price) {
                     $scope.projectPriceChat += val.total_price;
                 }
