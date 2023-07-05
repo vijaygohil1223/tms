@@ -21929,8 +21929,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                     allitCheked.splice(indexOfObject, 1);
                 }
+                if(allitCheked.length > 0)
+                    allitCheked = UniqueArraybyId(allitCheked,'id')
                 console.log('allitCheked', allitCheked)
-
             }
         });
     }
@@ -22189,22 +22190,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var itemAll = [];
                     $scope.itemAll = JSON.stringify(allitCheked);
                     var data = JSON.parse($scope.itemAll);
+                    console.log('data', data)
+                    
                     if ($scope.it == undefined || $scope.it == null || $scope.it == "") {
                         $scope.it = {};
                     }
-                    angular.forEach(data, function (val, i) {
-                        if (val.id) {
-                            var setItem_Status = angular.element("#setItemStatus").val();
-                            $scope.item_status = setItem_Status;
-                            $scope.it.item_status = $scope.item_status;
-                            $routeParams.id = val.id;
-                            rest.path = 'jobselectContactNameupdate';
-                            rest.put($scope.it).success(function (data) {
-                                $scope.setItemStatus = false;
-                                $route.reload();
-                            }).error(errorCallback);
-                        }
-                    })
+                    if(data.length){
+                        //var data = UniqueArraybyId(data,'id')
+                        angular.forEach(data, function (val, i) {
+                            if (val.id) {
+                                var setItem_Status = angular.element("#setItemStatus").val();
+                                $scope.item_status = setItem_Status;
+                                $scope.it.item_status = $scope.item_status;
+                                $scope.it.jobSummuryIds = allitCheked;
+                                
+                                $routeParams.id = val.id;
+                                rest.path = 'jobselectContactNameupdate';
+                                rest.put($scope.it).success(function (data) {
+                                    $scope.setItemStatus = false;
+                                    $route.reload();
+                                }).error(errorCallback);
+                            }
+                        })
+                    }
                     notification('jobs updated successfully.', 'success');
                 } else {
                     notification('Please select job', 'warning');
@@ -22372,7 +22380,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         }).error(errorCallback);
     }
-
 
     $scope.deletejobsDetails = function (id, orderId, taskName) {
         bootbox.confirm("Are you sure you want to delete this row?", function (result) {

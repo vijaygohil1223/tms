@@ -666,7 +666,9 @@ class jobs_detail
 
     public function jobselectContactNameupdate($id, $data)
     {
-
+        if(isset($data['jobSummuryIds'])){
+            unset($data['jobSummuryIds']);
+        }
         if (isset($data['contact_person'])) {
 
             $data['updated_date'] = date('Y-m-d H:i:s');
@@ -691,7 +693,6 @@ class jobs_detail
         }
 
         if (isset($data['item_status'])) {
-
             $this->_db->where('job_summmeryId', $id);
             $jobsData = $this->_db->getone('tms_summmery_view');
 
@@ -704,6 +705,26 @@ class jobs_detail
             if ($id) {
                 // Update scoop status to QA Ready
                 if(isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Completed' ) {
+                    $qry = "select * from tms_summmery_view WHERE job_summmeryId != ".$id. " AND order_id = ".$jobsData['order_id']. " AND item_id = ".$jobsData['item_id']. " AND item_status = 'In preparation'  ORDER BY job_summmeryId ASC" ;
+                    $scoopJoblist = $this->_db->rawQuery($qry);
+                    if($scoopJoblist){
+                        if($scoopJoblist[0]['resource']){
+                            // $jobStatus['updated_date'] = date('Y-m-d H:i:s');
+                            // $jobStatus['item_status'] = 'Ongoing';
+                            // $this->_db->where('job_summmeryId', $scoopJoblist[0]['job_summmeryId']);
+                            // $id = $this->_db->update('tms_summmery_view', $jobStatus);
+                            $emailData = array();
+                            $emailData['id'] =  $scoopJoblist[0]['job_summmeryId'];
+                            $emailData['job_status'] =  'Ongoing';
+                            $emailData['data'] = array( 'subject' => 'Job Request', 'vEmailAddress' => $scoopJoblist[0]['resource'] );
+
+                           $sendEmail = self::jobSendRequest($emailData);
+
+                        }
+
+
+                    }
+
                     $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '".$jobsData['order_id']."' AND item_number = '".$jobsData['item_id']."' AND item_status != '4' ";
                     $this->_db->rawQuery($qry_up);
                 }
@@ -1226,7 +1247,7 @@ class jobs_detail
     }
 
     public function jobSendRequest($data)
-    {   
+    {
         $this->_db->where('template_id',11);
         $emailTemplateRegistration = $this->_db->getOne('tms_email_templates');
         $search_array = array("[JOBNO]", "[LANGUAGES]",'[JOBSTATUS]','[DUEDATE]','[ACCEPTLINK]','[REJECTLINK]');
@@ -1292,7 +1313,7 @@ class jobs_detail
             }
 
             $dataUp['updated_date'] = date('Y-m-d H:i:s');
-            $dataUp['item_status'] = 'Requested';
+            $dataUp['item_status'] = isset($data['job_status']) ? $data['job_status'] : 'Requested';
             $this->_db->where('job_summmeryId', $data['id']);
             $updt = $this->_db->update('tms_summmery_view', $dataUp);
             
