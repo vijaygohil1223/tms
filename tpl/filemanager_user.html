@@ -507,9 +507,10 @@
                                     category.ext =='css'  ||
                                     category.ext =='sql'  ||
                                     category.ext =='tiff' ||
-                                    category.ext =='ttf'  
+                                    category.ext =='tiff' ||
+                                    category.ext =='xml'  
                                    " class="txt" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>
-                       {{category.name.substr(0,22)}}</p></file>
+                       {{category.name }}</p></file>
 
                        <!-- EXE -->
                        <file extension="exe" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)"  
@@ -629,10 +630,11 @@
                             display.ext =='css'  ||
                             display.ext =='sql'  ||
                             display.ext =='tiff' ||
+                            display.ext =='xml' ||
                             display.ext =='ttf'  
                            " class="txt" context-menu="menuOptionsFiles" menuoptionIdName="0">
             <p>
-              {{display.name.substr(0,22)}}</p>
+              {{display.name}}</p>
           </file>
 
           <!-- EXE -->

@@ -5246,7 +5246,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (['mp4','wmv','avi','3gp','mov','vob'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/video.png";
                             }
-                            if (['txt','html','htm','js','css','vob','sql','tiff','ttf'].includes(fileExtension)) {
+                            if (['txt','html','htm','js','css','vob','sql','tiff','ttf','xml'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/video.txt";
                             }
                             previewContainer.attr('src', DefaultImgPath);
