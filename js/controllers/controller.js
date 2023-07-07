@@ -20946,6 +20946,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         notification('Please create project.', 'warning');
         return false;
     }
+
     $scope.$on('dataEvent', function(event, data) {
         console.log('childData',data); // Access the data sent from the child controller
       });
@@ -21935,7 +21936,275 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
+
+    // send purchase order to linguist
+    $scope.emailTemplate = '';
+    // invoice setting Data - invoice address based on selected business unit
+    var poDesignTypeID = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1; 
+    $scope.pdfExportID = poDesignTypeID == '2' ? '#downloadPO2' : '#downloadPO';
+    $scope.dataReplaceArr = {};
+    $scope.sendPoBtn = false;
+    $scope.poSettingData = {};
     
+    $scope.poSettingFn = function(centerID){
+        rest.path = "clientInvoiceSetting";
+        rest.get().success(function (settingData) {
+            console.log('staticData', settingData)
+            if(settingData){
+                // po button show hide
+                $scope.sendPoBtn = true;
+                if(centerID){
+                    $scope.poSettingData = settingData.find( (item) => {
+                        if((item.branch_center_id.toString().split(',')).includes(centerID.toString())){
+                            return item
+                        }
+                    })
+                }
+                if(!$scope.poSettingData){
+                    $scope.poSettingData = settingData[0];
+                }
+                $scope.dataReplaceArr.COMPANY_NAME = $scope.poSettingData.company_name;
+                $scope.dataReplaceArr.COMPANY_ADDRESS = $scope.poSettingData.address1;
+                $scope.dataReplaceArr.COMPANY_CITY = $scope.poSettingData.city;
+                $scope.dataReplaceArr.COMPANY_POSTCODE = $scope.poSettingData.postcode;
+                $scope.dataReplaceArr.COMPANY_COUNTRY =$scope.poSettingData.country;
+                $scope.dataReplaceArr.COMPANY_VAT_NUMBER = $scope.poSettingData.vat_number;
+                $scope.dataReplaceArr.CompanyCodeShort = $scope.poSettingData.company_short_code;
+                $scope.dataReplaceArr.COMPANY_COPYRIGHT_TEXT = $scope.poSettingData.copyright_text;
+                $scope.dataReplaceArr.COMPANY_EMAIL = $scope.poSettingData.work_email;
+                $scope.dataReplaceArr.COMPANY_WEB = $scope.poSettingData.web_address;
+
+                console.log('$scope.dataReplaceArr-tms', $scope.dataReplaceArr)
+
+            }
+        })
+    }  
+
+    $scope.emailTemplate = '';
+    var emailTemplate = '';
+    var emailContentText = '';
+    // START Purchase order tempalate
+    rest.path = "emailTemplateGetAll" ;
+    rest.get().success(function (data) {
+        //setTimeout(() => {
+            emailTemplate = data.find( (templt) => templt.template_id == 15);
+            console.log('$scope.emailTemplate', emailTemplate)
+            emailContentText = data.find( (templt) => templt.template_id == 13);
+            if(emailContentText){
+                $scope.emailTemplateText =  emailContentText.template_content;  
+            }
+        //}, 3000);
+       // $scope.getSingleJobdetail(288)
+    })
+    // END purchase order template
+
+    $scope.purchaseDetail = [];
+    $scope.purchaseDetail.purchaseOrderDate = new Date();
+    $scope.resourceCity = $scope.resourceCountry = $scope.resourceZipcode = $scope.resourceState = $scope.resourceVatinfo = '';
+    $scope.resourceDetail = [];
+    $scope.resourceDetailFn = function(resID){
+        console.log('resID', resID)
+        var deferredRes = $q.defer()
+        $scope.purchaseDetail.purchaseOrderNo = 'S-' + pad($scope.jobdetail.job_summmeryId, 7);
+        if(resID){
+            
+            rest.path = "getUserDataById/" + resID;
+            rest.get().success(function (dataUser) {
+                if(dataUser.userPaymentData){
+                    if(dataUser.userPaymentData.vPaymentInfo){
+                     var vPaymentInfo = JSON.parse(dataUser.userPaymentData.vPaymentInfo)
+                     $scope.resourceVatinfo = vPaymentInfo.tax_id;
+                    }
+                }
+            });
+
+            rest.path = 'viewExternalget/' + resID;
+            rest.get().success(function (data) {
+                $scope.resourceDetail = data;
+                console.log('$scope.resourceDetail', $scope.resourceDetail)
+                if ($scope.resourceDetail.address1Detail) {
+                    let resourceAddDetail = JSON.parse($scope.resourceDetail.address1Detail);
+                    angular.forEach(resourceAddDetail, function (resourceAddress, i) {
+                        if (resourceAddress.id == 'address1_locality')
+                            $scope.resourceCity = resourceAddress.value;
+                        if (resourceAddress.id == 'address1_country')
+                            $scope.resourceCountry = resourceAddress.value;
+                        if (resourceAddress.id == 'address1_postal_code')
+                            $scope.resourceZipcode = resourceAddress.value;
+                    })
+                }
+                deferredRes.resolve($scope.resourceDetail);
+            }).error(errorCallback);
+
+            
+            return deferredRes.promise; 
+        }    
+    }
+    // job -> invoice  
+    $scope.sendPoPopup = function () {
+        let projDeadline =  moment($scope.purchaseDetail.due_date).format($window.localStorage.getItem('global_dateFormat') + ' ' + 'HH:mm');
+        let poDueDateTime = (projDeadline != 'Invalid date') ? projDeadline : '';
+        // replace tempalte variable
+        var dataReplaceArr = {
+            NAME1: $scope.resourceDetail.vFirstName,
+            NAME2: $scope.resourceDetail.vLastName,
+            STREET1: $scope.resourceDetail.vAddress1,
+            STREET2: '',
+            POSTCODE: $scope.resourceZipcode ? $scope.resourceZipcode : '',
+            CITY: $scope.resourceCity ? $scope.resourceCity : '',
+            COUNTRY: $scope.resourceCountry ? $scope.resourceCountry : '',
+            PROJECT_MANAGER: angular.element("#s2id_contactPerson .select2-search-choice").text().trim(),
+            EMAIL: '',
+            PHONENUMBER: '',
+            ORDERDATE: $filter('globalDtFormat')($scope.purchaseDetail.purchaseOrderDate),
+            JOBNO: $scope.jobdetail.po_number ? $scope.jobdetail.po_number : '' ,
+            PROJECTNAME: $scope.jobdetail.projectName,
+            INDIRECT_CUSTOMER: $scope.jobdetail.clientName,
+            JOBSERVICE: $scope.jobdetail.project_type_name, 
+            LANGUAGES: $scope.jobdetail.ItemLanguage,
+            INSTRUCTIONS: $scope.jobdetail.jobDesc,
+            DEADLINE: poDueDateTime,
+            WORDCOUNT: '',
+            TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
+            TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
+        };
+        
+        Object.assign($scope.dataReplaceArr, dataReplaceArr);
+        console.log('$scope.dataReplaceArr', $scope.dataReplaceArr)
+
+        if(emailTemplate){
+            $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
+            if ($("#invoiceContent").length === 0) {
+                $('#emailTemplate').append($scope.emailTemplate);
+            }
+        }
+
+        var poFilenamePdf = $scope.jobdetail.po_number ? 'PO_' +$scope.jobdetail.po_number +'.pdf' : 'purchase_order.pdf'; 
+        $scope.poTempate = true;
+        
+        $scope.mailDetail = {
+            'pdfData': '',
+            'jobdetail':$scope.jobdetail,
+            'resourceDetail':$scope.resourceDetail,
+            'purchaseDetail':$scope.purchaseDetail,
+            'purchaseOrderNo': $scope.purchaseDetail.purchaseOrderNo,
+            'resourceEmail': $scope.resourceDetail.vEmailAddress,
+            'poFilenamePdf': poFilenamePdf,
+            'resourceName': $scope.resourceDetail.vFirstName +' '+ $scope.resourceDetail.vLastName,
+            'deadline' : poDueDateTime,
+            'companyCodeShort': $scope.poSettingData ? $scope.poSettingData.company_short_code : '' 
+        };
+        console.log('$scope.jobdetail', $scope.jobdetail)
+ 
+            setTimeout(() => {
+                    // kendo.drawing.drawDOM($($scope.pdfExportID)).then(function (group) {
+                    //     //group.options.set("font", "8px DejaVu Sans");
+                    //     kendo.drawing.pdf.saveAs(group, poFilenamePdf);
+                    // });
+                    kendo.drawing.drawDOM($($scope.pdfExportID))
+                    .then(function (group) {
+                        // Render the result as a PDF file
+                        return kendo.drawing.exportPDF(group, {
+                            //paperSize: "auto",
+                        });
+                    })
+                    .done(function (data) {
+                        $scope.mailDetail.pdfData = data;
+     
+                        var modalInstance = $uibModal.open({
+                            animation: $scope.animationsEnabled,
+                            size: 'sm',
+                            templateUrl: 'tpl/po-invoice-mailpopup.html',
+                            controller: 'poInvoiceMailController',
+                            resolve: {
+                                items: function () {
+                                    return $scope.mailDetail;
+                                }
+                            }
+                        });
+
+                        modalInstance.result.then(function(response) {
+                            $route.reload();
+                            console.log('Modal response:', response);
+                          }, function() {
+                            $route.reload();
+                            console.log('Modal dismissed');
+                          });
+
+                    });
+            }, 500);
+    }
+
+    $scope.getSingleJobdetail = function(jobId){
+        var deferredPo = $q.defer()
+        if (jobId) {
+            rest.path = 'jobSummeryDetailsGet/' + jobId;
+            rest.get().success(function (data) {
+                console.log('data', data)
+                $scope.jobdetail = data[0];
+                
+                console.log('$scope.jobdetail', $scope.jobdetail)
+                // purchase order setting Data data fn 
+                
+                $scope.poSettingFn($scope.jobdetail.vCenterid)
+               // $scope.poSettingFn($scope.jobdetail.resource_id)
+                
+                //deferredPo.resolve($scope.poSettingFn);
+
+                $scope.jobdetail.ItemLanguage = '';
+                var srcLang = 'English (US)';
+                var trgLang = 'English (US)';
+                $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+                rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
+                rest.get().success(function (data) {
+                    console.log('data=jobItemQuantityget', data)
+                    var sourceData = JSON.parse(data.source_lang);
+                    var targetData = JSON.parse(data.target_lang);
+                    srcLang = sourceData.sourceLang;
+                    trgLang = targetData.sourceLang;
+                    $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+                });
+
+                $scope.itemPriceUni = [];
+                if ($scope.jobdetail.price) {
+                    //$scope.itemPriceUni = JSON.parse($scope.jobdetail.price);
+                    $scope.itemPriceUni[$scope.jobdetail.job_summmeryId] = JSON.parse($scope.jobdetail.price);
+                    for (var j = 0; j < $scope.itemPriceUni[$scope.jobdetail.job_summmeryId].length; j++) {
+                        $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal ? numberFormatComma($scope.itemPriceUni[$scope.jobdetail.job_summmeryId][j].itemTotal) : 0;
+                    }
+                }
+                if ($scope.jobdetail.total_price.length == 0) {
+                    angular.element('#totalItemPrice').text('0.0');
+                } else {
+                    //angular.element('#totalItemPrice').text(data.total_price);
+                }
+                $scope.clientCurrency = $scope.jobdetail.freelance_currency ? $scope.jobdetail.freelance_currency.split(',')[0] : 'EUR'; 
+                
+                deferredPo.resolve($scope.jobdetail);  
+                           
+                
+            }).error(errorCallback);
+
+        }
+
+        return deferredPo.promise;
+    }
+
+    $scope.sendPurchaseOrderFn = function(id){
+        $scope.getSingleJobdetail(id).then( function(myData){
+            console.log('myData', myData)
+            $scope.resourceDetailFn($scope.jobdetail.resource).then( function(finalRes){
+                console.log('finalRes', finalRes)
+                
+                console.log('$scope.itemjobList', $scope.itemjobList)
+
+                console.log('itemListFinal', $scope.itemListFinal)
+                $scope.sendPoPopup()  
+
+            } ); 
+            
+        })
+    }
 
     $scope.selectionActionOption = function (action) {
 
@@ -22197,21 +22466,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     if(data.length){
                         //var data = UniqueArraybyId(data,'id')
+                        if(emailTemplate){
+                            $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
+                        }
+                        //html2pdf().from(element).outputPdf().then(function(pdfAsString) {
+                        //html2pdf().from($scope.emailTemplate).set(opt).toPdf().output('datauristring').then(function (pdfAsString) {
+                        
                         angular.forEach(data, function (val, i) {
                             if (val.id) {
+                                
+                                
                                 var setItem_Status = angular.element("#setItemStatus").val();
                                 $scope.item_status = setItem_Status;
                                 $scope.it.item_status = $scope.item_status;
                                 $scope.it.jobSummuryIds = allitCheked;
+                                //$scope.it.pdfData = pdfAsString;
                                 
                                 $routeParams.id = val.id;
                                 rest.path = 'jobselectContactNameupdate';
                                 rest.put($scope.it).success(function (data) {
                                     $scope.setItemStatus = false;
-                                    $route.reload();
+                                    if(setItem_Status == 'Completed' && allitCheked.length == 1 &&  data && data.sendPurchaseOrder){
+                                        $scope.sendPurchaseOrderFn(data.job_summmeryId);
+                                    }else{
+                                        $route.reload();  
+                                    }    
+                                    //$route.reload();
                                 }).error(errorCallback);
                             }
                         })
+
+                        
                     }
                     notification('jobs updated successfully.', 'success');
                 } else {
@@ -26933,6 +27218,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'mailTextContent':$scope.cPersonMsg.messageData,
             'order_id': items.jobdetail.order_id ? items.jobdetail.order_id : '',
             'item_id': items.jobdetail.item_id ? items.jobdetail.item_id : '',
+            'job_summmeryId': items.jobdetail.job_summmeryId ? items.jobdetail.job_summmeryId : '',
            // "file": $scope.attachementfile
         };
         console.log('$scope.invoicemailDetail', $scope.invoicemailDetail)

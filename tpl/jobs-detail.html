@@ -10,6 +10,26 @@
     .tableRowId{
         /*cursor:move !important;*/
     }
+
+    /* Purchase order  */
+
+    .templatepopup {
+        /* display: none; */
+        opacity: 0;
+        position: fixed;
+        left: -80%;
+        bottom: 0;
+    }
+    #emailTemplateText{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ccc;
+    }
+    /* purchase order css end */
      
 </style>
   <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' " >
@@ -409,6 +429,101 @@
                 </div>
             </div>
         </div>
+        <!-- Purchase order pdf start -->
+        <div class="templatepopup " >
+            <div id="downloadPO" class="invoiceInput">
+                <div ng-show="poTempate">
+                    <div class="row poTempate">
+                        <div class="row invoice-header">
+                            <div class="col-xs-6">
+                                <h1>Purchase Order</h1>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                <h4>SpellUp AS</h4>
+                                <p>Ødegårdsveien 43J </br>
+                                    1911 Flateby </br>
+                                    Norway </br>
+                                    NO930108995</P>    
+                            </div>
+                        </div>
+
+                        <div class="row invoice-content1">
+                            <div class="col-xs-6">
+                                <p>
+                                    <strong>Issued to:</strong> </br>
+                                </p>
+                                <p class="mb-0" style="font-size:20px;">
+                                    <span>{{resourceDetail.vFirstName}} {{resourceDetail.vLastName}}</span></br>
+                                </p>
+                                <p>
+                                    {{resourceDetail.vAddress1}} </br>
+                                    {{resourceZipcode}}<span ng-if="resourceCity">, {{resourceCity}}</span></br>
+                                    {{resourceCountry}}</br>
+                                    <span ng-if="resourceVatinfo">Vat Number : {{resourceVatinfo}}</span> </br>
+                                </p>
+                            </div>
+                            <div class="col-xs-6 text-right">
+                                <p class="h4"> <strong>PO #{{jobdetail.po_number}} <!-- {{purchaseDetail.purchaseOrderNo }}--> </strong></p>
+                                <br />
+                                <p>
+                                    PO date: <br /><span ng-bind="purchaseDetail.purchaseOrderDate | globalDtFormat"></span></br>
+                                    <strong>Project Name:</strong> <br />
+                                    <span ng-bind="jobdetail.projectName"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="line"></div>
+                        <div class="invoice-content2">
+                            <table ng-init="invoiceLength = itemPriceUni[jobdetail.job_summmeryId].length - 1"
+                                class="table table-striped" id="InvoiceTbl">
+                                <thead>
+                                    <tr>
+                                        <th>ITEMS</th>
+                                        <th>DESCRIPTION</th>
+                                        <th>QUANTITY</th>
+                                        <th>PRICE</th>
+                                        <th>AMOUNT</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table table-striped bg-white b-a">
+                                    <tr class="thfont" ng-repeat="invL in itemPriceUni[jobdetail.job_summmeryId] track by $index">
+                                        <th>{{$index + 1}}</th>
+                                        <th> {{ invL.pricelist }}</th>
+                                        <th>{{invL.quantity}}</th>
+                                        <th style="white-space:nowrap;"> {{ invL.itemPrice }} </th>
+                                        <th> {{ invL.itemTotal }}</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" style="text-align:right !important;">Subtotal:</td>
+                                        <td>{{ jobdetail.total_price | NumbersCommaformat }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row invoice-footer">
+                            <div class="col-xs-12 text-right">
+                                <h4>TOTAL</h4>
+                                <h3>{{clientCurrency}} {{jobdetail.total_price | NumbersCommaformat}}</h3>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 15px !important;">
+                            <div class="imgcenter" style="margin: 0 auto;width: 170px;">
+                                <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="SpellUp"
+                                    style="max-height: 50px; max-width: 100%; width: auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Design 2 for beconnected and dosina server -->
+            <div class="po" id="downloadPO2">
+                <div id="emailTemplate" ng-show="poTempate">
+                    <!-- Pdf Content Dynamic -->
+                </div>
+            </div>
+        </div> 
+
       </div>
     </div>
   </div>

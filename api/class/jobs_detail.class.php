@@ -666,6 +666,7 @@ class jobs_detail
 
     public function jobselectContactNameupdate($id, $data)
     {
+
         if(isset($data['jobSummuryIds'])){
             unset($data['jobSummuryIds']);
         }
@@ -705,28 +706,26 @@ class jobs_detail
             if ($id) {
                 // Update scoop status to QA Ready
                 if(isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Completed' ) {
-                    $qry = "select * from tms_summmery_view WHERE job_summmeryId != ".$id. " AND order_id = ".$jobsData['order_id']. " AND item_id = ".$jobsData['item_id']. " AND item_status = 'In preparation'  ORDER BY job_summmeryId ASC" ;
-                    $scoopJoblist = $this->_db->rawQuery($qry);
-                    if($scoopJoblist){
-                        if($scoopJoblist[0]['resource']){
-                            // $jobStatus['updated_date'] = date('Y-m-d H:i:s');
-                            // $jobStatus['item_status'] = 'Ongoing';
-                            // $this->_db->where('job_summmeryId', $scoopJoblist[0]['job_summmeryId']);
-                            // $id = $this->_db->update('tms_summmery_view', $jobStatus);
-                            $emailData = array();
-                            $emailData['id'] =  $scoopJoblist[0]['job_summmeryId'];
-                            $emailData['job_status'] =  'Ongoing';
-                            $emailData['data'] = array( 'subject' => 'Job Request', 'vEmailAddress' => $scoopJoblist[0]['resource'] );
-
-                           $sendEmail = self::jobSendRequest($emailData);
-
-                        }
-
-
-                    }
 
                     $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '".$jobsData['order_id']."' AND item_number = '".$jobsData['item_id']."' AND item_status != '4' ";
                     $this->_db->rawQuery($qry_up);
+
+                    // check for purchase order
+                    $qry = "SELECT tsv.job_summmeryId, tsv.order_id, tsv.item_id, tsv.resource, tsv.po_number, tu.vEmailAddress, tu.vFirstName, tu.vLastName from tms_summmery_view as tsv LEFT JOIN tms_users as tu ON tsv.resource = tu.iUserId WHERE tsv.job_summmeryId != ".$id. " AND tsv.order_id = ".$jobsData['order_id']. " AND tsv.item_id = ".$jobsData['item_id']. " AND tsv.item_status = 'In preparation'  AND tsv.resource > 0  ORDER BY tsv.job_summmeryId ASC" ;
+                    $scoopJoblist = $this->_db->rawQuery($qry);
+                    if(count($scoopJoblist) > 0 && $scoopJoblist[0]['resource']){
+                            // $emailData = array();
+                            // $emailData['pdfData'] =  $data['pdfData'];
+                            // $emailData['resourceEmail'] =  $scoopJoblist[0]['vEmailAddress'];
+                            // $emailData['resourceName'] =  $scoopJoblist[0]['vFirstName']. ' '.$scoopJoblist[0]['vLastName '];
+                            // $emailData['order_id'] =  $scoopJoblist[0]['order_id'];
+                            // $emailData['item_id'] =  $scoopJoblist[0]['item_id'];
+                            // $emailData['poFilenamePdf'] =  'PO_'.$scoopJoblist[0]['po_number'].'.pdf';
+                            //$sendEmail = self::sendPurchaseOrderLinguist($emailData);
+                            $return['job_summmeryId'] = $scoopJoblist[0]['job_summmeryId'];            
+                            $return['sendPurchaseOrder'] = true;            
+                    }
+
                 }
 
                 $return['status'] = 200;
@@ -1219,7 +1218,6 @@ class jobs_detail
 
         $attachments = '';
         $to_name = '';
-
         $send_fn = new functions();
         $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc = '', $bcc = '', $subject, $body, $attachments);
 
@@ -1313,7 +1311,7 @@ class jobs_detail
             }
 
             $dataUp['updated_date'] = date('Y-m-d H:i:s');
-            $dataUp['item_status'] = isset($data['job_status']) ? $data['job_status'] : 'Requested';
+            $dataUp['item_status'] = 'Requested';
             $this->_db->where('job_summmeryId', $data['id']);
             $updt = $this->_db->update('tms_summmery_view', $dataUp);
             
@@ -2219,8 +2217,8 @@ class jobs_detail
         $bin = base64_decode($pdf_content[1], true);
         //$pdfFileName = $data['purchaseOrderNo'].'.pdf';
         $pdfFileName = isset($data['poFilenamePdf']) ? $data['poFilenamePdf'] : 'purchase_order.pdf';
-
-        $bodyTemp = "<p> Hello ".$data['resourceName']." </p>";
+        $resourceName = isset($data['resourceName']) ? $data['resourceName'] : '';
+        $bodyTemp = "<p> Hello ".$resourceName." </p>";
         $bodyTemp .= "<p>Please see the attached Purchased Order : <b>" .$pdfFileName. "</b> </p>";
         $bodyTemp .= "<p> From :SpellUp </p>";
         $body = $bodyTemp;
@@ -2255,6 +2253,10 @@ class jobs_detail
             if($mailResponse['status'] == 200) {
                 if(isset($data['order_id']) && isset($data['item_id'])) {
                     $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '".$data['order_id']."' AND item_number = '".$data['item_id']."' AND item_status = '1' ";
+                    $this->_db->rawQuery($qry_up);
+                }
+                if(isset($data['job_summmeryId']) && $data['job_summmeryId'] != '' ) {
+                    $qry_up = "UPDATE `tms_summmery_view` SET `item_status` = 'Ongoing' WHERE job_summmeryId = '".$data['job_summmeryId']."' AND `item_status` = 'In preparation' ";
                     $this->_db->rawQuery($qry_up);
                 }
 
