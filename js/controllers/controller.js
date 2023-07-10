@@ -4987,6 +4987,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statusName = $window.localStorage.jobstatusName;
     $scope.statussource = $routeParams.id;
     var FilesLength;
+
+    // check file extesion
+    $scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
+    $scope.fileExtensionExist = function(extension) {
+        return $scope.fileExtensionList.indexOf(extension) !== -1;
+    };
     //popup close
     // serachTextBox Animation
     $scope.searchBox = function () {
@@ -5246,8 +5252,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (['mp4','wmv','avi','3gp','mov','vob'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/video.png";
                             }
-                            if (['txt','html','htm','js','css','vob','sql','tiff','ttf','xml'].includes(fileExtension)) {
-                                DefaultImgPath = "assets/img/file_icon/video.txt";
+                            if ($scope.fileExtensionList.includes(fileExtension)) {
+                                DefaultImgPath = "assets/img/file_icon/fileicon.png";
                             }
                             previewContainer.attr('src', DefaultImgPath);
                         }
@@ -6162,6 +6168,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userIdInternal = $window.localStorage.getItem("internal");
     $scope.IndirectClientId = $window.localStorage.getItem("IndirectClientId");
     $scope.copyfile = [];
+    //$scope.fileExtensionList = [ "doc", "docx", "pdf", "csv", "xls", "xlsx", "xlsm", "ppt", "pptx", "jpg", "jpeg", "png", "gif", "svg", "webp", "jfif", "bmp", "mp3", "mp4", "avi", "mov", "wmv", "vob", "zip", "rar", "tar", "gz", "exe" ];
+    $scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
+    $scope.fileExtensionExist = function(extension) {
+        return $scope.fileExtensionList.indexOf(extension) !== -1;
+    };
+    
     var FilesLength;
     //popup close
     $scope.popupCloseFile = function () {
@@ -6402,15 +6414,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var fullTxt = $(".ajax-file-upload-filename:contains('" + files[i].name + "')").text();
                             $('<div class="upimg' + fullTxt.charAt(0).toString() + '" style="display:none">' + data + '</div>').insertAfter(".ajax-file-upload-filename:contains('" + files[i].name + "')");
                         }
-                        if (fileExtension != 'jpg' && fileExtension != 'png' && fileExtension != 'gif' && fileExtension != 'svg') {
+                        if(! ['jpg','png','gif','svg'].includes(fileExtension)){
                             var previewContainer = $('.upimg' + fullTxt.charAt(0).toString()).parent().children(':first-child');
                             previewContainer.css('display', 'block', 'margin-left', '40px');
                             previewContainer.css('margin-left', '55px');
                             var DefaultImgPath = "assets/img/file_icon/fileicon.png";
-                            if (fileExtension == 'docx' || fileExtension == 'doc') {
+                            if (['docx','doc'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/doc.png";
                             }
-                            if (fileExtension == 'xlsx' || fileExtension == 'xlsm' || fileExtension == 'xls' || fileExtension == 'csv') {
+                            if (['xlsx','xlsm','xls','csv'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/xls.png";
                             }
                             if (fileExtension == 'pdf') {
@@ -6428,11 +6440,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (fileExtension == 'mp3' || fileExtension == 'wav' || fileExtension == 'wma') {
                                 DefaultImgPath = "assets/img/file_icon/mp3.png";
                             }
-                            if (fileExtension == 'mp4' || fileExtension == 'wmv' || fileExtension == 'avi' || fileExtension == '3gp' || fileExtension == 'mov' || fileExtension == 'vob') {
+                            if (['mp4','wmv','avi','3gp','mov','vob'].includes(fileExtension)) {
                                 DefaultImgPath = "assets/img/file_icon/video.png";
                             }
-                            if (fileExtension == 'txt' || fileExtension == 'html' || fileExtension == 'htm' || fileExtension == 'js' || fileExtension == 'css' || fileExtension == 'vob' || fileExtension == 'sql' || fileExtension == 'tiff' || fileExtension == 'ttf') {
-                                DefaultImgPath = "assets/img/file_icon/video.txt";
+                            if ($scope.fileExtensionList.includes(fileExtension)) {
+                                DefaultImgPath = "assets/img/file_icon/fileicon.png";
                             }
                             previewContainer.attr('src', DefaultImgPath);
                         }

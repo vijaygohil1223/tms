@@ -58,7 +58,8 @@ table {
    .zip{ background-image: url(assets/img/file_icon/zip.png);}
    .xls{ background-image: url(assets/img/file_icon/xls.png);}
    .ppt{ background-image: url(assets/img/file_icon/ppt.png);}
-   .txt{ background-image: url(assets/img/file_icon/txt.png);}
+   /* .txt{ background-image: url(assets/img/file_icon/txt.png);} */
+   .txt { background-image: url(assets/img/file_icon/fileicon.png); }
    .exe{ background-image: url(assets/img/file_icon/exe.png);}
    .mp3{ background-image: url(assets/img/file_icon/mp3.png);}
    .fileicon{ background-image: url(assets/img/file_icon/fileicon.png);}
@@ -403,26 +404,17 @@ table {
                            " class="video" context-menu="menuOptionsFiles"><p>
                {{display.name}}</p></file>
 
-               <!-- TEXT -->
-               <file extension="txt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" 
-                     ng-if="display.ext == 'txt' ||
-                            display.ext =='html' ||
-                            display.ext =='htm'  ||
-                            display.ext =='js'   ||
-                            display.ext =='css'  ||
-                            display.ext =='sql'  ||
-                            display.ext =='tiff' ||
-                            display.ext =='ttf' ||
-                            display.ext =='xml' 
-                           " class="txt" context-menu="menuOptionsFiles"><p>
-               {{display.name}}</p></file>
-
                <!-- EXE -->
                <file extension="exe" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" 
                      ng-if="display.ext == 'exe'
                            " class="exe" context-menu="menuOptionsFiles"><p>
                {{display.name}}</p></file>
                
+               <!-- TEXT and other type -->
+               <file extension="txt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" 
+                     ng-if="fileExtensionExist(display.ext)" class="txt" context-menu="menuOptionsFiles"><p>
+               {{display.name}}</p></file>
+
                <a id="download{{display.fmanager_id}}" style="display:none;" href="uploads/fileupload/{{display.name}}">Download</a>
             </div>
          </div>   
