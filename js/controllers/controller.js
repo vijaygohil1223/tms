@@ -1608,7 +1608,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
-}).controller('dashboardController', function ($scope, $window, $location, $compile, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter) {
+}).controller('dashboardController', function ($scope, $window, $location, $compile, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter, allLanguages) {
+    console.log('allLanguages', allLanguages)
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userLoginID = $window.localStorage.getItem("session_iUserId");
     $window.localStorage.jobfolderId = " ";
@@ -1627,51 +1628,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.scoopReport = '';
     $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
 
-    //Getting Jobs from getJobsFromTmsSummeryView
-    // $scope.getJobList = function () {
-    //     rest.path = 'getJobsFromTmsSummeryView';
-    //     rest.get().success(function (data) {
-    //         $scope.dashboardJobList = data;
-            
-    //         var Requested = [];
-    //         var NewJob = [];
-    //         var inProgerss = [];
-    //         var readyToBeDelivered = [];
-    //         var delivered = [];
-    //         var completed = [];
-    //         var pendingPo = [];
-    //         // ---- new added status ----- //
-
-    //         // -- Job count -- //
-    //         var jobRequestesCount = 0;
-    //         var jobInProgressCount = 0;
-    //         var jobDueTodayCount = 0;
-    //         var jobDueTomorrowCount = 0;
-    //         var jobOverDueCount = 0;
-
-    //         $timeout(function () {
-    //             $scope.inProgerss = inProgerss;
-    //             $scope.jobNew = NewJob;
-    //             $scope.readyToBeDelivered = readyToBeDelivered;
-    //             $scope.delivered = delivered;
-    //             $scope.completed = completed;
-    //             $scope.pendingPo = pendingPo;
-
-    //             $scope.jobRequestesCount = jobRequestesCount;
-    //             $scope.jobInProgressCount = jobInProgressCount;
-    //             $scope.jobDueTodayCount = jobDueTodayCount;
-    //             $scope.jobDueTomorrowCount = jobDueTomorrowCount;
-    //             $scope.jobOverDueCount = jobOverDueCount;
-
-    //         }, 200);
-    //     }).error(errorCallback);
-    // };
-    //$scope.getJobList();
-
+    
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
     }
-
 
     var objCenter = [];
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -2353,30 +2313,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
                 if (val.itemsSourceLang) {
                     $scope.projectData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
-                    // var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
-                    // if(sourceLangName){
-                    //     if($scope.langsListAll){
-                    //         var sourceLang = $scope.langsListAll.find(obj => {
-                    //             return obj.name === sourceLangName;
-                    //         })
-                    //         if(sourceLang)
-                    //         $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.title;
-                    //     }
-                    // }
+                    var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
+                    if(sourceLangName){
+                        if($scope.langsListAll){
+                            var sourceLang = allLanguages.find(obj => {
+                                return obj.name === sourceLangName;
+                            })
+                            if(sourceLang)
+                            $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id.toString().split('_').pop();
+                        }
+                    }
                 } else {
                     $scope.projectData[i].itemsSourceLang = newLangData;
                 }
                 if (val.itemsTargetLang) {
                     $scope.projectData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
-                    // var targetLangName = $scope.projectData[i].itemsTargetLang.sourceLang;
-                    // if(targetLangName){
-                    //     var targetLang = $scope.langsListAll.find(obj => {
-                    //         return obj.name == targetLangName
-                    //     })
-                    //     if(targetLang){
-                    //         $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.title;
-                    //     }
-                    // }
+                    var targetLangName = $scope.projectData[i].itemsTargetLang.sourceLang;
+                    //console.log('targetLangName', targetLangName)
+                    if(targetLangName){
+                        var targetLang = allLanguages.find(obj => {
+                            return obj.name == targetLangName
+                        })
+                        if(targetLang){
+                            $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id.toString().split('_').pop();
+                        }
+                    }
                 } else {
                     $scope.projectData[i].itemsTargetLang = newLangData;
                 }
@@ -22152,7 +22113,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (jobId) {
             rest.path = 'jobSummeryDetailsGet/' + jobId;
             rest.get().success(function (data) {
-                console.log('data', data)
+                console.log('scoop-data', data)
                 $scope.jobdetail = data[0];
                 
                 console.log('$scope.jobdetail', $scope.jobdetail)
@@ -22167,15 +22128,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var srcLang = 'English (US)';
                 var trgLang = 'English (US)';
                 $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
-                rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
-                rest.get().success(function (data) {
-                    console.log('data=jobItemQuantityget', data)
-                    var sourceData = JSON.parse(data.source_lang);
-                    var targetData = JSON.parse(data.target_lang);
+                if($scope.jobdetail.scoop_source_lang){
+                    var sourceData = JSON.parse($scope.jobdetail.scoop_source_lang);
+                    var targetData = JSON.parse($scope.jobdetail.scoop_target_lang);
                     srcLang = sourceData.sourceLang;
                     trgLang = targetData.sourceLang;
                     $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
-                });
+                }
+
+                // rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
+                // rest.get().success(function (data) {
+                //     console.log('data=jobItemQuantityget', data)
+                //     var sourceData = JSON.parse(data.source_lang);
+                //     var targetData = JSON.parse(data.target_lang);
+                //     srcLang = sourceData.sourceLang;
+                //     trgLang = targetData.sourceLang;
+                //     $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+                // });
 
                 $scope.itemPriceUni = [];
                 if ($scope.jobdetail.price) {
@@ -22207,14 +22176,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('myData', myData)
             $scope.resourceDetailFn($scope.jobdetail.resource).then( function(finalRes){
                 console.log('finalRes', finalRes)
-                
                 console.log('$scope.itemjobList', $scope.itemjobList)
-
                 console.log('itemListFinal', $scope.itemListFinal)
                 $scope.sendPoPopup()  
-
             } ); 
-            
         })
     }
 

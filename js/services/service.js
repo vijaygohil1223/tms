@@ -173,7 +173,7 @@ app.factory('allLanguages', function($http, $location, $routeParams,rest) {
                 'is_favourite': val.is_favourite,
             });
         });
-        console.log("allLanguages", allLanguages);
+        //console.log("allLanguages", allLanguages);
     
     }).error(function(data, error, status) {});
 
