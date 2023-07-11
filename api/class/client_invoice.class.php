@@ -249,7 +249,17 @@ class Client_invoice {
             $partPaidAmount = array();
             $partPaidAmount['invoice_id']                   = $id;
             $partPaidAmount['invoice_partial_paid_amount']  = $data['partPaid'];
-            $partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
+            //$partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
+            // Check if the datetime is valid
+            
+            $ins_createdate = date('Y-m-d H:i:s');
+            if(isset($data['created_date'])){
+                $createdate = DateTime::createFromFormat('Y-m-d H:i:s', $data['created_date']);
+                if ($createdate && $createdate->format('Y-m-d H:i:s') === $data['created_date']) {
+                    $ins_createdate = $data['created_date']; 
+                }
+            }
+            $partPaidAmount['created_date'] = $ins_createdate; 
             
             $partPaymentInsert = $this->_db->insert('tms_invoice_client_payments', $partPaidAmount);
         }    

@@ -16871,6 +16871,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
         $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
     }
+    // $scope.created_date = moment().format('YYYY-MM-DD HH:mm:ss');
+    // console.log('CurrentDate', $scope.created_date)
+
 
     $scope.statusChange = function (status) {
         if (status == "Part") {
@@ -16882,7 +16885,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceComplete = items.Invoice_cost - items.paid_amount;
         }
     }
-
+    
 
     $scope.ok = function (frmId) {
         // if any change in amount box and then select to completed replace value in box amount
@@ -16911,6 +16914,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 notification("Zero amount not allowed", 'error');
                 return false;
             } else {
+                
+                $scope.inv.created_date = originalDateFormatNew($scope.created_date);
+                console.log('$scope.inv.created_date', $scope.inv.created_date)
+                $scope.inv.created_date = moment($scope.inv.created_date).format('YYYY-MM-DD HH:mm:ss');
+                console.log('$scope.inv.create_date', $scope.inv.created_date)
+                    
 
                 var date = $filter('date')(new Date(), 'yyyy/MM/dd');
                 
