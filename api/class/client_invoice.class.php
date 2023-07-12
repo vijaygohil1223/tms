@@ -219,6 +219,10 @@ class Client_invoice {
         $updata['invoice_date'] = $data['invoice_date'];
         $updata['vat'] = isset($data['vat']) ? $data['vat'] : 0;
         $updata['custom_invoice_number'] = isset($data['custom_invoice_number']) ? $data['custom_invoice_number'] : $data['invoice_number'];
+        if(isset($data['scoop_id'])){
+            $updata['scoop_id'] = $data['scoop_id'];
+        }
+
         if($id){
             $this->_db->where('invoice_id', $id);
     	    $up_id = $this->_db->update('tms_invoice_client',$updata);
@@ -257,6 +261,7 @@ class Client_invoice {
                 $createdate = DateTime::createFromFormat('Y-m-d H:i:s', $data['created_date']);
                 if ($createdate && $createdate->format('Y-m-d H:i:s') === $data['created_date']) {
                     $ins_createdate = $data['created_date']; 
+                    $data['paid_date'] = $data['created_date']; 
                 }
             }
             $partPaidAmount['created_date'] = $ins_createdate; 

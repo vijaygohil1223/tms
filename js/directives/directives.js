@@ -173,6 +173,8 @@ app.directive("ngDatetimepicker1", function($window) {
             ngModel: '='
         },
         link: function(scope, element, attrs, ngModelCtrl) {
+            console.log('attrs', attrs)
+            const minTime = attrs.mintime=='false' ? false : new Date();
             var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
             element.datetimepicker({
                 widgetPositioning:{
@@ -180,7 +182,7 @@ app.directive("ngDatetimepicker1", function($window) {
                     vertical: 'bottom'
                 },
                 // minDate: moment().subtract(1,'d'),
-                minDate:new Date(),
+                minDate:minTime,
                 format:globalDateFormat+' - '+'HH:mm'
             }).on('dp.change', function(ev) {
                 ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat+' '+'HH:mm'));

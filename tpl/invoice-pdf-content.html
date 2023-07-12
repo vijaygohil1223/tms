@@ -107,6 +107,7 @@
                   <!-- <span ng-hide="editInvoiceField">{{invL.item.subTotal | customNumber }}</span> -->
                   <!-- {{ invL.itemPriceTax }} -->
                   <span id="priceWithTax{{$index}}">{{ invL.item.priceWithTax | customNumber }}</span>
+                  <a href="javascript:void(0);" class="btnDelete" ng-click="itemQuentityDelete(invL.itemId,$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>  
                 </th>
               </tr>
               <tr ng-if="$index == invoiceLength">

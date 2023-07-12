@@ -16170,6 +16170,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#invSubtotal').val($scope.invoiceTotal);
         }
     }
+    var newObj = [];
+    $scope.itemQuentityDelete = function (id, index) {
+        //var newObj = [];
+        console.log('index', index)
+        $scope.invoiceList.splice(index, 1);
+        console.log('$scope.invoiceList', $scope.invoiceList)
+        setTimeout(() => {
+            $scope.changeInvoiceField(index,0,0,'itemPrice'); 
+        }, 200);
+        if($scope.invoiceList.length){
+            var smPromise = new Promise((resolve, reject) => {
+                $scope.invoiceList.forEach((element, indx, array) => {
+                    console.log('element', element)
+                    newObj.push({ "id": element.itemId });
+                    if (indx === array.length -1) resolve();
+                });
+            });
+            smPromise.then(() => {
+                console.log('newObj', newObj)
+                //$cookieStore.put('invoiceScoopId', newInvoiceArr);
+            });
+        }    
+    }
+
     $scope.invoiceSettingData = [];
 
     if ($routeParams.id) {
@@ -16380,6 +16404,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 'value': numberFormatCommaToPoint(elIntemVal)
             })
         });
+
+        console.log('newObj', newObj)
+        if(newObj.length > 0){
+            $scope.upInvoiceData.scoop_id = JSON.stringify(newObj) ;
+        }
+        
 
         rest.path = 'saveEditedInvoice';
         rest.put($scope.upInvoiceData).success(function (data) {
@@ -16864,22 +16894,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.totalAmount = items.Invoice_cost;
     
     $scope.amountToPaid = items.paid_amount;
+
+    console.log('items-popup',items )
     
     if (items.paid_amount == 0) {
         $scope.dueAmount = items.Invoice_cost;
+        $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
     } else {
         $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
         $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
+        $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
     }
-    // $scope.created_date = moment().format('YYYY-MM-DD HH:mm:ss');
-    // console.log('CurrentDate', $scope.created_date)
 
+    function compareDatesDescending(a, b) {
+        const dateA = new Date(a.created_date);
+        const dateB = new Date(b.created_date);
+        return dateB - dateA;
+    }
+    //$scope.created_date = $filter('dateFormatDisplayFront')(moment().format('YYYY-MM-DD HH:mm:ss'));
+    //console.log('CurrentDate', $scope.created_date)
+    $scope.getInvoicePartPayments = function () {
+        rest.path = "getClientInvoicePartPayments/" + items.statusId;
+        rest.get().success(function (partPayments) {
+            partPayments.sort(compareDatesDescending)
+            $scope.partPaymentList = partPayments;
+        });
+    }
+    $scope.getInvoicePartPayments();
 
     $scope.statusChange = function (status) {
         if (status == "Part") {
             $scope.closeAmount = false;
         } else {
-
             $scope.closeAmount = true;
             $scope.am = "Amount";
             $scope.invoiceComplete = items.Invoice_cost - items.paid_amount;
@@ -16916,14 +16962,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 
                 $scope.inv.created_date = originalDateFormatNew($scope.created_date);
-                console.log('$scope.inv.created_date', $scope.inv.created_date)
                 $scope.inv.created_date = moment($scope.inv.created_date).format('YYYY-MM-DD HH:mm:ss');
-                console.log('$scope.inv.create_date', $scope.inv.created_date)
-                    
-
-                var date = $filter('date')(new Date(), 'yyyy/MM/dd');
                 
+                var date = $filter('date')(new Date(), 'yyyy/MM/dd');
                 $scope.inv.paid_date = date;
+                
+                var invPaidAmount = numberFormatCommaToPoint($scope.inv.paid_amount);
+                console.log('invPaidAmount', invPaidAmount)
+                $scope.inv.paid_amount = parseFloat(invPaidAmount);
+                console.log('$scope.inv.paid_amount', $scope.inv.paid_amount)
                 $scope.inv.partPaid = $scope.inv.paid_amount;
                 $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
                 if ($scope.inv.paid_amount == items.Invoice_cost) {
@@ -16935,11 +16982,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.inv.paid_amount = items.Invoice_cost;
                     $scope.inv.invoice_status = "Complete";
                 }
+
                 $routeParams.id = items.statusId;
                 rest.path = "clientInvoiceStatusChange";
                 rest.put($scope.inv).success(function (data) {
+                    //$scope.getInvoicePartPayments()
                     $uibModalInstance.dismiss('cancel');
                     $route.reload();
+                }).error( function(data){
+                    $scope.inv.paid_amount = $filter('customNumber')($scope.inv.paid_amount);
                 });
             }
         }
@@ -28679,6 +28730,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (invoices) {
             $scope.getAllInvoice = invoices;
+            console.log('$scope.getAllInvoice', $scope.getAllInvoice)
             allInvoiceListArr = invoices;
             
             //get of invoice due period
@@ -31015,6 +31067,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             
             $scope.invoiceList = data;
+            console.log('$scope.invoiceList', $scope.invoiceList)
             
 
             // $scope.grandTotal = 0;
@@ -31086,6 +31139,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var invoiceSum = 0;
         $(".invoiceCal").each(function (indx) {
             var invPrice = numberFormatCommaToPoint(this.value)
+            console.log('invPrice', invPrice)
             if (!isNaN(invPrice) && this.value.length != 0) {
                 //let amountTaxRate = taxRateAmountCalc(invPrice, $scope.invoiceList[0].tax_rate);
                 //let itemPriceTax = parseFloat(invPrice) + parseFloat(amountTaxRate);                        
@@ -31108,6 +31162,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    var newObj = [];
+    $scope.itemQuentityDelete = function (id, index) {
+        console.log('$cookieStore.get',$cookieStore.get('invoiceScoopId') )
+        console.log('index', index)
+        $scope.invoiceList.splice(index, 1);
+        console.log('$scope.invoiceList', $scope.invoiceList)
+        setTimeout(() => {
+            $scope.changeInvoiceField(index,0,0,'itemPrice'); 
+        }, 200);
+
+        let newInvoiceArr = [];
+        if($scope.invoiceList.length){
+            var smPromise = new Promise((resolve, reject) => {
+                $scope.invoiceList.forEach((element, indx, array) => {
+                    newInvoiceArr.push(element.itemId)
+                    newObj.push({ "id": element.itemId });
+                    if (indx === array.length -1) resolve();
+                });
+            });
+            smPromise.then(() => {
+                console.log('newInvoiceArr', newInvoiceArr)
+                //var obj = newObj;
+                console.log('obj', obj)
+                    
+                $cookieStore.put('invoiceScoopId', newInvoiceArr);
+            });
+        }else{
+            
+        }    
+    }
+
     $scope.save = function (frmId, invoiceType) {
         if ($scope.invoiceD == undefined || $scope.invoiceD == null || $scope.invoiceD == "") {
             $scope.invoiceData = {};
@@ -31124,7 +31209,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $scope.invoiceData.freelance_id = $scope.invoiceDetail.freelanceId;
         $scope.invoiceData.customer_id = $scope.invoiceDetail.clientId;
-        $scope.invoiceData.scoop_id = JSON.stringify(obj);
+        $scope.invoiceData.scoop_id = newObj.length > 0 ? JSON.stringify(newObj) : JSON.stringify(obj);
         $scope.invoiceData.payment_type = $scope.invoiceDetail.payment;
         $scope.invoiceData.invoice_number = $scope.invoiceDetail.invoiceNumber;
         $scope.invoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number;

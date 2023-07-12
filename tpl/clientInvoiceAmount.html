@@ -17,21 +17,43 @@
         </div>
         <div class="col-lg-6" ng-hide="closeAmount">
             <div class="form-group">
-                <label>Amount</label> <input type="number" ng-init="inv.paid_amount=dueAmount" class="form-control" name="paid_amount" ng-model="inv.paid_amount" min="0" allow-decimal-numbers required>
+                <label>Amount</label> 
+                <input type="text" ng-init="inv.paid_amount=dueAmount" class="form-control" name="paid_amount" ng-model="inv.paid_amount" allow-decimal-comma-number required>
+                <!-- <input type="number" ng-init="inv.paid_amount=dueAmount" class="form-control" name="paid_amount" ng-model="inv.paid_amount" min="0" allow-decimal-numbers required> -->
             </div>
         </div>
         <div class="col-lg-12">
             <div class="col-lg-6" style="padding-left:initial;">
                 <div class="form-group">
-                    <label>Date</label> <input type="text" class="form-control" name="created_date" ng-model="created_date" ng-datetimepicker1 required>
+                    <label>Date</label> <input type="text" class="form-control" name="created_date" minTime="false" ng-model="created_date" ng-datetimepicker1 required autocomplete="off">
                 </div>
             </div>    
         </div>
     </div>
     <div class="panel-body">
-        <h4>Total Amount is: {{currencySymbol.split(',')[1]}} {{totalAmount | customNumber}}</h4>
-        <h4>Paid Amount : {{currencySymbol.split(',')[1]}} {{amountToPaid | customNumber}}</h4>
-        <span style="color:green;" ng-if="totalAmount==amountToPaid">Invoice amount Completed</span>
+        <div class="col-sm-12">
+            <h4>Total Amount is: {{currencySymbol.split(',')[1]}} {{totalAmount | customNumber}}</h4>
+            <h4>Paid Amount : {{currencySymbol.split(',')[1]}} {{amountToPaid | customNumber}}</h4>
+            <span style="color:green;" ng-if="totalAmount==amountToPaid">Invoice amount Completed</span>
+        </div>
+        <div class="col-sm-12">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                    </tr>
+                </thead>
+                <tbody class="table table-striped bg-white b-a">
+                    <tr class="thfont" ng-repeat="invP in partPaymentList">
+                        <th>{{$index + 1}}</th>
+                        <th> {{ invP.invoice_partial_paid_amount | customNumber }}</th>
+                        <th> {{ invP.created_date | dateFormatDisplayFront}}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>    
     </div>
     <div class="panel-footer">
         <button class="btn btn-info" ng-disabled="totalAmount==amountToPaid" type="button"  ng-click="ok('invoiceAmount_form')">Ok</button>

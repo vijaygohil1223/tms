@@ -242,6 +242,7 @@ td.table-data-text {
                               <td class="table-data-txt"> {{invL.po_number}}</td>
                               <td class="table-data-txt"> 
                                 <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled"/>
+                                <a href="javascript:void(0);" class="btnDelete" ng-click="itemQuentityDelete(invL.itemId,$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
                               </td>
                             </tr> 
                             <!-- <tr ng-if="$index == invoiceLength">
