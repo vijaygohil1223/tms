@@ -16099,6 +16099,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // invoice setting Data
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+    console.log('$scope.invoiceTemplateName', $scope.invoiceTemplateName)
     
     
     $scope.invoicePaid = function (frmId) {
@@ -16171,27 +16172,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     var newObj = [];
-    $scope.itemQuentityDelete = function (id, index) {
-        //var newObj = [];
-        console.log('index', index)
-        $scope.invoiceList.splice(index, 1);
-        console.log('$scope.invoiceList', $scope.invoiceList)
-        setTimeout(() => {
-            $scope.changeInvoiceField(index,0,0,'itemPrice'); 
-        }, 200);
-        if($scope.invoiceList.length){
-            var smPromise = new Promise((resolve, reject) => {
-                $scope.invoiceList.forEach((element, indx, array) => {
-                    console.log('element', element)
-                    newObj.push({ "id": element.itemId });
-                    if (indx === array.length -1) resolve();
+    $scope.dltdScoopId = 0;
+    $scope.itemScoopDelete = function (id, index) {
+        $scope.dltdScoopId = id;
+        if($scope.invoiceList.length > 1){
+            //var newObj = [];
+            console.log('index', index)
+            $scope.invoiceList.splice(index, 1);
+            console.log('$scope.invoiceList', $scope.invoiceList)
+            setTimeout(() => {
+                $scope.changeInvoiceField(index,0,0,'itemPrice'); 
+            }, 200);
+            if($scope.invoiceList.length){
+                var smPromise = new Promise((resolve, reject) => {
+                    $scope.invoiceList.forEach((element, indx, array) => {
+                        console.log('element', element)
+                        newObj.push({ "id": element.itemId });
+                        if (indx === array.length -1) resolve();
+                    });
                 });
+                smPromise.then(() => {
+                    $scope.editInvoiceClient($scope.invoiceDetail.invoice_number);    
+                    //$cookieStore.put('invoiceScoopId', newInvoiceArr);
+                });
+            }
+        }else{
+            const deleteMsg = '<div style="color:red"><h4 >are you sure you want to delete?</h4> <h4>Also, the Invoice will be deleted! </h4></div>';
+            bootbox.confirm(deleteMsg, function (result) {
+                if (result == true) {
+                    const invoiceData = { invoice_id: $routeParams.id, deleted_scoopId: $scope.dltdScoopId }
+                    rest.path = 'deleteClientInvoice';
+                    rest.post(invoiceData).success(function (data) {
+                        $location.path('/invoice-client-projects');
+                        //$route.reload();
+                    }).error(errorCallback);
+                }else{
+                    $scope.dltdScoopId = 0;
+                }
+                
             });
-            smPromise.then(() => {
-                console.log('newObj', newObj)
-                //$cookieStore.put('invoiceScoopId', newInvoiceArr);
-            });
-        }    
+            return false;
+        }        
     }
 
     $scope.invoiceSettingData = [];
@@ -16202,9 +16223,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             
             $scope.invoiceDetail = data[0];
-
+            
             $scope.invoiceDetail.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
-        
             
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
@@ -16407,9 +16427,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         console.log('newObj', newObj)
         if(newObj.length > 0){
-            $scope.upInvoiceData.scoop_id = JSON.stringify(newObj) ;
+            $scope.upInvoiceData.scoop_id = JSON.stringify(newObj);
+            $scope.upInvoiceData.deleted_scoopId = $scope.dltdScoopId
         }
-        
 
         rest.path = 'saveEditedInvoice';
         rest.put($scope.upInvoiceData).success(function (data) {
@@ -31163,33 +31183,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     var newObj = [];
-    $scope.itemQuentityDelete = function (id, index) {
+    $scope.itemScoopDelete = function (id, index) {
         console.log('$cookieStore.get',$cookieStore.get('invoiceScoopId') )
         console.log('index', index)
-        $scope.invoiceList.splice(index, 1);
-        console.log('$scope.invoiceList', $scope.invoiceList)
-        setTimeout(() => {
-            $scope.changeInvoiceField(index,0,0,'itemPrice'); 
-        }, 200);
+        if($scope.invoiceList.length > 1){
+            $scope.invoiceList.splice(index, 1);
+            console.log('$scope.invoiceList', $scope.invoiceList)
+            setTimeout(() => {
+                $scope.changeInvoiceField(index,0,0,'itemPrice'); 
+            }, 200);
 
-        let newInvoiceArr = [];
-        if($scope.invoiceList.length){
-            var smPromise = new Promise((resolve, reject) => {
-                $scope.invoiceList.forEach((element, indx, array) => {
-                    newInvoiceArr.push(element.itemId)
-                    newObj.push({ "id": element.itemId });
-                    if (indx === array.length -1) resolve();
+            let newInvoiceArr = [];
+            if($scope.invoiceList.length){
+                var smPromise = new Promise((resolve, reject) => {
+                    $scope.invoiceList.forEach((element, indx, array) => {
+                        newInvoiceArr.push(element.itemId)
+                        newObj.push({ "id": element.itemId });
+                        if (indx === array.length -1) resolve();
+                    });
                 });
-            });
-            smPromise.then(() => {
-                console.log('newInvoiceArr', newInvoiceArr)
-                //var obj = newObj;
-                console.log('obj', obj)
-                    
-                $cookieStore.put('invoiceScoopId', newInvoiceArr);
-            });
+                smPromise.then(() => {
+                    $cookieStore.put('invoiceScoopId', newInvoiceArr);
+                });
+            }    
         }else{
-            
+            $location.path('/invoice-client-projects');
         }    
     }
 

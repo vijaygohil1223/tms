@@ -3420,6 +3420,12 @@ $app->put('/saveEditedInvoice/:id','authenticate', function ($id) use($app) {
     $result1 = $invoice->saveEditedInvoice($data, $id);
     echoResponse(200, $result1);
 });
+$app->post('/deleteClientInvoice', 'authenticate',function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->deleteClientInvoice($data);
+    echoResponse(200, $result);
+});
 $app->post('/saveEditedInvoice_test', 'authenticate',function () use($app) {
     $invoice = new Client_invoice ();
     $data = json_decode($app->request->getBody(), TRUE);

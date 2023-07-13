@@ -6,6 +6,10 @@
     background: #f1ecec;
     margin-bottom: 25px;
   }
+  .btnDelete{
+    right: 15px;
+    margin-top: -35px;
+  }
 </style>
 
 <div class="panel panel-default invoiceInput" id="pdfExport">
@@ -83,6 +87,7 @@
                     id="invSubTotal{{$index}}"
                     ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')"
                     name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled"/>
+                  <a href="javascript:void(0);" class="btnDelete" ng-hide="editDisabled" ng-click="itemScoopDelete(invL.itemId,$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>    
                 </th>
                 <!-- <th>
                   <span ng-if="invL.tax_rate">{{invL.tax_rate | customNumber}}%</span>

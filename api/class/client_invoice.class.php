@@ -234,9 +234,35 @@ class Client_invoice {
                     $this->_db->where('itemId', $item['id']);
                     $scpstsId = $this->_db->update('tms_items', $scpData);
                 }
+                if(isset($data['deleted_scoopId']) && $data['deleted_scoopId'] != 0 ){
+                    $scpStatusData['item_status'] = 5;
+                    $this->_db->where('itemId', $data['deleted_scoopId']);
+                    $scpstsId = $this->_db->update('tms_items', $scpStatusData);
+                }
             }
         }
         if($id) {
+    		$res['status'] = 200;
+    		$res['msg'] = "Successfully updated";
+    	} else {
+    		$res['status'] = 401;
+    		$res['msg'] = "Not updated";
+    	}
+
+    	return $res;
+    }
+
+    public function deleteClientInvoice($data) {
+        if(isset($data['deleted_scoopId']) && $data['deleted_scoopId'] != 0 ){
+            $scpStatusData['item_status'] = 5;
+            $this->_db->where('itemId', $data['deleted_scoopId']);
+            $scpstsId = $this->_db->update('tms_items', $scpStatusData);
+        }
+        if(isset($data['invoice_id'])){
+            $this->_db->where('invoice_id', $data['invoice_id']);
+            $delete = $this->_db->delete('tms_invoice_client');
+        }
+        if($delete) {
     		$res['status'] = 200;
     		$res['msg'] = "Successfully updated";
     	} else {
