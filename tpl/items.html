@@ -558,64 +558,69 @@
                            </form>
                         </div>
                      </div>
-                     <table class="table m-b-none default footable-loaded footable">
-                        <thead>
-                           <th>#</th>
-                           <th>Scoop Number</th>
-                           <!-- <th>Project Name</th> -->
-                           <th>Due Date</th>
-                           <th>Scoop Status</th>
-                           <th>Job Status</th>
-                           <th>Price</th>
-                           <th>Action</th>
-                        </thead>
-                        <tbody>
-                           <tr ng-repeat="it2 in TblItemList" id="trRowId{{it2.itemId}}">
-                              <td id="poitemli">{{$index + 1}}</td>
-                              <td>{{it2.item_number| numberFixedLen:3}}</td>
-                              <!-- <td>{{it2.project_name}}</td> -->
-                              <td>
-                                 <span ng-if="it2.due_date"
-                                    id="dynamicFilrtDueSet{{it2.itemId}}">{{it2.due_date}}</span>
-                                 <span ng-if="!it2.due_date">Not set yet</span>
-                              </td>
-                              <td ng-bind="it2.item_status_name"></td>
-                              <td>
-                                 <div>
-                                    <a href="javascript:void(0)" ng-click="jobitemsIdStatus(it2.itemId)">
-                                       <span class="summeryColor" id="sumimg{{$index}}"></span>
-                                       <span class="summeryColor" id="itemPer{{$index}}"></span><span
-                                          class="summeryColor" id="progress{{$index}}">% Progress</span>
+                     <div class="col-sm-12" style="margin-bottom:15px;">
+                        <button class="btn btn-info pull-right" ng-click="invoiceCreate()"><i class="fa fa-floppy-o" aria-hidden="true"></i> Invoice</button>
+                     </div>
+                     <div>
+                        <table class="table m-b-none default footable-loaded footable">
+                           <thead>
+                              <th>#</th>
+                              <th>Scoop Number</th>
+                              <!-- <th>Project Name</th> -->
+                              <th>Due Date</th>
+                              <th>Scoop Status</th>
+                              <th>Job Status</th>
+                              <th>Price</th>
+                              <th>Action</th>
+                           </thead>
+                           <tbody>
+                              <tr ng-repeat="it2 in TblItemList" id="trRowId{{it2.itemId}}">
+                                 <td id="poitemli">{{$index + 1}}</td>
+                                 <td>{{it2.item_number| numberFixedLen:3}}</td>
+                                 <!-- <td>{{it2.project_name}}</td> -->
+                                 <td>
+                                    <span ng-if="it2.due_date"
+                                       id="dynamicFilrtDueSet{{it2.itemId}}">{{it2.due_date}}</span>
+                                    <span ng-if="!it2.due_date">Not set yet</span>
+                                 </td>
+                                 <td ng-bind="it2.item_status_name"></td>
+                                 <td>
+                                    <div>
+                                       <a href="javascript:void(0)" ng-click="jobitemsIdStatus(it2.itemId)">
+                                          <span class="summeryColor" id="sumimg{{$index}}"></span>
+                                          <span class="summeryColor" id="itemPer{{$index}}"></span><span
+                                             class="summeryColor" id="progress{{$index}}">% Progress</span>
+                                       </a>
+                                       <span id="noJob{{$index}}" class="jbClassDel{{it2.itemId}}"></span>
+                                    </div>
+                                 </td>
+                                 <td ng-if="!it2.total_amount">{{0 |customNumber}}</td>
+                                 <td ng-if="it2.total_amount">{{it2.total_amount |customNumber}}</td>
+                                 <td>
+                                    <!--  <a href="javascript:void(0)" ng-click="getitemsId(it2.itemId, 'scrollItem')" title="edit">
+                                 <i class="glyph-icon fa-edit"></i></a> / -->
+                                    <a href="javascript:void(0)" ng-click="deleteItemsId(it2.itemId,it2.item_number)"
+                                       title="delete">
+                                       <i class="glyph-icon iconDelete fa-times"></i>
                                     </a>
-                                    <span id="noJob{{$index}}" class="jbClassDel{{it2.itemId}}"></span>
-                                 </div>
-                              </td>
-                              <td ng-if="!it2.total_amount">{{0 |customNumber}}</td>
-                              <td ng-if="it2.total_amount">{{it2.total_amount |customNumber}}</td>
-                              <td>
-                                 <!--  <a href="javascript:void(0)" ng-click="getitemsId(it2.itemId, 'scrollItem')" title="edit">
-                              <i class="glyph-icon fa-edit"></i></a> / -->
-                                 <a href="javascript:void(0)" ng-click="deleteItemsId(it2.itemId,it2.item_number)"
-                                    title="delete">
-                                    <i class="glyph-icon iconDelete fa-times"></i>
-                                 </a>
-                              </td>
-                           </tr>
-                           <tr ng-show="projectItemEmpty">
-                              <td colspan="4" ng-bind="dataNotFound"></td>
-                           </tr>
-                           <tr ng-show="!projectItemEmpty">
+                                 </td>
+                              </tr>
+                              <tr ng-show="projectItemEmpty">
+                                 <td colspan="4" ng-bind="dataNotFound"></td>
+                              </tr>
+                              <tr ng-show="!projectItemEmpty">
 
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td><strong><span id="crnt1Cur"></span> {{totalPrice | customNumber}}</strong></td>
-                              <td colspan="2"></td>
-                           </tr>
-                        </tbody>
-                     </table>
+                                 <td></td>
+                                 <td></td>
+                                 <td></td>
+                                 <td></td>
+                                 <td></td>
+                                 <td><strong><span id="crnt1Cur"></span> {{totalPrice | customNumber}}</strong></td>
+                                 <td colspan="2"></td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
 
                   </div>
                </div>

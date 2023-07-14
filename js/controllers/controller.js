@@ -20936,6 +20936,48 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.jobchainoption = data;
     }).error(errorCallback)
 
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log(userTimeZone);
+    
+    $scope.invoiceCreate = function () {
+        var search = [{text: $('#itemCode').text() }]
+        if (search) {
+            rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function (data) {
+                console.log('data====', data)
+                $scope.InvoiceResult = data;
+                $scope.InvoiceResult = data.filter(function (el) {
+                    return el.orderId == $scope.routeOrderID && el.itemStatus == 'Approved';
+                });
+                // $scope.InvoiceResult = $scope.itemList.filter(function (el) {
+                //     console.log('el', el)
+                //     return el.order_id==192 && el.item_status == 'Approved';
+                // });
+                
+                
+                $scope.searchOrderNumber = search;
+                var obj = [];
+                obj.push({
+                    'InvoiceList': $scope.InvoiceResult,
+                    'searchOrderNumber': $scope.searchOrderNumber
+                });
+                var modalInstance = $uibModal.open({
+                    animation: $scope.animationsEnabled,
+                    templateUrl: 'tpl/clientInvoiceCreatePopup.html',
+                    controller: 'clientInvoiceCreatePopupCtrl',
+                    size: '',
+                    resolve: {
+                        items: function () {
+                            return obj;
+                        }
+                    }
+                });
+            }).error(errorCallback);
+        } else {
+            //notification('Please Project scoop.', 'warning');
+        }
+    }
+
 }).controller('contactPerMsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.contactMsgId;
@@ -29129,15 +29171,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.InvoiceResult = items[0].InvoiceList;
     $scope.searchOrderNumber = items[0].searchOrderNumber;
+
     $scope.addInvoice = function (data) {
-        
         var client = "";
         var flag = 0;
         var array = [];
-
         angular.forEach(data, function (val, i) {
             if (val.SELECTED == 1) {
-                
                 if (!client) {
                     client = val.contactName;
                 }

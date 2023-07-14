@@ -173,7 +173,6 @@ app.directive("ngDatetimepicker1", function($window) {
             ngModel: '='
         },
         link: function(scope, element, attrs, ngModelCtrl) {
-            console.log('attrs', attrs)
             const minTime = attrs.mintime=='false' ? false : new Date();
             var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
             element.datetimepicker({
