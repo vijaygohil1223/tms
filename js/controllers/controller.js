@@ -2319,8 +2319,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var sourceLang = allLanguages.find(obj => {
                                 return obj.name === sourceLangName;
                             })
-                            if(sourceLang)
-                            $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id.toString().split('_').pop();
+                            if(sourceLang){
+                                //$scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id.toString().split('_').pop();
+                                $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id;
+                            }
                         }
                     }
                 } else {
@@ -2335,7 +2337,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             return obj.name == targetLangName
                         })
                         if(targetLang){
-                            $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id.toString().split('_').pop();
+                            //$scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id.toString().split('_').pop();
+                            $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id;
                         }
                     }
                 } else {
