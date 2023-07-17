@@ -3849,7 +3849,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Start purchase order download/send po
     // invoice setting Data - invoice address based on selected business unit
     var poDesignTypeID = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1; 
-    $scope.pdfExportID = poDesignTypeID == '2' ? '#downloadPO2' : '#downloadPO';
+    $scope.pdfExportID = poDesignTypeID == '2' ? '.s2_downloadPO' : '.downloadPO';
     $scope.dataReplaceArr = {};
     $scope.sendPoBtn = false;
     $scope.poSettingData = {};
@@ -3857,9 +3857,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.poSettingFn = function(centerID){
         rest.path = "clientInvoiceSetting";
         rest.get().success(function (settingData) {
-            console.log('staticData', settingData)
             if(settingData){
-
                 // po button show hide
                 $scope.sendPoBtn = true;
                 // $scope.poSettingData = settingData[0];
@@ -3916,6 +3914,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.poTempate = false;
 
     $scope.sendPoPopup = function (type) {
+        $scope.poTempate = true;
+        
         let poDueDate = ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date : '';
         let poDueDateTime = poDueDate ? poDueDate.split(' ')[0] + ' | ' + $('#due_time').val() : '';
         // replace tempalte variable
@@ -3949,12 +3949,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(emailTemplate){
             $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
             if ($("#invoiceContent").length === 0) {
-                $('#emailTemplate').append($scope.emailTemplate);
+                $('.emailTemplate').append($scope.emailTemplate);
             }
         }
 
         var poFilenamePdf = $scope.jobdetail.po_number ? 'PO_' +$scope.jobdetail.po_number +'.pdf' : 'purchase_order.pdf'; 
-        $scope.poTempate = true;
+        console.log('$scope.pdfExportID-first', $scope.pdfExportID)
+
         if(type == 'Download'){
             setTimeout(() => {
                 kendo.drawing.drawDOM($($scope.pdfExportID)).then(function (group) {

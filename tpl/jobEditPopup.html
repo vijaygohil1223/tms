@@ -149,13 +149,13 @@
     }
     #emailTemplateText{
         /* display: none; */
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 20px;
-  border: 1px solid #ccc;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
     }
     /* purchase order css end */
     
@@ -784,7 +784,7 @@
             </div>
             <!-- Purchase order pdf start -->
             <div class="templatepopup">
-                <div id="downloadPO" class="invoiceInput">
+                <div id="downloadPO" class="invoiceInput downloadPO">
                     <div ng-show="poTempate">
                         <div class="row poTempate">
                             <div class="row invoice-header">
@@ -792,11 +792,16 @@
                                     <h1>Purchase Order</h1>
                                 </div>
                                 <div class="col-xs-6 text-right">
-                                    <h4>SpellUp AS</h4>
+                                    <!-- <h4>SpellUp AS</h4>
                                     <p>Ødegårdsveien 43J </br>
                                         1911 Flateby </br>
                                         Norway </br>
-                                        NO930108995</P>    
+                                        NO930108995</P>   -->
+                                    <h4>{{poSettingData.company_name}}</h4>
+                                    <p>{{poSettingData.address1}} </br>
+                                        {{poSettingData.postcode}} {{poSettingData.city}} </br>
+                                        {{poSettingData.country}} </br>
+                                        {{poSettingData.vat_number}}</P>      
                                 </div>
                             </div>
 
@@ -862,7 +867,7 @@
                             </div>
                             <div class="row" style="margin-bottom: 15px !important;">
                                 <div class="imgcenter" style="margin: 0 auto;width: 170px;">
-                                    <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="SpellUp"
+                                    <img src="{{poSettingData.logo_url}}" class="img-full" alt="SpellUp"
                                         style="max-height: 50px; max-width: 100%; width: auto;">
                                 </div>
                             </div>
@@ -870,8 +875,8 @@
                     </div>
                 </div>
                 <!-- Design 2 for beconnected and dosina server -->
-                <div class="po" id="downloadPO2">
-                    <div id="emailTemplate" ng-show="poTempate">
+                <div class="po s2_downloadPO" id="downloadpo_s2">
+                    <div id="emailTemplate"  class="emailTemplate" ng-show="poTempate">
                         <!-- Pdf Content Dynamic -->
                     </div>
                 </div>

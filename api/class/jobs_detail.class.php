@@ -1397,17 +1397,12 @@ class jobs_detail
             //     $this->_db->rawQuery($qry_up);
             // }
         }
-        
 
         if ($id) {
-
             $return['status'] = 200;
-
             $return['msg'] = 'Successfully Updated.';
         } else {
-
             $return['status'] = 422;
-
             $return['msg'] = 'Not Updated.';
         }
 
