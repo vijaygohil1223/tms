@@ -1370,6 +1370,11 @@ class jobs_detail
         if (isset($data['proj_specialization'])) {
             unset($data['proj_specialization']);
         }
+        if (isset($data['scoop_source_lang']))
+            unset($data['scoop_source_lang']);
+        if (isset($data['scoop_target_lang']))
+            unset($data['scoop_target_lang']);    
+        
         if (isset($data['due_date'])) {
             $data['due_date'] = date('Y-m-d H:i:s', strtoTime($data['due_date']));
         }
