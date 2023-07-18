@@ -213,6 +213,8 @@ class Client_invoice {
     	return $id;
     }
     public function saveEditedInvoice($data,$id) {
+        // print_r($data);
+        // exit;
         $updata['value_date'] = date('Y-m-d H:i');
         $updata['Invoice_cost'] = $data['Invoice_cost'];
         $updata['item_total'] = $data['item_total'];

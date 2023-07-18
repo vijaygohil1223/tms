@@ -16129,6 +16129,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+
     $scope.vatTax = 0;
     //change jobitem price module
     $scope.changeInvoiceField = function (index, parentIndex, itemVal = 0, type = '') {
@@ -16196,7 +16197,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                 });
                 smPromise.then(() => {
-                    $scope.editInvoiceClient($scope.invoiceDetail.invoice_number);    
+                    //$scope.editInvoiceClient($scope.invoiceDetail.invoice_number);    
+                    setTimeout(() => {
+                        console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+                        $scope.editInvoiceClient($scope.invoiceDetail.invoice_number);    
+                    }, 200);
                     //$cookieStore.put('invoiceScoopId', newInvoiceArr);
                 });
             }
@@ -16414,10 +16419,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         //$scope.upInvoiceData.item_total = $scope.invoiceTotal
-        $scope.upInvoiceData.vat = $scope.vat
+        //$scope.upInvoiceData.vat = $scope.vat
+        $scope.upInvoiceData.vat = $scope.vatTax
         $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;
         $scope.upInvoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
         $scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
+        
         $scope.upInvoiceData.item = [];
         $scope.invoiceList.forEach(element => {
             const elItemID = element.itemId;
@@ -16434,6 +16441,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.upInvoiceData.scoop_id = JSON.stringify(newObj);
             $scope.upInvoiceData.deleted_scoopId = $scope.dltdScoopId
         }
+
+        console.log('$scope.upInvoiceData', $scope.upInvoiceData)
 
         rest.path = 'saveEditedInvoice';
         rest.put($scope.upInvoiceData).success(function (data) {
