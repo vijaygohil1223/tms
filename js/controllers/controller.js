@@ -674,7 +674,6 @@ function exportTableToExcel(id, fileName){
 app.controller('loginController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope) {
     /*-------Check for login--------*/
     if ($cookieStore.get('session_iUserId') != undefined) {
-        console.log('login!!!')
         $location.path('/dashboard');
     }
 
@@ -1608,8 +1607,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
-}).controller('dashboardController', function ($scope, $window, $location, $compile, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter, allLanguages) {
-    console.log('allLanguages', allLanguages)
+}).controller('dashboardController', function ($scope, $window, $location, $compile, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userLoginID = $window.localStorage.getItem("session_iUserId");
     $window.localStorage.jobfolderId = " ";
@@ -2202,10 +2200,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.childPrice = [];
     $scope.langsListAll = [];
+    var allLanguages = [];
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'languagesGet';
         rest.get().success(function (data) {
             $scope.langsListAll = data;
+            console.log('$scope.langsListAll', $scope.langsListAll)
+            allLanguages = data
         }).error(errorCallback);
 
         //* child Price list *//
@@ -2317,11 +2318,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(sourceLangName){
                         if($scope.langsListAll){
                             var sourceLang = allLanguages.find(obj => {
-                                return obj.name === sourceLangName;
+                                return obj.title === sourceLangName;
                             })
                             if(sourceLang){
-                                //$scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id.toString().split('_').pop();
-                                $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id;
+                                $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id.toString().split('_').join('-');
+                                //$scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id;
                             }
                         }
                     }
@@ -2334,11 +2335,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //console.log('targetLangName', targetLangName)
                     if(targetLangName){
                         var targetLang = allLanguages.find(obj => {
-                            return obj.name == targetLangName
+                            return obj.title == targetLangName
                         })
                         if(targetLang){
-                            //$scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id.toString().split('_').pop();
-                            $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id;
+                            $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id.toString().split('_').join('-');
+                            //$scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id;
                         }
                     }
                 } else {
@@ -19924,7 +19925,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.changeWorkflow = function (id) {
         $scope.workflowChange = true; 
     }
-    $scope.isAllScoopUpdated = false;
+
+    $scope.isAllScoopCopy = false;
+    $scope.isAllScoopUpdate = false;
     $scope.jobi = {};
 
     $scope.saveitems = function (formId, formIndex) {
@@ -19935,7 +19938,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
                     // single item save (same Po Number exist) 
-                    //if(!$scope.isAllScoopUpdated){
+                    //if(!$scope.isAllScoopCopy){
                         //angular.element(document.getElementById('po_number'+$scope.itemList[formIndex].itemId)).triggerHandler('change');
                         //$scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
                         if($scope.poNumberExist){
@@ -19943,8 +19946,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //return false;
                         }    
                     //}
-                    var formIdAllSave = $scope.isAllScoopUpdated ? $scope.itemList[0].itemId : formId;
-                    var formIndexNew = $scope.isAllScoopUpdated ? 0 : formIndex;
+                    var formIdAllSave = $scope.isAllScoopCopy ? $scope.itemList[0].itemId : formId;
+                    var formIndexNew = $scope.isAllScoopCopy ? 0 : formIndex;
                     
                     var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
                     var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
@@ -20019,7 +20022,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.TblItemList[formIndex].total_amount = 0;
                             return false;
                         } else {
-                            if ($scope.jobi.jobSummery && $scope.workflowChange || ($scope.isAllScoopUpdated && $scope.workflowChange) ) {
+                            if ($scope.jobi.jobSummery && $scope.workflowChange || ($scope.isAllScoopCopy && $scope.workflowChange) ) {
                                 
                                 // gettingName of selected workflow job chain
                                 
@@ -20027,7 +20030,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 let workflowSel = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();        
                                 
                                 $scope.jobitem = {};
-                                var dd = $scope.isAllScoopUpdated ? workflowSel : $scope.jobi.jobSummery;
+                                var dd = $scope.isAllScoopCopy ? workflowSel : $scope.jobi.jobSummery;
                                 $scope.jobi.jobSummery = dd.substr(1);
                                 $scope.matchjob = dd.slice(0, 1);
                                 if ($scope.matchjob == 'j') {
@@ -20211,7 +20214,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     
                     $scope.itemList[formIndexNew].itemId ,$scope.itemList[formIndexNew].due_date;
-                    if($scope.isAllScoopUpdated && formIndex != 0 ){    
+                    if($scope.isAllScoopCopy && formIndex != 0 ){    
                         $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndexNew].due_date).format("YYYY-MM-DD HH:mm");
                     
                     }else{
@@ -20235,7 +20238,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }else{
                         $scope.itemList[formIndex].upcomingDate = '0000-00-00';
                     }
-                    if($scope.isAllScoopUpdated && formIndex != 0 && $scope.itemList[formIndexNew].heads_up == 1){    
+                    if($scope.isAllScoopCopy && formIndex != 0 && $scope.itemList[formIndexNew].heads_up == 1){    
                         $scope.itemList[formIndex].upcomingDate = $scope.itemList[formIndexNew].upcomingDate;
                         
                         if(! isNaN(Date.parse($scope.itemList[formIndexNew].upcomingDate))){
@@ -20256,7 +20259,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // const hasKeyStsName = 'item_status_name' in $scope.itemList;
                     // if(hasKeyStsName)    
                     //  delete $scope.itemList.item_status_name;
-                    if($scope.isAllScoopUpdated){
+                    if($scope.isAllScoopCopy){
                         $scope.itemList[formIndex].project_type = $scope.itemList[0].project_type; 
                         //$scope.itemList[formIndex].po_number = $scope.itemList[0].po_number; 
                         $scope.itemList[formIndex].item_status = $scope.itemList[0].item_status; 
@@ -20291,17 +20294,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //log file end
                         //$route.reload();
                                 
-                        if(!$scope.isAllScoopUpdated){
+                        if(!$scope.isAllScoopCopy && !$scope.isAllScoopUpdate){
                             notification('Item successfully updated.', 'success');
                         }else{
                             if( $scope.itemList[$scope.itemList.length-1].itemId == $scope.itemList[formIndex].itemId ){
                                 notification('All items successfully updated.', 'success');
-                                $scope.isAllScoopUpdated = false;
+                                $scope.isAllScoopCopy = false;
                                 $route.reload();
                             }
                         }
                     }).error(function (data, error, status) { 
-                        $scope.isAllScoopUpdated = false;
+                        $scope.isAllScoopCopy = false;
                     });
                 } else {
                     //if source and target language not selected
@@ -20378,15 +20381,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     // Save all scoop data (only left side value)
-    $scope.scoopAllSave = function() {
+    $scope.scoopAllSave = function(type) {
         //debugger
-        $scope.isAllScoopUpdated = true;    
+        $scope.isAllScoopCopy = type === 'copy' ? true : false;    
+        $scope.isAllScoopUpdate = type === 'save-all' ? true : false;    
         jQuery('.scoopall').removeAttr('required');
         //$(".scoopall").attr('required', '');
         angular.forEach($scope.itemList, function (val, index) {
             //debugger
             angular.element(document.getElementById('po_number'+val.itemId)).triggerHandler('change');
-            $scope.isAllScoopUpdated = true; 
+            $scope.isAllScoopCopy = type === 'copy' ? true : false;   
+            $scope.isAllScoopUpdate = type === 'save-all' ? true : false;    
             $('#project_type'+val.itemId).removeAttr('required');
             $('#upcomingDate'+val.itemId).removeAttr('required');
             //$('#EmailSub'+val.itemId).removeAttr('required');

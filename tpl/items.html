@@ -158,7 +158,7 @@
                                                 ng-model="it.start_date" required onkeydown="return false"
                                                 readonly="" style="width: auto;"/>
                                           </div>
-                                          <a href="javascript:void(0)" ng-if="$index==0" ng-click="scoopAllSave()"
+                                          <a href="javascript:void(0)" ng-if="$index==0" ng-click="scoopAllSave('copy')"
                                              ng-if="itemList.length >0" class="btn btn-info"
                                              style="padding:7px 7px;">
                                              <i class="fa fa-right-mark"></i>Copy Scoop
@@ -543,6 +543,11 @@
                                                             ng-click="saveitems(it.itemId,$index);" id="saveitem{{it.itemId}}"><i
                                                                class="fa fa-floppy-o" aria-hidden="true"></i>
                                                             Save</button>
+
+                                                         <a href="javascript:void(0)" ng-if="$index==itemList.length-1" ng-click="scoopAllSave('save-all')"
+                                                         ng-if="itemList.length >0" class="btn btn-info pull-right" >
+                                                            <i class="fa fa-right-mark"></i>Save All
+                                                         </a>
 
                                                          <!-- <button class="btn btn-info"
                                                       ng-click="closeItem('item-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Close</button> -->
