@@ -19922,8 +19922,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     $scope.workflowChange = false;
+    $scope.workflowChangeArr = [];
     $scope.changeWorkflow = function (id) {
         $scope.workflowChange = true; 
+        $scope.workflowChangeArr.push(id);
     }
 
     $scope.isAllScoopCopy = false;
@@ -20017,12 +20019,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //     }
                     // } else {
                         if ($('#jobchainName' + formIdAllSave).val() == 'select' || $('#jobDropDown' + formIdAllSave).val() == 'select') {
-                            notification('Please select workflow.', 'warning');
+                            //notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
                             $scope.TblItemList[formIndex].total_amount = 0;
-                            return false;
+                            //return false;
                         } else {
-                            if ($scope.jobi.jobSummery && $scope.workflowChange || ($scope.isAllScoopCopy && $scope.workflowChange) ) {
+                            if ($scope.jobi[formId].jobSummery && $scope.workflowChange || ($scope.isAllScoopCopy && $scope.workflowChange) ) {
                                 
                                 // gettingName of selected workflow job chain
                                 
@@ -20030,11 +20032,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 let workflowSel = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();        
                                 
                                 $scope.jobitem = {};
-                                var dd = $scope.isAllScoopCopy ? workflowSel : $scope.jobi.jobSummery;
-                                $scope.jobi.jobSummery = dd.substr(1);
+                                var dd = $scope.isAllScoopCopy ? workflowSel : $scope.jobi[formId].jobSummery;
+                                //$scope.jobi.jobSummery = dd.substr(1);
+                                $scope.jobi[formId].jobSummery = dd.substr(1);
                                 $scope.matchjob = dd.slice(0, 1);
                                 if ($scope.matchjob == 'j') {
-                                    rest.path = 'jobpertjobGet/' + $scope.jobi.jobSummery + '/' + $scope.routeOrderID;
+                                    rest.path = 'jobpertjobGet/' + $scope.jobi[formId].jobSummery + '/' + $scope.routeOrderID;
                                     rest.get().success(function (data) {
                                         $scope.itemdata = data;
                                         $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
@@ -20050,7 +20053,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 var job_no = [];
                                                 var due_date = [];
                                                 var item_status = [];
-                                                $scope.job_id = $scope.jobi.jobSummery;
+                                                $scope.job_id = $scope.jobi[formId].jobSummery;
                                                 $scope.job_code = $scope.itemdata.job_code;
                                                 $scope.order_id = $scope.routeOrderID;
                                                 $scope.job_no = $scope.itemdata.job_no;
@@ -20120,12 +20123,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     // gettingName of selected workflow job chain
                                     $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName'+formIdAllSave).find(':selected').text();
                                     if (chainId != undefined  && $scope.workflowChange) {
-                                        rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.routeOrderID + '/' + chainId;
+                                        rest.path = 'jobpertjobChainGet/' + $scope.jobi[formId].jobSummery + '/' + $scope.routeOrderID + '/' + chainId;
                                         rest.get().success(function (data) {
                                             $scope.jobnumchain = data.job_no += 1;
                                             $scope.ijNum = 1;
                                             if (data.newJob == "") {
-                                                notification('No job in jobchain', 'warning');
+                                               // notification('No job in jobchain', 'warning');
                                             } else {
                                                 angular.forEach(data.newJob, function (val, i) {
                                                     if (chainId) {
@@ -20138,7 +20141,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                             var job_no = [];
                                                             var due_date = [];
                                                             var item_status = [];
-                                                            $scope.job_id = $scope.jobi.jobSummery;
+                                                            $scope.job_id = $scope.jobi[formId].jobSummery;
                                                             $scope.job_code = val.job_code;
                                                             $scope.order_id = $scope.routeOrderID;
                                                             $scope.master_job_id = val.job_id;
@@ -20180,7 +20183,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                             $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
                                                             $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
 
-                                                            $scope.jobitem.job_chain_id = $scope.jobi.jobSummery;
+                                                            $scope.jobitem.job_chain_id = $scope.jobi[formId].jobSummery;
                                                             $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
 
                                                             rest.path = 'jobSummarySave';
@@ -20382,7 +20385,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Save all scoop data (only left side value)
     $scope.scoopAllSave = function(type) {
-        //debugger
         $scope.isAllScoopCopy = type === 'copy' ? true : false;    
         $scope.isAllScoopUpdate = type === 'save-all' ? true : false;    
         jQuery('.scoopall').removeAttr('required');
@@ -20401,17 +20403,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.itemList[0].heads_up != 1 )    
                 $('#upcomingDate'+val.itemId).css('display','none');    
 
-            let selectedWorkflow = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();
+            var indexNo = $scope.isAllScoopUpdate ? index : 0;    
             
-            if($('#jobchainName'+val.itemId).find(':selected').val() == 'select' && selectedWorkflow != 'select' ){
-                $scope.workflowChange = true;
-                $('#jobchainName'+val.itemId).find('option').val(selectedWorkflow).trigger('click');
+            if($scope.isAllScoopUpdate){
+                console.log('$scope.workflowChangeArr', $scope.workflowChangeArr)
+                $scope.workflowChange = $scope.workflowChangeArr.includes(val.itemId) ? true : false;
             }else{
-                $scope.workflowChange = $scope.workflowChange ? $scope.workflowChange : false;
-            }
-            
+                let selectedWorkflow = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();
+                if($('#jobchainName'+val.itemId).find(':selected').val() == 'select' && selectedWorkflow != 'select' ){
+                    $scope.workflowChange = true;
+                    $('#jobchainName'+val.itemId).find('option').val(selectedWorkflow).trigger('click');
+                }else{
+                    $scope.workflowChange = $scope.workflowChange ? $scope.workflowChange : false;
+                }
+            } 
             $scope.saveitems(val.itemId, index);
-        
         })
     }    
     // substitute pm,cm,qa 
@@ -22810,6 +22816,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.jobList_jobChingetOne = function (data) {
+        console.log('data-changesss', data)
         var deferred = $q.defer();
         rest.path = 'jobChingetOne/' + $scope.jobi.jobSummery;
         rest.get().success(function (res) {
@@ -22939,6 +22946,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 notification('No job in jobchain', 'warning');
                             } else {
                                 $scope.jobList_jobChingetOne(data)
+                                    console.log('job-return-data', data)
                                     .then(function (_StoreAsSortJob) {
                                         angular.forEach(_StoreAsSortJob, function (val, i) {
                                             if (chainId) {
@@ -32294,7 +32302,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.workflowChange = false;
     $scope.changeWorkflow = function (id) {
-        $scope.workflowChange = true; 
+        $scope.workflowChange = true;
     }
     //*****------- Update project scoop start-------****//
     $scope.jobi = {};
@@ -32384,7 +32392,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.TblItemList[formIndex].total_amount = 0;
                             return false;
                         } else {
-                            if ($scope.jobi.jobSummery  && $scope.workflowChange) {
+                            if ($scope.jobi.jobSummery && $scope.workflowChange) {
                                 // gettingName of selected workflow job chain
                                 $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formId).find(':selected').text();
 

@@ -435,10 +435,18 @@
                                                          </div>
                                                          <div class="col-sm-12">
                                                             <label class="control-label">Add new job/workflow</label>
-                                                            <select class="form-control m-b "
+                                                            <!-- <select class="form-control m-b "
                                                                ng-init="jobi.jobSummery = 'select'"
                                                                name="jobchainName{{it.itemId}}"
-                                                               ng-model="jobi.jobSummery" id="jobchainName{{it.itemId}}"
+                                                               ng-model="jobi.jobSummery" 
+                                                               id="jobchainName{{it.itemId}}"
+                                                               ng-change="changeWorkflow({{it.itemId}})"
+                                                               required> -->
+                                                            <select class="form-control m-b "
+                                                               ng-init="jobi[it.itemId].jobSummery = 'select'"
+                                                               name="jobchainName{{it.itemId}}"
+                                                               ng-model="jobi[it.itemId].jobSummery" 
+                                                               id="jobchainName{{it.itemId}}"
                                                                ng-change="changeWorkflow({{it.itemId}})"
                                                                required>
                                                                <option value="select">--Please Select--</option>
