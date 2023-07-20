@@ -32387,10 +32387,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //     }
                     // } else {
                         if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
-                            notification('Please select workflow.', 'warning');
+                            //notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
                             $scope.TblItemList[formIndex].total_amount = 0;
-                            return false;
+                            //return false;
                         } else {
                             if ($scope.jobi.jobSummery && $scope.workflowChange) {
                                 // gettingName of selected workflow job chain
