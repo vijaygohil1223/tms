@@ -340,7 +340,8 @@
                                                          <select class="form-control m-b "
                                                             ng-init="jobi.jobSummery = 'select'"
                                                             name="jobchainName{{it.itemId}}" ng-model="jobi.jobSummery"
-                                                            id="jobchainName{{it.itemId}}" required>
+                                                            ng-change="changeWorkflow({{it.itemId}})"
+                                                            id="jobchainName{{it.itemId}}" >
                                                             <option value="select">--Please Select--</option>
                                                             <optgroup label="Job Chain">
                                                                <option class="summertablebc "
