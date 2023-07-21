@@ -32479,7 +32479,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     var chainId = $scope.itemList[formIndex].item_number;
 
                                     // gettingName of selected workflow job chain
-                                    $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
+                                    //$scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
+                                    $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName' + formId).find(':selected').text();
                                     if (chainId != undefined  && $scope.workflowChange) {
                                         rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.order_id + '/' + chainId;
                                         rest.get().success(function (data) {
