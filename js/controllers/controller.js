@@ -20978,7 +20978,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     return el.order_id==192 && el.item_status == 'Approved';
                 // });
                 
-                
                 $scope.searchOrderNumber = search;
                 var obj = [];
                 obj.push({
@@ -29196,6 +29195,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.InvoiceResult = items[0].InvoiceList;
+    console.log('$scope.InvoiceResult', $scope.InvoiceResult)
     $scope.searchOrderNumber = items[0].searchOrderNumber;
 
     $scope.addInvoice = function (data) {
