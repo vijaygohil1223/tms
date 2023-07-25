@@ -1915,7 +1915,7 @@ class jobs_detail
 
                 $resourceName = $this->_db->getOne('tms_users');
 
-                $data[$key]['contact_person'] = $resourceName['vUserName'];
+                $data[$key]['contact_person'] = $resourceName ? $resourceName['vUserName'] : '';
             }
         }
 
