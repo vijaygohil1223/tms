@@ -109,7 +109,7 @@ class item {
                 $jobStatus = 'Cancelled';
             if ($data['item_status'] == '5') {
                 $jobStatus = 'Invoice Ready';
-                $andWhere = " AND item_status NOT IN ('Cancelled','Canceled','Invoiced','Paid','Invoiced') ";
+                $andWhere = " AND resource!=''  AND item_status NOT IN ('Cancelled','Canceled','Invoiced','Paid') ";
             }    
             if (isset($data['order_id']) && $jobStatus != '' ) {
                 $qry_up = "UPDATE tms_summmery_view SET item_status = '".$jobStatus."' WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_number']."' ".$andWhere." ";
