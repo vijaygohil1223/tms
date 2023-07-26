@@ -19495,6 +19495,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 if (data) {
                     $scope.Filestotal = data[0].totalfile;
+                    console.log('$scope.Filestotal', $scope.Filestotal)
                 }
                 //angular.element('#filescount' + id).text($scope.Filestotal);
                 $('#filescount' + id).text($scope.Filestotal);
@@ -19514,6 +19515,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.get().success(function (data) {
                     if (data) {
                         $scope.Filestotal = data[0].totalfile;
+                        console.log('$scope.Filestotal-interval', $scope.Filestotal)
                     }
                     angular.element('#filescount' + id).text($scope.Filestotal);
                 }).error(errorCallback);
@@ -19527,7 +19529,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             count = 0;
         }
         var id = $window.localStorage.getItem("scoopfolderId");
-        
         //$('#sourceCount-'+id).text(count);
         //$('#filescount'+id).text(count);
     }
@@ -20711,9 +20712,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'getFilestotal/' + val.itemId;
                 rest.get().success(function (data) {
                     if (data) {
+                        console.log('data-f1', data)
                         $scope.Filestotal = data[0].totalfile;
                     }
                     angular.element('#filescount' + val.itemId).text($scope.Filestotal);
+                }).error(errorCallback);
+
+
+                rest.path = 'getFilestotal/' + val.itemId;
+                rest.get().success(function (data) {
+                    if (data) {
+                        console.log('data', data)
+                    }
                 }).error(errorCallback);
 
 

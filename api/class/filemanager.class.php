@@ -930,4 +930,18 @@ array(
         return $data;
     }
 
+    public function getFilestotal($id){
+        $this->treeArr_data = array();
+        $this->_db->where('item_id',$id);
+        $fmanagerId = $this->_db->getOne('tms_filemanager');    
+
+        $dataArr = $this->_db->get('tms_filemanager');    
+        $data[0]['totalfile'] = 0;   
+        if($fmanagerId){
+            $this->treeArr_data = self::buildTreePath($dataArr,$fmanagerId['fmanager_id']);
+            $data[0]['totalfile'] = $this->treeArr_data ? count($this->treeArr_data) : 0;   
+        }
+        return $data;
+    }
+
 }

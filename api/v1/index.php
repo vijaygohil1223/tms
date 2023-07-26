@@ -1982,8 +1982,14 @@ $app->get('/itemCurrency/:id','authenticate', function ($id) {
     $result = $item->itemCurrencyGet($id);
     echoResponse(200, $result);
 });
+// $app->get('/getFilestotal/:id', 'authenticate',function ($id) {
+//     $item = new item ();
+//     $result = $item->getFilestotal($id);
+//     echoResponse(200, $result);
+// });
+// changes in api to get all files and folder for scoop
 $app->get('/getFilestotal/:id', 'authenticate',function ($id) {
-    $item = new item ();
+    $item = new filemanager ();
     $result = $item->getFilestotal($id);
     echoResponse(200, $result);
 });
