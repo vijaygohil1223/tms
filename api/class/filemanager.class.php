@@ -527,14 +527,20 @@ class filemanager {
         foreach ($data as $value) {
             $this->_db->where('fmanager_id',$value['id']);
             $info = $this->_db->getOne('tms_filemanager');
-            $images = glob($path.$info['name']);
-            if(isset($images)) {
-                unlink($path.$info['name']);
+            if($info && count($info)>0){
+                $images = glob($path.$info['name']);
+                if(isset($images)) {
+                    unlink($path.$info['name']);
+                }
             }
-            
+
             $this->_db->where('fmanager_id',$value['id']);
             $this->_db->delete('tms_filemanager');
         }
+        $return['status'] = 200;
+        $return['msg'] = 'Successfully Deleted';
+
+        return $return;
         
     }
 
