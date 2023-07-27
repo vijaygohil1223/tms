@@ -5115,9 +5115,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (fileDivText) {
                     var dataU = $('.upimg' + fileDivText.charAt(0)).text();
                 }
-                var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
-                var regExp = /\(([^)]+)\)/;
-                var getFileSize = regExp.exec(size);
+                //var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
+                //var regExp = /\(([^)]+)\)/;
+                //var getFileSize = regExp.exec(size);
+                const regex = /\(([^)]+)\)[^)]*$/;
+                var getFileSize = fileDivText.match(regex);
+                getFileSize = (getFileSize && getFileSize.length > 1) ? getFileSize[1] : '0 B';
                 $scope.name = dataU;
                 $scope.f_id = 1;
                 $scope.parent_id = $window.localStorage.getItem("parentId");
@@ -5131,7 +5134,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.filedata.parent_id = $scope.parent_id;
                 $scope.filedata.filename = files[0];
                 $scope.filedata.filetype = fileType;
-                $scope.filedata.size = getFileSize[1];
+                $scope.filedata.size = getFileSize;
+                
 
                 /*rest.path = 'fileAdd';
                 rest.post($scope.filedata).success(function(data) {
@@ -6300,9 +6304,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var dataU = $('.upimg' + fileDivText.charAt(0)).text();
                 }
 
-                var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
-                var regExp = /\(([^)]+)\)/;
-                var getFileSize = regExp.exec(size);
+                //var size = fileDivText.substring(fileDivText.lastIndexOf(".") - 4, fileDivText.length).trim();
+                //var regExp = /\(([^)]+)\)/;
+                //var getFileSize = regExp.exec(size);
+                const regex = /\(([^)]+)\)[^)]*$/;
+                var getFileSize = fileDivText.match(regex);
+                console.log('getFileSize', getFileSize)
+                getFileSize = (getFileSize && getFileSize.length > 1) ? getFileSize[1] : '0 B';
                 $scope.name = dataU;
                 $scope.f_id = 1;
                 $scope.parent_id = $window.localStorage.getItem("parentId");
@@ -6316,8 +6324,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.filedata.parent_id = $scope.parent_id;
                 $scope.filedata.filename = files[0];
                 $scope.filedata.filetype = fileType;
-                $scope.filedata.size = getFileSize[1];
-                $scope.chkfilesize = getFileSize[1];
+                $scope.filedata.size = getFileSize;
+                $scope.chkfilesize = getFileSize;
 
                 //rest.path = 'fileAdd';
                 /*var allFiles = {
