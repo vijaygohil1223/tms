@@ -607,8 +607,10 @@
                                        <span id="noJob{{$index}}" class="jbClassDel{{it2.itemId}}"></span>
                                     </div>
                                  </td>
-                                 <td ng-if="!it2.total_amount">{{0 |customNumber}}</td>
-                                 <td ng-if="it2.total_amount">{{it2.total_amount |customNumber}}</td>
+                                 <td ng-if="!it2.total_price">{{0 |customNumber}}</td>
+                                 <td ng-if="it2.total_price">{{it2.total_price |customNumber}}</td>
+                                 <!-- <td ng-if="it2.total_amount">{{it2.total_amount |customNumber}}</td> -->
+                                 
                                  <td>
                                     <!--  <a href="javascript:void(0)" ng-click="getitemsId(it2.itemId, 'scrollItem')" title="edit">
                                  <i class="glyph-icon fa-edit"></i></a> / -->

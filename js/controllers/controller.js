@@ -20441,7 +20441,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.itemList = data;
             $scope.TblItemList = data;
-
+            
             $scope.projectItemEmpty = jQuery.isEmptyObject(data);
             $scope.totalPrice = 0;
             var cont = [];
@@ -20636,7 +20636,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 }*/
                 
-                $scope.totalPrice += val.total_amount;
+                //$scope.totalPrice += val.total_amount;
+                $scope.totalPrice += val.total_price;
 
                 if (val.itemId) {
                     $routeParams.id = val.itemId;
