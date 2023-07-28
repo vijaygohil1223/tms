@@ -3360,6 +3360,24 @@ $app->post('/freelanceInvoiceExcelStatus', 'authenticate',function () use($app) 
     $result = $invoice->freelanceInvoiceExcelStatus($data);
     echoResponse(200, $result);
 });
+$app->post('/filterStatement', function () use($app) {
+    $stmt = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $stmt->filterStatement($data);
+    echoResponse(200, $result);
+});
+$app->get('/getInvoiceNumber','authenticate', function () use($app) {
+    $stmt = new Freelance_invoice ();
+    $result = $stmt->getInvoiceNumber();
+    echoResponse(200, $result);
+});
+$app->get('/getFreelanceInvoicePartPayments/:id','authenticate', function($id) {
+    $invoice = new Freelance_invoice ();
+    $result = $invoice->getFreelanceInvoicePartPayments($id);
+    echoResponse(200, $result);
+});
+//-------------------END Freelancer Invoice manage----------------//
+
 function echoResponse($status_code, $response) {
     global $app;
     $app->status($status_code);
@@ -3755,17 +3773,6 @@ $app->post('/activateAccount', function () use($app) {
     echoResponse(200, $result);
 });
 
-$app->post('/filterStatement', function () use($app) {
-    $stmt = new Freelance_invoice ();
-    $data = json_decode($app->request->getBody(), TRUE);
-    $result = $stmt->filterStatement($data);
-    echoResponse(200, $result);
-});
-$app->get('/getInvoiceNumber','authenticate', function () use($app) {
-    $stmt = new Freelance_invoice ();
-    $result = $stmt->getInvoiceNumber();
-    echoResponse(200, $result);
-});
 // ------------------ Work Instruct -----------------------//
 $app->get('/workinstructactive','authenticate', function () use($app) {
     $workinstruct = new workinstruct ();

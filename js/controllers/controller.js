@@ -16857,10 +16857,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     if (items.paid_amount == 0) {
         $scope.dueAmount = items.Invoice_cost;
+        $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
     } else {
         $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
         $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
+        $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
     }
+    // if (items.paid_amount == 0) {
+    //     $scope.dueAmount = items.Invoice_cost;
+    //     $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
+    // } else {
+    //     $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
+    //     $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
+    //     $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
+    // }
 
     $scope.statusChange = function (status) {
         if (status == "Part") {
@@ -16871,6 +16881,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceComplete = items.Invoice_cost - items.paid_amount;
         }
     }
+
+    function compareDatesDescending(a, b) {
+        const dateA = new Date(a.created_date);
+        const dateB = new Date(b.created_date);
+        return dateB - dateA;
+    }
+    //$scope.created_date = $filter('dateFormatDisplayFront')(moment().format('YYYY-MM-DD HH:mm:ss'));
+    //console.log('CurrentDate', $scope.created_date)
+    $scope.getInvoicePartPayments = function () {
+        rest.path = "getFreelanceInvoicePartPayments/" + items.statusId;
+        rest.get().success(function (partPayments) {
+            partPayments.sort(compareDatesDescending)
+            $scope.partPaymentList = partPayments;
+        });
+    }
+    $scope.getInvoicePartPayments();
 
 
     $scope.ok = function (frmId) {
@@ -16901,8 +16927,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return false;
             } else {
 
+                $scope.inv.created_date = originalDateFormatNew($scope.created_date);
+                $scope.inv.created_date = moment($scope.inv.created_date).format('YYYY-MM-DD HH:mm:ss');
+
                 var date = $filter('date')(new Date(), 'yyyy/MM/dd');
                 $scope.inv.paid_date = date;
+
+                var invPaidAmount = numberFormatCommaToPoint($scope.inv.paid_amount);
+                console.log('invPaidAmount', invPaidAmount)
+                $scope.inv.paid_amount = parseFloat(invPaidAmount);
+                console.log('$scope.inv.paid_amount', $scope.inv.paid_amount)
                 $scope.inv.partPaid = $scope.inv.paid_amount;
                 $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
                 if ($scope.inv.paid_amount == items.Invoice_cost) {

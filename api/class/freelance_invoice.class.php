@@ -23,6 +23,12 @@ class Freelance_invoice {
         return $invoiceData;
 	}
 
+    public function getFreelanceInvoicePartPayments($id) {
+        $this->_db->where('invoice_id', $id);
+        $data = $this->_db->get('tms_invoice_payments');
+        return $data;
+    }
+
 	//invoice serach data get
 	public function invoiceCreate($data1) {
 		$infoD = array();
@@ -233,8 +239,16 @@ class Freelance_invoice {
         if(isset($data['partPaid'])){
             $partPaidAmount['invoice_id']                   = $id;
             $partPaidAmount['invoice_partial_paid_amount']  = $data['partPaid'];
-            $partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
-            
+            //$partPaidAmount['created_date']                 = date('Y-m-d H:i:s');
+            $ins_createdate = date('Y-m-d H:i:s');
+            if(isset($data['created_date'])){
+                $createdate = DateTime::createFromFormat('Y-m-d H:i:s', $data['created_date']);
+                if ($createdate && $createdate->format('Y-m-d H:i:s') === $data['created_date']) {
+                    $ins_createdate = $data['created_date']; 
+                    $data['paid_date'] = $data['created_date']; 
+                }
+            }
+            $partPaidAmount['created_date'] = $ins_createdate; 
             $partPaymentInsert = $this->_db->insert('tms_invoice_payments', $partPaidAmount);
         }    
         /* Insert Part paid invoice payment detail in database END */
