@@ -689,7 +689,9 @@ app.directive('select2ClientInvoiceStatus', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            var data = ['Open','Part Paid','Paid','Complete','Overdue','Cancel','Irrecoverable'];
+            //var data = ['Open','Part Paid','Paid','Complete','Overdue','Cancel','Irrecoverable'];
+            var data = ['Open','Paid','Complete','Overdue','Cancel','Irrecoverable'];
+            //var data = data.filter(item => item !== 'Part Paid');
             var invoiceStatuses = [];
             $.each(data, function(key, value) {
                 var obj = {

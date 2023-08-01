@@ -34,25 +34,36 @@
           <div class="panel-body">
             <div class="row wraper">
               <div class="bg-light lter b-b wrapper-md d-flex" style="justify-content:end;margin-top:-15px;">
-                <div class="col-sm-2">
-                  <div class="col-sm-12 d-flex" style="white-space:nowrap;">
-                    <label style="margin-top:5px;">Check All &nbsp;&nbsp;</label>
-                    <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall"
-                      ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" />
+                
+                <div class="col-sm-12">
+                  <div class="col-sm-2" style="width: 10%;">
+                    <div class="d-flex" >
+                      <label style="margin-top:5px;white-space:nowrap;">Check All &nbsp;&nbsp;</label>
+                      <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall"
+                        ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" />
+                    </div>
                   </div>
-                </div>
-                <div class="col-sm-4">
-                  <div class="col-sm-10 d-flex" style="white-space:nowrap;">
-                    <label style="margin-top:5px;">Change Status &nbsp;&nbsp;</label>
-                    <input type="text" select2-invoice-status id="invoiceStatusdata"
-                      class="input-sm form-control w-sm inline v-middle" ng-model="invoiceStatus"
-                      placeholder="please select Status" />
+                  <div class="col-sm-4">
+                    <div class="d-flex" style="white-space:nowrap;">
+                      <label style="margin-top:5px;">Change Status &nbsp;&nbsp;</label>
+                      <input type="text" select2-invoice-status id="invoiceStatusdata"
+                        class="input-sm form-control w-sm inline v-middle" ng-model="invoiceStatus" ng-change="onInputChange(invoiceStatus)"
+                        placeholder="please select Status" />
+                    </div>
+                  </div>
+                  <div class="col-sm-3" ng-show="isPaymentDate">
+                    <div class="d-flex" style="white-space:nowrap;">
+                      <label style="margin-top:5px;">Payment Date &nbsp;&nbsp;</label>
+                      <input type="text" class="input-sm form-control w-sm inline v-middle" name="created_date" minTime="false" ng-model="created_date" 
+                      ng-datetimepicker1 required autocomplete="off" placeholder="Payment date" style="margin-left:20px;"/>  
+                    </div>
                   </div>
                   <div class="col-sm-2">
                     <button class="btn btn-sm btn-info" ng-click="statusAction(action,projectStatus)"
-                      style="padding:5px 25px;"><i class="glyphicon glyphicon-ok"></i></button>
+                      style="padding:5px 25px;margin-left:20px;"><i class="glyphicon glyphicon-ok"></i></button>
                   </div>
                 </div>
+
               </div>
               <div class="col-sm-12">
                 <ul class="alt projectjobdv2 overviewli">

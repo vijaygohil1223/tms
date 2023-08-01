@@ -293,8 +293,10 @@ class Client_invoice {
                 }
             }
             $partPaidAmount['created_date'] = $ins_createdate; 
-            
-            $partPaymentInsert = $this->_db->insert('tms_invoice_client_payments', $partPaidAmount);
+            if($partPaidAmount['invoice_partial_paid_amount'] > 0)
+                $partPaymentInsert = $this->_db->insert('tms_invoice_client_payments', $partPaidAmount);
+            else
+                $partPaymentInsert = 1;
         }    
         /* Insert Part paid invoice payment detail in database END */
 
