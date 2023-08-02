@@ -433,9 +433,8 @@
                                        <!-- <th>Order Date</th> -->
                                        <th>Scoop name</th>
                                        <th>Email Subject</th>
-                                       <th>
-                                          <!-- Customers -->Client
-                                       </th>
+                                       <th>Client</th>
+                                       <th>Account</th>
                                        <th>Status</th>
                                        <th>Prices</th>
                                        <!-- <th>Price in selected currency</th> -->
@@ -467,6 +466,7 @@
                                           <td><a href="#/viewdirect/{{result.customer}}"
                                                 class="summeryColor"><span>{{result.contactName}}</span></a></td>
                                           <!-- <td ng-bind="result.projectName"></td> -->
+                                          <td> {{ result.indirectAccountName}} </td>
                                           <td ng-bind="result.clientStatus"></td>
                                           <td ng-bind="result.totalAmount | customNumber">--</td>
                                           <!-- <td>{{ result.jobTotalPrice }}</td> -->
