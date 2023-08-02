@@ -233,7 +233,6 @@ class Freelance_invoice {
     }
 
     public function invoiceStatusChange($data, $id) {
-
         /* Insert Part paid invoice payment detail in database START */
         $partPaidAmount = array();
         if(isset($data['partPaid'])){
