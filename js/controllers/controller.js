@@ -7599,7 +7599,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('orderstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
+}).controller('orderstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
 
@@ -7803,7 +7803,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         //$scope.dtItemAmout += value.totalAmount;
                                         var prn = $scope.totalItemAmout * 12 / 100;
                                         $scope.totalItemAvg = prn;
-                                        angular.element('#itemAmount' + i).text(value.totalAmount);
+                                        let totalAmt = $filter('customNumber')(value.totalAmount);
+                                        angular.element('#itemAmount' + i).text(totalAmt);
                                         //angular.element('#itemAmount' + i).text(value.TotalAmount);
                                     }
                                 }

@@ -426,7 +426,7 @@
                                  </div>
                               </div>
                               <div class="table-responsive">
-                                 <table class="table m-b-none default footable-loaded footable">
+                                 <table class="table m-b-none default footable-loaded footable" >
                                     <thead>
                                        <th>#</th>
                                        <th>Orders Number</th>
@@ -439,7 +439,7 @@
                                        <th>Prices</th>
                                        <!-- <th>Price in selected currency</th> -->
                                     </thead>
-                                    <tbody>
+                                    <tbody >
                                        <tr ng-repeat="result in staturRes=(statusResult)"
                                           class="orderRClass" ng-init="setTotals(result)"
                                           ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice">
@@ -605,7 +605,7 @@
                                        <tr ng-repeat="result in statusProjectType"
                                           class="orderRClass">   
                                           <td id="projectTypeName{{$index}}" ng-bind="result.projectTypeName"></td>
-                                          <td id="projectTypeAmount{{$index}}" ng-bind="result.TotalAmount"></td>
+                                          <td id="projectTypeAmount{{$index}}" ng-bind="result.TotalAmount | customNumber"></td>
                                           <td id="projectTypeShare{{$index}}"></td>
                                        </tr>
                                        <tr>
@@ -656,7 +656,7 @@
                                        <tr ng-repeat="cust in statusCustomerType"
                                           class="orderRClass">   
                                           <td id="CustomersName{{$index}}" ng-bind="cust.contactName"></td>
-                                          <td id="CustomersAmount{{$index}}" ng-bind="cust.TotalAmount"></td>
+                                          <td id="CustomersAmount{{$index}}" ng-bind="cust.TotalAmount | customNumber"></td>
                                           <td id="customersShare{{$index}}"></td>
                                        </tr>
                                        <tr>
