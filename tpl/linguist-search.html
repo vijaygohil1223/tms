@@ -348,8 +348,12 @@
                                     <thead>
                                         <th>#</th>
                                         <th>Resource</th>
-                                        <th>Freelancer Type</th>
+                                        <th>Rate/Word</th>
+                                        <th>Rate/Hour</th>
                                         <th>Currency</th>
+                                        <th>Language Pair</th>
+                                        <th>Hardware</th>
+                                        <th>Freelancer Type</th>
                                         <th>Country</th>
                                     </thead>
                                     <tbody>
@@ -361,11 +365,17 @@
                                             <td>
                                                 {{result.vFirstName}} {{result.vLastName}}
                                             </td>
-                                            <td>{{result.freelancerType}}</td>
+                                            <td>{{ result.priceRateWords }}</td>
+                                            <td> {{ result.priceRateHours }}</td>
                                             <td>{{result.currency}}</td>
+                                            <td>  
+                                                <p ng-repeat="lang in result.langPair" style="margin: 0;"> {{lang.languagePrice}}  </p> 
+                                            </td>
+                                            <td> </td>
+                                            <td>{{result.freelancerType}}</td>
                                             <td>{{result.userCountry}}</td>
                                         </tr>
-                                        <tr ng-show="!statusRes.length">
+                                        <tr ng-show="!statusResult.length">
                                             <td colspan="8" ng-bind="dataNotFound"></td>
                                         </tr>
                                     </tbody>
