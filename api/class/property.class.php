@@ -167,8 +167,8 @@ class property {
         $result = $this->_db->get('tms_user_property');
         foreach ($result as $key => $value) {
             $property_name = self::getTypeById($value['property_id']);
-            $result[$key]['property_name'] = $property_name['property_name'];
-            $result[$key]['values_names'] = $values->getBunch($value['value_id']);
+            $result[$key]['property_name'] = isset($property_name['property_name']) ? $property_name['property_name'] : '';
+            $result[$key]['values_names'] = isset($value['value_id']) ? $values->getBunch($value['value_id']) : '';
         }
         return $result;
     }

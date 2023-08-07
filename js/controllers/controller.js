@@ -34026,8 +34026,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if($scope.jobReport.property_id){
                         temp_data = temp_data.filter((obj) => {
                             let prt = $scope.propertyList.filter( (pl) => {
-                                if(pl.property_id == $scope.jobReport.property_id &&  pl.user_id == obj.iUserId) 
+                                if(pl.property_id == $scope.jobReport.property_id &&  pl.user_id == obj.iUserId){ 
+                                    let propValue = pl.value_id.toString().split(',');
+                                    if(propValue.length && !$scope.jobReport.value_id){
+                                        propValue.forEach(element => {
+                                            rest.path = 'generalPropertiesView/' + element;
+                                            rest.get().success(function (data) {
+                                                if(data)
+                                                    obj.hardware = data
+                                                //obj.hardware = data
+                                            })    
+                                        });
+                                    }
+                                    
                                     return pl 
+                                }
                             });
                             if(prt.length)
                                 return obj;
@@ -34036,8 +34049,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if($scope.jobReport.value_id){
                         temp_data = temp_data.filter((obj) => {
                             let prv = $scope.propertyList.filter( (pl) => {
-                                if(pl.user_id == obj.iUserId && pl.value_id.toString().split(',').includes($scope.jobReport.value_id)) 
+                                if(pl.user_id == obj.iUserId && pl.value_id.toString().split(',').includes($scope.jobReport.value_id)){ 
+                                    obj.hardware = $('#property-value').select2('data').text
                                     return pl 
+                                }
                             });
                             if(prv.length)
                                 return obj;
@@ -34065,15 +34080,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                         if(val.price_basis){
                             let priceObj = JSON.parse(val.price_basis);
-                            //console.log('priceObj', priceObj)
+                            val.priceRateHours = ''
+                            val.priceRateWords = ''
                             if(priceObj.length){
-                                let priceRateHours = priceObj.filter((itmPrc) => {
-                                    if(itmPrc.basePriceUnit.includes('Hour'))
+                                var priceRateHours = priceObj.find((itmPrc) => {
+                                    if(itmPrc.basePriceUnit.includes('Hour')){
+                                        val.priceRateHours = itmPrc.basePrice;
+                                        data.filter( (itemData,i) => {
+                                            if(itemData.iUserId == val.iUserId){
+                                                data[i].priceRateHours = itmPrc.basePrice
+                                            }
+                                        })
                                         return itmPrc 
-                                } )
-                                console.log('priceRateHour-'+val.resourceName, priceRateHours)
-                                val.priceRateHours = priceRateHours.length ? priceRateHours[0].basePrice : '' ;
-                                val.priceRateWords = priceObj.length ? priceObj[0].basePrice : '';
+                                    }
+                                })
+                                if(priceObj.length)
+                                    val.priceRateWords = priceObj[0].basePrice;
                             }
                         }
 

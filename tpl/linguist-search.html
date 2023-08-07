@@ -365,14 +365,14 @@
                                             <td>
                                                 {{result.vFirstName}} {{result.vLastName}}
                                             </td>
-                                            <td>{{ result.priceRateWords }}</td>
-                                            <td> {{ result.priceRateHours }}</td>
+                                            <td> <span ng-if="result.priceRateWords">{{ result.priceRateWords | customNumber }}</span> </td>
+                                            <td> <span ng-if="result.priceRateHours"> {{ result.priceRateHours | customNumber }} </span> </td>
                                             <td>{{result.currency}}</td>
                                             <td>  
                                                 <p ng-repeat="lang in result.langPair" style="margin: 0;"> {{lang.languagePrice}}  </p> 
                                             </td>
-                                            <td> </td>
-                                            <td>{{result.freelancerType}}</td>
+                                            <td> {{result.hardware}} </td>
+                                            <td>{{result.freelancerType}} </td>
                                             <td>{{result.userCountry}}</td>
                                         </tr>
                                         <tr ng-show="!statusResult.length">
