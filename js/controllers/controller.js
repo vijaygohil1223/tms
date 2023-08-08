@@ -34080,10 +34080,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                         if(val.price_basis){
                             let priceObj = JSON.parse(val.price_basis);
+                            //console.log('priceObj', priceObj)
                             val.priceRateHours = ''
                             val.priceRateWords = ''
                             if(priceObj.length){
                                 var priceRateHours = priceObj.find((itmPrc) => {
+                                    if(itmPrc.basePriceUnit.includes('Words Translation (New)')){
+                                        val.priceRateWords = itmPrc.basePrice;
+                                    }
                                     if(itmPrc.basePriceUnit.includes('Hour')){
                                         val.priceRateHours = itmPrc.basePrice;
                                         data.filter( (itemData,i) => {
@@ -34095,7 +34099,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     }
                                 })
                                 if(priceObj.length)
-                                    val.priceRateWords = priceObj[0].basePrice;
+                                    val.priceRateWords = val.priceRateWords ? val.priceRateWords : priceObj[0].basePrice ;
                             }
                         }
 

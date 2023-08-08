@@ -363,7 +363,7 @@
                                                 {{ $index + 1 }}
                                             </td>
                                             <td>
-                                                {{result.vFirstName}} {{result.vLastName}}
+                                                <a style="color:#4ba0c3" href="#/viewExternal/{{result.iUserId}}" >{{result.vFirstName}} {{result.vLastName}}</a>
                                             </td>
                                             <td> <span ng-if="result.priceRateWords">{{ result.priceRateWords | customNumber }}</span> </td>
                                             <td> <span ng-if="result.priceRateHours"> {{ result.priceRateHours | customNumber }} </span> </td>
