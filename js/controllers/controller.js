@@ -10722,6 +10722,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isValidMobileNumber = false;
     $scope.multipleDateArr = [];
     $scope.abscentDateArr = [];
+    $scope.isSecondCurrency = false
     
             
     /* Mobile Validation START */
@@ -10959,6 +10960,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id != undefined) {
         rest.path = 'getProfile';
         rest.model().success(function (data) {
+            console.log('data-externalprofile', data)
             $scope.userprofiledata = data;
             $window.localStorage.iUserId = data.iUserId;
             $window.localStorage.setItem("externalPricelistId", data.iUserId);
@@ -10991,6 +10993,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }    
             }, 100);
 
+            if(data.second_currency == 'NOK,kr')
+                angular.element('#secondCurrency').select2('data', { text: 'NOK' });    
+                //angular.element('#secondCurrency').select2('val', 'NOK,kr').trigger('change');
+
+            console.log('$scope.userprofiledata.second_currency',$scope.userprofiledata.second_currency )
             //$scope.userprofiledata.menu_access = $scope.userprofiledata.menu_access ? JSON.parse($scope.userprofiledata.menu_access) : []; 
             //$scope.existMenu = $scope.userprofiledata.menu_access;
             
@@ -11247,6 +11254,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.abscentDateArr.splice(index, 1); // 2nd parameter means remove one item only
         }    
     } 
+
+    $scope.showSecondCUrrency = function(){
+        if($scope.isSecondCurrency)
+            angular.element('#secondCurrency').select2('val', 'NOK,kr').trigger('change');
+        else
+            angular.element('#secondCurrency').select2('val', '').trigger('change');
+    }
 
     rest.path = 'usertype';
     rest.get().success(function (data) {

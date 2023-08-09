@@ -189,9 +189,15 @@
                                                                 <label>Resource Status</label>
                                                                 <input type="text" select2-userstatus class="form-control" id="eUserStatus" name="eUserStatus" ng-model="userprofiledata.eUserStatus" />
                                                             </div>
-                                                            <div class="form-group">
+                                                            <div class="form-group col-sm-6" style="padding-left:0;">
                                                                 <label>Currency Code</label>
                                                                 <input type="text" select2-currency-convert data-typeid="2" id="freelanceCurrency" class="form-control" name="freelance_currency"  ng-model="userprofiledata.freelance_currency" required />
+                                                            </div>
+                                                            <div class="form-group col-sm-6" style="padding-right:0;">
+                                                                <label>Second Currency (Norway) &nbsp;&nbsp; 
+                                                                    <input type="checkbox" ng-click="showSecondCUrrency()" ng-model="isSecondCurrency" value="NOK,kr" ng-true-value="1" ng-false-value="0" ng-checked="userprofiledata.second_currency == 'NOK,kr'" >
+                                                                </label>
+                                                                <input type="text" select2-currency-convert data-typeid="2" id="secondCurrency" class="form-control" name="second_currency"  ng-model="userprofiledata.second_currency" disabled/>
                                                             </div>
                                                             <!-- <div class="form-group" ng-show="!userprofiledata.iUserId">
                                                                 <label>Department</label>
