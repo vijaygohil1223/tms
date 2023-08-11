@@ -3639,6 +3639,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }, 1500);
     // END - edit/update project scoop stay on same tabs
 
+    if ($cookieStore.get('session_iUserId') != undefined) {
+        // currency exchange rate update every day
+        if($window.localStorage.getItem("currencyExchangeUpdated") != true){
+            rest.path = 'currencyExchange' ;
+            rest.get().success(function(data){
+                $window.localStorage.setItem("currencyExchangeUpdated", true)
+            })
+        } 
+        // Latest api rate
+        // fetch("https://api.exchangerate-api.com/v4/latest/EUR")
+        // .then(response => response.json())
+        // .then(data => {
+        //     console.log('crncy-api-rate',data); // JSON data
+        // })
+        // .catch(error => {
+        //     console.error("Error fetching data:", error);
+        // });
+    }
+
 
 }).controller('usertypeController', function ($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
     rest.path = 'usertype';
@@ -28781,7 +28800,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.InvoiceResult = data.filter(function (el) {
                     el.freelance_currency = el.freelance_currency ? el.freelance_currency.split(',')[0] : 'EUR';
                     let jbStatus = el.item_status.toLowerCase();
-                    return jbStatus == 'approved' || jbStatus == 'invoice ready' || jbStatus == 'overdue';
+                    return ['approved','invoice ready','invoice Ready','overdue'].includes(jbStatus);
+                    //return jbStatus == 'approved' || jbStatus == 'invoice ready' || jbStatus == 'overdue';
                 });
             
         });        
@@ -30939,7 +30959,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editInvoiceField = true;
     $scope.taxPercentage = 0;
     $scope.invoiceNumOfdays = 30;
+    $scope.currencyRate = 1;
+    $scope.nokRate = 1;
+    $scope.showSecondCUrrency = false; // freelacer Second currency selected as nok
+    
     //get data of invoice
+
+    $scope.currencyAllData = [];
+    rest.path = 'currency';
+    rest.get().success(function (data) {
+        $scope.currencyAllData = data;
+        console.log('$scope.currencyAllData', $scope.currencyAllData)
+    })
 
     if ($cookieStore.get('invoiceJobId').length) {
         var obj = [];
@@ -30953,6 +30984,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.post($scope.invoiceLt).success(function (data) {
             $scope.invoiceDetail = data[0];
             
+            // If freelacer Second currency selected as nok
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency =='NOK,kr'){
+                $scope.showSecondCUrrency = true;
+            }
+            angular.forEach($scope.currencyAllData, function (item, i) {    
+                if(item.currency_code == 'NOK,kr')
+                    $scope.nokRate = item.current_curency_rate 
+                if(item.currency_code == $scope.invoiceDetail.freelance_currency)
+                    $scope.currencyRate = item.current_curency_rate ? item.current_curency_rate : 1 
+            })
+            
+
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
@@ -31086,9 +31130,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
             $scope.taxValue = amountTaxRate;
+            $scope.taxValue2 = $filter('customNumber')(amountTaxRate * $scope.nokRate);
+            console.log('$scope.taxValue2', $scope.taxValue2)
+            
             //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
                 
             $scope.grandTotal = $scope.invoiceTotal + parseFloat(amountTaxRate);
+            console.log('$scope.grandTotal', $scope.grandTotal)
+            $scope.grandTotalNok = $filter('customNumber')($scope.nokRate * $scope.grandTotal);
+            console.log('$scope.grandTotalNok', $scope.nokRate * $scope.grandTotal)
             $scope.invoiceTotal = $filter('customNumber')($scope.invoiceTotal);
         });
     }
@@ -31161,9 +31211,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.custom_invoice_no = $scope.invoiceDetail.custom_invoice_no;
 
         $scope.invoiceData.vat = numberFormatCommaToPoint($scope.vat);
+        $scope.invoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
         $scope.invoiceData.job_total = numberFormatCommaToPoint($scope.invoiceTotal);
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
+        $scope.invoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
+        $scope.invoiceData.currency_rate = $scope.currencyRate ;
 
         $scope.invoiceData.job = [];
         $scope.invoiceList.forEach(element => {

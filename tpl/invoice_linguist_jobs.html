@@ -42,10 +42,10 @@
                 <tbody ng-init="invLen = InvoiceResult.length - 1" ng-repeat="invoiceL in InvoiceResult  track by $index">
                   <tr>
                     <td>
-                      <span ng-if="invoiceL.item_status=='Invoice Ready' || invoiceL.item_status=='Approved' || invoiceL.item_status=='Overdue'">
+                      <span ng-if="invoiceL.item_status=='Invoice Ready' || invoiceL.item_status=='Invoice ready' || invoiceL.item_status=='Approved' || invoiceL.item_status=='Overdue'">
                           <input type="checkbox" ng-model="invoiceL.SELECTED" ng-true-value="1" ng-false-value="0"/>
                       </span>
-                      <span ng-if="invoiceL.item_status != 'Invoice Ready' && invoiceL.item_status != 'Approved'">
+                      <span ng-if="invoiceL.item_status != 'Invoice Ready' && invoiceL.item_status != 'Invoice ready' && invoiceL.item_status != 'Approved'">
                           <input type="checkbox" name="invoceCheck" disabled>
                       </span>
                     </td>
