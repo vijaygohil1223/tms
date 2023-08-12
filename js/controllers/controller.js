@@ -17158,6 +17158,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 }).controller('invoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.gloabalDateFormat = $window.localStorage.getItem('global_dateFormat')
     $scope.isDisabledApprvd = false;
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
@@ -17329,16 +17330,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $scope.invoiceList = data;
             
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
+            const invoiceDate = $scope.invoiceDetail.invoice_date && isValidDate($scope.invoiceDetail.invoice_date) ? $scope.invoiceDetail.invoice_date : data[0].created_date ;
+            $scope.invoiceDetail.invoice_date = invoiceDate;
+            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(invoiceDate, data[0].number_of_days);
+            //console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
 
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             //$scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
-
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, data[0].number_of_days);
-            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            const parsedDate = moment(invoiceDate, 'YYYY-MM-DD');
+            //parsedDate.format($scope.gloabalDateFormat)
+            
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, data[0].number_of_days);
+            //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')($scope.invoiceDetail.invoice_date);
+            console.log('$scope.invoiceDetail.invoice_date', $scope.invoiceDetail.invoice_date)
 
             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
@@ -31210,7 +31217,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.invoice_number = $scope.invoiceDetail.invoiceNumber;
         $scope.invoiceData.custom_invoice_no = $scope.invoiceDetail.custom_invoice_no;
 
-        $scope.invoiceData.vat = numberFormatCommaToPoint($scope.vat);
+        //$scope.invoiceData.vat = numberFormatCommaToPoint($scope.vat);
+        $scope.invoiceData.vat = $scope.vat;
         $scope.invoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
         $scope.invoiceData.job_total = numberFormatCommaToPoint($scope.invoiceTotal);
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
