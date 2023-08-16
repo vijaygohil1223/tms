@@ -63,10 +63,12 @@
                         <p class="mb-0" style="font-size:20px;">
                           <strong>SpellUp AS</strong></br>
                         </p>
-                        <p>Ødegårdsveien 43J </br>
-                          1911 Flateby </br>
-                          Norway </br>
-                          NO930108995</P>
+                        <p>
+                          {{invoicesetInfoData.address1}} <br/>
+                          {{invoicesetInfoData.postcode}}  {{invoicesetInfoData.city}} <br/>
+                          {{invoicesetInfoData.country}} <br/>
+                          {{invoicesetInfoData.vat_number}} <br/>
+                        </p>
                       </div>
                       <div class="col-xs-4 text-right">
                         <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoiceNumber }}</strong></p>

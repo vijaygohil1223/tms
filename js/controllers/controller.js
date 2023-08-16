@@ -17163,6 +17163,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
     $scope.invoiceNumOfdays = 30;
+    $scope.showSecondCUrrency = true;
     $scope.invoicePaid = function (frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -17186,6 +17187,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     $scope.vat = 0;
+
     //change jobitem price module
     $scope.changeInvoiceField = function (index, parentIndex, itemVal = 0, type = '') {
         var invoiceSum = 0;
@@ -17225,6 +17227,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.vat = $filter('customNumber')($scope.vat);
     }
 
+    // fetch all currency
+    $scope.currencyAllData = [];
+    rest.path = 'currency';
+    rest.get().success(function (data) {
+        $scope.currencyAllData = data;
+        console.log('$scope.currencyAllData', $scope.currencyAllData)
+    })
+
+    $scope.invoicesetInfoData = [];
+    rest.path = 'invoiceSettings';
+    rest.get().success(function (data) {
+        if(data)
+        $scope.invoicesetInfoData = data;
+        console.log('$scope.invoicesetInfoData', $scope.invoicesetInfoData)
+    }).error(errorCallback);
+
     if ($routeParams.id) {
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
@@ -17232,6 +17250,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             $scope.vatNo = '';
+            // If freelacer Second currency selected as nok
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency =='NOK,kr'){
+                $scope.showSecondCUrrency = true;
+            }
+            angular.forEach($scope.currencyAllData, function (item, i) {    
+                if(item.currency_code == 'NOK,kr')
+                    $scope.nokRate = item.current_curency_rate 
+                if(item.currency_code == $scope.invoiceDetail.freelance_currency)
+                    $scope.currencyRate = item.current_curency_rate ? item.current_curency_rate : 1 
+            })
+
+            
+            const invoicesetInfoData = $scope.invoicesetInfoData.filter( (item)=> {
+                if(item.branch_center_id.toString().split(',').includes($scope.invoiceDetail.business_center_id.toString())){
+                    return item
+                }
+            })
+            $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0]  ;
+            
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
             if ($scope.invoiceDetail.clientAddresDetail) {
                 let clientAddDetail = JSON.parse($scope.invoiceDetail.clientAddresDetail);
@@ -17368,6 +17406,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //$scope.grandTotal += v.itemTotal;
                     })
                 }
+
+                console.log('val.price_per_job', val.price_per_job)
                 $scope.invoiceList[i].price_per_job = $filter('customNumber')(val.price_per_job);
                 if (val.jobpriceList) {
                     angular.forEach(val.jobpriceList, function (v, i) {
@@ -17381,8 +17421,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
             $scope.taxValue = amountTaxRate;
             $scope.taxPercentage = taxRate;
+
+            $scope.taxValue2 = $filter('customNumber')($scope.invoiceDetail.vat2);
+            console.log('$scope.taxValue2', $scope.taxValue2)
             
+            //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
+                
             $scope.grandJobTotal = parseFloat($scope.invoiceTotal) + parseFloat(amountTaxRate);
+            $scope.grandTotalNok = $filter('customNumber')($scope.invoiceDetail.Invoice_cost2);
+
             $scope.invoiceTotal = (invoiceTotal.toString().includes(',')) ? $scope.invoiceTotal : $filter('customNumber')($scope.invoiceTotal);
             $scope.vat = ($scope.vat.toString().includes(',')) ? $scope.vat : $filter('customNumber')($scope.vat);
 
@@ -17427,15 +17474,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)
         $scope.upInvoiceData.vat = numberFormatCommaToPoint($scope.vat);
+        $scope.upInvoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
         $scope.upInvoiceData.Invoice_cost = $scope.grandJobTotal;
+        $scope.upInvoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
+        console.log('$scope.upInvoiceData.Invoice_cost2', $scope.upInvoiceData.Invoice_cost2)
+        
         $scope.upInvoiceData.item = [];
         $scope.invoiceList.forEach(element => {
             const elItemID = element.jobId;
             const elItemVal = $('input[name=itemVal_' + element.jobId).val();
-            $scope.upInvoiceData.item.push({
-                'id': elItemID,
-                'value': numberFormatCommaToPoint(elItemVal)
-            })
+            // $scope.upInvoiceData.item.push({
+            //     'id': elItemID,
+            //     'value': numberFormatCommaToPoint(elItemVal),
+            // })
         });
         rest.path = 'saveEditedInvoiceLinguist';
         rest.put($scope.upInvoiceData).success(function (data) {
@@ -17488,7 +17539,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     $scope.isPdfdownload = false;
+    $scope.hideElemnt = true;
     $scope.printIt = function (number) {
+        $scope.hideElemnt = false;
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
         var btnPaid = angular.element('#btnPaid');
         var btnMarkAsCancel = angular.element('#btnMarkAsCancel');
@@ -17509,18 +17562,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $scope.isPdfdownload = true;
 
-        kendo.drawing.drawDOM($("#exportable")).then(function (group) {
-            group.options.set("font", "8px DejaVu Sans");
-            /*group.options.set("pdf", {
-                margin: {
-                    left   : "40mm",
-                    top    : "0mm",
-                    right  : "40mm",
-                    bottom : "0mm"
-                }
-            });*/
-            kendo.drawing.pdf.saveAs(group, number + ".pdf");
-        });
+        setTimeout( ()=>{
+            kendo.drawing.drawDOM($("#exportable")).then(function (group) {
+                group.options.set("font", "8px DejaVu Sans");
+                /*group.options.set("pdf", {
+                    margin: {
+                        left   : "40mm",
+                        top    : "0mm",
+                        right  : "40mm",
+                        bottom : "0mm"
+                    }
+                });*/
+                kendo.drawing.pdf.saveAs(group, number + ".pdf");
+            });
+        }, 200)
 
         $timeout(function () {
             angular.element('.invoiceInput input').removeClass('invoiceInputborder');
@@ -17534,6 +17589,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#editInvoiceSave2').show();
             angular.element('.btnSave').show();
             $scope.isPdfdownload = false;
+            // hide show input element
+            $scope.hideElemnt = true;
 
         }, 1000);
         // angular.element('#btnPaid').show();
@@ -30978,6 +31035,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.currencyAllData = data;
         console.log('$scope.currencyAllData', $scope.currencyAllData)
     })
+    
+    $scope.invoicesetInfoData = [];
 
     if ($cookieStore.get('invoiceJobId').length) {
         var obj = [];
@@ -31002,8 +31061,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(item.currency_code == $scope.invoiceDetail.freelance_currency)
                     $scope.currencyRate = item.current_curency_rate ? item.current_curency_rate : 1 
             })
-            
 
+            rest.path = 'invoiceSettings';
+            rest.get().success(function (data) {
+                if(data){
+                    $scope.invoicesetInfoData = data;
+                    const invoicesetInfoData = $scope.invoicesetInfoData.filter( (item)=> {
+                        if($scope.invoiceDetail.business_center_id && item.branch_center_id.toString().split(',').includes($scope.invoiceDetail.business_center_id.toString())){
+                            return item
+                        }
+                    })
+                    $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0]  ;
+                }
+
+            }).error(errorCallback);
+
+            
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';

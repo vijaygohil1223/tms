@@ -43,7 +43,7 @@ class Freelance_invoice {
 			$this->_db->join('tms_payment tp', 'tp.iUserId = tu.iUserId AND tp.iType = 1', 'LEFT');
 			$this->_db->join('tms_tax tx', 'tp.tax_rate = tx.tax_id', 'LEFT');
 			$this->_db->join('tms_items ti', 'ti.order_id=tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
-			$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress,tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency, tu.second_currency as freelance_second_currency, tg.company_code, tsv.job_code AS jobCode, tsv.price AS jobPrice, tsv.total_price as price_per_job,tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber ');
+			$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tci.vCenterid AS client_business_center , tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress,tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency, tu.second_currency as freelance_second_currency, tg.company_code, tsv.job_code AS jobCode, tsv.price AS jobPrice, tsv.total_price as price_per_job,tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber ');
 			
             //echo $this->_db->getLastQuery();
             //exit;
@@ -188,7 +188,7 @@ class Freelance_invoice {
 			    $this->_db->join('tms_tax tx', 'tp.tax_rate = tx.tax_id', 'LEFT');
                 //$this->_db->join('tms_payment tp', 'tp.iUserId=tu.iUserId', 'LEFT');
                 $this->_db->join('tms_items ti', 'ti.order_id=tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
-                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency , tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice, tsv.contact_person AS projectManagerId, tcm.vEmailAddress as emailRemind1, tcm.vSecondaryEmailAddress as emailRemind2, tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber, tsv.total_price as price_per_job');
+                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tci.vCenterid as business_center_id ,tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency , tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice, tsv.contact_person AS projectManagerId, tcm.vEmailAddress as emailRemind1, tcm.vSecondaryEmailAddress as emailRemind2, tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber, tsv.total_price as price_per_job');
                 //, tci.vEmailAddress  AS companyEmail
                 $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
 
@@ -493,20 +493,23 @@ class Freelance_invoice {
     public function saveEditedInvoice($data,$id) {
         $updata['value_date'] = date('Y-m-d H:i');
         $updata['Invoice_cost'] = $data['Invoice_cost'];
+        $updata['Invoice_cost2'] = $data['Invoice_cost2'];
         $updata['job_total'] = $data['item_total'];
         $updata['invoice_type'] = 'save';
         $updata['vat'] = $data['vat'];
+        $updata['vat2'] = $data['vat2'];
         if($id){
             $this->_db->where('invoice_id', $id);
     	    $up_id = $this->_db->update('tms_invoice',$updata);
-            if($up_id){
-                foreach($data['item'] as $item){
-                    $jobData['updated_date'] = date('Y-m-d H:i:s');
-                    $jobData['total_price'] = $item['value'];
-                    $this->_db->where('job_summmeryId', $item['id']);
-                    $scpstsId = $this->_db->update('tms_summmery_view', $jobData);
-                }
-            }
+            // if each job in linguist invoice is editable than update below table 
+            // if($up_id){
+            //     foreach($data['item'] as $item){
+            //         $jobData['updated_date'] = date('Y-m-d H:i:s');
+            //         $jobData['total_price'] = $item['value'];
+            //         $this->_db->where('job_summmeryId', $item['id']);
+            //         $scpstsId = $this->_db->update('tms_summmery_view', $jobData);
+            //     }
+            // }
         }
         if($id) {
     		$res['status'] = 200;

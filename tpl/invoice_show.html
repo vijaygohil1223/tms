@@ -63,7 +63,6 @@
                                             {{freelanceCountry}} </br>
                                             <span ng-if="vatNo">Vat Number: {{vatNo}} </span></br>
                                             <!-- Email : {{invoiceDetail.freelanceEmail}} -->
-
                                         </p>
 
                                     </div>
@@ -75,12 +74,14 @@
                                             <strong>BILL TO:</strong> </br>
                                         </p>
                                         <p class="mb-0" style="font-size:20px;">
-                                            <strong>SpellUp AS</strong></br>
+                                            <strong>{{invoicesetInfoData.company_name}}</strong></br>
                                         </p>
-                                        <p>Ødegårdsveien 43J </br>
-                                            1911 Flateby </br>
-                                            Norway </br>
-                                            NO930108995</P>
+                                        <p>
+                                            {{invoicesetInfoData.address1}} <br/>
+                                            {{invoicesetInfoData.postcode}}  {{invoicesetInfoData.city}} <br/>
+                                            {{invoicesetInfoData.country}} <br/>
+                                            {{invoicesetInfoData.vat_number}} <br/>
+                                        </p>
                                     </div>
                                     <div class="col-xs-4 text-right">
                                         <p class="h4"> <strong>INVOICE #{{ invoiceDetail.invoice_number }}</strong></p>
@@ -155,6 +156,15 @@
                                                     ng-change="changeInvoiceField($index, $parent.$index, vat, 'vat')" /> -->
                                                 </td>
                                             </tr>
+                                            <tr class="tdborder" ng-show="showSecondCUrrency">
+                                                <td colspan="3" class="text-right"><strong>Tax in NOK</strong></td>
+                                                <td>
+                                                  <span ng-hide="hideElemnt">{{ taxValue2 }}</span>  
+                                                  <input class="invoiceCal form-control" ng-show="hideElemnt" type="text" ng-model="taxValue2"
+                                                    id="vatnok"
+                                                    name="vatnok"  style="width: 100px;"/>
+                                                </td>
+                                              </tr>
                                             <!-- <tr>
                                             <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
                                             <td> 0.00</td>
@@ -203,6 +213,11 @@
                                         <h3>
                                             {{currencyType}} {{grandJobTotal | customNumber}}
                                         </h3>
+                                        <h3 ng-show="showSecondCUrrency">
+                                            NOK <span ng-hide="hideElemnt">{{ grandTotalNok }}</span>
+                                            <input class="invoiceCal form-control" type="text" ng-show="hideElemnt" ng-model="grandTotalNok"
+                                                  id="vatnok" name="vatnok" style="width:100px;color:#454f59;float:right;margin-left:10px;"/>
+                                          </h3>
                                     </div>
                                 </div>
 
@@ -228,9 +243,9 @@
                                 ng-show="invoiceDetail.is_approved==0 && !isPdfdownload"
                                 ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd"
                                 style="color: #454f59 !important;"> UnApproved</button>
-                            <!-- <button id="editInvoiceSave2" class="btn btn-info btnSave" ng-hide="editDisabled"
+                            <button id="editInvoiceSave2" class="btn btn-info btnSave" ng-hide="editDisabled"
                                 ng-click="editInvoiceLinguist(invoiceDetail.invoice_number)"><i
-                                    class="fa fa-pencil"></i> Edit & Save </button> -->
+                                    class="fa fa-pencil"></i> Edit & Save </button>
                         </div>
                     </div>
                 </div>
