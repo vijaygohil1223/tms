@@ -16060,22 +16060,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //search data action
     $scope.statusAction = function (action) {
         var invoiceStatus = angular.element('#invoiceStatusdata').val();
+        console.log('invoiceStatus', invoiceStatus)
         const inStatus = invoiceStatus.split(',')
+        console.log('inStatus', inStatus)
         const inStatusName = invoiceStatus.split(',').pop()
         
         var i, j, totalChecked, successMsg;
         i = j = totalChecked = successMsg = 0;
-        if(inStatus.length == 2){
-            //for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
+        if(inStatusName){
+            //if(inStatus.length == 2){
+                //for (var i = 0; i < angular.element('[id^=invoiceCheckData]').length; i++) {
             angular.forEach($scope.checkedIds, function (val, i) {    
                 console.log('$scope.checkedIds', $scope.checkedIds)
-                console.log('val', val)
                 const getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return getAllInvoice.invoice_id == val });
                 console.log('getAllInvoice', getAllInvoice)
-                var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
-                const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
-                if (invoiceselect == 'true') {
-                    var invoiceId = angular.element('#invoiceCheckData' + i).val();
+                var invoiceselect = getAllInvoice.length ? 'true' : 'false';
+                const invoiceCheckLength = $scope.checkedIds.length;
+                //var invoiceselect = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
+                //const invoiceCheckLength = angular.element('[id^=invoiceCheckData]').length;
+                if (invoiceselect == 'true' && val) {
+                    //var invoiceId = angular.element('#invoiceCheckData' + i).val();
+                    var invoiceId = val;
                     totalChecked++;
                     $scope.invoice = {};
                     var invcObj = {};
@@ -16095,7 +16100,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         "paid_amount": getAllInvoice[0].paid_amount,
                         "statusId": invoiceId
                     };
-                    if ( ['Paid','Part Paid','Completed'].includes($scope.invoice.invoice_status)) {
+                    if ( ['Paid','Part Paid','Complete','Completed'].includes($scope.invoice.invoice_status)) {
                         
                         $scope.inv.created_date = originalDateFormatNew($scope.created_date);
                         $scope.inv.created_date = moment($scope.inv.created_date).format('YYYY-MM-DD HH:mm:ss');
@@ -16113,7 +16118,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.inv.partPaid = parseFloat(invPaidAmount);
                         $scope.inv.paid_amount = parseFloat(invcObj.Invoice_cost);
                         
-                        $scope.inv.invoice_status = ['Paid', 'Completed'].includes($scope.invoice.invoice_status) ? 'Completed' : $scope.invoice.invoice_status 
+                        $scope.inv.invoice_status = ['Paid', 'Complete', 'Completed'].includes($scope.invoice.invoice_status) ? 'Completed' : $scope.invoice.invoice_status 
                         
                         console.log('$scope.inv', $scope.inv)
             
@@ -16194,7 +16199,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
     console.log('$scope.invoiceTemplateName', $scope.invoiceTemplateName)
-    
     
     $scope.invoicePaid = function (frmId) {
         var obj = {
@@ -17164,6 +17168,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editDisabled = false;
     $scope.invoiceNumOfdays = 30;
     $scope.showSecondCUrrency = true;
+    $scope.hideElemnt = true;
     $scope.invoicePaid = function (frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -17269,7 +17274,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             })
             $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0]  ;
-            
+            if(['Part Paid', 'Paid', 'Complete', 'Completed'].includes($scope.invoiceDetail.invoice_status)){
+                $scope.hideElemnt = false;
+            }
+
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
             if ($scope.invoiceDetail.clientAddresDetail) {
                 let clientAddDetail = JSON.parse($scope.invoiceDetail.clientAddresDetail);
@@ -17423,7 +17431,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.taxPercentage = taxRate;
 
             $scope.taxValue2 = $filter('customNumber')($scope.invoiceDetail.vat2);
-            console.log('$scope.taxValue2', $scope.taxValue2)
             
             //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
                 
@@ -17539,7 +17546,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     $scope.isPdfdownload = false;
-    $scope.hideElemnt = true;
+    
     $scope.printIt = function (number) {
         $scope.hideElemnt = false;
         angular.element('.invoiceInput input').addClass('invoiceInputborder');

@@ -161,7 +161,7 @@
                                                 <td>
                                                   <span ng-hide="hideElemnt">{{ taxValue2 }}</span>  
                                                   <input class="invoiceCal form-control" ng-show="hideElemnt" type="text" ng-model="taxValue2"
-                                                    id="vatnok"
+                                                    id="vatnok" allow-decimal-comma-number
                                                     name="vatnok"  style="width: 100px;"/>
                                                 </td>
                                               </tr>
@@ -216,8 +216,8 @@
                                         <h3 ng-show="showSecondCUrrency">
                                             NOK <span ng-hide="hideElemnt">{{ grandTotalNok }}</span>
                                             <input class="invoiceCal form-control" type="text" ng-show="hideElemnt" ng-model="grandTotalNok"
-                                                  id="vatnok" name="vatnok" style="width:100px;color:#454f59;float:right;margin-left:10px;"/>
-                                          </h3>
+                                                  id="vatnok" name="vatnok" allow-decimal-comma-number style="width:100px;color:#454f59;float:right;margin-left:10px;"/>
+                                        </h3>
                                     </div>
                                 </div>
 
