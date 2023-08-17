@@ -29342,9 +29342,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         "paid_amount": getAllInvoice.length > 0 ? getAllInvoice[0].paid_amount : 0,
                         "statusId": invoiceId
                     };
-                    if (['Paid', 'Part Paid', 'Completed'].includes($scope.invoice.invoice_status)) {
+                    if (['Paid', 'Part Paid', 'Complete', 'Completed'].includes($scope.invoice.invoice_status)) {
+                        console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
                         // payment date
                         $scope.inv.created_date = originalDateFormatNew($scope.created_date);
+                        console.log('$scope.inv.created_date', $scope.inv.created_date)
                         $scope.inv.created_date = moment($scope.inv.created_date).format('YYYY-MM-DD HH:mm:ss');
                         if(! isValidDate($scope.inv.created_date) ) 
                             $scope.inv.created_date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -29360,14 +29362,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.inv.partPaid = parseFloat(invPaidAmount);
                         $scope.inv.paid_amount = parseFloat(invcObj.Invoice_cost);
                         
-                        $scope.inv.invoice_status = ['Paid', 'Completed'].includes($scope.invoice.invoice_status) ? 'Completed' : $scope.invoice.invoice_status 
+                        $scope.inv.invoice_status = ['Paid', 'Complete', 'Completed'].includes($scope.invoice.invoice_status) ? 'Completed' : $scope.invoice.invoice_status 
                         
-                        console.log('$scope.inv', $scope.inv)
-
                         $routeParams.id = invoiceId;
                         rest.path = "clientInvoiceStatusChange";
                         rest.put($scope.inv).success(function (data) {
-                            console.log('api-data', data)
                             successMsg++;
                             //$scope.getInvoicePartPayments()
                             //$uibModalInstance.dismiss('cancel');
@@ -31066,14 +31065,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 if(data){
                     $scope.invoicesetInfoData = data;
-                    const invoicesetInfoData = $scope.invoicesetInfoData.filter( (item)=> {
+                    const invoicesetInfoData = $scope.invoicesetInfoData.filter( (item) => {
                         if($scope.invoiceDetail.business_center_id && item.branch_center_id.toString().split(',').includes($scope.invoiceDetail.business_center_id.toString())){
                             return item
                         }
                     })
-                    $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0]  ;
+                    $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0];
                 }
-
             }).error(errorCallback);
 
             
