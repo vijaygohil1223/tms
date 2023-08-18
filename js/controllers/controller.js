@@ -17169,6 +17169,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceNumOfdays = 30;
     $scope.showSecondCUrrency = true;
     $scope.hideElemnt = true;
+    $scope.viewBtn = true;
     $scope.invoicePaid = function (frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -17549,6 +17550,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.printIt = function (number) {
         $scope.hideElemnt = false;
+        $scope.viewBtn = false;
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
         var btnPaid = angular.element('#btnPaid');
         var btnMarkAsCancel = angular.element('#btnMarkAsCancel');
@@ -17598,6 +17600,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.isPdfdownload = false;
             // hide show input element
             $scope.hideElemnt = true;
+            $scope.viewBtn = true;
 
         }, 1000);
         // angular.element('#btnPaid').show();
@@ -17674,6 +17677,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
     $scope.viewBtn = false;
+    $scope.nokRate = 1;
+    $scope.showSecondCUrrency = false;
     
     $scope.vat = 0;
 
@@ -17682,6 +17687,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             $scope.invoiceDetail = data[0];
+
+            if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency =='NOK,kr'){
+                $scope.showSecondCUrrency = true;
+            }
+            angular.forEach($scope.currencyAllData, function (item, i) {    
+                if(item.currency_code == 'NOK,kr')
+                    $scope.nokRate = item.current_curency_rate 
+                if(item.currency_code == $scope.invoiceDetail.freelance_currency)
+                    $scope.currencyRate = item.current_curency_rate ? item.current_curency_rate : 1 
+            })
+
+            rest.path = 'invoiceSettings';
+            rest.get().success(function (data) {
+                if(data){
+                    $scope.invoicesetInfoData = data;
+                    const invoicesetInfoData = $scope.invoicesetInfoData.filter( (item) => {
+                        if($scope.invoiceDetail.business_center_id && item.branch_center_id.toString().split(',').includes($scope.invoiceDetail.business_center_id.toString())){
+                            return item
+                        }
+                    })
+                    $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0];
+                }
+            }).error(errorCallback);
             
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             $scope.vatNo = '';
@@ -17815,8 +17843,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
             $scope.taxValue = amountTaxRate;
             $scope.taxPercentage = taxRate;
+            $scope.taxValue2 = $filter('customNumber')($scope.invoiceDetail.vat2);
             
             $scope.grandJobTotal = parseFloat($scope.invoiceTotal) + parseFloat(amountTaxRate);
+            $scope.grandTotalNok = $filter('customNumber')($scope.invoiceDetail.Invoice_cost2);
             $scope.invoiceTotal = (invoiceTotal.toString().includes(',')) ? $scope.invoiceTotal : $filter('customNumber')($scope.invoiceTotal);
             $scope.vat = ($scope.vat.toString().includes(',')) ? $scope.vat : $filter('customNumber')($scope.vat);
 
@@ -31032,6 +31062,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.currencyRate = 1;
     $scope.nokRate = 1;
     $scope.showSecondCUrrency = false; // freelacer Second currency selected as nok
+    $scope.hideElemnt = true;
+    $scope.invoiceCreatePage = true
     
     //get data of invoice
 
@@ -31183,6 +31215,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var date = new Date();
             //$scope.invoiceDetail.invoiceNumber = data[0].poNumber.split('_')[0] + '_' + data[0].jobCode + '_' + pad(data[0].invoiceCount + 1, 3);
             $scope.invoiceDetail.invoiceNumber = 'S-' + pad(data[0].invoiceCount + 1, 6);
+            $scope.invoiceDetail.invoice_number = $scope.invoiceDetail.invoiceNumber;
             $scope.invoiceDetail.custom_invoice_no = $scope.invoiceDetail.invoiceNumber;
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.job_id = obj;
@@ -31221,6 +31254,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
                 
             $scope.grandTotal = $scope.invoiceTotal + parseFloat(amountTaxRate);
+            $scope.grandJobTotal = $scope.grandTotal; 
             console.log('$scope.grandTotal', $scope.grandTotal)
             $scope.grandTotalNok = $filter('customNumber')($scope.nokRate * $scope.grandTotal);
             console.log('$scope.grandTotalNok', $scope.nokRate * $scope.grandTotal)
