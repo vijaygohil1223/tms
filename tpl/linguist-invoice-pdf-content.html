@@ -52,7 +52,7 @@
         ng-if="(invoiceDetail.custom_invoice_no!='' && invoiceDetail.custom_invoice_no != invoiceDetail.invoice_number) || invoiceCreatePage"
         style="padding:10px;margin-bottom:10px;">
         <div class="row">
-            <div class="col-xs-6 d-flex">
+            <div class="col-xs-10 d-flex">
                 <strong class="nowrap">Linguist Invoice No</strong> : <span ng-hide="invoiceCreatePage">{{invoiceDetail.custom_invoice_no}}</span>
                 <input type="text" ng-show="invoiceCreatePage" id="custom_invoice_no" name="custom_invoice_no"
                           ng-model="invoiceDetail.custom_invoice_no" class="form-control" style="margin-left: 10px;">
@@ -80,7 +80,7 @@
                     </td>
                     <td style="width:100px" class="nowrap">
                         {{invL.price_per_job}}
-                        <!-- <input class="invoiceCal form-control itemVal_{{invL.jobId}}"
+                        <!-- <input class="form-control itemVal_{{invL.jobId}}"
                                 ng-show="editInvoiceField" type="text" ng-model="invL.price_per_job"
                                 ng-disabled="editDisabled" id="invSubTotal{{$index}}"
                                 ng-change="changeInvoiceField($index,$parent.$index,invL.price_per_job,'itemPrice')"
@@ -110,7 +110,7 @@
                     <td colspan="3" class="text-right"><strong>Tax in NOK</strong></td>
                     <td>
                         <span ng-hide="hideElemnt">{{ taxValue2 }}</span>
-                        <input class="invoiceCal form-control" ng-show="hideElemnt" type="text" ng-model="taxValue2"
+                        <input class="form-control" ng-show="hideElemnt" type="text" ng-model="taxValue2"
                             id="vatnok" allow-decimal-comma-number name="vatnok" style="width: 100px;" />
                     </td>
                 </tr>
@@ -163,7 +163,7 @@
             </h3>
             <h3 ng-show="showSecondCUrrency">
                 NOK <span ng-hide="hideElemnt">{{ grandTotalNok }}</span>
-                <input class="invoiceCal form-control" type="text" ng-show="hideElemnt" ng-model="grandTotalNok"
+                <input class="form-control" type="text" ng-show="hideElemnt" ng-model="grandTotalNok"
                     id="vatnok" name="vatnok" allow-decimal-comma-number
                     style="width:100px;color:#454f59;float:right;margin-left:10px;" />
             </h3>

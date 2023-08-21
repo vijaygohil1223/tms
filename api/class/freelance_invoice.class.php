@@ -446,7 +446,7 @@ class Freelance_invoice {
         $attachments = '';
         $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
         $to_name = 'TMS';
-        //$to = 'anil.kanhasoft@yopmail.com';
+        //$to = 'anil.kanhasoft@gmail.com';
         
         if($data['pdfData']){
             if ($pdf_content != '') {
@@ -462,7 +462,7 @@ class Freelance_invoice {
                 }
             }
         }        
-
+        
         $send_fn = new functions();
         $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc='', $subject, $body, $attachments);
             
@@ -485,7 +485,6 @@ class Freelance_invoice {
             $result['msg'] = 'Could not send mail!';
             return $result;
         }
-
 
     }
 

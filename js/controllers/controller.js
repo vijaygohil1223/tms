@@ -17552,26 +17552,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.hideElemnt = false;
         $scope.viewBtn = false;
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
-        var btnPaid = angular.element('#btnPaid');
-        var btnMarkAsCancel = angular.element('#btnMarkAsCancel');
-        var btnSave = angular.element('#btnSave');
-        var btnDraft = angular.element('#btnDraft');
-        var btnCancel = angular.element('#btnCancel');
-        var btnApproved = angular.element('#btnApproved');
-        
-        angular.element('#btnPaid').hide();
-        angular.element('#btnMarkAsCancel').hide();
-        angular.element('#btnSave').hide();
-        angular.element('#btnDraft').hide();
-        angular.element('#btnCancel').hide();
-        angular.element('#btnApproved').hide();
-        angular.element('#editInvoiceSave').hide();
-        angular.element('#editInvoiceSave2').hide();
-        angular.element('.btnSave').hide();
-
         $scope.isPdfdownload = true;
 
+        // angular.element('#btnPaid').hide();
+        // angular.element('#btnMarkAsCancel').hide();
+        // angular.element('#btnSave').hide();
+        // angular.element('#btnDraft').hide();
+        // angular.element('#btnCancel').hide();
+        // angular.element('#btnApproved').hide();
+        // angular.element('#editInvoiceSave').hide();
+        // angular.element('#editInvoiceSave2').hide();
+        // angular.element('.btnSave').hide();
+
+        
         setTimeout( ()=>{
+            
+            console.log('$scope.hideElemnt',$scope.hideElemnt )
             kendo.drawing.drawDOM($("#exportable")).then(function (group) {
                 group.options.set("font", "8px DejaVu Sans");
                 /*group.options.set("pdf", {
@@ -17588,15 +17584,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $timeout(function () {
             angular.element('.invoiceInput input').removeClass('invoiceInputborder');
-            angular.element('#btnPaid').show();
-            angular.element('#btnMarkAsCancel').show();
-            angular.element('#btnSave').show();
-            angular.element('#btnDraft').show();
-            angular.element('#btnCancel').show();
-            angular.element('#btnApproved').show();
-            angular.element('#editInvoiceSave').show();
-            angular.element('#editInvoiceSave2').show();
-            angular.element('.btnSave').show();
+            // angular.element('#btnPaid').show();
+            // angular.element('#btnMarkAsCancel').show();
+            // angular.element('#btnSave').show();
+            // angular.element('#btnDraft').show();
+            // angular.element('#btnCancel').show();
+            // angular.element('#btnApproved').show();
+            // angular.element('#editInvoiceSave').show();
+            // angular.element('#editInvoiceSave2').show();
+            // angular.element('.btnSave').show();
+            
             $scope.isPdfdownload = false;
             // hide show input element
             $scope.hideElemnt = true;
@@ -17623,52 +17620,65 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.sendRemiderinvoice = function (number) {
-        angular.element('#btnPaid').hide();
-        angular.element('#btnMarkAsCancel').hide();
-        angular.element('#btnSave').hide();
-        angular.element('#btnDraft').hide();
-        angular.element('#btnCancel').hide();
-        angular.element('#btnApproved').hide();
-        angular.element('#editInvoiceSave').hide();
-        angular.element('#editInvoiceSave2').hide();
-        angular.element('.btnSave').hide();
+        angular.element('.invoiceInput input').addClass('invoiceInputborder');
+        $scope.hideElemnt = false;
+        $scope.viewBtn = false;
+        // angular.element('#btnPaid').hide();
+        // angular.element('#btnMarkAsCancel').hide();
+        // angular.element('#btnSave').hide();
+        // angular.element('#btnDraft').hide();
+        // angular.element('#btnCancel').hide();
+        // angular.element('#btnApproved').hide();
+        // angular.element('#editInvoiceSave').hide();
+        // angular.element('#editInvoiceSave2').hide();
+        //angular.element('.btnSave').hide();
 
-        kendo.drawing.drawDOM($("#exportable"))
-            .then(function (group) {
-                // Render the result as a PDF file
-                return kendo.drawing.exportPDF(group, {
-                    //paperSize: "auto",
+        setTimeout( ()=> {
+            kendo.drawing.drawDOM($("#exportable"))
+                .then(function (group) {
+                    // Render the result as a PDF file
+                    return kendo.drawing.exportPDF(group, {
+                        //paperSize: "auto",
+                    });
+                })
+                .done(function (data) {
+                    $scope.invoicemailDetail = {
+                        'pdfData': data,
+                        'invoiceno': number,
+                        'invoice_id': $routeParams.id,
+                        'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+                        'freelanceName': $scope.invoiceDetail.freelanceName,
+                        'emailRemind1': $scope.invoiceDetail.emailRemind1,
+                        'emailRemind2': $scope.invoiceDetail.emailRemind2,
+                        'outstanding_reminder': 1,
+                    };
+                    rest.path = 'sendInvoiceMail';
+                    rest.post($scope.invoicemailDetail).success(function (data) {
+                        if (data.status == 200) {
+                            angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+                            $scope.hideElemnt = true;
+                            $scope.viewBtn = true;
+                            notification('Reminder mail has been sent successfully', 'success');
+                        }
+                    }).error(errorCallback);
+                    
                 });
-            })
-            .done(function (data) {
-                $scope.invoicemailDetail = {
-                    'pdfData': data,
-                    'invoiceno': number,
-                    'invoice_id': $routeParams.id,
-                    'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-                    'freelanceName': $scope.invoiceDetail.freelanceName,
-                    'emailRemind1': $scope.invoiceDetail.emailRemind1,
-                    'emailRemind2': $scope.invoiceDetail.emailRemind2,
-                    'outstanding_reminder': 1,
-                };
-                rest.path = 'sendInvoiceMail';
-                rest.post($scope.invoicemailDetail).success(function (data) {
-                    if (data.status == 200) {
-                        notification('Reminder mail has been sent successfully', 'success');
-                    }
-                }).error(errorCallback);
-
-                angular.element('#btnPaid').show();
-                angular.element('#btnMarkAsCancel').show();
-                angular.element('#btnSave').show();
-                angular.element('#btnDraft').show();
-                angular.element('#btnCancel').show();
-                angular.element('#btnApproved').show();
-                angular.element('#editInvoiceSave').show();
-                angular.element('#editInvoiceSave2').show();
-                angular.element('.btnSave').show();
-
-            });
+            }, 200)
+            
+            setTimeout( ()=> {
+                angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+                $scope.hideElemnt = true;
+                $scope.viewBtn = true;
+                // angular.element('#btnPaid').show();
+                // angular.element('#btnMarkAsCancel').show();
+                // angular.element('#btnSave').show();
+                // angular.element('#btnDraft').show();
+                // angular.element('#btnCancel').show();
+                // angular.element('#btnApproved').show();
+                // angular.element('#editInvoiceSave').show();
+                // angular.element('#editInvoiceSave2').show();
+            }, 1000)
+            
     }
 
 }).controller('linguistInvoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
