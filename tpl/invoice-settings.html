@@ -9,7 +9,7 @@
       <div class="md-content page_content_wrapper" id="top">
       
         <div class="content_head bg-light lter b-b wrapper-md ng-scope">
-          <h1 class="m-n font-thin h3">Invoice PO Setting</h1>
+          <h1 class="m-n font-thin h3">Invoice & PO Setting</h1>
         </div>
         <div class="wrapper-md ng-scope">
           <div class="panel panel-default">
@@ -92,7 +92,15 @@
                 <div class="col-sm-4">
                   <div class="form-group">
                       <label>Description</label>
-                      <input type="text" name="description" placeholder="Enter Description" class="form-control"  ng-model="invcPo.description" >
+                      <input type="text" name="description" placeholder="Enter Description" class="form-control" ng-model="invcPo.description" >
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group">
+                      <label>Invoice Receive Email (Linguist)</label>
+                      <input type="text" name="invoice_receive_email" placeholder="Enter Invoice Email" class="form-control" ng-model="invcPo.invoice_receive_email" >
                   </div>
                 </div>
               </div>

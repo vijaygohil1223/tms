@@ -17167,7 +17167,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
     $scope.invoiceNumOfdays = 30;
-    $scope.showSecondCUrrency = true;
+    $scope.showSecondCUrrency = false;
     $scope.hideElemnt = true;
     $scope.viewBtn = true;
     $scope.invoicePaid = function (frmId) {
@@ -17242,12 +17242,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     })
 
     $scope.invoicesetInfoData = [];
-    rest.path = 'invoiceSettings';
-    rest.get().success(function (data) {
-        if(data)
-        $scope.invoicesetInfoData = data;
-        console.log('$scope.invoicesetInfoData', $scope.invoicesetInfoData)
-    }).error(errorCallback);
+    
 
     if ($routeParams.id) {
         rest.path = "invoiceViewOne/" + $routeParams.id;
@@ -17269,12 +17264,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
 
             
-            const invoicesetInfoData = $scope.invoicesetInfoData.filter( (item)=> {
-                if(item.branch_center_id.toString().split(',').includes($scope.invoiceDetail.business_center_id.toString())){
-                    return item
+            rest.path = 'invoiceSettings';
+            rest.get().success(function (data) {
+                if(data){
+                    $scope.invoicesetInfoData = data;
+                    const invoicesetInfoData = $scope.invoicesetInfoData.filter( (item)=> {
+                        if(item.branch_center_id.toString().split(',').includes($scope.invoiceDetail.business_center_id.toString())){
+                            return item
+                        }
+                    })
+                    $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0] ;
                 }
-            })
-            $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0]  ;
+            }).error(errorCallback);
+
             if(['Part Paid', 'Paid', 'Complete', 'Completed'].includes($scope.invoiceDetail.invoice_status)){
                 $scope.hideElemnt = false;
             }
@@ -17605,18 +17607,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // angular.element('#btnSave').show();
         // angular.element('#btnDraft').show();
         // angular.element('#btnCancel').show();
-        // html2canvas(document.getElementById('exportable'), {
-        //     onrendered: function(canvas) {
-        //         var data = canvas.toDataURL();
-        //         var docDefinition = {
-        //             content: [{
-        //                 image: data,
-        //                 width: 500,
-        //             }]
-        //         };
-        //         pdfMake.createPdf(docDefinition).download(number + ".pdf");
-        //     }
-        // });
     }
 
     $scope.sendRemiderinvoice = function (number) {
@@ -17680,6 +17670,59 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 1000)
             
     }
+
+    $scope.sendInvoiceEmail = function (type, number) {
+        if (type != undefined && type != " " && type != null) {
+            $window.localStorage.generalMsg = $scope.invoicesetInfoData.invoice_receive_email ? $scope.invoicesetInfoData.invoice_receive_email : '';
+            setTimeout( ()=> {
+                kendo.drawing.drawDOM($("#exportable"))
+                    .then(function (group) {
+                        // Render the result as a PDF file
+                        return kendo.drawing.exportPDF(group, {
+                            //paperSize: "auto",
+                        });
+                    })
+                    .done(function (data) {
+                        var invoicemailDetail = {
+                            'pdfData': data,
+                            'invoiceno': number,
+                            'invoice_id': $routeParams.id,
+                            'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+                            'freelanceName': $scope.invoiceDetail.freelanceName,
+                            'emailRemind1': $scope.invoiceDetail.emailRemind1,
+                            'emailRemind2': $scope.invoiceDetail.emailRemind2,
+                            'outstanding_reminder': 0,
+                            'invoice_to_be_sent': 1,
+                        };
+                        
+                        var modalInstance = $uibModal.open({
+                            animation: $scope.animationsEnabled,
+                            templateUrl: 'tpl/generalmsg.html',
+                            controller: 'generalmsgController',
+                            size: '',
+                            resolve: {
+                                items: function () {
+                                    return invoicemailDetail;
+                                }
+                            }
+                        });
+                        // rest.path = 'sendInvoiceMail';
+                        // rest.post($scope.invoicemailDetail).success(function (data) {
+                        //     if (data.status == 200) {
+                        //         angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+                        //         $scope.hideElemnt = true;
+                        //         $scope.viewBtn = true;
+                        //         notification('Reminder mail has been sent successfully', 'success');
+                        //     }
+                        // }).error(errorCallback);
+                        
+                    });
+
+                }, 200)
+        } else {
+            notification('Please Add Email', 'warning');
+        }
+    };
 
 }).controller('linguistInvoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -27385,9 +27428,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
-}).controller('generalmsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
+}).controller('generalmsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.generalMsg;
+    $scope.emailPopupType = 'general';
+
+    // Invoice email 
+    $scope.invoiceData = {} 
+    if(items && items.invoice_to_be_sent == 1 ){
+        $scope.emailPopupType = 'invoice-linguist';
+        $scope.invoiceData = items;
+        console.log('$scope.invoiceData', $scope.invoiceData)
+        $scope.invoiceData.invoiceName = items.pdfData ? items.invoiceno + '.pdf' : ''; 
+    }
 
     $scope.bccShow = function () {
         $scope.bccshow = true;
@@ -27423,7 +27476,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cPersonMsg.vEmailAddress = $window.localStorage.generalMsg;
         $scope.cPersonMsg.msgEmailSubject = $scope.msgEmailSubject;
         
-        $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>';
+        $scope.cPersonMsg.messageData = $scope.emailPopupType !='invoice-linguist' ? '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>' : '';
+        
     }).error(errorCallback);
 
     $scope.ok = function (frmId, message) {
@@ -27433,11 +27487,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         };
 
         if (angular.element("#" + frmId).valid()) {
-            rest.path = 'sendgeneralMsg';
-            rest.post(data).success(function (data) {
-                notification('Mail send successfully', 'success');
-                $window.localStorage.msgSubject = '';
-            }).error(errorCallback);
+            console.log('post-data', data)
+            if($scope.emailPopupType == 'invoice-linguist'){
+                $scope.invoiceData.file = $scope.attachementfile; 
+                $scope.invoiceData.data = message; 
+                rest.path = 'sendInvoiceMail';
+                rest.post($scope.invoiceData).success(function (data) {
+                    if (data.status == 200) {
+                        $scope.hideElemnt = true;
+                        $scope.viewBtn = true;
+                        notification('Invoice mail has been sent successfully', 'success');
+                    }
+                }).error(errorCallback);
+            }else{
+                rest.path = 'sendgeneralMsg';
+                rest.post(data).success(function (data) {
+                    notification('Mail send successfully', 'success');
+                    $window.localStorage.msgSubject = '';
+                }).error(errorCallback);
+            }
+            
             $timeout(function () {
                 $uibModalInstance.close(data);
                 $route.reload();

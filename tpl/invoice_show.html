@@ -3,6 +3,7 @@
         background: #f1ecec;
         margin-bottom: 25px;
     }
+
     .imgcenter {
         margin: 0 auto;
         width: max-content;
@@ -42,17 +43,19 @@
             <div class="wrapper-md ng-scope">
                 <div class="panel panel-default invoiceInput">
                     <div class="panel-body">
-                        
+
                         <div class="col-sm-12" id="exportable">
+                            <!-- Invoice pdf Template -->
                             <linguist-invoice-pdftemplate></linguist-invoice-pdftemplate>
                         </div>
                         <div class="col-sm-12">
-                            
+
                             <div id="toAddEleAfterDwonload"></div>
                             <div ng-show="viewBtn">
                                 <button id="btnPaid" ng-show="userRight==1" class="btn btn-info btnSave"
                                     ng-click="invoicePaid('invoice-form');"> Paid</button>
-                                <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
+                                <button id="btnMarkAsCancel"
+                                    ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
                                     class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as
                                     cancel</button>
                                 <!-- <button id="btnSave" ng-show="invoiceDetail.invoice_type!='save'"
@@ -69,6 +72,9 @@
                                     ng-show="invoiceDetail.is_approved==0 && !isPdfdownload"
                                     ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd"
                                     style="color: #454f59 !important;"> UnApproved</button>
+                                <button id="editInvoiceSave2" class="btn btn-info btnSave" ng-hide="editDisabled"
+                                    ng-click="sendInvoiceEmail('invoice_to_be_sent',invoiceDetail.invoice_number)"><i
+                                        class="fa fa-envelope-o"></i> To Be Sent </button>
                                 <button id="editInvoiceSave2" class="btn btn-info btnSave" ng-hide="editDisabled"
                                     ng-click="editInvoiceLinguist(invoiceDetail.invoice_number)"><i
                                         class="fa fa-pencil"></i> Edit & Save </button>

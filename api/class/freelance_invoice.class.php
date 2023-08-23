@@ -415,6 +415,7 @@ class Freelance_invoice {
     }
 
     public function sendInvoiceMail($data) {
+        
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
         $pdfFileName = $data['invoiceno'].'.pdf';
@@ -428,47 +429,97 @@ class Freelance_invoice {
         $pdfFile = $path.$data['invoiceno'].'.pdf';
 
         // Start Email Config
-        $body = "<p> Invoice outstanding with Reminder </p>";
-        $body .= "Invoice No : " .$data['invoiceno']. ", </p>";
-        $body .= "Linguist Name : " .$data['freelanceName']. ", </p>";
-        $body .= "Linguist Email : " .$data['freelanceEmail']. "</p>";
-        $subject = "Invoice Reminder";
+        
         $Username = 'TMS';
-
-        $to = $data['emailRemind1'];
+        
+        $to = isset($data['data']['vEmailAddress']) ? $data['data']['vEmailAddress'] : $data['emailRemind1'] ;
         //$from = $data['data']['vEmailAddress'];
         $cc = '';    
         if($data['emailRemind2']){
             //$cc = [[ 'email' => $data['emailRemind2'] ]];
             $cc = $data['emailRemind2'];
         }
+        $to_name = 'TMS';    
             
         $attachments = '';
         $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
-        $to_name = 'TMS';
-        //$to = 'anil.kanhasoft@gmail.com';
+
+        if (isset($data['data']['cc'])) {
+            $cc = $data['data']['cc'];
+        } else {
+            $cc = "";
+        }
+        if (isset($data['data']['bcc'])) {
+            $bcc = $data['data']['bcc'];
+        } else {
+            $bcc = "";
+        }
+        if (isset($data['data']['messageData'])  && $data['data']['messageData'] != '') {
+            $message = $data['data']['messageData'];
+        } else {
+            $msgText = 'Invoice outstanding';
+            $message = "<p> ".$msgText." </p>";
+            $message .= "<p> Invoice No : " .$data['invoiceno']. ", </p>";
+            $message .= "<p> Linguist Name : " .$data['freelanceName']. ", </p>";
+            $message .= "<p> Linguist Email : " .$data['freelanceEmail']. "</p>";
+        }
+        $body = "<div>" . $message . "</div>";
         
-        if($data['pdfData']){
-            if ($pdf_content != '') {
-                $pdfFileContent = ''; 
-                if(is_array($pdf_content)){
-                    $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
-                    // pdf file
+        $attachments = '';
+        if(isset($data['file'])){
+            $file_content = explode("base64,",$data['file']);
+            $fileContentType = explode(';',explode(':',$file_content[0])[1]);
+            $fileContentType = $fileContentType[0];
+            $fileType = explode('/',$fileContentType);
+            $fileType = $fileType[1];
+            
+            $fileName = 'download-file.'.$fileType;   
+            if($fileContentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                $fileName = 'download-file.docx';
+            if($fileContentType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                $fileName = 'download-file.xls';
+            
+            // Array for mailjet
+            if ($file_content != '') {
+                $allFileContent = ''; 
+                if(is_array($file_content)){
+                    $allFileContent = sizeof($file_content)>1 ? $file_content[1] : '';
                     $attachments =  [[
-                        'ContentType' => 'application/pdf',
-                        'Filename' => $pdfFileName,
-                        'Base64Content' => $pdfFileContent
+                        'ContentType' => $fileContentType,
+                        'Filename' => $fileName,
+                        'Base64Content' => $allFileContent
                     ]]; 
                 }
             }
-        }        
-        
+        }else{
+            if($data['pdfData']){
+                if ($pdf_content != '') {
+                    $pdfFileContent = ''; 
+                    if(is_array($pdf_content)){
+                        $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
+                        // pdf file
+                        $attachments =  [[
+                            'ContentType' => 'application/pdf',
+                            'Filename' => $pdfFileName,
+                            'Base64Content' => $pdfFileContent
+                        ]]; 
+                    }
+                }
+            }
+        }  
+        // print_r($attachments);
+        // print_r($data);
+        // exit;
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc='', $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
             
         if($mailResponse['status'] == 200) {
             $upData['modified_date'] = date('Y-m-d');
-            $upData['reminder_sent'] = 1;
+            if(isset($data['outstanding_reminder']))
+                $upData['reminder_sent'] = 1;
+            if(isset($data['invoice_to_be_sent']))
+                $upData['is_invoice_sent'] = 1;
+            
             $this->_db->where('invoice_id', $data['invoice_id']);
             $this->_db->update('tms_invoice',$upData);
 
