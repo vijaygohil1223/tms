@@ -17248,6 +17248,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             $scope.vatNo = '';
@@ -17262,7 +17263,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(item.currency_code == $scope.invoiceDetail.freelance_currency)
                     $scope.currencyRate = item.current_curency_rate ? item.current_curency_rate : 1 
             })
-
             
             rest.path = 'invoiceSettings';
             rest.get().success(function (data) {
@@ -17277,9 +17277,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }).error(errorCallback);
 
-            if(['Part Paid', 'Paid', 'Complete', 'Completed'].includes($scope.invoiceDetail.invoice_status)){
+            if($scope.invoiceDetail.invoice_status != 'Open' || ($scope.userRight == 2 && $scope.invoiceDetail.is_invoice_sent == 1 )){
                 $scope.hideElemnt = false;
             }
+
+            console.log('$scope.userRight',$scope.userRight )
 
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
             if ($scope.invoiceDetail.clientAddresDetail) {
@@ -17672,7 +17674,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.sendInvoiceEmail = function (type, number) {
-        if (type != undefined && type != " " && type != null) {
+        if (type) {
             $window.localStorage.generalMsg = $scope.invoicesetInfoData.invoice_receive_email ? $scope.invoicesetInfoData.invoice_receive_email : '';
             setTimeout( ()=> {
                 kendo.drawing.drawDOM($("#exportable"))
@@ -17691,8 +17693,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             'freelanceName': $scope.invoiceDetail.freelanceName,
                             'emailRemind1': $scope.invoiceDetail.emailRemind1,
                             'emailRemind2': $scope.invoiceDetail.emailRemind2,
-                            'outstanding_reminder': 0,
-                            'invoice_to_be_sent': 1,
+                            'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
+                            'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
                         };
                         
                         var modalInstance = $uibModal.open({
@@ -27435,10 +27437,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Invoice email 
     $scope.invoiceData = {} 
-    if(items && items.invoice_to_be_sent == 1 ){
+    if(items && (items.invoice_to_be_sent == 1 || items.outstanding_reminder == 1 ) ){
         $scope.emailPopupType = 'invoice-linguist';
         $scope.invoiceData = items;
-        console.log('$scope.invoiceData', $scope.invoiceData)
         $scope.invoiceData.invoiceName = items.pdfData ? items.invoiceno + '.pdf' : ''; 
     }
 
@@ -27475,8 +27476,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cPersonMsg = data;
         $scope.cPersonMsg.vEmailAddress = $window.localStorage.generalMsg;
         $scope.cPersonMsg.msgEmailSubject = $scope.msgEmailSubject;
-        
-        $scope.cPersonMsg.messageData = $scope.emailPopupType !='invoice-linguist' ? '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>' : '';
+        let msgText = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>';
+        // for linguist invoice / invoice Reminder
+        if($scope.emailPopupType == 'invoice-linguist'){
+            msgText = `Hi, <br /> 
+                <p> Invoice outstanding </p> 
+                <p> Invoice No : ${items.invoiceno}, </p>
+                <p> Linguist Name : ${items.freelanceName}, </p>
+                <p> Linguist Email : ${items.freelanceEmail}, </p> `;
+        }
+        $scope.cPersonMsg.messageData = msgText;
         
     }).error(errorCallback);
 
@@ -27510,7 +27519,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $timeout(function () {
                 $uibModalInstance.close(data);
                 $route.reload();
-            }, 100)
+            }, 500)
         }
     }
 
