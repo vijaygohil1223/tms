@@ -488,23 +488,21 @@ function numberFormatComma(input) {
         return '';
     } else {
         var decNo = 2;
-        var str = input.toString();
-        var numarray = str.split('.');
-        var a = new Array();
-        a = numarray;
-        var a1 = a[0];
         var n1 = n2 = '';
-        if (a[1] == undefined && a[1] !== '00') {
-            a[1] = '';
-        } else {
-            if(a[1].length == 3)
-                decNo = 3 
-            if(a[1].length > 3)
-                decNo = 4 
-            var n2 = ',' + a[1].slice(0, decNo);
-            //var n2 = ',' + a[1].slice(0, decNo);
-        }
-        var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+        var inputString = input.toString().split('.');
+        var part1 = inputString[0] ;
+        // if(inputString && inputString.length > 1 ){
+        //     var  part2 = inputString[1].toString();
+        //     // if(part2.length == 3)
+        //     //     var decNo = 3 
+        //     // if(part2.length > 3)
+        //     //     var decNo = 4 
+        //     var n2 = ',' + part2.slice(0, decNo);
+        // }
+        var n2 = inputString && inputString.length > 1 ? ',' + inputString[1].toString().slice(0, decNo) : '';
+        console.log('n2', n2)
+        
+        var n1 = part1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
         return n1 + n2;
     }
 }
@@ -514,25 +512,20 @@ function numberFormatCommaToPoint(input) {
         return '';
     } else {
         var decNo = 2;
-        var str = input.toString();
-        var numarray = str.split(',');
-        var a = new Array();
-        a = numarray;
-        var a1 = a[0];
-        var n2 = '.00';
+        var inputString = input.toString().split(',');
+        var part1 = inputString[0];
+        var n2 = part1 ? '.00' : '';
         var n1 = '';
-        if (a[1] == undefined && a[1] !== '00') {
-            a[1] = '';
-        } else {
-            if(a[1].length == 3)
-                decNo = 3 
-            if(a[1].length > 3)
-                decNo = 4 
-            var n2 = '.' + a[1].slice(0, 2);
-            //var n2 = '.' + a[1].slice(0, a[1].length);
-        }
-        //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "");
-        var n1 = a1.toString().replace(/\./g, "");
+        // if(inputString && inputString.length > 1 ){
+        //     var  part2 = inputString[1].toString();
+        //     var n2 = '.' + part2.slice(0, decNo);
+        //     //var n2 = '.' + a[1].slice(0, a[1].length);
+        // }
+        var n2 = inputString && inputString.length > 1 ? '.' + inputString[1].toString().slice(0, decNo) : n2;
+        console.log('n2-point', n2)
+        
+        //var n1 = part1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "");
+        var n1 = part1.toString().replace(/\./g, "");
         return n1 + n2;
     }
 }
@@ -541,18 +534,29 @@ function CommaToPoint4Digit(input, decN=0) {
         return '';
     } else {
         var decNo = window.localStorage.getItem('DecimalNumber') ? window.localStorage.getItem('DecimalNumber') : 2;
-        var numarray = input.toString().split(',');
-        var a = new Array();
-        a = numarray;
-        var a1 = a[0];
-        var n2 = '.00';
+        var inputString = input.toString().split(',');
+        var part1 = inputString[0];
+        var n2 = part1 ? '.00' : '';
         var n1 = '';
-        if (a[1] == undefined && a[1] !== '00') {
-            a[1] = '';
-        } else {
-            var n2 = '.' + a[1].slice(0, decNo);
-        }
-        var n1 = a1.toString().replace(/\./g, "");
+        // if(inputString && inputString.length > 1 ){
+        //     var  part2 = inputString[1].toString();
+        //     var n2 = '.' + part2.slice(0, decNo);
+        // }
+        var n2 = inputString && inputString.length > 1 ? '.' + inputString[1].toString().slice(0, decNo) : n2;
+        console.log('n2--4point', n2)
+        // var numarray = input.toString().split(',');
+        // var a = new Array();
+        // a = numarray;
+        // var a1 = a[0];
+        // var n2 = '.00';
+        // var n1 = '';
+        // if (a[1] == undefined && a[1] !== '00') {
+        //     a[1] = '';
+        // } else {
+        //     var n2 = '.' + a[1].slice(0, decNo);
+        // }
+        
+        var n1 = part1.toString().replace(/\./g, "");
         return n1 + n2;
     }
 }
@@ -27505,6 +27509,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if (data.status == 200) {
                         $scope.hideElemnt = true;
                         $scope.viewBtn = true;
+                        $window.localStorage.msgSubject = '';
                         notification('Invoice mail has been sent successfully', 'success');
                     }
                 }).error(errorCallback);
