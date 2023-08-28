@@ -543,7 +543,6 @@ function CommaToPoint4Digit(input, decN=0) {
         //     var n2 = '.' + part2.slice(0, decNo);
         // }
         var n2 = inputString && inputString.length > 1 ? '.' + inputString[1].toString().slice(0, decNo) : n2;
-        console.log('n2--4point', n2)
         // var numarray = input.toString().split(',');
         // var a = new Array();
         // a = numarray;
@@ -37009,8 +37008,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.activityListFltr = [];
     $scope.search = {}; 
     $scope.filterActivity = function (frmId) {
-        if (jQuery.isEmptyObject($scope.search) && !$scope.dueDateFrom && !$scope.dueDateTo) {
-            notification('Please select option to filter statement.', 'warning');
+        console.log('$scope.search', $scope.search)
+        if ( !$scope.search.hasOwnProperty('logStatus') && !$scope.search.hasOwnProperty('projectNumber') ) {
+        //if (jQuery.isEmptyObject($scope.search) && !$scope.dueDateFrom && !$scope.dueDateTo) {
+            notification('Please select option to filter.', 'warning');
             return false;
         } else {
             if ($scope.dueDateFrom && !$scope.dueDateTo) {
@@ -37074,7 +37075,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return obj.log_status == $scope.search.logStatus;
             });
         }
-        
+
         var todayDate = new Date();
         var dateStart = ''
         var dateEnd = ''

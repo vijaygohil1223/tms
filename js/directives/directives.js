@@ -6008,6 +6008,7 @@ app.directive('allowDecimalCommaNumber', function () {
                 var $input = $(this);  
                 var value = $input.val();  
                 //value1 = value.replace(/[a-z]/g, '')  
+                
                 value = value.replace(/[^0-9\,\.]/g, '')  
                 var findsComma = new RegExp(/\,/g)  
                 var findsComma = value.match(findsComma)  
@@ -6022,6 +6023,9 @@ app.directive('allowDecimalCommaNumber', function () {
                 if (containsDot != null) {  
                     return true;  
                 }
+                // we can check with this method(Not tested)
+                // reg expression /^-?\d{1,3}(?:.\d{3})*(?:,\d+)?$/.test(input); 
+
                 // control key
                 var ctrl = event.ctrlKey ? event.ctrlKey : ((event.which === 17) ? true : false);
                 

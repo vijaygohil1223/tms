@@ -69,6 +69,10 @@ class log_master {
             $logStatus = $filterParams['logStatus'];
             $this->_db->where('lg.log_status','%'.$logStatus.'%', 'like');
         }
+		if(isset($filterParams['projectNumber'])){
+            $logTitle = $filterParams['projectNumber'];
+            $this->_db->where('lg.log_title','%'.$logTitle.'%', 'like');
+        }
 		$this->_db->orderBy('lg.modified_date','DESC');
 		$data = $this->_db->get('tms_log_master lg', null, 'lg.*, tu.vFirstName, tu.vLastName');
 		return $data;
