@@ -11,7 +11,9 @@
         <div class="md-content activityPage page_content_wrapper" id="top">
 
             <div class="content_head bg-light lter b-b wrapper-md ng-scope">
-                <h1 class="m-n font-thin h3">Activity <span>{{activityList.length}}</span></h1>
+                <h1 class="m-n font-thin h3">Activity 
+                    <!-- <span>{{activityList.length}}</span> -->
+                </h1>
             </div>
             <div class="wrapper-md ng-scope">
                 <div class="col-md-12 p-0">
@@ -91,66 +93,52 @@
                                             <td ng-bind="$index + 1"></td>
                                             <td>
                                                 <!-- For Direct Client -->
-                                                <a href
-                                                    ng-if="activity.log_status == 'direct_cli' && activity.log_type != 'delete'"
+                                                <a ng-if="activity.log_status == 'direct_cli' && activity.log_type != 'delete'"
                                                     href="#/viewdirect/{{activity.log_type_id}}"
                                                     ng-bind="activity.log_title"></a>
-                                                <a href
-                                                    ng-if="activity.log_status == 'direct_cli' && activity.log_type == 'delete'"
+                                                <a ng-if="activity.log_status == 'direct_cli' && activity.log_type == 'delete'"
                                                     href="javascript:void(0);" ng-bind="activity.log_title"></a>
                                                 <!-- For Project -->
-                                                <a href
-                                                    ng-if="activity.log_status == 'project' && activity.log_type == 'delete'"
-                                                    href="javascript:void(0);" ng-click="edit(activity.log_type_id)"
+                                                <a ng-if="activity.log_status == 'project' && activity.log_type == 'delete'"
+                                                    href="javascript:void(0);" ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, activity.log_status)"
                                                     ng-bind="activity.log_title"></a>
-                                                <a href
-                                                    ng-if="activity.log_status == 'project' && activity.log_type != 'delete'"
-                                                    href="javascript:void(0);" ng-click="edit(activity.log_type_id)"
+                                                <a ng-if="activity.log_status == 'project' && activity.log_type != 'delete'"
+                                                    href="javascript:void(0);" ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, activity.log_status)"
                                                     ng-bind="activity.log_title"></a>
                                                 <!-- For Project Scoop -->
-                                                <a href
-                                                    ng-if="activity.log_status == 'project_scoop' && activity.log_type == 'delete'"
+                                                <a ng-if="activity.log_status == 'project_scoop' && activity.log_type == 'delete'"
                                                     href="javascript:void(0);"
-                                                    ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, '')"
+                                                    ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, activity.log_status)"
                                                     ng-bind="activity.log_title"></a>
-                                                <a href
-                                                    ng-if="activity.log_status == 'project_scoop' && activity.log_type != 'delete'"
+                                                <a ng-if="activity.log_status == 'project_scoop' && activity.log_type != 'delete'"
                                                     href="javascript:void(0);"
-                                                    ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, '')"
+                                                    ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, activity.log_status )"
                                                     ng-bind="activity.log_title"></a>
                                                 <!-- For External Resource -->
-                                                <a href
-                                                    ng-if="activity.log_status == 'external_res' && activity.log_type == 'delete'"
+                                                <a ng-if="activity.log_status == 'external_res' && activity.log_type == 'delete'"
                                                     href="javascript:void(0);" ng-bind="activity.log_title"></a>
-                                                <a href
-                                                    ng-if="activity.log_status == 'external_res' && activity.log_type != 'delete'"
+                                                <a ng-if="activity.log_status == 'external_res' && activity.log_type != 'delete'"
                                                     href="#/viewExternal/{{activity.log_type_id}}"
                                                     ng-bind="activity.log_title"></a>
                                                 <!-- For Task #/job-summery-details/{{activity.task_id}}-->
-                                                <a href
-                                                    ng-if="activity.log_status == 'task' && activity.log_type != 'delete'"
+                                                <a ng-if="activity.log_status == 'task' && activity.log_type != 'delete'"
                                                     href="javascript:void(0);"
-                                                    ng-click="goToJob(activity.task_id,activity.log_type_id)"
+                                                    ng-click="goToScoopViewdetail(activity.task_id, activity.log_type_id, activity.log_status)"
                                                     ng-bind="activity.log_title"></a>
-                                                <a href
-                                                    ng-if="activity.log_status == 'task' && activity.log_type == 'delete'"
-                                                    href="javascript:void(0);" ng-bind="activity.log_title"></a></span>
+                                                <a ng-if="activity.log_status == 'task' && activity.log_type == 'delete'"
+                                                    href="javascript:void(0);" ng-bind="activity.log_title"></span></a>
                                                 <!-- For Indirect Client -->
-                                                <a href
-                                                    ng-if="activity.log_status == 'indirect_cli' && activity.log_type == 'delete'"
-                                                    href="javascript:void(0);" ng-bind="activity.log_title"></a></span>
-                                                <a href
-                                                    ng-if="activity.log_status == 'indirect_cli' && activity.log_type != 'delete'"
+                                                <a ng-if="activity.log_status == 'indirect_cli' && activity.log_type == 'delete'"
+                                                    href="javascript:void(0);" ng-bind="activity.log_title"></span></a>
+                                                <a ng-if="activity.log_status == 'indirect_cli' && activity.log_type != 'delete'"
                                                     href="#/viewindirect/{{activity.log_type_id}}"
-                                                    ng-bind="activity.log_title"></a></span>
+                                                    ng-bind="activity.log_title"></span></a>
                                                 <!-- For Internal Resource -->
-                                                <a href
-                                                    ng-if="activity.log_status == 'internal_res' && activity.log_type == 'delete'"
-                                                    href="javascript:void(0);" ng-bind="activity.log_title"></a></span>
-                                                <a href
-                                                    ng-if="activity.log_status == 'internal_res' && activity.log_type != 'delete'"
+                                                <a ng-if="activity.log_status == 'internal_res' && activity.log_type == 'delete'"
+                                                    href="javascript:void(0);" ng-bind="activity.log_title"></span></a>
+                                                <a ng-if="activity.log_status == 'internal_res' && activity.log_type != 'delete'"
                                                     href="#/viewinternal/{{activity.log_type_id}}"
-                                                    ng-bind="activity.log_title"></a></span>
+                                                    ng-bind="activity.log_title"></span></a>
                                             </td>
                                             <td>
                                                 <small class="block"> <span ng-if="activity.log_type != 'add'"><span

@@ -37105,8 +37105,66 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
     }
 
+    $scope.goToScoopViewdetail = function (taskId, typeId, logType) {
+        if(logType === 'delete'){
+            notification('Record not available in the system', 'warning');
+        }
+        if(typeId && typeId != 0 && logType && ['project','project_scoop','task'].includes(logType) ){
+            const orderId =  typeId;
+            rest.path = 'order/' + orderId + '/' + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function (data) {
+                console.log('data-data', data)
+                if (data && data.userName != null) {
+                    $scope.orderdata = data;
+                    
+                    $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
+                    $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
+                    $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
+
+                    $window.localStorage.orderNo = $scope.orderdata.order_number;
+                    $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+                    $window.localStorage.orderID = orderId;
+                    $window.localStorage.iUserId = orderId;
+                    $window.localStorage.userType = 3;
+                    $window.localStorage.currentUserName = data.vClientName;
+                    $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject", "false");
+
+                    //$window.open($location.absUrl().split('#')[0]+'#/general/'+orderId, '_blank');
+                    if(logType === "task"){
+                        $location.path('/jobs-detail/'+data.order_id);    
+                    }else{
+                        $location.path('/general/'+data.order_id);
+                        $window.localStorage.orderBlock = 1;
+                    }
+                    
+                } else {
+                    notification('Not available', 'warning');
+                }
+            }).error(errorCallback);
+        
+        }
+            // if (viewType && orderId) {
+            //     $window.localStorage.orderID = orderId;
+            //     var modalInstance = $uibModal.open({
+            //         //animation: $scope.animationsEnabled,
+            //         templateUrl: 'tpl/scoopViewdetailPopup.html',
+            //         controller: 'viewScoopPopupController',
+            //         size: '',
+            //         resolve: {
+            //             items: function () {
+            //                 return {scoop_id: viewType,order_id:orderId};
+            //             }
+            //         }
+            //     });
+            // }
+            
+    };
+
     $scope.refresh = function(){
         $route.reload();
     }
-
+    
 });
