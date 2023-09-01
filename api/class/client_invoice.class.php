@@ -471,11 +471,12 @@ class Client_invoice {
         $search_array = array("[INVOICENO]", "[PAYDUE]");
         $replace_array = array($data['invoiceno'], $invoiceDue );
 
-        $body = str_replace($search_array, $replace_array, $emailTemplateInvoice['template_content']);
-        //$body = "<p> Hello ".$data['clientCompanyName']." </p>";
-        //$body .= "<p>Please see the attached invoice : <b>" .$data['invoiceno']. "</b> </p>";
-        //$body .= "Email: " .$data['freelanceEmail']. "</p>";
-        
+        if (isset($data['data']['messageData'])  && $data['data']['messageData'] != '') {
+            $body = $data['data']['messageData'];
+        }else{
+            $body = str_replace($search_array, $replace_array, $emailTemplateInvoice['template_content']);
+        }
+         
         $attachments = '';
         $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
         $to_name = ' ';
