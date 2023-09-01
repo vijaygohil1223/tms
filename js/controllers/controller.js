@@ -16569,45 +16569,49 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#irrecoverable').hide();
                 angular.element('#editInvoiceSave').hide();
                 angular.element('.invoiceInput input').addClass('invoiceInputborder');
-
-                kendo.drawing.drawDOM($("#pdfExport"))
-                    .then(function (group) {
-                        // Render the result as a PDF file
-                        return kendo.drawing.exportPDF(group, {
-                            //paperSize: "auto",
-                        });
-                    })
-                    .done(function (data) {
-                        $scope.invoicemailDetail = {
-                            'pdfData': data,
-                            'invoice_id': $scope.invoiceDetail.invoice_id,
-                            'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
-                            'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
-                            'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-                            'freelanceName': $scope.invoiceDetail.freelanceName,
-                            'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                            'companycontactEmail': $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
-                            'outstanding_reminder': 0,
-                        };
-                        rest.path = 'sendClientInvoiceMail';
-                        rest.post($scope.invoicemailDetail).success(function (data) {
+               
+                var invoiceNo = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
+                
+                $scope.sendInvoiceEmail('invoice_to_be_sent', invoiceNo)
+                
+                // kendo.drawing.drawDOM($("#pdfExport"))
+                //     .then(function (group) {
+                //         // Render the result as a PDF file
+                //         return kendo.drawing.exportPDF(group, {
+                //             //paperSize: "auto",
+                //         });
+                //     })
+                //     .done(function (data) {
+                //         $scope.invoicemailDetail = {
+                //             'pdfData': data,
+                //             'invoice_id': $scope.invoiceDetail.invoice_id,
+                //             'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
+                //             'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
+                //             'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+                //             'freelanceName': $scope.invoiceDetail.freelanceName,
+                //             'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
+                //             'companycontactEmail': $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
+                //             'outstanding_reminder': 0,
+                //         };
+                //         rest.path = 'sendClientInvoiceMail';
+                //         rest.post($scope.invoicemailDetail).success(function (data) {
                             
-                            if (data.status == 200) {
-                                notification('Invoice has been sent successfully', 'success');
-                                //setTimeout(() => {
-                                $location.path('/client-invoice-show/' + $routeParams.id);
-                                //}, 200);
-                                angular.element('#btnPaid').show();
-                                angular.element('#btnMarkAsCancel').show();
-                                //angular.element('#btnSave').show();
-                                angular.element('#btnDraft').show();
-                                angular.element('#btnCancel').show();
-                                angular.element('#irrecoverable').show();
-                                angular.element('#editInvoiceSave').show();
-                                angular.element('.invoiceInput input').addClass('invoiceInputborder');
-                            }
-                        }).error(errorCallback);
-                    });
+                //             if (data.status == 200) {
+                //                 notification('Invoice has been sent successfully', 'success');
+                //                 //setTimeout(() => {
+                //                 $location.path('/client-invoice-show/' + $routeParams.id);
+                //                 //}, 200);
+                //                 angular.element('#btnPaid').show();
+                //                 angular.element('#btnMarkAsCancel').show();
+                //                 //angular.element('#btnSave').show();
+                //                 angular.element('#btnDraft').show();
+                //                 angular.element('#btnCancel').show();
+                //                 angular.element('#irrecoverable').show();
+                //                 angular.element('#editInvoiceSave').show();
+                //                 angular.element('.invoiceInput input').addClass('invoiceInputborder');
+                //             }
+                //         }).error(errorCallback);
+                //     });
             } else {
                 $location.path('/invoice-client');
             }
@@ -16672,44 +16676,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('#irrecoverable').hide();
         angular.element('#editInvoiceSave').hide();
 
-        kendo.drawing.drawDOM($("#pdfExport"))
-            .then(function (group) {
-                // Render the result as a PDF file
-                return kendo.drawing.exportPDF(group, {
-                    //paperSize: "auto",
-                });
-            })
-            .done(function (data) {
-                $scope.invoicemailDetail = {
-                    'pdfData': data,
-                    'invoice_id': $scope.invoiceDetail.invoice_id,
-                    'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
-                    'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
-                    'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-                    'freelanceName': $scope.invoiceDetail.freelanceName,
-                    'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                    'companycontactEmail': $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
-                    'outstanding_reminder': 1,
-                };
-                rest.path = 'sendClientInvoiceMail';
-                rest.post($scope.invoicemailDetail).success(function (data) {
-                    if (data.status == 200) {
-                        notification('Reminder mail has been sent successfully', 'success');
-                    }
-                }).error(errorCallback);
+        $scope.sendInvoiceEmail('invoice_reminder', number)
 
-                setTimeout(() => {
-                    angular.element('.invoiceInput input').removeClass('invoiceInputborder');
-                    angular.element('#btnPaid').show();
-                    angular.element('#btnMarkAsCancel').show();
-                    angular.element('#btnSave').show();
-                    angular.element('#btnDraft').show();
-                    angular.element('#btnCancel').show();
-                    angular.element('#irrecoverable').show();
-                    angular.element('#editInvoiceSave').show();
-                }, 500);
+        // kendo.drawing.drawDOM($("#pdfExport"))
+        //     .then(function (group) {
+        //         // Render the result as a PDF file
+        //         return kendo.drawing.exportPDF(group, {
+        //             //paperSize: "auto",
+        //         });
+        //     })
+        //     .done(function (data) {
+        //         $scope.invoicemailDetail = {
+        //             'pdfData': data,
+        //             'invoice_id': $scope.invoiceDetail.invoice_id,
+        //             'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
+        //             'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
+        //             'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+        //             'freelanceName': $scope.invoiceDetail.freelanceName,
+        //             'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
+        //             'companycontactEmail': $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
+        //             'outstanding_reminder': 1,
+        //             'clientInvoice': 1,
+        //         };
+        //         rest.path = 'sendClientInvoiceMail';
+        //         rest.post($scope.invoicemailDetail).success(function (data) {
+        //             if (data.status == 200) {
+        //                 notification('Reminder mail has been sent successfully', 'success');
+        //             }
+        //         }).error(errorCallback);
 
-            });
+        //         setTimeout(() => {
+        //             angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+        //             angular.element('#btnPaid').show();
+        //             angular.element('#btnMarkAsCancel').show();
+        //             angular.element('#btnSave').show();
+        //             angular.element('#btnDraft').show();
+        //             angular.element('#btnCancel').show();
+        //             angular.element('#irrecoverable').show();
+        //             angular.element('#editInvoiceSave').show();
+        //         }, 500);
+
+        //     });
     }
     // End Invoice send Outstaing Reminder
 
@@ -16725,6 +16732,65 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     }
+
+    $scope.sendInvoiceEmail = function (type, number) {
+        if (type) {
+            let companycontactEmail = $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail;
+            $window.localStorage.generalMsg = companycontactEmail;
+            setTimeout( ()=> {
+                kendo.drawing.drawDOM($("#pdfExport"))
+                    .then(function (group) {
+                        // Render the result as a PDF file
+                        return kendo.drawing.exportPDF(group, {
+                            //paperSize: "auto",
+                        });
+                    })
+                    .done(function (data) {
+
+                        var invoicemailDetail = {
+                            'pdfData': data,
+                            'invoice_id': $scope.invoiceDetail.invoice_id,
+                            'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
+                            'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
+                            'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+                            'freelanceName': $scope.invoiceDetail.freelanceName,
+                            'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
+                            'companycontactEmail': companycontactEmail,
+                            'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
+                            'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
+                            'isClientInvoice' : 1
+                        };
+                        
+                        var modalInstance = $uibModal.open({
+                            animation: $scope.animationsEnabled,
+                            templateUrl: 'tpl/generalmsg.html',
+                            controller: 'generalmsgController',
+                            size: '',
+                            resolve: {
+                                items: function () {
+                                    angular.element('#btnPaid').show();
+                                    angular.element('#btnMarkAsCancel').show();
+                                    angular.element('#btnDraft').show();
+                                    angular.element('#btnCancel').show();
+                                    angular.element('#irrecoverable').show();
+                                    angular.element('#editInvoiceSave').show();
+                                    angular.element('.invoiceInput input').addClass('invoiceInputborder');
+                                    
+                                    if(type == 'invoice_reminder' ==1 )
+                                        angular.element('#btnSave').show();
+                                    
+                                    return invoicemailDetail;
+                                }
+                            }
+                        });
+                        
+                    });
+
+                }, 200)
+        } else {
+            notification('Please Add Email', 'warning');
+        }
+    };
 
 }).controller('invoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -27441,11 +27507,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Invoice email 
     $scope.invoiceData = {} 
     if(items && (items.invoice_to_be_sent == 1 || items.outstanding_reminder == 1 ) ){
-        $scope.emailPopupType = 'invoice-linguist';
+        $scope.emailPopupType = items.isClientInvoice ? 'invoice-client' : 'invoice-linguist';
         $scope.invoiceData = items;
         $scope.invoiceData.invoiceName = items.pdfData ? items.invoiceno + '.pdf' : ''; 
     }
-
+    console.log('itemsss=', items)
+            
     $scope.bccShow = function () {
         $scope.bccshow = true;
     }
@@ -27488,6 +27555,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 <p> Linguist Name : ${items.freelanceName}, </p>
                 <p> Linguist Email : ${items.freelanceEmail}, </p> `;
         }
+        if($scope.emailPopupType == 'invoice-client'){
+            rest.path = "emailTemplateGetAll" ;
+            rest.get().success(function (data) {
+                var emailContentText = data.find( (templt) => templt.template_id == 12);
+                if(emailContentText){
+                    const rplcData = {
+                        INVOICENO: items.invoiceno,
+                        PAYDUE: items.invoiceDue,
+                    };
+                    $scope.emailTemplateText =  emailContentText.template_content;  
+                    $scope.cPersonMsg.messageData = replaceVariables(emailContentText.template_content, rplcData);
+                }
+            })
+        }
         $scope.cPersonMsg.messageData = msgText;
         
     }).error(errorCallback);
@@ -27499,26 +27580,49 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         };
 
         if (angular.element("#" + frmId).valid()) {
-            console.log('post-data', data)
-            if($scope.emailPopupType == 'invoice-linguist'){
-                $scope.invoiceData.file = $scope.attachementfile; 
-                $scope.invoiceData.data = message; 
-                rest.path = 'sendInvoiceMail';
-                rest.post($scope.invoiceData).success(function (data) {
-                    if (data.status == 200) {
-                        $scope.hideElemnt = true;
-                        $scope.viewBtn = true;
+            switch($scope.emailPopupType){
+                case 'invoice-linguist':
+                    $scope.invoiceData.file = $scope.attachementfile; 
+                    $scope.invoiceData.data = message; 
+                    rest.path = 'sendInvoiceMail';
+                    rest.post($scope.invoiceData).success(function (data) {
+                        if (data.status == 200) {
+                            $scope.hideElemnt = true;
+                            $scope.viewBtn = true;
+                            $window.localStorage.msgSubject = '';
+                            notification('Invoice mail has been sent successfully', 'success');
+                        }
+                    }).error(errorCallback);
+                    break;
+                case 'invoice-client' :
+                    $scope.invoiceData.file = $scope.attachementfile; 
+                    $scope.invoiceData.data = message; 
+                    rest.path = 'sendClientInvoiceMail';
+                    rest.post($scope.invoiceData).success(function (data) {
+                        if (data.status == 200) {
+                            $scope.hideElemnt = true;
+                            $scope.viewBtn = true;
+                            $window.localStorage.msgSubject = '';
+                            notification('Invoice mail has been sent successfully', 'success');
+                        }
+                    }).error(errorCallback);
+                    break;
+                case 'general' :
+                    rest.path = 'sendgeneralMsg';
+                    rest.post(data).success(function (data) {
+                        notification('Mail send successfully', 'success');
                         $window.localStorage.msgSubject = '';
-                        notification('Invoice mail has been sent successfully', 'success');
-                    }
-                }).error(errorCallback);
-            }else{
-                rest.path = 'sendgeneralMsg';
-                rest.post(data).success(function (data) {
-                    notification('Mail send successfully', 'success');
-                    $window.localStorage.msgSubject = '';
-                }).error(errorCallback);
+                    }).error(errorCallback);
+                    break;        
             }
+
+            // if($scope.emailPopupType == 'invoice-linguist'){
+                
+            // }else if($scope.emailPopupType == 'invoice-client'){
+                
+            // }else{
+                
+            // }
             
             $timeout(function () {
                 $uibModalInstance.close(data);

@@ -481,28 +481,65 @@ class Client_invoice {
         $to_name = ' ';
         //$to = 'anil.kanhasoft@gmail.com';
         $to = $data['companycontactEmail'];
+        $cc = $bcc = '';
+        if (isset($data['data']['cc'])) {
+            $cc = $data['data']['cc'];
+        } else {
+            $cc = "";
+        }
+        if (isset($data['data']['bcc'])) {
+            $bcc = $data['data']['bcc'];
+        } else {
+            $bcc = "";
+        }
 
-        if($data['pdfData']){
-            if ($pdf_content != '') {
-                $pdfFileContent = ''; 
-                if(is_array($pdf_content)){
-                    $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
-                    // pdf file
-                    $attachments =  [[
-                        'ContentType' => 'application/pdf',
-                        'Filename' => $pdfFileName,
-                        'Base64Content' => $pdfFileContent
-                    ]]; 
+        if(isset($data['pdfData']) && $data['pdfData'] ){
+            if(isset($data['file']) && $data['file'] !='' ){
+                $file_content = explode("base64,",$data['file']);
+                $fileContentType = explode(';',explode(':',$file_content[0])[1]);
+                $fileContentType = $fileContentType[0];
+                $fileType = explode('/',$fileContentType);
+                $fileType = $fileType[1];
+                
+                $fileName = 'download-file.'.$fileType;   
+                if($fileContentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                    $fileName = 'download-file.docx';
+                if($fileContentType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                    $fileName = 'download-file.xls';
+                
+                // Array for mailjet
+                if ($file_content != '') {
+                    $allFileContent = ''; 
+                    if(is_array($file_content)){
+                        $allFileContent = sizeof($file_content)>1 ? $file_content[1] : '';
+                        $attachments =  [[
+                            'ContentType' => $fileContentType,
+                            'Filename' => $fileName,
+                            'Base64Content' => $allFileContent
+                        ]]; 
+                    }
                 }
-            }    
-        $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
-            
-        if($mailResponse['status'] == 200) {
-        //if ($response->success()) { //output success or failure messages
-                if(isset($data['outstanding_reminder'])){
-                    if($data['outstanding_reminder']==1)
-                        $upData['reminder_sent'] = 1;
+            }else{
+                if ($pdf_content != '') {
+                    $pdfFileContent = ''; 
+                    if(is_array($pdf_content)){
+                        $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
+                        // pdf file
+                        $attachments = [[
+                            'ContentType' => 'application/pdf',
+                            'Filename' => $pdfFileName,
+                            'Base64Content' => $pdfFileContent
+                        ]]; 
+                    }
+                }    
+            }
+            $send_fn = new functions();
+            $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
+                
+            if($mailResponse['status'] == 200) {
+            //if ($response->success()) { //output success or failure messages
+                if(isset($data['outstanding_reminder']) && $data['outstanding_reminder']==1){
+                    $upData['reminder_sent'] = 1;
                 }
                 $upData['modified_date'] = date('Y-m-d');
                 $upData['is_invoice_sent'] = 1;
@@ -522,7 +559,6 @@ class Client_invoice {
                     }
                 }
                 // End Update status in scoop table
-
                 $result['status'] = 200;
                 $result['msg'] = 'Success';
                 return $result;
