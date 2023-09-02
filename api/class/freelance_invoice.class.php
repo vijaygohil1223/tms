@@ -161,7 +161,7 @@ class Freelance_invoice {
 		$this->_db->join('tms_summmery_view tsv', 'tsv.job_summmeryId=tmInvoice.job_id','LEFT');
 		$this->_db->orderBy('tmInvoice.invoice_id', 'asc');
     	$this->_db->where('tmInvoice.invoice_type', $type);
-    	$data = $this->_db->get('tms_invoice tmInvoice', null,'tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.paid_date, tmInvoice.created_date,tmInvoice.is_approved,tmInvoice.reminder_sent,tmInvoice.is_excel_download');
+    	$data = $this->_db->get('tms_invoice tmInvoice', null,'tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.paid_date, tmInvoice.created_date,tmInvoice.is_approved,tmInvoice.reminder_sent,tmInvoice.is_excel_download, tmInvoice.currency_rate');
     	foreach ($data as $key => $value) {
     		$companyName = self::getAll('abbrivation',substr($value['company_code'],0,-2),'tms_centers');
     		$data[$key]['companyName'] = isset($companyName[0]['name'])?$companyName[0]['name']:'';	
@@ -190,10 +190,12 @@ class Freelance_invoice {
                 $this->_db->join('tms_items ti', 'ti.order_id=tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
                 $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tci.vCenterid as business_center_id ,tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency , tu.second_currency as freelance_second_currency , tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice, tsv.contact_person AS projectManagerId, tcm.vEmailAddress as emailRemind1, tcm.vSecondaryEmailAddress as emailRemind2, tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber, tsv.total_price as price_per_job');
                 //, tci.vEmailAddress  AS companyEmail
+                
                 $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
-
-                $data['companyName'] = $companyName[0]['name'];
-
+                
+                $data['companyName'] = count($companyName) > 0 ? $companyName[0]['name'] : '';
+                //$data['companyName'] = $companyName[0]['name'];
+                
                 //payment due date number of day
                 $data['number_of_days'] = $paymentDue[0]['number_of_days'];
 

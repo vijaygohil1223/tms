@@ -9180,40 +9180,44 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
             $scope.invoiceList = data;
+            console.log('$scope.invoiceList', $scope.invoiceList)
             angular.forEach(data, function (val, i) {
-                allPayCostAmt += val.Invoice_cost;
+                var currencyRate = val.currency_rate ? parseFloat(val.currency_rate) : 1; 
+                var invoiceCostInEur = parseFloat(val.Invoice_cost) / currencyRate;
+                allPayCostAmt += invoiceCostInEur;
+                //allPayCostAmt += val.Invoice_cost;
                 if (val.paid_amount)
                     allPaidAmt += val.paid_amount;
 
                 if (val.invoice_status == "Open") {
-                    $scope.submitPayable += val.Invoice_cost;
+                    $scope.submitPayable += invoiceCostInEur;
                 }
                 if (val.is_approved == 1 && val.invoice_status == 'Open') {
-                    $scope.approvedPayable += val.Invoice_cost;
+                    $scope.approvedPayable += invoiceCostInEur;
                 }
                 if (val.is_approved == 1 && val.reminder_sent == 1 && val.invoice_status != 'Complete' && val.invoice_status != 'Cancel' && val.invoice_status != 'Paid') {
-                    $scope.outstandRmndrPayable += val.Invoice_cost;
+                    $scope.outstandRmndrPayable += invoiceCostInEur;
                 }
                 if (val.invoice_status == 'Part Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete') {
-                    $scope.paidPayable += val.Invoice_cost;
+                    $scope.paidPayable += invoiceCostInEur;
                 }
                 if (val.invoice_status == 'Cancel') {
-                    $scope.cancelPayable += val.Invoice_cost;
+                    $scope.cancelPayable += invoiceCostInEur;
                 }
 
                 var newPaydueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriodDays)
                 if ((val.invoice_type != 'draft' && val.is_approved == 1)) {
                     //if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
                     if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
-                        outstandingCostAmt += val.Invoice_cost;
+                        outstandingCostAmt += invoiceCostInEur;
                         outstandingPaidAmt += val.paid_amount;
                     }
                     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
-                        overdueCostAmt += val.Invoice_cost;
+                        overdueCostAmt += invoiceCostInEur;
                         overduePaidAmt += val.paid_amount;
                     }
                     if (newPaydueDate == dateFormat(new Date()).split(".").reverse().join("-")) {
-                        todayCostAmt += val.Invoice_cost;
+                        todayCostAmt += invoiceCostInEur;
                         todayPaidAmt += val.paid_amount;
                     }
                 }
