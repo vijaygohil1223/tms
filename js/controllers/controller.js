@@ -16200,6 +16200,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.currencyType = 'EUR';
     $scope.viewBtn = true;
     $scope.invoiceNumOfdays = 30;
+    $scope.currencyRate = 1;
     //$scope.noneCls = "none"
     
     // invoice setting Data
@@ -16368,6 +16369,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 })
             }) 
+            rest.path = 'currency';
+            rest.get().success(function (data) {
+                $scope.currencyAllData = data;
+                data.filter( (items) => {
+                    if(items.currency_code == $scope.invoiceDetail.client_currency)
+                        $scope.currencyRate = items.current_curency_rate
+                    console.log('$scope.currencyRate', $scope.currencyRate)
+                })
+            })
             $scope.currencyType = $scope.invoiceDetail && $scope.invoiceDetail.client_currency.includes(',') ?  $scope.invoiceDetail.client_currency.split(',')[0] : 'EUR';
             $scope.invoiceDetail.tax_rate = $scope.invoiceDetail.tax_rate ? $scope.invoiceDetail.tax_rate : 0; 
             $scope.vatTax = $scope.invoiceDetail.tax_rate;
@@ -16525,7 +16535,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;
         $scope.upInvoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
         $scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
-        
+        $scope.upInvoiceData.currency_rate = $scope.currencyRate;
+
         $scope.upInvoiceData.item = [];
         $scope.invoiceList.forEach(element => {
             const elItemID = element.itemId;
@@ -31576,6 +31587,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceList = [];
     $scope.currencyType = 'EUR';
     $scope.invoiceNumOfdays = 30;
+    $scope.currencyRate = 1;
 
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
@@ -31630,6 +31642,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 })
             })    
             $scope.currencyType = $scope.invoiceDetail && $scope.invoiceDetail.client_currency.includes(',') ?  $scope.invoiceDetail.client_currency.split(',')[0] : 'EUR';
+
+            rest.path = 'currency';
+            rest.get().success(function (data) {
+                $scope.currencyAllData = data;
+                data.filter( (items) => {
+                    if(items.currency_code == $scope.invoiceDetail.client_currency)
+                        $scope.currencyRate = items.current_curency_rate
+                })
+            })
 
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
@@ -31832,7 +31853,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
 
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
-        
+
+        $scope.invoiceData.currency_rate = $scope.currencyRate;
+
         //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         // $scope.upInvoiceData.vat = $scope.vat
         // $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;  
