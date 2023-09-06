@@ -16526,15 +16526,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.upInvoiceData = {};
     $scope.editInvoiceClient = function (id) {
-        console.log('$scope.invoiceDetail', $scope.invoiceDetail)
-
+        
         $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         //$scope.upInvoiceData.item_total = $scope.invoiceTotal
         //$scope.upInvoiceData.vat = $scope.vat
-        $scope.upInvoiceData.vat = $scope.vatTax
+        $scope.upInvoiceData.vat = $scope.vatTax;
         $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;
         $scope.upInvoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
-        $scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
+        //$scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
+        const invoiceDateString = moment($scope.invoiceDetail.invoice_date);
+        $scope.upInvoiceData.invoice_date = invoiceDateString.isValid() ? invoiceDateString.format('YYYY-MM-DD') : '0000-00-00';
         $scope.upInvoiceData.currency_rate = $scope.currencyRate;
 
         $scope.upInvoiceData.item = [];
