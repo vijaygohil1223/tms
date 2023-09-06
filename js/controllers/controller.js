@@ -9267,40 +9267,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.invoiceList = data;
             angular.forEach(data, function (val, i) {
-                allPayCostRecvbl += val.Invoice_cost;
+                var currencyRate = val.currency_rate ? parseFloat(val.currency_rate) : 1; 
+                var invoiceCostInEur = parseFloat(val.Invoice_cost) / currencyRate;
+                //allPayCostRecvbl += val.Invoice_cost;
+                allPayCostRecvbl += invoiceCostInEur;
                 if (val.paid_amount)
                     allPaidRecvbl += val.paid_amount;
 
                 if (val.invoice_status == "Open") {
-                    $scope.toBesentReceivables += val.Invoice_cost;
+                    $scope.toBesentReceivables += invoiceCostInEur;
                 }
                 //if(val.reminder_sent == 1 && val.invoice_status != 'Complete'){
                 if (val.reminder_sent == 1 && val.invoice_status != 'Complete' && val.invoice_status != 'Cancel' && val.invoice_status != 'Paid') {
-                    $scope.outstandRmndrReceivables += val.Invoice_cost;
+                    $scope.outstandRmndrReceivables += invoiceCostInEur;
                 }
                 if (val.invoice_status == 'Part Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete') {
-                    $scope.paidReceivables += val.Invoice_cost;
+                    $scope.paidReceivables += invoiceCostInEur;
                 }
                 if (val.invoice_status == 'Cancel') {
-                    $scope.cancelReceivables += val.Invoice_cost;
+                    $scope.cancelReceivables += invoiceCostInEur;
                 }
                 if (val.invoice_status == 'Irrecoverable') {
-                    $scope.irRecoverableReceivables += val.Invoice_cost;
+                    $scope.irRecoverableReceivables += invoiceCostInEur;
                 }
 
                 var newPaydueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriodDays)
                 if (val.invoice_type != 'draft') {
                     // if (val.invoice_date.split(' ')[0] < dateFormat(new Date()).split(".").reverse().join("-")) {
                     if (newPaydueDate > dateFormat(new Date()).split(".").reverse().join("-")) {
-                        outstandingCostRecvbl += val.Invoice_cost;
+                        outstandingCostRecvbl += invoiceCostInEur;
                         outstandingPaidRecvbl += val.paid_amount;
                     }
                     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
-                        overdueCostRecvbl += val.Invoice_cost;
+                        overdueCostRecvbl += invoiceCostInEur;
                         overduePaidRecvbl += val.paid_amount;
                     }
                     if (newPaydueDate == dateFormat(new Date()).split(".").reverse().join("-")) {
-                        todayCostRecvbl += val.Invoice_cost;
+                        todayCostRecvbl += invoiceCostInEur;
                         todayPaidRecvbl += val.paid_amount;
                     }
                 }
@@ -9320,7 +9323,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.invoiceListDraft = data;
             angular.forEach(data, function (val, i) {
-                $scope.inPreparationReceivables += val.Invoice_cost;
+                var currencyRate = val.currency_rate ? parseFloat(val.currency_rate) : 1; 
+                var invoiceCostInEur = parseFloat(val.Invoice_cost) / currencyRate;
+                //$scope.inPreparationReceivables += val.Invoice_cost;
+                $scope.inPreparationReceivables += invoiceCostInEur;
             });
         }).error(errorCallback);
 
