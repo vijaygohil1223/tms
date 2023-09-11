@@ -8704,6 +8704,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('overviewReportController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $cookieStore, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
+    $scope.currencyCode = '€';
     var session_iUserId = $cookieStore.get('session_iUserId') ? $cookieStore.get('session_iUserId') : 0;
 
     var Dateobject = [];
