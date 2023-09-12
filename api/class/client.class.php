@@ -462,13 +462,16 @@ class client {
         $result = explode(',', $data ['image']);
         
         $getFileType = explode(';',explode(':',$result[0])[1]);
-        
         $finalstring = base64_decode($result[1]);
 
         $mimetype = self::getImageMimeType($finalstring,$getFileType[0]);
         if($mimetype == 'jpeg'){
             $mimetype = 'jpg';
         }
+        if($getFileType[0] === 'image/webp')
+            $mimetype = 'webp';
+        // echo  "filename=".$mimetype;
+        // exit;
         $filename = time() . "." . $mimetype;
         $output_file = UPLOADS_ROOT . "logo/" . $filename;
         $ifp = fopen($output_file, "wb");

@@ -11182,7 +11182,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.checkemailaddress = function () {
-        if(!$routeParams.id){
+        if(!$routeParams.id && $scope.userprofiledata.vEmailAddress){
             rest.path = 'checkemailaddress';
             rest.post($scope.userprofiledata.vEmailAddress).success(function (data) { }).error(errorCallback);
         }
@@ -14584,7 +14584,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.getFile = function (file) {
         fileReader.readAsDataUrl(file, $scope)
             .then(function (result) {
-                if (file.type == 'image/jpeg' || file.type == 'image/jpg' || file.type == 'image/png' || file.type == 'image/gif') {
+                //if (file.type == 'image/jpeg' || file.type == 'image/jpg' || file.type == 'image/png' || file.type == 'image/gif') {
+                if(['image/jpeg','image/jpg','image/png','image/gif','image/webp'].includes(file.type)){
                     $scope.imgshow = false;
                     $scope.imageSrc = result;
                 } else {
@@ -14696,7 +14697,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //debugger
         if (angular.element("#" + formId).valid()) {
             //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
-                if ($scope.info.iClientId) {
+            if ($scope.info.iClientId) {
                 $scope.info.image = $scope.imageSrc;
                 // if ($scope.info.vPhone == "" || $scope.info.vPhone == undefined || $scope.info.vPhone.length == 0) {
                 //     notification('Please enter mobile number', 'warning');
