@@ -10740,7 +10740,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     }    
 
-}).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout) {
+}).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout, $filter ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.superAdmin = $window.localStorage.getItem("session_superAdmin");
   
@@ -10993,13 +10993,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id != undefined) {
         rest.path = 'getProfile';
         rest.model().success(function (data) {
-            console.log('data-externalprofile', data)
             $scope.userprofiledata = data;
             $window.localStorage.iUserId = data.iUserId;
             $window.localStorage.setItem("externalPricelistId", data.iUserId);
             $window.localStorage.currentUserName = data.vFirstName + " " + data.vLastName;
             $scope.currentUserName = $window.localStorage.currentUserName;
             $scope.imgshow = true;
+
+            $scope.userprofiledata.iResourceNumber = $filter('numberFixedLen')($scope.userprofiledata.iResourceNumber, 4);
 
             $scope.isValidMobileNumber = true;
             if (data.dtBirthDate) {
@@ -11176,7 +11177,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'checkusernameExist';
         rest.post(objUsernm).success(function (data) { 
             if(data && data.userExist ==1)
-                $scope.userprofiledata.vUserName =  $scope.userprofiledata.vUserName +' '+ $scope.userprofiledata.iResourceNumber 
+                $scope.userprofiledata.vUserName = $scope.userprofiledata.vUserName +' '+ $scope.userprofiledata.iResourceNumber 
         }).error(errorCallback);
         
     };
@@ -11976,8 +11977,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.user_Id = $window.localStorage.getItem("contactUserId");
     angular.element('.help-block').css('display', 'none');
     $scope.isValidMobileNumber = false;
+    $scope.clientUrlName = 'client-profile';
     $timeout(function () {
         $scope.redirectToClientViewId = $window.localStorage.iUserId;
+        if($scope.redirectToClientViewId)
+            $scope.clientUrlName = 'edit-client/'+$scope.redirectToClientViewId;
     }, 100);
 
     /* Mobile Validation START */
@@ -12158,6 +12162,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             scrollToId('contact-form');
         }).error(errorCallback);
     };
+
+
+
 
     $scope.saveContact = function (formId, id) {
         
@@ -12434,8 +12441,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.baseQuentity = [];
     $scope.basePrice = [];
     $scope.baseTotal = [];
+    
+    $scope.clientUrlName = 'client-profile';
     $timeout(function () {
         $scope.redirectToClientViewId = $window.localStorage.iUserId;
+        if($scope.redirectToClientViewId)
+            $scope.clientUrlName = 'edit-client/'+$scope.redirectToClientViewId;
     }, 100);
     angular.element('.panel-heading').css('background-color', 'white');
     if ($scope.uType == 2) {
@@ -13324,8 +13335,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.displaybankOption = false;
     $scope.displayPaypalOption = false;
+    
+    $scope.clientUrlName = 'client-profile';
     $timeout(function () {
-        $scope.redirectToPayClientViewId = $window.localStorage.iUserId;
+        $scope.redirectToClientViewId = $window.localStorage.iUserId;
+        if($scope.redirectToClientViewId)
+            $scope.clientUrlName = 'edit-client/'+$scope.redirectToClientViewId;
     }, 100);
 
     if ($scope.userRight == 2) {
@@ -15160,8 +15175,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
     angular.element('.help-block').css('display', 'none');
 
+    $scope.clientUrlName = 'client-profile';
     $timeout(function () {
         $scope.redirectToClientViewId = $window.localStorage.iUserId;
+        if($scope.redirectToClientViewId)
+            $scope.clientUrlName = 'edit-client/'+$scope.redirectToClientViewId;
     }, 100);
 
     // debugger;

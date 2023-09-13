@@ -1,5 +1,5 @@
 <style type="text/css">
-    .nav-pills.nav-wizard>>ul>li {
+    .nav-pills.nav-wizard>ul>li {
         border-right: 78px solid #eef5fa !important;
     }
 
@@ -31,7 +31,7 @@
             <div class="wrapper-md ng-scope">
                 <ul class="nav nav-pills nav-wizard" style="width: 69%;margin: auto;">
                     <li>
-                        <a href="#/client-profile">Basic Information</a>
+                        <a href="#/{{clientUrlName}}">Basic Information</a>
                         <div class="nav-arrow"></div>
                     </li>
                     <li>
@@ -85,8 +85,8 @@
                                                     <div class="form-group">
                                                         <label>Password</label>
                                                         <input type="password" class="form-control" name="password"
-                                                            ng-model="clientlist.vPassword" autocomplete="new-password"
-                                                             />
+                                                            ng-model="clientlist.vPassword"
+                                                            autocomplete="new-password" />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-3">
@@ -106,11 +106,12 @@
                                                     <div class="form-group">
                                                         <label><strong>Description :</strong></label>
                                                         <div class="input-group">
-                                                            <input class="form-control" name="vDescription" ng-model="clientlist.vDescription" >
+                                                            <input class="form-control" name="vDescription"
+                                                                ng-model="clientlist.vDescription">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                             </div>
                                             <!-- <div class="col-sm-12" >
                                                 <div class="col-sm-12">
@@ -128,9 +129,8 @@
                                                 <a class="btn btn-info pull-right"
                                                     href="#/viewdirect/{{redirectToClientViewId}}">Finish</a>
                                                 <a class="btn btn-info pull-right"
-                                                    ng-click="saveLogin('login-details');"
-                                                    style="margin-right:5px;"><i class="fa fa-floppy-o"
-                                                        aria-hidden="true"></i> Save</a>
+                                                    ng-click="saveLogin('login-details');" style="margin-right:5px;"><i
+                                                        class="fa fa-floppy-o" aria-hidden="true"></i> Save</a>
                                             </div>
                                         </div>
                                     </div>
@@ -158,11 +158,11 @@
                                 <!-- <td><a target="_blank" class="summeryColor" ng-href="http://{{client.vWebsite}}/" ng-bind="client.vWebsite"></a></td>  -->
                                 <td ng-bind="client.vWebsite"></td>
                                 <td ng-bind="client.vDescription"></td>
-                                
+
                                 <td><a href="javascript:void(0)" ng-click="getclientEdit(client.iClientId);"
-                                        title="edit"><i class="glyph-icon fa-edit"></i></a> <a
-                                        href="javascript:void(0)" ng-click="deletelogindetail(client.iClientId)"
-                                        title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
+                                        title="edit"><i class="glyph-icon fa-edit"></i></a> <a href="javascript:void(0)"
+                                        ng-click="deletelogindetail(client.iClientId)" title="delete"><i
+                                            class="iconDelete glyph-icon fa-times"></i></a></td>
                             </tr>
                             <tr ng-show="contactLoginEmpty">
                                 <td colspan="4" ng-bind="dataNotFound"></td>

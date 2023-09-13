@@ -1,15 +1,14 @@
 <style type="text/css">
-    .nav-pills.nav-wizard>>ul>li {
+    .nav-pills.nav-wizard>ul>li {
         border-right: 78px solid #eef5fa !important;
     }
-
     .hrght {
         float: right;
         color: red;
         margin-top: -1.5%;
     }
     .mt-20 {
-        margin-top:20px;
+        margin-top: 20px;
     }
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
@@ -36,7 +35,8 @@
             <div class="wrapper-md ng-scope">
                 <ul class="nav nav-pills nav-wizard" style="width: 69%;margin: auto;">
                     <li>
-                        <a href="#/client-profile">Basic Information</a>
+                        <!-- <a href="#/client-profile">Basic Information</a> -->
+                        <a href="#/{{clientUrlName}}">Basic Information</a>
                         <div class="nav-arrow"></div>
                     </li>
                     <li>
@@ -107,13 +107,15 @@
                                             <div class="col-sm-6 mt-20">
                                                 <div class="form-group">
                                                     <label>Tax Rate</label>
-                                                    <input type="text" select2-taxrate class="form-control" name="tax_rate"  ng-model="paymentData.tax_rate"/>
+                                                    <input type="text" select2-taxrate class="form-control"
+                                                        name="tax_rate" ng-model="paymentData.tax_rate" />
                                                 </div>
                                             </div>
                                             <div class="col-sm-6 mt-20">
                                                 <div class="form-group">
                                                     <label>Number of days (For invoice due date)</label>
-                                                    <input type="number" class="form-control" name="invoice_no_of_days"  ng-model="paymentData.invoice_no_of_days"/>
+                                                    <input type="number" class="form-control" name="invoice_no_of_days"
+                                                        ng-model="paymentData.invoice_no_of_days" />
                                                 </div>
                                             </div>
                                             <div class="col-sm-6"></div>
@@ -124,18 +126,20 @@
                                                         rows="12" style="resize: none;"></textarea>
                                                 </div>
                                                 <div class="panel-footer">
-                                                    <strong>Payment terms :</strong> (e.g. all invoices are paid {{invoicePeriodDays}} days
+                                                    <strong>Payment terms :</strong> (e.g. all invoices are paid
+                                                    {{invoicePeriodDays}} days
                                                     after date of issue)
                                                     <a ng-if="uType == '1'" class="btn btn-info pull-right"
                                                         ng-click="savePayment('payment_form','1');">Save</a>
 
                                                     <a ng-if="uType == '2'" class="btn btn-info pull-right"
-                                                    ng-click="savePaymentdirect('payment_form','2');" style="margin-left: 5px;"> Save & Next
-                                                    <i class="fa fa-angle-right"></i> </a> 
+                                                        ng-click="savePaymentdirect('payment_form','2');"
+                                                        style="margin-left: 5px;"> Save & Next
+                                                        <i class="fa fa-angle-right"></i> </a>
                                                     <a ng-if="uType == '2'" class="btn btn-info pull-right"
-                                                    ng-click="savePaymentdirect('payment_form','2',1);"> Save 
-                                                    <!-- <i class="fa fa-angle-right"></i> --> </a>
-                                                       
+                                                        ng-click="savePaymentdirect('payment_form','2',1);"> Save
+                                                        <!-- <i class="fa fa-angle-right"></i> --> </a>
+
                                                 </div>
                                             </div>
                                         </div>
