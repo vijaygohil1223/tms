@@ -2238,27 +2238,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })
     }         
 
+    $scope.dashboardTabList = [ 
+        { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assigned", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_projects", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 } 
+    ];
     // Tabs permission array
     //$scope.tabPermission = { "due_today": true, "to_be_assigned": true, "in_progress": true, "qa_ready": true, "to_be_delivered": true, "due_tomorrow": true, "delivered": true, "my_projects": true };
     var tabPermission = { "due_today": true, "assigned": true, "ongoing": true, "qa_ready": true, "qa_issue": true, "pm_ready": true, "delivery": true, "completed": true, "overdue": true, "due_tomorrow": true, "my_project": true, "upcoming": true, "approved": true, "all": true };
     $scope.tabPermission = {};
+    if($window.localStorage.getItem("session_iUserId") == 1){
+        $scope.dashboardTabList.map( (item) =>  { 
+            item.tabPermission = true
+        })
+    }
     // User data with postion for widget box
     if ($cookieStore.get('session_iUserId') != undefined) {
         rest.path = 'viewExternalget/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            
             $scope.vResourcePosition = data.vResourcePosition;
             //-- Permission to show tabs --//
-            if($window.localStorage.getItem("session_iUserId") == 1){
-                $scope.tabPermission = tabPermission;
-            }else{ 
-                if(data.tabPermission)
+            if($window.localStorage.getItem("session_iUserId") != 1){ 
+                if(data.tabPermission){
                     $scope.tabPermission = JSON.parse(data.tabPermission) 
-                else
+                    $scope.dashboardTabList.map( (item) =>  { 
+                        for (const keyName in $scope.tabPermission){
+                            if( keyName == item.tabPermissionValue )
+                                item.tabPermission = true
+                        }
+                    })
+                }else
                     $('.btn_create-project').css('top','15px')
             }        
-            
         });
+    }
+
+    $scope.fillDashboardTabFn = function(index, scoopArr, scoopCount){
+        $scope.dashboardTabList[index].projectScoopData = scoopArr
+        $scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
     }
 
     // ** Dashoboard Project TABS start ** //
@@ -2454,16 +2469,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val) {
                     $scope.projectsAll.push(val);
                     $scope.projectsAllCount++;
+                    $scope.fillDashboardTabFn(13, $scope.projectsAll, $scope.projectsAllCount)
                 }
                 // My Projects
                 if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
                     $scope.projectsMyproj.push(val);
                     $scope.projectsMyprojCount++;
+                    $scope.fillDashboardTabFn(10, $scope.projectsMyproj, $scope.projectsMyprojCount)
                 }
                 // upcoming Projects - Heads up
                 if (val.heads_up == 1 ) {
                     $scope.projectsUpcoming.push(val);
                     $scope.projectsUpcomingCount++;
+                    $scope.fillDashboardTabFn(11, $scope.projectsUpcoming, $scope.projectsUpcomingCount)
                 }
                 //To be Assigned - Assign
                 if (val.itemStatusId == "1") {
@@ -2473,6 +2491,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_color = '#ffea3c';
                     $scope.projectsAssigned.push(val);
                     $scope.projectsAssignedCount++;
+                    $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
                 }
                 
                 // To be Delivered - Delivery
@@ -2482,6 +2501,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_color = '#c6d732';
                     $scope.projectsToBeDelivered.push(val);
                     $scope.projectsToBeDeliveredCount++;
+                    $scope.fillDashboardTabFn(6, $scope.projectsToBeDelivered, $scope.projectsToBeDeliveredCount)
                 }
                 // Delivered - Completed
                 if (val.itemStatusId == "4") {
@@ -2491,6 +2511,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsDeliveredCount++;
                     val.projectstatus_class = 'projectstatus_delivered';
                     val.projectstatus_color = '#80bb41';
+                    $scope.fillDashboardTabFn(7, $scope.projectsDelivered, $scope.projectsDeliveredCount)
                 }
                 // Approved - Approved
                 if (val.itemStatusId == "5") {
@@ -2499,6 +2520,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsApproved.push(val);
                     val.projectstatus_class = 'projectstatus_approved';
                     val.projectstatus_color = '#4caf52';
+                    $scope.fillDashboardTabFn(12, $scope.projectsApproved, $scope.projectsApprovedCount)
                 }
                 // Invoiced 
                 if (val.itemStatusId == "6") {
@@ -2550,12 +2572,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             checkAllComplete = scoopJobs.every( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
                         }
                     }
+                    // QA Ready
                     if(val.itemStatusId == "10" || checkAllComplete){
                         val.progrss_precentage = 75;
                         val.projectstatus_class = 'projectstatus_ready';
                         val.projectstatus_color = '#019788';
                         $scope.projectsQaready.push(val);
                         $scope.projectsQaReadyCount++;
+
+                        $scope.fillDashboardTabFn(3, $scope.projectsQaready, $scope.projectsQaReadyCount) 
                     }
                     // In Progress - Ongoing
                     if (val.itemStatusId == "2"  && checkAllComplete==false)  {
@@ -2564,6 +2589,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         val.projectstatus_color = '#fec106';
                         $scope.projectsInProgress.push(val);
                         $scope.projectsInprogressCount++;
+
+                        $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
                     }    
                 }
                 // PM Ready
@@ -2573,6 +2600,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsPmready.push(val);
                     val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#f44237';
+
+                    $scope.fillDashboardTabFn(5, $scope.projectsPmready, $scope.projectsPmReadyCount) 
+                    console.log('$scope.projectsPmready=>called', $scope.projectsPmready)
                 }
                 // QA issue
                 if (val.itemStatusId == "13") {
@@ -2581,6 +2611,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsQaissue.push(val);
                     val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#f44237';
+
+                    $scope.fillDashboardTabFn(4, $scope.projectsQaissue, $scope.projectsQaIssueCount) 
                 }
                 
                 // Overdue
@@ -2598,14 +2630,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if (scoopDueDate.split(' ')[0] == $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsDueToday.push(val);
                         $scope.projectsDueTodayCount++;
+                        $scope.fillDashboardTabFn(0, $scope.projectsDueToday, $scope.projectsDueTodayCount) 
                     }
                     if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsDueTomorrow.push(val);
                         $scope.projectsDueTomorrowCount++;
+                        $scope.fillDashboardTabFn(9, $scope.projectsDueTomorrow, $scope.projectsDueTomorrowCount) 
                     }
                     if (scoopDueDate.split(' ')[0] < $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsOverdue.push(val);
                         $scope.projectsOverdueCount++;
+                        $scope.fillDashboardTabFn(8, $scope.projectsOverdue, $scope.projectsOverdueCount) 
                     }
                 }    
                 if (val.heads_up == 1) {
@@ -2618,7 +2653,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if(data.length == 0)
                 $scope.showDataLoader = false;
 
+            // edit/update project scoop stay on same tabs
+            setTimeout(() => {
+                let getprojectActiveTab = $window.localStorage.getItem("projectActiveTab");
+                if(getprojectActiveTab)
+                    $scope.lastProjectTabs();
+                    setTimeout( () => {
+                        //$window.localStorage.setItem("projectActiveTab", '');
+                    },100)
+                    console.log('dashboardTabList', $scope.dashboardTabList)
+            }, 1500);
+
         });
+
     };
     $scope.allProjectListing();
     // Branch change (Norway-Bulgaria) call function again
@@ -3620,7 +3667,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     }
     
-    // on edit/update stay on same tabs
+    // on - edit/update project scoop stay on same tabs
     $scope.changeProjectTabs = function(className){
         $window.localStorage.setItem("projectActiveTab", className);
     }
@@ -3632,14 +3679,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         else    
             $window.localStorage.setItem("projectActiveTab", '');
     }    
-    setTimeout(() => {
-        let getprojectActiveTab = $window.localStorage.getItem("projectActiveTab");
-        if(getprojectActiveTab)
-            $scope.lastProjectTabs();
-            setTimeout( () => {
-                //$window.localStorage.setItem("projectActiveTab", '');
-            },100)
-    }, 1500);
+    
     // END - edit/update project scoop stay on same tabs
 
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -11031,7 +11071,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#secondCurrency').select2('data', { text: 'NOK' });    
                 //angular.element('#secondCurrency').select2('val', 'NOK,kr').trigger('change');
 
-            console.log('$scope.userprofiledata.second_currency',$scope.userprofiledata.second_currency )
             //$scope.userprofiledata.menu_access = $scope.userprofiledata.menu_access ? JSON.parse($scope.userprofiledata.menu_access) : []; 
             //$scope.existMenu = $scope.userprofiledata.menu_access;
             
@@ -11049,8 +11088,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.dtBirthDate = '';
             else
                 $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format($scope.dateFormatGlobal);
-
-                console.log('$scope.userprofiledata.dtBirthDate', $scope.userprofiledata.dtBirthDate)
             
             $scope.userprofiledata.dtLast_job = userLastJob;
             if ($scope.userprofiledata.dtLast_job == 'Invalid date')
@@ -15507,7 +15544,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // job popup
     $scope.jobNoDetails = function (id) {
-        console.log('id', id)
         //scrollBodyToTop();
         //$location.path('job-summery-details/' + id);
         $routeParams.id = id;
