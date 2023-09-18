@@ -475,10 +475,6 @@ td { font-size: 11px; } */
                             <!-- <th>Action</th> -->
                           </thead>
                           <tbody>
-                            <!-- <tr ng-if="projectsAll.length==0">
-                              <td colspan="11" loading-widget> 
-                              </td>
-                            </tr> -->
                             <tr ng-repeat="order in myTabs.projectScoopData">
                               <td>
                                 <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)" class="scoopCheck{{order.itemId}}" name="scoopCheck{{$index}}" ng-model="checkScoop" ng-checked="checkdata=='scoopcheck'" />

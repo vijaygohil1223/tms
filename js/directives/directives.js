@@ -864,34 +864,38 @@ app.directive('select2Gender', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, ngModel) {
-            $http({
-                dataType: "dataType",
-                url: "gender.json",
-                async: false
-            }).success(function(data) {
-                $timeout(function() {
-                    element.select2({
-                        allowClear: true,
-                        data: data,
-                        multiple:true,
-                        //maximumSelectionSize:1,
-                        closeOnSelect:true,
-                    }).on("change", function (e) {
-                        const inputIdS2 = '#s2id_'+$(this).attr('id');
-                        if(e.added){
-                            $(inputIdS2+' li').each(function() {
-                                const childDiv = $(this).children();
-                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
-                                if(eleText){
-                                    if(eleText !== e.added.text){
-                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
-                                    }    
-                                }
-                            });
-                        }    
-                    });
-                }, 500);
-            });
+            const genderArr = [{"id": "1", "text": "Male"},{"id":"2", "text": "Female"}];
+            $timeout(function() {
+                element.select2({
+                    allowClear: true,
+                    data: genderArr,
+                    multiple:true,
+                    //maximumSelectionSize:1,
+                    closeOnSelect:true,
+                }).on("change", function (e) {
+                    const inputIdS2 = '#s2id_'+$(this).attr('id');
+                    if(e.added){
+                        $(inputIdS2+' li').each(function() {
+                            const childDiv = $(this).children();
+                            let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                            if(eleText){
+                                if(eleText !== e.added.text){
+                                    $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                }    
+                            }
+                        });
+                    }    
+                });
+            }, 500);
+            
+            //  gender.json file deleted
+            // $http({
+            //     dataType: "dataType",
+            //     url: "gender.json",
+            //     async: false
+            // }).success(function(data) {
+                
+            // });
         }
     }
 });

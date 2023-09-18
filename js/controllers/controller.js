@@ -11022,11 +11022,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Europe country form json file
     // api - https://restcountries.com/v3.1/region/europe
     $scope.europeCountry = [];
-    fetch('country-europe.json', { method: 'GET'}).then(function (response) {
-        return response.json();
-    })
-    .then(function (data) {
-        $scope.europeCountry = data;
+    
+    // fetch('country-europe.json', { method: 'GET'}).then(function (response) {
+    //     return response.json();
+    // })
+    // .then(function (data) {
+    //     $scope.europeCountry = data;
+    //     console.log('$scope.europeCountry', $scope.europeCountry)
+    // });
+    rest.path = "getCountry";
+    rest.get().success(function (data) {
+        data.filter( (list) => {
+            if(list.is_european_country == 1){
+                $scope.europeCountry.push(
+                    {
+                        'name':list.nicename,
+                        'iso2':list.iso,
+                        'iso3':list.iso3
+                    }
+                )
+            }    
+        })
+        console.log('$scope.cpuntryMobilecodeList', $scope.europeCountry)
     });
     $scope.stateOptional = '';
 
@@ -14484,12 +14501,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Europe country form json file
     // api - https://restcountries.com/v3.1/region/europe
     $scope.europeCountry = [];
-    fetch('country-europe.json', { method: 'GET'}).then(function (response) {
-        return response.json();
-    })
-    .then(function (data) {
-        $scope.europeCountry = data;
+    // fetch('country-europe.json', { method: 'GET'}).then(function (response) {
+    //     return response.json();
+    // })
+    // .then(function (data) {
+    //     $scope.europeCountry = data;
         
+    // });
+    rest.path = "getCountry";
+    rest.get().success(function (data) {
+        data.filter( (list) => {
+            if(list.is_european_country == 1){
+                $scope.europeCountry.push(
+                    {
+                        'name':list.nicename,
+                        'iso2':list.iso,
+                        'iso3':list.iso3
+                    }
+                )
+            }    
+        })
+        console.log('$scope.cpuntryMobilecodeList', $scope.europeCountry)
     });
     $scope.stateOptional = '';
 
@@ -36772,12 +36804,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // To get phone code country code To add data in mobile
     $scope.cpuntryMobilecodeList = [];
-    fetch('country-phonecode.json')
-        .then(response => response.json())
-        .then(data => {
-            $scope.cpuntryMobilecodeList = data;
-        }
-        );
+    rest.path = "getCountry";
+    rest.get().success(function (data) {
+        data.filter( (list) => {
+            $scope.cpuntryMobilecodeList.push(
+                {
+                    'name':list.nicename,
+                    'code':list.iso,
+                    'phone':list.phonecode
+                }
+            )
+        })
+    });
+
+    // fetch('country-phonecode.json')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         $scope.cpuntryMobilecodeList = data;
+    //     }
+    //     );
 
     $scope.csvDataInsrt = [];
     var percent = 0;
