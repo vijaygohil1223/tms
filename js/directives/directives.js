@@ -6576,24 +6576,7 @@ app.directive('select2CreateScoop', function($http, rest, $timeout) {
         link: function(scope, element, attrs) {
             //rest.path = 'prtypeactive';
             //rest.get().success(function(data) {
-                var scoopData = [
-                    {
-                        'id': '1',
-                        'text': '1' 
-                    },{
-                        'id': '2',
-                        'text': '2'
-                    },{
-                        'id': '3',
-                        'text': '3'
-                    },{
-                        'id': '4',
-                        'text': '4'
-                    },{
-                        'id': '5',
-                        'text': '5'
-                    }
-                ];
+                var scoopData = [ { 'id': '1', 'text': '1' },{ 'id': '2', 'text': '2' },{ 'id': '3', 'text': '3' },{ 'id': '4', 'text': '4' },{ 'id': '5', 'text': '5' } ];
                 $timeout(function() {
                     element.select2({
                         placeholder:'Create Scoop',
