@@ -18270,24 +18270,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.totalAmountAdmin = 0;
     $scope.totalPendingAmountAdmin = 0;
     $scope.filterStatement = function (frmId) {
-        if (jQuery.isEmptyObject($scope.search)) {
+        const dueDateFrom = $('#dueDateFrom').val();
+        const dueDateTo = $('#dueDateTo').val();
+        if (jQuery.isEmptyObject($scope.search)  && (!dueDateFrom || !dueDateTo)) {
             notification('Please select option to filter statement.', 'warning');
             return false;
         } else {
-            if (!$scope.search.dueDateFrom && !$scope.search.dueDateTo) {
-
-            } else if ($scope.search.dueDateFrom && !$scope.search.dueDateTo) {
-                notification('You have to select both dates.', 'warning');
-                return false;
-            } else if (!$scope.search.dueDateFrom && $scope.search.dueDateTo) {
-                notification('You have to select both dates.', 'warning');
-                return false;
+            if(dueDateFrom || dueDateTo){
+                if(!dueDateFrom){
+                    notification('Please select Due From date.', 'warning');
+                    return false
+                }
+                if(!dueDateTo){
+                    notification('Please select Due To date.', 'warning');
+                    return false
+                }
             }
             if ($scope.search.dueDateFrom) {
                 $scope.search.dueDateFrom = originalDateFormatNew($scope.search.dueDateFrom);
                 $scope.search.dueDateFrom = moment($scope.search.dueDateFrom).subtract($scope.invoicePeriod.number_of_days, 'd').format('YYYY-MM-DD');
             }
-
             if ($scope.search.dueDateTo) {
                 $scope.search.dueDateTo = originalDateFormatNew($scope.search.dueDateTo);
                 $scope.search.dueDateTo = moment($scope.search.dueDateTo).subtract($scope.invoicePeriod.number_of_days, 'd').format('YYYY-MM-DD');
@@ -18309,12 +18311,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     } else {
                         angular.forEach($scope.stamementList, function (val, i) {
                             $scope.stamementList[i].paymentDueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod.number_of_days);
+                            $scope.stamementList[i].freelance_currency = val.freelance_currency.split(',')[0];
                         })
 
                         Array.prototype.sum = function (prop) {
                             var total = 0
                             for (var i = 0, _len = this.length; i < _len; i++) {
-                                total += this[i][prop]
+                                // other currency rate Euro=USD...
+                                const cRate = this[i]['currency_rate'] ? this[i]['currency_rate'] : 1
+                                //total += this[i][prop]
+                                total += this[i][prop] / cRate
                             }
                             return total
                         }
@@ -18473,18 +18479,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.totalAmountAdmin = 0;
     $scope.totalPendingAmountAdmin = 0;
     $scope.filterClientStatement = function (frmId) {
-        if (jQuery.isEmptyObject($scope.search)) {
+        console.log('$scope.search', $scope.search)
+        const dueDateFrom = $('#dueDateFrom').val();
+        const dueDateTo = $('#dueDateTo').val();
+        if (jQuery.isEmptyObject($scope.search) && (!dueDateFrom || !dueDateTo)) {
             notification('Please select option to filter statement.', 'warning');
             return false;
         } else {
-            if (!$scope.search.dueDateFrom && !$scope.search.dueDateTo) {
-
-            } else if ($scope.search.dueDateFrom && !$scope.search.dueDateTo) {
-                notification('You have to select both dates.', 'warning');
-                return false;
-            } else if (!$scope.search.dueDateFrom && $scope.search.dueDateTo) {
-                notification('You have to select both dates.', 'warning');
-                return false;
+            if(dueDateFrom || dueDateTo){
+                if(!dueDateFrom){
+                    notification('Please select Due From date.', 'warning');
+                    return false
+                }
+                if(!dueDateTo){
+                    notification('Please select Due To date.', 'warning');
+                    return false
+                }
             }
             if ($scope.search.dueDateFrom) {
                 $scope.search.dueDateFrom = originalDateFormatNew($scope.search.dueDateFrom);
@@ -18512,12 +18522,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     } else {
                         angular.forEach($scope.stamementList, function (val, i) {
                             $scope.stamementList[i].paymentDueDate = TodayAfterNumberOfDays(val.created_date, $scope.invoicePeriod.number_of_days);
+                            $scope.stamementList[i].client_currency = val.client_currency.split(',')[0];
                         })
 
                         Array.prototype.sum = function (prop) {
                             var total = 0
                             for (var i = 0, _len = this.length; i < _len; i++) {
-                                total += this[i][prop]
+                                // other currency rate Euro=USD...
+                                const cRate = this[i]['currency_rate'] ? this[i]['currency_rate'] : 1
+                                //total += this[i][prop]
+                                total += this[i][prop] / cRate
                             }
                             return total
                         }

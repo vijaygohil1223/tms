@@ -97,9 +97,10 @@
               <th>Company Name</th>
               <th>Invoice date</th>
               <th>Due date</th>
-              <th>Project No</th>
+              <!-- <th>Project No</th> -->
               <th>Total amount</th>
               <th>Pending amount</th>
+              <th>Currency</th>
             </thead>
             <tbody>
               <tr ng-repeat="s in stamementList track by $index">
@@ -109,9 +110,10 @@
                 <td ng-if="s.created_date == '0000-00-00 00:00:00'">-</td>
                 <td ng-if="s.created_date != '0000-00-00 00:00:00'">{{s.created_date | globalDtFormat}}</td>
                 <td>{{s.paymentDueDate | globalDtFormat}}</td>
-                <td>{{s.InvoiceNo.split('_')[0]}}</td>
+                <!-- <td>{{s.InvoiceNo.split('_')[0]}}</td> -->
                 <td>{{s.Amount | customNumber}}</td>
-                <td>{{s.Amount - s.paid_amount |customNumber}}</td>
+                <td>{{s.Amount - s.paid_amount | customNumber}}</td>
+                <td>{{s.client_currency}}</td>
               </tr>
               <tr ng-show="!stamementList.length">
                 <td colspan="8" ng-bind="dataNotFound"></td>

@@ -435,7 +435,7 @@ class Client_invoice {
             $this->_db->where('tmInvoice.invoice_number', $filterParams['invoiceNumber']);
         }
         
-        $data = $this->_db->get('tms_invoice_client tmInvoice', null,' tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date,tc.vUserName as companyName,tc.vCodeRights');
+        $data = $this->_db->get('tms_invoice_client tmInvoice', null,' tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date, tmInvoice.currency_rate, tc.vUserName as companyName,tc.vCodeRights, tc.client_currency');
         //echo $this->_db->getLastQuery();
         return $data;
     }

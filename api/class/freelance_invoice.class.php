@@ -385,7 +385,7 @@ class Freelance_invoice {
         if(isset($filterParams['invoiceNumber'])){
             $this->_db->where('tmInvoice.invoice_number', $filterParams['invoiceNumber']);
         }
-        $data = $this->_db->get('tms_invoice tmInvoice', null,' tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date,tmInvoice.is_approved');
+        $data = $this->_db->get('tms_invoice tmInvoice', null,' tu.vUserName,tmInvoice.invoice_number AS InvoiceNo,tmInvoice.paid_date As Date,tmInvoice.Invoice_cost As Amount,tmInvoice.paid_amount,tmInvoice.freelance_id,tmInvoice.customer_id,tmInvoice.value_date,tmInvoice.invoice_type,tmInvoice.invoice_status,tmInvoice.created_date,tmInvoice.is_approved, tmInvoice.currency_rate, tu.freelance_currency');
         //echo $this->_db->getLastQuery();
         return $data;
     }
