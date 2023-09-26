@@ -6815,7 +6815,6 @@ app.directive('ngSidebarHideshow', function () {
                 $(".addactive").toggleClass("active");
             };
         }
-
     };
 });
 // client invoice pdf html file

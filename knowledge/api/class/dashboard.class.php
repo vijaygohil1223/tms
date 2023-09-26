@@ -78,20 +78,22 @@ class Dashboard {
                 //print_r($subArr[2]);
 
                  $splitDate = explode(' ',$subArr[0]);
-                 $month = $splitDate[1]; 
-                 $date = $splitDate[0];
-                 if(strlen($date)==1){
-                    $date = str_pad($date,2,"0", STR_PAD_LEFT);
-                 } 
-                 $year = date('Y');
-                 $finalDate = $year.'-'.$month.'-'.$date;
-                 $subArr[0] = date('Y-m-d', strtotime($finalDate));
-                 $hData = array(
-                    "holidayDate" => $subArr[0],
-                    "holidayName" => $subArr[2]
-                );
+                 if(count($splitDate) >1){
+                    $month = $splitDate[1]; 
+                    $date = $splitDate[0];
+                    if(strlen($date)==1){
+                        $date = str_pad($date,2,"0", STR_PAD_LEFT);
+                    } 
+                    $year = date('Y');
+                    $finalDate = $year.'-'.$month.'-'.$date;
+                    $subArr[0] = date('Y-m-d', strtotime($finalDate));
+                    $hData = array(
+                        "holidayDate" => $subArr[0],
+                        "holidayName" => $subArr[2]
+                    );
 
-                 $holidays[$key] = $hData;
+                    $holidays[$key] = $hData;
+                }
             }
         
         return $holidays;
