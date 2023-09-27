@@ -5767,7 +5767,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 }).error(errorCallback);
                             }
                         }
-
+                        
                     }],
                 ];
 
@@ -6799,6 +6799,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var is_setint = 0;
     $timeout(function () {
 
+        // redirect to higher level directiory or file
+
+    $scope.GetRootFolderName = function (paraId='') {
+        var rootId = $window.localStorage.getItem("rootId");
+        const parentId =$window.localStorage.getItem("parentId")
+        $routeParams.id = paraId ? paraId ? parentId : parentId : rootId;
+        
+        rest.path = 'getRootFolder';
+        rest.put(rootId).success(function (data) {
+            $scope.rootFolderName = '';
+            if (data != null) {
+                $window.localStorage.setItem("rootFolderName", data.name)
+                $scope.rootFolderName = data.name;
+            }
+        }).error(errorCallback);
+    }
+    $scope.GetRootFolderName();
+
         //var setintrvl = setInterval(function() {
         if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
             var id = $window.localStorage.getItem("parentId");
@@ -6868,6 +6886,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                         ['Refresh', function ($itemScope) {
                             $route.reload();
+                            setTimeout( () => {
+                                $scope.GetRootFolderName($window.localStorage.getItem("parentId"))
+                            }, 1000)
                         }],
                     ];
 
@@ -7123,6 +7144,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                                         rest.path = 'fileManagerUpdate';
                                         rest.put($scope.folderData).success(function (data) {
+                                            setTimeout( ()=>{
+                                                $scope.GetRootFolderName($window.localStorage.getItem("parentId"))
+                                            },1000)
                                             $route.reload();
                                         }).error(errorCallback);
                                     }
@@ -7371,6 +7395,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //nested file
     $scope.findfile = function (id, name) {
+        console.log('id-sdfds', id)
         var externalResourceUserId = null;
         if ($window.sessionStorage.getItem("ExternalUserId") != null) {
             var externalResourceUserId = $window.sessionStorage.getItem("ExternalUserId");
@@ -7392,8 +7417,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     }
                 }
+                
             })
             $scope.headerfilename(id);
+            $scope.GetRootFolderName(id)
         }).error(errorCallback);
     }
 
@@ -7407,24 +7434,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.setItem("parentId", $scope.folid);
     }
 
-    // redirect to higher level directiory or file
+    
 
-    $scope.GetRootFolderName = function () {
-        var rootId = $window.localStorage.getItem("rootId");
-        $routeParams.id = rootId;
-
-        rest.path = 'getRootFolder';
-        rest.put(rootId).success(function (data) {
-            $scope.rootFolderName = '';
-            if (data != null) {
-                $scope.rootFolderName = data.name;
-            }
-
-        }).error(errorCallback);
-    }
-    $scope.GetRootFolderName();
+    
     // redirect to higher level directiory or file
     $scope.higherlevelFolder = function (id) {
+        console.log('higherleve-id', id)
+        //$scope.GetRootFolderName(id)
         var externalResourceId = null;
         if ($window.sessionStorage.getItem("ExternalUserId") != null) {
             var externalResourceId = $window.sessionStorage.getItem("ExternalUserId");
@@ -7480,6 +7496,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // }
                     $scope.headerfilename(fid);
                     $window.localStorage.setItem("parentId", fid);
+                    // To get root folder name
+                    $scope.GetRootFolderName(fid)
                     $scope.showLoder = false;
                 }).error(errorCallback);
             } else {
