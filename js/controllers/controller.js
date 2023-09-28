@@ -3929,6 +3929,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "clientInvoiceSetting";
         rest.get().success(function (settingData) {
             if(settingData){
+                console.log('settingData', settingData)
                 // po button show hide
                 $scope.sendPoBtn = true;
                 // $scope.poSettingData = settingData[0];
@@ -3942,10 +3943,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             return item
                         }
                     })
-                }
-                if(!$scope.poSettingData){
+                    if($scope.poSettingData === undefined ){
+                        $scope.poSettingData = settingData[0];
+                    }
+                }else{
                     $scope.poSettingData = settingData[0];
                 }
+                
                 $scope.dataReplaceArr.COMPANY_NAME = $scope.poSettingData.company_name;
                 $scope.dataReplaceArr.COMPANY_ADDRESS = $scope.poSettingData.address1;
                 $scope.dataReplaceArr.COMPANY_CITY = $scope.poSettingData.city;
@@ -3977,7 +3981,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             emailContentText = data.find( (templt) => templt.template_id == 13);
             //$scope.emailTemplateText =  $('#emailTemplateText').append(emailContentText.template_content);
             if(emailContentText){
-                $scope.emailTemplateText =  emailContentText.template_content;  
+                $scope.emailTemplateText = emailContentText.template_content;  
             }
         //}, 3000);
     })
@@ -4004,7 +4008,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             ORDERDATE: $filter('globalDtFormat')($scope.purchaseDetail.purchaseOrderDate),
             JOBNO: $scope.jobdetail.po_number ? $scope.jobdetail.po_number : '' ,
             PROJECTNAME: $scope.jobdetail.projectName,
-            INDIRECT_CUSTOMER: $scope.jobdetail.clientName,
+            //INDIRECT_CUSTOMER: $scope.jobdetail.clientName,
+            INDIRECT_CUSTOMER: $scope.jobdetail.clientAccountName,
             JOBSERVICE: $scope.jobdetail.project_type_name, 
             LANGUAGES: $scope.jobdetail.ItemLanguage,
             INSTRUCTIONS: $scope.jobdetail.jobDesc,
@@ -22578,8 +22583,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             return item
                         }
                     })
-                }
-                if(!$scope.poSettingData){
+                    if($scope.poSettingData === undefined ){
+                        $scope.poSettingData = settingData[0];
+                    }
+                }else{
                     $scope.poSettingData = settingData[0];
                 }
                 $scope.dataReplaceArr.COMPANY_NAME = $scope.poSettingData.company_name;
@@ -27887,7 +27894,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     Item: items.jobdetail.projectName,
                     //JobService: items.jobdetail.po_number , // taskname
                     JobService: items.jobdetail.project_type_name , // taskname
-                    IndirectCustomer : items.jobdetail.clientName,
+                    //IndirectCustomer : items.jobdetail.clientName,
+                    IndirectCustomer : items.jobdetail.clientAccountName,
                     JobComment : items.jobdetail.jobDesc,
                     DelivDeadline: items.deadline,
                     CompanyCodeShort: items.companyCodeShort,
