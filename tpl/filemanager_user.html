@@ -438,7 +438,7 @@
                         <p>{{category.name}}</p></folder>
 
                         <!-- Pdf  -->
-                       <file extension="pdf" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)" ng-if="category.ext == 'pdf'"  context-menu="menuOptionsFiles" class="pdf" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.name}}</p></file>
+                       <file extension="pdf" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)" ng-if="category.ext == 'pdf' || category.ext == 'PDF'"  context-menu="menuOptionsFiles" class="pdf" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.name}}</p></file>
                        
                        <!-- Png -->
                        <file extension="png" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name)" 
@@ -523,7 +523,7 @@
           </div>
           <!-- Pdf  -->
           <file extension="pdf" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name)" ng-if="display.ext == 'pdf'" context-menu="menuOptionsFiles"
+            ng-dblclick="addToDownload(display.name)" ng-if="display.ext == 'pdf' || display.ext == 'PDF'" context-menu="menuOptionsFiles"
             class="pdf" menuoptionIdName="0">
             <p>{{display.name}}</p>
           </file>

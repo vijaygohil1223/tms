@@ -22593,7 +22593,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.dataReplaceArr.COMPANY_ADDRESS = $scope.poSettingData.address1;
                 $scope.dataReplaceArr.COMPANY_CITY = $scope.poSettingData.city;
                 $scope.dataReplaceArr.COMPANY_POSTCODE = $scope.poSettingData.postcode;
-                $scope.dataReplaceArr.COMPANY_COUNTRY =$scope.poSettingData.country;
+                $scope.dataReplaceArr.COMPANY_COUNTRY = $scope.poSettingData.country;
                 $scope.dataReplaceArr.COMPANY_VAT_NUMBER = $scope.poSettingData.vat_number;
                 $scope.dataReplaceArr.CompanyCodeShort = $scope.poSettingData.company_short_code;
                 $scope.dataReplaceArr.COMPANY_COPYRIGHT_TEXT = $scope.poSettingData.copyright_text;
