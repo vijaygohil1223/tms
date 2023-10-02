@@ -2333,8 +2333,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 $scope.projectData = data;
             }
+            console.log('$scope.projectData', $scope.projectData)
             angular.forEach($scope.projectData, function (val, i) {
                 val.progrss_precentage = -1;
+                // Scoop project manager - (Substituted project manager)
+                val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
                 //$scope.projectsAll = $scope.projectData;
                 //var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
@@ -2661,9 +2664,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     setTimeout( () => {
                         //$window.localStorage.setItem("projectActiveTab", '');
                     },100)
-                    console.log('dashboardTabList', $scope.dashboardTabList)
+                    //console.log('dashboardTabList', $scope.dashboardTabList)
             }, 1500);
 
+        }).error( function(){
+            $scope.showDataLoader = false;
         });
 
     };
