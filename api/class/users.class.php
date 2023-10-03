@@ -251,7 +251,7 @@ class users {
             if ($id) {
                 //Sending registation email to users email address
                 //$userName = $user['vUserName'];
-                $userName = $user['vFirstName'].' '.$user['vLastName'] ;
+                $userName = $user['vFirstName'] ;
                 $registrationLink = ACTIVATION_URL.'#/activation/'.$activationToken;
                 $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 $userEmail = $user['vEmailAddress'];
@@ -269,7 +269,7 @@ class users {
                 //$jobDetail = new jobs_detail();
                 //$jobDetail->sendEmail($userEmail,$emailTemplateRegistration['template_subject'],$html);
                 // mailjet send mail
-                $to_name = $user['vFirstName'].' '.$user['vLastName'];
+                $to_name = $user['vFirstName'];
                 $send_fn = new functions();
                 $response = $send_fn->send_email_smtp($userEmail, $to_name, $cc='', $bcc='', $emailTemplateRegistration['template_subject'], $html, $attachments='');
                 // End mailjet
@@ -345,7 +345,7 @@ class users {
                 
                 //Sending registation email to users email address
                 //$userName = $user['vUserName'];
-                $userName = $user['vFirstName'].' '.$user['vLastName'];
+                $userName = $user['vFirstName'];
                 $registrationLink = ACTIVATION_URL.'#/activation/'.$activationToken;
                 $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$activationToken.'"> '.$registrationLink.' </a>';
                 
@@ -1207,7 +1207,8 @@ array(
 
     public function sendAcountActivationlink($user){
         //Sending registation email to users email address
-        $userName = $user['vUserName'];
+        //$userName = $user['vUserName'];
+        $userName = isset($user['vFirstName']) ? $user['vFirstName'] : '';
 
         $registrationLink = ACTIVATION_URL.'#/activation/'.$user['activation_token'];
         $registrationLink = '<a href="'.ACTIVATION_URL.'#/activation/'.$user['activation_token'].'"> '.$registrationLink.' </a>';
@@ -1224,7 +1225,7 @@ array(
         
         $html = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
 
-        $to_name = $user['vFirstName'].$user['vLastName'];
+        $to_name = $user['vFirstName'];
         $send_fn = new functions();
         $response = $send_fn->send_email_smtp($userEmail, $to_name, $cc='', $bcc='', $emailTemplateRegistration['template_subject'], $html, $attachments='');
         // End mailjet
