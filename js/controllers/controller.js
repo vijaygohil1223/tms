@@ -10438,6 +10438,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             var address = [];
 
+            address.push($scope.viewExternalCommunicational.vAddress1);
+            
             angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
                 angular.element('#' + val.id).html(val.value);
                 address.push(val.value);
