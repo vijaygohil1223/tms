@@ -210,7 +210,7 @@ class order {
 
         $this->_db->where("tor.order_id", $orderId);
 
-        $results = $this->_db->getOne("tms_order AS tor", "tor.*, tu.iUserId, tu.vUserName");
+        $results = $this->_db->getOne("tms_order AS tor", "tor.*, tu.iUserId, concat(tu.vFirstName, ' ', tu.vLastName) as vUserName");
 
         if($results['edited_by'] == $userId) {
 

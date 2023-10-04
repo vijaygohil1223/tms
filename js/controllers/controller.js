@@ -22220,6 +22220,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             rest.path = 'jobsummeryGet/' + $routeParams.id;
             rest.get().success(function (data) {
+                console.log('data-summurry', data)
 
                 $scope.itemListFinal = [];
                 rest.path = "getsaveSortedJobsData/" + $window.localStorage.orderID;
@@ -22237,6 +22238,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemListFinal.push($scope.itemList.filter(function (e1, i1) {
                             return e1.item_id == e.item_number;
                         }));
+                        console.log('$scope.itemListFinal', $scope.itemListFinal)
                         
                     });
 

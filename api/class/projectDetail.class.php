@@ -29,7 +29,7 @@ class projectDetail {
         $this->_db->join('tms_items AS ti','tsv.order_id = ti.order_id','LEFT');
         $this->_db->join('tms_proj_language AS tpl','ti.item_language = tpl.pl_id','LEFT');
         $this->_db->join('tms_users AS tu','tsv.resource = tu.iUserId','LEFT');
-        $data = $this->_db->get('tms_summmery_view AS tsv',null,'tsv.*,tg.order_no AS company_code, tf.fmanager_id, ti.item_name AS description, tu.vUserName As userName');
+        $data = $this->_db->get('tms_summmery_view AS tsv',null,'tsv.*,tg.order_no AS company_code, tf.fmanager_id, ti.item_name AS description, concat(tu.vFirstName, " ", tu.vLastName) As userName');
         $dataCount = sizeof($data);
         $info = [];
         foreach($data AS $key=>$value) {
@@ -51,7 +51,7 @@ class projectDetail {
         $this->_db->join('tms_proj_language AS tpl','ti.item_language = tpl.pl_id','LEFT');
         $this->_db->join('tms_users AS tu','tsv.resource = tu.iUserId','LEFT');
         $data = $this->_db->get('tms_summmery_view AS tsv',null,'tsv.*,tg.order_no AS company_code, 
-            tf.fmanager_id, ti.item_name AS description, tu.vUserName As userName');
+            tf.fmanager_id, ti.item_name AS description, concat(tu.vFirstName, " ", tu.vLastName) As userName');
         return $data;
     }
 }
