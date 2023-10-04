@@ -127,10 +127,15 @@
                               <div class="col-sm-12 p-0">
                                  <div class="form-group">
                                     <label>Payment Method</label>
-                                    <select class="form-control m-b" id="paymentMethod" ng-change="paymentChange();"
+                                    <!-- <select class="form-control m-b" id="paymentMethod" ng-change="paymentChange();"
                                        name="payment_method" ng-model="bank.payment_method"
                                        ng-options="opt1 for opt1 in ['Bank Transfer','Paypal']" required>
                                        <option value="" disabled selected>Select Payment Method</option>
+                                    </select> -->
+                                    <select class="form-control m-b" id="paymentMethod" ng-change="paymentChange();"
+                                       name="payment_method" ng-model="bank.payment_method" ng-options="opt1 for opt1 in ['Bank Transfer']" required>
+                                       <!-- <option value="" disabled>Bank Transfer</option> -->
+                                       <option value="Bank Transfer" selected>Bank Transfer</option>
                                     </select>
                                  </div>
                                  <div class="form-group" ng-if="displaybankOption">

@@ -5514,13 +5514,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.roothigher = true;
                 }
             }
-
+            
             if ($scope.userRight == 2) {
                 if (data.name == '_out' || data.name == '_in') {
                     if (data.name == '_out')
-                        $scope.parentName = 'From BeConnected';
+                        $scope.parentName = 'From TMS';
                     else
-                        $scope.parentName = 'To BeConnected';
+                        $scope.parentName = 'To TMS';
                 } else {
                     $scope.parentName = data.name;
                 }
@@ -13429,8 +13429,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.userType = 1;
         $scope.uType = 1;
     }
-    
-    $scope.bank = { 'payment_method': '', 'currency_code':'EUR'}
+
+    $scope.displaybankOption = true;
+    $scope.bank = { 'payment_method': 'Bank Transfer', 'currency_code':'EUR'}
     $scope.payment = {'tax_id': '', 'country_code':''}
     if ($routeParams.id != ' ' && $routeParams.id != undefined) {
 
@@ -13440,7 +13441,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (data == null) {
                 $scope.paymentData = {};
                 $scope.payment = {};
-                $scope.bank = {};
+                //$scope.bank = {};
             } else {
                 $scope.paymentData = data;
             }
@@ -22224,6 +22225,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = "getsaveSortedJobsData/" + $window.localStorage.orderID;
                 rest.get().success(function (d) {
                     $scope.availableSortedJobs = d;
+                    console.log('$scope.availableSortedJobs', $scope.availableSortedJobs)
 
                     if ($scope.availableSortedJobs.length > 0) {
                         $scope.itemList = d;

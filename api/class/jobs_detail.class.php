@@ -1,134 +1,82 @@
 <?php
 
-
-
 require_once 'users.class.php';
-
 require_once 'filemanager.class.php';
-
 require_once 'client.class.php';
-
 require_once 'tasktype.class.php';
-
 require_once 'functions.class.php';
-
 require_once 'sendmail/class.phpmailer.php';
-
-
 
 class jobs_detail
 {
 
     public function __construct()
     {
-
         $this->_db = db::getInstance();
     }
 
-
-
     public function getAll()
     {
-
         $qry = "SELECT * FROM `tms_summmery_view` WHERE `po_number` != ''";
-
         $data = $this->_db->rawQuery($qry);
-
         return $data;
     }
 
-
-
     public function getExternalUserJobs($id)
     {
-
         $qry = "SELECT * FROM tms_summmery_view WHERE po_number != '' && resource ='{$id}'";
-
         $data = $this->_db->rawQuery($qry);
-
         return $data;
     }
 
     public function select2JobCodeGet()
     {
-
         return $this->_db->get('tms_jobs');
     }
 
-
-
-
-
     public function itemupdateJobs($id, $data)
     {
-
         $data['updated_date'] = date('Y-m-d H:i:s');
-
         $this->_db->where('itemId', $id);
-
         $data = $this->_db->update('tms_items', $data);
-
         if ($id) {
-
             $return['status'] = 200;
-
             $return['msg'] = 'Successfully Updated.';
         } else {
-
             $return['status'] = 422;
-
             $return['msg'] = 'Not Updated.';
         }
-
         return $return;
     }
 
-
-
     public function jobpertitemGet($id)
     {
-
         $this->_db->where('itemId', $id);
-
         return $data = $this->_db->getone('tms_items');
     }
-
-
 
     public function jobpertjobGet($id, $pid)
     {
 
         $this->_db->where('job_id', $id);
-
         $data = $this->_db->getone('tms_jobs');
-
         $info = self::jobsummeryGet($pid);
-
         $this->_db->where('order_id', $pid);
-
         $itemData = $this->_db->getone('tms_items');
-
         $data['item_number'] = $itemData ? $itemData['item_number'] : '';
-
         if ($info) {
-
             foreach ($info as $in) {
             }
-
             if ($in) {
-
                 if ($in == 0) {
-
                     $data['job_no'] = 1;
                 } else {
-
                     $data['job_no'] = $in['job_no'] + 1;
                 }
             }
         }
 
         if (!$info) {
-
             $data['job_no'] = 1;
         }
 
@@ -138,7 +86,7 @@ class jobs_detail
 
 
     public function jobSummarySave($info)
-    {   
+    {
         //echo '<pre>'; print_r($info); echo '</pre>';
         $this->_db->where('item_id', $info['item_id']);
         $this->_db->where('job_id', $info['job_id']);
@@ -147,9 +95,7 @@ class jobs_detail
 
         // changes - If same job exist we can add new jobs
         $alreadyExists2 = false;
-
         if ($alreadyExists2) {
-
             return false;
             // $return['status'] = 404;
             // $return['msg'] = 'Job already Exists.';
@@ -161,10 +107,10 @@ class jobs_detail
                 $info['job_no'] = 1;
             }
             // Add resource if Job is External Quality Assurance(EQA) = 11
-            if($info['job_id'] == '11'){
+            if ($info['job_id'] == '11') {
                 $this->_db->where('item_id', $info['item_id']);
                 $this->_db->where('order_id', $info['order_id']);
-                $this->_db->orderBy('job_summmeryId','DESC');
+                $this->_db->orderBy('job_summmeryId', 'DESC');
                 $jobAssigned = $this->_db->getOne('tms_summmery_view');
                 if (count($jobAssigned) > 0)
                     $info['resource'] = $jobAssigned['resource'];
@@ -174,7 +120,7 @@ class jobs_detail
 
             $info['updated_date'] = date('Y-m-d H:i:s');
 
-            if(isset($info['contact_person']) && $info['contact_person'] == '')
+            if (isset($info['contact_person']) && $info['contact_person'] == '')
                 unset($info['contact_person']);
 
             $id = $this->_db->insert('tms_summmery_view', $info);
@@ -222,14 +168,14 @@ class jobs_detail
             }
             if ($info['order_id'] && $info['item_id']) {
                 // job Name External Quality Assurance (EQA) = 11
-                if($info['job_id'] == '11'){
+                if ($info['job_id'] == '11') {
                     // item scoop status QA issues = 11 id
                     $qry_up = "UPDATE tms_items SET `item_status` = '11' WHERE order_id = '" . $info['order_id'] . "' AND item_number = '" . $info['item_id'] . "' ";
                 } else {
                     // update item status if status 2 (Ongoing) back to 1 (Assign)
                     $qry_up = "UPDATE tms_items SET `item_status` = '1' WHERE order_id = '" . $info['order_id'] . "' AND item_number = '" . $info['item_id'] . "' AND item_status = '2' ";
                 }
-                if($qry_up)    
+                if ($qry_up)
                     $this->_db->rawQuery($qry_up);
             }
 
@@ -287,18 +233,11 @@ class jobs_detail
     {
 
         $this->_db->join("tms_order tmo", "tmo.order_id=ti.order_id", "INNER");
-
         $this->_db->join("tms_customer tc", "ti.order_id=tc.order_id", "INNER");
-
         $this->_db->join("tms_proj_language tpl", "ti.item_language=tpl.pl_id", "LEFT");
-
         $this->_db->where('ti.order_id', $orderId);
-
         $this->_db->where('item_number', $id);
-
         $data = $this->_db->getone('tms_items ti', null, 'tpl.*,tc.*,ti.*,tmo.order_number, tmo.abbrivation');
-
-
         return $data;
     }
 
@@ -313,93 +252,51 @@ class jobs_detail
 
             $invoiceRecords = $this->_db->get('tms_invoice');
 
-
-
             foreach ($invoiceRecords as $k => $v) {
-
                 foreach (json_decode($v['job_id'], true) as $ke => $val) {
-
                     $existedJobId = $val['id'];
-
                     if ($id == $existedJobId) {
-
                         $invoiceAlreadyAdded = true;
                     }
                 }
             }
         }
 
-
-
         if ($invoiceAlreadyAdded) {
-
             $this->_db->where('job_summmeryId', $id);
-
             $jobSummeryData = $this->_db->getOne('tms_summmery_view');
 
-
-
             if ($jobSummeryData) {
-
                 $return['jobNumber'] = $jobSummeryData['po_number'];
             }
 
-
-
             $return['status'] = 422;
-
             $return['msg'] = 'You can not delete invoice created job.';
-
             return $return;
         } else {
 
-
-
             $externalResourceUserId = 'null';
-
-
-
             $this->_db->where('job_id', $id);
-
             $data = $this->_db->getOne('tms_filemanager');
-
             if ($data) {
-
                 $filed = new filemanager();
-
                 $info = $filed->filefolderGet($data['fmanager_id'], $id, $externalResourceUserId);
-
                 if ($info) {
-
                     foreach ($info as $key => $value) {
-
                         if (isset($value['ext'])) {
-
                             $path = "../../uploads/fileupload/";
-
                             $images = glob($path . $value['name']);
 
-
-
                             if ($images) {
-
                                 unlink($path . $value['name']);
                             }
 
-
-
                             $in = $filed->filefolderGet($value['fmanager_id'], $id, $externalResourceUserId);
-
                             foreach ($in as $key => $value) {
-
                                 if (isset($value['ext'])) {
-
                                     $path = "../../uploads/fileupload/";
-
                                     $images = glob($path . $value['name']);
-
                                     if ($images) {
-
                                         unlink($path . $value['name']);
                                     }
                                 }
@@ -667,7 +564,7 @@ class jobs_detail
     public function jobselectContactNameupdate($id, $data)
     {
 
-        if(isset($data['jobSummuryIds'])){
+        if (isset($data['jobSummuryIds'])) {
             unset($data['jobSummuryIds']);
         }
         if (isset($data['contact_person'])) {
@@ -702,28 +599,28 @@ class jobs_detail
 
             $id = $this->_db->update('tms_summmery_view', $data);
 
-            
+
             if ($id) {
                 // Update scoop status to QA Ready
-                if(isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Completed' ) {
+                if (isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Completed') {
 
-                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '".$jobsData['order_id']."' AND item_number = '".$jobsData['item_id']."' AND item_status != '4' ";
+                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND item_status != '4' ";
                     $this->_db->rawQuery($qry_up);
 
                     // check for purchase order
-                    $qry = "SELECT tsv.job_summmeryId, tsv.order_id, tsv.item_id, tsv.resource, tsv.po_number, tu.vEmailAddress, tu.vFirstName, tu.vLastName from tms_summmery_view as tsv LEFT JOIN tms_users as tu ON tsv.resource = tu.iUserId WHERE tsv.job_summmeryId != ".$id. " AND tsv.order_id = ".$jobsData['order_id']. " AND tsv.item_id = ".$jobsData['item_id']. " AND tsv.item_status = 'In preparation'  AND tsv.resource > 0  ORDER BY tsv.job_summmeryId ASC" ;
+                    $qry = "SELECT tsv.job_summmeryId, tsv.order_id, tsv.item_id, tsv.resource, tsv.po_number, tu.vEmailAddress, tu.vFirstName, tu.vLastName from tms_summmery_view as tsv LEFT JOIN tms_users as tu ON tsv.resource = tu.iUserId WHERE tsv.job_summmeryId != " . $id . " AND tsv.order_id = " . $jobsData['order_id'] . " AND tsv.item_id = " . $jobsData['item_id'] . " AND tsv.item_status = 'In preparation'  AND tsv.resource > 0  ORDER BY tsv.job_summmeryId ASC";
                     $scoopJoblist = $this->_db->rawQuery($qry);
-                    if(count($scoopJoblist) > 0 && $scoopJoblist[0]['resource']){
-                            // $emailData = array();
-                            // $emailData['pdfData'] =  $data['pdfData'];
-                            // $emailData['resourceEmail'] =  $scoopJoblist[0]['vEmailAddress'];
-                            // $emailData['resourceName'] =  $scoopJoblist[0]['vFirstName']. ' '.$scoopJoblist[0]['vLastName '];
-                            // $emailData['order_id'] =  $scoopJoblist[0]['order_id'];
-                            // $emailData['item_id'] =  $scoopJoblist[0]['item_id'];
-                            // $emailData['poFilenamePdf'] =  'PO_'.$scoopJoblist[0]['po_number'].'.pdf';
-                            //$sendEmail = self::sendPurchaseOrderLinguist($emailData);
-                            $return['job_summmeryId'] = $scoopJoblist[0]['job_summmeryId'];            
-                            $return['sendPurchaseOrder'] = true;            
+                    if (count($scoopJoblist) > 0 && $scoopJoblist[0]['resource']) {
+                        // $emailData = array();
+                        // $emailData['pdfData'] =  $data['pdfData'];
+                        // $emailData['resourceEmail'] =  $scoopJoblist[0]['vEmailAddress'];
+                        // $emailData['resourceName'] =  $scoopJoblist[0]['vFirstName']. ' '.$scoopJoblist[0]['vLastName '];
+                        // $emailData['order_id'] =  $scoopJoblist[0]['order_id'];
+                        // $emailData['item_id'] =  $scoopJoblist[0]['item_id'];
+                        // $emailData['poFilenamePdf'] =  'PO_'.$scoopJoblist[0]['po_number'].'.pdf';
+                        //$sendEmail = self::sendPurchaseOrderLinguist($emailData);
+                        $return['job_summmeryId'] = $scoopJoblist[0]['job_summmeryId'];
+                        $return['sendPurchaseOrder'] = true;
                     }
 
                 }
@@ -742,7 +639,7 @@ class jobs_detail
         }
 
         if (isset($data['due_date'])) {
-            
+
             $data['updated_date'] = date('Y-m-d H:i:s');
 
             $data['due_date'] = date("Y.m.d H:i:s", strtotime($data['due_date']));
@@ -903,7 +800,6 @@ class jobs_detail
         if (isset($data['userEmail']))
 
             $to = $data['userEmail'];
-
         else
 
             $to = "";
@@ -913,7 +809,6 @@ class jobs_detail
         if (isset($info['job_code']) && isset($info['job_no']))
 
             $jobNo = $info['job_code'] . str_pad($info['job_no'], 3, '0', STR_PAD_LEFT);
-
         else
 
             $jobNo = "";
@@ -921,7 +816,6 @@ class jobs_detail
         if (isset($info['description']))
 
             $description = $info['description'];
-
         else
 
             $description = "";
@@ -929,7 +823,6 @@ class jobs_detail
         if (isset($info['resource']))
 
             $resource = $info['resource'];
-
         else
 
             $resource = "";
@@ -937,14 +830,12 @@ class jobs_detail
         if (isset($info['due_date']))
 
             $dueDate = $info['due_date'];
-
         else
 
             $dueDate = "";
 
         if (isset($info['item_status']))
             $itemStatus = $info['item_status'];
-
         else
             $itemStatus = "";
 
@@ -955,8 +846,8 @@ class jobs_detail
         $resource = $UserData['vUserName'];
 
         $urlSlug = base64_encode('jobId=147&userId=4');
-        $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlug.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
-        
+        $acceptLink = '<a href="' . SITE_URL . '#/job-accept/' . $urlSlug . '" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
+
         $body = "<p>Hello " . $info['contact_person'] . "</p>";
 
         $body .= "<p>Following Job has been created and assigned to you.</p>";
@@ -972,7 +863,7 @@ class jobs_detail
         $body .= "<p>Item Status : " . $itemStatus . ".</p>";
 
         $body .= "<br><p> click here to accept the job <br>" . $acceptLink . "</p>";
-        
+
         $subject = "Job Detail's";
 
         //$this->_mailer = new PHPMailer();
@@ -1069,7 +960,7 @@ class jobs_detail
 
         $this->_db->where('order_id', $id);
 
-        $data =  $this->_db->getone('tms_proj_language');
+        $data = $this->_db->getone('tms_proj_language');
 
         return $data;
     }
@@ -1125,14 +1016,14 @@ class jobs_detail
     public function jobSummeryDetailsAutoChangeon($orderId, $autoId)
     {
         $this->_db->where('job_summmeryId', $orderId);
-        $info =  $this->_db->update('tms_summmery_view', array('auto_job' => '0'));
+        $info = $this->_db->update('tms_summmery_view', array('auto_job' => '0'));
         return $info;
     }
 
     public function jobSummeryDetailsAutoChangeoff($orderId, $autoId)
     {
         $this->_db->where('job_summmeryId', $orderId);
-        $info =  $this->_db->update('tms_summmery_view', array('auto_job' => $autoId));
+        $info = $this->_db->update('tms_summmery_view', array('auto_job' => $autoId));
         return $info;
     }
 
@@ -1140,13 +1031,13 @@ class jobs_detail
 
     public function jobSummeryDetailsUpdate($id, $data)
     {
-        $this->_db->where('template_id',11);
+        $this->_db->where('template_id', 11);
         $emailTemplateRegistration = $this->_db->getOne('tms_email_templates');
-        $search_array = array("[JOBNO]", "[LANGUAGES]",'[JOBSTATUS]','[DUEDATE]','[ACCEPTLINK]','[REJECTLINK]');
+        $search_array = array("[JOBNO]", "[LANGUAGES]", '[JOBSTATUS]', '[DUEDATE]', '[ACCEPTLINK]', '[REJECTLINK]');
 
         $this->_db->where('job_summmeryId', $id);
         $jobDetails = $this->_db->getone('tms_summmery_view');
-        
+
         if (isset($jobDetails['po_number']))
             $jobnumber = $jobDetails['po_number'];
         else
@@ -1154,16 +1045,16 @@ class jobs_detail
         if (isset($jobDetails['due_date']))
             $duedate = $jobDetails['due_date'];
         else
-            $duedate =  " ";
+            $duedate = " ";
         if (isset($jobDetails['ItemLanguage']))
             $langPair = $jobDetails['ItemLanguage'];
         else
-            $langPair =  " ";
-        
+            $langPair = " ";
+
         if (isset($jobDetails['resource']))
             $resource = $jobDetails['resource'];
         else
-            $resource = " ";    
+            $resource = " ";
         // if (isset($data['jobnumber']))
         //     $jobnumber = $data['jobnumber'];
         // else
@@ -1180,13 +1071,13 @@ class jobs_detail
             $itemStatus = $data['item_status'];
         else
             $itemStatus = " ";
-            
+
 
         $jobId = $id;
         $urlSlugAc = base64_encode("jobId=$jobId&userId=$resource&accept=1");
         $urlSlugRej = base64_encode("jobId=$jobId&userId=$resource&reject=1");
-        $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlugAc.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
-        $rejectLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlugRej.'" target="blank" style="padding: 7px 7px; background: red; border-radius: 5px; color: white;"> Reject Job </a>';        
+        $acceptLink = '<a href="' . SITE_URL . '#/job-accept/' . $urlSlugAc . '" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
+        $rejectLink = '<a href="' . SITE_URL . '#/job-accept/' . $urlSlugRej . '" target="blank" style="padding: 7px 7px; background: red; border-radius: 5px; color: white;"> Reject Job </a>';
 
         // $body = "<p>Please login to account accept.</p>";
         // $body .= "<p>Job No. : " . $jobnumber . ",</p>";
@@ -1194,7 +1085,7 @@ class jobs_detail
         // $body .= "<p>job Status : " . $itemStatus . ",</p>";
         // $body .= "<p> click here to accept the job <br>" . $acceptLink . "</p>";
 
-        $replace_array = array($jobnumber,$langPair,$itemStatus,$duedate,$acceptLink,$rejectLink);
+        $replace_array = array($jobnumber, $langPair, $itemStatus, $duedate, $acceptLink, $rejectLink);
         $body = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
 
         $subject = "Job Request";
@@ -1245,32 +1136,32 @@ class jobs_detail
 
     public function jobSendRequest($data)
     {
-        $this->_db->where('template_id',11);
+        $this->_db->where('template_id', 11);
         $emailTemplateRegistration = $this->_db->getOne('tms_email_templates');
-        $search_array = array("[JOBNO]", "[LANGUAGES]",'[JOBSTATUS]','[DUEDATE]','[ACCEPTLINK]','[REJECTLINK]');
+        $search_array = array("[JOBNO]", "[LANGUAGES]", '[JOBSTATUS]', '[DUEDATE]', '[ACCEPTLINK]', '[REJECTLINK]');
 
         if (isset($data['id'])) {
             $this->_db->where('job_summmeryId', $data['id']);
             $jobDetails = $this->_db->getone('tms_summmery_view');
-            
+
             if (isset($jobDetails['po_number']))
                 $jobnumber = $jobDetails['po_number'];
             else
                 $jobnumber = " ";
-                if (isset($jobDetails['due_date']))
+            if (isset($jobDetails['due_date']))
                 $duedate = $jobDetails['due_date'];
             else
-                $duedate =  " ";
+                $duedate = " ";
             if (isset($jobDetails['ItemLanguage']))
                 $langPair = $jobDetails['ItemLanguage'];
             else
-                $langPair =  " ";
-                    
+                $langPair = " ";
+
             if (isset($jobDetails['item_status']))
                 $itemStatus = $jobDetails['item_status'];
             else
                 $itemStatus = " ";
-    
+
             if (isset($data['data']['vEmailAddress'])) {
                 $eIds = explode(',', $data['data']['vEmailAddress']);
                 $dataUp['send_request'] = $data['data']['vEmailAddress'];
@@ -1281,10 +1172,10 @@ class jobs_detail
                     $jobId = $data['id'];
                     $urlSlugAc = base64_encode("jobId=$jobId&userId=$val&accept=1");
                     $urlSlugRej = base64_encode("jobId=$jobId&userId=$val&reject=1");
-                    $acceptLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlugAc.'" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
-                    $rejectLink = '<a href="'.SITE_URL.'#/job-accept/'.$urlSlugRej.'" target="blank" style="padding: 7px 7px; background: red; border-radius: 5px; color: white;"> Reject Job </a>';
+                    $acceptLink = '<a href="' . SITE_URL . '#/job-accept/' . $urlSlugAc . '" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
+                    $rejectLink = '<a href="' . SITE_URL . '#/job-accept/' . $urlSlugRej . '" target="blank" style="padding: 7px 7px; background: red; border-radius: 5px; color: white;"> Reject Job </a>';
 
-                    if (isset($freelaceremail['vEmailAddress'])){
+                    if (isset($freelaceremail['vEmailAddress'])) {
                         $to = $freelaceremail['vEmailAddress'];
                         // Message
                         // $body = "<p> Please login to account accept Or Click on below link.</p>";
@@ -1295,11 +1186,11 @@ class jobs_detail
                         // $body .= "<p> click here to accept the job <br><br>" . $acceptLink . "</p>";
                         // $body .= "<p> click here to reject the job <br><br>" . $rejectLink . "</p>";
 
-                        $replace_array = array($jobnumber,$langPair,$itemStatus,$duedate,$acceptLink,$rejectLink);
+                        $replace_array = array($jobnumber, $langPair, $itemStatus, $duedate, $acceptLink, $rejectLink);
                         $body = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
-                        
+
                         $subject = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Send Request ";
-                
+
                         $attachments = '';
                         $to_name = '';
 
@@ -1313,13 +1204,13 @@ class jobs_detail
             $dataUp['item_status'] = 'Requested';
             $this->_db->where('job_summmeryId', $data['id']);
             $updt = $this->_db->update('tms_summmery_view', $dataUp);
-            
+
             //if($mailResponse['status'] == 200) {
             if ($updt) {
                 $return['status'] = 200;
                 $return['msg'] = 'Successfully Sent.';
-            } 
-        }else {
+            }
+        } else {
             $return['status'] = 422;
             $return['msg'] = 'Not Sent.';
         }
@@ -1332,7 +1223,7 @@ class jobs_detail
         if (isset($data['jobId'])) {
             $this->_db->where('job_summmeryId', $data['jobId']);
             $jobDetails = $this->_db->getone('tms_summmery_view');
-        
+
             $dataUp['updated_date'] = date('Y-m-d H:i:s');
             if (isset($data['jobAccept']) && $data['jobAccept'] == '1') {
                 $dataUp['accept'] = $data['resourceId'];
@@ -1341,17 +1232,17 @@ class jobs_detail
                 $dataUp['item_status'] = 'Ongoing';
             } else {
                 $dataUp['rejection'] = $data['resourceId'];
-            }   
+            }
             $this->_db->where('job_summmeryId', $data['jobId']);
             $updt = $this->_db->update('tms_summmery_view', $dataUp);
-        
+
             //if($mailResponse['status'] == 200) {
             if ($updt) {
                 $return['status'] = 200;
                 $return['jobAccept'] = $data['jobAccept'];
                 $return['msg'] = 'Successfully Updated.';
-            } 
-        }else {
+            }
+        } else {
             $return['status'] = 422;
             $return['msg'] = 'Not Updated.';
         }
@@ -1371,23 +1262,23 @@ class jobs_detail
         if (isset($data['scoop_source_lang']))
             unset($data['scoop_source_lang']);
         if (isset($data['scoop_target_lang']))
-            unset($data['scoop_target_lang']);    
-        
+            unset($data['scoop_target_lang']);
+
         if (isset($data['due_date'])) {
             $data['due_date'] = date('Y-m-d H:i:s', strtoTime($data['due_date']));
         }
         if (isset($data['resource'])) {
             $explR = explode(",", $data['resource']);
-            $data['resource'] = $explR[count($explR)-1];
+            $data['resource'] = $explR[count($explR) - 1];
         }
-        
+
         $data['updated_date'] = date('Y-m-d H:i:s');
 
         $this->_db->where('job_summmeryId', $id);
 
         $update = $this->_db->update('tms_summmery_view', $data);
 
-        if($update && isset($data['order_id'])) {
+        if ($update && isset($data['order_id'])) {
             // $qry = "SELECT count(*) as count FROM tms_summmery_view WHERE order_id = '".$data['order_id']."' AND item_id = '".$data['item_id']."' AND resource = '' ";
             // $res_exist = $this->_db->rawQuery($qry);
             // if ($res_exist && $res_exist[0]['count'] == 0) {
@@ -1425,12 +1316,12 @@ class jobs_detail
             $info = $this->_db->getone('tms_users');
 
             $data['vEmailAddress'] = $info['vEmailAddress'];
-        };
+        }
+        ;
 
         if (isset($data['vEmailAddress']))
 
             $to = $data['vEmailAddress'];
-
         else
 
             $to = "";
@@ -1438,7 +1329,6 @@ class jobs_detail
         if (isset($data['job_code']) && isset($data['job_no']))
 
             $jobNo = $data['job_code'] . str_pad($data['job_no'], 3, '0', STR_PAD_LEFT);
-
         else
 
             $jobNo = "";
@@ -1446,7 +1336,6 @@ class jobs_detail
         if (isset($data['description']))
 
             $description = $data['description'];
-
         else
 
             $description = "";
@@ -1454,7 +1343,6 @@ class jobs_detail
         if (isset($data['resource']))
 
             $resource = $data['resource'];
-
         else
 
             $resource = "";
@@ -1462,7 +1350,6 @@ class jobs_detail
         if (isset($data['due_date']))
 
             $dueDate = $data['due_date'];
-
         else
 
             $dueDate = "";
@@ -1470,7 +1357,6 @@ class jobs_detail
         if (isset($data['item_status']))
 
             $itemStatus = $data['item_status'];
-
         else
 
             $itemStatus = "";
@@ -1540,7 +1426,7 @@ class jobs_detail
 
         $this->_db->where('itemId', $ItemId);
 
-        $data =  $this->_db->getOne('tms_items');
+        $data = $this->_db->getOne('tms_items');
 
         if ($data) {
 
@@ -1548,7 +1434,7 @@ class jobs_detail
 
             $this->_db->where('order_id', $orderId);
 
-            $info  = $this->_db->get('tms_summmery_view');
+            $info = $this->_db->get('tms_summmery_view');
         } else {
 
             $info = "";
@@ -1564,7 +1450,7 @@ class jobs_detail
 
         $this->_db->where('itemId', $ItemId);
 
-        $data =  $this->_db->getOne('tms_items');
+        $data = $this->_db->getOne('tms_items');
 
         if ($data) {
 
@@ -1594,7 +1480,7 @@ class jobs_detail
 
         $this->_db->where('vUserName', $resource);
 
-        $data =  $this->_db->getOne('tms_users');
+        $data = $this->_db->getOne('tms_users');
 
         return $data['iUserId'];
     }
@@ -1608,7 +1494,7 @@ class jobs_detail
 
         $this->_db->where('item_id', $id);
 
-        $data =  $this->_db->getOne('tms_summmery_view');
+        $data = $this->_db->getOne('tms_summmery_view');
     }
 
 
@@ -1706,8 +1592,8 @@ class jobs_detail
 
                 //Sending Email to manager after job is Delivered END
                 // Update status to QA Ready
-                if(isset($jobsData['order_id']) && isset($jobsData['item_id'])) {
-                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '".$jobsData['order_id']."' AND item_number = '".$jobsData['item_id']."' ";
+                if (isset($jobsData['order_id']) && isset($jobsData['item_id'])) {
+                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' ";
                     $this->_db->rawQuery($qry_up);
                 }
 
@@ -2094,7 +1980,7 @@ class jobs_detail
 
                 $jobId = $value['job_summmeryId'];
 
-                $query = "SELECT tsv.*,tu.vUserName,tu.vEmailAddress,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId FROM tms_summmery_view tsv LEFT JOIN tms_users tu on tsv.resource = tu.iUserId LEFT JOIN tms_users tsu on tsv.contact_person = tsu.iUserId WHERE tsv.`job_summmeryId` = $jobId";
+                $query = "SELECT tsv.*,concat(tu.vFirstName, ' ', tu.vLastName) as vUserName,tu.vEmailAddress,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId FROM tms_summmery_view tsv LEFT JOIN tms_users tu on tsv.resource = tu.iUserId LEFT JOIN tms_users tsu on tsv.contact_person = tsu.iUserId WHERE tsv.`job_summmeryId` = $jobId";
 
                 $chk = $this->_db->rawQuery($query);
 
@@ -2201,7 +2087,7 @@ class jobs_detail
         $qry = "SELECT * FROM `tms_summmery_view` ";
         $data = $this->_db->rawQuery($qry);
         return $data;
-    }    
+    }
 
     public function getOneJobsummury($id)
     {
@@ -2210,51 +2096,54 @@ class jobs_detail
         return $data;
     }
 
-    public function sendPurchaseOrderLinguist($data) {
-        $pdf_content = explode("base64,",$data['pdfData']);
+    public function sendPurchaseOrderLinguist($data)
+    {
+        $pdf_content = explode("base64,", $data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
         //$pdfFileName = $data['purchaseOrderNo'].'.pdf';
         $pdfFileName = isset($data['poFilenamePdf']) ? $data['poFilenamePdf'] : 'purchase_order.pdf';
         $resourceName = isset($data['resourceName']) ? $data['resourceName'] : '';
-        $bodyTemp = "<p> Hello ".$resourceName." </p>";
-        $bodyTemp .= "<p>Please see the attached Purchased Order : <b>" .$pdfFileName. "</b> </p>";
+        $bodyTemp = "<p> Hello " . $resourceName . " </p>";
+        $bodyTemp .= "<p>Please see the attached Purchased Order : <b>" . $pdfFileName . "</b> </p>";
         $bodyTemp .= "<p> From :SpellUp </p>";
         $body = $bodyTemp;
-        if(isset($data['mailTextContent'])){
+        if (isset($data['mailTextContent'])) {
             $body = $data['mailTextContent'];
         }
         //$body .= "welcome to <img src=\"cid:id1\"></br>";
-        
+
         $attachments = '';
         $subject = 'Purchase Order';
         $to_name = '';
         //$to = 'anil.kanhasoft@gmail.com';
         $to = $data['resourceEmail'];
 
-        if($data['pdfData']){
+        if ($data['pdfData']) {
             if ($pdf_content != '') {
-                $pdfFileContent = ''; 
-                if(is_array($pdf_content)){
-                    $pdfFileContent = sizeof($pdf_content)>1 ? $pdf_content[1] : '';
+                $pdfFileContent = '';
+                if (is_array($pdf_content)) {
+                    $pdfFileContent = sizeof($pdf_content) > 1 ? $pdf_content[1] : '';
                     // pdf file
-                    $attachments =  [[
-                        'ContentType' => 'application/pdf',
-                        'Filename' => $pdfFileName,
-                        'Base64Content' => $pdfFileContent
-                    ]]; 
+                    $attachments = [
+                        [
+                            'ContentType' => 'application/pdf',
+                            'Filename' => $pdfFileName,
+                            'Base64Content' => $pdfFileContent
+                        ]
+                    ];
                 }
-            }    
-            
+            }
+
             $send_fn = new functions();
-            $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc='', $bcc='', $subject, $body, $attachments);
-            
-            if($mailResponse['status'] == 200) {
-                if(isset($data['order_id']) && isset($data['item_id'])) {
-                    $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '".$data['order_id']."' AND item_number = '".$data['item_id']."' AND item_status = '1' ";
+            $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc = '', $bcc = '', $subject, $body, $attachments);
+
+            if ($mailResponse['status'] == 200) {
+                if (isset($data['order_id']) && isset($data['item_id'])) {
+                    $qry_up = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '" . $data['order_id'] . "' AND item_number = '" . $data['item_id'] . "' AND item_status = '1' ";
                     $this->_db->rawQuery($qry_up);
                 }
-                if(isset($data['job_summmeryId']) && $data['job_summmeryId'] != '' ) {
-                    $qry_up = "UPDATE `tms_summmery_view` SET `item_status` = 'Ongoing' WHERE job_summmeryId = '".$data['job_summmeryId']."' AND `item_status` = 'In preparation' ";
+                if (isset($data['job_summmeryId']) && $data['job_summmeryId'] != '') {
+                    $qry_up = "UPDATE `tms_summmery_view` SET `item_status` = 'Ongoing' WHERE job_summmeryId = '" . $data['job_summmeryId'] . "' AND `item_status` = 'In preparation' ";
                     $this->_db->rawQuery($qry_up);
                 }
 
@@ -2266,7 +2155,7 @@ class jobs_detail
                 $result['msg'] = 'Could not send mail!';
                 return $result;
             }
-        }else{
+        } else {
             return $result['status'] = 422;
         }
     }

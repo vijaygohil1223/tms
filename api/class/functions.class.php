@@ -393,7 +393,7 @@ class functions {
     }
 
     public function send_email_smtp__imgg($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '') {
-        $b64image = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/assets/img/BeConnected_Logo.gif'));
+        $b64image = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/assets/img/logo.png'));
 
         $dom = new DOMDocument;
         @$dom->loadHTML($content);
