@@ -1790,7 +1790,8 @@ class jobs_detail
 
                 $resourceName = $this->_db->getOne('tms_users');
 
-                $data[$key]['resource'] = $resourceName ? $resourceName['vUserName'] : '';
+                $data[$key]['resource'] = $resourceName ? $resourceName['vFirstName']. " " .$resourceName['vLastName'] : '';
+                //$data[$key]['resource'] = $resourceName ? $resourceName['vUserName'] : '';
             }
 
             if ($value['contact_person']) {
@@ -1799,7 +1800,7 @@ class jobs_detail
 
                 $resourceName = $this->_db->getOne('tms_users');
 
-                $data[$key]['contact_person'] = $resourceName ? $resourceName['vUserName'] : '';
+                $data[$key]['contact_person'] = $resourceName ? $resourceName['vFirstName']. " " .$resourceName['vLastName'] : '';
             }
         }
 
