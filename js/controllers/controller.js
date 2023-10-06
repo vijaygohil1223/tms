@@ -17487,9 +17487,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }).error(errorCallback);
 
-            if($scope.invoiceDetail.invoice_status != 'Open' || ($scope.userRight == 2 && $scope.invoiceDetail.is_invoice_sent == 1 )){
+            if($scope.invoiceDetail.invoice_status != 'Open' || $scope.invoiceDetail.is_approved == '1' || ($scope.userRight == 2 && $scope.invoiceDetail.is_invoice_sent == 1 )){
                 $scope.hideElemnt = false;
             }
+            
+            console.log('$scope.hideElemnt', $scope.hideElemnt)
 
             console.log('$scope.userRight',$scope.userRight )
 
