@@ -2102,8 +2102,8 @@ class jobs_detail
         //$pdfFileName = $data['purchaseOrderNo'].'.pdf';
         $pdfFileName = isset($data['poFilenamePdf']) ? $data['poFilenamePdf'] : 'purchase_order.pdf';
         $resourceName = isset($data['resourceName']) ? $data['resourceName'] : '';
-        $bodyTemp = "<p> Hello " . $resourceName . " </p>";
-        $bodyTemp .= "<p>Please see the attached Purchased Order : <b>" . $pdfFileName . "</b> </p>";
+        $bodyTemp = "<p> Hi " . $resourceName . ", </p>";
+        $bodyTemp .= "<p> Please see the attached Purchased Order : <b>" . $pdfFileName . "</b> </p>";
         $bodyTemp .= "<p> From :SpellUp </p>";
         $body = $bodyTemp;
         if (isset($data['mailTextContent'])) {
@@ -2112,7 +2112,7 @@ class jobs_detail
         //$body .= "welcome to <img src=\"cid:id1\"></br>";
 
         $attachments = '';
-        $subject = 'Purchase Order';
+        $subject = isset($data['emailSubject']) ? $data['emailSubject'] : 'Purchase Order';
         $to_name = '';
         //$to = 'anil.kanhasoft@gmail.com';
         $to = $data['resourceEmail'];

@@ -4060,7 +4060,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'poFilenamePdf': poFilenamePdf,
             'resourceName': $scope.resourceDetail.vFirstName +' '+ $scope.resourceDetail.vLastName,
             'deadline' : poDueDateTime,
-            'companyCodeShort': $scope.poSettingData ? $scope.poSettingData.company_short_code : '' 
+            'companyCodeShort': $scope.poSettingData ? $scope.poSettingData.company_short_code : '', 
+            'companyNameSite': $scope.poSettingData ? $scope.poSettingData.company_name : '' 
         };
         if(type == 'SendOrder'){ 
             setTimeout(() => {
@@ -27883,7 +27884,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.emailDetail = items;
     console.log('$scope.emailDetail', $scope.emailDetail)
     var jobDetailUrl = downloadUrl = '';
-
+    $scope.emailSubject = ''; 
     if(items){
 
         
@@ -27892,6 +27893,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var jobDetailUrl = baseUrl + '#/project-job-detail/' + $window.btoa('jobdetailID='+items.jobdetail.job_summmeryId);
         var downloadUrl = baseUrl + '#/job-download-file/' + $window.btoa('downloadID='+items.jobdetail.job_summmeryId);
         console.log('jobDetailUrl', jobDetailUrl)
+        $scope.emailSubject = 'PO | '+ items.jobdetail.po_number + ' | ' + items.companyNameSite  
     }
 
 
@@ -27903,6 +27905,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var emailContentText = data.find( (templt) => templt.template_id == 13);
             if(emailContentText){
                 const rplcData = {
+                    Name1: items.resourceDetail.vFirstName,
                     Name2: items.resourceDetail.vLastName,
                     Item: items.jobdetail.projectName,
                     //JobService: items.jobdetail.po_number , // taskname
@@ -27931,6 +27934,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'pdfData': items.pdfData,
             'purchaseOrderNo': items.purchaseDetail.purchaseOrderNo,
             'resourceEmail': $scope.cPersonMsg.vEmailAddress ? $scope.cPersonMsg.vEmailAddress : items.resourceDetail.vEmailAddress,
+            'emailSubject':$scope.emailSubject,
             'poFilenamePdf': items.poFilenamePdf,
             'resourceName': items.resourceDetail.vFirstName +' '+ items.resourceDetail.vLastName,
             'mailTextContent':$scope.cPersonMsg.messageData,
@@ -29969,7 +29973,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     // download file from email link
     $scope.fieldDownloadFromEmailURL = function(folderId){
-        var tmsfolder = 'jobs';
+        var tmsfolder = 'jobs-file';
         if (folderId != undefined) {
             $scope.showLoder = true;
             rest.path = 'filemanagerfolderDownload/' + folderId;
@@ -30016,7 +30020,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         folderArr.forEach(function (folders) {
                             zipdwnld.folder(folders.folderurl_dir);
                         });
-                        
                         file_count++;
                         if (data != null) {
                             zipdwnld.file(url.folderurl_dir + url.file_name, data, { binary: true });
