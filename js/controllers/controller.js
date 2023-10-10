@@ -3982,7 +3982,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
         //setTimeout(() => {
             emailTemplate = data.find( (templt) => templt.template_id == 15);
-            console.log('$scope.emailTemplate', emailTemplate)
             emailContentText = data.find( (templt) => templt.template_id == 13);
             //$scope.emailTemplateText =  $('#emailTemplateText').append(emailContentText.template_content);
             if(emailContentText){
@@ -3994,6 +3993,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.poTempate = false;
 
     $scope.sendPoPopup = function (type) {
+        $('.emailTemplate').empty();
         $scope.poTempate = true;
         
         let poDueDate = ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date : '';
@@ -4012,7 +4012,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             PHONENUMBER: '',
             ORDERDATE: $filter('globalDtFormat')($scope.purchaseDetail.purchaseOrderDate),
             JOBNO: $scope.jobdetail.po_number ? $scope.jobdetail.po_number : '' ,
-            PROJECTNAME: $scope.jobdetail.projectName,
+            PROJECTNAME: $scope.jobdetail.po_number,
+            // PROJECTNAME: $scope.jobdetail.projectName,
             //INDIRECT_CUSTOMER: $scope.jobdetail.clientName,
             INDIRECT_CUSTOMER: $scope.jobdetail.clientAccountName,
             JOBSERVICE: $scope.jobdetail.project_type_name, 
@@ -27907,7 +27908,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 const rplcData = {
                     Name1: items.resourceDetail.vFirstName,
                     Name2: items.resourceDetail.vLastName,
-                    Item: items.jobdetail.projectName,
+                    Item: items.jobdetail.po_number,
+                    //Item: items.jobdetail.projectName,
                     //JobService: items.jobdetail.po_number , // taskname
                     JobService: items.jobdetail.project_type_name , // taskname
                     //IndirectCustomer : items.jobdetail.clientName,
