@@ -4045,7 +4045,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     kendo.drawing.pdf.saveAs(group, poFilenamePdf);
                 });
                 setTimeout(() => {
-                    $scope.poTempate = false;  
+                   // $scope.poTempate = false;  
                 }, 3000); 
             }, 500);
             
@@ -5094,6 +5094,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //project root get display front
     if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
+            console.log('AA')
             rest.path = 'filefrontroot/' + $window.localStorage.orderID + '/' + $routeParams.id;
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data.fmanager_id);
@@ -5102,8 +5103,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $window.localStorage.countSt == " " && $scope.userRight == '1') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
+            console.log('BBBB')
             // For download popup source-target to display file-folder (Parent id will be change)  
-            $routeParams.id = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
+            //$routeParams.id = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
+            $routeParams.id = $routeParams.id; 
             rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data[0].fmanager_id);
@@ -5118,8 +5121,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $scope.userRight == '2') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
+            console.log('CCC')
             // For download popup source-target to display file-folder (Parent id will be change)  
-            let routeParamsid = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
+            //let routeParamsid = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
+            let routeParamsid = $routeParams.id; 
             //rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
             rest.path = 'jobfileuserfrontroot/' + $window.localStorage.jobfolderId + '/' + routeParamsid;
             rest.get().success(function (data) {
@@ -5333,9 +5338,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#' + fid).addClass('activeselect');
             } else {
                 angular.element('#' + fid).addClass('activeselect');
-                /*$scope.copyfile.push({
+                $scope.copyfile.push({
                     id: fid
-                });*/
+                });
             }
         } else if (chkForClass == true) {
             angular.element('#' + fid).removeClass('activeselect');
@@ -5532,6 +5537,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
+    // Double click on file it will download direct
+    setTimeout(() => {
+        $('file').on('dblclick', function() {
+            // To solve two time file download issue
+            if ($(this).data('clicked')) {
+                return;
+            }
+            $(this).data('clicked', true);
+            // Create a hidden anchor element
+            var fileName = $(this).find("p").text();
+
+            const downloadLink = document.createElement('a');
+            downloadLink.style.display = 'none';
+            document.body.appendChild(downloadLink);
+            downloadLink.setAttribute('href', fileName);
+            downloadLink.setAttribute('download', fileName.split('/').pop());
+            downloadLink.click();
+
+            document.body.removeChild(downloadLink);
+
+            setTimeout(() => {
+                // To solve two time file download issue
+                $(this).data('clicked', false);
+            }, 500);
+        
+        });
+    }, 2000);
+
     if ($window.localStorage.getItem("parentId") != " ") {
         var id = $window.localStorage.getItem("parentId");
         console.log('id', id)
@@ -5555,7 +5588,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         ItemNo = val.name.match(/\d+$/);
                         if (ItemNo) {
                             $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
-
                         }
                     }
                 })
@@ -5786,11 +5818,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // context-menu for files
                 $scope.menuOptionsFiles = [
                     ['Download', function ($itemScope) {
-                        var a = document.createElement('a');
-                        document.body.appendChild(a);
-                        a.download = $itemScope.display.name;
-                        a.href = $("#download" + $itemScope.display.fmanager_id).attr('href');
-                        a.click();
+                        if($scope.copyfile && $scope.copyfile.length > 0){
+                            const fileInputs = document.querySelectorAll('file.activeselect p');
+                            const fileUrls = Array.from(fileInputs).map(itm => itm.innerText);    
+                            const downloadLink = document.createElement('a');
+                            downloadLink.style.display = 'none';
+                            document.body.appendChild(downloadLink);
+                            // Loop through selected files and trigger downloads
+                            fileUrls.forEach(url => {
+                                downloadLink.setAttribute('href', url);
+                                downloadLink.setAttribute('download', url.split('/').pop());
+                                downloadLink.click();
+                            });
+                            document.body.removeChild(downloadLink);
+                        }else{
+                            var a = document.createElement('a');
+                            document.body.appendChild(a);
+                            a.download = $itemScope.display.name;
+                            a.href = $("#download" + $itemScope.display.fmanager_id).attr('href');
+                            a.click();    
+                        }    
+                            
+                        
+                        
                     }],
 
                     ['Delete', function ($itemScope) {
