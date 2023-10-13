@@ -654,6 +654,25 @@ function findCommonArrEle(arr1, arr2) {
     return arr1.some(item => arr2.includes(item))
 }
 
+function calculateDueDate(givenDate) {
+    // const givenDate = new Date('2023-10-01');
+    // const dueDate = calculateDueDate(givenDate);
+    // console.log(dueDate.toLocaleDateString("hi-IN") );
+    const startDate = new Date(givenDate);
+    startDate.setDate(startDate.getDate() + 60);
+    if (startDate.getDate() <= 5) {
+        startDate.setDate(5);
+    } else if (startDate.getDate() <= 20) {
+        startDate.setDate(20);
+    } else {
+        //startDate.setMonth(startDate.getMonth() + 1);
+        // if the month has 31 days than we have to use this
+        startDate.setMonth(startDate.getMonth() + 1, 5);
+        startDate.setDate(5);
+    }
+    return startDate;
+}
+
 function calculateAveragePercentage(percentages) {
     if(percentages.length ==0)
         return 0;
@@ -5094,7 +5113,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //project root get display front
     if ($window.localStorage.orderID && $window.localStorage.jobfolderId == " " && $window.localStorage.countSt == " ") {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            console.log('AA')
+            //console.log('AAA')
             rest.path = 'filefrontroot/' + $window.localStorage.orderID + '/' + $routeParams.id;
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data.fmanager_id);
@@ -5103,8 +5122,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $window.localStorage.countSt == " " && $scope.userRight == '1') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            console.log('BBBB')
-            // For download popup source-target to display file-folder (Parent id will be change)  
+            //console.log('BBBB')
+            //For download popup source-target to display file-folder (Parent id will be change)  
             //$routeParams.id = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
             $routeParams.id = $routeParams.id; 
             rest.path = 'jobfilefrontroot/' + $window.localStorage.orderID + '/' + $window.localStorage.jobfolderId + '/' + $routeParams.id;
@@ -5121,7 +5140,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $scope.userRight == '2') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            console.log('CCC')
+            //console.log('CCC')
             // For download popup source-target to display file-folder (Parent id will be change)  
             //let routeParamsid = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
             let routeParamsid = $routeParams.id; 
@@ -21946,10 +21965,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 if (type1) {
                     if (type1 == 'source') {
+                        console.log('type1', type1)
                         $('#sourceCount-' + id).text(count);
 
                     }
                     if (type1 == 'target') {
+                        console.log('type2', type1)
                         $('#targetCount-' + id).text(count);
                     }
                 }
@@ -21976,8 +21997,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $('.sourceC' + id).text(count);
             }
             if (type == 'target') {
-                //$('#targetCount-' + id).text(count);
-                $('.sourceC' + id).text(count);
+                $('#targetCount-' + id).text(count);
+                //$('.sourceC' + id).text(count);
             }
         }
     }
