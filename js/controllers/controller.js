@@ -736,6 +736,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $window.localStorage.setItem("session_menuAccess", data.session_data.menu_access);
                     $window.localStorage.setItem("session_superAdmin", data.session_data.super_admin);
+                    $window.localStorage.setItem("linguist_invoice_due_days", 60);
 
                     $rootScope.myData = data;
                     
@@ -17760,8 +17761,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.changeCreateDate = function(input){
         if(input){
             let dtInput = originalDateFormatNew(input);
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(dtInput, $scope.invoiceNumOfdays);
-            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            $scope.invoiceDetail.paymentDueDate = calculateDueDate(dtInput, $scope.invoiceNumOfdays)
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(dtInput, $scope.invoiceNumOfdays);
+            //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
         }
     }
 
@@ -17967,6 +17969,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.sendInvoiceEmail = function (type, number) {
         if (type) {
+            $scope.hideElemnt = false;
+            $scope.viewBtn = false;
+            angular.element('.invoiceInput input').addClass('invoiceInputborder');
+            $scope.isPdfdownload = true;
             $window.localStorage.generalMsg = $scope.invoicesetInfoData.invoice_receive_email ? $scope.invoicesetInfoData.invoice_receive_email : '';
             setTimeout( ()=> {
                 kendo.drawing.drawDOM($("#exportable"))
@@ -18009,6 +18015,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //         notification('Reminder mail has been sent successfully', 'success');
                         //     }
                         // }).error(errorCallback);
+
+                        modalInstance.result.then(function (data) {
+                            $route.reload();
+                        });
+
+                        // setTimeout( ()=> {
+                        //     angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+                        //     $scope.isPdfdownload = false;
+                        //     // hide show input element
+                        //     $scope.hideElemnt = true;
+                        //     $scope.viewBtn = true;
+                        // }, 1000)
                         
                     });
 
@@ -27835,6 +27853,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.viewBtn = true;
                             $window.localStorage.msgSubject = '';
                             notification('Invoice mail has been sent successfully', 'success');
+                            $timeout(function () {
+                                $uibModalInstance.close(data);
+                                $route.reload();
+                            }, 500)
                         }
                     }).error(errorCallback);
                     break;
@@ -31503,7 +31525,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceList = [];
     $scope.editInvoiceField = true;
     $scope.taxPercentage = 0;
-    $scope.invoiceNumOfdays = 30;
+    $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     $scope.currencyRate = 1;
     $scope.nokRate = 1;
     $scope.showSecondCUrrency = false; // freelacer Second currency selected as nok
