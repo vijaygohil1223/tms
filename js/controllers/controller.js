@@ -654,18 +654,15 @@ function findCommonArrEle(arr1, arr2) {
     return arr1.some(item => arr2.includes(item))
 }
 
-function calculateDueDate(givenDate) {
-    // const givenDate = new Date('2023-10-01');
-    // const dueDate = calculateDueDate(givenDate);
-    // console.log(dueDate.toLocaleDateString("hi-IN") );
-    const startDate = new Date(givenDate);
-    startDate.setDate(startDate.getDate() + 60);
+function calculateDueDate(inputDate, daysAfter) {
+    const noOfDays = daysAfter ? daysAfter : 30;
+    const startDate = new Date(inputDate);
+    startDate.setDate(startDate.getDate() + noOfDays);
     if (startDate.getDate() <= 5) {
         startDate.setDate(5);
     } else if (startDate.getDate() <= 20) {
         startDate.setDate(20);
     } else {
-        //startDate.setMonth(startDate.getMonth() + 1);
         // if the month has 31 days than we have to use this
         startDate.setMonth(startDate.getMonth() + 1, 5);
         startDate.setDate(5);
@@ -15950,7 +15947,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.invoiceStatus[i] = true;
                 data[i].freelance_currency = data[i].freelance_currency ? data[i].freelance_currency.split(',')[0] : 'EUR'; 
                 
-                const invoice_duedate = TodayAfterNumberOfDays(data[i].created_date, invoiceDuePeriodDays);
+                //const invoice_duedate = TodayAfterNumberOfDays(data[i].created_date, invoiceDuePeriodDays);
+                const invoice_duedate = calculateDueDate(data[i].created_date, invoiceDuePeriodDays);
                 
                 var ckey = $scope.invoiceList.length;
                 if (ckey > 0)
@@ -16002,7 +16000,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
-                var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
+                var invoice_duedate = calculateDueDate(val.created_date, invoicePeriod);
+                //var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
                 var InDuedate = new Date(invoice_duedate); 
                 
@@ -17666,8 +17665,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             const invoiceDate = $scope.invoiceDetail.invoice_date && isValidDate($scope.invoiceDetail.invoice_date) ? $scope.invoiceDetail.invoice_date : data[0].created_date ;
             $scope.invoiceDetail.invoice_date = invoiceDate;
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(invoiceDate, data[0].number_of_days);
-            //console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(invoiceDate, data[0].number_of_days);
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(invoiceDate, data[0].number_of_days);
+            $scope.invoiceDetail.paymentDueDate = calculateDueDate(invoiceDate, data[0].number_of_days)
+            console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
 
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             //$scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
@@ -17800,7 +17801,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $scope.invoiceDetail.invoice_id;
         rest.path = "invoiceStatusChange";
         rest.put(obj).success(function (data) {
-            $location.path("/invoice-data");
+            $route.reload();
+            //$location.path("/invoice-show/"+$routeParams.id);
+            //$location.path("/invoice-data");
+        }).error(function () { 
+            $route.reload();
         });
     }
 
@@ -17811,7 +17816,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $scope.invoiceDetail.invoice_id;
         rest.path = "invoiceStatusApproved";
         rest.put(obj).success(function (data) {
-            $location.path("/invoice-data");
+            $route.reload();
+            //$location.path("/invoice-show/"+$routeParams.id);
+            //$location.path("/invoice-data");
+        }).error(function () { 
+            $route.reload();
         });
     }
 
@@ -29175,7 +29184,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.paid_date = paid_date ? paid_date : '-'; 
                 
                 let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
-                var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
+                var invoice_duedate = calculateDueDate(val.created_date, invoicePeriod);
+                //var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
                 var InDuedate = new Date(invoice_duedate); 
                 
@@ -31654,8 +31664,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.custom_invoice_no = $scope.invoiceDetail.invoiceNumber;
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.job_id = obj;
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, data[0].number_of_days);
-            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, data[0].number_of_days);
+            //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            $scope.invoiceDetail.paymentDueDate = $filter('globalDtFormat')(calculateDueDate(date, data[0].number_of_days) )
             
             //$scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, 0));
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays(date, 0));
@@ -31739,8 +31751,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.changeCreateDate = function(input){
         if(input){
             let dtInput = originalDateFormatNew(input);
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(dtInput, $scope.invoiceNumOfdays);
-            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            $scope.invoiceDetail.paymentDueDate = $filter('globalDtFormat')(calculateDueDate(dtInput, $scope.invoiceNumOfdays))
+            // $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(dtInput, $scope.invoiceNumOfdays);
+            // $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
         }
     }
 
