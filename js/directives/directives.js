@@ -6839,8 +6839,18 @@ app.directive('clientinvoicepdfTemplate2', function () {
 // linguist invoice pdf html file
 app.directive('linguistInvoicePdftemplate', function () {
     return {
-        restrict: 'EA', // Default in 1.3+
-        templateUrl: 'tpl/linguist-invoice-pdf-content.html',
+        restrict: 'E', // Default in 1.3+
+        scope: {
+        templateName: '=' // Bind the template name to a scope variable
+        },
+        templateUrl: function(elem, attrs) {
+            console.log('attrs', attrs)
+            // Return the dynamic template URL based on the templateName scope variable
+            const tmpName = attrs & attrs.templateType == '2' ?  'linguist-invoice-pdf-content2.html' : 'linguist-invoice-pdf-content.html' 
+            console.log('tmpName', tmpName)
+            return 'tpl/' + tmpName ;
+        }
+        //templateUrl: 'tpl/linguist-invoice-pdf-content.html',
     };
 });
 app.directive('materialHeaderTemplate', function () {

@@ -655,7 +655,7 @@ function findCommonArrEle(arr1, arr2) {
 }
 
 function calculateDueDate(inputDate, daysAfter) {
-    const noOfDays = daysAfter ? daysAfter : 30;
+    const noOfDays = daysAfter ? parseInt(daysAfter) : 30;
     const startDate = new Date(inputDate);
     startDate.setDate(startDate.getDate() + noOfDays);
     if (startDate.getDate() <= 5) {
@@ -15934,6 +15934,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     var allInvoiceListArr = [];
     $scope.getData = function () {
         rest.path = "viewAllInvoice1/save";
@@ -16000,7 +16001,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.clientInvoiceListData = data;
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
-                let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
+                //let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
+                let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : $scope.invoiceNumOfdays
+                
                 var invoice_duedate = calculateDueDate(val.created_date, invoicePeriod);
                 //var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
@@ -17447,10 +17450,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isDisabledApprvd = false;
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
-    $scope.invoiceNumOfdays = 30;
+    $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     $scope.showSecondCUrrency = false;
     $scope.hideElemnt = true;
     $scope.viewBtn = true;
+
+    const TmpltDesign = $window.localStorage.getItem("invoiceDesignType");
+    $scope.invoiceDesignType = TmpltDesign && TmpltDesign == 2 ? '2' : '';
+    $scope.invoiceTemplateName = 'tpl/linguist-invoice-pdf-content'+$scope.invoiceDesignType+'.html' ;
+
     $scope.invoicePaid = function (frmId) {
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
@@ -17528,6 +17536,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
+            data[0].number_of_days = $scope.invoiceNumOfdays;
             $scope.invoiceDetail = data[0];
             console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             
@@ -29066,6 +29075,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('freelanceInvoiceController', function ($scope, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $filter, $q, invoiceDuePeriodDays) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
 
     $scope.search = function (search) {
         if (search) {
@@ -29204,8 +29214,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 let paid_date = $filter('globalDtFormat')(val.paid_date);
                 val.paid_date = paid_date ? paid_date : '-'; 
-                
-                let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
+                //let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
+                let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : $scope.invoiceNumOfdays
                 var invoice_duedate = calculateDueDate(val.created_date, invoicePeriod);
                 //var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
@@ -31526,6 +31536,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editInvoiceField = true;
     $scope.taxPercentage = 0;
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
+    console.log('$scope.invoiceNumOfdays', $scope.invoiceNumOfdays)
     $scope.currencyRate = 1;
     $scope.nokRate = 1;
     $scope.showSecondCUrrency = false; // freelacer Second currency selected as nok
@@ -31557,7 +31568,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             // If freelacer Second currency selected as nok
             console.log('$scope.invoiceDetail', $scope.invoiceDetail)
-            if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency =='NOK,kr'){
+            if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency == 'NOK,kr'){
                 $scope.showSecondCUrrency = true;
             }
             angular.forEach($scope.currencyAllData, function (item, i) {    
@@ -31678,8 +31689,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
             var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
-            $scope.invoiceNumOfdays = data[0].number_of_days;
+            //$scope.invoiceNumOfdays = data[0].number_of_days;
+            console.log('$scope.invoiceNumOfdays', $scope.invoiceNumOfdays)
             var date = new Date();
+            console.log('date', date)
             //$scope.invoiceDetail.invoiceNumber = data[0].poNumber.split('_')[0] + '_' + data[0].jobCode + '_' + pad(data[0].invoiceCount + 1, 3);
             $scope.invoiceDetail.invoiceNumber = 'S-' + pad(data[0].invoiceCount + 1, 6);
             $scope.invoiceDetail.invoice_number = $scope.invoiceDetail.invoiceNumber;
@@ -31687,9 +31700,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.job_id = obj;
 
-            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, data[0].number_of_days);
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, $scope.invoiceNumOfdays);
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
-            $scope.invoiceDetail.paymentDueDate = $filter('globalDtFormat')(calculateDueDate(date, data[0].number_of_days) )
+            $scope.invoiceDetail.paymentDueDate = $filter('globalDtFormat')(calculateDueDate(date, $scope.invoiceNumOfdays) )
             
             //$scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, 0));
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays(date, 0));
