@@ -2,11 +2,13 @@
   .overview-list.projecttable .dataTables_wrapper {
     margin-top: 10px;
   }
+
   .overviewli li.list-group-item a {
     text-decoration: none;
     padding-top: 10px !important;
     padding-bottom: 10px !important;
   }
+  
 </style>
 
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
@@ -25,19 +27,19 @@
         <h1 class="m-n font-thin h3">Invoice List</h1>
         <div>
           <button class="btn btn-info" ng-click="exportData()">Excel &nbsp;<i class="glyphicon glyphicon-download-alt"
-            aria-hidden="true"></i></button>
+              aria-hidden="true"></i></button>
           <a class="btn btn-info" href="#/invoice-linguist-jobs">Create Invoice</a>
-        </div>    
+        </div>
       </div>
       <div class="wrapper-md ng-scope">
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="row wraper">
               <div class="bg-light lter b-b wrapper-md d-flex" style="justify-content:end;margin-top:-15px;">
-                
+
                 <div class="col-sm-12">
                   <div class="col-sm-2" style="width: 10%;">
-                    <div class="d-flex" >
+                    <div class="d-flex">
                       <label style="margin-top:5px;white-space:nowrap;">Check All &nbsp;&nbsp;</label>
                       <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall"
                         ng-checked="checkalldata=='all'" ng-click="checkInvoiceIds('all')" />
@@ -47,15 +49,16 @@
                     <div class="d-flex" style="white-space:nowrap;">
                       <label style="margin-top:5px;">Change Status &nbsp;&nbsp;</label>
                       <input type="text" select2-invoice-status id="invoiceStatusdata"
-                        class="input-sm form-control w-sm inline v-middle" ng-model="invoiceStatus" ng-change="onInputChange(invoiceStatus)"
-                        placeholder="please select Status" />
+                        class="input-sm form-control w-sm inline v-middle" ng-model="invoiceStatus"
+                        ng-change="onInputChange(invoiceStatus)" placeholder="please select Status" />
                     </div>
                   </div>
                   <div class="col-sm-3" ng-show="isPaymentDate">
                     <div class="d-flex" style="white-space:nowrap;">
                       <label style="margin-top:5px;">Payment Date &nbsp;&nbsp;</label>
-                      <input type="text" class="input-sm form-control w-sm inline v-middle" name="created_date" minTime="false" ng-model="created_date" 
-                      ng-datepicker required autocomplete="off" placeholder="Payment date" style="margin-left:20px;"/>  
+                      <input type="text" class="input-sm form-control w-sm inline v-middle" name="created_date"
+                        minTime="false" ng-model="created_date" ng-datepicker required autocomplete="off"
+                        placeholder="Payment date" style="margin-left:20px;" />
                     </div>
                   </div>
                   <div class="col-sm-2">
@@ -102,55 +105,59 @@
                 </ul>
                 <div class="overview-list projecttable">
                   <div class="table-responsive">
-                    <table class="table table-striped b-b" datatable="ng" id="invoiceList" >
+                    <table class="table table-striped b-b" datatable="ng" id="invoiceList">
                       <!-- <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList"> -->
-                        <thead>
-                          <th>#</th>
-                          <th>Invoice number</th>
-                          <th>Company name</th>
-                          <th>Freelancer name</th>
-                          <th>Price</th>
-                          <th>Currency</th>
-                          <th ng-click="dtExcelTable('create-date')">Creation Date</th>
-                          <th ng-click="dtExcelTable('due-date')">Due Date</th>
-                          <th ng-click="dtExcelTable('payment-date')">Payment Date</th>
-                          <th>Invoice status</th>
-                          <th>Action</th>
-                        </thead>
-                        <tbody>
-                          <tr ng-repeat="invoiceL in invoiceListAll">
-                            <td class="nowrap">
-                              <input type="checkbox" id="invoiceCheck{{$index}}" ng-click="checkInvoiceIds(invoiceL.invoice_id)"
-                                class="invoiceCheck{{invoiceL.invoice_id}}" name="invoiceCheck{{$index}}" ng-model="checkor"
-                                ng-checked="checkdata=='invoicecheck'">
-                              <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported" style="margin-left:7px;"></span>
-                              <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
-                                style="display: none;" ng-model="invoiceL.invoice_id">
-                            </td>
-                            <td>
-                              <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"> {{invoiceL.invoice_number}} </a>
-                            </td>
-                            <td ng-bind="invoiceL.companyName"></td>
-                            <td ng-bind="invoiceL.freelanceName"></td>
-                            <td ng-bind="invoiceL.Invoice_cost"></td>
-                            <td ng-bind="invoiceL.freelance_currency"></td>
-                            <td>{{ invoiceL.created_date | globalDtFormat }}</td>
-                            <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
-                            <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
-                            <td>
-                              <span ng-bind="invoiceL.invoice_status"></span>
-                            </td>
-                            <td>
-                              <div class="trActiontitle">
-                                <!-- <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                      <thead>
+                        <th>#</th>
+                        <th>Invoice number</th>
+                        <th>Company name</th>
+                        <th>Freelancer name</th>
+                        <th>Price</th>
+                        <th>Currency</th>
+                        <th ng-click="dtExcelTable('create-date')">Creation Date</th>
+                        <th ng-click="dtExcelTable('due-date')">Due Date</th>
+                        <th ng-click="dtExcelTable('payment-date')">Payment Date</th>
+                        <th>Invoice status</th>
+                        <th>Action</th>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="invoiceL in invoiceListAll">
+                          <td class="nowrap">
+                            <input type="checkbox" id="invoiceCheck{{$index}}"
+                              ng-click="checkInvoiceIds(invoiceL.invoice_id)"
+                              class="invoiceCheck{{invoiceL.invoice_id}}" name="invoiceCheck{{$index}}"
+                              ng-model="checkor" ng-checked="checkdata=='invoicecheck'">
+                            <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported"
+                              style="margin-left:7px;"></span>
+                            <input type="text" id="invoiceCheckData{{$index}}" name="invoiceCheckData{{$index}}"
+                              style="display: none;" ng-model="invoiceL.invoice_id">
+                          </td>
+                          <td>
+                            <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"> {{invoiceL.invoice_number}}
+                            </a>
+                          </td>
+                          <td ng-bind="invoiceL.companyName"></td>
+                          <td ng-bind="invoiceL.freelanceName"></td>
+                          <td ng-bind="invoiceL.Invoice_cost"></td>
+                          <td ng-bind="invoiceL.freelance_currency"></td>
+                          <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                          <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                          <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
+                          <td>
+                            <span ng-bind="invoiceL.invoice_status"></span>
+                          </td>
+                          <td>
+                            <div class="trActiontitle">
+                              <!-- <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
                                     class="fa fa-eye"></i></a> -->
-                                <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
-                                      class="fa fa-download"></i></a>    
-                              </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                              <a href="javascript:void(0)" title="pdf report" class="trActionIcon"
+                                ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
+                                  class="fa fa-download"></i></a>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                   <!-- Loader  -->
                   <div loading-widget ng-show="showDataLoaderJob"></div>
@@ -160,7 +167,8 @@
             </div>
             <!-- Invoice for export to excel -->
             <div class="table-responsive" id="exportable" style="display:none">
-              <table class="table m-b-none default footable-loaded footable" id="exportable2" datatable="ng" dt-options="{ paging: false, searching: false, info: false }">
+              <table class="table m-b-none default footable-loaded footable" id="exportable2" datatable="ng"
+                dt-options="{ paging: false, searching: false, info: false }">
                 <thead>
                   <th>#</th>
                   <th>Invoice number</th>
@@ -195,7 +203,7 @@
           </div>
         </div>
       </div>
-      
+
       <!-- footer copy right -->
       <div class="wrapper-md m-t-n-xl" data-ng-include="'tpl/copyRight.html'"></div>
 

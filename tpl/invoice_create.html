@@ -34,7 +34,8 @@
                     <a href="" class="btn btn-sm btn-info pull-right" onclick="window.print();">Print</a>
                 </div> -->
               <div class="col-sm-12">
-                <linguist-invoice-pdftemplate></linguist-invoice-pdftemplate>
+                <!-- <linguist-invoice-pdftemplate></linguist-invoice-pdftemplate> -->
+                <div data-ng-include="invoiceTemplateName"></div>
 
               </div>
               <button class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-floppy-o"

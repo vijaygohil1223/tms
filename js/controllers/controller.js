@@ -15950,7 +15950,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 data[i].freelance_currency = data[i].freelance_currency ? data[i].freelance_currency.split(',')[0] : 'EUR'; 
                 
                 //const invoice_duedate = TodayAfterNumberOfDays(data[i].created_date, invoiceDuePeriodDays);
-                const invoice_duedate = calculateDueDate(data[i].created_date, invoiceDuePeriodDays);
+                const invoice_duedate = calculateDueDate(data[i].created_date, $scope.invoiceNumOfdays);
                 
                 var ckey = $scope.invoiceList.length;
                 if (ckey > 0)
@@ -18047,12 +18047,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('linguistInvoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     $scope.isDisabledApprvd = false;
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
     $scope.viewBtn = false;
     $scope.nokRate = 1;
     $scope.showSecondCUrrency = false;
+    $scope.invoiceCreatePage = false;
+
+    const TmpltDesign = $window.localStorage.getItem("invoiceDesignType");
+    $scope.invoiceDesignType = TmpltDesign && TmpltDesign == 2 ? '2' : '';
+    $scope.invoiceTemplateName = 'tpl/linguist-invoice-pdf-content'+$scope.invoiceDesignType+'.html' ;
     
     $scope.vat = 0;
 
@@ -18061,6 +18067,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
 
             if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency =='NOK,kr'){
                 $scope.showSecondCUrrency = true;
@@ -18085,7 +18092,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }).error(errorCallback);
             
+            $scope.invoiceDetail.invoice_date = $scope.invoiceDetail.value_date
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
+            
             $scope.vatNo = '';
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
             if ($scope.invoiceDetail.clientAddresDetail) {
@@ -18177,12 +18186,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $scope.invoiceList = data;
             
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].created_date, data[0].number_of_days);
 
-            $scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
-            $scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
-
-
+            const invoice_duedate = calculateDueDate(data[0].value_date, $scope.invoiceNumOfdays);
+            //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
+            $scope.invoiceDetail.paymentDueDate = moment(invoice_duedate).format($window.localStorage.getItem('global_dateFormat'));
+            //$scope.invoiceDetail.paymentDueDate = moment($scope.invoiceDetail.paymentDueDate).format($window.localStorage.getItem('global_dateFormat'));
+            
             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
             $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
@@ -31542,7 +31553,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.showSecondCUrrency = false; // freelacer Second currency selected as nok
     $scope.hideElemnt = true;
     $scope.invoiceCreatePage = true
-    
+
+    const TmpltDesign = $window.localStorage.getItem("invoiceDesignType");
+    $scope.invoiceDesignType = TmpltDesign && TmpltDesign == 2 ? '2' : '';
+    $scope.invoiceTemplateName = 'tpl/linguist-invoice-pdf-content'+$scope.invoiceDesignType+'.html' ;
     //get data of invoice
 
     $scope.currencyAllData = [];
