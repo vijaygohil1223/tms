@@ -22412,7 +22412,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if(val.target_lang)
                             val.target_lang = JSON.parse(val.target_lang);
                         val.stLang = (val.source_lang && val.target_lang ) ? val.source_lang.sourceLang + ' > ' + val.target_lang.sourceLang : '';
-                        var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
+                        //var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
+                        var scoopAmount = $scope.itemjobList[i].total_price ? parseFloat($scope.itemjobList[i].total_price) : 0;
                         var jobAmount = parseFloat(totalJobAmount);
                         var profit = scoopAmount - jobAmount;
                         if (scoopAmount) {
@@ -22445,7 +22446,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('#profitMargin' + $scope.itemjobList[i].item_number).css("color", "red");
                         }
                         if (val.due_date != null) {
-                            var sales = val.total_amount
+                            //var sales = val.total_amount
+                            var sales = val.total_price
                             sales = $filter('NumbersCommaformat')(sales);
                             var sales = sales ? sales : '0,00';
                             var expense = $filter('NumbersCommaformat')(jobAmount);
@@ -34144,7 +34146,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if (totalJobAmount == undefined) {
                             totalJobAmount = 0.00;
                         }
-                        var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
+                        //var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
+                        var scoopAmount = $scope.itemjobList[i].total_price ? parseFloat($scope.itemjobList[i].total_price) : 0;
+                        
                         var jobAmount = parseFloat(totalJobAmount);
                         var profit = scoopAmount - jobAmount;
                         if (scoopAmount) {
@@ -34177,7 +34181,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('#profitMargin' + $scope.itemjobList[i].item_number).css("color", "red");
                         }
                         if (val.due_date != null) {
-                            var sales = val.total_amount
+                            //var sales = val.total_amount
+                            var sales = val.total_price
+                            console.log('sales=>', sales)
                             sales = $filter('NumbersCommaformat')(sales);
                             var sales = sales ? sales : '0,00';
                             var expense = $filter('NumbersCommaformat')(jobAmount);
