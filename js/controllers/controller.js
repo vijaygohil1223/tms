@@ -31717,7 +31717,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(date, $scope.invoiceNumOfdays);
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
-            $scope.invoiceDetail.paymentDueDate = $filter('globalDtFormat')(calculateDueDate(date, $scope.invoiceNumOfdays) )
+            //$scope.invoiceDetail.paymentDueDate = $filter('globalDtFormat')(calculateDueDate(date, $scope.invoiceNumOfdays) )
+            $scope.invoiceDetail.paymentDueDate = calculateDueDate(date, $scope.invoiceNumOfdays);
+            console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
             
             //$scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, 0));
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays(date, 0));

@@ -250,8 +250,8 @@
                   </div>
                   <div class="col-sm-3">
                     <p class="mb-d"><strong>Date</strong></p>
-                    <span ng-bind="invoiceDetail.invoice_date" ng-if="!invoiceCreatePage"></span></br>
-                    <input class="form-control" type="text" ng-if="invoiceCreatePage" ng-model="invoiceDetail.invoice_date" id="createDate"
+                    <span ng-bind="invoiceDetail.invoice_date" ng-hide="hideElemnt"></span></br>
+                    <input class="form-control" type="text" ng-show="hideElemnt" ng-model="invoiceDetail.invoice_date" id="createDate"
                       ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date"
                       ng-disabled="editDisabled" style="margin-top: -3px;" />
                   </div>
