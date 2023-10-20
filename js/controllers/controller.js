@@ -22747,10 +22747,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
         //setTimeout(() => {
             emailTemplate = data.find( (templt) => templt.template_id == 15);
-            console.log('$scope.emailTemplate', emailTemplate)
+            //console.log('$scope.emailTemplate', emailTemplate)
             emailContentText = data.find( (templt) => templt.template_id == 13);
             if(emailContentText){
-                $scope.emailTemplateText =  emailContentText.template_content;  
+                $scope.emailTemplateText = emailContentText.template_content;  
             }
         //}, 3000);
        // $scope.getSingleJobdetail(288)
@@ -22818,7 +22818,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             ORDERDATE: $filter('globalDtFormat')($scope.purchaseDetail.purchaseOrderDate),
             JOBNO: $scope.jobdetail.po_number ? $scope.jobdetail.po_number : '' ,
             PROJECTNAME: $scope.jobdetail.projectName,
-            INDIRECT_CUSTOMER: $scope.jobdetail.clientName,
+            //INDIRECT_CUSTOMER: $scope.jobdetail.clientName,
+            INDIRECT_CUSTOMER: $scope.jobdetail.clientAccountName,
             JOBSERVICE: $scope.jobdetail.project_type_name, 
             LANGUAGES: $scope.jobdetail.ItemLanguage,
             INSTRUCTIONS: $scope.jobdetail.jobDesc,
@@ -22902,7 +22903,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('scoop-data', data)
                 $scope.jobdetail = data[0];
                 
-                console.log('$scope.jobdetail', $scope.jobdetail)
+                console.log('$scope.jobdetail=', $scope.jobdetail)
                 // purchase order setting Data data fn 
                 
                 $scope.poSettingFn($scope.jobdetail.vCenterid)
