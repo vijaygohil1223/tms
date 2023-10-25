@@ -20604,7 +20604,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].contact_person = $scope.itemList[formIndex].contact_person ? ($scope.itemList[formIndex].contact_person.toString()).split(',').pop() : '';
 
                     $scope.itemList[formIndex].order_id = $scope.routeOrderID;
-                    $scope.itemList[formIndex].total_amount = $scope.total_amount;
+                    //$scope.itemList[formIndex].total_amount = $scope.total_amount;
 
                     var sourceField = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale");
                     var targetField = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale");
@@ -20623,7 +20623,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].source_lang = JSON.stringify(sourceObj);
                     $scope.itemList[formIndex].target_lang = JSON.stringify(targetObj);
 
-                    $scope.itemList[formIndex].total_amount = $scope.itemList[formIndex].total_price;
+                    var up_total_price = $scope.itemList[formIndex].total_price
+                    $scope.itemList[formIndex].total_amount = up_total_price;
+                    console.log('up_total_price', up_total_price)
+                    console.log('$scope.itemList[formIndex].total_amount', $scope.itemList[formIndex].total_amount)
+                    console.log('$scope.itemList[formIndex].total_price', $scope.itemList[formIndex].total_price)
                     
                     /*if(!$scope.itemList[formIndex].total_amount || $scope.itemList[formIndex].price ==undefined){
                         $scope.itemList[formIndex].total_amount = 0
@@ -20645,7 +20649,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if ($('#jobchainName' + formIdAllSave).val() == 'select' || $('#jobDropDown' + formIdAllSave).val() == 'select') {
                             //notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
-                            $scope.TblItemList[formIndex].total_amount = 0;
+                            $scope.TblItemList[formIndex].total_amount = $scope.itemList[formIndex].total_amount ? $scope.itemList[formIndex].total_amount : 0;
+                            //$scope.TblItemList[formIndex].total_amount = 0;
                             //return false;
                         } else {
                             if ($scope.jobi[formId].jobSummery && $scope.workflowChange || ($scope.isAllScoopCopy && $scope.workflowChange) ) {
@@ -20895,6 +20900,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemList[formIndex].item_email_subject = $scope.itemList[0].item_email_subject; 
                         $scope.itemList[formIndex].item_name = $scope.itemList[0].item_name; 
                     }    
+                    
+                    console.log('$scope.itemList[formIndex]', $scope.itemList[formIndex])
                     
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     rest.path = 'ItemUpdate';
@@ -33231,7 +33238,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
                             //notification('Please select workflow.', 'warning');
                             //setting total amount to 0 in table listing
-                            $scope.TblItemList[formIndex].total_amount = 0;
+                            $scope.TblItemList[formIndex].total_amount = $scope.itemList[formIndex].total_amount ? $scope.itemList[formIndex].total_amount : 0;
+                            //$scope.TblItemList[formIndex].total_amount = 0;
                             //return false;
                         } else {
                             if ($scope.jobi.jobSummery && $scope.workflowChange) {
