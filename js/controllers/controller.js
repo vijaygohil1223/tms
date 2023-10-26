@@ -1135,9 +1135,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 if (data) {
                     if(data.accept > '0' ){
-                        
                         if($scope.jobDetails.jobAccept == 1 && data.accept == $scope.jobDetails.resourceId){
-                            $('#responseMsg').text('Already, You have accepted the job');
+                            $('#responseMsg').text('Already, You have accepted the job, thank you.');
                             $("#responseMsg").addClass("alert alert-success" );
                         }else{
                             let msgText = $scope.jobDetails.jobAccept ? 'The job is accepted by someone else!' : 'Job is already accepted!' ;
@@ -1150,13 +1149,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.post($scope.jobDetails).success(function (data) {
                             if(data && data.jobAccept == 1){
                                 notification('You have accepted the job', 'success');
-                                $('#responseMsg').text('You have accepted the job');
+                                $('#responseMsg').text('You have accepted the job, thank you.');
                                 $("#responseMsg").addClass( "alert alert-success" );
                             }else{
                                 if($scope.jobDetails.jobAccept == '0' ){
                                     notification('You have rejected the job', 'warning');
                                     $('#responseMsg').text('You have rejected the job');
-                                    $("#responseMsg").addClass( "alert alert-warning" );
+                                    $("#responseMsg").addClass("alert alert-warning");
                                 }
                             }
                         }).error(errorCallback);

@@ -624,7 +624,8 @@ array(
                 $resetPasswordLink = ACTIVATION_URL.'#/resetpassword/'.$resetPasswordToken;
                 //$search_array = array("[USERNAME]","[USEREMAIL]","[USERPASSWORD]");
                 $search_array = array("[USERNAME]","[RESETPASSWORDLINK]");
-                $userNm = $results['vUserName'];
+                $userNm = $results['vFirstName'] ? $results['vFirstName'] : $results['vUserName'];
+                //$userNm = $results['vUserName'];
                 $replace_array = array($userNm,$resetPasswordLink);
                 
                 $message = str_replace($search_array, $replace_array, $emailTemplate['template_content']);
