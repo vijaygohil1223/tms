@@ -5563,21 +5563,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $(this).data('clicked', true);
             // Create a hidden anchor element
             var fileName = $(this).find("p").text();
-
-            const downloadLink = document.createElement('a');
-            downloadLink.style.display = 'none';
-            document.body.appendChild(downloadLink);
-            downloadLink.setAttribute('href', fileName);
-            downloadLink.setAttribute('download', fileName.split('/').pop());
-            downloadLink.click();
-
-            document.body.removeChild(downloadLink);
-
+            var idValue = $(this).attr('id');
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+            a.download = fileName;
+            a.href = $("#download" + idValue).attr('href');
+            a.click();    
             setTimeout(() => {
                 // To solve two time file download issue
                 $(this).data('clicked', false);
             }, 500);
-        
         });
     }, 2000);
 
@@ -5837,15 +5832,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if($scope.copyfile && $scope.copyfile.length > 0){
                             const fileInputs = document.querySelectorAll('file.activeselect p');
                             const fileUrls = Array.from(fileInputs).map(itm => itm.innerText);    
+                            //const fileInputs2 = document.querySelectorAll('file.activeselect');
+                            //const fileUrls2 = Array.from(fileInputs2).map(itm => itm.id);    
                             const downloadLink = document.createElement('a');
                             downloadLink.style.display = 'none';
                             document.body.appendChild(downloadLink);
                             // Loop through selected files and trigger downloads
                             fileUrls.forEach(url => {
-                                downloadLink.setAttribute('href', url);
+                                downloadLink.setAttribute('href', 'uploads/fileupload/'+url);
                                 downloadLink.setAttribute('download', url.split('/').pop());
                                 downloadLink.click();
                             });
+
                             document.body.removeChild(downloadLink);
                         }else{
                             var a = document.createElement('a');
