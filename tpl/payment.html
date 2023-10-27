@@ -99,13 +99,13 @@
                               <div class="col-sm-12 vatNumberValid p-0">
                               </div>
                               
-                              <div class="col-sm-12 p-0">
+                              <div class="col-sm-12 p-0" ng-if="userRight==1">
                                  <div class="form-group">
                                     <label>Tax Rate</label> 
                                     <input type="text" select2-taxrate class="form-control" name="tax_rate"  ng-model="paymentData.tax_rate"/>
                                  </div>
-                             </div>
-                              <div class="col-sm-12 p-0">
+                              </div>
+                              <div class="col-sm-12 p-0" ng-if="userRight==1">
                                  <div class="form-group" style="margin-top:16px;">
                                     <label>Taxation Type</label>
                                     <select class="form-control m-b" name="tax_type" ng-model="payment.tax_type"

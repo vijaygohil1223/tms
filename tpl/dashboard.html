@@ -1078,7 +1078,7 @@ td { font-size: 11px; } */
                                       </td>
                                       <td ng-bind="job.due_date | dateFormat2"></td>
                                       <td>
-                                        <button class="btn requestedColor"
+                                        <!-- <button class="btn requestedColor"
                                           ng-if="job.item_status == 'Requested'"></button>
                                         <button class="btn assignedwaitongColor"
                                           ng-if="job.item_status == 'Assigned-waiting' || job.item_status == 'Waiting'"></button>
@@ -1089,7 +1089,7 @@ td { font-size: 11px; } */
                                         <button class="btn invoiceacceptedColor"
                                           ng-if="job.item_status == 'Invoiced' || job.item_status == 'Invoice Accepted'"></button>
                                         <button class="btn approvedColor"
-                                          ng-if="job.item_status == 'Invoice Ready' || job.item_status == 'Approved'"></button>
+                                          ng-if="job.item_status == 'Invoice Ready' || job.item_status == 'Approved'"></button> -->
                                         {{job.item_status}}
                                       </td>
                                     </tr>

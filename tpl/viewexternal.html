@@ -322,16 +322,20 @@
                         <tab index="6">
                             <tab-heading>
                                 <i class="fa fa-lock"></i>
-                                <span>Account Information</span>
+                                <span>Business Information</span>
                             </tab-heading>
                             <div class="col-sm-6">
                                 <table class="table table-striped b-t b-b">
                                     <tbody>
                                         <tr>
+                                            <td><span class="TblSpan">Company Name</span></td>
+                                            <td><span ng-bind="viewExternalCommunicational.companyName"></span></td>
+                                        </tr>
+                                        <tr>
                                             <td><span class="TblSpan">VAT Number</span></td>
                                             <td><span ng-bind="payment.tax_id"></span></td>
                                         </tr>
-                                        <tr>
+                                        <tr ng-if="userRight==1">
                                             <td><span class="TblSpan">Taxation Type</span></td>
                                             <td><span ng-bind="payment.tax_type"></span></td>
                                         </tr>
