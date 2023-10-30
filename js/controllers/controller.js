@@ -5831,7 +5831,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     ['Download', function ($itemScope) {
                         if($scope.copyfile && $scope.copyfile.length > 0){
                             const fileInputs = document.querySelectorAll('file.activeselect p');
-                            const fileUrls = Array.from(fileInputs).map(itm => itm.innerText);    
+                            const fileUrls = Array.from(fileInputs).map(itm => itm.innerText);
                             //const fileInputs2 = document.querySelectorAll('file.activeselect');
                             //const fileUrls2 = Array.from(fileInputs2).map(itm => itm.id);    
                             const downloadLink = document.createElement('a');
@@ -12842,7 +12842,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 200);
         })    
     }    
-
+    // refresh page. 
     $scope.removecustomerPriceId = function () {
         $scope.customerPrice = {};
         $scope.priceBasiList = {};

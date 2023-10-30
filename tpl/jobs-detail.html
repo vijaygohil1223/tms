@@ -259,7 +259,6 @@
                                                     </th>
                                                     <!-- <th>Step</th> -->
                                                     <th>Job Number</th>
-                                                    <th>Description</th>
                                                     <th>Resources</th>
                                                     <th>Due date</th>
                                                     <th>Project Manager</th>
@@ -267,6 +266,7 @@
                                                     <th>Download <!-- Source --> </th>
                                                     <th>Upload <!-- Target --> </th>
                                                     <th>Action</th>
+                                                    <th>Job Comment</th>
                                                 </tr>
                                             </thead>
                                             <!-- ui-sortable="sortableOptions" ng-model="itemList" 
@@ -289,9 +289,6 @@
                                                         <a href="javascript:void(0)" class="summeryColor" ng-click="jobNoDetails(it.job_summmeryId)">{{it.po_number}}</a>
                                                         <!-- <a href="javascript:void(0)" class="summeryColor" ng-click="jobNoDetails(it.job_summmeryId)">{{it.job_code}}{{it.job_no| numberFixedLen:3}}</a> -->
                                                     </td>
-                                                    <td>
-                                                        {{it.description}}
-                                                    </td>
                                                     <td ng-hide="resourceStatus == {{$index}}{{itemL.itemId}}" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
                                                         <label id="resourceview{{$index}}" ng-hide="it.job_summmeryId==id || job[{{$index}}]"><a href="javascript:void(0)" ng-click="jobsumResource(it.resource, it.job_summmeryId)"><span ng-show="hoverEdit" class="summeryColor" ng-if="it.vUserName"><i class="fa fa-envelope"></i></span></a> &nbsp;<a href="#/viewExternal/{{it.iUserId}}" class="summeryColor">{{it.vUserName}}</a></label>
                                                         <input ng-show="it.job_summmeryId == id" select2-job-detail-resource type="text" class="form-control" name="resource[]" ng-model="it.resource" />
@@ -301,15 +298,16 @@
                                                         </a>
                                                     </span>
                                                     </td>
+                                                    <td class="nowrap">
+                                                        <label ng-hide="it.job_summmeryId==id || job[{{$index}}]" ng-if="it.due_date!='0000-00-00 00:00:00'">{{it.due_date| dateFormat2}}</label>
+                                                    </td>
+                                                    
                                                     <td ng-show="resourceStatus == {{$index}}{{itemL.itemId}}">
                                                         <input select2-job-detail-resource type="text" class="form-control" id="resources{{$index}}{{itemL.itemId}}" name="resources" ng-model="jobdetail.resource" ng-change="resourceSave(it.job_summmeryId, jobdetail.resource)" />
                                                     </td>
                                                     <!-- <td>
                                                         <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">{{it.description}}</label>
                                                     </td> -->
-                                                    <td class="nowrap">
-                                                        <label ng-hide="it.job_summmeryId==id || job[{{$index}}]" ng-if="it.due_date!='0000-00-00 00:00:00'">{{it.due_date| dateFormat2}}</label>
-                                                    </td>
                                                     <td>
                                                         <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">
                                                             <a href="#/viewinternal/{{it.contactPersonId}}" class="summeryColor">{{it.contactPerson}}</a>
@@ -396,6 +394,7 @@
                                                     
                                                         <a href="javascript:void(0)" ng-click="jobSendRequest(it.resource, it.job_summmeryId)" class="btn btn-info btn-sm" style="padding:2px 10px;" ng-if="it.item_status=='In preparation' || it.item_status=='Requested'"><i class="glyphicon glyphicon-envelope"></i> Request </a>
                                                     </td>
+                                                    <td> {{it.description}} </td>
                                                 </tr>
                                                 <tr ng-show="!itemListFinal[$index].length">
                                                     <td colspan="9" ng-bind="dataNotFound"></td>
