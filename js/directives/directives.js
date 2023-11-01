@@ -639,15 +639,15 @@ app.directive('select2InvoiceStatus', function($http, rest, $timeout) {
         link: function(scope, element, attrs, ngModelCtrl) {
             // var invoiceStatuses = [
             //     {
-            //         'id': 'Part Paid',
-            //         'text': 'Part Paid'
+            //         'id': 'Partly Paid',
+            //         'text': 'Partly Paid'
             //     },
             //     {
             //         'id': 'Complete',
             //         'text': 'Complete' 
             //     }
             // ];
-            var data = ['Open','Approved','Part Paid','Paid','Complete','Overdue','Cancel'];
+            var data = ['Open','Approved','Partly Paid','Paid','Complete','Overdue','Cancel'];
             var invoiceStatuses = [];
             $.each(data, function(key, value) {
                 var obj = {
@@ -689,9 +689,9 @@ app.directive('select2ClientInvoiceStatus', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            //var data = ['Open','Part Paid','Paid','Complete','Overdue','Cancel','Irrecoverable'];
+            //var data = ['Open','Partly Paid','Paid','Complete','Overdue','Cancel','Irrecoverable'];
             var data = ['Open','Paid','Complete','Overdue','Cancel','Irrecoverable'];
-            //var data = data.filter(item => item !== 'Part Paid');
+            //var data = data.filter(item => item !== 'Partly Paid');
             var invoiceStatuses = [];
             $.each(data, function(key, value) {
                 var obj = {

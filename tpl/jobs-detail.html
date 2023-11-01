@@ -13,22 +13,7 @@
 
     /* Purchase order  */
 
-    .templatepopup {
-        /* display: none; */
-        opacity: 0;
-        position: fixed;
-        left: -80%;
-        bottom: 0;
-    }
-    #emailTemplateText{
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #fff;
-        padding: 20px;
-        border: 1px solid #ccc;
-    }
+  
     /* purchase order css end */
      
 </style>
@@ -336,14 +321,14 @@
                                                             <div class="job-table-status btn completedColor" ng-if="it.item_status == 'Completed'"></div>
                                                             <div class="job-table-status btn rdyToDeliverColor" ng-if="it.item_status == 'Ready to be Delivered'"></div> -->
                                                             <span class="jStatus">
-                                                            <span class="joStatus">{{it.item_status}}</span>
-                                                            <span class="jAuto none">{{it.auto_status}}</span>
-                                                            <span class="jsumeryIdAuto none">{{it.job_summmeryId}}</span>
-                                                            <span class="jjobnum none">{{it.job_code}}{{it.job_no | numberFixedLen:3}}</span>
-                                                            <span class="jduedate none">{{it.due_date}}</span>
-                                                            <span class="jobEmail none">{{it.vEmailAddress}}</span>
-                                                            <span class="jobResource none">{{it.vUserName}}</span>
-                                                            <span class="jobstatApp none">{{it.appr_id}}</span>
+                                                                <span class="joStatus">{{it.item_status}}</span>
+                                                                <span class="jAuto none">{{it.auto_status}}</span>
+                                                                <span class="jsumeryIdAuto none">{{it.job_summmeryId}}</span>
+                                                                <span class="jjobnum none">{{it.job_code}}{{it.job_no | numberFixedLen:3}}</span>
+                                                                <span class="jduedate none">{{it.due_date}}</span>
+                                                                <span class="jobEmail none">{{it.vEmailAddress}}</span>
+                                                                <span class="jobResource none">{{it.vUserName}}</span>
+                                                                <span class="jobstatApp none">{{it.appr_id}}</span>
                                                             </span>
                                                         </label>
                                                         <input ng-show="job[{{$index}}]" type="text" select2-job-detailitm-status class="form-control" name="status[]" ng-model="it.item_status[$index]" />

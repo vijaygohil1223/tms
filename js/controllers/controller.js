@@ -9333,7 +9333,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.is_approved == 1 && val.reminder_sent == 1 && val.invoice_status != 'Complete' && val.invoice_status != 'Cancel' && val.invoice_status != 'Paid') {
                     $scope.outstandRmndrPayable += invoiceCostInEur;
                 }
-                if (val.invoice_status == 'Part Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete') {
+                if (val.invoice_status == 'Partly Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete') {
                     $scope.paidPayable += invoiceCostInEur;
                 }
                 if (val.invoice_status == 'Cancel') {
@@ -9416,7 +9416,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.reminder_sent == 1 && val.invoice_status != 'Complete' && val.invoice_status != 'Cancel' && val.invoice_status != 'Paid') {
                     $scope.outstandRmndrReceivables += invoiceCostInEur;
                 }
-                if (val.invoice_status == 'Part Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete') {
+                if (val.invoice_status == 'Partly Paid' || val.invoice_status == 'Paid' || val.invoice_status == 'Complete') {
                     $scope.paidReceivables += invoiceCostInEur;
                 }
                 if (val.invoice_status == 'Cancel') {
@@ -16021,7 +16021,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.completedInvcCount++;
                     $scope.completeInvc.push(val);
                 }
-                // if (val.invoice_status == 'Part Paid') {
+                // if (val.invoice_status == 'Partly Paid') {
                 //     $scope.partPaidInvcCount++;
                 //     $scope.partPaidInvc.push(val);
                 // } 
@@ -16078,7 +16078,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     case "Completed":
                         $scope.invoiceListAll = $scope.completeInvc;
                         break;
-                    // case "Part Paid":
+                    // case "Partly Paid":
                     //     $scope.invoiceListAll = $scope.partPaidInvc;
                     //     break;
                     case "Overdue":
@@ -16303,7 +16303,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         "paid_amount": getAllInvoice[0].paid_amount,
                         "statusId": invoiceId
                     };
-                    if ( ['Paid','Part Paid','Complete','Completed'].includes($scope.invoice.invoice_status)) {
+                    if ( ['Paid','Partly Paid','Complete','Completed'].includes($scope.invoice.invoice_status)) {
                         
                         $scope.inv.created_date = originalDateFormatNew($scope.created_date);
                         $scope.inv.created_date = moment($scope.inv.created_date).format('YYYY-MM-DD HH:mm:ss');
@@ -16666,7 +16666,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#irrecoverable').removeClass('btn-info');
                 $scope.is_disabled = true;
             }
-            if ( ['Complete','Paid','Part Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
+            if ( ['Complete','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
                 $scope.editDisabled = true;
             }
             // 
@@ -17148,7 +17148,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#irrecoverable').removeClass('btn-info');
                 $scope.is_disabled = true;
             }
-            if ( ['Complete','Paid','Part Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
+            if ( ['Complete','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
                 $scope.editDisabled = true;
             }
             // 
@@ -17309,7 +17309,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.inv.invoice_status = "Complete";
                     $scope.inv.is_approved = 1;
                 } else {
-                    $scope.inv.invoice_status = "Part Paid";
+                    $scope.inv.invoice_status = "Partly Paid";
                     $scope.inv.is_approved = 1;
                 }
                 if ($scope.closeAmount == true) {
@@ -17418,7 +17418,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ($scope.inv.paid_amount == items.Invoice_cost) {
                     $scope.inv.invoice_status = "Complete";
                 } else {
-                    $scope.inv.invoice_status = "Part Paid";
+                    $scope.inv.invoice_status = "Partly Paid";
                 }
                 if ($scope.closeAmount == true) {
                     $scope.inv.paid_amount = items.Invoice_cost;
@@ -17745,12 +17745,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$route.reload();
                 });
             }
-            if ($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid' || $scope.invoiceDetail.invoice_status == 'Part Paid') {
+            if ($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid' || $scope.invoiceDetail.invoice_status == 'Partly Paid') {
                 $scope.isDisabledApprvd = true;
             }
             if ($scope.userRight != 1)
                 $scope.isDisabledApprvd = true;
-            if ( ['Complete','Paid','Part Paid','Cancel'].includes($scope.invoiceDetail.invoice_status)) {
+            if ( ['Complete','Paid','Partly Paid','Cancel'].includes($scope.invoiceDetail.invoice_status)) {
                 $scope.editDisabled = true;
             }    
 
@@ -18240,12 +18240,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $route.reload();
                 });
             }
-            if ($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid' || $scope.invoiceDetail.invoice_status == 'Part Paid') {
+            if ($scope.invoiceDetail.invoice_status == 'Complete' || $scope.invoiceDetail.invoice_status == 'Paid' || $scope.invoiceDetail.invoice_status == 'Partly Paid') {
                 $scope.isDisabledApprvd = true;
             }
             if ($scope.userRight != 1)
                 $scope.isDisabledApprvd = true;
-            if ( ['Complete','Paid','Part Paid','Cancel'].includes($scope.invoiceDetail.invoice_status)) {
+            if ( ['Complete','Paid','Partly Paid','Cancel'].includes($scope.invoiceDetail.invoice_status)) {
                 $scope.editDisabled = true;
             }    
 
@@ -29254,7 +29254,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.completedInvcCount++;
                     $scope.completeInvc.push(val);
                 }
-                // if (val.invoice_status == 'Part Paid') {
+                // if (val.invoice_status == 'Partly Paid') {
                 //     $scope.partPaidInvcCount++;
                 //     $scope.partPaidInvc.push(val);
                 // } 
@@ -29311,7 +29311,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     case "Completed":
                         $scope.invoiceListAll = $scope.completeInvc;
                         break;
-                    // case "Part Paid":
+                    // case "Partly Paid":
                     //     $scope.invoiceListAll = $scope.partPaidInvc;
                     //     break;
                     case "Overdue":
@@ -29623,7 +29623,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.completedInvcCount++;
                     $scope.completeInvc.push(val);
                 }
-                if (val.invoice_status == 'Part Paid') {
+                if (val.invoice_status == 'Partly Paid') {
                     $scope.partPaidInvcCount++;
                     $scope.partPaidInvc.push(val);
                 } 
@@ -29681,7 +29681,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     case "Completed":
                         $scope.invoiceListAll = $scope.completeInvc;
                         break;
-                    case "Part Paid":
+                    case "Partly Paid":
                         $scope.invoiceListAll = $scope.partPaidInvc;
                         break;    
                     case "Irrecoverable":
@@ -29875,7 +29875,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         "paid_amount": getAllInvoice.length > 0 ? getAllInvoice[0].paid_amount : 0,
                         "statusId": invoiceId
                     };
-                    if (['Paid', 'Part Paid', 'Complete', 'Completed'].includes($scope.invoice.invoice_status)) {
+                    if (['Paid', 'Partly Paid', 'Complete', 'Completed'].includes($scope.invoice.invoice_status)) {
                         console.log('$scope.invoice.invoice_status', $scope.invoice.invoice_status)
                         // payment date
                         $scope.inv.created_date = originalDateFormatNew($scope.created_date);
