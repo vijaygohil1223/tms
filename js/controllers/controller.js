@@ -34584,6 +34584,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(type){
             $scope.jobReport = {};
             $scope.jobReport.resourceType = type;
+
+            $scope.masterChildDropDown();
         }
     }
 
