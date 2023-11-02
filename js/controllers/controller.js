@@ -21114,8 +21114,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
                     //angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
-                    angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
-
+                    //angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
+                    
                     $scope.custPriceAll().then((prData) => {
                         let customerpriceFltr =  $scope.customerpriceAll ;
                         //angular.element('#currency'+ val.itemId).text('Eur');
@@ -21164,7 +21164,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $scope.itemList[i].manager = $scope.itemList[i].manager ? $scope.itemList[i].manager : data.project_manager;
                     $scope.itemList[i].coordinator = $scope.itemList[i].coordinator ? $scope.itemList[i].coordinator : data.project_coordinator;
+                    
                     $scope.itemList[i].qaSpecialist = $scope.itemList[i].qaSpecialist ? $scope.itemList[i].qaSpecialist : data.QA_specialist;
+                    if(data.QA_specialist){
+                        $scope.subqahide = true;
+                        angular.element('#QA_specialist' + val.itemId).attr('disabled', 'true');
+                    }
                     
                     if (val.price) {
 
@@ -33554,7 +33559,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     angular.element('#manager' + val.itemId).select2('val', data.project_manager);
                     angular.element('#coordinator' + val.itemId).select2('val', data.project_coordinator);
-                    angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
+                    //angular.element('#QA_specialist' + val.itemId).val(data.QA_specialist);
                     
                     $scope.custPriceAll().then((prData) => {
                         let customerpriceFltr =  $scope.customerpriceAll ;
@@ -33606,6 +33611,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[i].coordinator = $scope.itemList[i].coordinator ? $scope.itemList[i].coordinator : data.project_coordinator;
                     $scope.itemList[i].qaSpecialist = $scope.itemList[i].qaSpecialist ? $scope.itemList[i].qaSpecialist : data.QA_specialist;
                     
+                    if(data.QA_specialist){
+                        $scope.subqahide = true;
+                        angular.element('#QA_specialist' + val.itemId).attr('disabled', 'true');
+                    }
+
                     if (val.price) {
 
                         $scope.itemPriceUni[val.itemId] = JSON.parse(val.price);

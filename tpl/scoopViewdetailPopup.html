@@ -445,9 +445,8 @@
                                                                <td>
                                                                   <div class="form-group">
                                                                      <label class="control-label">QA Specialist</label>
-                                                                     <label
-                                                                        class="i-checks i-checks-sm checksubQa[$index]"
-                                                                        style="margin-left: 10px;">
+                                                                     <label class="i-checks i-checks-sm checksubQa[$index]"
+                                                                        style="margin-left: 10px;" ng-hide="subqahide">
                                                                         <input type="checkbox" name="checksubQa"
                                                                            ng-true-value="1" ng-false-value="0"
                                                                            ng-model="checksubQa[$index]"
@@ -455,8 +454,7 @@
                                                                            class="ng-pristine ng-untouched ng-valid">
                                                                         <i></i>
                                                                      </label>
-                                                                     <label
-                                                                        class="no-wrap m-0 checksub">Substitute</label>
+                                                                     <label class="no-wrap m-0 checksub" ng-hide="subqahide">Substitute</label>
 
                                                                      <input type="text"
                                                                         class="form-control QA_specialist"
@@ -517,7 +515,6 @@
                                           </th>
                                           <!-- <th>Step</th> -->
                                           <th>Job Number</th>
-                                          <th>Description</th>
                                           <th>Resources</th>
                                           <th>Due date</th>
                                           <th>Project Manager</th>
@@ -529,6 +526,7 @@
                                              <!-- Target -->
                                           </th>
                                           <th>Action</th>
+                                          <th>Job Comment</th>
                                        </tr>
                                     </thead>
                                     <!-- ui-sortable="sortableOptions" ng-model="itemList" 
@@ -542,7 +540,6 @@
                                              {{it.po_number}}
                                              <!-- <a href="javascript:void(0)" class="summeryColor" ng-click="jobNoDetails(it.job_summmeryId)">{{it.po_number}}</a> -->
                                           </td>
-                                          <td>{{it.description}}</td>
                                           <td ng-hide="resourceStatus == {{$index}}{{itemL.itemId}}"
                                              ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
                                              <label id="resourceview{{$index}}"
@@ -720,6 +717,7 @@
                                                 ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.tmp_po_number)"
                                                 title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
                                           </td>
+                                          <td>{{it.description}}</td>
                                        </tr>
                                        <tr ng-show="!itemListFinal[$index].length">
                                           <td colspan="9" ng-bind="dataNotFound"></td>
