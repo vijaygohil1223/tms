@@ -266,10 +266,11 @@
                 <dl class="dl-horizontal" style="padding-top:0;">
                   <dd class="invoice-heading">
                     <div class="d-flex"> <strong>Invoice</strong>
-                      <span ng-hide="hideElemnt" style="margin-left:5px;margin-top:2px;font-size: 0.9em;"> #{{invoiceDetail.invoice_number}} </span>
-                      <input class="form-control" type="text" ng-model="invoiceDetail.invoice_number"
-                      ng-show="hideElemnt" id="custom_invoice_number" name="custom_invoice_number" ng-disabled="editDisabled"
-                        style="width: 150px; font-weight:bold;margin-left: 5px;margin-top: -3px;" />
+                      <!-- <span ng-hide="hideElemnt" style="margin-left:5px;margin-top:2px;font-size: 0.9em;"> #{{invoiceDetail.invoice_number}} </span> -->
+                      <span style="margin-left:5px;margin-top:2px;font-size: 0.9em;font-weight:bold;"> #{{invoiceDetail.invoice_number}} </span>
+                      <input class="form-control" type="text" ng-model="invoiceDetail.custom_invoice_no"
+                      ng-show="hideElemnt" id="custom_invoice_number" name="custom_invoice_number" placeholder="Custom invoice no" ng-disabled="editDisabled"
+                        style="width: 150px;margin-left:5px;margin-top: -3px;" required />
                     </div>
                   </dd>
               </div>

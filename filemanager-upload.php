@@ -52,7 +52,7 @@ if (isset($_FILES["myfile"])) {
 
             //$ret[$fileName]= $output_dir.$fileName;
             $checkext = explode('.', $filename);
-            $ret['ext'] = end($checkext);
+            $ret['ext'] = strtolower(end($checkext));
             $size = $_FILES['myfile']['size'];
             $ret['size'] = formatSizeUnits($size);
             $ret['name'] = $filename;
@@ -72,7 +72,7 @@ if (isset($_FILES["myfile"])) {
 
                 $checkext = explode('.', $filename);
 
-                $ret['ext'][$i] = end($checkext);
+                $ret['ext'][$i] = strtolower(end($checkext));
                 $size = $_FILES['myfile']['size'][$i];
                 $ret['size'][$i] = formatSizeUnits($size);
                 $ret['name'][$i] = $filename;

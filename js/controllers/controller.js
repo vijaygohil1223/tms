@@ -5283,7 +5283,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     fileReader.readAsDataUrl(files[i], $scope).then(function (result) {
                         var data = result;
                         var txt = $(".ajax-file-upload-filename:contains('" + files[i].name + "')");
-                        var fileExtension = files[i].name.substr((files[i].name.lastIndexOf('.') + 1));
+                        var fileExtension = files[i].name.substr((files[i].name.lastIndexOf('.') + 1)).toLowerCase();
                         if (txt) {
                             var fullTxt = $(".ajax-file-upload-filename:contains('" + files[i].name + "')").text();
                             $('<div class="upimg' + fullTxt.charAt(0).toString() + '" style="display:none">' + data + '</div>').insertAfter(".ajax-file-upload-filename:contains('" + files[i].name + "')");
@@ -31591,6 +31591,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "invoiceCreate";
         rest.post($scope.invoiceLt).success(function (data) {
             $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             
             // If freelacer Second currency selected as nok
             console.log('$scope.invoiceDetail', $scope.invoiceDetail)
@@ -31722,7 +31723,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.invoiceDetail.invoiceNumber = data[0].poNumber.split('_')[0] + '_' + data[0].jobCode + '_' + pad(data[0].invoiceCount + 1, 3);
             $scope.invoiceDetail.invoiceNumber = 'S-' + pad(data[0].invoiceCount + 1, 6);
             $scope.invoiceDetail.invoice_number = $scope.invoiceDetail.invoiceNumber;
-            $scope.invoiceDetail.custom_invoice_no = $scope.invoiceDetail.invoiceNumber;
+            //$scope.invoiceDetail.custom_invoice_no = $scope.invoiceDetail.invoiceNumber;
+            $scope.invoiceDetail.custom_invoice_no = '';
             $scope.invoiceDetail.invoiceDate = date;
             $scope.invoiceDetail.job_id = obj;
 
@@ -31824,6 +31826,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if ($scope.invoiceD == undefined || $scope.invoiceD == null || $scope.invoiceD == "") {
             $scope.invoiceData = {};
         }
+        if(! $scope.invoiceDetail.custom_invoice_no){
+            notification('Please enter custom invoice Number.', 'warning');
+            return false;
+        }
+        if($scope.invoiceDetail.custom_invoice_no.indexOf('#') !== -1){
+            notification('Custom invoice numbers cannot include the symbol "#."', 'warning');
+            return false;
+        }
+
         switch (invoiceType) {
             case "save":
                 $scope.invoiceData.invoice_type = invoiceType;
