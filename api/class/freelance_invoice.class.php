@@ -221,7 +221,7 @@ class Freelance_invoice {
                     }
                 }
 				$infoD[$k] = array_merge($data, $id1[0]);
-	    	}
+            }
 	    	return $infoD;
     }
 
@@ -547,6 +547,7 @@ class Freelance_invoice {
         $updata['Invoice_cost'] = $data['Invoice_cost'];
         $updata['Invoice_cost2'] = $data['Invoice_cost2'];
         $updata['job_total'] = $data['item_total'];
+        $updata['custom_invoice_no'] = $data['custom_invoice_no'];
         $updata['invoice_type'] = 'save';
         $updata['vat'] = $data['vat'];
         $updata['vat2'] = $data['vat2'];
