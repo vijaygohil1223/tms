@@ -1,12 +1,6 @@
 <style type="text/css">
     .modal-dialog {
         width: 85%;
-        /* top: -30px;
-        left: 132px; */
-    }
-    .panel-body {
-        /*padding: 15px;*/
-        /*height: 350px;*/
     }
     .app-content-body {
         float:none;
@@ -20,14 +14,12 @@
         overflow-y: auto;
         padding: 0px 15px;
     }
-    
     /*.bolck {
         float: left;
         width: 100%;
         padding: 15px;
         background: #fff;
     }*/
-    
     .bolck .control-label {
         text-align: right;
         font-size: 12px;
@@ -386,7 +378,8 @@ li.seperatordate.comment {
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label><strong>Job Number :</strong></label>
-                                                            <label>{{jobdetail.job_code}}{{jobdetail.job_no | numberFixedLen:3}}</label>
+                                                            <!-- <label>{{jobdetail.job_code}}{{jobdetail.job_no | numberFixedLen:3}}</label> -->
+                                                            <span>{{jobdetail.po_number}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
@@ -404,8 +397,11 @@ li.seperatordate.comment {
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
-                                                            <label><strong>Project No:</strong></label>
-                                                            <label id="companyCode">{{jobdetail.company_code}}</label>
+                                                            <!-- <label><strong>Project No:</strong></label>
+                                                            <label id="companyCode">{{jobdetail.company_code}}</label> -->
+                                                            <label><strong>Language: </strong> </label>
+                                                            <span>{{jobdetail.ItemLanguage}}</span>
+                                                            <input type="text" id="sourceLang" class="form-control none" name="sourcelang" ng-model="jobdetail.ItemLanguage" readonly/>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
@@ -415,6 +411,14 @@ li.seperatordate.comment {
                                                             <span class="none"><input type="text" select2-job-detailitm-status class="form-control" name="itemStatus" id="itemStatus"  ng-model="jobdetail.item_status" readonly/></span>
                                                         </div>
                                                     </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <!-- <label><strong>Po Number:</strong> </label>
+                                                            <span>{{jobdetail.po_number}}</span> -->
+                                                            <label><strong>Comment:</strong> </label>
+                                                            <span>{{jobdetail.jobDesc}}</span>
+                                                        </div>
+                                                    </div>
                                                     <!-- <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label><strong>Project Name:</strong> </label>
@@ -422,24 +426,18 @@ li.seperatordate.comment {
                                                            <textarea class="form-control none" name="description" ng-model="jobdetail.description" readonly></textarea>
                                                         </div>
                                                     </div> -->
-                                                    <div class="col-sm-6">
+                                                    <!-- <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label><strong>Language: </strong> </label>
                                                             <span>{{jobdetail.ItemLanguage}}</span>
                                                             <input type="text" id="sourceLang" class="form-control none" name="sourcelang" ng-model="jobdetail.ItemLanguage" readonly/>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label><strong>Due Date:</strong></label>
                                                             <span>{{jobdetail.due_date | dateFormat2}}</span>
                                                             <input  ng-upcomming-date type="text" class="form-control none" id="duedate" name="due_date" ng-model="jobdetail.due_date" readonly/>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        <div class="form-group">
-                                                            <label><strong>Po Number:</strong> </label>
-                                                            <span>{{jobdetail.po_number}}</span>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
@@ -451,12 +449,12 @@ li.seperatordate.comment {
                                                             <a href="javascript:void(0)"  ng-click="jobsumemailResource(jobdetail.contact_person)"><span class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a>
                                                         </div>
                                                     </div>
-                                                    <div class="col-sm-6">
-                                                      <div class="form-group">
-                                                          <label><strong>Comment:</strong> </label>
-                                                          <span>{{jobdetail.jobDesc}}</span>
-                                                      </div>
-                                                  </div>
+                                                    <!-- <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label><strong>Comment:</strong> </label>
+                                                            <span>{{jobdetail.jobDesc}}</span>
+                                                        </div>
+                                                    </div> -->
                                                     
                                                     <div class="col-sm-12">
                                                         <div class="col-sm-6">

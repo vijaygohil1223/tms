@@ -19,7 +19,7 @@
 </style>
   <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1" data-ng-include=" 'tpl/material.header.html' " >
   </div>
-  <div layout="row">
+  <div layout="row" >
     <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs" data-ng-include=" 'tpl/material.aside.html' ">
     </div>
     <div flex layout="column">
@@ -31,9 +31,9 @@
            <!--  <a href="#/dashboard1"  class="btn btn-info pull-right">Cancel<span style="padding:3px;" class="fa fa-times1"></span></a> -->
           <h1 class="m-n font-thin h3">
             Jobs -
-          <span id="itemCode" ng-bind="projectOrderName"></span>
-          <span class="itemClient">{{indirectCustomerName}}</span>
-        </h1>
+            <span id="itemCode" ng-bind="projectOrderName"></span>
+            <span class="itemClient">{{indirectCustomerName}}</span>
+          </h1>
         <div class="hrght1" ng-if="showEditedByName"><h5>This record is currently edited by {{UpdateClientName}}<h5></div>
         </div>
         <div class="wrapper-md ng-scope">
@@ -234,159 +234,173 @@
                                             </thead>
                                         </table>
                                     </div>
-                                    <div class="" ng-hide="tableshowAll">
-                                        <table class="mb-0 table table-striped b-t b-b table-bordered ta{{$index}}">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width:20px;">
-                                                        <input type="checkbox" id="scoopJobs{{itemL.item_number}}" ng-model="selectedAll" ng-click="checkAlljobsScoop(itemL.item_number)" name="checkAll">
-                                                        <!-- <input type="checkbox" ng-model="selectedAll" ng-click="checkAll('1')" name="checkAll"> -->
-                                                    </th>
-                                                    <!-- <th>Step</th> -->
-                                                    <th>Job Number</th>
-                                                    <th>Resources</th>
-                                                    <th>Due date</th>
-                                                    <th>Project Manager</th>
-                                                    <th>Status</th>
-                                                    <th>Download <!-- Source --> </th>
-                                                    <th>Upload <!-- Target --> </th>
-                                                    <th>Action</th>
-                                                    <th>Job Comment</th>
-                                                </tr>
-                                            </thead>
-                                            <!-- ui-sortable="sortableOptions" ng-model="itemList" 
-                                                ui-sortable="sortableOptions" ng-model="itemListFinal['number{{itemL.item_number}}']" 
-                                            -->
-                                            <tbody ui-sortable="sortableOptions" ng-model="itemListFinal[$index]">
-                                                
-                                                <tr ng-repeat="it in itemListFinal[$index]" class="tableRowId">
-                                                    <td>
-                                                        <input type="checkbox" ng-model="confirmed" ng-change="checkBoxCheckFromMultiple(it.itemChecked,it.job_summmeryId)" id="jobId-{{it.job_summmeryId}}" />
-                                                         <input type="text" class="none" id="jobSummeryId{{it.job_summmeryId}}" value="{{it.job_id}}">
-                                                        <!-- <input type="checkbox" ng-model="it.itemChecked" ng-show="itemall" ng-change="checkBoxCheckFromMultiple(it.itemChecked,it.job_summmeryId)" id="checkitem1{{it.job_summmeryId}}"/>
-                                                        <input type="checkbox" ng-model="it.itemAllChecked" ng-show="itemalldata" />
-                                                        <input type="checkbox" id="checkitem{{it.job_summmeryId}}" ng-model="it.c" ng-value="it.c" ng-hide="itemall || itemalldata" ng-change="checkBoxCheck(it.c,it.job_summmeryId)" />
-                                                        <input type="text" class="none" id="getsummeryId{{$index}}" ng-if="it.c == true" ng-model="it.job_summmeryId">
-                                                        <input type="text" class="none" id="jobSummeryId{{it.job_summmeryId}}" value="{{it.job_id}}"> -->
-                                                    </td>
-                                                    <!-- <td>{{$index}}</td> -->
-                                                    <td>
-                                                        <a href="javascript:void(0)" class="summeryColor" ng-click="jobNoDetails(it.job_summmeryId)">{{it.po_number}}</a>
-                                                        <!-- <a href="javascript:void(0)" class="summeryColor" ng-click="jobNoDetails(it.job_summmeryId)">{{it.job_code}}{{it.job_no| numberFixedLen:3}}</a> -->
-                                                    </td>
-                                                    <td ng-hide="resourceStatus == {{$index}}{{itemL.itemId}}" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
-                                                        <label id="resourceview{{$index}}" ng-hide="it.job_summmeryId==id || job[{{$index}}]"><a href="javascript:void(0)" ng-click="jobsumResource(it.resource, it.job_summmeryId)"><span ng-show="hoverEdit" class="summeryColor" ng-if="it.vUserName"><i class="fa fa-envelope"></i></span></a> &nbsp;<a href="#/viewExternal/{{it.iUserId}}" class="summeryColor">{{it.vUserName}}</a></label>
-                                                        <input ng-show="it.job_summmeryId == id" select2-job-detail-resource type="text" class="form-control" name="resource[]" ng-model="it.resource" />
-                                                        <span ng-show="hoverEdit && it.resource">
-                                                        <a href="javascript:void(0);" ng-click="resouceEdit1($index,itemL.itemId, it.resource)">
-                                                            <i class="fa fa-pencil summeryColor" aria-hidden="true"></i>
-                                                        </a>
-                                                    </span>
-                                                    </td>
-                                                    <td class="nowrap">
-                                                        <label ng-hide="it.job_summmeryId==id || job[{{$index}}]" ng-if="it.due_date!='0000-00-00 00:00:00'">{{it.due_date| dateFormat2}}</label>
-                                                    </td>
+                                    <div class="col-sm-12" style="padding-left:0px;">
+                                        <div class="table-responsive" ng-hide="tableshowAll">
+                                            <table class="mb-0 table table-striped b-t b-b table-bordered ta{{$index}}" dt-options="dtOptions">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:20px;">
+                                                            <input type="checkbox" id="scoopJobs{{itemL.item_number}}" ng-model="selectedAll" ng-click="checkAlljobsScoop(itemL.item_number)" name="checkAll">
+                                                            <!-- <input type="checkbox" ng-model="selectedAll" ng-click="checkAll('1')" name="checkAll"> -->
+                                                        </th>
+                                                        <!-- <th>Step</th> -->
+                                                        <th>Job Number</th>
+                                                        <th>Resources</th>
+                                                        <th>Due date</th>
+                                                        <th>Project Manager</th>
+                                                        <th>Status</th>
+                                                        <th>Download <!-- Source --> </th>
+                                                        <th>Upload <!-- Target --> </th>
+                                                        <th>Action</th>
+                                                        <th>Job Comment</th>
+                                                    </tr>
+                                                </thead>
+                                                <!-- ui-sortable="sortableOptions" ng-model="itemList" 
+                                                    ui-sortable="sortableOptions" ng-model="itemListFinal['number{{itemL.item_number}}']" 
+                                                -->
+                                                <tbody ui-sortable="sortableOptions" ng-model="itemListFinal[$index]">
                                                     
-                                                    <td ng-show="resourceStatus == {{$index}}{{itemL.itemId}}">
-                                                        <input select2-job-detail-resource type="text" class="form-control" id="resources{{$index}}{{itemL.itemId}}" name="resources" ng-model="jobdetail.resource" ng-change="resourceSave(it.job_summmeryId, jobdetail.resource)" />
-                                                    </td>
-                                                    <!-- <td>
-                                                        <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">{{it.description}}</label>
-                                                    </td> -->
-                                                    <td>
-                                                        <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">
-                                                            <a href="#/viewinternal/{{it.contactPersonId}}" class="summeryColor">{{it.contactPerson}}</a>
-                                                        </label>
-                                                        <input type="text" class="none" id="contactPerson{{$index}}" name="contact_person" ng-if="it.c == true" ng-model="it.contact_person">
-                                                        <input ng-show="job[{{$index}}]" select2-contactsummery type="text" class="form-control" name="contact[]" ng-model="it.contact_person[$index]" />
-                                                        <input ng-show="it.job_summmeryId == id" select2-contactsummery type="text" class="form-control" name="contact" ng-model="it.contact_person" />
-                                                        <input ng-show="it.job_summmeryId == it.ContactId" select2-contactsummery type="text" class="form-control" name="contact" ng-model="it.contact_person" />
-                                                    </td>
-                                                    <td style="width:15%;">
-                                                        <label class="d-flex align-center" ng-hide="it.job_summmeryId==id || job[{{$index}}]">
-                                                            <div class="job-table-status btn inpreprartionColor" ng-if="it.item_status == 'In preparation'"></div>
-                                                            <div class="job-table-status btn requestedColor" ng-if="it.item_status == 'Requested'"></div>
-                                                            <div class="job-table-status btn assignedwaitongColor" ng-if="it.item_status == 'Assigned-waiting' || it.item_status == 'Waiting'"></div>
-                                                            <div class="job-table-status btn inprogressColor" ng-if="it.item_status == 'In-progress' || it.item_status == 'Ongoing'"></div>
-                                                            <div class="job-table-status btn overdueColor" ng-if="it.item_status == 'Overdue'"></div>
-                                                            <div class="job-table-status btn deliveredColor" ng-if="it.item_status == 'Delivered' || it.item_status == 'Completed' "></div>
-                                                            <div class="job-table-status btn approvedColor" ng-if="it.item_status == 'Approved' || it.item_status == 'Invoice Ready' "></div>
-                                                            <div class="job-table-status btn invoicecreatedColor" ng-if="it.item_status == 'Invoice created'"></div>
-                                                            <div class="job-table-status btn invoiceckedColor" ng-if="it.item_status == 'Invoice checked'"></div>
-                                                            <div class="job-table-status btn invoiceacceptedColor" ng-if="it.item_status == 'Invoice Accepted' || it.item_status == 'Invoiced' "></div>
-                                                            <div class="job-table-status btn paidColor" ng-if="it.item_status == 'Paid'"></div>
-                                                            <div class="job-table-status btn canceledColor" ng-if="it.item_status == 'Canceled' || it.item_status == 'Cancelled'"></div>
-                                                            <!-- <div class="job-table-status btn withoutInvoiceColor" ng-if="it.item_status == 'Without invoice'"></div>
-                                                            <div class="job-table-status btn newJob" ng-if="it.item_status == 'New'"></div>
-                                                            <div class="job-table-status btn completedColor" ng-if="it.item_status == 'Completed'"></div>
-                                                            <div class="job-table-status btn rdyToDeliverColor" ng-if="it.item_status == 'Ready to be Delivered'"></div> -->
-                                                            <span class="jStatus">
-                                                                <span class="joStatus">{{it.item_status}}</span>
-                                                                <span class="jAuto none">{{it.auto_status}}</span>
-                                                                <span class="jsumeryIdAuto none">{{it.job_summmeryId}}</span>
-                                                                <span class="jjobnum none">{{it.job_code}}{{it.job_no | numberFixedLen:3}}</span>
-                                                                <span class="jduedate none">{{it.due_date}}</span>
-                                                                <span class="jobEmail none">{{it.vEmailAddress}}</span>
-                                                                <span class="jobResource none">{{it.vUserName}}</span>
-                                                                <span class="jobstatApp none">{{it.appr_id}}</span>
+                                                    <tr ng-repeat="it in itemListFinal[$index]" class="tableRowId">
+                                                        <td>
+                                                            <input type="checkbox" ng-model="confirmed" ng-change="checkBoxCheckFromMultiple(it.itemChecked,it.job_summmeryId)" id="jobId-{{it.job_summmeryId}}" />
+                                                            <input type="text" class="none" id="jobSummeryId{{it.job_summmeryId}}" value="{{it.job_id}}">
+                                                            <!-- <input type="checkbox" ng-model="it.itemChecked" ng-show="itemall" ng-change="checkBoxCheckFromMultiple(it.itemChecked,it.job_summmeryId)" id="checkitem1{{it.job_summmeryId}}"/>
+                                                            <input type="checkbox" ng-model="it.itemAllChecked" ng-show="itemalldata" />
+                                                            <input type="checkbox" id="checkitem{{it.job_summmeryId}}" ng-model="it.c" ng-value="it.c" ng-hide="itemall || itemalldata" ng-change="checkBoxCheck(it.c,it.job_summmeryId)" />
+                                                            <input type="text" class="none" id="getsummeryId{{$index}}" ng-if="it.c == true" ng-model="it.job_summmeryId">
+                                                            <input type="text" class="none" id="jobSummeryId{{it.job_summmeryId}}" value="{{it.job_id}}"> -->
+                                                        </td>
+                                                        <!-- <td>{{$index}}</td> -->
+                                                        <td>
+                                                            <a href="javascript:void(0)" class="summeryColor" ng-click="jobNoDetails(it.job_summmeryId)">{{it.po_number}}</a>
+                                                            <!-- <a href="javascript:void(0)" class="summeryColor" ng-click="jobNoDetails(it.job_summmeryId)">{{it.job_code}}{{it.job_no| numberFixedLen:3}}</a> -->
+                                                        </td>
+                                                        <td ng-hide="resourceStatus == {{$index}}{{itemL.itemId}}" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()"  class="nowrap">
+                                                            <span >
+                                                                <label id="resourceview{{$index}}" ng-hide="it.job_summmeryId==id || job[{{$index}}]"><a href="javascript:void(0)" ng-click="jobsumResource(it.resource, it.job_summmeryId)"><span ng-show="hoverEdit" class="summeryColor" ng-if="it.vUserName"><i class="fa fa-envelope"></i></span></a> &nbsp;<a href="#/viewExternal/{{it.iUserId}}" class="summeryColor">{{it.vUserName}}</a></label>
+                                                                <input ng-show="it.job_summmeryId == id" select2-job-detail-resource type="text" class="form-control" name="resource[]" ng-model="it.resource" />
+                                                                <span ng-show="hoverEdit && it.resource">
+                                                                    <a href="javascript:void(0);" ng-click="resouceEdit1($index,itemL.itemId, it.resource)">
+                                                                        <i class="fa fa-pencil summeryColor" aria-hidden="true"></i>
+                                                                    </a>
+                                                                </span>
                                                             </span>
-                                                        </label>
-                                                        <input ng-show="job[{{$index}}]" type="text" select2-job-detailitm-status class="form-control" name="status[]" ng-model="it.item_status[$index]" />
-                                                        <input ng-show="it.job_summmeryId == id" type="text" select2-job-detailitm-status class="form-control" name="status" ng-model="it.item_status" />
-                                                    </td>
-                                                    <td>
-                                                        <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'target')"><span class="orderout"></span>&nbsp;(<span class="targteC{{it.job_summmeryId}}" id="targetCount-{{it.job_summmeryId}}"></span>)</a>
-                                                        <!-- <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'source')"><span class="orderin"></span>&nbsp;(<span class="sourceC{{it.job_summmeryId}}" id="sourceCount-{{it.job_summmeryId}}"></span>) </a>-->
-                                                    </td>
-                                                    <td style="width:7%;">
-                                                        <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'source')"><span class="orderin"></span>&nbsp;(<span class="sourceC{{it.job_summmeryId}}" id="sourceCount-{{it.job_summmeryId}}"></span>) </a>
-                                                        <!-- <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'target')"><span class="orderout"></span>&nbsp;(<span class="targteC{{it.job_summmeryId}}" id="targetCount-{{it.job_summmeryId}}"></span>)</a> -->
-                                                    </td>
-                                                    <td>
-                                                        <!-- <span ng-if="it.auto_status == 'Manual'">
-                                                            <a href="javascript:void(0)">
-                                                                <img src="assets/img/manually.png" alt="" title="Manual"/>
-                                                            </a>    
-                                                    </span>
-                                                    <span ng-if="it.auto_status == 'Auto'">
-                                                            <span ng-if="it.auto_job == '1'">
+                                                        </td>
+                                                        <td ng-show="resourceStatus == {{$index}}{{itemL.itemId}}" class="nowrap">
+                                                            <input select2-job-detail-resource type="text" class="form-control" id="resources{{$index}}{{itemL.itemId}}" name="resources" ng-model="jobdetail.resource" ng-change="resourceSave(it.job_summmeryId, jobdetail.resource)" />
+                                                        </td>
+                                                        <td class="nowrap">
+                                                            <label ng-hide="it.job_summmeryId==id || job[{{$index}}]" ng-if="it.due_date!='0000-00-00 00:00:00'">{{it.due_date| dateFormat2}}</label>
+                                                        </td>
+                                                        
+                                                        <!-- <td>
+                                                            <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">{{it.description}}</label>
+                                                        </td> -->
+                                                        <td>
+                                                            <label ng-hide="it.job_summmeryId==id || job[{{$index}}]">
+                                                                <a href="#/viewinternal/{{it.contactPersonId}}" class="summeryColor">{{it.contactPerson}}</a>
+                                                            </label>
+                                                            <input type="text" class="none" id="contactPerson{{$index}}" name="contact_person" ng-if="it.c == true" ng-model="it.contact_person">
+                                                            <input ng-show="job[{{$index}}]" select2-contactsummery type="text" class="form-control" name="contact[]" ng-model="it.contact_person[$index]" />
+                                                            <input ng-show="it.job_summmeryId == id" select2-contactsummery type="text" class="form-control" name="contact" ng-model="it.contact_person" />
+                                                            <input ng-show="it.job_summmeryId == it.ContactId" select2-contactsummery type="text" class="form-control" name="contact" ng-model="it.contact_person" />
+                                                        </td>
+                                                        <td>
+                                                            <label class="d-flex align-center" ng-hide="it.job_summmeryId==id || job[{{$index}}]">
+                                                                <div class="job-table-status btn inpreprartionColor" ng-if="it.item_status == 'In preparation'"></div>
+                                                                <div class="job-table-status btn requestedColor" ng-if="it.item_status == 'Requested'"></div>
+                                                                <div class="job-table-status btn assignedwaitongColor" ng-if="it.item_status == 'Assigned-waiting' || it.item_status == 'Waiting'"></div>
+                                                                <div class="job-table-status btn inprogressColor" ng-if="it.item_status == 'In-progress' || it.item_status == 'Ongoing'"></div>
+                                                                <div class="job-table-status btn overdueColor" ng-if="it.item_status == 'Overdue'"></div>
+                                                                <div class="job-table-status btn deliveredColor" ng-if="it.item_status == 'Delivered' || it.item_status == 'Completed' "></div>
+                                                                <div class="job-table-status btn approvedColor" ng-if="it.item_status == 'Approved' || it.item_status == 'Invoice Ready' "></div>
+                                                                <div class="job-table-status btn invoicecreatedColor" ng-if="it.item_status == 'Invoice created'"></div>
+                                                                <div class="job-table-status btn invoiceckedColor" ng-if="it.item_status == 'Invoice checked'"></div>
+                                                                <div class="job-table-status btn invoiceacceptedColor" ng-if="it.item_status == 'Invoice Accepted' || it.item_status == 'Invoiced' "></div>
+                                                                <div class="job-table-status btn paidColor" ng-if="it.item_status == 'Paid'"></div>
+                                                                <div class="job-table-status btn canceledColor" ng-if="it.item_status == 'Canceled' || it.item_status == 'Cancelled'"></div>
+                                                                <!-- <div class="job-table-status btn withoutInvoiceColor" ng-if="it.item_status == 'Without invoice'"></div>
+                                                                <div class="job-table-status btn newJob" ng-if="it.item_status == 'New'"></div>
+                                                                <div class="job-table-status btn completedColor" ng-if="it.item_status == 'Completed'"></div>
+                                                                <div class="job-table-status btn rdyToDeliverColor" ng-if="it.item_status == 'Ready to be Delivered'"></div> -->
+                                                                <span class="jStatus">
+                                                                    <span class="joStatus">{{it.item_status}}</span>
+                                                                    <span class="jAuto none">{{it.auto_status}}</span>
+                                                                    <span class="jsumeryIdAuto none">{{it.job_summmeryId}}</span>
+                                                                    <span class="jjobnum none">{{it.job_code}}{{it.job_no | numberFixedLen:3}}</span>
+                                                                    <span class="jduedate none">{{it.due_date}}</span>
+                                                                    <span class="jobEmail none">{{it.vEmailAddress}}</span>
+                                                                    <span class="jobResource none">{{it.vUserName}}</span>
+                                                                    <span class="jobstatApp none">{{it.appr_id}}</span>
+                                                                </span>
+                                                            </label>
+                                                            <input ng-show="job[{{$index}}]" type="text" select2-job-detailitm-status class="form-control" name="status[]" ng-model="it.item_status[$index]" />
+                                                            <input ng-show="it.job_summmeryId == id" type="text" select2-job-detailitm-status class="form-control" name="status" ng-model="it.item_status" />
+                                                        </td>
+                                                        <td>
+                                                            <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'target')"><span class="orderout"></span>&nbsp;(<span class="targteC{{it.job_summmeryId}}" id="targetCount-{{it.job_summmeryId}}"></span>)</a>
+                                                            <!-- <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'source')"><span class="orderin"></span>&nbsp;(<span class="sourceC{{it.job_summmeryId}}" id="sourceCount-{{it.job_summmeryId}}"></span>) </a>-->
+                                                        </td>
+                                                        <td style="width:7%;">
+                                                            <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'source')"><span class="orderin"></span>&nbsp;(<span class="sourceC{{it.job_summmeryId}}" id="sourceCount-{{it.job_summmeryId}}"></span>) </a>
+                                                            <!-- <a href="javascript:void(0)" ng-click="countAction(it.job_summmeryId, 'target')"><span class="orderout"></span>&nbsp;(<span class="targteC{{it.job_summmeryId}}" id="targetCount-{{it.job_summmeryId}}"></span>)</a> -->
+                                                        </td>
+                                                        <td>
+                                                            <!-- <span ng-if="it.auto_status == 'Manual'">
                                                                 <a href="javascript:void(0)">
-                                                                    <img src="assets/img/partial_delivery.png" alt="" title="Partial delivery"/>
-                                                                </a>
-                                                            </span>
-                                                            <span ng-if="it.auto_job == '2'">
-                                                                <a href="javascript:void(0)">
-                                                                    <img src="assets/img/final_delivery.png" alt=""  title="Final delivery"/>
+                                                                    <img src="assets/img/manually.png" alt="" title="Manual"/>
                                                                 </a>    
+                                                        </span>
+                                                        <span ng-if="it.auto_status == 'Auto'">
+                                                                <span ng-if="it.auto_job == '1'">
+                                                                    <a href="javascript:void(0)">
+                                                                        <img src="assets/img/partial_delivery.png" alt="" title="Partial delivery"/>
+                                                                    </a>
+                                                                </span>
+                                                                <span ng-if="it.auto_job == '2'">
+                                                                    <a href="javascript:void(0)">
+                                                                        <img src="assets/img/final_delivery.png" alt=""  title="Final delivery"/>
+                                                                    </a>    
+                                                                </span>
+                                                                <span ng-if="it.auto_job == '3'">
+                                                                    <a href="javascript:void(0)">
+                                                                        <img src="assets/img/approved.png" alt=""  title="Approved
+                                                                        "/>
+                                                                    </a>    
+                                                                </span>
+                                                                <span ng-if="it.auto_job == '4'">
+                                                                    <a href="javascript:void(0)">
+                                                                        <img src="assets/img/approved_without_invoice.png" alt=""  title="Approved/Without invoice"/>
+                                                                    </a>
+                                                                </span>
+                                                        </span> -->
+                                                            <a href="javascript:void(0)" ng-click="edit(it.job_summmeryId)" title="edit"><i class="glyph-icon fa-edit"></i></a>
+                                                            <!-- &nbsp;/&nbsp;<a href="javascript:void(0);" ng-click="saveItem(it.job_summmeryId, it)" title="Save">
+                                                        <i class="fa fa-floppy-o"></i></a> -->
+                                                            <a ng-if="it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.po_number)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
+                                                            <a ng-if="!it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.tmp_po_number)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
+                                                        
+                                                            <a href="javascript:void(0)" ng-click="jobSendRequest(it.resource, it.job_summmeryId)" class="btn btn-info btn-sm" style="padding:2px 10px;" ng-if="it.item_status=='In preparation' || it.item_status=='Requested'"><i class="glyphicon glyphicon-envelope"></i> Request </a>
+                                                        </td>
+                                                        <td> 
+                                                            <span class="labeltitle mytooltip">
+                                                                <span>
+                                                                    <p>
+                                                                        <span>{{ it.description | limitTo: 21 }}</span>
+                                                                        <span class="more-text" id="addmoretext{{it.job_summmeryId}}">{{it.description}}</span>
+                                                                        <span> <a ng-if="it.description.length > 20" ng-click="toggleReadMore(it.job_summmeryId)" class="read-more-button" id="read-more-button{{it.job_summmeryId}}">Read more</a> </span>
+                                                                    </p>
+                                                                </span>
                                                             </span>
-                                                            <span ng-if="it.auto_job == '3'">
-                                                                <a href="javascript:void(0)">
-                                                                    <img src="assets/img/approved.png" alt=""  title="Approved
-                                                                    "/>
-                                                                </a>    
-                                                            </span>
-                                                            <span ng-if="it.auto_job == '4'">
-                                                                <a href="javascript:void(0)">
-                                                                    <img src="assets/img/approved_without_invoice.png" alt=""  title="Approved/Without invoice"/>
-                                                                </a>
-                                                            </span>
-                                                    </span> -->
-                                                        <a href="javascript:void(0)" ng-click="edit(it.job_summmeryId)" title="edit"><i class="glyph-icon fa-edit"></i></a>
-                                                        <!-- &nbsp;/&nbsp;<a href="javascript:void(0);" ng-click="saveItem(it.job_summmeryId, it)" title="Save">
-                                                    <i class="fa fa-floppy-o"></i></a> -->
-                                                        <a ng-if="it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.po_number)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
-                                                        <a ng-if="!it.po_number" href="javascript:void(0)" ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.tmp_po_number)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
-                                                    
-                                                        <a href="javascript:void(0)" ng-click="jobSendRequest(it.resource, it.job_summmeryId)" class="btn btn-info btn-sm" style="padding:2px 10px;" ng-if="it.item_status=='In preparation' || it.item_status=='Requested'"><i class="glyphicon glyphicon-envelope"></i> Request </a>
-                                                    </td>
-                                                    <td> {{it.description}} </td>
-                                                </tr>
-                                                <tr ng-show="!itemListFinal[$index].length">
-                                                    <td colspan="9" ng-bind="dataNotFound"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                                        </td>
+                                                    </tr>
+                                                    <tr ng-show="!itemListFinal[$index].length">
+                                                        <td colspan="9" ng-bind="dataNotFound"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
 
+                                        </div>
                                     </div>
                                 </div>
                             </div>
