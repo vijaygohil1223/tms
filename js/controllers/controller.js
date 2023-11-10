@@ -21774,18 +21774,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('scrollCollapse', true);
 
     setTimeout( ()=> {
-        //$('.more-text').css('display', 'none');
-        //$('.more-text').addClass('none');
         angular.element('.more-text').addClass('none');
     }, 2500)
     $scope.toggleReadMore = function(id) {
         if ($('#read-more-button'+id).text() == "Read more") {
             $('#read-more-button'+id).text("Read less")
-            //$('#addmoretext'+id).css('display', 'block');
             angular.element('#addmoretext'+id).removeClass('none');
+            angular.element('#smalltext'+id).addClass('none');
         } else {
             $('#read-more-button'+id).text("Read more")
             angular.element('#addmoretext'+id).addClass('none');
+            angular.element('#smalltext'+id).removeClass('none');
         }
     };
 
@@ -33010,6 +33009,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $route.reload();
     }
 
+    
     $scope.itemAmountChilprice = function (id) {
         rest.path = 'childPriceitemAmountget/' + id;
         rest.get().success(function (data) {
@@ -33842,12 +33842,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.element('#filescount' + val.itemId).text($scope.Filestotal);
                 }).error(errorCallback);
 
-
+                setTimeout( ()=> {
+                    angular.element('.more-text').addClass('none');
+                }, 2500)
 
             })
         });
     }
     $scope.getItems();
+
+    // job comment read more content
+    setTimeout( ()=> {
+        //angular.element('.more-text').addClass('none');
+    }, 2500)
+    $scope.toggleReadMore = function(id) {
+        if ($('#read-more-button'+id).text() == "Read more") {
+            $('#read-more-button'+id).text("Read less")
+            angular.element('#addmoretext'+id).removeClass('none');
+            angular.element('#smalltext'+id).addClass('none');
+        } else {
+            $('#read-more-button'+id).text("Read more")
+            angular.element('#addmoretext'+id).addClass('none');
+            angular.element('#smalltext'+id).removeClass('none');
+        }
+    };
 
 
     // Project Detail ---  ---   

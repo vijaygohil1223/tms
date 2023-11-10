@@ -717,7 +717,17 @@
                                                 ng-click="deletejobsDetails(it.job_summmeryId, it.order_id,it.tmp_po_number)"
                                                 title="delete"><i class="iconDelete glyph-icon fa-times"></i></a>
                                           </td>
-                                          <td>{{it.description}}</td>
+                                          <td>
+                                             <span>
+                                                <span>
+                                                    <p>
+                                                        <span id="smalltext{{it.job_summmeryId}}">{{ it.description | limitTo: 15 }}</span>
+                                                        <span class="more-text" id="addmoretext{{it.job_summmeryId}}">{{it.description}}</span>
+                                                        <span> <a ng-if="it.description.length > 15" ng-click="toggleReadMore(it.job_summmeryId)" class="read-more-button" id="read-more-button{{it.job_summmeryId}}">Read more</a> </span>
+                                                    </p>
+                                                </span>
+                                            </span>
+                                          </td>
                                        </tr>
                                        <tr ng-show="!itemListFinal[$index].length">
                                           <td colspan="9" ng-bind="dataNotFound"></td>
