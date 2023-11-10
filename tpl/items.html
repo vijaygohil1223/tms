@@ -528,11 +528,12 @@
                                                                   <td>
                                                                      <div class="form-group">
                                                                         <label class="control-label">QA Specialist</label>
-                                                                        <label class="i-checks i-checks-sm checksubQa[$index]" style="margin-left: 10px;" ng-hide="subqahide">
+                                                                        <label class="i-checks i-checks-sm checksubQa[$index]" style="margin-left: 10px;">
                                                                            <input type="checkbox" name="checksubQa" ng-true-value="1" ng-false-value="0" ng-model="checksubQa[$index]" ng-checked="it.subQa && it.subQa != 0" class="ng-pristine ng-untouched ng-valid">
                                                                            <i></i>
                                                                         </label>
-                                                                        <label class="no-wrap m-0 checksub" ng-hide="subqahide">Substitute</label>
+                                                                        <!-- <label class="no-wrap m-0 checksub" ng-hide="subqahide">Substitute</label> -->
+                                                                        <label class="no-wrap m-0 checksub">Substitute</label>
                                                                         <input type="text" class="form-control QA_specialist" name="Coordinator" select2-qaspa id="QA_specialist{{it.itemId}}" ng-model="it.qaSpecialist" />
                                                                         
                                                                         <div ng-if="checksubQa[$index]" class="mt-15">
