@@ -816,12 +816,15 @@ class Client_invoice {
     // Invoice Design template
     public function clientInvoiceDesignType() {
         $data = $this->_db->getOne('tms_invoice_setting');
+        if($data['postcode'] && preg_match('/^0/', $data['postcode']) ){
+            // if number start with zero it remove zero from string i.e 0123=123
+            $data['postcode'] = $data["postcode"] . " ";
+        }
         return $data;
     }
     // Invoice setting data
     public function getClientInvoiceSetting() {
         $data = $this->_db->get('tms_invoice_setting');
-        //print_r($data);
         foreach ($data as $key => $value) {
             if($data[$key]['postcode'] && preg_match('/^0/', $data[$key]['postcode']) ){
                 // if number start with zero it remove zero from string i.e 0123=123

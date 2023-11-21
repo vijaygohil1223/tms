@@ -53,6 +53,12 @@ class invoicesetting {
 
     public function getAll() {
         $results = $this->_db->get('tms_invoice_setting');
+        foreach ($results as $key => $value) {
+            if($results[$key]['postcode'] && preg_match('/^0/', $results[$key]['postcode']) ){
+                // if number start with zero it remove zero from string i.e 0123=123
+                $results[$key]['postcode'] = $value["postcode"] . " ";
+            }
+        }
         return $results;
     }
 
@@ -84,6 +90,10 @@ class invoicesetting {
     public function getTypeById($id) {
         $this->_db->where('id', $id);
         $result = $this->_db->getOne('tms_invoice_setting');
+        if($result['postcode'] && preg_match('/^0/', $result['postcode']) ){
+            // if number start with zero it remove zero from string i.e 0123=123
+            $result['postcode'] = $result["postcode"] . " ";
+        }
         return $result;
     }
     
