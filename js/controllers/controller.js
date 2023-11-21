@@ -3960,6 +3960,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // }
                 if(centerID){
                     $scope.poSettingData = settingData.find( (item) => {
+                        console.log('item.postcode', item.postcode.toString())
                         if((item.branch_center_id.toString().split(',')).includes(centerID.toString())){
                             return item
                         }
@@ -3971,6 +3972,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.poSettingData = settingData[0];
                 }
                 
+                console.log('$scope.poSettingData', $scope.poSettingData)
+
                 $scope.dataReplaceArr.COMPANY_NAME = $scope.poSettingData.company_name;
                 $scope.dataReplaceArr.COMPANY_ADDRESS = $scope.poSettingData.address1;
                 $scope.dataReplaceArr.COMPANY_CITY = $scope.poSettingData.city;
@@ -4014,6 +4017,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         let poDueDate = ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date : '';
         let poDueDateTime = poDueDate ? poDueDate.split(' ')[0] + ' | ' + $('#due_time').val() : '';
+        let freelanceCurrency = $scope.jobdetail.total_price ? ' '+$scope.jobdetail.freelance_currency.split(',')[0] : ''; 
         // replace tempalte variable
         var dataReplaceArr = {
             NAME1: $scope.resourceDetail.vFirstName,
@@ -4038,7 +4042,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             DEADLINE: poDueDateTime,
             WORDCOUNT: '',
             TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
-            TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
+            TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price) + freelanceCurrency,
         };
         
         Object.assign($scope.dataReplaceArr, dataReplaceArr);
@@ -4203,6 +4207,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.resourceDetail = data;
             if ($scope.resourceDetail.address1Detail) {
                 let resourceAddDetail = JSON.parse($scope.resourceDetail.address1Detail);
+                console.log('resourceAddDetail', resourceAddDetail)
                 angular.forEach(resourceAddDetail, function (resourceAddress, i) {
                     if (resourceAddress.id == 'address1_locality')
                         $scope.resourceCity = resourceAddress.value;
@@ -4210,6 +4215,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.resourceCountry = resourceAddress.value;
                     if (resourceAddress.id == 'address1_postal_code')
                         $scope.resourceZipcode = resourceAddress.value;
+                    console.log('$scope.resourceZipcode', $scope.resourceZipcode)
                 })
             }
             }).error(errorCallback);

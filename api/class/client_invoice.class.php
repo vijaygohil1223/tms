@@ -821,6 +821,13 @@ class Client_invoice {
     // Invoice setting data
     public function getClientInvoiceSetting() {
         $data = $this->_db->get('tms_invoice_setting');
+        //print_r($data);
+        foreach ($data as $key => $value) {
+            if($data[$key]['postcode'] && preg_match('/^0/', $data[$key]['postcode']) ){
+                // if number start with zero it remove zero from string i.e 0123=123
+                $data[$key]['postcode'] = $value["postcode"] . " ";
+            }
+        }
         return $data;
     }
     
