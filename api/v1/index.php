@@ -2825,6 +2825,11 @@ $app->get('/filemanagerfolderDownload/:id/','authenticate', function ($id) {
     $result = $filemanager->filemanagerfolderDownload($id);
     echoResponse(200, $result);
 });
+$app->get('/getfolderByjobid/:id/','authenticate', function ($id) {
+    $filemanager = new filemanager ();
+    $result = $filemanager->getfolderByjobid($id);
+    echoResponse(200, $result);
+});
 
 //----------------order status search---------------------//
 $app->get('/statusorderReportFind', 'authenticate',function () use($app) {

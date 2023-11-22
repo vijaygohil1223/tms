@@ -950,4 +950,9 @@ array(
         return $data;
     }
 
+    public function getfolderByjobid($jonid) {
+        $data = self::filegetByjobId($jonid);
+        return $data;
+    }
+
 }

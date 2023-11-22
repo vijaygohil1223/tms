@@ -483,6 +483,13 @@ function pasteHtmlAtCaret(html, selectPastedContent) {
     }
 }
 
+var isChrome = navigator.userAgent.includes("Chrome");
+// Check for Safari
+var isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+if (isSafari) {
+  console.log("Safari is in use.", isSafari);
+}
+
 function numberFormatComma(input) {
     if (input == undefined || input == 0 || input == '') {
         return '';
@@ -502,7 +509,12 @@ function numberFormatComma(input) {
         var n2 = inputString && inputString.length > 1 ? ',' + inputString[1].toString().slice(0, decNo) : '';
         console.log('n2', n2)
         
-        var n1 = part1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+        if (isSafari) {
+            var n1 = part1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }else{
+            var n1 = part1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+        }
+        //var n1 = part1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         return n1 + n2;
     }
 }
@@ -5058,6 +5070,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statussource = $routeParams.id;
     var FilesLength;
 
+
+    console.log('$rootScope.jobId', $routeParams.jobId)
+
     // check file extesion
     $scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
     $scope.fileExtensionExist = function(extension) {
@@ -5143,7 +5158,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($window.localStorage.orderID != " " && $window.localStorage.jobfolderId && $scope.userRight == '2') {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
-            //console.log('CCC')
+            console.log('CCC')
             // For download popup source-target to display file-folder (Parent id will be change)  
             //let routeParamsid = ($routeParams.id == 'target') ? 'source' : $routeParams.id; 
             let routeParamsid = $routeParams.id; 
@@ -5152,6 +5167,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 console.log('data', data)
                 $window.localStorage.pId = data[0].fmanager_id;
+                console.log('$window.localStorage.pId', $window.localStorage.pId)
                 $window.localStorage.setItem("parentId", data[0].fmanager_id);
 
                 //setting variable for jobfilecounter for freelancer project detail
@@ -6104,8 +6120,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.setItem("parentId", $scope.folid);
     }
 
+
+    $scope.jobMainParentId = '';
+    if($routeParams.jobId){
+        rest.path = 'getfolderByjobid/' + $routeParams.jobId;
+        rest.get().success(function (data) {
+            console.log('foder-data', data)
+            $scope.jobMainParentId = data.fmanager_id
+            console.log('$scope.jobMainParentId', $scope.jobMainParentId)
+        })
+    }    
+
     // redirect to higher level directiory or file
     $scope.higherlevelFolder = function (id) {
+        console.log('higherlevelFolder-parentID', $window.localStorage.getItem("parentId"))
+        console.log('id', id)
+
+        if($routeParams.jobId && $scope.userRight == 2 && $scope.jobMainParentId && $scope.jobMainParentId >= $window.localStorage.getItem("parentId") ){
+            // linguist he can not show other files folders
+            return false;
+        }
         var externalResourceId = null;
         rest.path = 'higherfolderGet/' + id + '/' + externalResourceId;
         //rest.path = 'higherfolderGet/' + id;

@@ -67,7 +67,6 @@ app.filter('dateFormat2', function($window) {
 app.filter('dateFormatDisplayFront', function($window) {
     return function(input) {
         //console.log('input', input)
-
         var d = new Date(input);
         if( ! isNaN(Date.parse(d)) ){
             return (d.getDate().toString().length > 1 ? d.getDate() : '0' + d.getDate()) + "." +
@@ -465,7 +464,13 @@ app.filter('currencyCommaformat', function($filter) {
             return '-';
         } else {
             //var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
-            var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
+            const isChrome = navigator.userAgent.includes("Chrome");
+            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            if (isSafari) {
+                var currencydata = input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+            }else{
+                var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
+            }
             return currencydata.replace(".", ',');
         }
     }
@@ -480,7 +485,13 @@ app.filter('currencyCommaDcmlformat', function($filter) {
             //var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
             //const input1 = input % 1 != 0 ? (Math.round(input * 100) / 100).toFixed(2) : input;
             var input1 = input.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
-            var currencydata = input1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "-");
+            const isChrome = navigator.userAgent.includes("Chrome");
+            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            if (isSafari) {
+                var currencydata = input1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "-");
+            }else{
+                var currencydata = input1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, "-");
+            }
             var currencydata1 = currencydata.replace(".", ',');
             //var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
             return currencydata1.replace("-", '.');
@@ -505,7 +516,13 @@ app.filter('CurrencyNumbersCommaformat', function($filter) {
             if(a[1]==undefined && a[1]!=='00'){
                 a[1]='';
             }else{ var a2 = ','+a[1].slice(0, 2); }
-            var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            const isChrome = navigator.userAgent.includes("Chrome");
+            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            if (isSafari) {
+                var n1 = a1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }else{
+                var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            }
             return n1 + a2 ;
             //return n1 + a2 + ' EUR';
         }
@@ -530,7 +547,13 @@ app.filter('filterCurrencyComma', function() {
             if(input.toString().includes('.')){
                  var a2 = ','+numarray.pop().slice(0, 2); 
             }
-            var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            const isChrome = navigator.userAgent.includes("Chrome");
+            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            if (isSafari) {
+                var n1 = a1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }else{
+                var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            }
             return n1 + a2 + ' ' + currencyType;
         }
     };
@@ -558,7 +581,13 @@ app.filter('NumbersCommaformat', function($filter) {
                     decNo = 4 
                 var a2 = ','+a[1].slice(0, decNo); 
             }
-            var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            const isChrome = navigator.userAgent.includes("Chrome");
+            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            if (isSafari) {
+                var n1 = a1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }else{
+                var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            }
             return n1 + a2;
         }
     }
@@ -580,7 +609,13 @@ app.filter('NumbersCommaformatzero', function($filter) {
                 a[1]='';
                 a2='';
             }else{ var a2 = ','+a[1].slice(0, 2); }
-            var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            const isChrome = navigator.userAgent.includes("Chrome");
+            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            if (isSafari) {
+                var n1 = a1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }else{
+                var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+            }
             n1 = n1 ? n1 : 0 ;
             return n1 + a2;
         }
