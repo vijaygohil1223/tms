@@ -66,4 +66,17 @@ class Customerpricelist {
         return self::customerpriceSave($data);
     }
 
+    public function deleteLinguistPricelist($id) {
+		$this->_db->where ( 'price_list_id', $id );
+		$id = $this->_db->delete ( 'tms_customer_price_list' );
+		if ($id) {
+			$return ['status'] = 200;
+			$return ['msg'] = 'Successfully Updated.';
+		} else {
+			$return ['status'] = 422;
+			$return ['msg'] = 'Not Saved.';
+		}
+		return $return;
+	}
+
 }

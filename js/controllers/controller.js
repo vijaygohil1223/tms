@@ -12808,7 +12808,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    $scope.customerChange = function (id) {
+    $scope.customerChange = function (id, fromedit='false') {
         if(id){
             rest.path = 'customerpriceGetOne/' + id;
             rest.get().success(function (data) {
@@ -12823,6 +12823,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 } else {
                     check = false;
                 }
+
+                if(fromedit === 'true'){
+                    angular.element("#customerPriceId").select2('data', { id: data.price_list_id, text: data.price_name });
+                    scrollToId('price-List-form');
+                }
+
                 angular.element('#specialization').select2('val', check ? data.specialization.split(',') : data.specialization);
                 $scope.priceBasiList = JSON.parse(data.price_basis);
                 $scope.priceLanguageList = JSON.parse(data.price_language);
@@ -12868,6 +12874,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
     }
 
+    // price list
+    $scope.priceListLinguist = [];
+    $scope.linguistPriceList = function(){
+        rest.path = 'customerpriceAll/' + 2;  //2 for external userID
+        rest.get().success(function (data) {
+            // price type 2 for linguist price list 
+            $scope.priceListLinguist = data.filter( (itm) => itm.resource_id == $window.localStorage.iUserId );
+            console.log('$window.localStorage.iUserId', $window.localStorage.iUserId)
+            console.log('$scope.priceListLinguist', $scope.priceListLinguist)
+        });
+    }
+    setTimeout( ()=>{
+        $scope.linguistPriceList()
+    }, 100)
+
+    $scope.deletePriceList = function (id) {
+        bootbox.confirm("Are you sure you want to delete this price list?", function (result) {
+            if (result == true) {
+                rest.path = 'deleteLinguistPricelist/' + id;
+                rest.delete().success(function (data) {
+                    notification('Price record deleted successfully.', 'success');
+                    setTimeout( ()=>{
+                        $scope.linguistPriceList()
+                        //$route.reload();
+                    },200)
+                }).error(errorCallback);
+            }
+        });
+    };
+    
     // External user detail page pricelist
     if($rootScope.parentPriceId && $rootScope.Oldtab == "/viewExternal/"+$rootScope.parentUserId){
         $scope.customerChange($rootScope.parentPriceId);
@@ -12881,6 +12917,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'customerpriceGetOne/' + $scope.customerPriceId;
         rest.get().success(function (data) {
             $scope.customerPrice = data;
+            console.log('$scope.customerPrice', $scope.customerPrice)
             setTimeout(() => {
                 angular.element("#customerPriceId").select2('data', { id: $rootScope.parentPriceId, text: data.price_name });
                 angular.element('#price_currency').select2('val', data.price_currency);
@@ -13009,6 +13046,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 'text': val.price_name
                             });
                         });
+                        $scope.linguistPriceList();
                     });
                     angular.element('#customerPriceId').select2({
                         allowClear: true,
@@ -13152,6 +13190,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             });
                         }    
                     });
+
+                    $scope.linguistPriceList();
                 }).error(errorCallback);
             }
         }

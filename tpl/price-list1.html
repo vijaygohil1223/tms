@@ -96,7 +96,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-sm-1" id="showRemoveButton" ng-show="customerPriceId" style="top: 7px;left: -22px;">
-                                                <a><i class="iconDelete glyph-icon fa-times" ng-click="removecustomerPriceId()"></i></a>
+                                                <a><i class="glyphicon glyphicon-refresh" ng-click="removecustomerPriceId()"></i></a>
+                                                <!-- <a><i class="iconDelete glyph-icon fa-times" ng-click="removecustomerPriceId()"></i></a> -->
                                             </div>
                                             <div class="col-sm-5">
                                                 <div class="form-group">
@@ -407,6 +408,38 @@
                             <button ng-show="customerPriceList" class="btn btn-info pull-right"
                                 ng-click="save('price-List-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i>
                                 Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default " style="margin-top:1%">
+                    <div class="panel-body">
+                        <div class="panel panel-default">
+                            <div class="panel-heading font-bold">
+                                <h4>Price list all</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-sm-12">
+                                    <table class="table m-b-none default footable-loaded footable">
+                                        <thead style="background-color: #e0e0e0;">
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Action</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="prc in  priceListLinguist">
+                                                <td ng-bind="$index + 1"></td>
+                                                <td> 
+                                                    <a ng-click="customerChange(prc.price_list_id, 'true')" >{{prc.price_name}}</a>
+                                                </td>
+                                                <td>
+                                                    <a><i class="iconDelete glyph-icon fa-times" ng-click="deletePriceList(prc.price_list_id)"></i></a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
