@@ -4025,7 +4025,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.sendPoPopup = function (type) {
         console.log('type', type)
-        $('.emailTemplate').empty();
+        //$('.emailTemplate').empty();
         $scope.poTempate = true;
         
         let poDueDate = ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date : '';
@@ -4063,8 +4063,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         if(emailTemplate){
             $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
+            $('.emailTemplate').html($scope.emailTemplate);
             if ($("#invoiceContent").length === 0) {
-                $('.emailTemplate').append($scope.emailTemplate);
+                //$('.emailTemplate').append($scope.emailTemplate);
             }
         }
 
@@ -12889,10 +12890,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.priceListExtrnlClntFn = function(){
         rest.path = 'customerpriceAll/' + $scope.pricePageId;  //2 for external userID  1 for client
         rest.get().success(function (data) {
-            console.log('data-customer', data)
             // price type 2 for linguist price list (sort data in desc order) 
             $scope.priceListLinguistClient = data.sort(({price_list_id: a}, {price_list_id: b}) => a-b).filter( (itm) => itm.resource_id == $window.localStorage.iUserId );
-            
         });
     }
     setTimeout( ()=>{
