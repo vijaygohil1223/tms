@@ -66,15 +66,26 @@ class Customerpricelist {
         return self::customerpriceSave($data);
     }
 
-    public function deleteLinguistPricelist($id) {
-		$this->_db->where ( 'price_list_id', $id );
+    public function deleteExtrnlorClntPricelist($type, $id) {
+        if($type == 1){
+            $this->_db->where('project_pricelist', $id);
+            $item = $this->_db->getOne('tms_items', 'itemId');
+            $num_rows = $this->_db->count;
+            if($type==1 && $num_rows > 0){
+                $return ['is_priceUsed'] = 1;
+    			$return ['status'] = 200;
+    			$return ['msg'] = 'You can not delete this record.';
+                return $return;
+            }
+        }
+        $this->_db->where ( 'price_list_id', $id );
 		$id = $this->_db->delete ( 'tms_customer_price_list' );
 		if ($id) {
 			$return ['status'] = 200;
-			$return ['msg'] = 'Successfully Updated.';
+			$return ['msg'] = 'Successfully deleted.';
 		} else {
 			$return ['status'] = 422;
-			$return ['msg'] = 'Not Saved.';
+			$return ['msg'] = 'Not deleted.';
 		}
 		return $return;
 	}

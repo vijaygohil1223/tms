@@ -427,13 +427,13 @@
                                             <th>Action</th>
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="prc in  priceListLinguist">
+                                            <tr ng-repeat="prc in  priceListLinguistClient">
                                                 <td ng-bind="$index + 1"></td>
                                                 <td> 
                                                     <a ng-click="customerChange(prc.price_list_id, 'true')" >{{prc.price_name}}</a>
                                                 </td>
                                                 <td>
-                                                    <a><i class="iconDelete glyph-icon fa-times" ng-click="deletePriceList(prc.price_list_id)"></i></a>
+                                                    <a><i class="iconDelete glyph-icon fa-times" ng-click="deletePriceList(prc.price_list_id, pricePageId)"></i></a>
                                                 </td>
                                             </tr>
                                         </tbody>

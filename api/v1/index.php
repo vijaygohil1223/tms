@@ -1756,9 +1756,9 @@ $app->get('/customerpriceListCopy/:id','authenticate', function($id) {
     $result = $cusPrice->customerpriceListCopy($id);
     echoResponse(200, $result);
 });
-$app->delete('/deleteLinguistPricelist/:id','authenticate', function ($id) use($app) {
+$app->delete('/deleteExtrnlorClntPricelist/:type/:id','authenticate', function ($type, $id) use($app) {
     $cusPrice = new Customerpricelist ();
-    $result = $cusPrice->deleteLinguistPricelist($id);
+    $result = $cusPrice->deleteExtrnlorClntPricelist($type, $id);
     echoResponse($result ['status'], $result);
 });
 // -------------------sevices status --------------------------//

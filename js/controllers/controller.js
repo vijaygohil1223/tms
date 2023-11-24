@@ -4024,6 +4024,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.poTempate = false;
 
     $scope.sendPoPopup = function (type) {
+        console.log('type', type)
         $('.emailTemplate').empty();
         $scope.poTempate = true;
         
@@ -4074,6 +4075,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             setTimeout(() => {
                 kendo.drawing.drawDOM($($scope.pdfExportID)).then(function (group) {
                     //group.options.set("font", "8px DejaVu Sans");
+                    group.options.set("pdf", {
+                        margin: {
+                            left   : "1mm",
+                            top    : "0mm",
+                            right  : "1mm",
+                            bottom : "0mm"
+                        },
+                        paperSize: "A4",
+                    });
                     kendo.drawing.pdf.saveAs(group, poFilenamePdf);
                 });
                 setTimeout(() => {
@@ -12875,28 +12885,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     // price list
-    $scope.priceListLinguist = [];
-    $scope.linguistPriceList = function(){
-        rest.path = 'customerpriceAll/' + 2;  //2 for external userID
+    $scope.priceListLinguistClient = [];
+    $scope.priceListExtrnlClntFn = function(){
+        rest.path = 'customerpriceAll/' + $scope.pricePageId;  //2 for external userID  1 for client
         rest.get().success(function (data) {
-            // price type 2 for linguist price list 
-            $scope.priceListLinguist = data.filter( (itm) => itm.resource_id == $window.localStorage.iUserId );
-            console.log('$window.localStorage.iUserId', $window.localStorage.iUserId)
-            console.log('$scope.priceListLinguist', $scope.priceListLinguist)
+            console.log('data-customer', data)
+            // price type 2 for linguist price list (sort data in desc order) 
+            $scope.priceListLinguistClient = data.sort(({price_list_id: a}, {price_list_id: b}) => a-b).filter( (itm) => itm.resource_id == $window.localStorage.iUserId );
+            
         });
     }
     setTimeout( ()=>{
-        $scope.linguistPriceList()
+        $scope.priceListExtrnlClntFn()
     }, 100)
 
-    $scope.deletePriceList = function (id) {
+    $scope.deletePriceList = function (id, typeId) {
         bootbox.confirm("Are you sure you want to delete this price list?", function (result) {
             if (result == true) {
-                rest.path = 'deleteLinguistPricelist/' + id;
+                rest.path = 'deleteExtrnlorClntPricelist/' + typeId + '/'+ id;
                 rest.delete().success(function (data) {
-                    notification('Price record deleted successfully.', 'success');
+                    if(typeId == 1 && data && data.is_priceUsed==1){
+                        notification('The price list has not been deleted. it is already in use!', 'warning');
+                    }else{
+                        notification('Pricelist record has been deleted successfully.', 'success');
+                    }
+                    $scope.priceListExtrnlClntFn()
                     setTimeout( ()=>{
-                        $scope.linguistPriceList()
                         //$route.reload();
                     },200)
                 }).error(errorCallback);
@@ -13046,7 +13060,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 'text': val.price_name
                             });
                         });
-                        $scope.linguistPriceList();
+                        $scope.priceListExtrnlClntFn();
                     });
                     angular.element('#customerPriceId').select2({
                         allowClear: true,
@@ -13191,7 +13205,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }    
                     });
 
-                    $scope.linguistPriceList();
+                    $scope.priceListExtrnlClntFn();
                 }).error(errorCallback);
             }
         }
