@@ -12910,8 +12910,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     $scope.priceListExtrnlClntFn()
                     setTimeout( ()=>{
-                        //$route.reload();
-                    },200)
+                        $route.reload();
+                    },500)
                 }).error(errorCallback);
             }
         });
@@ -30631,6 +30631,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //page redirect job discussion
             $scope.jobDiscussionRedirect = data[0].order_id
             $window.localStorage.jobOrderId = data[0].order_id;
+            $scope.currencyCodeDisplay = data[0].freelance_currency.split(',')[0]
 
             if (data[0].order_id) {
                 $window.localStorage.orderID = data[0].order_id;
@@ -30648,7 +30649,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.wrInstructEmpty = jQuery.isEmptyObject($scope.wrInstruct);
             }
 
-
             $scope.jobdetail.created_date = data[0].created_date;
 
             //count file
@@ -30665,9 +30665,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //getting freelancer payment information data
             rest.path = "getUserDataById/" + $scope.jobdetail.resource;
             rest.get().success(function (dataUser) {
-                
                 $scope.vBankInfo = JSON.parse(dataUser.userPaymentData.vBankInfo);
-                $scope.currencyCodeDisplay = $scope.vBankInfo.currency_code;
+                //$scope.currencyCodeDisplay = $scope.vBankInfo.currency_code;
             }).error(errorCallback);
         }).error(errorCallback);
     }

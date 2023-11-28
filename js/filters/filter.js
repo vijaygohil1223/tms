@@ -597,18 +597,13 @@ app.filter('NumbersCommaformatzero', function($filter) {
         if (input == undefined || input == 0 || input == '') {
             return '';
         } else {
-            //var str1 = input.toFixed(2);
-            var str1 = input;
-            var str=str1.toString();
-            var numarray=str.split('.');
-            var a=new Array();
-            a=numarray;
-            var a1=a[0];
-            var a2=',00';
-            if(a[1]==undefined && a[1]!=='00'){
-                a[1]='';
-                a2='';
-            }else{ var a2 = ','+a[1].slice(0, 2); }
+            var numarray=input.toString().split('.');
+            var a1=numarray[0];
+            //var a2=',00';
+            var a2='';
+            if(input.toString().includes('.')){
+                 var a2 = ','+numarray.pop().slice(0, 2); 
+            }
             const isChrome = navigator.userAgent.includes("Chrome");
             const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
             if (isSafari) {
