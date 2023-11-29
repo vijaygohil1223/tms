@@ -699,40 +699,42 @@
                         <tab index="9">
                             <tab-heading>
                                 <i class="fa fa-ban"></i>
-                                <span>Abscent List</span>
+                                <span>Absent List</span>
                             </tab-heading>
                             <div class="col-sm-6">
                                 <div class="panel panel-default" id="scrollToNew">
                                     <div class="panel-heading font-bold">
-                                        <h4> Absence/Holiday List </h4>
+                                        <h4> Absent/Holiday List </h4>
                                     </div>
-                                    <table class="table table-striped b-t b-b">
-                                        <thead>
-                                            <th>#</th>
-                                            <th>From Date</th>
-                                            <th>To Date</th>
-                                            <th>Holiday</th>
-                                            <th>Remark</th>
-                                            <th> </th>
-                                        </thead>
-                                        <tbody>
-                                            <tr ng-repeat="abs in abscentHolidayData track by $index">
-                                                <td ng-bind="$index + 1"></td>
-                                                <td> {{ abs.dateFrom | globalDtFormat }} </td>
-                                                <td> {{ abs.dateTo | globalDtFormat }} </td>
-                                                <td> 
-                                                    <span ng-if="abs.isHoliday"> <i class="fa fa-check"></i> </span>
-                                                </td>
-                                                <td> {{ abs.remarks }} </td>
-                                                <td>
-                                                    <a ng-click="removeRowDates($index)"> <i class="fa fa-remove"> </i> </a>
-                                                </td>
-                                            </tr>
-                                            <tr ng-show="!abscentHolidayData.length">
-                                                <td colspan="5" ng-bind="dataNotFound"></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped b-t b-b">
+                                            <thead>
+                                                <th>#</th>
+                                                <th>From Date</th>
+                                                <th>To Date</th>
+                                                <th>Holiday</th>
+                                                <th>Remark</th>
+                                                <th> </th>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="abs in abscentHolidayData track by $index">
+                                                    <td ng-bind="$index + 1"></td>
+                                                    <td> {{ abs.dateFrom | globalDtFormat }} </td>
+                                                    <td> {{ abs.dateTo | globalDtFormat }} </td>
+                                                    <td> 
+                                                        <span ng-if="abs.isHoliday"> <i class="fa fa-check"></i> </span>
+                                                    </td>
+                                                    <td> {{ abs.remarks }} </td>
+                                                    <td>
+                                                        <a ng-click="removeRowDates($index)"> <i class="fa fa-remove"> </i> </a>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-show="!abscentHolidayData.length">
+                                                    <td colspan="5" ng-bind="dataNotFound"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -741,7 +743,7 @@
                                         <div class="col-sm-12">
                                             <div class="panel panel-default">
                                                 <div class="panel-heading font-bold">
-                                                    <h4>Add absent/Holiday</h4>
+                                                    <h4>Add Absent/Holiday</h4>
                                                 </div>
                                                 <div class="panel-body">
                                                     <div class="col-sm-6">
