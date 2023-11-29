@@ -204,7 +204,12 @@ $app->get('/getTreeMenu','authenticate', function () {
     $result = $user->getTreeMenu();
     echoResponse(200, $result);
 });
-
+$app->put('/updateAbscentDate/:id','authenticate', function ($id) use($app) {
+    $user = new users ();
+    $data = json_decode($app->request->getBody());
+    $result = $user->updateAbscentDate($id, (array) $data);
+    echoResponse($result ['status'], $result);
+});
 
 // ---------------------additional info section -------------------------//
 $app->post('/additionalinfo','authenticate', function () use($app) {

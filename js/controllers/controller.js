@@ -10236,6 +10236,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.currentUserName = $window.localStorage.currentUserName;
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
     $scope.overAllshow = true;
+    $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
 
     $scope.changeUserStatus = function (currentStatus) {
         
@@ -10545,6 +10546,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
         rest.path = 'viewExternalget/' + $routeParams.id;
         rest.get().success(function (data) {
+            console.log('external-data', data)
             $scope.viewExternalCommunicational = data;
             //Display Mobile Number
             var CountryCode = JSON.parse(data.iMobile).countryTitle;
@@ -10932,7 +10934,75 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $location.path('price-list1');
         }
     
-    }    
+    }
+    
+    //$scope.abscentHolidayData = {};
+    $scope.abscentList = function(){
+        setTimeout( ()=>{
+            $scope.abscentHolidayData = $scope.viewExternalCommunicational.is_available ? JSON.parse($scope.viewExternalCommunicational.is_available) : [];
+            console.log('$scope.viewExternalCommunicational', $scope.viewExternalCommunicational)
+      console.log('$scope.abscentHoliday', $scope.abscentHolidayData)
+        }, 1000)        
+      
+    }
+    $scope.abscentList();
+    // Save abscent Dates
+    $scope.absentPost = {};
+    $scope.saveAbsent = function(){
+        var abDate = $scope.absentPost.abDate;
+        if(!abDate){
+            notification('Please enter from date', 'warning')
+            return false;
+        }
+        if(abDate){
+            var abDateTo = $scope.absentPost.abDateTo ? $scope.absentPost.abDateTo : abDate;
+            let date1 = moment(abDate,$scope.dateFormatGlobal).format('YYYY-MM-DD');
+            let date2 = moment(abDateTo,$scope.dateFormatGlobal).format('YYYY-MM-DD');
+            
+            let multiDay = (Date.parse(date1) < Date.parse(date2)) ? 1 : 0;
+                abDateTo = (Date.parse(date1) > Date.parse(date2)) ? abDate : $scope.absentPost.abDateTo;
+            
+            var obj = {
+                dateFrom : date1,
+                dateTo : date2,
+                multiDay : multiDay,
+                remarks : $scope.absentPost.remarks ? $scope.absentPost.remarks : '',
+                isHoliday : $scope.absentPost.isHoliday ? 1 : 0 
+            }
+            $scope.postData = {};
+            //$scope.abscentHolidayData.push(obj);
+            $scope.pushObj = $scope.abscentHolidayData; 
+            $scope.pushObj.push(obj); 
+            $scope.postData.is_available = JSON.stringify($scope.pushObj);
+            
+            rest.path = 'updateAbscentDate' ;
+            rest.put($scope.postData).success(function (data) {
+                if(data && data.status==200){
+                    //$scope.abscentHolidayData.push(obj);
+                    $scope.absentPost = {};
+                }
+                //$route.reload();
+            }).error(errorCallback);
+        }
+    }
+
+    $scope.removeRowDates = function(indexToRemove){
+        console.log('index', indexToRemove)
+        if (indexToRemove >= 0 && indexToRemove < $scope.abscentHolidayData.length) {
+            $scope.abscentHolidayData.splice(indexToRemove, 1); // Remove 1 element at the specified index
+            
+            const postReminData = {};
+            postReminData.is_available = JSON.stringify($scope.abscentHolidayData)
+            //setTimeout( ()=>{
+                console.log('postReminData==inn', postReminData)
+                rest.path = 'updateAbscentDate' ;
+                rest.put(postReminData).success(function (data) {
+                
+                }).error(errorCallback);
+            //},100)
+        }
+    }
+
 
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout, $filter ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

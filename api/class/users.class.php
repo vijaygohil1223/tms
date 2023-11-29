@@ -1521,5 +1521,19 @@ array(
             
     }
 
+    public function updateAbscentDate($id, $user) {
+        $user['dtUpdatedDate'] = date('Y-m-d H:i:s');
+        $this->_db->where('iUserId', $id);
+            if ($this->_db->update(TBL_USERS, $user)) {
+                $return['status'] = 200;
+                $return['msg'] = 'Updated Successfully.';
+            } else {
+                $return['status'] = 422;
+                $return['msg'] = 'Not Updated.';
+            }
+        
+        return $return;
+    }
+
 
 }
