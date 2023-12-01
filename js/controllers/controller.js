@@ -595,6 +595,15 @@ function fileUrlExists(url) {
     http.send();
     return http.status != 404;
 }
+function downloadFileFn(url) {
+    var link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', ''); // This attribute indicates it's a download link
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 //  date format for comment
 function commentDateToformat(nwdate, dtseperator = '-') {
     var d = new Date(nwdate);
@@ -18444,6 +18453,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
             group.options.set("font", "8px DejaVu Sans");
             kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
+            if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+                var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+                downloadFileFn(fileUrl);
+            }
         });
 
         $timeout(function () {
@@ -31760,7 +31773,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
     }
 
-}).controller('InvoiceCreateController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $filter) {
+}).controller('InvoiceCreateController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $filter, fileReader) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceList = [];
     $scope.editInvoiceField = true;
@@ -32034,7 +32047,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    $scope.getFile = function (file) {
+        console.log('file', file)
+        fileReader.readAsDataUrl(file, $scope)
+            .then(function (result) {
+                $scope.resourceInvoiceFile = result;
+            });
+        $scope.resourceInvoiceFileName = file.name;
+    };
     $scope.save = function (frmId, invoiceType) {
+        
         if ($scope.invoiceD == undefined || $scope.invoiceD == null || $scope.invoiceD == "") {
             $scope.invoiceData = {};
         }
@@ -32048,6 +32070,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return false;
         }
 
+        if(! $scope.resourceInvoiceFile){
+            notification('Please upload your invoice file.', 'warning');
+            return false;
+        }
+        $scope.invoiceData.resourceInvoiceFile = $scope.resourceInvoiceFile
+        $scope.invoiceData.resourceInvoiceFileName = $scope.resourceInvoiceFileName
+        
         switch (invoiceType) {
             case "save":
                 $scope.invoiceData.invoice_type = invoiceType;

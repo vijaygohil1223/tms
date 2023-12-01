@@ -86,6 +86,22 @@ class Freelance_invoice {
 	
 	//invoice and draft save
     public function saveInvoice($data) {
+        $pdf_content = explode("base64,",$data['resourceInvoiceFile']);
+        $bin = base64_decode($pdf_content[1], true);
+        // if (strpos($bin, '%PDF') !== 0) {
+        //     throw new Exception('Missing the PDF file ');
+        // }
+        $fileName = $data['resourceInvoiceFileName'];
+        $path = '../../uploads/invoice/';
+        if (file_exists($path.$fileName) ) {
+            //mkdir ($dir, 0755);
+            $fileName = time().'-'.$data['resourceInvoiceFileName'];
+        }
+        $pdfFile = $path.$fileName;
+        if(file_put_contents($pdfFile, $bin)){
+            // file uploaded
+        }
+
         $invoiceAlreadyAdded = false;
         if($data['job_id']){
             $invoiceRecords = $this->_db->get('tms_invoice');
@@ -106,7 +122,11 @@ class Freelance_invoice {
             unset($data['job']);
         }
         if(!$invoiceAlreadyAdded){
-            $data['created_date'] = date('Y-m-d');
+            if($fileName)
+                $data['resourceInvoiceFileName'] = $fileName;
+            if(isset($data['resourceInvoiceFile']))
+                    unset($data['resourceInvoiceFile']);
+        	$data['created_date'] = date('Y-m-d');
         	$data['modified_date'] = date('Y-m-d');
         	$data['value_date'] = date('Y-m-d');
         	$data['invoice_date'] = (isset($data['invoice_date'])) ? $data['invoice_date'] : date('Y-m-d');
