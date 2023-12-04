@@ -16186,6 +16186,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var InDuedate = new Date(invoice_duedate); 
                 
                 val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
+                val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
                 
                 $scope.allInvcData.push(val);
                 if (val.invoice_status == 'Open') {
@@ -18450,14 +18451,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
         $scope.isPdfdownload = true;
 
-        kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
-            group.options.set("font", "8px DejaVu Sans");
-            kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
-            if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
-                var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
-                downloadFileFn(fileUrl);
-            }
-        });
+        if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+            var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+            downloadFileFn(fileUrl);
+        }else{
+            kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
+                group.options.set("font", "8px DejaVu Sans");
+                kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
+                if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+                    var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+                    downloadFileFn(fileUrl);
+                }
+            });
+        }    
 
         $timeout(function () {
            $scope.cancel();
@@ -29615,26 +29621,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.resourceId = $scope.userRight == 2 ? $scope.resourceDefault : resourceId.split(',').pop();
         
         $scope.InvoiceResult = [];
+        $scope.jobInvoiceIds = [];
         rest.path = 'freelanceJob/' + $scope.resourceId;
         rest.get().success(function (data) {
             $scope.InvoiceResult = data;
-            $scope.InvoiceResult = data.filter(function (el) {
+
+            rest.path = "viewAllInvoice1/save";
+            rest.get().success(function (data2) {
+                console.log('all-invoice-data2', data2)
+                data2.filter( (item) => {
+                    if(item.freelanceId == $scope.resourceId){
+                        var jbarr = JSON.parse(item.jobInvoiceIds)
+                        const idArray = jbarr.map(obj => $scope.jobInvoiceIds.push(obj.id));
+                        return true; 
+                    }
+                })
+                console.log('$scope.jobInvoiceIds', $scope.jobInvoiceIds)
+                $scope.InvoiceResult = data.filter(function (el) {
                     el.freelance_currency = el.freelance_currency ? el.freelance_currency.split(',')[0] : 'EUR';
                     let jbStatus = el.item_status.toLowerCase();
-                    return ['approved','invoice ready','invoice Ready','overdue'].includes(jbStatus);
-                    //return jbStatus == 'approved' || jbStatus == 'invoice ready' || jbStatus == 'overdue';
+                    // check status and jobids not exist in invoice list
+                    if(['approved','invoice ready','invoice Ready','overdue'].includes(jbStatus) && !$scope.jobInvoiceIds.includes(el.job_summmeryId))
+                        return true;
+
                 });
-            
+            })
         });        
     }
     $scope.changeResource('0');
     
     $scope.addInvoice = function (data) {
-        
         var company = "";
         var flag = 0;
         var array = [];
-
         angular.forEach(data, function (val, i) {
             if (val.SELECTED == 1) {
                 if (!company) {
