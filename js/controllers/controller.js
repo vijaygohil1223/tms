@@ -16190,6 +16190,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 $scope.allInvcData.push(val);
                 if (val.invoice_status == 'Open') {
+                    val.invoice_status = 'Waiting on approval';
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }
