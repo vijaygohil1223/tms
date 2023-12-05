@@ -565,22 +565,17 @@ app.filter('NumbersCommaformat', function($filter) {
         } else {
             //var str1 = input.toFixed(2);
             var decNo = 2;
-            var str1 = input;
-            var str=str1.toString();
-            var numarray=str.split('.');
-            var a=new Array();
-            a=numarray;
-            var a1=a[0];
-            var a2=',00';
-            if(a[1]==undefined && a[1]!=='00'){
-                a[1]='';
-            }else{
-                if(a[1].length == 3)
-                    decNo = 3 
-                if(a[1].length > 3)
-                    decNo = 4 
-                var a2 = ','+a[1].slice(0, decNo); 
+            // Remove characters except numbers or decimal numbers
+            var inputNo = input.toString().replace(/[^0-9.]/g, '');
+            var numarray = inputNo.toString().split('.');
+            var a1 = numarray[0];
+            var a2 = ',00';
+            if(inputNo.toString().includes('.')){
+                var decml = numarray.pop()
+                decNo = (decml.length > 3) ? 4 : (decml.length == 3) ? 3 : 2 
+                var a2 = ','+decml.slice(0, decNo); 
             }
+            // for safari we need to changes in pattern
             const isChrome = navigator.userAgent.includes("Chrome");
             const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
             if (isSafari) {

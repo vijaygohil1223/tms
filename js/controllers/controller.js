@@ -16190,7 +16190,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 $scope.allInvcData.push(val);
                 if (val.invoice_status == 'Open') {
-                    val.invoice_status = 'Waiting on approval';
+                    val.invoice_status = 'Waiting on approval'; // status open = Waiting on approval
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }
@@ -29471,9 +29471,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var InDuedate = new Date(invoice_duedate); 
                 
                 val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
+                val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
                 
                 $scope.allInvcData.push(val);
                 if (val.invoice_status == 'Open') {
+                    val.invoice_status = 'Waiting on approval'; // status open = Waiting on approval
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }
