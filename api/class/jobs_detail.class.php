@@ -1138,7 +1138,7 @@ class jobs_detail
     {
         $this->_db->where('template_id', 11);
         $emailTemplateRegistration = $this->_db->getOne('tms_email_templates');
-        $search_array = array("[JOBNO]", "[LANGUAGES]", '[JOBSTATUS]', '[DUEDATE]', '[ACCEPTLINK]', '[REJECTLINK]');
+        $search_array = array("[JOBNO]", "[LANGUAGES]", '[JOBSTATUS]', '[DUEDATE]', '[ACCEPTLINK]', '[REJECTLINK]', '[JOBDETAILS]');
 
         if (isset($data['id'])) {
             $this->_db->where('job_summmeryId', $data['id']);
@@ -1170,8 +1170,10 @@ class jobs_detail
                     $freelaceremail = $this->_db->getone('tms_users');
 
                     $jobId = $data['id'];
+                    $urlSlugJobdetail = base64_encode("jobId=$jobId&userId=$val&jobDetails=1");
                     $urlSlugAc = base64_encode("jobId=$jobId&userId=$val&accept=1");
                     $urlSlugRej = base64_encode("jobId=$jobId&userId=$val&reject=1");
+                    $jobDetailsLink = '<a href="' . SITE_URL . '#/job-accept/' . $urlSlugJobdetail . '" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Job Details </a>';
                     $acceptLink = '<a href="' . SITE_URL . '#/job-accept/' . $urlSlugAc . '" target="blank" style="padding: 7px 7px; background: green; border-radius: 5px; color: white;"> Accept Job </a>';
                     $rejectLink = '<a href="' . SITE_URL . '#/job-accept/' . $urlSlugRej . '" target="blank" style="padding: 7px 7px; background: red; border-radius: 5px; color: white;"> Reject Job </a>';
 
@@ -1186,7 +1188,7 @@ class jobs_detail
                         // $body .= "<p> click here to accept the job <br><br>" . $acceptLink . "</p>";
                         // $body .= "<p> click here to reject the job <br><br>" . $rejectLink . "</p>";
 
-                        $replace_array = array($jobnumber, $langPair, $itemStatus, $duedate, $acceptLink, $rejectLink);
+                        $replace_array = array($jobnumber, $langPair, $itemStatus, $duedate, $acceptLink, $rejectLink, $jobDetailsLink);
                         $body = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
 
                         $subject = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Send Request ";

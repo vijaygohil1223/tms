@@ -2,6 +2,7 @@
     md-progress-linear .md-bar {
         background-color: rgb(45, 150, 243);
     }
+
     .boxEffect {
         -webkit-box-shadow: 0 10px 6px -6px #777;
         -moz-box-shadow: 0 10px 6px -6px #777;
@@ -9,14 +10,14 @@
     }
 </style>
 <div class="container w-auto-xs" style="margin-top: -30px;">
-    
+
     <div class="m-b-sm">
         <div class="wrapper d-flex space-between justify-space-between">
             <a ng-click="backtoPage()" class="navbar-brand block">
                 <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="..."
                     style="max-height: 50px; max-width: 100%; width: auto;">
             </a>
-            <h3><strong>Accept or Reject Job</strong></h3>
+            <h3><strong>Job Details Accept/Reject </strong></h3>
         </div>
         <div class="panel panel-default" style="box-shadow: 0px 1px 1px 1px #bbb5b5;">
             <div class="panel-body">
@@ -24,15 +25,188 @@
                     <!--   TAB1 -->
                     <div class="row">
                         <div class="col-sm-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label><strong>Job Number :</strong></label>
+                                            <!-- <label>{{jobdetailData.job_code}}{{jobdetailData.job_no | numberFixedLen:3}}</label> -->
+                                            <span>{{jobdetailData.po_number}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label><strong>Creation Date:</strong></label>
+                                            <label>{{jobdetailData.created_date | globalDtFormat}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label><strong>Resource:</strong></label>
+                                            <span>{{jobdetailData.userName}}</span>
+                                            <span class="none"><input select2-job-detail-resource type="text"
+                                                    class="form-control" name="resources"
+                                                    ng-model="jobdetailData.resource" readonly /></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <!-- <label><strong>Project No:</strong></label>
+                                            <label id="companyCode">{{jobdetailData.company_code}}</label> -->
+                                            <label><strong>Language: </strong> </label>
+                                            <span>{{jobdetailData.ItemLanguage}}</span>
+                                            <input type="text" id="sourceLang" class="form-control none"
+                                                name="sourcelang" ng-model="jobdetailData.ItemLanguage" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label><strong>Status:</strong> </label>
+                                            <span>{{jobdetailData.item_status}}</span>
+                                            <span class="none"><input type="text" select2-job-detailitm-status
+                                                    class="form-control" name="itemStatus" id="itemStatus"
+                                                    ng-model="jobdetailData.item_status" readonly /></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label><strong>Comment:</strong> </label>
+                                            <span>{{jobdetailData.description}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label><strong>Due Date:</strong></label>
+                                            <span>{{jobdetailData.due_date | dateFormat2}}</span>
+                                            <input ng-upcomming-date type="text" class="form-control none" id="duedate"
+                                                name="due_date" ng-model="jobdetailData.due_date" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label><strong>Project Manager:</strong> </label>
+                                            <span>{{jobdetailData.projectManager}}</span>
+                                            <span class="none"><input select2-contactsummery type="text"
+                                                    class="form-control" name="contactPerson"
+                                                    ng-model="jobdetailData.contactPerson" readonly /></span>
+                                            <!-- <a href="#/discussion/{{jobDiscussionRedirect}}" ng-click="jobDiscussion();" title="Job Discussion"><span class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a> -->
+                                            <a href="javascript:void(0)" class="none"
+                                                ng-click="jobsumemailResource(jobdetailData.contact_person)"><span
+                                                    class="summeryColor"><i class="fa fa-envelope fa-lg"></i></span></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 none">
+                                        <div class="col-sm-6">
+                                            <a style="padding:2px" href="javascript:void(0);"
+                                                ng-click="popupOpenFilemanager('#/filemanager/source')"><span
+                                                    class="orderin"></span>Download &nbsp;(<span class="sourceC"
+                                                    id="proDetailSourceCount"></span>)</a>
+                                        </div>
+                                        <div class="col-sm-6 none">
+                                            <a style="padding:2px" href="javascript:void(0)"
+                                                ng-click="popupOpenFilemanager('#/filemanager/target')"><span
+                                                    class="orderout"></span>Upload
+                                                &nbsp;(<span class="targteC" id="proDetailTargetCount"></span>)</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default custm-table">
+                                <div class="panel-heading font-bold">
+                                    <h4>Job Status</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-sm-12">
+                                        <!-- <div class="" ng-if="jobdetailData.item_status == 'Requested' "> -->
+                                        <div class="">
+                                            <a class="btn btn-info"
+                                                ng-click="acceptjobstatus(jobdetailData.item_status,'accept');">Accept</a>
+                                            <a class="btn btn-info"
+                                                ng-click="acceptjobstatus(jobdetailData.item_status,'reject');">Reject</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default custm-table">
+                                <div class="panel-heading font-bold">
+                                    <h4>Work instructions</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table m-b-none default footable-loaded footable">
+                                        <thead style="background-color:#3615a0;">
+                                            <!-- <th style="color:#454f59;">Work Instructions</th>
+                                            <th>Check list</th>
+                                            <th></th> -->
+                                        </thead>
+                                        <tbody>
+                                            <tr id="work1_{{$index}}" class="put_row" ng-repeat="war in wrInstruct">
+                                                <td class="none"><span id="work_id{{$index}}"
+                                                        ng-bind="war.work_id"><span></td>
+                                                <td>
+                                                    <!-- <span style="color:green;"> <i class="fa fa-check" aria-hidden="true"></i> </span> -->
+                                                    <span id="work_name{{$index}}" ng-bind="war.work_name"><span>
+                                                </td>
+                                                <td>
+                                                    <!-- <span class="checkList"></span> <input type="checkbox" id="workcheck{{war.work_id}}"
+                                                        value="war.work_checked" ng-checked="war.work_checked == true" name="work_checked"
+                                                        ng-click="checkWorkInstruct(war.work_id)"> -->
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="!wrInstruct">
+                                                <td colspan="3" ng-bind="dataNotFound"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading font-bold">
+                                    <h4>Payment to linguist</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table m-b-none default footable-loaded footable">
+                                        <thead>
+                                            <th>Quantity</th>
+                                            <th>Price unit</th>
+                                            <th>Unit price</th>
+                                            <th>Amount in {{currencyCodeDisplay}}</th>
+                                            <!-- <th>Tax</th> -->
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="linguist in jobdetailData.price">
+                                                <td ng-bind="linguist.quantity"></td>
+                                                <td ng-bind="linguist.pricelist"></td>
+                                                <td ng-bind="linguist.itemPrice | NumbersCommaformatzero"></td>
+                                                <td ng-bind="linguist.itemTotal | NumbersCommaformatzero"></td>
+                                                <!-- <td>Without tax</td> -->
+                                            </tr>
+                                            <tr ng-show="itemPriceEmpty">
+                                                <td colspan="4" ng-bind="dataNotFound"></td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="3" style="text-align: right;">Total Net price</th>
+                                                <th ng-bind="jobdetailData.total_price | NumbersCommaformat">
+                                                    <!-- customNumber --></th>
+                                                <th></th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tabs 2-->
+                    <div class="row">
+                        <div class="col-sm-12">
                             <div class="panel panel-default" style="text-align: center;">
                                 <div class="panel-heading font-bold">
-                                    <h4>Thank you so much for accepting the job! We are looking forward to work with you.</h4>
+                                    <h4>Thank you so much for accepting the job! We are looking forward to work with
+                                        you.</h4>
                                 </div>
                                 <div class="panel-body">
                                     <div class="col-sm-12 pl-0">
                                         <h4 id="responseMsg" style="font-size:16px;"></h4>
                                         <p>Please log into you TMS Dashboard for more details.</p>
-                                        <!-- <button type="submit" class="btn btn-sm btn-info">Submit</button> -->
                                     </div>
                                 </div>
                             </div>

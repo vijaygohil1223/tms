@@ -1117,6 +1117,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     let queryString = fullUrl.split('/').pop();
     var encodedUrl = atob(queryString);
     let paramsName = encodedUrl.split('&')
+    console.log('paramsName', paramsName)
     $scope.jobId = 0;
     $scope.UserId = 0;
     $scope.accept = 0;
@@ -1155,6 +1156,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'getOneJobsummury/'+ $scope.jobDetails.jobId;
             rest.get().success(function (data) {
                 if (data) {
+                    data.price = data.price ? JSON.parse(data.price) : {}
+                    $scope.wrInstruct = data.work_instruction ? JSON.parse(data.work_instruction) : {}
+                    $scope.jobdetailData = data
+                    console.log('$scope.jobdetailData', $scope.jobdetailData)
+
                     if(data.accept > '0' ){
                         if($scope.jobDetails.jobAccept == 1 && data.accept == $scope.jobDetails.resourceId){
                             $('#responseMsg').text('Already, You have accepted the job, thank you.');
@@ -4102,7 +4108,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 500);
             
         }
-        
         $scope.mailDetail = {
             'pdfData': '',
             'jobdetail':$scope.jobdetail,
@@ -4145,6 +4150,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     return $scope.mailDetail;
                                 }
                             }
+                        });
+
+                        modalInstance.result.then(function (updatedData) {
+                            if(updatedData && updatedData.purchaseOrderSent){
+                                $scope.purchaseOrderSent = true;
+                                $scope.jobdetail.isPoSent = 1;
+                            }
+                            $scope.dataNew = updatedData; // Receive updated data from modal
+                            console.log('$scope.dataNew', $scope.dataNew)
+                        }, function () {
+                            // Modal dismissed
                         });
 
                     });
@@ -28292,6 +28308,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //     "file": $scope.attachementfile,
         //     "data": message
         // };
+        const jobSummeryId = items.jobdetail.job_summmeryId ? items.jobdetail.job_summmeryId : '';
         $scope.invoicemailDetail = {
             'pdfData': items.pdfData,
             'purchaseOrderNo': items.purchaseDetail.purchaseOrderNo,
@@ -28302,17 +28319,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'mailTextContent':$scope.cPersonMsg.messageData,
             'order_id': items.jobdetail.order_id ? items.jobdetail.order_id : '',
             'item_id': items.jobdetail.item_id ? items.jobdetail.item_id : '',
-            'job_summmeryId': items.jobdetail.job_summmeryId ? items.jobdetail.job_summmeryId : '',
+            'job_summmeryId': jobSummeryId,
            // "file": $scope.attachementfile
         };
-        console.log('$scope.invoicemailDetail', $scope.invoicemailDetail)
-
         rest.path = 'sendPurchaseOrderLinguist';
         rest.post($scope.invoicemailDetail).success(function (data) {
             if (data.status == 200) {
                 notification('Purchase order has been sent successfully', 'success');
                 $scope.poTempate = false; 
-                $uibModalInstance.dismiss('cancel');
+                setTimeout(() => {
+                    $uibModalInstance.close({id : jobSummeryId, purchaseOrderSent: 1});     
+                }, 500);
+                //$uibModalInstance.dismiss('cancel');
             }
         }).error(errorCallback);
 

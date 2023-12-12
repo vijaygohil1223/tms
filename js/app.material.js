@@ -107,7 +107,7 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             templateUrl: modulesPath + 'job-accept-reject.html',
             controller: 'jobacceptrejectController',
             //activetab: 'dashboard',
-            //role: ['1', '2']
+            role: '2' || ''
         })
 
         // ------------------- client profile ------------------------//
