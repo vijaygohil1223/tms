@@ -107,7 +107,7 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             templateUrl: modulesPath + 'job-accept-reject.html',
             controller: 'jobacceptrejectController',
             //activetab: 'dashboard',
-            role: '2' || ''
+            role: '2'
         })
 
         // ------------------- client profile ------------------------//
@@ -715,6 +715,7 @@ app.run(function ($rootScope, $log, $location, $interval, $window, $cookieStore,
     $rootScope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $rootScope.$on('$routeChangeStart', function (event, next) {
+        console.log('next', next)
         $timeout(function () {
             $('.butterbar').removeClass('hide').addClass('active');
         }, 200);

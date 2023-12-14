@@ -9,7 +9,7 @@
         box-shadow: 0 10px 6px -6px #777;
     }
 </style>
-<div class="container w-auto-xs" style="margin-top: -30px;">
+<div class="container w-auto-xs" style="margin-top: -30px; width:75%;">
 
     <div class="m-b-sm">
         <div class="wrapper d-flex space-between justify-space-between">
@@ -25,7 +25,42 @@
                     <!--   TAB1 -->
                     <div class="row">
                         <div class="col-sm-12">
+                            <div class="panel panel-default custm-table">
+                                <div class="panel-heading font-bold">
+                                    <h4>Job Status</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-sm-12" ng-show="!jobdetailData.accept">
+                                        <!-- <div class="" ng-if="jobdetailData.item_status == 'Requested' "> -->
+                                        <div class="">
+                                            <a class="btn btn-info" ng-click="acceptjobstatus(jobdetailData.item_status,'accept');">Accept</a>
+                                            <a class="btn btn-info"
+                                                ng-click="acceptjobstatus(jobdetailData.item_status,'reject');">Reject</a>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="panel panel-default" style="text-align: center;">
+                                                <div class="panel-heading font-bold" ng-show="jobDetails.jobAccept">
+                                                    <h4>Thank you so much for accepting the job! We are looking forward to work with you.</h4>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="col-sm-12 pl-0">
+                                                        <h4 id="responseMsg" style="font-size:16px;"></h4>
+                                                        <p ng-show="! isLoggedIn">Please log into you TMS Dashboard for more details.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="panel panel-default">
+                                <div class="panel-heading font-bold">
+                                    <h4>Job Details</h4>
+                                </div>
                                 <div class="panel-body">
                                     <div class="col-sm-6">
                                         <div class="form-group">
@@ -111,22 +146,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default custm-table">
-                                <div class="panel-heading font-bold">
-                                    <h4>Job Status</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="col-sm-12">
-                                        <!-- <div class="" ng-if="jobdetailData.item_status == 'Requested' "> -->
-                                        <div class="">
-                                            <a class="btn btn-info"
-                                                ng-click="acceptjobstatus(jobdetailData.item_status,'accept');">Accept</a>
-                                            <a class="btn btn-info"
-                                                ng-click="acceptjobstatus(jobdetailData.item_status,'reject');">Reject</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="panel panel-default custm-table">
                                 <div class="panel-heading font-bold">
                                     <h4>Work instructions</h4>
@@ -196,7 +216,7 @@
                         </div>
                     </div>
                     <!-- Tabs 2-->
-                    <div class="row">
+                    <div class="row none">
                         <div class="col-sm-12">
                             <div class="panel panel-default" style="text-align: center;">
                                 <div class="panel-heading font-bold">

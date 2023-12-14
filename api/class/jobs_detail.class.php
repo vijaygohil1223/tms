@@ -2094,6 +2094,18 @@ class jobs_detail
     {
         $this->_db->where('job_summmeryId', $id);
         $data = $this->_db->getOne('tms_summmery_view');
+        $data['freelance_currency'] = '';
+        if($data && $data['resource'] != ''){
+            $this->_db->where('iUserId', $data['resource']);
+            $data2 = $this->_db->getone('tms_users');
+            $data['freelance_currency'] = $data2 ? $data2['freelance_currency'] : '';
+            $data['userName'] = $data2 ? $data2['vFirstName'] .' '. $data2['vLastName'] : '';
+            }
+        if($data && $data['contact_person'] != ''){
+            $this->_db->where('iUserId', $data['contact_person']);
+            $data3 = $this->_db->getone('tms_users');
+            $data['projectManager'] = $data3 ? $data3['vFirstName'] .' '. $data3['vLastName'] : '';
+        }
         return $data;
     }
 
