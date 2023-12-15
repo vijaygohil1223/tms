@@ -2431,7 +2431,8 @@ $app->get('/JobsummeryResourceGet','authenticate', function () {
     $result = $itemsJob->JobsummeryResourceGet();
     echoResponse(200, $result);
 });
-$app->get('/JobsummerycontactGet','authenticate', function () {
+// Add authentication if necessary
+$app->get('/JobsummerycontactGet', function () {
     $itemsJob = new jobs_detail ();
     $result = $itemsJob->JobsummerycontactGet();
     echoResponse(200, $result);
@@ -2500,7 +2501,8 @@ $app->get('/jobSummeryDetailsGet/:id','authenticate', function ($id) use($app) {
     $result = $itemsJob->jobSummeryDetailsGet($id);
     echoResponse(200, $result);
 });
-$app->get('/jobdetailItemStatusGet','authenticate', function () {
+// Add authentication if necessary
+$app->get('/jobdetailItemStatusGet', function () {
     $itemsJob = new jobs_detail ();
     $result = $itemsJob->jobdetailItemStatusGet();
     echoResponse(200, $result);
@@ -2510,7 +2512,8 @@ $app->get('/scoopdetailItemStatusGet','authenticate', function () {
     $result = $itemsJob->scoopdetailItemStatusGet();
     echoResponse(200, $result);
 });
-$app->get('/jobdetailresourceGet','authenticate', function () {
+// Add authentication if necessary
+$app->get('/jobdetailresourceGet', function () {
     $itemsJob = new jobs_detail ();
     $result = $itemsJob->jobdetailresourceGet();
     echoResponse(200, $result);

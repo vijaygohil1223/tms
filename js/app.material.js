@@ -12,6 +12,7 @@ var app = angular.module('app', ['ui.bootstrap.contextMenu', 'ngRoute', 'ngAnima
 //     });
 // });
 app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileProvider, $translateProvider) {
+    //$locationProvider.html5Mode(true);
     var modulesPath = 'tpl/';
     $routeProvider.when('/', {
         templateUrl: modulesPath + 'login.html',
@@ -103,7 +104,12 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'signupController',
             //activetab: 'dashboard',
             //role: '1'    
-        }).when('/job-accept/:id', {
+        }).when('/job-accept/:encryptedId', {
+            templateUrl: modulesPath + 'job-accept-reject.html',
+            controller: 'jobacceptrejectController',
+            //activetab: 'dashboard',
+            //role: '2'
+        }).when('/job-accept-resource/:encryptedId2', {
             templateUrl: modulesPath + 'job-accept-reject.html',
             controller: 'jobacceptrejectController',
             //activetab: 'dashboard',
@@ -724,11 +730,13 @@ app.run(function ($rootScope, $log, $location, $interval, $window, $cookieStore,
         if (next.role) {
             if (next.role[0] && !next.role[1]) {
                 if (next.role != $cookieStore.get('session_iFkUserTypeId')) {
+                    console.log('next.role', next.role)
                     $location.path('/dashboard1');
                 }
             }
         }
         if (roles == true && userRole == -1) {
+            console.log('userRole', userRole)
             $location.path('/dashboard1');
         }
 

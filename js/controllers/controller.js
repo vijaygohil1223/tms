@@ -37831,12 +37831,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //     $location.path('/dashboard');
     // }
     $scope.isLoggedIn = $window.localStorage.session_iUserId ? true : false;
+
     console.log('$scope.isLoggedIn', $scope.isLoggedIn)
 
     $window.localStorage.setItem("global_dateFormat", 'DD.MM.YYYY'); // Default
     $window.localStorage.setItem("dtSeparator", '.'); // Default
 
     let fullUrl = $location.absUrl();
+    
     $scope.baseURL = fullUrl.split('#')[0];
     let queryString = fullUrl.split('/').pop();
     var encodedUrl = atob(queryString);
@@ -37847,7 +37849,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.accept = 0;
     $scope.reject = 0;
     $scope.linguistJobDetails = 0;
-    
+    if($scope.isLoggedIn){
+        $location.path('/job-accept-resource/'+queryString);
+        console.log('queryString --called', queryString)
+    }
     $scope.jobDetails = {};
     $scope.jobDetails.resourceId = 0;
     if(paramsName.length > 0){
@@ -37896,7 +37901,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     if(data.accept > '0' ){
                         if(data.accept == $scope.jobDetails.resourceId){
-                            $('#responseMsg').text('Already, You have accepted the job, thank you.');
+                            $('#responseMsg').text('You have accepted the job, thank you.');
                             $("#responseMsg").addClass("alert alert-success" );
                         }else{
                             let msgText = 'The job is accepted by someone else!' ;
@@ -37913,7 +37918,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.acceptjobstatus = function (status, action) {
         if($scope.jobdetailData.accept > 0 ){
             if($scope.jobDetails.jobAccept == 1 && $scope.jobdetailData.accept == $scope.jobDetails.resourceId){
-                $('#responseMsg').text('Already, You have accepted the job, thank you.');
+                $('#responseMsg').text('You have accepted the job, thank you.');
+                //$('#responseMsg').text('Already, You have accepted the job, thank you.');
                 $("#responseMsg").addClass("alert alert-success" );
             }else{
                 let msgText = $scope.jobDetails.jobAccept ? 'The job is accepted by someone else!' : 'Job is already accepted!' ;
@@ -37941,7 +37947,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 setTimeout(() => {
                     $route.reload();
-                }, 500);
+                }, 1500);
             }).error(errorCallback);
         }
 
