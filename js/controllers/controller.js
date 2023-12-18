@@ -37967,6 +37967,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $("#responseMsg").addClass("alert alert-warning");
                     }
                 }
+                $scope.acceptReject = false;
                 setTimeout(() => {
                     //$route.reload();
                 }, 5000);
