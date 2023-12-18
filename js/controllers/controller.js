@@ -23899,6 +23899,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     var loginid = $window.localStorage.getItem("session_iUserId");
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
+    $scope.isLinguist = false;
 
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
     $scope.currencyName = 'EUR';
@@ -24063,6 +24064,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         } else {
             $location.path('dashboard1');
         }
+    }
+
+    $window.localStorage.setItem("isLinguistChat", $scope.isLinguist)
+    $scope.chatLinguist = function(){
+        $scope.isLinguist = !$scope.isLinguist;
+        $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
+        console.log('testingnggngg=', $window.localStorage.getItem("isLinguistChat"))
     }
 
 
@@ -24280,6 +24288,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
 
                 }, 1500);
+                
                 commentsArray = data;
                 
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
@@ -24543,7 +24552,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             data.fullname = $window.localStorage.getItem("session_vUserName");
             data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
             data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
-
+            data.externalChat = $window.localStorage.getItem("isLinguistChat") ? 1 : 0;
+            
             function escapeSpecialChars(regex) {
                 return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
             }
@@ -24575,6 +24585,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         putComment: function (data, success, error) {
             $routeParams.id = data.id;
             data.login_userid = $window.localStorage.getItem("session_iUserId");
+            data.externalChat = $window.localStorage.getItem("isLinguistChat") ? 1 : 0;
             rest.path = 'discussionOrder';
             rest.put(data).success(function (res) {
                 if (res.Status == 401) {
@@ -24637,6 +24648,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     "upvote_count": '0',
                     "job_id": 0,
                     "user_has_upvoted": '0',
+                    'externalChat' : $window.localStorage.getItem("isLinguistChat") ? 1 : 0,
                     "read_id": $window.localStorage.getItem("session_iUserId") + ',',
 
                 }
@@ -37831,6 +37843,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //     $location.path('/dashboard');
     // }
     $scope.isLoggedIn = $window.localStorage.session_iUserId ? true : false;
+    $scope.acceptReject = true;
 
     console.log('$scope.isLoggedIn', $scope.isLoggedIn)
 
@@ -37891,6 +37904,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'getOneJobsummury/'+ $scope.jobDetails.jobId;
             rest.get().success(function (data) {
                 if (data) {
+                    console.log('data-details', data)
                     data.price = data.price ? JSON.parse(data.price) : {}
                     $scope.wrInstruct = data.work_instruction ? JSON.parse(data.work_instruction) : {}
                     $scope.jobdetailData = data
@@ -37900,6 +37914,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     console.log('$scope.jobDetails.resourceId', $scope.jobDetails.resourceId)
 
                     if(data.accept > '0' ){
+                        $scope.acceptReject = false;
                         if(data.accept == $scope.jobDetails.resourceId){
                             $('#responseMsg').text('You have accepted the job, thank you.');
                             $("#responseMsg").addClass("alert alert-success" );
@@ -37908,6 +37923,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $('#responseMsg').text(msgText);
                             $("#responseMsg").addClass("alert alert-warning" );
                             notification(msgText);
+                        }
+                    }
+                    if(data.rejection > '0' ){
+                        if(data.rejection == $scope.jobDetails.resourceId){
+                            $scope.acceptReject = false;
+                            $('#responseMsg').text('You have rejected the job!');
+                            $("#responseMsg").addClass("alert alert-warning" );
                         }
                     }
                 }
@@ -37946,8 +37968,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 setTimeout(() => {
-                    $route.reload();
-                }, 1500);
+                    //$route.reload();
+                }, 5000);
             }).error(errorCallback);
         }
 
