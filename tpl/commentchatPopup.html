@@ -271,7 +271,12 @@ li.seperatordate.comment {
   <div class="wrapper-md ng-scope" style="background: #f4f4fb; padding:0 10px;">
     
 <div class="modal-header" style="min-height:60px;">
-  <h3 class="modal-title">Discussion Board</h3>
+  <h3 class="modal-title" style="display: block;">
+    <span>Discussion Board</span>
+    <button class="btn linguistDiscussion" data-sort-key="isLinguist=='true' ? 1 : 0" ng-class=" {'btn-default':!isLinguist, 'btn-success':isLinguist }" ng-click="chatLinguist()"  style="margin-left:20px;">{{  isLinguist ? 'Linguist' : 'Internal' }} Chat</button>
+  
+
+  </h3>
   <!-- <div ng-click="cancel()" style="margin-rigth:10px;"><a><i class="fa fa-times-circle"></i></a></div> -->
   <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()" style="font-size: 30px;">×</button>
 </div>

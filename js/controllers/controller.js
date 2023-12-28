@@ -24058,6 +24058,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.getItem("session_iUserId");
     $window.localStorage.getItem("session_vUserName");
     $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.setItem("isLinguistChat", $scope.isLinguist)
+    
     $scope.backtoPage = function () {
         if ($window.localStorage.getItem("session_iFkUserTypeId") == 1) {
             $location.path('jobs-detail/' + $window.localStorage.orderID);
@@ -24066,14 +24068,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    $window.localStorage.setItem("isLinguistChat", $scope.isLinguist)
-    $scope.chatLinguist = function(){
-        $scope.isLinguist = !$scope.isLinguist;
-        $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
-        console.log('testingnggngg=', $window.localStorage.getItem("isLinguistChat"))
-    }
-
-
+                            
     if ($routeParams.id) {
 
         var commentsArray = [];
@@ -24085,211 +24080,207 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.msgIDArr = [];
         $scope.commentsArrayAll = async function () {
             rest.path = "discussionOrder/" + $routeParams.id;
-            rest.get().success(function (data) {
+            rest.get().success(function (data2) {
+                let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
+                var data = data2.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
+                
+                console.log('$window.localStorage.getItem("isLinguistChat")==================>', $window.localStorage.getItem("isLinguistChat"))
                 setTimeout(function () {
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function (val, i) {
                         var dataId = val.id;
+                        //if( val.externalChat = (($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) ){
+                            //val.externalChat = (localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0,
 
-                        /*if (val.content == "") {
-                            var dataId = val.id;
-                            var hrefClass = 'attachment';
-                            var hrefTarget = '_blank';
-                            var data = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '><img src=' + val.fileURL + '></img></a>';
-                            if(val.user_id == 1){
-                                //$('li[data-id=' + dataId + ']').addClass('cmtright');
-                                //$(time).addClass('cmtright');
-                            }
-                            $('li[data-id=' + dataId + ']').find('.content').html(data);
-                            $('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                        }*/
+                            var msgReadArr = val.read_id.split(",");
+                            var msgReadArrFilter = msgReadArr.filter(function (el) {
+                                if ($scope.teamArray.indexOf(parseInt(el)) != -1) {
+                                    return el;
+                                }
+                                return 0;
+                            });
 
-                        var msgReadArr = val.read_id.split(",");
-                        var msgReadArrFilter = msgReadArr.filter(function (el) {
-                            if ($scope.teamArray.indexOf(parseInt(el)) != -1) {
-                                return el;
+                            $('#comment-list').find(' > li[data-id^=c]').hide();
+                            //$('#comment-list').find(' > li[data-id^=c]').css('display','none');
+                            //$('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
+                            //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
+
+                            if (userprofilepic) {
+                                $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
                             }
-                            return 0;
+                            var filedata = '';
+                            if (val.fileURL != "") {
+                                var filetype = val.fileMimeType;
+                                var filetype1 = filetype.includes("image/");
+                                var file_format = '';
+                                var file_type = '';
+                                var mimeTypeParts = val.fileMimeType.split('/');
+                                if (mimeTypeParts.length == 2) {
+                                    file_format = mimeTypeParts[1];
+                                    file_type = mimeTypeParts[0];
+                                }
+                                // Icon
+                                var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                                    'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
+                                ];
+
+                                var iconClass = 'fa fa-file-o';
+                                // File Extension name
+                                var extName = '';
+                                var extParts = val.fileURL.split('/');
+                                var extFileName = extParts[extParts.length - 1];
+                                var extFileName = extFileName.split('?')[0];
+                                extName = extFileName.split('.')[1];
+
+                                if (availableIcons.indexOf(file_format) > 0) {
+                                    iconClass = 'fa fa-file-' + file_format + '-o';
+                                } else if (availableIcons.indexOf(file_type) > 0) {
+                                    iconClass = 'fa fa-file-' + file_type + '-o';
+                                } else if (extName == 'docx' || extName == 'rtf') {
+                                    iconClass = 'fa fa-file-word-o';
+                                } else if (extName == 'xlsx' || extName == 'xlsm') {
+                                    iconClass = 'fa fa-file-excel-o';
+                                } else if (extName == 'zip') {
+                                    iconClass = 'fa fa-file-archive-o';
+                                }
+
+                                //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                                //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                                var cmtimgName = val.fileURL + '?v=' + jQuery.now();
+
+                                if (file_type == 'image') {
+                                    var filehtml = '<img src=' + cmtimgName + '></img>';
+                                } else if (file_type == 'video') {
+                                    var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
+                                } else {
+                                    var filename = val.fileURL;
+                                    var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
+                                }
+                                var hrefClass = 'attachment';
+                                var hrefTarget = '_blank';
+                                filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+
+                            }
+                                if (val.user_id == loginid) {
+                                    //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                                    $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+
+                                    if (val.content == '' || val.content == null) {
+                                        //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                                        //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                                    } else {
+                                        //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
+                                        //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
+                                    }
+                                    if (msgReadArrFilter.length > 0) {
+                                        $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
+                                    }
+                                } else {
+                                    //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
+                                    //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
+                                    if (val.content == "" || val.content == null) {
+                                        //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                                        //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                                    }
+                                }
+                                // if (file_type == 'image' || file_type == 'video') {
+                                //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
+                                // }
+                                
+                                if (val.content) {
+                                    $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                                }
+                                //$compile(val.content)($scope);
+                                // ------------ Script for date seperating in chat box --------------//
+                                var ndt = new Date(data[i].created);
+                                var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                                var dd = ("0" + ndt.getDate()).slice(-2);
+                                var yy = ndt.getFullYear();
+                                //var timeText = dd + '-' + mm + '-' + yy;
+                                //var dateSeprt = dd + '-' + mm + '-' + yy;
+                                var dateSeprt = commentDateToformat(data[i].created);
+
+                                // const todayDate = new Date();
+                                // if (ndt.getDate() == todayDate.getDate() &&
+                                //     ndt.getMonth() == todayDate.getMonth() &&
+                                //     ndt.getFullYear() == todayDate.getFullYear()) {
+                                //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                                //     var timeText = 'Today';
+                                // }
+                                var timeText = commentDatetimeToText(data[i].created);
+                                if (timeText == "Today") {
+                                    $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                                }
+                                // ------count total attachment------//
+                                let totalAttachment = 0;
+                                totalAttachment = $('#attachment-list').find('li .attachment').length;
+                                //$('.att_count').text(totalAttachment);
+
+
+                                if (i > 0) {
+                                    var ndt1 = new Date(data[i - 1].created);
+                                    // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                                    // var dd = ("0" + ndt.getDate()).slice(-2);
+                                    // var yy = ndt.getFullYear();
+                                    //var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                                    var dateSeprt2 = commentDateToformat(data[i - 1].created);
+
+                                    if (dateSeprt != dateSeprt2) {
+                                        if ($('li[new-id=' + dataId + ']').length === 0)
+                                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                        //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                    }
+                                } else {
+                                    if ($('li[new-id=' + dataId + ']').length === 0)
+                                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                    //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                                }
+
+
+                                var msgRead_id = val.read_id;
+
+                                if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
+                                    
+                                } else {
+                                    var cmtObj = {
+                                        id: val.id,
+                                        read_id: loginid
+                                    }
+                                    $scope.commentReadArray.push(cmtObj);
+                                }
+                                // Read/ Unread - check comment id exist in db
+                                promises.push(val);
+
+                                if (val.user_id != loginid) {
+                                    usercommentsArr.push(val.user_Id)
+                                }
+                                if (val.id) {
+                                    $scope.msgIDArr.push(val.id)
+                                }
+                            //}    
                         });
 
-                        $('#comment-list').find(' > li[data-id^=c]').hide();
-                        //$('#comment-list').find(' > li[data-id^=c]').css('display','none');
-                        //$('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
-                        //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
-
-                        if (userprofilepic) {
-                            $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
-                        }
-                        var filedata = '';
-                        if (val.fileURL != "") {
-                            var filetype = val.fileMimeType;
-                            var filetype1 = filetype.includes("image/");
-                            var file_format = '';
-                            var file_type = '';
-                            var mimeTypeParts = val.fileMimeType.split('/');
-                            if (mimeTypeParts.length == 2) {
-                                file_format = mimeTypeParts[1];
-                                file_type = mimeTypeParts[0];
-                            }
-                            // Icon
-                            var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
-                                'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
-                            ];
-
-                            var iconClass = 'fa fa-file-o';
-                            // File Extension name
-                            var extName = '';
-                            var extParts = val.fileURL.split('/');
-                            var extFileName = extParts[extParts.length - 1];
-                            var extFileName = extFileName.split('?')[0];
-                            extName = extFileName.split('.')[1];
-
-                            if (availableIcons.indexOf(file_format) > 0) {
-                                iconClass = 'fa fa-file-' + file_format + '-o';
-                            } else if (availableIcons.indexOf(file_type) > 0) {
-                                iconClass = 'fa fa-file-' + file_type + '-o';
-                            } else if (extName == 'docx' || extName == 'rtf') {
-                                iconClass = 'fa fa-file-word-o';
-                            } else if (extName == 'xlsx' || extName == 'xlsm') {
-                                iconClass = 'fa fa-file-excel-o';
-                            } else if (extName == 'zip') {
-                                iconClass = 'fa fa-file-archive-o';
-                            }
-
-                            //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
-                            //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
-                            var cmtimgName = val.fileURL + '?v=' + jQuery.now();
-
-                            if (file_type == 'image') {
-                                var filehtml = '<img src=' + cmtimgName + '></img>';
-                            } else if (file_type == 'video') {
-                                var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
-                            } else {
-                                var filename = val.fileURL;
-                                var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
-                            }
-                            var hrefClass = 'attachment';
-                            var hrefTarget = '_blank';
-                            filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
-
-                        }
-                        if (val.user_id == loginid) {
-                            //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
-                            $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
-
-                            if (val.content == '' || val.content == null) {
-                                //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                            } else {
-                                //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
-                                //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
-                            }
-                            if (msgReadArrFilter.length > 0) {
-                                $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
-                            }
-                        } else {
-                            //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
-                            //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
-                            if (val.content == "" || val.content == null) {
-                                //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                            }
-                        }
-                        // if (file_type == 'image' || file_type == 'video') {
-                        //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
-                        // }
-                        
-                        if (val.content) {
-                            $('li[data-id=' + dataId + ']').find('.content').html(val.content);
-                        }
-                        //$compile(val.content)($scope);
-                        // ------------ Script for date seperating in chat box --------------//
-                        var ndt = new Date(data[i].created);
-                        var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                        var dd = ("0" + ndt.getDate()).slice(-2);
-                        var yy = ndt.getFullYear();
-                        //var timeText = dd + '-' + mm + '-' + yy;
-                        //var dateSeprt = dd + '-' + mm + '-' + yy;
-                        var dateSeprt = commentDateToformat(data[i].created);
-
-                        // const todayDate = new Date();
-                        // if (ndt.getDate() == todayDate.getDate() &&
-                        //     ndt.getMonth() == todayDate.getMonth() &&
-                        //     ndt.getFullYear() == todayDate.getFullYear()) {
-                        //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                        //     var timeText = 'Today';
-                        // }
-                        var timeText = commentDatetimeToText(data[i].created);
-                        if (timeText == "Today") {
-                            $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                        }
-                        // ------count total attachment------//
-                        let totalAttachment = 0;
-                        totalAttachment = $('#attachment-list').find('li .attachment').length;
-                        //$('.att_count').text(totalAttachment);
-
-
-                        if (i > 0) {
-                            var ndt1 = new Date(data[i - 1].created);
-                            // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                            // var dd = ("0" + ndt.getDate()).slice(-2);
-                            // var yy = ndt.getFullYear();
-                            //var dateSeprt2 = dd + '-' + mm + '-' + yy;
-                            var dateSeprt2 = commentDateToformat(data[i - 1].created);
-
-                            if (dateSeprt != dateSeprt2) {
-                                if ($('li[new-id=' + dataId + ']').length === 0)
-                                    $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                            }
-                        } else {
-                            if ($('li[new-id=' + dataId + ']').length === 0)
-                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                            //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
-                        }
-
-
-                        var msgRead_id = val.read_id;
-
-                        if (msgRead_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)"))) {
+                        $(".comment-wrapper").each(function (i, v) {
+                            /*var dateTime = $(this).find('time')[0].innerText;
                             
-                        } else {
-                            var cmtObj = {
-                                id: val.id,
-                                read_id: loginid
-                            }
-                            $scope.commentReadArray.push(cmtObj);
+                            //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
+                            dateTime = moment(dateTime).format('DD-MM-YYYY');
+                            $(this).find('time')[0].innerText = dateTime;*/
+
+                            //$(this).find('time')[0].append("testing");
+                        });
+
+                        if (data.length == promises.length) {
+                            //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                         }
-                        // Read/ Unread - check comment id exist in db
-                        promises.push(val);
-
-                        if (val.user_id != loginid) {
-                            usercommentsArr.push(val.user_Id)
-                        }
-                        if (val.id) {
-                            $scope.msgIDArr.push(val.id)
-                        }
-
-
-                    });
-
-                    $(".comment-wrapper").each(function (i, v) {
-                        /*var dateTime = $(this).find('time')[0].innerText;
-                        
-                        //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
-                        dateTime = moment(dateTime).format('DD-MM-YYYY');
-                        $(this).find('time')[0].innerText = dateTime;*/
-
-                        //$(this).find('time')[0].append("testing");
-                    });
-
-                    if (data.length == promises.length) {
-                        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                    }
+                    
 
                 }, 1500);
                 
                 commentsArray = data;
+                //var data = data2.filter( (itm) => itm.externalChat == ( ($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) )
+                //commentsArray = data.filter( (itm) => itm.externalChat == ( ($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) );
+                //console.log('commentsArray=='+isLinguistChat, commentsArray)
                 
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
                 
@@ -24302,7 +24293,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
-
+    
     if ($routeParams.id) {
         $scope.usersArray = [];
         rest.path = "users";
@@ -24416,254 +24407,311 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }, 3000);
 
-    var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
-        roundProfilePictures: true,
-        textareaRows: 1,
-        enableAttachments: true,
-        enablePinging: true,
-        currentUserId: loginid,
-        enableHashtags: true,
-        textareaPlaceholderText: 'Type message here...',
-        getComments: function (success, error) {
+    console.log('$window.localStorage.getItem("isLinguistChat") ', $window.localStorage.getItem("isLinguistChat") )
 
-            $timeout(function () {
-                if ($routeParams.id) {
-                    var interval = setInterval(() => {
-                        rest.path = "discussionOrder/" + $routeParams.id;
-                        rest.get().success(function (data) {
-                            var NewcommentsArray = data;
-                            var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
-                            var cmtArr = [];
-                            var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+    $scope.commentsFn = function(){
+        var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
+            roundProfilePictures: true,
+            textareaRows: 1,
+            enableAttachments: true,
+            enablePinging: true,
+            currentUserId: loginid,
+            enableHashtags: true,
+            textareaPlaceholderText: 'Type message here...',
+            getComments: function (success, error) {
+                $timeout(function () {
+                    if ($routeParams.id) {
+                        var interval = setInterval(() => {
+                            rest.path = "discussionOrder/" + $routeParams.id;
+                            rest.get().success(function (data) {
+                                let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
+                                //var data = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
+                                var NewcommentsArray = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
+                                //console.log('NewcommentsArray', NewcommentsArray)
+                                
+                                //console.log('$scope.isLinguistCall--interval',$scope.isLinguistCall )
+                                    
+                                // if($scope.isLinguistCall){
+                                //     NewcommentsArray = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
+                                //     console.log('NewcommentsArray', NewcommentsArray)
+                                //     //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                //     $scope.commentsArrayAll();
+                                //     success(NewcommentsArray);
+                                //     setTimeout( () => {
+                                //         $scope.isLinguistCall = false
+                                //         //var isLinguistCall = false
+                                //         console.log('$scope.isLinguistCall=============', $scope.isLinguistCall)
+                                //     },100)
+                                // }
+                                
+                                var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArr) { return NewcommentsArr.user_id != loginid });
+                                //var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
+                                var cmtArr = [];
+                                var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
-                            var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-
-                            // --- update read id //
-                            $scope.newCommentReadArray = [];
-                            if (cmtArr) {
-                                angular.forEach(cmtArr, function (cmtval, cmti) {
-                                    var newCmtObj = {
-                                        id: cmtval.id,
-                                        read_id: loginid
-                                    }
-                                    $scope.newCommentReadArray.push(newCmtObj);
-                                    if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                        
-                                        rest.path = "discussionCommentread";
-                                        rest.put($scope.newCommentReadArray).success(function (res) {
-                                            
-                                            if (res.status == 1) {
-                                                //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                            //if( (NewcommentsArray.length > commentsArray.length && ) )
+                                // --- update read id //
+                                $scope.newCommentReadArray = [];
+                                if (cmtArr) {
+                                    angular.forEach(cmtArr, function (cmtval, cmti) {
+                                        var newCmtObj = {
+                                            id: cmtval.id,
+                                            read_id: loginid
+                                        }
+                                        $scope.newCommentReadArray.push(newCmtObj);
+                                        if ($scope.newCommentReadArray.length == cmtArr.length) {
+                                            rest.path = "discussionCommentread";
+                                            rest.put($scope.newCommentReadArray).success(function (res) {
+                                                
+                                                if (res.status == 1) {
+                                                    //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                                //success(NewcommentsArray);
+                                //if( (NewcommentsArray.length > commentsArray.length && ) )
+                                
+                                var arrayNotload = $('#comment-list').find(' > li').length;
+                                if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
+                                    $('#comment-list').find(' > li[data-id^=c]').hide();
+                                    rest.path = "discussionCommentread";
+                                    rest.put($scope.commentReadArray).success(function (res) {
+                                        if (res.status == 1) {
+                                            jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                        }
+                                    });
+                                    $scope.commentsArrayAll();
+                                    success(NewcommentsArray);
+                                    
+                                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                    
+                                    if ($('.cmtleft').length > 0 || $('.cmtright').length > 0)
+                                        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                                    $('#comment-list').find(' > li[data-id^=c]').hide();
+                                    // to remove same li date div
+                                    // var seen = {};
+                                    // $('.seperatordate').each(function() {
+                                    //     var txt = $(this).text();
+                                    //     if (seen[txt])
+                                    //         $(this).remove();
+                                    //     else
+                                    //         seen[txt] = true;
+                                    // });
+                                    // end script
+                                    usercommentsArr = [];
+                                }
+                            });
                             
-                            var arrayNotload = $('#comment-list').find(' > li').length;
-                            if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
-                                $('#comment-list').find(' > li[data-id^=c]').hide();
-                                rest.path = "discussionCommentread";
-                                rest.put($scope.commentReadArray).success(function (res) {
-                                    if (res.status == 1) {
-                                        jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                    }
-                                });
-                                $scope.commentsArrayAll();
-                                success(NewcommentsArray);
-                                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                                if ($('.cmtleft').length > 0 || $('.cmtright').length > 0)
-                                    jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                                $('#comment-list').find(' > li[data-id^=c]').hide();
-                                // to remove same li date div
-                                // var seen = {};
-                                // $('.seperatordate').each(function() {
-                                //     var txt = $(this).text();
-                                //     if (seen[txt])
-                                //         $(this).remove();
-                                //     else
-                                //         seen[txt] = true;
-                                // });
-                                // end script
-                                usercommentsArr = [];
+                            //interval
+                            var urlExist = window.location.href;
+                            if (!(urlExist.includes('#/discussion/'))) {
+                                clearInterval(interval);
                             }
-                        });
-                        
-                        //interval
-                        var urlExist = window.location.href;
-                        if (!(urlExist.includes('#/discussion/'))) {
-                            clearInterval(interval);
-                        }
 
-                    }, 5000);
+                        }, 5000);
+                    }
+
+                            
+                    success(commentsArray);
+                    console.log('againnn=>commentsArray', commentsArray)
+
+                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                    //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                    //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                    $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
+                    $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
+
+                }, 1500);
+            },
+            getTeamusers: function (success, error) {
+                setTimeout(function () {
+                    success($scope.usersArray);
+                }, 200);
+            },
+            searchUsers: function (term, success, error) {
+                setTimeout(function () {
+                    success($scope.usersArray.filter(function (user) {
+
+                        var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
+                        var isNotSelf = user.id != loginid;
+                        return containsSearchTerm && isNotSelf;
+                    }));
+                }, 1000);
+            },
+
+            searchEmojitext: function (term, success, error) {
+                setTimeout(function () {
+                    success($scope.emojitext.filter(function (emojitxt) {
+                        var containsSearchTerm = emojitxt.emojiname.toLowerCase().indexOf(term.toLowerCase()) != -1;
+                        return containsSearchTerm;
+                    }));
+                }, 500);
+            },
+            postComment: function (data, success, error) {
+                console.log('data=>start postttt', data)
+                // data.order_id = $routeParams.id;
+                // data.user_id = $window.localStorage.getItem("session_iUserId");
+                // data.fullname = $window.localStorage.getItem("session_vUserName");
+                // data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                // data.pings = '';
+                // data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+                // rest.path = "discussionOrder";
+                // rest.post(data).success(function (info) {
+
+                // }).error(errorCallback);
+                // $timeout(function () {
+                //     success(data);
+                // }, 500);
+
+                console.log('$window.localStorage.getItem("isLinguistChat")=>post', $window.localStorage.getItem("isLinguistChat"))
+                data.job_id = 0;
+                data.order_id = $routeParams.id;
+                data.user_id = $window.localStorage.getItem("session_iUserId");
+                data.fullname = $window.localStorage.getItem("session_vUserName");
+                data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+                data.externalChat = ($window.localStorage.getItem("isLinguistChat") === 'true') ? 1 : 0;
+                
+                function escapeSpecialChars(regex) {
+                    return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
                 }
-                success(commentsArray);
-
-                $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-                $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
-                $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
-
-            }, 1500);
-        },
-        getTeamusers: function (success, error) {
-            setTimeout(function () {
-                success($scope.usersArray);
-            }, 200);
-        },
-        searchUsers: function (term, success, error) {
-            setTimeout(function () {
-                success($scope.usersArray.filter(function (user) {
-
-                    var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
-                    var isNotSelf = user.id != loginid;
-                    return containsSearchTerm && isNotSelf;
-                }));
-            }, 1000);
-        },
-
-        searchEmojitext: function (term, success, error) {
-            setTimeout(function () {
-                success($scope.emojitext.filter(function (emojitxt) {
-                    var containsSearchTerm = emojitxt.emojiname.toLowerCase().indexOf(term.toLowerCase()) != -1;
-                    return containsSearchTerm;
-                }));
-            }, 500);
-        },
-        postComment: function (data, success, error) {
-            // data.order_id = $routeParams.id;
-            // data.user_id = $window.localStorage.getItem("session_iUserId");
-            // data.fullname = $window.localStorage.getItem("session_vUserName");
-            // data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-            // data.pings = '';
-            // data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
-            // rest.path = "discussionOrder";
-            // rest.post(data).success(function (info) {
-
-            // }).error(errorCallback);
-            // $timeout(function () {
-            //     success(data);
-            // }, 500);
-            data.job_id = 0;
-            data.order_id = $routeParams.id;
-            data.user_id = $window.localStorage.getItem("session_iUserId");
-            data.fullname = $window.localStorage.getItem("session_vUserName");
-            data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-            data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
-            data.externalChat = $window.localStorage.getItem("isLinguistChat") ? 1 : 0;
-            
-            function escapeSpecialChars(regex) {
-                return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
-            }
-            for (var i in emojimap) {
-                var regex = new RegExp(escapeSpecialChars(i), 'gim');
-                data.content = data.content.replace(regex, emojimap[i]);
-            }
-
-            var pingsvalue = [];
-            if (data.content) {
-                $(Object.keys(data.pings)).each(function (index, userId) {
-                    var fullname = data.pings[userId];
-                    var pingText = '@' + fullname;
-                    data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
-
-                    pingsvalue[index] = Object.keys(data.pings)[index];
-                });
-            }
-            
-            data.pings = pingsvalue.toString();
-            rest.path = "discussionOrder";
-            rest.post(data).success(function (info) {
-
-            }).error(errorCallback);
-            $timeout(function () {
-                success(data);
-            }, 500);
-        },
-        putComment: function (data, success, error) {
-            $routeParams.id = data.id;
-            data.login_userid = $window.localStorage.getItem("session_iUserId");
-            data.externalChat = $window.localStorage.getItem("isLinguistChat") ? 1 : 0;
-            rest.path = 'discussionOrder';
-            rest.put(data).success(function (res) {
-                if (res.Status == 401) {
-                    notification("You can not edit other user message", "error");
-                    $timeout(function () {
-                        location.reload();
-                    }, 1000);
-                } else if (res.Status == 200) {
-                    notification("Successfully edited", "success");
-                } else {
-                    notification("Please try later", "warning");
+                for (var i in emojimap) {
+                    var regex = new RegExp(escapeSpecialChars(i), 'gim');
+                    data.content = data.content.replace(regex, emojimap[i]);
                 }
-            }).error(errorCallback);
-            $timeout(function () {
-                success(data);
-            }, 500);
-        },
-        deleteComment: function (data, success, error) {
-            data.login_userid = $window.localStorage.getItem("session_iUserId");
-            rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
-            rest.delete(data).success(function (data) {
-                if (data.Status == 401) {
-                    notification("You can not edit other user message", "error");
-                    $timeout(function () {
-                        location.reload();
-                    }, 1000);
-                } else if (data.Status == 200) {
-                    notification("Successfully edited", "success");
-                } else {
-                    notification("Please try later", "warning");
-                }
-            }).error(errorCallback);
-            $timeout(function () {
-                success();
-            }, 500);
-        },
-        upvoteComment: function (data, success, error) {
-            $routeParams.id = data.id;
-            rest.path = 'discussionOrder';
-            rest.put(data).success(function (data) {
 
-            }).error(errorCallback);
-            $timeout(function () {
-                success(data);
-            }, 500);
-        },
-        uploadAttachments: function (dataArray, success, error, data) {
-            /*"fileURL":dataArray[0].file_url,*/
-            $(dataArray).each(function (index, dataArrays) {
-                var obj = {
-                    "order_id": $routeParams.id,
-                    "user_id": $window.localStorage.getItem("session_iUserId"),
-                    "fullname": $window.localStorage.getItem("session_vUserName"),
-                    "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
-                    "fileURL": "uploads/discussionfile/" + dataArray[index].file.name2,
-                    "fileMimeType": dataArray[index].file.type,
-                    "created": dataArray[index].created,
-                    "modified": dataArray[index].modified,
-                    "created_by_current_user": '1',
-                    "upvote_count": '0',
-                    "job_id": 0,
-                    "user_has_upvoted": '0',
-                    'externalChat' : $window.localStorage.getItem("isLinguistChat") ? 1 : 0,
-                    "read_id": $window.localStorage.getItem("session_iUserId") + ',',
+                var pingsvalue = [];
+                if (data.content) {
+                    $(Object.keys(data.pings)).each(function (index, userId) {
+                        var fullname = data.pings[userId];
+                        var pingText = '@' + fullname;
+                        data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
 
+                        pingsvalue[index] = Object.keys(data.pings)[index];
+                    });
                 }
+                
+                data.pings = pingsvalue.toString();
+                console.log('posttt=>data',data)
                 rest.path = "discussionOrder";
-                rest.post(obj).success(function (info) {
+                rest.post(data).success(function (info) {
 
                 }).error(errorCallback);
-                dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
-                dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                $timeout(function () {
+                    success(data);
+                }, 500);
+            },
+            putComment: function (data, success, error) {
+                $routeParams.id = data.id;
+                data.login_userid = $window.localStorage.getItem("session_iUserId");
+                data.externalChat = $window.localStorage.getItem("isLinguistChat") === 'true' ? 1 : 0;
+                rest.path = 'discussionOrder';
+                rest.put(data).success(function (res) {
+                    if (res.Status == 401) {
+                        notification("You can not edit other user message", "error");
+                        $timeout(function () {
+                            location.reload();
+                        }, 1000);
+                    } else if (res.Status == 200) {
+                        notification("Successfully edited", "success");
+                    } else {
+                        notification("Please try later", "warning");
+                    }
+                }).error(errorCallback);
+                $timeout(function () {
+                    success(data);
+                }, 500);
+            },
+            deleteComment: function (data, success, error) {
+                data.login_userid = $window.localStorage.getItem("session_iUserId");
+                rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
+                rest.delete(data).success(function (data) {
+                    if (data.Status == 401) {
+                        notification("You can not edit other user message", "error");
+                        $timeout(function () {
+                            location.reload();
+                        }, 1000);
+                    } else if (data.Status == 200) {
+                        notification("Successfully edited", "success");
+                    } else {
+                        notification("Please try later", "warning");
+                    }
+                }).error(errorCallback);
+                $timeout(function () {
+                    success();
+                }, 500);
+            },
+            upvoteComment: function (data, success, error) {
+                $routeParams.id = data.id;
+                rest.path = 'discussionOrder';
+                rest.put(data).success(function (data) {
+
+                }).error(errorCallback);
+                $timeout(function () {
+                    success(data);
+                }, 500);
+            },
+            uploadAttachments: function (dataArray, success, error, data) {
+                /*"fileURL":dataArray[0].file_url,*/
+                $(dataArray).each(function (index, dataArrays) {
+                    var obj = {
+                        "order_id": $routeParams.id,
+                        "user_id": $window.localStorage.getItem("session_iUserId"),
+                        "fullname": $window.localStorage.getItem("session_vUserName"),
+                        "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
+                        "fileURL": "uploads/discussionfile/" + dataArray[index].file.name2,
+                        "fileMimeType": dataArray[index].file.type,
+                        "created": dataArray[index].created,
+                        "modified": dataArray[index].modified,
+                        "created_by_current_user": '1',
+                        "upvote_count": '0',
+                        "job_id": 0,
+                        "user_has_upvoted": '0',
+                        'externalChat' : $window.localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0,
+                        "read_id": $window.localStorage.getItem("session_iUserId") + ',',
+
+                    }
+                    rest.path = "discussionOrder";
+                    rest.post(obj).success(function (info) {
+
+                    }).error(errorCallback);
+                    dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
+                    dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                });
+                $timeout(function () {
+                    success(dataArray);
+                }, 500);
+            },
+        });
+    }    
+    $scope.commentsFn();
+
+    $scope.chatLinguist = function(){
+        $scope.isLinguist = !$scope.isLinguist;
+        console.log('$scope.isLinguist', $scope.isLinguist)
+        $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
+        //var commentsArray_ = [...commentsArray] 
+        //console.log('commentsArray_', commentsArray_)
+        //commentsArray = commentsArray_.filter( (itm) => { return itm.externalChat == 0 } );
+        $scope.commentsArrayAll();
+        //$scope.isLinguistCall = true
+        $scope.commentsFn()
+
+        setTimeout(() => {
+            jQuery("#addemoji").emojioneArea({
+                autoHideFilters: true,
+                useSprite: true,
             });
-            $timeout(function () {
-                success(dataArray);
-            }, 500);
-        }
-    });
+        }, 200);
+        //console.log('CommentedElement', CommentedElement)
+        //CommentedElement.getComments
+        //CommentedElement.navigationElementClicked
+    }
+
+
+
 }).controller('userstatusController', function ($scope, $location, $route, rest, $routeParams, $window) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'statustype/1';
@@ -30567,6 +30615,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
     $window.localStorage.jobfolderId = $routeParams.id;
     // $window.localStorage.orderID = " ";
+    const userRight = $scope.userRight  
+    console.log('userRight', userRight)
 
     $window.localStorage.pId = " ";
     $window.localStorage.setItem("parentId", " ");
@@ -30797,6 +30847,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Start comment chat Linguist Dashboard
     $scope.discussionChat = function () {
         $routeParams.id = $scope.jobDiscussionRedirect;
+        console.log('$routeParams.id', $routeParams.id)
         var loginid = $window.localStorage.getItem("session_iUserId");
         var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
         $scope.login_userid = $window.localStorage.getItem("session_iUserId");
@@ -30985,7 +31036,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.commentsArrayAll = async function () {
                 var deferred = $q.defer();
                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
-                rest.get().success(function (data) {
+                rest.get().success(function (data2) {
+                    let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
+                    var data = data2.filter( (itm) => { return itm.externalChat == isLinguistChat } );
+                    
                     setTimeout(function () {
                         
                         //var setintrvlMenu = setInterval(function() {
@@ -31158,12 +31212,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
 
                     }, 1500);
+                    //commentsArray = data.filter( (itm) => { return itm.externalChat === 1 } );
                     commentsArray = data;
                     
                 }).error(errorCallback);
 
                 //return deferred.promise;
-
             }
             $scope.commentsArrayAll();
         }
@@ -31284,7 +31338,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             setInterval(() => {
                                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                                 rest.get().success(function (data) {
-                                    var NewcommentsArray = data;
+                                    //var NewcommentsArray = data;
+                                    let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
+                                    var NewcommentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat } );
+                                    //var NewcommentsArray = data.filter( itm => itm.externalChat === 1 );
                                     // other side user send message
                                     var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
                                     // FOR read unread comments
@@ -31386,6 +31443,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     data.fullname = $window.localStorage.getItem("session_vUserName");
                     data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
                     data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+                    data.externalChat = ($scope.userRight == '2') ? '1' : '0';
 
                     function escapeSpecialChars(regex) {
                         return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
@@ -31481,6 +31539,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             "job_id": defaultParamsJobid,
                             "user_has_upvoted": '0',
                             "read_id": $window.localStorage.getItem("session_iUserId") + ',',
+                            'externalChat' : ($scope.userRight == '2') ? 1 : 0,
 
                         }
                         rest.path = "discussionOrder";
@@ -31503,6 +31562,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('invoiceViewController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    console.log('$scope.userRight', $scope.userRight)
     var userId = $cookieStore.get('session_iUserId');
     if (items) {
         rest.path = "viewAllInvoice/" + items + '/' + userId;
@@ -36372,6 +36432,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     var loginid = $window.localStorage.getItem("session_iUserId");
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
+    $scope.isLinguist = false
+    $window.localStorage.setItem("isLinguistChat", $scope.isLinguist)
 
     if (items) {
         $routeParams.id = items;
@@ -36563,7 +36625,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.commentsArrayAll = async function () {
             var deferred = $q.defer();
             rest.path = "discussionOrder/" + $routeParams.id;
-            rest.get().success(function (data) {
+            rest.get().success(function (data2) {
+                let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
+                var data = data2.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
                 setTimeout(function () {
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function (val, i) {
@@ -36892,246 +36956,270 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
     }, 3000);
-    $timeout(function () {
 
-        var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
-            roundProfilePictures: true,
-            textareaRows: 1,
-            enableAttachments: true,
-            enablePinging: true,
-            currentUserId: loginid,
-            enableHashtags: true,
-            textareaPlaceholderText: 'Type message here...',
-            getComments: function (success, error) {
-                $timeout(function () {
-                    if ($routeParams.id) {
-                        $scope.stopTime = setInterval(() => {
-                            rest.path = "discussionOrder/" + $routeParams.id;
-                            rest.get().success(function (data) {
-                                var NewcommentsArray = data;
-                                var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
-                                
-                                // FOR read unread comments
-                                var cmtArr = [];
-                                var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-
-                                var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-
-                                // --- update read id //
-                                $scope.newCommentReadArray = [];
-                                if (cmtArr) {
-                                    angular.forEach(cmtArr, function (cmtval, cmti) {
-                                        var newCmtObj = {
-                                            id: cmtval.id,
-                                            read_id: loginid
-                                        }
-                                        $scope.newCommentReadArray.push(newCmtObj);
-                                        if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                               
-                                            rest.path = "discussionCommentread";
-                                            rest.put($scope.newCommentReadArray).success(function (res) {
-                                                if (res.status == 1) {
-                                                    //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                                //if( (NewcommentsArray.length > commentsArray.length && ) )
-
-                                var arrayNotload = $('#comment-list').find(' > li').length;
-                                if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
-                                    $('#comment-list').find(' > li[data-id^=c]').hide();
-                                    rest.path = "discussionCommentread";
-                                    rest.put($scope.commentReadArray).success(function (res) {
-                                        
-                                        if (res.status == 1) {
-                                            jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                        }
-                                    });
+    $scope.commentsFn = function(){
+        $timeout(function () {
+            var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
+                roundProfilePictures: true,
+                textareaRows: 1,
+                enableAttachments: true,
+                enablePinging: true,
+                currentUserId: loginid,
+                enableHashtags: true,
+                textareaPlaceholderText: 'Type message here...',
+                getComments: function (success, error) {
+                    $timeout(function () {
+                        if ($routeParams.id) {
+                            $scope.stopTime = setInterval(() => {
+                                rest.path = "discussionOrder/" + $routeParams.id;
+                                rest.get().success(function (data) {
+                                    //var NewcommentsArray = data;
+                                    let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
+                                    var NewcommentsArray = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
                                     
-                                    $scope.commentsArrayAll();
-                                    success(NewcommentsArray);
+                                    var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
+                                    
+                                    // FOR read unread comments
+                                    var cmtArr = [];
+                                    var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
-                                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                                    if ($('#comment-list').find(' > li').length)
-                                        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                                    $('#comment-list').find(' > li[data-id^=c]').hide();
-                                    usercommentsArr = [];
-                                    // to remove same li date div
-                                    // var seen = {};
-                                    // $('.seperatordate').each(function() {
-                                    //     var txt = $(this).text();
-                                    //     if (seen[txt])
-                                    //         $(this).remove();
-                                    //     else
-                                    //         seen[txt] = true;
-                                    // });
-                                    // end script
-                                }
-                            });
-                            
-                        }, 5000);
+                                    var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+
+                                    // --- update read id //
+                                    $scope.newCommentReadArray = [];
+                                    if (cmtArr) {
+                                        angular.forEach(cmtArr, function (cmtval, cmti) {
+                                            var newCmtObj = {
+                                                id: cmtval.id,
+                                                read_id: loginid
+                                            }
+                                            $scope.newCommentReadArray.push(newCmtObj);
+                                            if ($scope.newCommentReadArray.length == cmtArr.length) {
+                                                
+                                                rest.path = "discussionCommentread";
+                                                rest.put($scope.newCommentReadArray).success(function (res) {
+                                                    if (res.status == 1) {
+                                                        //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                    //if( (NewcommentsArray.length > commentsArray.length && ) )
+
+                                    var arrayNotload = $('#comment-list').find(' > li').length;
+                                    if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
+                                        $('#comment-list').find(' > li[data-id^=c]').hide();
+                                        rest.path = "discussionCommentread";
+                                        rest.put($scope.commentReadArray).success(function (res) {
+                                            
+                                            if (res.status == 1) {
+                                                jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                            }
+                                        });
+                                        
+                                        $scope.commentsArrayAll();
+                                        success(NewcommentsArray);
+
+                                        $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                        if ($('#comment-list').find(' > li').length)
+                                            jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                                        $('#comment-list').find(' > li[data-id^=c]').hide();
+                                        usercommentsArr = [];
+                                        // to remove same li date div
+                                        // var seen = {};
+                                        // $('.seperatordate').each(function() {
+                                        //     var txt = $(this).text();
+                                        //     if (seen[txt])
+                                        //         $(this).remove();
+                                        //     else
+                                        //         seen[txt] = true;
+                                        // });
+                                        // end script
+                                    }
+                                });
+                                
+                            }, 5000);
+                        }
+
+                        success(commentsArray);
+                        $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                        //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                        $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
+                        $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
+
+                    }, 500);
+                },
+                searchUsers: function (term, success, error) {
+                    setTimeout(function () {
+                        success($scope.usersArray.filter(function (user) {
+
+                            var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
+                            var isNotSelf = user.id != loginid;
+                            return containsSearchTerm && isNotSelf;
+                        }));
+                    }, 1000);
+                },
+
+                searchEmojitext: function (term, success, error) {
+                    setTimeout(function () {
+                        success($scope.emojitext.filter(function (emojitxt) {
+                            var containsSearchTerm = emojitxt.emojiname.toLowerCase().indexOf(term.toLowerCase()) != -1;
+                            return containsSearchTerm;
+                        }));
+                    }, 500);
+                },
+                postComment: function (data, success, error) {
+                    // data.order_id = $routeParams.id;
+                    // data.user_id = $window.localStorage.getItem("session_iUserId");
+                    // data.fullname = $window.localStorage.getItem("session_vUserName");
+                    // data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                    // data.pings = '';
+                    // data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+                    // rest.path = "discussionOrder";
+                    // rest.post(data).success(function (info) {
+
+                    // }).error(errorCallback);
+                    // $timeout(function () {
+                    //     success(data);
+                    // }, 500);
+                    data.job_id = 0;
+                    data.order_id = $routeParams.id;
+                    data.user_id = $window.localStorage.getItem("session_iUserId");
+                    data.fullname = $window.localStorage.getItem("session_vUserName");
+                    data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                    data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+                    data.externalChat = ($window.localStorage.getItem("isLinguistChat") === 'true') ? 1 : 0;
+
+                    function escapeSpecialChars(regex) {
+                        return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+                    }
+                    for (var i in emojimap) {
+                        var regex = new RegExp(escapeSpecialChars(i), 'gim');
+                        data.content = data.content.replace(regex, emojimap[i]);
                     }
 
-                    success(commentsArray);
-                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                    //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                    //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-                    $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
-                    $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
+                    var pingsvalue = [];
+                    if (data.content) {
+                        $(Object.keys(data.pings)).each(function (index, userId) {
+                            var fullname = data.pings[userId];
+                            var pingText = '@' + fullname;
+                            data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
 
-                }, 500);
-            },
-            searchUsers: function (term, success, error) {
-                setTimeout(function () {
-                    success($scope.usersArray.filter(function (user) {
-
-                        var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
-                        var isNotSelf = user.id != loginid;
-                        return containsSearchTerm && isNotSelf;
-                    }));
-                }, 1000);
-            },
-
-            searchEmojitext: function (term, success, error) {
-                setTimeout(function () {
-                    success($scope.emojitext.filter(function (emojitxt) {
-                        var containsSearchTerm = emojitxt.emojiname.toLowerCase().indexOf(term.toLowerCase()) != -1;
-                        return containsSearchTerm;
-                    }));
-                }, 500);
-            },
-            postComment: function (data, success, error) {
-                // data.order_id = $routeParams.id;
-                // data.user_id = $window.localStorage.getItem("session_iUserId");
-                // data.fullname = $window.localStorage.getItem("session_vUserName");
-                // data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-                // data.pings = '';
-                // data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
-                // rest.path = "discussionOrder";
-                // rest.post(data).success(function (info) {
-
-                // }).error(errorCallback);
-                // $timeout(function () {
-                //     success(data);
-                // }, 500);
-                data.job_id = 0;
-                data.order_id = $routeParams.id;
-                data.user_id = $window.localStorage.getItem("session_iUserId");
-                data.fullname = $window.localStorage.getItem("session_vUserName");
-                data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-                data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
-
-                function escapeSpecialChars(regex) {
-                    return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
-                }
-                for (var i in emojimap) {
-                    var regex = new RegExp(escapeSpecialChars(i), 'gim');
-                    data.content = data.content.replace(regex, emojimap[i]);
-                }
-
-                var pingsvalue = [];
-                if (data.content) {
-                    $(Object.keys(data.pings)).each(function (index, userId) {
-                        var fullname = data.pings[userId];
-                        var pingText = '@' + fullname;
-                        data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
-
-                        pingsvalue[index] = Object.keys(data.pings)[index];
-                    });
-                }
-                
-                data.pings = pingsvalue.toString();
-                rest.path = "discussionOrder";
-                rest.post(data).success(function (info) {
-
-                }).error(errorCallback);
-                $timeout(function () {
-                    success(data);
-                }, 500);
-            },
-            putComment: function (data, success, error) {
-                $routeParams.id = data.id;
-                data.login_userid = $window.localStorage.getItem("session_iUserId");
-                rest.path = 'discussionOrder';
-                rest.put(data).success(function (res) {
-                    if (res.Status == 401) {
-                        notification("You can not edit other user message", "error");
-                        $timeout(function () {
-                            location.reload();
-                        }, 1000);
-                    } else if (res.Status == 200) {
-                        notification("Successfully edited", "success");
-                    } else {
-                        notification("Please try later", "warning");
+                            pingsvalue[index] = Object.keys(data.pings)[index];
+                        });
                     }
-                }).error(errorCallback);
-                $timeout(function () {
-                    success(data);
-                }, 500);
-            },
-            deleteComment: function (data, success, error) {
-                data.login_userid = $window.localStorage.getItem("session_iUserId");
-                rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
-                rest.delete(data).success(function (data) {
-                    if (data.Status == 401) {
-                        notification("You can not edit other user message", "error");
-                        $timeout(function () {
-                            location.reload();
-                        }, 1000);
-                    } else if (data.Status == 200) {
-                        notification("Successfully edited", "success");
-                    } else {
-                        notification("Please try later", "warning");
-                    }
-                }).error(errorCallback);
-                $timeout(function () {
-                    success();
-                }, 500);
-            },
-            upvoteComment: function (data, success, error) {
-                $routeParams.id = data.id;
-                rest.path = 'discussionOrder';
-                rest.put(data).success(function (data) {
-
-                }).error(errorCallback);
-                $timeout(function () {
-                    success(data);
-                }, 500);
-            },
-            uploadAttachments: function (dataArray, success, error, data) {
-                /*"fileURL":dataArray[0].file_url,*/
-                $(dataArray).each(function (index, dataArrays) {
-                    var obj = {
-                        "order_id": $routeParams.id,
-                        "user_id": $window.localStorage.getItem("session_iUserId"),
-                        "fullname": $window.localStorage.getItem("session_vUserName"),
-                        "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
-                        "fileURL": "uploads/discussionfile/" + dataArray[index].file.name2,
-                        "fileMimeType": dataArray[index].file.type,
-                        "created": dataArray[index].created,
-                        "modified": dataArray[index].modified,
-                        "created_by_current_user": '1',
-                        "upvote_count": '0',
-                        "job_id": 0,
-                        "user_has_upvoted": '0',
-                        "read_id": $window.localStorage.getItem("session_iUserId") + ',',
-
-                    }
+                    
+                    data.pings = pingsvalue.toString();
                     rest.path = "discussionOrder";
-                    rest.post(obj).success(function (info) {
+                    rest.post(data).success(function (info) {
 
                     }).error(errorCallback);
-                    dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
-                    dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-                });
-                $timeout(function () {
-                    success(dataArray);
-                }, 500);
-            }
-        });
-    }, 1000);
+                    $timeout(function () {
+                        success(data);
+                    }, 500);
+                },
+                putComment: function (data, success, error) {
+                    $routeParams.id = data.id;
+                    data.login_userid = $window.localStorage.getItem("session_iUserId");
+                    rest.path = 'discussionOrder';
+                    rest.put(data).success(function (res) {
+                        if (res.Status == 401) {
+                            notification("You can not edit other user message", "error");
+                            $timeout(function () {
+                                location.reload();
+                            }, 1000);
+                        } else if (res.Status == 200) {
+                            notification("Successfully edited", "success");
+                        } else {
+                            notification("Please try later", "warning");
+                        }
+                    }).error(errorCallback);
+                    $timeout(function () {
+                        success(data);
+                    }, 500);
+                },
+                deleteComment: function (data, success, error) {
+                    data.login_userid = $window.localStorage.getItem("session_iUserId");
+                    rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
+                    rest.delete(data).success(function (data) {
+                        if (data.Status == 401) {
+                            notification("You can not edit other user message", "error");
+                            $timeout(function () {
+                                location.reload();
+                            }, 1000);
+                        } else if (data.Status == 200) {
+                            notification("Successfully edited", "success");
+                        } else {
+                            notification("Please try later", "warning");
+                        }
+                    }).error(errorCallback);
+                    $timeout(function () {
+                        success();
+                    }, 500);
+                },
+                upvoteComment: function (data, success, error) {
+                    $routeParams.id = data.id;
+                    rest.path = 'discussionOrder';
+                    rest.put(data).success(function (data) {
+
+                    }).error(errorCallback);
+                    $timeout(function () {
+                        success(data);
+                    }, 500);
+                },
+                uploadAttachments: function (dataArray, success, error, data) {
+                    /*"fileURL":dataArray[0].file_url,*/
+                    $(dataArray).each(function (index, dataArrays) {
+                        var obj = {
+                            "order_id": $routeParams.id,
+                            "user_id": $window.localStorage.getItem("session_iUserId"),
+                            "fullname": $window.localStorage.getItem("session_vUserName"),
+                            "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
+                            "fileURL": "uploads/discussionfile/" + dataArray[index].file.name2,
+                            "fileMimeType": dataArray[index].file.type,
+                            "created": dataArray[index].created,
+                            "modified": dataArray[index].modified,
+                            "created_by_current_user": '1',
+                            "upvote_count": '0',
+                            "job_id": 0,
+                            "user_has_upvoted": '0',
+                            "read_id": $window.localStorage.getItem("session_iUserId") + ',',
+                            "externalChat" :($window.localStorage.getItem("isLinguistChat") === 'true') ? 1 : 0,
+
+                        }
+                        rest.path = "discussionOrder";
+                        rest.post(obj).success(function (info) {
+
+                        }).error(errorCallback);
+                        dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
+                        dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                    });
+                    $timeout(function () {
+                        success(dataArray);
+                    }, 500);
+                }
+            });
+        }, 1000);
+    }
+    $scope.commentsFn()
+
+    $scope.chatLinguist = function(){
+        $scope.isLinguist = !$scope.isLinguist;
+        console.log('$scope.isLinguist', $scope.isLinguist)
+        $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
+        $scope.commentsArrayAll();
+        //$scope.isLinguistCall = true
+        $scope.commentsFn()
+
+        setTimeout(() => {
+            jQuery("#addemoji").emojioneArea({
+                autoHideFilters: true,
+                useSprite: true,
+            });
+        }, 500);
+    }
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');

@@ -721,7 +721,7 @@ app.run(function ($rootScope, $log, $location, $interval, $window, $cookieStore,
     $rootScope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $rootScope.$on('$routeChangeStart', function (event, next) {
-        console.log('next', next)
+        //console.log('next', next)
         $timeout(function () {
             $('.butterbar').removeClass('hide').addClass('active');
         }, 200);

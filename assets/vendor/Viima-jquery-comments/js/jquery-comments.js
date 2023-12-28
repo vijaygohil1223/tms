@@ -31,6 +31,9 @@
     }
 }(function($) {
 
+    var isExternalChat2 = localStorage.getItem('isLinguistChat') == 'true' || localStorage.getItem("session_iFkUserTypeId") == 2 ? 1 : 0
+            
+
     var Comments = {
         // Instance variables
         // ==================
@@ -55,7 +58,9 @@
             // Navigation
             'click .navigation li[data-sort-key]': 'navigationElementClicked',
             'click .navigation li.title': 'toggleNavigationDropdown',
-
+            
+            //'click .linguistDiscussion [data-sort-key]': 'navigationElementClicked',
+            
             // Main comenting field
             'click .commenting-field.main .textarea': 'showMainCommentingField',
             'click .commenting-field.main .close': 'hideMainCommentingField',
@@ -130,6 +135,7 @@
                 oldestText: '',
                 //popularText: 'Popular',       
                 //attachmentsText: 'Attachments',
+                //linguistText: 'Linguist',
                 attachmentsText: '',
                 sendText: 'Send',
                 replyText: 'Reply',
@@ -190,6 +196,7 @@
                     createdByCurrentUser: 'created_by_current_user',
                     upvoteCount: 'upvote_count',
                     userHasUpvoted: 'user_has_upvoted',
+                    externalChat: 'externalChat'
                     //read_id:'readId'        
                 },
 
@@ -286,17 +293,29 @@
             this.commentsById = {};
 
             var success = function(commentsArray) {
+                //debugger
+
                 // Convert comments to custom data model
+                //var commentsArray_ = commentsArray.filter( (itm) => itm.externalChat == isExternalChat2 ) 
                 var commentModels = commentsArray.map(function(commentsJSON) {
-                    return self.createCommentModel(commentsJSON)
+                    //if(commentsJSON.externalChat == isExternalChat2){
+                        return self.createCommentModel(commentsJSON)
+                    //}
                 });
+                    
 
                 // Sort comments by date (oldest first so that they can be appended to the data model
-                // without caring dependencies)
-                self.sortComments(commentModels, 'oldest');
-
+                // without caring dependencies)externalChat
+                if(isExternalChat2 && isExternalChat2 === 1 ){
+                    //self.sortComments(commentModels, 'linguist');
+                    self.sortComments(commentModels, 'oldest');
+                }else{
+                    self.sortComments(commentModels, 'oldest');
+                }
                 $(commentModels).each(function(index, commentModel) {
-                    self.addCommentToDataModel(commentModel);
+                    //if(commentModel.externalChat == isExternalChat2){
+                        self.addCommentToDataModel(commentModel);
+                   // }
                 });
                 self.render();
             };
@@ -331,13 +350,16 @@
         },
 
         createCommentModel: function(commentJSON) {
-            var commentModel = this.applyInternalMappings(commentJSON);
-            commentModel.childs = [];
-            return commentModel;
+            //if(commentJSON.externalChat == isExternalChat2){
+                var commentModel = this.applyInternalMappings(commentJSON);
+                commentModel.childs = [];
+            
+                return commentModel;
+           // }
         },
 
         addCommentToDataModel: function(commentModel) {
-            if (!(commentModel.id in this.commentsById)) {
+            if (!(commentModel.id in this.commentsById )) {
                 this.commentsById[commentModel.id] = commentModel;
 
                 // Update child array of the parent (append childs to the array of outer most parent)
@@ -400,16 +422,27 @@
             // Divide commments into main level comments and replies
             var mainLevelComments = [];
             var replies = [];
+            let isExternalChat = localStorage.getItem('isLinguistChat') == 'true' || localStorage.getItem("session_iFkUserTypeId") == 2 ? 1 : 0
+            
             $(this.getComments()).each(function(index, commentModel) {
-                if (commentModel.parent == null) {
-                    mainLevelComments.push(commentModel);
-                } else {
-                    replies.push(commentModel);
-                }
+                //commentModel.externalChat = isExternalChat
+                //if(commentModel.externalChat == isExternalChat){
+                    if (commentModel.parent == null) {
+                        mainLevelComments.push(commentModel);
+                    } else {
+                    // if(commentModel.externalChat == isExternalChat)
+                            replies.push(commentModel);
+                    }
+                //}
+                
             });
 
             // Append main level comments
-            this.sortComments(mainLevelComments, this.currentSortKey);
+            if(this.currentSortKey == 'linguist')
+                this.sortComments(mainLevelComments, this.currentSortKey);
+            else
+                this.sortComments(mainLevelComments, this.currentSortKey);
+
             mainLevelComments.reverse(); // Reverse the order as they are prepended to DOM
             $(mainLevelComments).each(function(index, commentModel) {
                 self.addComment(commentModel, commentList);
@@ -617,11 +650,11 @@
                     //commentJSON.fileURL = window.localStorage.getItem("uploadfilepath");
                     commentJSON.fileURL = 'uploads/discussionfile/' + file.name2;
                     commentJSON.fileMimeType = file.type;
+                    commentJSON.externalChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0;
+                    //commentJSON.fileMimeType = file.type;
 
                     var file_data = $('#discussionFileUpload').prop('files')[fileno];
-                    //console.log('file_data', file_data);
-                    //console.log('file_data' + fileno, file.name.split('.')[0]);
-
+                    
                     //newFileName = file_data.name.split('.')[0]+'_'+jQuery.now()+'.'+file_data.type.split('/')[1];
                     //newFileName = file_data.name.split('.')[0]+'_'+randomno+'.'+file_data.type.split('/')[1];
                     var ftype_0 = file.type.split('/')[0];
@@ -635,7 +668,7 @@
                     var form_data = new FormData();
                     form_data.append('file', file_data);
                     form_data.append('file2', newFileName);
-
+                    
                     $.ajax({
                             url: 'upload.php',
                             dataType: 'text',
@@ -744,6 +777,12 @@
         },
 
         sortComments: function(comments, sortKey) {
+            
+            let isLinguistChat = localStorage.getItem("isLinguistChat") =='true' ? 1 : 0
+            
+            var commentsClone = [...comments]
+            var comments_ = commentsClone.filter( (itm) => { return (itm.externalChat == isLinguistChat) })
+                
             var self = this;
 
             // Sort by popularity
@@ -770,7 +809,8 @@
 
                 // Sort by date
             } else {
-                comments.sort(function(commentA, commentB) {
+                
+                comments_.sort(function(commentA, commentB) {
                     var createdA = new Date(commentA.created).getTime();
                     var createdB = new Date(commentB.created).getTime();
                     if (sortKey == 'oldest') {
@@ -778,25 +818,37 @@
                     } else if(sortKey == 'attachments') {
                         return createdA - createdB;
                     } else {
-                        return createdB - createdA;
+                        return createdA - createdB;
+                        //return createdB - createdA;
                     }
                 });
             }
         },
 
         sortAndReArrangeComments: function(sortKey) {
+            let isLinguistChat = localStorage.getItem("isLinguistChat") =='true' ? 1 : 0
+            //var isLinguistChat = localStorage.getItem("isLinguistChat") =='true' ? 1 : 0 
             var commentList = this.$el.find('#comment-list');
             // Get main level comments
-            var mainLevelComments = this.getComments().filter(function(commentModel) { return !commentModel.parent });
+            var mainLevelComments = this.getComments().filter(function(commentModel) { return ( !commentModel.parent ) });
+            
+            if(sortKey == 'linguist') {
+                var mainLevelComments = this.getComments().filter( (itm)=>  itm.externalChat == isExternalChat2  )
+            }
+
             //this.sortComments(mainLevelComments, sortKey);
             this.sortComments(mainLevelComments, 'oldest');
+            if(isLinguistChat){
+                //this.sortComments(mainLevelComments, 'linguist');
+            }
             // Rearrange the main level comments
+                    
             $(mainLevelComments).each(function(index, commentModel) {
-                var commentEl = commentList.find('> li.comment[data-id=' + commentModel.id + ']');
-                var commentEl2 = commentList.find('> li.comment[new-id=' + commentModel.id + ']');
-                
-                commentList.append(commentEl2);
-                commentList.append(commentEl);
+                    var commentEl = commentList.find('> li.comment[data-id=' + commentModel.id + ']');
+                    var commentEl2 = commentList.find('> li.comment[new-id=' + commentModel.id + ']');
+                    
+                    commentList.append(commentEl2);
+                    commentList.append(commentEl);
             });
         },
 
@@ -863,6 +915,14 @@
             var navigationEl = $(ev.currentTarget);
             var sortKey = navigationEl.data().sortKey;
 
+            let isLinguistChat = localStorage.getItem("isLinguistChat") =='true' ? 1 : 0 
+            // if(sortKey == 'linguist')
+            //         localStorage.setItem('isLinguistChat',true) 
+            // else
+            //     localStorage.setItem('isLinguistChat',false)     
+            if(isLinguistChat){
+                //this.sortAndReArrangeComments(sortKey);
+            }
             // Sort the comments if necessary
             if (sortKey != 'attachments') {
                 this.sortAndReArrangeComments(sortKey);
@@ -986,7 +1046,6 @@
             var sendButton = $(ev.currentTarget);
             var commentingField = sendButton.parents('.commenting-field').first();
             var textarea = commentingField.find('.textarea');
-            //console.log('textarea',textarea);
             // Disable send button while request is pending
             sendButton.removeClass('enabled');
 
@@ -995,8 +1054,6 @@
 
             // Reverse mapping
             commentJSON = this.applyExternalMappings(commentJSON);
-
-            //console.log('commentJSON=emoji',commentJSON);
 
             var success = function(commentJSON) {
                 self.createComment(commentJSON);
@@ -1754,7 +1811,18 @@
                 'class': 'fa fa-commenting-o fa-2x cmtclr2'
             });
 
+            var commenticn_ = $('<i/>', {
+                'class': 'fa fa-commenting-o fa-2x cmtclr2'
+            });
+
             oldest.prepend(commenticn);
+
+            var linguistChat = $('<li/>', {
+                text: this.options.textFormatter(this.options.linguistText),
+                'data-sort-key': 'linguist',
+                'data-container-name': 'comments',
+                'class': 'linguistname',
+            });
 
             // Popular
             var popular = $('<li/>', {
@@ -1806,6 +1874,7 @@
 
 
             // Populate elements
+            //navigationWrapper.append(newest).append(oldest).append(linguistChat);
             navigationWrapper.append(newest).append(oldest);
             dropdownNavigation.append(newest.clone()).append(oldest.clone());
 
@@ -1869,7 +1938,6 @@
             if (newDate.getDate() == todayDate.getDate() &&
                 newDate.getMonth() == todayDate.getMonth() &&
                 newDate.getFullYear() == todayDate.getFullYear()) {
-                //console.log('commentModel',commentModel.created);
                 //$('li[new-id=' + commentModel.id + ']').prepend('<li style="color:blue">'+commentModel.created+'</li>');
                 setTimeout(function() {
                     var seperateDate = jQuery('li[new-id=' + commentModel.id + ']').text();
@@ -1910,7 +1978,6 @@
             var commentWrapper = $('<div/>', {
                 'class': 'comment-wrapper'
             });
-            //console.log('commentModel',commentModel);
             // Profile picture
             var profilePicture = this.createProfilePictureElement(commentModel.profilePictureURL);
 
@@ -1991,7 +2058,6 @@
             var content = $('<div/>', {
                 'class': 'content'
             });
-            //console.log('commentModel',commentModel);
             // Case: attachment
             var isAttachment = commentModel.fileURL != undefined;
             if (isAttachment) {
@@ -2263,6 +2329,7 @@
         // =========
 
         getComments: function() {
+            
             var self = this;
             return Object.keys(this.commentsById).map(function(id) { return self.commentsById[id] });
         },
@@ -2300,7 +2367,8 @@
                 profilePictureURL: this.options.profilePictureURL,
                 createdByCurrentUser: true,
                 upvoteCount: 0,
-                userHasUpvoted: false
+                userHasUpvoted: false,
+                externalChat: isExternalChat2
             };
             return commentJSON;
         },
@@ -2407,9 +2475,7 @@
             ce.text().replace(/^\s+/g, '');
             var newce = ce[0].innerHTML;
             //var test = newce.replace('<br>', '');
-            //console.log('test==',test);
             let emojiExist = $('.textarea .emojiImg').length;
-            //console.log('emojiExist',emojiExist);
             if(emojiExist == 0){
                 var newce = ce.text();
             }
@@ -2417,7 +2483,6 @@
             var text = newce.replace(/^\s+/g, '');
             text = text.replace(/<br ?\/?>/g,'');
             text = text.replace(/<div ?\/?>/g,'');
-            //console.log('work',text);
             
             // Normalize spaces
             var text = this.normalizeSpaces(text);
@@ -2437,7 +2502,6 @@
 
 
         getTextareaContentAsEscapedHTML: function(html) {
-            //console.log('html',html);
             // Escaping HTML except the new lines
             //var escaped = this.escape(html);
             //return escaped.replace(/(?:\n)/g, '<br>');
@@ -2477,8 +2541,6 @@
         },
 
         normalizeSpaces: function(inputText) {
-
-            //console.log('inputText',inputText)
             return inputText.replace(new RegExp('\u00a0', 'g'), ' '); // Convert non-breaking spaces to reguar spaces
         },
 
