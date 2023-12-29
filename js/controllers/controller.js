@@ -3048,6 +3048,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
             $scope.jobList = data;
+            console.log('$scope.jobList=>', $scope.jobList)
             $scope.freelanceEmpty = jQuery.isEmptyObject(data);
             var allStatus = [];
             var Requested = [];
@@ -30685,6 +30686,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobSummeryDetailsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
+            console.log('$scope.jobdetail', $scope.jobdetail)
             
             var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
@@ -30697,7 +30699,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //page redirect job discussion
             $scope.jobDiscussionRedirect = data[0].order_id
             $window.localStorage.jobOrderId = data[0].order_id;
-            $scope.currencyCodeDisplay = data[0].freelance_currency.split(',')[0]
+            $scope.currencyCodeDisplay = data[0].freelance_currency ? data[0].freelance_currency.split(',')[0] : ''
 
             if (data[0].order_id) {
                 $window.localStorage.orderID = data[0].order_id;
@@ -30729,11 +30731,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
 
             //getting freelancer payment information data
-            rest.path = "getUserDataById/" + $scope.jobdetail.resource;
-            rest.get().success(function (dataUser) {
-                $scope.vBankInfo = JSON.parse(dataUser.userPaymentData.vBankInfo);
-                //$scope.currencyCodeDisplay = $scope.vBankInfo.currency_code;
-            }).error(errorCallback);
+            if($scope.jobdetail.resource){
+                rest.path = "getUserDataById/" + $scope.jobdetail.resource;
+                rest.get().success(function (dataUser) {
+                    $scope.vBankInfo = JSON.parse(dataUser.userPaymentData.vBankInfo);
+                    //$scope.currencyCodeDisplay = $scope.vBankInfo.currency_code;
+                }).error(errorCallback);
+            }
+
         }).error(errorCallback);
     }
 
