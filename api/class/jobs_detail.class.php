@@ -1665,26 +1665,37 @@ class jobs_detail
     public function rejectJobStatus($id, $data)
     {
 
-        $data['updated_date'] = date('Y-m-d H:i:s');
-
-        $data['item_status'] = 'In preparation';
-
-        $this->_db->where('job_summmeryId', $id);
-
-        $data = $this->_db->update('tms_summmery_view', $data);
+        // $data['updated_date'] = date('Y-m-d H:i:s');
+        // $data['item_status'] = 'In preparation';
+        // $this->_db->where('job_summmeryId', $id);
+        // $data = $this->_db->update('tms_summmery_view', $data);
 
         if ($id) {
-
             //Sending Email to manager after job is reject START
-
             $this->_db->where('job_summmeryId', $id);
-
             $jobsData = $this->_db->getOne('tms_summmery_view');
 
+            $loginUserId = $data && isset($data['userId']) ? $data['userId'] : $jobsData['resource'] ;
+            $rejectedId = $jobsData && isset($jobsData['request_rejected_ids']) && $jobsData['request_rejected_ids'] != '' ? $jobsData['request_rejected_ids'].','.$data['userId'] : $data['userId']; 
+            
+            if($jobsData){
+                $sendRequest = explode(",", $jobsData['send_request'] ) ;
+                $requestRejectedIds = explode(",",$jobsData['request_rejected_ids'] );
+                if( count($sendRequest)>1 && count($requestRejectedIds)>1 ){
+                    if( empty(array_diff($sendRequest, $requestRejectedIds)) )
+                        $data['item_status'] = 'In preparation';
+                }
+            }
 
+            $data['updated_date'] = date('Y-m-d H:i:s');
+            $data['request_rejected_ids'] = $rejectedId;
+            unset($data['userId']);
+            
+            $this->_db->where('job_summmeryId', $id);
+            $data = $this->_db->update('tms_summmery_view', $data);
 
-            $this->_db->where('iUserId', $jobsData['resource']);
-
+            //$this->_db->where('iUserId', $jobsData['resource']);
+            $this->_db->where('iUserId', $loginUserId );
             $resourceData = $this->_db->getOne('tms_users');
 
 
@@ -1693,14 +1704,9 @@ class jobs_detail
 
             $jobEmailData = $this->_db->getOne('tms_customer');
 
-
-
             $this->_db->where('iUserId', $jobEmailData['project_manager']);
 
             $proManagerEmail = $this->_db->getOne('tms_users');
-
-
-
 
 
             $jobNo = $jobsData['po_number'];
@@ -1710,9 +1716,7 @@ class jobs_detail
             $jobLanguage = $jobsData['ItemLanguage'];
 
             $deadline = $jobsData['due_date'];
-
             $rejectReason = $jobsData['rejection'];
-
 
 
             $this->_db->where('template_id', 7);
@@ -1720,7 +1724,6 @@ class jobs_detail
             $emailTemplateAcceptJob = $this->_db->getOne('tms_email_templates');
 
             $search_array = array("[JOBNO]", "[PROJECTNAME]", '[LANGUAGES]', '[DEADLINE]', '[REJECTREASON]');
-
 
 
             $replace_array = array($jobNo, $projectName, $jobLanguage, $deadline, $rejectReason);

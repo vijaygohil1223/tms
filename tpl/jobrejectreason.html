@@ -10,7 +10,8 @@
     <div class="panel-body">
         <div class="col-lg-12" style="padding: 0;">
             <div class="form-group">
-                <textarea class="form-control"  name="rejection" ng-model="jobReject.rejection" required></textarea>
+                <input type="hidden" ng-model="jobReject.userId" />
+                <textarea class="form-control" name="rejection" ng-model="jobReject.rejection" required></textarea>
             </div>
         </div>
         <button class="btn btn-info" type="button" ng-click="ok('message_form',jobReject)">Ok</button>

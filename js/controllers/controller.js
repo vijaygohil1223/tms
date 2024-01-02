@@ -721,7 +721,7 @@ function exportTableToExcel(id, fileName){
 
 app.controller('loginController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope) {
     /*-------Check for login--------*/
-    if ($cookieStore.get('session_iUserId') != undefined) {
+    if ($cookieStore.get('session_iUserId') != undefined && $cookieStore.get('session_iUserId') > 0 ) {
         $location.path('/dashboard');
     }
 
@@ -30617,8 +30617,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.jobfolderId = $routeParams.id;
     // $window.localStorage.orderID = " ";
     const userRight = $scope.userRight  
-    console.log('userRight', userRight)
-
+    
     $window.localStorage.pId = " ";
     $window.localStorage.setItem("parentId", " ");
 
@@ -31342,7 +31341,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                             setInterval(() => {
                                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
-                                rest.get().success(function (data) {
+                                rest.get().success(function (data2) {
                                     //var NewcommentsArray = data;
                                     let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
                                     var NewcommentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat } );
@@ -36202,7 +36201,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 }).controller('jobStatusRejectController', function ($scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $uibModalInstance) {
     $scope.userRight = $window.sessionStorage.getItem("session_iFkUserTypeId");
+    $scope.session_iUserId = $window.localStorage.session_iUserId;
+    console.log('$scope.session_iUserId', $scope.session_iUserId)
     $scope.rejectId = $routeParams.id;
+    $scope.jobReject = {}
+    $scope.jobReject.userId = $scope.session_iUserId
 
     // jobReject
     $scope.ok = function (frmId, data) {
