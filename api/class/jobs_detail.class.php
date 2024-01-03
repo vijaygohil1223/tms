@@ -1236,6 +1236,7 @@ class jobs_detail
                 $dataUp['item_status'] = 'Ongoing';
             } else {
                 $dataUp['rejection'] = $data['resourceId'];
+                $dataUp['request_rejected_ids'] = $jobDetails && isset($jobDetails['request_rejected_ids']) && $jobDetails['request_rejected_ids'] != '' ? $jobDetails['request_rejected_ids'].','.$data['resourceId'] : $data['resourceId']; 
             }
             $this->_db->where('job_summmeryId', $data['jobId']);
             $updt = $this->_db->update('tms_summmery_view', $dataUp);
@@ -1549,12 +1550,18 @@ class jobs_detail
     public function acceptJobStatus($id, $data)
     {
 
+        
+        if($data && isset($data['acceptJobType']) && $data['acceptJobType']== 'accept' ){
+            $loginUserId = $data && isset($data['userId']) ? $data['userId'] : 0; 
+            $data['accept'] = $loginUserId;
+            $data['resource'] = $loginUserId;
+            unset($data['userId']);
+            unset($data['acceptJobType']);
+        }
         $data['updated_date'] = date('Y-m-d H:i:s');
-
         $data['rejection'] = '';
-
+        
         $this->_db->where('job_summmeryId', $id);
-
         $idd = $this->_db->update('tms_summmery_view', $data);
 
         if ($idd) {

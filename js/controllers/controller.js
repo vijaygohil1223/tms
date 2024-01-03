@@ -9,7 +9,7 @@ var errorCallback = function (data) {
 
 //Notification message function
 function notification(msg, type) {
-    //var msg = msg ? msg : "Something went wrong";
+    var msg = msg ? msg : "Something went wrong";
     //#themes mint, sunset, relax, nest, metroui, semanticui, light, bootstrap-v3, bootstrap-v4
     var n = new Noty({
         theme: 'bootstrap-v4',
@@ -30773,16 +30773,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ($scope.job == undefined || $scope.job == null || $scope.job == " ") {
                     $scope.job = {};
                 }
+                $scope.job.acceptJobType = 'accept';
                 $scope.job.item_status = $scope.item_status;
+                $scope.job.userId = $window.localStorage.getItem("session_iUserId");
                 break;
             case "reject":
-                var modalInstance = $uibModal.open({
+                var modalInstanceRej = $uibModal.open({
                     animation: $scope.animationsEnabled,
                     templateUrl: 'tpl/jobrejectreason.html',
                     controller: 'jobStatusRejectController',
                     size: ''
                 });
                 break;
+                modalInstanceRej.result.then(function (result) {
+                    console.log('Modal closed with result:', result);
+                    // Handle the result if needed
+                  }, function () {
+                    console.log('Modal dismissed');
+                    $location.path('/dashboard1');
+                    // Handle dismiss/cancel if needed
+                  });
             case "start":
                 if (status == 'Assigned-waiting' || status == 'Waiting') {
                     //$scope.item_status = "In-progress";
