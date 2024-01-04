@@ -464,8 +464,7 @@ app.filter('currencyCommaformat', function($filter) {
             return '-';
         } else {
             //var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
-            const isChrome = navigator.userAgent.includes("Chrome");
-            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             if (isSafari) {
                 var currencydata = input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
             }else{
@@ -485,8 +484,7 @@ app.filter('currencyCommaDcmlformat', function($filter) {
             //var currencydata = input.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, " ");
             //const input1 = input % 1 != 0 ? (Math.round(input * 100) / 100).toFixed(2) : input;
             var input1 = input.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
-            const isChrome = navigator.userAgent.includes("Chrome");
-            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             if (isSafari) {
                 var currencydata = input1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "-");
             }else{
@@ -516,8 +514,7 @@ app.filter('CurrencyNumbersCommaformat', function($filter) {
             if(a[1]==undefined && a[1]!=='00'){
                 a[1]='';
             }else{ var a2 = ','+a[1].slice(0, 2); }
-            const isChrome = navigator.userAgent.includes("Chrome");
-            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             if (isSafari) {
                 var n1 = a1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }else{
@@ -547,8 +544,7 @@ app.filter('filterCurrencyComma', function() {
             if(input.toString().includes('.')){
                  var a2 = ','+numarray.pop().slice(0, 2); 
             }
-            const isChrome = navigator.userAgent.includes("Chrome");
-            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             if (isSafari) {
                 var n1 = a1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }else{
@@ -576,8 +572,7 @@ app.filter('NumbersCommaformat', function($filter) {
                 var a2 = ','+decml.slice(0, decNo); 
             }
             // for safari we need to changes in pattern
-            const isChrome = navigator.userAgent.includes("Chrome");
-            const isSafari = navigator.userAgent.includes("Safari") && !isChrome;
+            var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             if (isSafari) {
                 var n1 = a1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }else{

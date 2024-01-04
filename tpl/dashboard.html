@@ -1043,6 +1043,7 @@ td { font-size: 11px; } */
                                     <th style="width:320px;">Comment</th>
                                     <th>Due date</th>
                                     <th>Status</th>
+                                    <th ng-if="highlightSearch == 'In_progress' "> Action </th>
                                   </thead>
                                   <!-- <tfoot>
                                     <td colspan="7">
@@ -1092,6 +1093,14 @@ td { font-size: 11px; } */
                                         <button class="btn approvedColor"
                                           ng-if="job.item_status == 'Invoice Ready' || job.item_status == 'Approved'"></button> -->
                                         {{job.item_status}}
+                                      </td>
+                                      <td ng-if="highlightSearch == 'In_progress' " class="nowrap">
+                                        <div class="d-flex">
+                                          <a ng-click="downloadFiles(job.job_summmeryId)">
+                                            <i class="fa fa-download"></i>
+                                          </a>
+                                          <a style="margin-left:15px" href="javascript:void(0)" ng-click="popupOpenFilemanager('#/filemanager/target')"><span class="orderout"></span>Upload &nbsp;(<span class="targteC" id="proDetailTargetCount"></span>)</a>
+                                        </div>
                                       </td>
                                     </tr>
                                     <tr ng-show="!JobL.length">
