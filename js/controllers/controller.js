@@ -483,10 +483,6 @@ function pasteHtmlAtCaret(html, selectPastedContent) {
     }
 }
 
-//var isChrome = navigator.userAgent.includes("Chrome");
-//var safariString = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6.1 Safari/605.1.15";
-// Check for Safari
-//var isSafari = navigator.userAgent.includes("Safari") && !isChrome;
 var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 if (isSafari) {
   console.log("Safari is in use.", isSafari);
