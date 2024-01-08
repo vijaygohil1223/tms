@@ -22,7 +22,7 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading font-bold">Select</div>
                                         <div class="panel-body">
-                                            <div class="col-sm-6 form-group">
+                                            <div class="col-sm-5 form-group">
                                                 <div class="col-sm-11">
                                                     <label>Job Status</label>
                                                     <input type="text" select2-job-detailitm-status id="jobStatus1"
@@ -32,8 +32,7 @@
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
                                                         ng-click="clearCode('job-status-report','jobStatus')"
-                                                        ng-if="jobReport.jobStatus"><i class="iconDelete glyph-icon fa-times"
-                                                            aria-hidden="true"></i></a>
+                                                        ng-if="jobReport.jobStatus"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -90,20 +89,22 @@
                                     </thead>
                                     <tbody>
                                         <tr id="{{}}"
-                                            ng-repeat="result in resultStatus=(statusResult | filter : jobReport)"
-                                            ng-if="result.resource == uId">
+                                            ng-repeat="result in resultStatus=(statusResult | filter : jobReport )"
+                                            ng-if="result.resourceId == uId">
                                             <td>
                                                 <input type="checkbox" id="orderCheck{{$index}}"
                                                     name="orderCheck{{$index}}" ng-model="checkor"
                                                     ng-checked="checkdata=='ordercheck'">
                                                 <input type="text" id="orderCheckData{{$index}}"
                                                     name="orderCheckData{{$index}}" style="display: none;"
-                                                    ng-model="result.jobId">
+                                                    ng-model="result.job_summmeryId">
                                             </td>
-                                            <td ng-if="result.poNumber"><a href="#/project-job-detail/{{result.jobId}}"
-                                                    class="summeryColor">{{result.poNumber}}</a></td>
                                             <td>
-                                                <button class="btn completedColor"
+                                                <a href="#/project-job-detail/{{result.job_summmeryId}}" ng-if="result.po_number"
+                                                    class="summeryColor">{{result.po_number}}</a>
+                                            </td>
+                                            <td>
+                                                <!-- <button class="btn completedColor"
                                                     ng-if="result.jobStatus == 'Completed'"></button>
                                                 <button class="btn inpreprartionColor"
                                                     ng-if="result.jobStatus == 'In preparation'"></button>
@@ -131,30 +132,22 @@
                                                 <button class="btn canceledColor"
                                                     ng-if="result.jobStatus == 'Canceled'"></button>
                                                 <button class="btn withoutInvoiceColor"
-                                                    ng-if="result.jobStatus == 'Without invoice'"></button>
+                                                    ng-if="result.jobStatus == 'Without invoice'"></button> -->
                                                 &nbsp;{{result.jobStatus}}
                                             </td>
                                             <!-- <td><a href="#/project-job-detail/{{result.jobId}}" class="summeryColor">{{result.orderNum}}-{{result.jobCode}}{{result.jobNo | numberFixedLen:3}}</a></td>
                                                             <td> -->
-                                            <!-- <button class="btn inpreprartionColor" ng-if="result.jobStatus == 'In preparation'"></button>
-                                                                <button class="btn requestedColor" ng-if="result.jobStatus == 'Requested'"></button>
-                                                                <button class="btn assignedwaitongColor" ng-if="result.jobStatus == 'Assigned-waiting'"></button>
-                                                                <button class="btn inprogressColor" ng-if="result.jobStatus == 'In-progress'"></button>
-                                                                <button class="btn overdueColor" ng-if="result.jobStatus == 'Overdue'"></button>
-                                                                <button class="btn deliveredColor" ng-if="result.jobStatus == 'Delivered'"></button>
-                                                                <button class="btn approvedColor" ng-if="result.jobStatus == 'Approved'"></button>
-                                                                <button class="btn invoicecreatedColor" ng-if="result.jobStatus == 'Invoice created'"></button>
-                                                                <button class="btn invoiceckedColor" ng-if="result.jobStatus == 'Invoice checked'"></button>
-                                                                <button class="btn invoiceacceptedColor" ng-if="result.jobStatus == 'Invoice Accepted'"></button>
-                                                                <button class="btn paidColor" ng-if="result.jobStatus == 'Paid'"></button>
-                                                                <button class="btn canceledColor" ng-if="result.jobStatus == 'Canceled'"></button>
-                                                                <button class="btn withoutInvoiceColor" ng-if="result.jobStatus == 'Without invoice'"></button>
-                                                                {{result.jobStatus}} -->
                                             </td>
-                                            <td>{{result.contactPersonName }}</td>
-                                            <td>{{result.resourceName}}</td>
+                                            <td>
+                                                {{ result.contact_person }}
+                                                    <!-- {{ result.contactPersonName }} -->
+                                            </td>
+                                            <td>
+                                                {{result.resource}}
+                                                <!-- {{result.resourceName}} -->
+                                            </td>
                                             <td>{{result.ItemLanguage}}</td>
-                                            <td>--</td>
+                                            <td>{{result.total_price | customNumber}}</td>
                                             <!-- <td>--</td> -->
                                         </tr>
                                         <tr ng-show="!resultStatus.length">

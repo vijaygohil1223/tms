@@ -1773,7 +1773,7 @@ class jobs_detail
 
         // $qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.*,tpt.project_name As type FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_project_type AS tpt ON tpt.pr_type_id = tg.project_type INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id";
         //$qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.* FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id";
-        $qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.*,ti.item_status as scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tmp.name AS job_type_name, tcus.project_coordinator as project_coordinator_id, tcus.project_manager as project_manager_id, tcus.QA_specialist as qa_specialist_id,tpc.iUserId AS job_manager_id FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_master_price AS tmp ON ti.project_type = tmp.master_price_id WHERE ti.item_number = tsv.item_id";
+        $qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.*,tsv.item_status as jobStatus, ti.item_status as scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tmp.name AS job_type_name, tcus.project_coordinator as project_coordinator_id, tcus.project_manager as project_manager_id, tcus.QA_specialist as qa_specialist_id,tpc.iUserId AS job_manager_id FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_master_price AS tmp ON ti.project_type = tmp.master_price_id WHERE ti.item_number = tsv.item_id";
 
         $data = $this->_db->rawQuery($qry);
 
@@ -1802,10 +1802,10 @@ class jobs_detail
 
                 $this->_db->where('iUserId', $value['resource']);
 
-                $resourceName = $this->_db->getOne('tms_users');
+                $resourceData = $this->_db->getOne('tms_users');
 
-                $data[$key]['resource'] = $resourceName ? $resourceName['vFirstName']. " " .$resourceName['vLastName'] : '';
-                //$data[$key]['resource'] = $resourceName ? $resourceName['vUserName'] : '';
+                $data[$key]['resource'] = $resourceData ? $resourceData['vFirstName']. " " .$resourceData['vLastName'] : '';
+                $data[$key]['resourceId'] = $value['resource'];
             }
 
             if ($value['contact_person']) {

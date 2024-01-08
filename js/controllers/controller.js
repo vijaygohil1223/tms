@@ -581,11 +581,11 @@ function commaToPoint(input) {
     }
 }
   // Function to replace variables in the HTML template
-  function replaceVariables(template, data) {
+function replaceVariables(template, data) {
     return template.replace(/\[(.*?)\]/g, (match, variable) => {
-      return data[variable] || '';
+        return data[variable] || '';
     });
-  }
+}
 // to download zip file
 function fileUrlExists(url) {
     var http = new XMLHttpRequest();
@@ -3306,16 +3306,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
-    $scope.popupOpenFilemanager = function (id) {
+    $scope.popupOpenFilemanager = function (jobType, jobId, orderId) {
         closeWindows();
         $window.localStorage.ItemClient = '';
         var ItemcodeNumber = angular.element('#companyCode').text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
+        $window.localStorage.jobfolderId = jobId;
         // start to get downloaded folder name with client name
         
-        rest.path = 'customer/' + $window.localStorage.orderID;
+        $window.localStorage.orderID = orderId
+        rest.path = 'customer/' + orderId;
         rest.get().success(function (res) {
             $scope.customer = res;
+            console.log('$scope.customer', $scope.customer)
             if (res) {
                 rest.path = 'client/' + $scope.customer.client;
                 rest.get().success(function (cData) {
@@ -3325,7 +3328,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         })
         // end
-        var soPopup = $window.open(id + "/" + $routeParams.id, "popup", "width=1000,height=650");
+        $routeParams.id = jobId
+        var soPopup = $window.open(jobType + "/" + $routeParams.id, "popup", "width=1000,height=650");
         soPopup.addEventListener("beforeunload", function () {
             localStorage['parentId'] = ' ';
             localStorage['pId'] = ' ';
@@ -29321,12 +29325,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if ($scope.jobReport == undefined || $scope.jobReport == null || $scope.jobReport == "") {
             notification('Please Select option', 'information');
         } else {
-            rest.path = 'statusJobReportFind';
+
+            console.log('$scope.jobReport', $scope.jobReport)
+            //rest.path = 'statusJobReportFind';
+            rest.path = 'getJobsFromTmsSummeryView';
             rest.get().success(function (data) {
                 $scope.statusResult = data;
+                console.log('$scope.statusResult', $scope.statusResult)
                 angular.forEach($scope.statusResult, function (val, i) {
                     if (val.ItemLanguage) {
-                        val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
+                        //val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
+                        var sourceLang = val.item_source_lang ? JSON.parse(val.item_source_lang).sourceLang : '' 
+                        var targetLang = val.item_target_lang ? JSON.parse(val.item_target_lang).sourceLang : '' 
+                        val.ItemLanguage = sourceLang + ' > ' + targetLang;
+                        
                     }
                 });
             })
@@ -30775,8 +30787,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var ItemcodeNumber = angular.element('#companyCode').text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
         // start to get downloaded folder name with client name
+
+        console.log('$window.localStorage.jobfolderId',$window.localStorage.jobfolderId )
         
         rest.path = 'customer/' + $window.localStorage.orderID;
+        console.log('window.localStorage.orderID', window.localStorage.orderID)
         rest.get().success(function (res) {
             $scope.customer = res;
             if (res) {

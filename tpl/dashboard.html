@@ -1099,7 +1099,7 @@ td { font-size: 11px; } */
                                           <a ng-click="downloadFiles(job.job_summmeryId)">
                                             <i class="fa fa-download"></i>
                                           </a>
-                                          <a style="margin-left:15px" href="javascript:void(0)" ng-click="popupOpenFilemanager('#/filemanager/target')"><span class="orderout"></span>Upload &nbsp;(<span class="targteC" id="proDetailTargetCount"></span>)</a>
+                                          <a style="margin-left:15px" href="javascript:void(0)" ng-click="popupOpenFilemanager('#/filemanager/target', job.job_summmeryId, job.order_id)"><span class="orderout"></span> Upload </a>
                                         </div>
                                       </td>
                                     </tr>
