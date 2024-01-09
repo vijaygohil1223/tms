@@ -3522,7 +3522,9 @@ app.directive('select2ScoopDetailitmStatus', function($http, rest, $timeout) {
             rest.path = 'scoopdetailItemStatusGet';
             rest.get().success(function(data) {
                 var indirect = [];
-                $.each(data, function(key, value) {
+                var dataArr = [...data].sort((a, b) => a.displayOrder - b.displayOrder);
+                console.log('dataArr', dataArr)
+                $.each(dataArr, function(key, value) {
                     var obj = {
                         'id': value.item_status_id,
                         //'id': value.item_status_name,

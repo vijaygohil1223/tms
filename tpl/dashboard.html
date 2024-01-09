@@ -427,7 +427,7 @@ td { font-size: 11px; } */
                             <th>Comment</th>
                             <th>Deadline</th>
                             <th>Progress</th>
-                            <!-- <th>Status</th> -->
+                            <th ng-if="myTabs.tabClassName=='tab-all' " >Status</th>
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
                             <!-- <th>Action</th> -->
@@ -568,12 +568,12 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td>
-                              <!-- <td>
+                              <td ng-if="myTabs.tabClassName == 'tab-all' " >
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   ng-click="changeScoopStatus(order.itemId, $index)"><i
                                     class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
-                              </td> -->
+                              </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |

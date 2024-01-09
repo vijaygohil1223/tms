@@ -101,6 +101,7 @@ class jobs {
     }
 
     public function Jobsummeryget() {
+        $this->_db->orderBy('tj.displayOrder','ASC');
         return $data = $this->_db->get('tms_jobs tj');
     }
 
