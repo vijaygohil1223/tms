@@ -171,15 +171,14 @@
                                     <tbody>
                                         <tr id="Export_{{$index}}"
                                             ng-repeat="result in statusResult | filter : jobReport"
-                                            ng-if="result.resource == uId">
-                                            <td>{{result.orderNum}}-{{result.jobCode}}{{result.jobNo |
-                                                numberFixedLen:3}}</td>
-                                            <td>{{result.contactPersonName}}</td>
-                                            <td>{{result.resourceName}}</td>
+                                            ng-if="result.resourceId == uId">
+                                            <td>{{ result.po_number }}</td>
+                                            <td>{{result.contact_person}}</td>
+                                            <td>{{result.resource}}</td>
                                             <td ng-bind="result.jobStatus"></td>
-                                            <td>--</td>
-                                            <td>--</td>
-                                            <!-- <td>--</td> -->
+                                            <td>{{result.ItemLanguage}}</td>
+                                            <td>{{result.total_price | customNumber}}</td>
+                                            
                                         </tr>
                                     </tbody>
                                 </table>

@@ -29394,20 +29394,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statusAction = function (action) {
         switch (action) {
             case "Remove selection":
-                bootbox.confirm("Are you sure you want to delete?", function (result) {
-                    for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                        var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                        if (jobselect == 'true') {
-                            var jobId = angular.element('#orderCheckData' + i).val();
-                            if (result == true) {
-                                rest.path = 'jobsearchStatusDelete/' + jobId;
-                                rest.delete().success(function (data) {
-                                    $route.reload();
-                                }).error(errorCallback);
-                            }
-                        }
+                $scope.checkdata = false;
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var itemselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (itemselect == 'true') {
+                        var jobId = angular.element('#orderCheckData' + i).val();
+                        $("#orderCheck" + i).prop("checked", false);
                     }
-                });
+                }
+                // bootbox.confirm("Are you sure you want to delete?", function (result) {
+                //     for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                //         var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                //         if (jobselect == 'true') {
+                //             var jobId = angular.element('#orderCheckData' + i).val();
+                //             if (result == true) {
+                //                 rest.path = 'jobsearchStatusDelete/' + jobId;
+                //                 rest.delete().success(function (data) {
+                //                     $route.reload();
+                //                 }).error(errorCallback);
+                //             }
+                //         }
+                //     }
+                // });
                 break;
             case "Export to excel":
                 var count = 0;
