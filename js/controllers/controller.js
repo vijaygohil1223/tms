@@ -3772,6 +3772,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // });
     }
 
+    $scope.linguistJobComplete = function (jobId) {
+        bootbox.confirm("Has the job been finished?", function (result) {
+            if (result == true) {
+                $scope.job = {};
+                $scope.job.item_status = "Completed";
+                if ($scope.job.item_status) {
+                    $routeParams.id = jobId;
+                    rest.path = 'acceptJobStatus';
+                    rest.put($scope.job).success(function (data) {
+                        if (data.status == 200 && data.emailSend == 'true') {
+                            // Delevered status renamed as Completed
+                            if ($scope.job.item_status == 'Delivered' || $scope.job.item_status == 'Completed') {
+                                notification('job is delivered successfully and email sent to project manager.', 'success');
+                            }
+                            $route.reload();
+                        }
+                        //$location.path('/dashboard');
+                    }).error( function(){
+                        $route.reload();
+                    });
+                }
+            }
+        })    
+    }
+
 
 }).controller('usertypeController', function ($scope, $log, $location, rest, $window, $rootScope, $route, $routeParams) {
     rest.path = 'usertype';

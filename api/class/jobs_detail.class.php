@@ -1618,37 +1618,23 @@ class jobs_detail
 
                 $jobResource = $resourceData['vUserName'];
 
-
-
                 $this->_db->where('template_id', 6);
 
                 $emailTemplateAcceptJob = $this->_db->getOne('tms_email_templates');
 
                 $search_array = array("[JOBNO]", "[LANGUAGES]", '[RESOURCENAME]', '[JOBREQUESTCOMMENT]');
 
-
-
-
-
                 $replace_array = array($jobNo, $jobLanguage, $jobResource);
 
-
-
                 $html = str_replace($search_array, $replace_array, $emailTemplateAcceptJob['template_content']);
-
-
 
                 $subject = $emailTemplateAcceptJob['template_subject'];
 
                 $to = $proManagerEmail['vEmailAddress'];
 
-
-
                 $mailSendStatus = $this->sendEmail($to, $subject, $html);
 
                 //Sending Email to manager after job is accepted END
-
-
 
             }
 
