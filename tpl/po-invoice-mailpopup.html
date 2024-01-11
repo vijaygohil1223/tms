@@ -92,7 +92,9 @@
     <div class="form-group" >
       <label class="col-md-2 control-label">Attached pdf:</label>
       <div class="col-md-10" style="margin-bottom: 15px;">
-        <span style="margin-top: 10px;"> {{ emailDetail.poFilenamePdf }} </span>
+        <a href="javascript:void(0)" ng-click="downloadFile(emailDetail.poFilenamePdf)">
+          <span style="margin-top: 10px;" > {{ emailDetail.poFilenamePdf }} </span>
+        </a>
       </div>
     </div>
     <!-- <div class="form-group">

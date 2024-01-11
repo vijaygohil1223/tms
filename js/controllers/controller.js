@@ -3772,8 +3772,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // });
     }
 
+
     $scope.linguistJobComplete = function (jobId) {
-        bootbox.confirm("Has the job been finished?", function (result) {
+        const msgHtml = `<style> .bootbox-body{ margin-bottom:0;}</style> <div class="row"> <div class="col-md-11 offset-md-1" style="text-align:center;padding:20px;color:#4c8a4c;"> <h4> I am pleased to confirm that the job has been successfully completed.</h4> </div> </div>`
+        bootbox.confirm(msgHtml, function (result) {
             if (result == true) {
                 $scope.job = {};
                 $scope.job.item_status = "Completed";
@@ -10698,6 +10700,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (data) {
                 $scope.payment = JSON.parse(data.vPaymentInfo);
                 $scope.bank = (data.vBankInfo) ? JSON.parse(data.vBankInfo) : '';
+                console.log('$scope.bank', $scope.bank)
+                if($scope.bank && $scope.bank.currency_code)
+                    $scope.bank.currency_code = $scope.bank.currency_code ? $scope.bank.currency_code.split(',')[0] : '';
             }
 
         }).error(errorCallback);
@@ -28447,6 +28452,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
+
+    $scope.downloadFile = function(fileName){
+        if(fileName){
+            const linkSource = $scope.emailDetail.pdfData;
+            const downloadLink = document.createElement('a');
+            downloadLink.href = linkSource;
+            downloadLink.download = fileName;
+            downloadLink.click();
+        }
+    }
+
 }).controller('jobSendRequestController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.ResourceMsg;
