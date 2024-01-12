@@ -408,7 +408,7 @@ class contactPerMsg {
             $subject = "Information";
         }
 
-        $body = "<p>" . $message . "</p>";
+        $body = "<div>" . $message . "</div>";
         //$body .= "<p>" . $emailsignData . "</p>";
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $to = $data['data']['vEmailAddress'];
