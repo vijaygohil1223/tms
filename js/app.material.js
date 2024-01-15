@@ -4,14 +4,15 @@ var app = angular.module('app', ['ui.bootstrap.contextMenu', 'ngRoute', 'ngAnima
     'oc.lazyLoad', 'pascalprecht.translate', 'ngMaterial', 'datatables', 'ngTagsInput', 'ngRateIt', 'angularRangeSlider',
     'internationalPhoneNumber', 'polyglotLanguageSwitcher', 'textAngular', 'ngLoadingSpinner', 'ui.sortable'
 ]);
-// app.config(function($locationProvider) {
-//     $locationProvider.html5Mode({
-//         enabled: true,
-//         requireBase: true,
-//         baseHref: '/tms/'
-//     });
-// });
+
 app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileProvider, $translateProvider) {
+    // To remove Hash tag # from url. 
+    //  Please also add base tag in index.html page (<base href="/">).
+    // $locationProvider.html5Mode({
+    //     enabled: true,
+    //     requireBase: true,
+    //     baseHref: '/tms/'
+    // });
     //$locationProvider.html5Mode(true);
     var modulesPath = 'tpl/';
     $routeProvider.when('/', {

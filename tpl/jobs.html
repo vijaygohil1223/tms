@@ -34,6 +34,16 @@
                                                 <input type="text" class="form-control" placeholder="Enter Job Code" name="JobCode" ng-model="type.job_code" required>
                                             </div>
                                         </div>
+                                        <div class="col-sm-3">
+                                            <div class="checkbox">
+                                                <label class="i-checks i-checks-sm" style="padding-top: 20px;">
+                                                  <input type="checkbox" name="is_active" ng-true-value="1" ng-false-value="0"
+                                                    ng-model="type.is_active" ng-checked="type.is_active == 1">
+                                                  <i></i>
+                                                  Active (Set as Active)
+                                                </label>
+                                              </div>
+                                        </div>
                                         <!-- <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label>Job Representation</label>
