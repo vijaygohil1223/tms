@@ -353,7 +353,14 @@
     <div class="bg-light lter b-b wrapper-md">
       <a href="javascript:void(0)" class="summeryColor pull-right" ng-click="popupCloseFile()">Close <i
           class="fa fa-times" aria-hidden="true"></i></a>
-      <h1 class="m-n font-thin h3">File Manager [&nbsp;{{rootFolderName}}&nbsp;] </h1>
+      <h1 class="m-n font-thin h3">File Manager :  
+        <span id="pathFolderWithurl" ></span>
+        <span ng-repeat="urlName in folderPathData">
+          <a href="javascript:void(0);" ng-click="findfileOneClk(urlName.fmanager_id,urlName.name)" ng-style="($index != folderPathData.length-1 || folderPathData.length==1 ) ? {'color':'blue'} : {'color':'gray'} "> {{urlName.name}}</a> <span ng-if="$index != folderPathData.length-1"> > </span>
+        </span>
+
+        <!-- {{ folderPath }}  -->
+      </h1>
     </div>
     <form id="customer-form">
       <nav class="navbar navbar-default" style="background:#e6e6e6;">
@@ -373,10 +380,10 @@
 
             <div class="form-group pull-right" style="padding-top:6px;margin-bottom:0px;">
               <div class="selectCount">
-                Selected Files : <span id="files_count">{{copyfile.length}}</span>
+                Selected Files : <p id="files_count" >{{copyfile.length}}</p>
                 <a href="javascript:void(0)" style="font-size:12px;color:#0086be" ng-click="clearCopy()">Clear</a>
               </div>
-              <input class="form-control nav-inp fileSearchBox" id="fileSearchBox" ng-focus="searchBox()"
+              <input class="form-control nav-inp fileSearchox" id="fileSearchBox" ng-focus="searchBox()"
                 name="fileSearchBox" placeholder="Search" type="text" ng-model="filters.search">
             </div>
           </div>

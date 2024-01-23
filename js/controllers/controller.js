@@ -734,6 +734,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $timeout(function () {
                 rest.path = 'authenticate';
                 rest.post(user).success(function (data) {
+                    console.log('data-loginData', data)
                     $('#loginSpin').hide();
                     $scope.userProfilepic = data.session_data.vProfilePic ? data.session_data.vProfilePic : 'user-icon.png';
                     $window.localStorage.setItem("_auth", data.session_data.vPassword);
@@ -6411,11 +6412,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $('.ajax-upload-dragdrop:eq(1)').hide();
     }, 1500);
 
-}).controller('filemanagerCtrl', function ($scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval) {
+}).controller('filemanagerCtrl', function ($scope, $sce, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval) {
     $scope.clientId = $window.localStorage.getItem("contactclientId");
     $scope.userId = $window.localStorage.getItem("contactUserId");
     $scope.userIdInternal = $window.localStorage.getItem("internal");
     $scope.IndirectClientId = $window.localStorage.getItem("IndirectClientId");
+
+    // if poup open from scoop
+    $scope.scoopIdFileManager = $window.localStorage.getItem("scoopIdFileManager");
+    
     $scope.copyfile = [];
     //$scope.fileExtensionList = [ "doc", "docx", "pdf", "csv", "xls", "xlsx", "xlsm", "ppt", "pptx", "jpg", "jpeg", "png", "gif", "svg", "webp", "jfif", "bmp", "mp3", "mp4", "avi", "mov", "wmv", "vob", "zip", "rar", "tar", "gz", "exe" ];
     $scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
@@ -6455,6 +6460,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         $('.ajax-upload-dragdrop:eq(1)').hide();
     }
+
+    $scope.urlParams = $location.absUrl().split('/').pop();
+    $scope.fullPathUrl = function(scoopId, parentId){
+        console.log('parentId', parentId)
+        console.log('scoopId', scoopId)
+        $scope.folderPathData = [];
+        rest.path = 'filemanagerScoopPath/'+scoopId+'/'+parentId;
+        rest.get().success(function (data) {
+            const sortedArray = data.sort((a, b) => a.fmanager_id - b.fmanager_id);
+            const newpath = sortedArray.filter( (itm) => { 
+                if(itm.name && itm.ext == '' ){
+                    $scope.folderPathData.push(itm)
+                }
+             } )
+            console.log('$scope.folderPathData', $scope.folderPathData)
+        })
+    }
+
 
     if ($scope.clientId != null) {
         if ($scope.clientId.trim().length == 0) {
@@ -6513,11 +6536,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }).error(errorCallback);
         }
     } else if ($routeParams.id == 'item' && $window.localStorage.ItemFolderid) {
+
+        if($window.localStorage.getItem("parentId") != undefined && $scope.urlParams == 'item' ){
+            console.log('parentDIDDD-undefined', $window.localStorage.getItem("parentId"))
+            $scope.fullPathUrl($scope.scoopIdFileManager, $window.localStorage.getItem("parentId"))
+        }
+        console.log('$window.localStorage.getItem("parentId")======', $window.localStorage.getItem("parentId"))
+
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
+            console.log('$window.localStorage.getItem("parentId===First-parent-ID")', $window.localStorage.getItem("parentId"))
             rest.path = "Itemfilefront/" + $window.localStorage.orderID + '/' + $window.localStorage.ItemFolderid;
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data.fmanager_id);
-                $route.reload();
+                console.log('$scope.scoopIdFileManager', $scope.scoopIdFileManager)
+                //$scope.fullPathUrl($scope.scoopIdFileManager, data.fmanager_id)
+                setTimeout( ()=> {
+                    $route.reload();
+                }, 100)
+                
             }).error(errorCallback);
         }
     }
@@ -7602,9 +7638,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }, 1000);
 
+    $scope.findfileOneClk = function(id, name){
+        $scope.findfile(id, name)
+    }
+
     //nested file
     $scope.findfile = function (id, name) {
-        console.log('id-sdfds', id)
+        if($scope.urlParams == 'item'){ 
+            $scope.fullPathUrl($scope.scoopIdFileManager , id);
+        }
+
         var externalResourceUserId = null;
         if ($window.sessionStorage.getItem("ExternalUserId") != null) {
             var externalResourceUserId = $window.sessionStorage.getItem("ExternalUserId");
@@ -7612,6 +7655,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'filefolderGet/' + id + '/' + $routeParams.id + '/' + externalResourceUserId;
         rest.get().success(function (data) {
             $scope.displayfolder = data;
+            console.log('$scope.displayfolder', $scope.displayfolder)
 
             //Change ItemFolder Name to item001 -> Files-001
             angular.forEach($scope.displayfolder, function (val, i) {
@@ -7649,6 +7693,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // redirect to higher level directiory or file
     $scope.higherlevelFolder = function (id) {
         console.log('higherleve-id', id)
+
+        console.log('higher====>', $window.localStorage.getItem("parentId"))
+        
+
+        console.log('scoooopfolderiDDD', $window.localStorage.getItem("scoopfolderId"))
+        console.log('orderID=itemID=>', $window.localStorage.ItemFolderid + '>' + $window.localStorage.orderID )
         //$scope.GetRootFolderName(id)
         var externalResourceId = null;
         if ($window.sessionStorage.getItem("ExternalUserId") != null) {
@@ -7669,14 +7719,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if (data.info.parent_id == 0) {
                         $scope.rootshow = false;
                     }
-                    angular.forEach(data.data, function (val, i) {
-
-                        fid = val.parent_id;
-                        fname = val.name;
-                    })
+                    // angular.forEach(data.data, function (val, i) {
+                    //     fid = val.parent_id;
+                    //     fname = val.name;
+                    // })
 
                     //Change ItemFolder Name to item001 -> Files-001
                     angular.forEach($scope.displayfolder, function (val, i) {
+
+                        fid = val.parent_id;
+                        fname = val.name;
+
+                        // Complete folder path for scoop
+                        if($scope.urlParams == 'item' && val.fmanager_id == id ){ 
+                            $scope.fullPathUrl($scope.scoopIdFileManager , val.parent_id );
+                        }
+
                         $scope.displayfolder[i].countchild = val.categories.length;
                         $scope.displayfolder[i].name = val.name.toString();
 
@@ -20349,6 +20407,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.itemfolderOpen = function (id) {
         closeWindows();
         localStorage['scoopfolderId'] = id;
+        localStorage['scoopIdFileManager'] = id;
+        
         $window.localStorage.ItemClient = '';
         $window.localStorage.ItemFolderid = id;
         // start to get downloaded folder name with client name
@@ -33344,6 +33404,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.itemfolderOpen = function (id) {
         closeWindows();
         localStorage['scoopfolderId'] = id;
+        localStorage['scoopIdFileManager'] = id;
         $window.localStorage.ItemClient = '';
         $window.localStorage.ItemFolderid = id;
         // start to get downloaded folder name with client name

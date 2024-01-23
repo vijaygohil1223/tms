@@ -936,6 +936,49 @@ array(
         return $data;
     }
 
+    public function buildTreeD2(array $elements, $parentId = 0, $itemId=0) {
+        $branch = array();
+        foreach ($elements as $element) {
+            //if($element['parent_id'] == $parentId)
+            $this->_db->where('fmanager_id',$parentId);
+            $fmanagerData = $this->_db->getOne('tms_filemanager');
+            if ($element['fmanager_id'] == $parentId  ) {
+            //if ($element['parent_id'] == $parentId || $element['fmanager_id'] == $parentId  ) {
+                    $this->_db->where('fmanager_id',$parentId);
+                $fmanagerData = $this->_db->getOne('tms_filemanager');
+                $parentId = $element['parent_id'];
+                $children = Self::buildTree($elements, $parentId);
+                
+                $branch[] = $element;
+
+                if($element['item_id'] == $itemId){
+                    return $branch;
+                }
+                    
+            }
+        }
+        return $branch;
+    }
+    public function filemanagerScoopPath($itemId, $parentId){
+        //print_r($parentId);
+        $scoopArray = array();
+        $this->_db->where('item_id',$itemId);
+        $fmanagerIdTest = $this->_db->getOne('tms_filemanager');    
+
+        $this->_db->where('fmanager_id',$itemId);
+        $fmanagerData = $this->_db->getOne('tms_filemanager');
+        
+        $this->_db->orderBy('fmanager_id','DESC');
+        $allData = $this->_db->get('tms_filemanager');
+        //$dataArr = $this->_db->get('tms_filemanager');    
+        if($fmanagerData){
+            $scoopArray = self::buildTreeD2($allData, $parentId, $itemId);
+            //array_push($scoopArray, $fmanagerData);
+        }
+        //print_r($scoopArray);
+        return $scoopArray;
+    }
+
     public function getFilestotal($id){
         $this->treeArr_data = array();
         $this->_db->where('item_id',$id);

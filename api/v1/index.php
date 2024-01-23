@@ -2833,6 +2833,11 @@ $app->get('/Itemfilefront/:orderId/:itemId', 'authenticate',function ($orderId, 
     $result = $filemanager->Itemfilefront($orderId, $itemId);
     echoResponse(200, $result);
 });
+$app->get('/filemanagerScoopPath/:itemId/:parentId','authenticate', function ($itemId, $parentId) {
+    $filemanager = new filemanager ();
+    $result = $filemanager->filemanagerScoopPath($itemId, $parentId);
+    echoResponse(200, $result);
+});
 $app->get('/filemanagerfolderDownload/:id/','authenticate', function ($id) {
     $filemanager = new filemanager ();
     $result = $filemanager->filemanagerfolderDownload($id);
