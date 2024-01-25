@@ -265,6 +265,10 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             templateUrl: modulesPath + 'project-status.html',
             controller: 'projectStatusController',
             role: '1'
+        }).when('/project-scoop-status', {
+        templateUrl: modulesPath + 'project-scoop-status.html',
+            controller: 'projectScoopStatusController',
+            role: '1'
         }).when('/job-status', {
             templateUrl: modulesPath + 'job-status.html',
             controller: 'jobStatusController',

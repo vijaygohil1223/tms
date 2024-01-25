@@ -1137,11 +1137,13 @@ app.directive('select2ProjJobs', function($http, rest, $timeout) {
             rest.get().success(function(data) {
                 var prType = [];
                 $.each(data, function(key, value) {
-                    var obj = {
-                        id: value.pr_status_id,
-                        text: value.project_status_name
-                    };
-                    prType.push(obj);
+                    if(value.is_active === 1){
+                        var obj = {
+                            id: value.pr_status_id,
+                            text: value.project_status_name
+                        };
+                        prType.push(obj);
+                    }
                 });
                 $timeout(function() {
                     element.select2({

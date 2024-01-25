@@ -26120,6 +26120,60 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
+
+}).controller('projectScoopStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.save = function (formId) {
+        if (angular.element("#" + formId).valid()) {
+            if ($scope.pr_status.item_status_id) {
+                $routeParams.id = $scope.pr_status.item_status_id;
+                rest.path = 'scpStatus';
+                rest.put($scope.pr_status).success(function () {
+                    notification('Record updated successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            } else {
+                if ($scope.pr_status.is_default == undefined) {
+                    $scope.pr_status.is_default = '0';
+                }
+                if ($scope.pr_status.is_active == undefined) {
+                    $scope.pr_status.is_active = '0';
+                }
+                rest.path = 'scpStatus';
+                rest.post($scope.pr_status).success(function (data) {
+                    notification('Record inserted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        }
+    }
+
+    rest.path = 'scpstatus';
+    rest.get().success(function (data) {
+        $scope.projectStatus = data;
+        $scope.projectStatusEmpty = jQuery.isEmptyObject(data);
+    }).error(errorCallback);
+
+    $scope.getType = function (id, eID) {
+        $routeParams.id = id;
+        rest.path = 'scpStatus';
+        rest.model().success(function (data) {
+            $scope.pr_status = data;
+        }).error(errorCallback);
+        scrollToId(eID);
+    }
+
+    $scope.deleteModel = function (id) {
+        bootbox.confirm("Are you sure you want to delete this row?", function (result) {
+            if (result == true) {
+                rest.path = 'scpStatus/' + id;
+                rest.delete().success(function () {
+                    notification('Record deleted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        });
+    };
 }).controller('jobStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.save = function (formId) {

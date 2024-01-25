@@ -1121,7 +1121,7 @@ td { font-size: 11px; } */
                                     <th style="width:320px;">Comment</th>
                                     <th>Due date</th>
                                     <th>Status</th>
-                                    <th ng-if="highlightSearch == 'In_progress' "> Action </th>
+                                    <th ng-if="highlightSearch == 'In_progress' || highlightSearch == 'All' "> Action </th>
                                   </thead>
                                   <!-- <tfoot>
                                     <td colspan="7">
@@ -1172,17 +1172,18 @@ td { font-size: 11px; } */
                                           ng-if="job.item_status == 'Invoice Ready' || job.item_status == 'Approved'"></button> -->
                                         {{job.item_status}}
                                       </td>
-                                      <td ng-if="highlightSearch == 'In_progress' " class="nowrap">
-                                        <div class="d-flex">
+                                      <td ng-if="highlightSearch == 'In_progress' || highlightSearch == 'All' " class="nowrap">
+                                        <div ng-if="job.item_status != 'Ongoing' "> - </div>
+                                        <div class="d-flex" ng-if="job.item_status == 'Ongoing' ">
                                           <a ng-click="downloadFiles(job.job_summmeryId)">
-                                            <i class="fa fa-download"></i>
+                                            <span class="btn btn-primary"> <i class="fa fa-download"></i> </span>
                                           </a>
                                           <a style="margin-left:15px" href="javascript:void(0)"
                                             ng-click="popupOpenFilemanager('#/filemanager/target', job.job_summmeryId, job.order_id)"><span
-                                              class="orderout"></span> Upload </a>
-                                          <a style="margin-left:30px" href="javascript:void(0)"
+                                            class="btn btn-primary"> <i class="fa fa-upload"></i> </span>  </a>
+                                          <a style="margin-left:20px" href="javascript:void(0)"
                                             ng-click="linguistJobComplete(job.job_summmeryId)"> <span
-                                              class="btn btn-primary" style="padding: 2px 5px;"> Complete </span> </a>
+                                              class="btn btn-primary" > <i class="fa fa-check"></i> </span> </a>
                                         </div>
                                       </td>
                                     </tr>

@@ -944,17 +944,14 @@ array(
             $fmanagerData = $this->_db->getOne('tms_filemanager');
             if ($element['fmanager_id'] == $parentId  ) {
             //if ($element['parent_id'] == $parentId || $element['fmanager_id'] == $parentId  ) {
-                    $this->_db->where('fmanager_id',$parentId);
+                $this->_db->where('fmanager_id',$parentId);
                 $fmanagerData = $this->_db->getOne('tms_filemanager');
                 $parentId = $element['parent_id'];
                 $children = Self::buildTree($elements, $parentId);
-                
                 $branch[] = $element;
-
                 if($element['item_id'] == $itemId){
                     return $branch;
                 }
-                    
             }
         }
         return $branch;

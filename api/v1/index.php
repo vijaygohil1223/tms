@@ -866,6 +866,35 @@ $app->get('/proStatusgetOne','authenticate', function () use($app) {
     $result = $projectstatus->proStatusgetOne();
     echoResponse(200, $result);
 });
+//--------------------project Scoop status (item status)--------------------------//
+$app->post('/scpStatus','authenticate', function () use($app) {
+    $scoopstatus = new projectscoopstatus ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $scoopstatus->save($data);
+    echoResponse($result ['status'], $result);
+});
+$app->get('/scpstatus','authenticate', function () use($app) {
+    $scoopstatus = new projectscoopstatus ();
+    $result = $scoopstatus->getAll();
+    echoResponse(200, $result);
+});
+$app->get('/scpStatus/:id','authenticate', function ($id) use($app) {
+    $scoopstatus = new projectscoopstatus ();
+    $result = $scoopstatus->getTypeById($id);
+    echoResponse(200, $result);
+});
+$app->put('/scpStatus/:id','authenticate', function ($id) use($app) {
+    $scoopstatus = new projectscoopstatus ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $scoopstatus->update($id, $data);
+    echoResponse($result ['status'], $result);
+});
+$app->delete('/scpStatus/:id','authenticate', function ($id) {
+    $scoopstatus = new projectscoopstatus ();
+    $result = $scoopstatus->delete($id);
+    echoResponse($result ['status'], $result);
+});
+
 //--------------------Job status--------------------------//
 $app->post('/jobStatus','authenticate', function () use($app) {
     $jobstatus = new jobstatus ();
