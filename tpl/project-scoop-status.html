@@ -63,7 +63,7 @@
               <th>#</th>
               <th>Scoop Status Name</th>
               <th>Status</th>
-              <!-- <th>Default Status</th> -->
+              <th>Default Status</th>
               <th>Action</th>
             </thead>
             <tbody>
@@ -73,15 +73,17 @@
                 <td ng-bind="t.item_status_name"></td>
                 <td ng-if="t.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
                 <td ng-if="t.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td>
-
-                <!-- <td ng-if="t.is_default=='0'">-</td>
-                <td ng-if="t.is_default=='1'"><span class="label bg-success" title="active">Default status</span></td> -->
-
-
-                <td><a href="javascript:void(0)" ng-click="getType(t.item_status_id, 'top');" title="edit"><i
-                      class="glyph-icon fa-edit"></i></a> <a href="javascript:void(0)"
-                    ng-click="deleteModel(t.item_status_id)" title="delete"><i
-                      class="iconDelete glyph-icon fa-times"></i></a></td>
+                <td>
+                  <span ng-if="t.is_default=='0'"></span>
+                  <span class="label bg-success" title="active" ng-if="t.is_default=='1'">Default status</span>
+                </td>
+                <td>
+                  <a href="javascript:void(0)" ng-click="getType(t.item_status_id, 'top');" title="edit">
+                    <i class="glyph-icon fa-edit"></i> </a> <a href="javascript:void(0)"
+                    ng-click="deleteModel(t.item_status_id)" title="delete">
+                    <i class="iconDelete glyph-icon fa-times"></i>
+                  </a>
+                </td>
               </tr>
             </tbody>
           </table>

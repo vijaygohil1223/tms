@@ -26174,6 +26174,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
+
+
 }).controller('jobStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.save = function (formId) {
