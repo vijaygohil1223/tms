@@ -30076,6 +30076,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach(invoices, function (val, i) {
                 val.invoice_number = val.custom_invoice_number ? val.custom_invoice_number : val.invoice_number; 
                 //console.log('val.invoice_number', val.invoice_number)
+                val.invoice_status
                 
                 var invoice_duedate = TodayAfterNumberOfDays(val.invoice_date, $scope.invoicePeriod);
 
@@ -30131,9 +30132,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var InDuedate = new Date(invoice_duedate); 
                 
                 val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
-                
+                // status 'Open' as 'Approved'
+                val.invoice_status = val.invoice_status == 'Open' ? 'Approved' : val.invoice_status
+
                 $scope.allInvcData.push(val);
-                if (val.invoice_status == 'Open') {
+                if (val.invoice_status == 'Open' || val.invoice_status == 'Approved')  {
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }

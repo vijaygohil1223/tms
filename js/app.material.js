@@ -7,7 +7,7 @@ var app = angular.module('app', ['ui.bootstrap.contextMenu', 'ngRoute', 'ngAnima
 
 app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileProvider, $translateProvider) {
     // To remove Hash tag # from url. 
-    //  Please also add base tag in index.html page (<base href="/">).
+    // Please also add base tag in index.html page (<base href="/">).
     // $locationProvider.html5Mode({
     //     enabled: true,
     //     requireBase: true,
