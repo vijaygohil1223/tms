@@ -30133,10 +30133,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
                 // status 'Open' as 'Approved'
-                val.invoice_status = val.invoice_status == 'Open' ? 'Approved' : val.invoice_status
+                val.invoice_status = val.invoice_status == 'Open' ? 'Outstanding' : val.invoice_status
 
                 $scope.allInvcData.push(val);
-                if (val.invoice_status == 'Open' || val.invoice_status == 'Approved')  {
+                
+                if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding')  {
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }

@@ -694,7 +694,7 @@ app.directive('select2ClientInvoiceStatus', function($http, rest, $timeout) {
             //var data = data.filter(item => item !== 'Partly Paid');
             var invoiceStatuses = [];
             $.each(data, function(key, value) {
-                const textValue = value == 'Open' ? 'Approved' : value
+                const textValue = value == 'Open' ? 'Outstanding' : value
                 var obj = {
                     'id': value,
                     'text': textValue
