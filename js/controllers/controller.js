@@ -16337,7 +16337,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
                 }
-                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete'].includes(val.invoice_status) ){
+                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed'].includes(val.invoice_status) ){
                     $scope.overdueInvcCount++ 
                     $scope.overdueInvc.push(val);
                 }
@@ -30157,7 +30157,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
                 }
-                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete'].includes(val.invoice_status) ){
+                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed','Cancel'].includes(val.invoice_status) ){
                     $scope.overdueInvcCount++ 
                     $scope.overdueInvc.push(val);
                 }
