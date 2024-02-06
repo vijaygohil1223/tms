@@ -11155,9 +11155,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isValidMobileNumber = false;
     $scope.multipleDateArr = [];
     $scope.abscentDateArr = [];
-    $scope.isSecondCurrency = false
+    $scope.isSecondCurrency = false;
+
+    console.log('$window.localStorage.getItem("session_iUserId")', $window.localStorage.getItem("session_iUserId"))
+    // login user data
+    if($scope.userRight == 1){
+        rest.path = 'getProfile/' + $window.localStorage.getItem("session_iUserId");
+        rest.get().success(function (result) {
+            console.log('result', result)
+            $scope.internalUserPosition = result.vResourcePosition ? result.vResourcePosition.split(',') : []
+            console.log('$scope.internalUserPosition', $scope.internalUserPosition)
+        }).error(errorCallback);
+    }
+
     
-            
     /* Mobile Validation START */
     var telInput = $("#iMobile"),
         errorMsg = $("#error-msg"),
@@ -30101,7 +30112,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.getAllInvoice();
 
     $scope.dateToday = new Date();
-    //----- ****** Start Invoice Tabs    ****** --------//
+    //----- ****** Start Invoice Tabs ****** --------//
+
     $scope.invcList_tabFilter = function () {
         var deferred = $q.defer();
 
