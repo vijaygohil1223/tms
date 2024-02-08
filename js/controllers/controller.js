@@ -2267,6 +2267,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$scope.projectsAll = $scope.projectData;
                 //var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
+                val.attached_workflow = val.attached_workflow.split('-').pop(); 
                 if (val.itemsSourceLang) {
                     $scope.projectData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
                     var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;

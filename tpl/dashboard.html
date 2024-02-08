@@ -494,6 +494,7 @@ td { font-size: 11px; } */
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th style="white-space: nowrap">QA Specialist</th>
+                            <th>Job</th>
                             <th>Linguist</th>
                             <!-- <th>Heads Up</th> -->
                             <th>Comment</th>
@@ -575,6 +576,7 @@ td { font-size: 11px; } */
                               <td>{{ order.itemPonumber }}</td>
                               <td>{{order.pm_fullName}}</td>
                               <td>{{order.qa_fullName}}</td>
+                              <td>{{order.attached_workflow}}</td>
                               <td>
                                 <div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">
                                   {{liguist.vUserName}} </div>
