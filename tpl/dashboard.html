@@ -493,11 +493,12 @@ td { font-size: 11px; } */
                             <th>Languages</th>
                             <th>PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
+                            <th style="white-space: nowrap">QA Specialist</th>
                             <th>Linguist</th>
                             <!-- <th>Heads Up</th> -->
                             <th>Comment</th>
                             <th>Deadline</th>
-                            <th>Progress</th>
+                            <!-- <th>Progress</th> -->
                             <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th>
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
@@ -573,6 +574,7 @@ td { font-size: 11px; } */
                               </td>
                               <td>{{ order.itemPonumber }}</td>
                               <td>{{order.pm_fullName}}</td>
+                              <td>{{order.qa_fullName}}</td>
                               <td>
                                 <div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">
                                   {{liguist.vUserName}} </div>
@@ -616,7 +618,7 @@ td { font-size: 11px; } */
                                   </div>
                                 </span>
                               </td>
-                              <td>
+                              <!-- <td>
                                 <span ng-if="order.progrss_precentage < 0 ">-</span>
                                 <div class="inline" ng-if="order.progrss_precentage >= 0">
                                   <div ui-jq="easyPieChart" ui-options="{
@@ -641,7 +643,7 @@ td { font-size: 11px; } */
                                     <canvas width="50" height="50"></canvas>
                                   </div>
                                 </div>
-                              </td>
+                              </td> -->
                               <td ng-if="myTabs.tabClassName == 'tab-all' ">
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
