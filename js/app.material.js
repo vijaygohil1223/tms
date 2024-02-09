@@ -53,6 +53,11 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
         controller: 'csvLingstProfileController',
         activetab: 'dashboard',
         role: '1'
+    }).when('/csv-client-profile', {
+        templateUrl: modulesPath + 'csv-client-profile.html',
+        controller: 'csvClientProfileController',
+        activetab: 'dashboard',
+        role: '1'        
     }).when('/resourcetype', {
         templateUrl: modulesPath + 'user-type.html',
         controller: 'usertypeController',

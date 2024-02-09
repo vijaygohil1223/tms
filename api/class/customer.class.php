@@ -74,6 +74,12 @@ class customer {
         $this->_db->where("c_id", $id);
         $id = $this->_db->update('tms_customer', $data);
         if ($id) {
+            $QA_specialist = isset($data['QA_specialist']) && $data['QA_specialist'] > 0 ? $data['QA_specialist'] : 0; 
+            $itemData['qaSpecialist'] = (isset($data['sub_qa']) && $data['sub_qa'] > 0) ? $data['sub_qa'] : $QA_specialist;
+            if($data['order_id'] && $itemData['qaSpecialist'] > 0 ){
+                $this->_db->where("order_id", $data['order_id']);
+                $itemsId = $this->_db->update('tms_items', $itemData);
+            }
             $return['status'] = 200;
             $return['msg'] = 'Successfully Updated.';
             $this->_db->where("iClientId",$data['indirect_customer']);
