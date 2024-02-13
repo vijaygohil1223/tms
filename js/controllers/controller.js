@@ -15049,6 +15049,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "clientProfileNumber/1";
         rest.get().success(function (data) {
             $scope.info.vClientNumber = pad(data, 3);
+            console.log('$scope.info.vClientNumber--called', $scope.info.vClientNumber)
             $scope.displayCreatorName = $window.localStorage.getItem("session_vUserName");
             $scope.info.created_id = $window.localStorage.getItem("session_iUserId");
         });

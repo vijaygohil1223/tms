@@ -731,19 +731,25 @@ array(
 
     public function clientProfileNumberGet($id) {
         if ($id == 1) {
-            $this->_db->orderBy('vClientNumber', 'desc');
-            $data = $this->_db->get('tms_client', 1);
+            // $this->_db->orderBy('vClientNumber', 'desc');
+            // $data = $this->_db->get('tms_client', 1);
+            // the column data type is varchar, so it create an issue
+            $data = $this->_db->rawQuery(" SELECT MAX(CAST(`vClientNumber` AS UNSIGNED)) AS max_value FROM tms_client ");
             if ($data) {
-                $return = $data[0]['vClientNumber'] + 1;
+                //$return = $data[0]['vClientNumber'] + 1;
+                $return = $data[0]['max_value'] ? $data[0]['max_value'] + 1 : 1;
             } else {
                 $return = 1;
             }
             return $return;
         } else {
-            $this->_db->orderBy('vClientNumber', 'desc');
-            $data = $this->_db->get('tms_client_indirect', 1);
+            //$this->_db->orderBy('vClientNumber', 'desc');
+            //$data = $this->_db->get('tms_client_indirect', 1);
+            // the column data type is varchar, so it create an issue
+            $data = $this->_db->rawQuery(" SELECT MAX(CAST(`vClientNumber` AS UNSIGNED)) AS max_value FROM tms_client_indirect ");
             if ($data) {
-                $return = $data[0]['vClientNumber'] + 1;
+                //$return = $data[0]['vClientNumber'] + 1;
+                $return = $data[0]['max_value'] ? $data[0]['max_value'] + 1 : 1;
             } else {
                 $return = 1;
             }
@@ -792,6 +798,8 @@ array(
         foreach ($infoData as $info) {
             if (isset($info['vUserName']) && isset($info['vUserName']) ) {
                 $isClientExist = self::getClientName('vUserName', $info['vUserName']);
+                $vClientNumber = self::clientProfileNumberGet(1);
+                
                 if(! $isClientExist){
             
                     // print_r($isClientExist);
@@ -800,7 +808,10 @@ array(
                     $clientPaymentInfo = isset($info['clientTaxInfo']) ? $info['clientTaxInfo'] : '';
                     if(isset($info['clientTaxInfo']) )
                         unset($info ['clientTaxInfo']);
-
+                    
+                    $vClientNumber_ = str_pad($vClientNumber, 3, "0", STR_PAD_LEFT);                        
+                    $info ['vClientNumber'] = $vClientNumber;
+                    $info ['tPoInfo'] = $info['vUserName'].'-'.$vClientNumber_;
                     //$info['dtCreationDate'] = $info['dtCreationDate'];
                     $info ['dtCreatedDate'] = date('Y-m-d H:i:s');
                     $info ['dtUpdatedDate'] = date('Y-m-d H:i:s');
@@ -832,7 +843,7 @@ array(
                         $dataFl['updated_date'] = date('Y-m-d H:i:s');
                         //$dataFl['name'] = 'cd' . str_pad($info['vClientNumber'], 4);
                         $info['vClientNumber'] = 10;
-                        $dataFl['name'] = str_replace(' ','',strtolower($info['vUserName'])).'-'.str_pad($info['vClientNumber'],3,"0", STR_PAD_LEFT);
+                        $dataFl['name'] = str_replace(' ','',strtolower($info['vUserName'])).'-'.$vClientNumber_;
                         $dataFl['client_id'] = $id;
                         $FileManagerId = $this->_db->insert('tms_filemanager', $dataFl);
                         
