@@ -37947,18 +37947,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return resIds;
         }
     
-        $scope.propList = [];
-        rest.path = "getAllPropertiesValue";
-        rest.get().success(function (data) {
-            $scope.propList = data;
-        });
-    
-        $scope.specializeList = [];
-        rest.path = "getAllSpecialization";
-        rest.get().success(function (data) {
-            $scope.specializeList = data;
-        });
-    
         // To get phone code country code To add data in mobile
         $scope.cpuntryMobilecodeList = [];
         rest.path = "getCountry";
@@ -37973,13 +37961,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 )
             })
         });
-    
-        // fetch('country-phonecode.json')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         $scope.cpuntryMobilecodeList = data;
-        //     }
-        //     );
+
+        $scope.vCenterid = 0;
+        $scope.vCodeRights = '';
+        
+        rest.path = "centerDateget";
+        rest.get().success(function (data) {
+            console.log('data', data)
+            if(data.length > 0){
+                const retData1 = data.find( item => item.is_default === 1 )
+                const retData = retData1 ? retData1 : data[0];
+                console.log('retData', retData)
+                $scope.vCenterid = retData.center_id;
+                console.log('$scope.vCenterid', $scope.vCenterid)
+                $scope.vCodeRights = retData.abbrivation;
+                console.log('$scope.centerName', $scope.vCodeRights)
+            }
+            
+        });
+        
+
+        $scope.cityTimezone = function (city) {
+            if(id){
+                rest.path = "cityTimeZoneget/" + city;
+                rest.get().success(function (data) {
+                    if (data != false) {
+                        let vTimeZone = data.timeZone;
+                    }
+                });
+            }    
+        }
     
         $scope.csvDataInsrt = [];
         var percent = 0;
@@ -38009,73 +38020,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.csvFieds = csv[0];
                     $scope.csvData = csv;
                     angular.forEach(csv, function (val, i) {
+                        val.forEach((str, index) => {
+                            val[index] = str.replace(/�/g, '');
+                        });
+                        
                         var dtCreationDate = '0000-00-00';
-                        var dtLast_job = '0000-00-00';
+                        
                         /// avoid first row contain Fields name        
                         if (i > 0) {
                             var deferred = $q.defer();
-                            if (val[3] == "�")
-                                val[3] = '';
-                            if (val[9] == "�")
-                                val[9] = '';
-                            if (val[11] == "�")
-                                val[11] = '';
-                            if (val[15]) {
-                                var dt = (val[15]).split('.')
+                            
+                            val[i] = val[i].replace(/�/g, '');
+                            console.log('val[i]', val[i])
+                            
+                            if (val[3]) {
+                                var dt = (val[3]).split('.')
                                 if (dt.length == 3) {
                                     var dtCreationDate = dt[2] + '-' + dt[1] + '-' + dt[0]
                                 }
                             }
-                            if (val[16]) {
-                                var last_dt = (val[16]).split('.')
-                                if (dt.length == 3) {
-                                    var dtLast_job = last_dt[2] + '-' + last_dt[1] + '-' + last_dt[0]
-                                }
+                            
+                            var email = '';
+                            if(val[1]){
+                                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val[1])
+                                if(isEmail)
+                                email = val[1]
                             }
-                            var email1 = '';
-                            var email2 = '';
-                            if (val[10]) {
-                                var all_eml = (val[10]).split(';')
-                                if (all_eml.length > 1) {
-                                    var email1 = all_eml[0];
-                                    var email2 = all_eml[1];
-                                } else {
-                                    var email1 = all_eml[0] ? all_eml[0] : '';
-                                }
-                            }
-                            var address1 = [];
-    
+                            
                             var address1 = [
-                                { "id": "address1_street_number", "value": val[7] ? val[7] : '' },
+                                { "id": "address1_street_number", "value": val[4] ? val[4] : '' },
+                                { "id": "address1_country", "value": val[7] ? val[7] : '' },
+                                { "id": "address1_administrative_area_level_1", "value": '' },
                                 { "id": "address1_locality", "value": val[5] ? val[5] : '' },
-                                { "id": "address1_administrative_area_level_1", "value": val[2] ? val[2] : '' },
-                                { "id": "address1_country", "value": val[4] ? val[4] : '' },
-                                { "id": "address1_postal_code", "value": val[6] ? val[6] : '' }
+                                { "id": "address1_postal_code", "value": val[6] ? val[6].replace(/[^\w\s]/g, '') : '' },
+                                {"id":"address1_vTimezone","value":""}
                             ]
                             var cTitlePhone = '';
                             var cFlagCode = '';
                             var countryCode = '';
-                            if (val[4]) {
-                                var countryPhoneArr = $scope.cpuntryMobilecodeList.filter(function (el) {
-                                    return el.name == val[4];
-                                });
-                                if (countryPhoneArr.length > 0) {
-                                    cFlagCode = 'iti-flag ' + countryPhoneArr[0].code
-                                    cTitlePhone = countryPhoneArr[0].name + ' : ' + '+' + countryPhoneArr[0].phone
-                                    countryCode = countryPhoneArr[0].code
-                                }
+                            var countryObj = {   
+                                "countryTitle":"United States: +1",
+                                "countryFlagClass":"iti-flag us",
+                                "mobileNumber":''
                             }
-                            var countryObj = {
-                                "countryTitle": cTitlePhone,
-                                "countryFlagClass": cFlagCode,
-                                "mobileNumber": val[9] ? val[9] : ''
-                            }
-                            //console.table(countryObj);
-                            var paymentObj = {
-                                "tax_id": val[13],
-                                "country_code": countryCode,
-                                "tax_type": val[21]
-                            }
+                            
                             //filterByReference - find specialization value exist in main array.
                             var specializationArr = '';
                             if (val[30]) {
@@ -38085,62 +38073,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //if(specializationArr.length>0)
                                 specializationArr = specializationArr.length > 0 ? specializationArr.toString() : '';
                             }
-                            var hardwareVal = '';
-                            if (val[26]) {
-                                var hardArr2 = (val[26]).split(',');
-                                deferred.resolve(filterByReferenceProp($scope.propList, hardArr2));
-                                var hardwareVal = filterByReferenceProp($scope.propList, hardArr2);
-                                hardwareVal = hardwareVal.length > 0 ? hardwareVal.toString() : '';
+                            
+                            const clientTax = {
+                                "tax_id": val[12] ? val[12] : '',
+                                "country_code": ""
                             }
-                            var softwareVal = '';
-                            if (val[29]) {
-                                var softArr2 = (val[29]).split(',');
-                                deferred.resolve(filterByReferenceProp($scope.propList, softArr2));
-                                var softwareVal = filterByReferenceProp($scope.propList, softArr2);
-                                softwareVal = softwareVal.length > 0 ? softwareVal.toString() : '';
-                            }
-                            var catToolsVal = '';
-                            if (val[22]) {
-                                var catToolsArr2 = (val[22]).split(',');
-                                deferred.resolve(filterByReferenceProp($scope.propList, catToolsArr2));
-                                var catToolsVal = filterByReferenceProp($scope.propList, catToolsArr2);
-                                catToolsVal = catToolsVal.length > 0 ? catToolsVal.toString() : '';
-                            }
-                            var firstName = val[8];
-                            var lastName = '';
-                            if (val[8]) {
-                                var uName = val[8].split(' ');
-                                if (uName.length == 2) {
-                                    firstName = uName[0];
-                                    lastName = uName[1];
-                                }
-                            }
+                            
                             var obj = {
-                                'vUserName': val[8],
-                                'vFirstName': firstName,
-                                'vLastName': lastName,
-                                'vEmailAddress': email1,
-                                'vSecondaryEmailAddress': email2,
-                                'iMobile': JSON.stringify(countryObj),
-                                'vPhoneNumber': val[9],
-                                'vWebsite': val[3],
+                                'vUserName': val[0],
+                                'vPhone': JSON.stringify(countryObj),
+                                'vWebsite': val[13],
+                                'vEmailAddress': val[1] ? val[1] : '',
                                 'address1Detail': JSON.stringify(address1),
-                                'tmemo': val[11],
-                                'activation_status': val[12] === 'Active' ? 1 : 0,
-                                'vTimeZoneCity': val[5],
-                                'vAddress1': val[7],
-                                'vAddress2': val[1],
-                                'iGender': 1,
-                                'freelancer': 'translation',
-                                'specialization': specializationArr,
-                                'vSalesId': val[13],
-                                'created_by_name': val[18],
+                                'vAddress1': val[4],
+                                'tmemo': val[8],
+                                'vStatus': 8,
                                 'dtCreationDate': dtCreationDate,
-                                'dtLast_job': dtLast_job,
-                                'propSoftware': softwareVal,
-                                'propHardware': hardwareVal,
-                                'propCatTools': catToolsVal,
-                                'vpaymentInfo': JSON.stringify(paymentObj),
+                                'vCenterid': $scope.vCenterid,
+                                'vCodeRights': $scope.vCodeRights,
+                                'client_currency': 'EUR,€',
+                                'invoice_no_of_days': val[2],
+                                'created_id': $window.localStorage.getItem("session_iUserId"),
+                                'clientTaxInfo': JSON.stringify(clientTax),
                             };
                             $scope.csvDataInsrt.push(obj);
     
@@ -38163,11 +38117,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $('#file-input').val('');
                                 }, 2000)
     
-    
                             }
-    
                         }
-    
                     });
                     
                     //$scope.csvData = [];      
@@ -38176,14 +38127,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         };
     
         $scope.saveClientData = function (formId) {
+            console.log('$scope.csvDataInsrt',$scope.csvDataInsrt)
+            
+            console.log('$scope.csvFieds', $scope.csvFieds)
             //if (angular.element("#" + formId).valid()) {
-            if($scope.csvFieds.length > 30){
-                if($scope.csvFieds[0] == 'Plunet Number' && $scope.csvFieds[2] == 'State' && $scope.csvFieds[3] == 'Website' && $scope.csvFieds[4] == 'Country' && $scope.csvFieds[5] == 'City' && $scope.csvFieds[6] == 'ZIP Code'){
-                    // rest.path = 'savelinguistCsvProfile';
-                    // rest.post($scope.csvDataInsrt).success(function (data) {
-                    //     notification('Record inserted successfully.', 'success');
-                    //     $route.reload();
-                    // }).error(errorCallback);
+            if($scope.csvFieds.length === 14){
+                if($scope.csvFieds[0] == 'Name' && $scope.csvFieds[1] == 'E-mail' ){
+                    rest.path = 'saveClientCsvProfile';
+                    rest.post($scope.csvDataInsrt).success(function (data) {
+                        notification('Record inserted successfully.', 'success');
+                        $route.reload();
+                    }).error(errorCallback);
                 }else{
                     notification('Necessary fields are missing. or Format is not proper.', 'warning');
                 }

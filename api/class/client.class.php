@@ -781,4 +781,91 @@ array(
         return $data;
     }
 
+    public function getClientName($filedName, $filedvalue) {
+        $this->_db->where("vUserName", $filedvalue);
+        return $results = $this->_db->getOne('tms_client');
+    }
+
+    // Save import csv data to client profile
+    public function saveClientCsvProfiles($infoData) {
+        
+        foreach ($infoData as $info) {
+            if (isset($info['vUserName']) && isset($info['vUserName']) ) {
+                $isClientExist = self::getClientName('vUserName', $info['vUserName']);
+                if(! $isClientExist){
+            
+                    // print_r($isClientExist);
+                    // print_r($info);
+                    // exit;
+                    $clientPaymentInfo = isset($info['clientTaxInfo']) ? $info['clientTaxInfo'] : '';
+                    if(isset($info['clientTaxInfo']) )
+                        unset($info ['clientTaxInfo']);
+
+                    //$info['dtCreationDate'] = $info['dtCreationDate'];
+                    $info ['dtCreatedDate'] = date('Y-m-d H:i:s');
+                    $info ['dtUpdatedDate'] = date('Y-m-d H:i:s');
+                    
+                    $id = $this->_db->insert('tms_client', $info);
+                    if ($id) {
+                        if (isset($info['vEmailAddress']) && isset($info['vEmailAddress']) ) {
+                            
+                            $dataContact['vEmail'] = $info['vEmailAddress'];
+                            $dataContact['vFirstName'] = $info['vUserName'];
+                            $dataContact['iClientId'] = $id;
+                            $dataContact['vActive'] = 'active';
+                            $dataContact['vPhone'] = '{"countryTitle":"United States: +1","countryFlagClass":"iti-flag us","mobileNumber":""}';
+                            $dataContact['dtCreatedDate'] = date('Y-m-d H:i:s');
+                            $dataContact['dtUpdatedDate'] = date('Y-m-d H:i:s');
+                            
+                            $clientContactId = $this->_db->insert('tms_client_contact', $dataContact);
+                        }
+                        
+                        $dataPay['iClientId'] = $id;
+                        $dataPay['iType'] = 2; // 2 for client
+                        $dataPay['vPaymentInfo'] = $clientPaymentInfo;
+                        //$dataPay['vBankInfo'] = '{"payment_method":"Bank Transfer","currency_code":"EUR"}';
+                        $dataPay['dtCreatedDate'] = date('Y-m-d H:i:s');
+                        $dataPay['dtUpdatedDate'] = date('Y-m-d H:i:s');
+                        $paymentInfoId = $this->_db->insert('tms_payment', $dataPay);
+
+                        $dataFl['created_date'] = date('Y-m-d H:i:s');
+                        $dataFl['updated_date'] = date('Y-m-d H:i:s');
+                        //$dataFl['name'] = 'cd' . str_pad($info['vClientNumber'], 4);
+                        $info['vClientNumber'] = 10;
+                        $dataFl['name'] = str_replace(' ','',strtolower($info['vUserName'])).'-'.str_pad($info['vClientNumber'],3,"0", STR_PAD_LEFT);
+                        $dataFl['client_id'] = $id;
+                        $FileManagerId = $this->_db->insert('tms_filemanager', $dataFl);
+                        
+                        //Default Folder Added When New Direct Client Is Added.
+                        if($FileManagerId){
+                            $FolderNames = array('Data','Projects','Invoice');
+                            foreach($FolderNames As $FolderName) {
+                                $in['name'] = $FolderName;
+                                $in['parent_id'] = $FileManagerId;
+                                $in['is_default_folder'] = 1;
+                                $in['created_date'] = date('Y-m-d H:i:s');
+                                $in['updated_date'] = date('Y-m-d H:i:s');
+                                $DefaultFolderInsert = $this->_db->insert('tms_filemanager',$in);
+                            }
+                            $return ['status'] = 200;
+                            $return ['msg'] = 'Inserted Successfully.';
+                            $return ['iClientId'] = $id;
+                            $return ['clientData'] = $this->getClientId($id);
+                        }
+                    } else {
+                        $return ['status'] = 422;
+                        $return ['msg'] = 'Not inserted.';
+                    }
+                }    
+            }
+         
+            $return ['status'] = 200;
+            $return ['msg'] = 'inserted successfully.';
+        }
+
+        return $return;  
+    }
+
+    
+
 }

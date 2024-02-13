@@ -659,6 +659,12 @@ $app->get('/clientProfileNumber/:id','authenticate', function ($id) use($app) {
     $result = $client->clientProfileNumberGet($id);
     echoResponse(200, $result);
 });
+$app->post('/saveClientCsvProfile', 'authenticate',function () use($app) {
+    $client = new client ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $client->saveClientCsvProfiles($data);
+    echoResponse($result ['status'], $result);
+});
 // -----------------client contact section -----------------//
 $app->get('/editcontact/:id','authenticate', function ($id) use($app) {
     $contact = new contact ();
