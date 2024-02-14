@@ -801,10 +801,7 @@ array(
                 $vClientNumber = self::clientProfileNumberGet(1);
                 
                 if(! $isClientExist){
-            
-                    // print_r($isClientExist);
-                    // print_r($info);
-                    // exit;
+
                     $clientPaymentInfo = isset($info['clientTaxInfo']) ? $info['clientTaxInfo'] : '';
                     if(isset($info['clientTaxInfo']) )
                         unset($info ['clientTaxInfo']);

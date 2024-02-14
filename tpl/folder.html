@@ -412,7 +412,7 @@ table {
                
                <!-- TEXT and other type -->
                <file extension="txt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" 
-                     ng-if="fileExtensionExist(display.ext)" class="txt" context-menu="menuOptionsFiles"><p>
+                     ng-if="! fileExtensionExist(display.ext) && display.f_id == '1' " class="txt" context-menu="menuOptionsFiles"><p>
                {{display.name}}</p></file>
 
                <a id="download{{display.fmanager_id}}" style="display:none;" href="uploads/fileupload/{{display.name}}">Download</a>

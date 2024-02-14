@@ -514,7 +514,7 @@
 
                        <!-- TEXT and other extension -->
                        <file extension="txt" id="{{category.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" ng-dblclick="addToDownload(display.name)" 
-                             ng-if="fileExtensionExist(category.ext)" class="txt" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>
+                             ng-if="! fileExtensionExist(category.ext) && category.f_id=='1' " class="txt" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>
                        {{category.name }}</p></file>
 
                         <ul class="folderul f1 ftr{{display.fmanager_id}} nch{{category.parent_id}}{{category.fmanager_id}}" style="display:none;">
@@ -630,7 +630,7 @@
 
           <!-- TEXT and other File extension -->
           <file extension="txt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name)" ng-if="fileExtensionExist(display.ext)" class="txt" context-menu="menuOptionsFiles" menuoptionIdName="0">
+            ng-dblclick="addToDownload(display.name)" ng-if="! fileExtensionExist(display.ext) && display.f_id=='1' " class="txt" context-menu="menuOptionsFiles" menuoptionIdName="0">
             <p>
               {{display.name}}</p>
           </file>

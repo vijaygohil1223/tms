@@ -5159,11 +5159,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statussource = $routeParams.id;
     var FilesLength;
 
-
     console.log('$rootScope.jobId', $routeParams.jobId)
-
     // check file extesion
-    $scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
+    //$scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
+    $scope.fileExtensionList = ['pdf','JPEG','jpeg','jpg','png','bmp','gif','jfif','svg','webp','zip','gz','rar','tar','doc','docx','msg','xlsx','xlsm','xls','csv','ppt','pptx','mp3','wav','wma','wmv','avi','3gp','mov','vob','exe'];
     $scope.fileExtensionExist = function(extension) {
         return $scope.fileExtensionList.indexOf(extension) !== -1;
     };
@@ -6424,8 +6423,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.scoopIdFileManager = $window.localStorage.getItem("scoopIdFileManager");
     
     $scope.copyfile = [];
+    //$scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlppx','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
     //$scope.fileExtensionList = [ "doc", "docx", "pdf", "csv", "xls", "xlsx", "xlsm", "ppt", "pptx", "jpg", "jpeg", "png", "gif", "svg", "webp", "jfif", "bmp", "mp3", "mp4", "avi", "mov", "wmv", "vob", "zip", "rar", "tar", "gz", "exe" ];
-    $scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
+    // excluded this file format add in file tag 
+    $scope.fileExtensionList = ['pdf','JPEG','jpeg','jpg','png','bmp','gif','jfif','svg','webp','zip','gz','rar','tar','doc','docx','msg','xlsx','xlsm','xls','csv','ppt','pptx','mp3','wav','wma','wmv','avi','3gp','mov','vob','exe'];
     $scope.fileExtensionExist = function(extension) {
         return $scope.fileExtensionList.indexOf(extension) !== -1;
     };
