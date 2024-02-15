@@ -136,7 +136,7 @@ class users {
             $data = $this->_db->rawQuery("SELECT tu.*,tut.vType,tup.position_name,tus.status_name FROM tms_users As tu LEFT JOIN tms_user_type As tut on tu.vResourceType = tut.iTypeId INNER JOIN tms_user_position As tup ON tup.position_id = tu.vResourcePosition INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
         }else{
             //$data = $this->_db->rawQuery("SELECT tu.*,tus.status_name FROM tms_users As tu  INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type && activation_status = 1");
-            $data = $this->_db->rawQuery("SELECT tu.*,tus.status_name FROM tms_users As tu  INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
+            $data = $this->_db->rawQuery("SELECT tu.*, concat(tu.vFirstName, ' ', tu.vLastName) as vUserFullName, tus.status_name FROM tms_users As tu  INNER JOIN tms_user_status As tus ON tus.status_id = tu.eUserStatus WHERE iFkUserTypeId = $type ");
         }
         
         $result['data'] = $data;

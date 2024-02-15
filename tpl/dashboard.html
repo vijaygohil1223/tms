@@ -533,7 +533,7 @@ td { font-size: 11px; } */
                                     <i class="fa fa-user fa-stack-1x text-white"></i>
                                   </span>
                                   <div class="media-body">
-                                    <a href="" class="h5">{{order.contactName}}</a>
+                                    <a href="" class="h5">{{order.contactName}} </a>
                                   </div>
                                 </article>
                                 <br />
@@ -792,13 +792,12 @@ td { font-size: 11px; } */
                       <ul class="scrollbar list-group list-group-lg m-b-none" id="scrollStyle" style="height: 250px">
                         <li class="list-group-item " ng-repeat="absentList in absentLngstlist"
                           ng-click="absentPopup(absentList.iUserId)" style="cursor: pointer;">
-                          <span ng-bind="absentList.vUserName"></span>
+                          <span ng-bind="absentList.vUserFullName"></span>
                         </li>
                         <li class="list-group-item" ng-if="!absentLngstlist.length">No absences linguist</li>
                       </ul>
                       <div class="panel-footer" style="background: #e6e9ef">
-                        <span class="pull-right badge bg-info" ng-if="absentLngstlist"
-                          ng-bind="absentLngstlist.length"></span>
+                        <span class="pull-right badge bg-info" ng-if="absentLngstlist" ng-bind="absentLngstlist.length"></span>
                         <span class="pull-right badge bg-info" ng-if="!absentLngstlist"> 0 </span>
                         <span>&nbsp;</span>
                       </div>

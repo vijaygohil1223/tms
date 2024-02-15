@@ -3497,7 +3497,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data) {
                 var absentLngstlist = data.data;
                 let currentDatestr = new Date(); 
-
                 currentDatestr = currentDatestr.toISOString().split('T')[0];
                 let cDate1 = new Date();
                 let cDate = cDate1.setHours(0, 0, 0, 0);
@@ -3539,7 +3538,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             element = div.innerHTML += "<li> <i class='fa fa-calendar'></i> &nbsp;&nbsp;"+ dateFrom + ' To ' + dateTo +"</li>";
         }
         var dialog = bootbox.dialog({
-            title: 'Absent Linguist : '+ absentRec[0].vUserName,
+            title: 'Absent Linguist : '+ absentRec[0].vUserFullName,
             message: "<div id='absent'>Absent On Date.</div> <br/>" + element,
             size: 'medium',
             buttons: {
@@ -20234,7 +20233,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.routeOrderID = $routeParams.id ? $routeParams.id : $window.localStorage.orderID;
     $scope.orderUrlID = $scope.routeOrderID ? '/'+$scope.routeOrderID : '';
     
-    
     $window.localStorage.jobitStatus = " ";
     $scope.EditedBy = $window.localStorage.getItem('sessionProjectEditedBy');
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
@@ -21455,17 +21453,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $scope.custPriceAll().then((prData) => {
                         let customerpriceFltr =  $scope.customerpriceAll ;
-                        //angular.element('#currency'+ val.itemId).text('Eur');
+                        //angular.element('#currency'+ val.itemId).text('EUR');
                         customerpriceFltr.filter( (el) => {
                             if(val.project_pricelist){
                                 if(el.price_list_id == val.project_pricelist){
-                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
+                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'EUR';
                                     //angular.element('#currency'+ val.itemId).text(price_currency);
                                     return el;
                                 }
                             }else{
                                 if(el.resource_id == data.client){
-                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
+                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'EUR';
                                     //angular.element('#currency'+ val.itemId).text(price_currency);
                                     return el;
                                 }
