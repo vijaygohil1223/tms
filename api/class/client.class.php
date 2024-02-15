@@ -704,8 +704,9 @@ array(
             $id['vStatus'] = $data['status_name'];
         }
         if(isset($id['vCodeRights']) && $id['vCodeRights']){
-            $substr = substr($id["vCodeRights"], 0, 3);
-            $business_unit	 = $this->_db->rawQuery("SELECT name FROM tms_centers WHERE abbrivation = '".$substr."'");
+            //$substr = substr($id["vCodeRights"], 0, 3);
+            //$business_unit	 = $this->_db->rawQuery("SELECT name FROM tms_centers WHERE abbrivation = '".$substr."'");
+            $business_unit	 = $this->_db->rawQuery("SELECT name FROM tms_centers WHERE center_id = '".$id['vCenterid']."'");
             if(count($business_unit)){
                 $id['vCodeRights_name'] = $business_unit[0]['name'];
             }else{

@@ -19394,6 +19394,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.getContact = function (id, element) {
+        console.log('id', id)
         if(id && id != undefined){
             $window.localStorage.setItem('directClientIdStore', id);
             $routeParams.id = id;
@@ -38032,8 +38033,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if (i > 0) {
                             var deferred = $q.defer();
                             
-                            val[i] = val[i].replace(/�/g, '');
-                            console.log('val[i]', val[i])
+                            val[i] = val[i] ? val[i].replace(/�/g, '') : val[i];
                             
                             if (val[3]) {
                                 var dt = (val[3]).split('.')
@@ -38044,7 +38044,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             
                             var email = '';
                             if(val[1]){
-                                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val[1])
+                                const valEmail = val[1].trim().split(/[; ]/)[0]
+                                const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valEmail)
                                 if(isEmail)
                                 email = val[1]
                             }
@@ -38068,24 +38069,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             
                             //filterByReference - find specialization value exist in main array.
                             var specializationArr = '';
-                            if (val[30]) {
-                                var spclArr2 = (val[30]).split(',');
-                                deferred.resolve(filterByReference($scope.specializeList, spclArr2));
-                                var specializationArr = filterByReference($scope.specializeList, spclArr2);
-                                //if(specializationArr.length>0)
-                                specializationArr = specializationArr.length > 0 ? specializationArr.toString() : '';
-                            }
-                            
+                                                        
                             const clientTax = {
                                 "tax_id": val[12] ? val[12] : '',
                                 "country_code": ""
                             }
                             
                             var obj = {
-                                'vUserName': val[0],
+                                'vUserName': val[0].replace(/\*/g, ''),
                                 'vPhone': JSON.stringify(countryObj),
                                 'vWebsite': val[13],
-                                'vEmailAddress': val[1] ? val[1] : '',
+                                'vEmailAddress': val[1] ? val[1].trim().split(/[; ]/)[0] : '',
                                 'address1Detail': JSON.stringify(address1),
                                 'vAddress1': val[4],
                                 'tmemo': val[8],
@@ -38127,11 +38121,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             });
         };
-    
+        
+        $scope.btnDisabled = false;
         $scope.saveClientData = function (formId) {
-            console.log('$scope.csvDataInsrt',$scope.csvDataInsrt)
-            
-            console.log('$scope.csvFieds', $scope.csvFieds)
+            $scope.btnDisabled = true;
             //if (angular.element("#" + formId).valid()) {
             if($scope.csvFieds.length === 14){
                 if($scope.csvFieds[0] == 'Name' && $scope.csvFieds[1] == 'E-mail' ){
@@ -38139,12 +38132,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.post($scope.csvDataInsrt).success(function (data) {
                         notification('Record inserted successfully.', 'success');
                         $route.reload();
-                    }).error(errorCallback);
+                    }).error(function(){
+                        $scope.btnDisabled = false;
+                    });
                 }else{
                     notification('Necessary fields are missing. or Format is not proper.', 'warning');
+                    $scope.btnDisabled = false;
                 }
             }else{
                 notification('Csv Format is not proper', 'warning');
+                $scope.btnDisabled = false;
             }    
             //}
         };

@@ -284,8 +284,25 @@ class order {
 
     public function orderdataget($id){
         if(isset($id) && $id != 'undefined' ){
-    	 $this->_db->where('iClientId',$id);
-    	 $data = $this->_db->getone('tms_client');
+            $this->_db->where('iClientId',$id);
+            $data = $this->_db->getone('tms_client');
+            if(count($data) && isset($data['vCenterid']) && $data['vCenterid'] !='' ){
+                $this->_db->where('center_id',$data['vCenterid']);
+                $business_unit = $this->_db->getone('tms_centers');
+                if(count($business_unit)){
+                    if($business_unit['order_number'] != ''){
+                        $bzJson = json_decode($business_unit['order_number'], true);
+                        if(count($bzJson) > 0 && isset($bzJson[0]['value']) && $bzJson[0]['value'] != '' ){
+                            $data['vCodeRights'] = str_replace('_', "", $bzJson[0]['value']);
+                        }else{
+                            $data['vCodeRights'] = $business_unit['abbrivation'];
+                        }
+                    }else{
+                        $data['vCodeRights'] = $business_unit['abbrivation'];
+                    }
+                }
+                
+            }
     	 return $data['vCodeRights'];
         }
     }
