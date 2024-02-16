@@ -2512,16 +2512,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                         $scope.fillDashboardTabFn(3, $scope.projectsQaready, $scope.projectsQaReadyCount) 
                     }
-                    // In Progress - Ongoing
-                    if (val.itemStatusId == "2"  && checkAllComplete==false)  {
-                        val.progrss_precentage = 25;
-                        val.projectstatus_class = 'projectstatus_inprogress';
-                        val.projectstatus_color = '#fec106';
-                        $scope.projectsInProgress.push(val);
-                        $scope.projectsInprogressCount++;
+                    // // In Progress - Ongoing
+                    // if (val.itemStatusId == "2"  && checkAllComplete==false)  {
+                    //     val.progrss_precentage = 25;
+                    //     val.projectstatus_class = 'projectstatus_inprogress';
+                    //     val.projectstatus_color = '#fec106';
+                    //     $scope.projectsInProgress.push(val);
+                    //     $scope.projectsInprogressCount++;
 
-                        $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
-                    }    
+                    //     $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
+                    // }    
+                }
+                // In Progress - Ongoing (as per new changes)
+                if ( ! ([4,5,6,7,9].includes(val.itemStatusId)) )  {
+                    val.progrss_precentage = 25;
+                    val.projectstatus_class = 'projectstatus_inprogress';
+                    val.projectstatus_color = '#fec106';
+                    $scope.projectsInProgress.push(val);
+                    $scope.projectsInprogressCount++;
+
+                    $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
                 }
                 // PM Ready
                 if (val.itemStatusId == "12") {
