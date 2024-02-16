@@ -798,7 +798,10 @@ array(
         
         foreach ($infoData as $info) {
             if (isset($info['vUserName']) && isset($info['vUserName']) ) {
-                $isClientExist = self::getClientName('vUserName', $info['vUserName']);
+                //$isClientExist = self::getClientName('vUserName', $info['vUserName']);
+                $this->_db->where("vUserName", $info['vUserName']);
+                $this->_db->where("vEmailAddress", $info['vEmailAddress']);
+                $isClientExist = $this->_db->getOne('tms_client');
                 $vClientNumber = self::clientProfileNumberGet(1);
                 
                 if(! $isClientExist){

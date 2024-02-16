@@ -36,7 +36,7 @@
                             </div>
                             <div class="col-md-12 pull-right"><button class="btn btn-info" ng-click="saveClientData(csvClient-form)" ng-disabled="btnDisabled"> Save Profile Data </button></div>
                             <div class="col-md-12">
-                                <p style="background-color: #ffffcc!important; padding: 8px; margin-top: 15px;"> * If the same record already exists client list, it will not be inserted.</p>
+                                <p style="background-color: #ffffcc!important; padding: 8px; margin-top: 15px;"> * If the same record already exists in the client list, it will not be inserted.</p>
                             </div>
                         </form>
                     </div>
@@ -44,17 +44,19 @@
                 <div class="panel panel-default"> 
                     <div class="panel-body">   
                         <div class="table-responsive" style="width: 1100px;">
-                            <table class="table table-striped b-b" datatable="ng" dt-options="dtOptions" style="white-space: nowrap;">
+                            <table class="table table-striped  " datatable="ng" dt-options="dtOptions">
                                 <thead >
                                     <tr>
                                         <th>#</th>
-                                        <th ng-repeat="csv in csvFieds">{{ csv }}</th>
+                                        <th ng-repeat="csv in csvFieds" style="word-wrap: normal;">{{ csv }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="csvdt in csvData" ng-if="$index > 0">
                                         <td>{{$index}}</td>
-                                        <td ng-repeat="csvval in csvdt track by $index">{{ csvval }}</td>
+                                        <td ng-repeat="csvval in csvdt track by $index"> 
+                                            <span >{{ csvval }}</span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
