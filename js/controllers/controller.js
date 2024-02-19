@@ -37926,11 +37926,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //debugger;
         $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
-        $scope.getWidth = function(id) {
-            var containerWidth = document.getElementById(id).offsetWidth;
-            console.log('containerWidth', containerWidth)
-            return containerWidth + 'px';
-        };
+        setTimeout( () =>{
+            $scope.getWidth = function(id) {
+                var containerWidth = document.getElementById(id).offsetWidth;
+                return containerWidth + 'px';
+            };
+        }, 2000)
 
         const filterByReference = (arr1, arr2) => {
             let resIds = [];
