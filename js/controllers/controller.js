@@ -3212,8 +3212,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.downloadFiles = function (jobID, jobNumber) {
-        console.log('jobNumber', jobNumber)
-        console.log('jobID', jobID)
         var tmsfolder = jobNumber !== '' ? jobNumber : 'tms';
         if (jobID != undefined) {
             $scope.showLoder = true;
@@ -37927,7 +37925,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('csvClientProfileController', function ($scope, $q, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder) {
         //debugger;
         $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
-    
+
+        $scope.getWidth = function(id) {
+            var containerWidth = document.getElementById(id).offsetWidth;
+            console.log('containerWidth', containerWidth)
+            return containerWidth + 'px';
+        };
+
         const filterByReference = (arr1, arr2) => {
             let resIds = [];
             let res = [];
@@ -38052,11 +38056,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                             
                             var email = '';
+                            var multipleEmail = [];
                             if(val[1]){
                                 const valEmail = val[1].trim().split(/[; ]/)[0]
                                 const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valEmail)
                                 if(isEmail)
-                                email = val[1]
+                                    email = valEmail
+
+                                const allEmail = val[1].trim().split(/[; ]/)
+                                const allValid = allEmail.filter(email2 => {
+                                    const isEmailCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email2);
+                                    if(isEmailCheck){
+                                        multipleEmail.push(email2)        
+                                        console.log('email-2', email2)
+                                    }
+
+                                });
+                                console.log('multipleEmail', multipleEmail)
                             }
                             
                             var address1 = [
@@ -38088,7 +38104,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 'vUserName': val[0].replace(/\*/g, ''),
                                 'vPhone': JSON.stringify(countryObj),
                                 'vWebsite': val[13],
-                                'vEmailAddress': val[1] ? val[1].trim().split(/[; ]/)[0] : '',
+                                'vEmailAddress': email,
+                                'clientContactvEmail': JSON.stringify(multipleEmail),
                                 'address1Detail': JSON.stringify(address1),
                                 'vAddress1': val[4],
                                 'tmemo': val[8],

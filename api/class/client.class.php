@@ -809,7 +809,13 @@ array(
                     $clientPaymentInfo = isset($info['clientTaxInfo']) ? $info['clientTaxInfo'] : '';
                     if(isset($info['clientTaxInfo']) )
                         unset($info ['clientTaxInfo']);
-                    
+
+                    $multipleContactEmail = [];
+                    if(isset($info['clientContactvEmail']) ){
+                        $multipleContactEmail =  json_decode($info['clientContactvEmail'], true);
+                        unset($info ['clientContactvEmail']);
+                    }
+                                        
                     $vClientNumber_ = str_pad($vClientNumber, 3, "0", STR_PAD_LEFT);                        
                     $info ['vClientNumber'] = $vClientNumber;
                     $info ['tPoInfo'] = $info['vUserName'].'-'.$vClientNumber_;
@@ -819,17 +825,18 @@ array(
                     
                     $id = $this->_db->insert('tms_client', $info);
                     if ($id) {
-                        if (isset($info['vEmailAddress']) && isset($info['vEmailAddress']) ) {
-                            
-                            $dataContact['vEmail'] = $info['vEmailAddress'];
-                            $dataContact['vFirstName'] = $info['vUserName'];
-                            $dataContact['iClientId'] = $id;
-                            $dataContact['vActive'] = 'active';
-                            $dataContact['vPhone'] = '{"countryTitle":"United States: +1","countryFlagClass":"iti-flag us","mobileNumber":""}';
-                            $dataContact['dtCreatedDate'] = date('Y-m-d H:i:s');
-                            $dataContact['dtUpdatedDate'] = date('Y-m-d H:i:s');
-                            
-                            $clientContactId = $this->_db->insert('tms_client_contact', $dataContact);
+                        if (isset($info['vEmailAddress']) && $info['vEmailAddress'] !='' && count($multipleContactEmail)>0 ) {
+                            foreach ($multipleContactEmail as $contactEmail) {
+                                $dataContact['vEmail'] = $contactEmail;
+                                $dataContact['vFirstName'] = $info['vUserName'];
+                                $dataContact['iClientId'] = $id;
+                                $dataContact['vActive'] = 'active';
+                                $dataContact['vPhone'] = '{"countryTitle":"United States: +1","countryFlagClass":"iti-flag us","mobileNumber":""}';
+                                $dataContact['dtCreatedDate'] = date('Y-m-d H:i:s');
+                                $dataContact['dtUpdatedDate'] = date('Y-m-d H:i:s');
+                                
+                                $clientContactId = $this->_db->insert('tms_client_contact', $dataContact);
+                            }
                         }
                         
                         $dataPay['iClientId'] = $id;
