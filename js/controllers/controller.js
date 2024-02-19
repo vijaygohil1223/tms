@@ -3211,9 +3211,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
-    $scope.downloadFiles = function (jobID) {
+    $scope.downloadFiles = function (jobID, jobNumber) {
+        console.log('jobNumber', jobNumber)
         console.log('jobID', jobID)
-        var tmsfolder = 'tms';
+        var tmsfolder = jobNumber !== '' ? jobNumber : 'tms';
         if (jobID != undefined) {
             $scope.showLoder = true;
             rest.path = 'getfolderByjobid/' + jobID;

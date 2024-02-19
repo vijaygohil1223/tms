@@ -1178,7 +1178,7 @@ td { font-size: 11px; } */
                                       <td ng-if="highlightSearch == 'In_progress' || highlightSearch == 'All' " class="nowrap">
                                         <div ng-if="job.item_status != 'Ongoing' "> - </div>
                                         <div class="d-flex" ng-if="job.item_status == 'Ongoing' ">
-                                          <a ng-click="downloadFiles(job.job_summmeryId)">
+                                          <a ng-click="downloadFiles(job.job_summmeryId, job.poNumber)">
                                             <span class="btn btn-primary"> <i class="fa fa-download"></i> </span>
                                           </a>
                                           <a style="margin-left:15px" href="javascript:void(0)"
