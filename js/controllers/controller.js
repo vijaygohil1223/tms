@@ -20277,11 +20277,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.clientData = data;
             $timeout(function () {
                 if ($scope.clientData.client_currency) {
-                    $scope.ClientCurrency = $scope.clientData.client_currency.split(',')[1];
-                    $scope.ClientCurrencyName = $scope.clientData.client_currency.split(',')[0];
+                    $scope.ClientCurrency = $scope.clientData.client_currency.split(',').pop();
+                    console.log('$scope.ClientCurrency', $scope.ClientCurrency)
+                    $scope.ClientCurrencyName = $scope.clientData.client_currency.split(',')[0] ? $scope.clientData.client_currency.split(',')[0] : 'EUR' ;
                 }
                 angular.element('#crnt1Cur').text($scope.ClientCurrency);
-                angular.element('#currency').text($scope.ClientCurrencyName);
+                //angular.element('#currency').text($scope.ClientCurrencyName);
             }, 100);
         }).error(errorCallback);
     }
@@ -23741,6 +23742,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.jobsumResource = function (resourceName, jobSummeryId) {
         $window.localStorage.ResourceMsg = resourceName;
+        //$window.localStorage.ResourceMsg = resourceName;
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'tpl/jobresourcemsg.html',
@@ -28452,12 +28454,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
+    console.log('$window.localStorage.ResourceMsg', $window.localStorage.ResourceMsg)
+
     rest.path = 'jobResourceMsg/' + $window.localStorage.ResourceMsg;
     rest.get().success(function (data) {
+        console.log('data', data)
         $scope.cPersonMsg = data.data;
-        $scope.cPersonMsg.vUserName = data.data.vUserName;
+        $scope.cPersonMsg.vUserName = data.data.vFirstName + ' ' +data.data.vLastName;
+        //$scope.cPersonMsg.vUserName = data.data.vUserName;
         if ($rootScope.linguistJobmsg != 'linguistJobmsg')
-            $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
+            $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br></div>';
+            //$scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
+            // sign removed if needed please add above line
     }).error(errorCallback);
 
     $scope.ok = function (frmId, message) {

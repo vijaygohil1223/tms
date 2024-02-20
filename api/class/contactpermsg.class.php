@@ -651,10 +651,10 @@ class contactPerMsg {
             $message = " ";
         }
 
-        $body = "<p>" . $message . "</p>";
+        $body = "<div>" . $message . "</div>";
         //$body .= "<p>" . $emailsignData . "</p>";
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
-        $subject = "Information";
+        $subject = isset($data['data']['subject']) && $data['data']['subject'] != '' ? $data['data']['subject'] : "Information";
         $Username = $data['data']['vUserName'];
         $to = $data['data']['vEmailAddress'];
         
@@ -686,26 +686,30 @@ class contactPerMsg {
         }
 
         if(isset($result['status'])) {
+            $path = "../../uploads/attatchment/";
             if(isset($emailImageData)) {
                 $img = explode("/",$emailImageData);
                 $image = end($img);
                 if($img[0] != " ") {
-                    $path = "../../uploads/attatchment/";
-                    $images = glob($path.$image);
-                    if($images){
-                        //unlink($path.$image);
-                    }    
+                    // $images = glob($path.$image);
+                    // if($images){
+                    //     unlink($path.$image);
+                    // }
+                    // remove file from folder
+                    if($image)
+                        $removeImage = self::checkFileExistAndDelete($path.$image, true);    
                 }    
             }
             if(isset($encoded_content) && $encoded_content!='') {
                 $img = explode("/",$encoded_content);
                 $image = end($img);
                 if($img[0] != " ") {
-                    $path = "../../uploads/attatchment/";
-                    $images = glob($path.$image);
-                    if($image){
-                        unlink($path.$image);
-                    }    
+                    // $images = glob($path.$image);
+                    // if($image){
+                    //     unlink($path.$image);
+                    // }    
+                    if($image)
+                        $removeImage = self::checkFileExistAndDelete($path.$image, true);    
                 }       
             }
         }
@@ -759,20 +763,20 @@ class contactPerMsg {
         //     "rar" => "526172211A0700"
         // );
         $imagemimetypes =
-array(  
-    array('jpeg',   'FFD8',                 'image/jpeg',                                                                   ),
-    array('png',    '89504E470D0A1A0A',     'image/png',                                                                    ),
-    array('gif',    '474946',               'image/gif',                                                                 ),
-    array('bmp',    '424D',                 'image/bmp',                                                                             ),
-    array('tiff',   '4949',                 'image/tiff',                                                                             ),
-    array('zip',    '504B0304',             'application/zip',                                                                             ),
-    array('pdf',    '255044462D312E',       'application/pdf',                                                                             ),
-    array('text',   'EFBBBF',               'text/plain',                                                                   ),
-    array('rar',    '526172211A0700',       '',                                                                             ),
-    array('xlsx',   '504B030414000600',     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',            ),
-    array('docx',   '504B0506',     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',      ),
-    array('pptx',   '504B030414000600',     'application/vnd.openxmlformats-officedocument.presentationml.presentation',    ),
-);
+            array(  
+                array('jpeg',   'FFD8',                 'image/jpeg',                                                                   ),
+                array('png',    '89504E470D0A1A0A',     'image/png',                                                                    ),
+                array('gif',    '474946',               'image/gif',                                                                 ),
+                array('bmp',    '424D',                 'image/bmp',                                                                             ),
+                array('tiff',   '4949',                 'image/tiff',                                                                             ),
+                array('zip',    '504B0304',             'application/zip',                                                                             ),
+                array('pdf',    '255044462D312E',       'application/pdf',                                                                             ),
+                array('text',   'EFBBBF',               'text/plain',                                                                   ),
+                array('rar',    '526172211A0700',       '',                                                                             ),
+                array('xlsx',   '504B030414000600',     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',            ),
+                array('docx',   '504B0506',     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',      ),
+                array('pptx',   '504B030414000600',     'application/vnd.openxmlformats-officedocument.presentationml.presentation',    ),
+            );
         foreach ($imagemimetypes as $row) {
             $mime=$row[0];
             $hexbytes=$row[1];
@@ -789,5 +793,21 @@ array(
 
         return NULL;
     }
+    public static function checkFileExistAndDelete($filePath,$isDelete=true) {
+        $return = false;
+        if (file_exists($filePath)) {
+            // Attempt to delete the file
+            $return = true;
+            if($isDelete == true){
+                if (unlink($filePath)) {
+                    $return = true;
+                } else {
+                    $return = false; 
+                }
+            }
+        }
+        return $return;
+    }
+
 }
 ?>
