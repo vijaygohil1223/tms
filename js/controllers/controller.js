@@ -29761,6 +29761,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getAllInvoiceByUserId/save/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
+            console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 let paid_date = $filter('globalDtFormat')(val.paid_date);
@@ -29771,6 +29772,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
                 var InDuedate = new Date(invoice_duedate); 
+                
+                val.invoice_number = val.custom_invoice_no && val.custom_invoice_no !== '' ? val.custom_invoice_no : val.invoice_number;
                 
                 val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
                 val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
@@ -32193,7 +32196,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     })
                     $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0];
-                    $scope.invoiceNoPrefix = $scope.invoicesetInfoData.invoiceNoPrefix
+                    //$scope.invoiceNoPrefix = $scope.invoicesetInfoData.invoiceNoPrefix
+                    $scope.invoiceNoPrefix = ''; // default prefix blank
 
                     $scope.invoiceDetail.invoiceNumber = $scope.invoiceNoPrefix + pad($scope.invoiceDetail.invoiceCount + 1, 6);
                     $scope.invoiceDetail.invoice_number = $scope.invoiceDetail.invoiceNumber;
