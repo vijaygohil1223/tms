@@ -37,6 +37,8 @@
                     ng-click="sendRemiderinvoice(invoiceDetail.invoice_number)">Send Reminder</a> -->
                 <a href="" class="btn btn-sm btn-info btnSave pull-right" ng-show="reminderBtnHideShow"
                     ng-click="sendInvoiceEmail('invoice_reminder',invoiceDetail.invoice_number)">Send Reminder</a>    
+                <a href="" class="btn btn-sm btn-info pull-right" style="margin-left: 10px;"
+                    ng-click="resourceInvoiceFileDn(invoiceDetail.resourceInvoiceFileName)">Resource File &nbsp;<i class="fa fa-download"> </i> </a>
                 <a href="" class="btn btn-sm btn-info pull-right"
                     ng-click="printIt(invoiceDetail.invoice_number)">Download</a>
                 <a ng-show="userRight==1" href="javascript:history.back()" class="btn btn-sm btn-info pull-right"

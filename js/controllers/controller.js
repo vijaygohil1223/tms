@@ -16324,6 +16324,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
+            console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 //let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
@@ -16336,7 +16337,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
                 val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
-                
+                val.invoice_number = val.custom_invoice_no && val.custom_invoice_no !== '' ? val.custom_invoice_no : val.invoice_number;
+
                 $scope.allInvcData.push(val);
                 if (val.invoice_status == 'Open') {
                     val.invoice_status = 'Waiting on approval'; // status open = Waiting on approval
@@ -18056,12 +18058,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.taxValue = amountTaxRate;
             $scope.taxPercentage = taxRate;
 
-            $scope.taxValue2 = $filter('customNumber')($scope.invoiceDetail.vat2);
+            $scope.taxValue2 = $scope.invoiceDetail.vat2 > 0 ? $filter('customNumber')($scope.invoiceDetail.vat2) : '';
             
             //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
                 
             $scope.grandJobTotal = parseFloat($scope.invoiceTotal) + parseFloat(amountTaxRate);
-            $scope.grandTotalNok = $filter('customNumber')($scope.invoiceDetail.Invoice_cost2);
+            $scope.grandTotalNok = $scope.invoiceDetail.Invoice_cost2 > 0 ? $filter('customNumber')($scope.invoiceDetail.Invoice_cost2) : '';
 
             $scope.invoiceTotal = (invoiceTotal.toString().includes(',')) ? $scope.invoiceTotal : $filter('customNumber')($scope.invoiceTotal);
             $scope.vat = ($scope.vat.toString().includes(',')) ? $scope.vat : $filter('customNumber')($scope.vat);
@@ -18375,6 +18377,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
+    $scope.isPdfdownload = false;
+    $scope.resourceInvoiceFileDn = function (invoiceNo) {
+        let pdfName = invoiceNo ? invoiceNo : 'Resource Invoice';
+        $scope.isPdfdownload = true;
+
+        if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+            var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+            downloadFileFn(fileUrl);
+        }else{
+            kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
+                group.options.set("font", "8px DejaVu Sans");
+                kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
+                if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+                    var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+                    downloadFileFn(fileUrl);
+                }
+            });
+        }    
+    
+    }
+
 }).controller('linguistInvoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
@@ -18397,7 +18420,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            console.log('$scope.invoiceDetail===>>', $scope.invoiceDetail)
 
             if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency =='NOK,kr'){
                 $scope.showSecondCUrrency = true;
@@ -18421,6 +18444,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.invoicesetInfoData = invoicesetInfoData.length > 0 ? invoicesetInfoData[0] : $scope.invoicesetInfoData[0];
                 }
             }).error(errorCallback);
+
+            $scope.invoiceDetail.invoice_number = $scope.invoiceDetail.custom_invoice_no && $scope.invoiceDetail.custom_invoice_no != '' ? $scope.invoiceDetail.custom_invoice_no : $scope.invoiceDetail.invoice_number; 
+            console.log('$scope.invoiceDetail.invoice_number', $scope.invoiceDetail.invoice_number)
             
             $scope.invoiceDetail.invoice_date = $scope.invoiceDetail.value_date
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
@@ -18590,6 +18616,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
 
             setTimeout(() => {
+                // invoice donwload
                 $scope.printIt($scope.invoiceDetail.invoice_number);
             }, 500);
 
@@ -18598,7 +18625,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.isPdfdownload = false;
     $scope.printIt = function (invoiceNo) {
-        let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
+        let pdfName = invoiceNo ? invoiceNo : 'Resource Invoice';
         $scope.isPdfdownload = true;
 
         if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
@@ -32346,7 +32373,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             let amountTaxRate = taxRateAmountCalc($scope.invoiceTotal, taxRate);
             $scope.taxValue = amountTaxRate;
-            $scope.taxValue2 = $filter('customNumber')(amountTaxRate * $scope.nokRate);
+            //$scope.taxValue2 = $filter('customNumber')(amountTaxRate * $scope.nokRate);
+            $scope.taxValue2 = '';
             console.log('$scope.taxValue2', $scope.taxValue2)
             
             //let itemPriceTax = parseFloat(val.scoop_value) + parseFloat(amountTaxRate);                        
@@ -32355,6 +32383,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.grandJobTotal = $scope.grandTotal; 
             console.log('$scope.grandTotal', $scope.grandTotal)
             $scope.grandTotalNok = $filter('customNumber')($scope.nokRate * $scope.grandTotal);
+            $scope.grandTotalNok = '';
             console.log('$scope.grandTotalNok', $scope.nokRate * $scope.grandTotal)
             $scope.invoiceTotal = $filter('customNumber')($scope.invoiceTotal);
         });
@@ -32456,10 +32485,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         //$scope.invoiceData.vat = numberFormatCommaToPoint($scope.vat);
         $scope.invoiceData.vat = $scope.vat;
-        $scope.invoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
+        $scope.invoiceData.vat2 = $scope.taxValue2 != '' ? numberFormatCommaToPoint($scope.taxValue2) : ''; // for second Currencty nok
         $scope.invoiceData.job_total = numberFormatCommaToPoint($scope.invoiceTotal);
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
-        $scope.invoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
+        $scope.invoiceData.Invoice_cost2 = $scope.grandTotalNok != '' ? numberFormatCommaToPoint($scope.grandTotalNok) : ''; // for second Currencty nok
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
         $scope.invoiceData.currency_rate = $scope.currencyRate ;
 
