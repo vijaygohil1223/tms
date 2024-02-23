@@ -4106,7 +4106,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         let poDueDate = ($scope.jobdetail.due_date != 'Invalid date') ? $scope.jobdetail.due_date : '';
         let poDueDateTime = poDueDate ? poDueDate.split(' ')[0] + ' | ' + $('#due_time').val() : '';
-        let freelanceCurrency = $scope.jobdetail.freelance_currency ? ' '+$scope.jobdetail.freelance_currency.split(',')[0] : ''; 
+        let freelanceCurrency = $scope.jobdetail.freelance_currency ? ' '+ $scope.jobdetail.freelance_currency.split(',')[0] : ' '+'EUR'; 
         // replace tempalte variable
         var dataReplaceArr = {
             NAME1: $scope.resourceDetail.vFirstName,
@@ -28548,8 +28548,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var jobDetailUrl = downloadUrl = '';
     $scope.emailSubject = ''; 
     if(items){
-
-        
         console.log('items.jobDetail.item_id', items.jobdetail.item_id)
         var baseUrl = $location.absUrl().split('#')[0];
         var jobDetailUrl = baseUrl + '#/project-job-detail/' + $window.btoa('jobdetailID='+items.jobdetail.job_summmeryId);
@@ -28565,7 +28563,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cPersonMsg.name = items.resourceDetail.vFirstName + ' ' + items.resourceDetail.vLastName
         $scope.cPersonMsg.vEmailAddress = items.resourceDetail.vEmailAddress 
             var emailContentText = data.find( (templt) => templt.template_id == 13);
-            let freelanceCurrency = items.jobdetail.freelance_currency ? ' '+items.jobdetail.freelance_currency.split(',')[0] : ''; 
+            let freelanceCurrency = items.jobdetail.freelance_currency ? ' '+items.jobdetail.freelance_currency.split(',')[0] : ' '+ 'EUR'; 
             if(emailContentText){
                 const rplcData = {
                     Name1: items.resourceDetail.vFirstName,
