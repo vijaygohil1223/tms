@@ -4267,10 +4267,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //     return x;
                                 // }
                                 if(val.child_price_id == x.childPriceId){
-                                    if(specializationArr)
-                                        var spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
-                                    else
-                                        var spclFound = false; 
+                                    var spclFound = specializationArr && specializationArr.length>0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
                                     const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
                                     if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
                                         $scope.exChildPriceArr[i].rate = x.basePrice;  
@@ -19710,7 +19707,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.general.due_date = originalDateFormatDash($scope.general.due_date + ' - ' + due_timeval1);
                         $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
                     }
-                    $scope.general.specialization = $scope.general.specialization.toString().includes(',') ? ($scope.general.specialization).split(',').pop() : $scope.general.specialization;
+                    $scope.general.specialization = $scope.general.specialization && $scope.general.specialization.toString().includes(',') ? ($scope.general.specialization).split(',').pop() : $scope.general.specialization;
+                    console.log('$scope.general', $scope.general)
 
                     $window.localStorage.orderNumber = $scope.general.order_no;
                     $scope.routeOrderID = $scope.routeOrderID ? $scope.routeOrderID : $window.localStorage.orderID;
@@ -20418,7 +20416,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.forEach($scope.clientpriceList, function (val2, i2) {
                         val2.price_basis.find(x => {
                             if(val.child_price_id == x.childPriceId){
-                                const spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
+                                const spclFound = specializationArr && specializationArr.length > 0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
                                 const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
                                 
                                 if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
@@ -20851,22 +20849,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $scope.order_id;
         rest.path = 'contactPerson';
         rest.model().success(function (data) {
+            console.log('contactPerson-data=>', data)
             
             var cor = [];
             var man = [];
             angular.forEach(data, function (val, i) {
-                if (val.vResourceType == 1) {
-                    cor.push(val.iUserId);
-                }
-
-                if (val.vResourceType == 2) {
-                    man.push(val.iUserId);
-                }
+                // shortway
+                (val && val.vResourceType) && ( val.vResourceType === 1 ? cor.push(val.iUserId) : val.vResourceType === 2 && man.push(val.iUserId) );
+                // if(val && val.vResourceType){
+                //     if (val.vResourceType == 1) {
+                //         cor.push(val.iUserId);
+                //     }
+                //     if (val.vResourceType == 2) {
+                //         man.push(val.iUserId);
+                //     }
+                // }
             })
 
             $timeout(function () {
                 angular.element('#manager').select2('val', man);
+                console.log('man', man)
                 angular.element('#coordinator').select2('val', cor);
+                console.log('cor', cor)
             }, 1000);
         }).error(errorCallback);
 
@@ -33482,11 +33486,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.forEach($scope.clientpriceList, function (val2, i2) {
                         val2.price_basis.find(x => {
                             if(val.child_price_id == x.childPriceId){
-                                const spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
+                                //const spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
+                                const spclFound = specializationArr && specializationArr.length > 0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
                                 const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
                                 
                                 if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
-                                    
                                     $scope.newchildPriceArr[item_id][i].rate = x.basePrice;  
                                 }
                                 return x;
