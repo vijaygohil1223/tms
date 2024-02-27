@@ -26,7 +26,9 @@
       <div class="content_head bg-light lter b-b wrapper-md ng-scope d-flex" style="justify-content:space-between;">
         <h1 class="m-n font-thin h3">Invoice List</h1>
         <div>
-          <button class="btn btn-info" ng-click="exportData()">Excel &nbsp;<i class="glyphicon glyphicon-download-alt"
+          <button class="btn btn-info" ng-click="exportData('invoicePDF')">Invoice pdf &nbsp;<i class="glyphicon glyphicon-download-alt"
+            aria-hidden="true"></i></button>
+          <button class="btn btn-info" ng-click="exportData('excel')">Excel &nbsp;<i class="glyphicon glyphicon-download-alt"
               aria-hidden="true"></i></button>
           <a class="btn btn-info" href="#/invoice-linguist-jobs">Create Invoice</a>
         </div>
