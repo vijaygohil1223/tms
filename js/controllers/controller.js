@@ -34219,17 +34219,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $scope.custPriceAll().then((prData) => {
                         let customerpriceFltr =  $scope.customerpriceAll ;
-                        angular.element('#currency'+ val.itemId).text('Eur');
+                        angular.element('#currency'+ val.itemId).text('EUR');
                         customerpriceFltr.filter( (el) => {
                             if(val.project_pricelist){
                                 if(el.price_list_id == val.project_pricelist){
-                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
+                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'EUR';
                                     angular.element('#currency'+ val.itemId).text(price_currency);
                                     return el;
                                 }
                             }else{
                                 if(el.resource_id == data.client){
-                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'Eur';
+                                    let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'EUR';
                                     angular.element('#currency'+ val.itemId).text(price_currency);
                                     return el;
                                 }
