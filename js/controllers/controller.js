@@ -16517,34 +16517,60 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    // $scope.invoiceItems = []; 
+    // $scope.selectedItems = {};
+    // $scope.selectAll = false;
+
     $scope.checkedIds = [];
-    $scope.checkInvoiceIds = function(id){
+    $scope.checkInvoiceIds = function(id, item){
         //var result = arrayRemove(array, 6);
         if(id){
             if(id == 'all'){
+                
                 let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
+                console.log('isCheckedAll', isCheckedAll)
+                console.log(`angular.element('[id^=invoiceCheck]').length`, angular.element('[id^=invoiceCheck]').length)
                 if(isCheckedAll == 'true'){
                     $("input[id^=invoiceCheck]:checkbox").prop("checked", true);
-                    for (var i = 0; i < angular.element('[id^=invoiceCheck]').length; i++) {
-                        var invoiceselected = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
+                    // for (var i = 0; i < angular.element('[id^=invoiceCheck]').length; i++) {
+                    //     var invoiceselected = $('#invoiceCheck' + i).is(':checked') ? 'true' : 'false';
+                    //     if (invoiceselected == 'true') {
+                    //         var invoiceIds = angular.element('#invoiceCheckData' + i).val();
+                    //         $scope.checkedIds.push(invoiceIds.toString());
+                    //     }
+                    // }
+                    angular.forEach($scope.invoiceListAll, function(item) {
+                        var invoiceselected = $('.invoiceCheck' + item.invoice_id).is(':checked') ? 'true' : 'false';
                         if (invoiceselected == 'true') {
-                            var invoiceIds = angular.element('#invoiceCheckData' + i).val();
+                            var invoiceIds = angular.element('.invoiceCheckData' + item.invoice_id).val();
                             $scope.checkedIds.push(invoiceIds.toString());
                         }
-                    }        
+                    });        
                 }else{
                     $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
                     $('input[id^=checkAll]:checkbox').removeAttr('checked');
                     //$('#checkAll').removeAttr('checked');
                     $scope.checkedIds = [];
                 }
+                // angular.forEach($scope.invoiceListAll, function(item) {
+                //     $scope.selectedItems[item.invoice_id] = true;
+                // });
+
             }else{
                 let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
                 if(isChecked == 'true')
                     $scope.checkedIds.push(id.toString());
                 else
                     $scope.checkedIds = arrayRemove($scope.checkedIds, id);
+
+                // if ($scope.selectedItems[item.invoice_id]) {
+                //     delete $scope.selectedItems[item.invoice_id];
+                // } else {
+                //     $scope.selectedItems[item.invoice_id] = true;
+                // }              
+
             }        
+            
         }    
                         
     }
@@ -16593,7 +16619,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             case "invoicePDF":
                 console.log('checkedIDDS', $scope.checkedIds)
                 console.log('$scope.invoiceListAll', $scope.invoiceListAll)
-                $scope.downloadAllfile = $scope.invoiceListAll;
                 var zipdwnld = new JSZip();
                 var file_count = 0;
                 var fileUrls = [];
