@@ -5113,7 +5113,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $interval(getCountJobFolder, 1000);
 
-    $scope.jobsumemailResource = function (resourceName, jobSummeryId) {
+    $scope.jobsumemailResource = function (resourceName, jobSummeryId, jobNumber) {
+        $scope.data = {
+            jobSummeryId : jobSummeryId,
+            jobNumber:  jobNumber,
+            type: 'job',
+        }
         if (!resourceName || !jobSummeryId) {
             notification('Resource not selected', 'warning');
         } else {
@@ -15981,7 +15986,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     //mail contactpreson and resources
-    $scope.jobsumResource = function (resourceName, jobSummeryId) {
+    $scope.jobsumResource = function (resourceName, jobSummeryId, jobNumber) {
+        console.log('jobNumber', jobNumber)
+        $scope.data = {
+            jobSummeryId : jobSummeryId,
+            jobNumber:  jobNumber,
+            type: 'job',
+        }
         $window.localStorage.ResourceMsg = resourceName;
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
@@ -23843,9 +23854,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     
-    $scope.jobsumResource = function (resourceName, jobSummeryId) {
+    $scope.jobsumResource = function (resourceName, jobSummeryId, jobNumber) {
         $window.localStorage.ResourceMsg = resourceName;
         //$window.localStorage.ResourceMsg = resourceName;
+        $scope.data = {
+            jobSummeryId : jobSummeryId,
+            jobNumber:  jobNumber,
+            type: 'job',
+        }
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'tpl/jobresourcemsg.html',
@@ -28530,7 +28546,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
-}).controller('jobResourceMsgController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
+}).controller('jobResourceMsgController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.ResourceMsg;
 
@@ -28558,10 +28574,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     console.log('$window.localStorage.ResourceMsg', $window.localStorage.ResourceMsg)
-
+    
     rest.path = 'jobResourceMsg/' + $window.localStorage.ResourceMsg;
     rest.get().success(function (data) {
-        console.log('data', data)
+        console.log('data-job=>', data)
         $scope.cPersonMsg = data.data;
         $scope.cPersonMsg.vUserName = data.data.vFirstName + ' ' +data.data.vLastName;
         //$scope.cPersonMsg.vUserName = data.data.vUserName;
@@ -28569,6 +28585,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br></div>';
             //$scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
             // sign removed if needed please add above line
+
+        $scope.cPersonMsg.subject = items && items.type && items.type === 'job' ? items.jobNumber : '';
+
     }).error(errorCallback);
 
     $scope.ok = function (frmId, message) {
@@ -31016,7 +31035,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    $scope.jobsumemailResource = function (resourceName) {
+    $scope.jobsumemailResource = function (resourceName, jobSummeryId, jobNumber) {
+        $scope.data = {
+            jobSummeryId : jobSummeryId,
+            jobNumber:  jobNumber,
+            type: 'job',
+        }
         if (resourceName) {
             rest.path = 'contact_personGet/' + $scope.jobdetail.contact_person;
             rest.get().success(function (data) {
@@ -31286,7 +31310,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    $scope.jobsumemailResource = function (resourceName) {
+    $scope.jobsumemailResource = function (resourceName, jobSummeryId, jobNumber) {
+        $scope.data = {
+            jobSummeryId : jobSummeryId,
+            jobNumber:  jobNumber,
+            type: 'job',
+        }
         if (resourceName) {
             rest.path = 'contact_personGet/' + $scope.jobdetail.contact_person;
             rest.get().success(function (data) {

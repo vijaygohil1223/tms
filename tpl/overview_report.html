@@ -561,10 +561,11 @@
                                     <td><a href="#/viewinternal/{{result.contactPerson}}"
                                             class="summeryColor">{{result.contact_person}}</a>
                                     </td>
-                                    <td><a href="javascript:void(0)"
-                                            ng-click="jobsumResource(result.resource,result.jobId)"><i
-                                                class="fa fa-envelope summeryColor"></i></a>&nbsp;<a
-                                            href="javascript:void(0)" class="summeryColor"
+                                    <td>
+                                      <!-- <a href="javascript:void(0)"
+                                            ng-click="jobsumResource(result.resource,result.jobId,result.po_number)"><i
+                                                class="fa fa-envelope summeryColor"></i></a> -->
+                                                <a href="javascript:void(0)" class="summeryColor"
                                             ng-click="resourceRedirect(result.resource)">{{result.resource}}</a>
                                     </td>
                                     <td><span ng-if="result.Client"><a
