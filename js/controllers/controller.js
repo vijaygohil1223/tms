@@ -21625,9 +21625,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[i].coordinator = $scope.itemList[i].coordinator ? $scope.itemList[i].coordinator : data.project_coordinator;
                     
                     $scope.itemList[i].qaSpecialist = $scope.itemList[i].qaSpecialist ? $scope.itemList[i].qaSpecialist : data.QA_specialist;
-                    if(data.QA_specialist){
+                    if(data.QA_specialist && data.QA_specialist !== '0'){
                         $scope.subqahide = true;
-                        angular.element('#QA_specialist' + val.itemId).attr('disabled', 'true');
+                        //angular.element('#QA_specialist' + val.itemId).attr('disabled', 'true');
                     }
                     
                     if (val.price) {
@@ -34368,9 +34368,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[i].coordinator = $scope.itemList[i].coordinator ? $scope.itemList[i].coordinator : data.project_coordinator;
                     $scope.itemList[i].qaSpecialist = $scope.itemList[i].qaSpecialist ? $scope.itemList[i].qaSpecialist : data.QA_specialist;
                     
-                    if(data.QA_specialist){
+                    if(data.QA_specialist && data.QA_specialist !== '0'){
                         $scope.subqahide = true;
-                        angular.element('#QA_specialist' + val.itemId).attr('disabled', 'true');
+                        //angular.element('#QA_specialist' + val.itemId).attr('disabled', 'true');
                     }
 
                     if (val.price) {
