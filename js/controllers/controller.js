@@ -16597,9 +16597,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //Linguist Invoice export to excel
     $scope.exportData = function (type) {
         $("#exportable .dt-loading" ).remove();
+        $scope.invoiceListSelected = [];
         if($scope.checkedIds.length > 0){
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
-            $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+            //$scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+            const invoiceListClone = [...$scope.invoiceListAll];
+            $scope.invoiceListSelected = invoiceListClone.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
         }
         switch (type) {
             case "Allexcel":
@@ -16634,7 +16637,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var file_count = 0;
                 var fileUrls = [];
                 // Filter and collect valid file URLs
-                $scope.invoiceListAll.forEach(function(val) {
+                $scope.invoiceListSelected.forEach(function(val) {
                     if (val.resourceInvoiceFileName !== '') {
                         var fileName = val.resourceInvoiceFileName;
                         var fimgUrl = "uploads/invoice/" + fileName;
@@ -16666,6 +16669,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     });
                 });
+                setTimeout(() => {
+                    if(fileUrls.length == 0){
+                        notification('No files available', 'warning');
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 200);
+                    }
+                }, 500);
 
                 break;
         }
