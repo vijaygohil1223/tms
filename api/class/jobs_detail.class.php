@@ -1146,12 +1146,16 @@ class jobs_detail
             $this->_db->where('job_summmeryId', $data['id']);
             $jobDetails = $this->_db->getone('tms_summmery_view');
 
-            if (isset($jobDetails['po_number']))
-                $jobnumber = $jobDetails['po_number'];
-            else
-                $jobnumber = " ";
-            if (isset($jobDetails['due_date']))
-                $duedate = $jobDetails['due_date'];
+            $jobnumber = isset($jobDetails['po_number']) ? $jobDetails['po_number'] : ''; 
+            if (isset($jobDetails['due_date'])){
+                try {
+                    $datetime = new DateTime($jobDetails['due_date']);
+                    $duedateFrmt = $datetime->format('d.m.Y H:i');
+                } catch (Exception $e) {
+                    $duedateFrmt = '';
+                }
+                $duedate = $duedateFrmt;
+            }
             else
                 $duedate = " ";
             if (isset($jobDetails['ItemLanguage']))
@@ -1193,7 +1197,7 @@ class jobs_detail
                         $replace_array = array($jobnumber, $langPair, $itemStatus, $duedate, $acceptLink, $rejectLink, $jobDetailsLink);
                         $body = str_replace($search_array, $replace_array, $emailTemplateRegistration['template_content']);
 
-                        $subject = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Send Request ";
+                        $subject = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Request";
 
                         $attachments = '';
                         $to_name = '';

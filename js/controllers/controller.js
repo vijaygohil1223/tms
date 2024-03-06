@@ -28762,6 +28762,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cPersonMsg = {};
     $scope.cPersonMsg.subject = 'Job Request';
 
+    rest.path = "emailTemplateGetAll" ;
+    rest.get().success(function (data) {
+        const emailTemplate = data.find( (templt) => templt.template_id == 11);
+        if(emailTemplate?.template_subject !== '')
+            $scope.cPersonMsg.subject = emailTemplate.template_subject;
+    })
+    
     $scope.bccShow = function () {
         $scope.bccshow = true;
     }
@@ -28797,7 +28804,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }    
 
     $scope.ok = function (frmId, message) {
-
+        
         var data = {
             "id": items,
             "file": $scope.attachementfile,
