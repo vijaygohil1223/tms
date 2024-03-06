@@ -332,7 +332,7 @@ class functions {
     }
 
     // SMTP send mail (Using mailjet library)
-    public function send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '') {
+    public function send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '', $inlinedAttachments ='' ) {
         
         $mailParams = [
             'Messages' => [
@@ -379,6 +379,9 @@ class functions {
             //                                     'Base64Content' => $pdfFileContent
             //                                 ]];
             $mailParams['Messages'][0]['Attachments'] =  $attachments;
+        }
+        if (is_array($inlinedAttachments)) {
+            $mailParams['Messages'][0]['InlinedAttachments'] =  $inlinedAttachments;
         }
         $response = $this->_mailjet->post(Resources::$Email, ['body' => $mailParams]);
         if ($response->success()) {            

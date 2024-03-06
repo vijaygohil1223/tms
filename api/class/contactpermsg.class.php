@@ -70,7 +70,7 @@ class contactPerMsg {
         $to = $data['data']['vEmail'];
 
         $attachments = '';
-        $to_name = 'SpellUp';
+        $to_name = 'TMS';
         if ($encoded_content != ' ') {
             $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
             $fileNm = explode(',', $data['file']);
@@ -622,7 +622,7 @@ class contactPerMsg {
             $emailSign = $this->_db->getone('tms_email_sign');   
             $emailsignData = $emailSign['sign_detail'];
             $emailImage = $emailSign['sign_image']; 
-            $emailImageData = $this->uploadimage($emailImage);
+            //$emailImageData = $this->uploadimage($emailImage);
         } else {
             $emailsignData = " ";
             $emailImageData = " ";
@@ -646,12 +646,14 @@ class contactPerMsg {
         }
         if (isset($data['data']['messageData'])) {
             $str = $data['data']['messageData'];
-            $message = str_replace($emailsignData,"",$str);
+            //$message = str_replace($emailsignData,"",$str);
+            $message = $data['data']['messageData'];
         } else {
             $message = " ";
         }
 
         $body = "<div>" . $message . "</div>";
+        $body .= "<p><img src='cid:signid' width='80px' width='100px'></p>";
         //$body .= "<p>" . $emailsignData . "</p>";
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = isset($data['data']['subject']) && $data['data']['subject'] != '' ? $data['data']['subject'] : "Information";
@@ -673,8 +675,34 @@ class contactPerMsg {
                 'Base64Content' => $fileNm[1]
             ]];
         }    
+        
+        $inlineImageAttachement = '';
+        if($emailSign && isset($emailSign['sign_image']) && $emailSign['sign_picture'] !='' ){
+            $base64_image = $emailSign['sign_image'];
+            $attachInline = explode(',', $base64_image);
+            // Get the content type
+            $content_type = '';
+            if (count($attachInline) > 0) {
+                preg_match('/^data:(.*?);/', $attachInline[0], $matches);
+                if (isset($matches[1])) {
+                    $content_type = $matches[1];
+                }
+            }
+            // Get the base64 string
+            $base64_string = '';
+            if (count($attachInline) > 1) {
+                $base64_string = $attachInline[1];
+            }
+            $inlineImageAttachement =  [[
+                'ContentType' => $content_type,
+                'Filename' => 'sign.png',
+                'ContentID' => "signid",
+                'Base64Content' => $base64_string
+            ]];
+        }
+
         $send_fn = new functions();
-        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
+        $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments, $inlineImageAttachement);
             
         if($mailResponse['status'] == 200) {
         //if ($this->_mailer->Send()) { //output success or failure messages

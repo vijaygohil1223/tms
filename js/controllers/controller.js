@@ -28593,15 +28593,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cPersonMsg.vUserName = data.data.vFirstName + ' ' +data.data.vLastName;
         //$scope.cPersonMsg.vUserName = data.data.vUserName;
         if ($rootScope.linguistJobmsg != 'linguistJobmsg')
-            $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br></div>';
-            //$scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
+            //$scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br></div>';
+            $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '<img id="signImage" src="' + data.info.sign_image + '" width="100px"></div>';
             // sign removed if needed please add above line
 
         $scope.cPersonMsg.subject = items && items.type && items.type === 'job' ? items.jobNumber : '';
 
     }).error(errorCallback);
 
+    // to remove signign image
+    const removeSignImage = (htmlContent) => {
+        var tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlContent;
+        var imageElement = tempDiv.querySelector('#signImage');
+        if (imageElement) {
+            var parentElement = imageElement.parentNode;
+            parentElement.removeChild(imageElement);
+        }
+            return tempDiv.innerHTML;
+    }
+
     $scope.ok = function (frmId, message) {
+        if(message?.messageData){
+            message.messageData = removeSignImage(message.messageData)
+        }
         var data = {
             "file": $scope.attachementfile,
             "data": message
