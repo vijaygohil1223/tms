@@ -16307,6 +16307,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.getData();
 
+    
     $scope.dateToday = new Date();
     //----- ****** Start Invoice Tabs Linguist    ****** --------//
     $scope.invcList_tabFilter = function () {
@@ -16811,7 +16812,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-}).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter) {
+}).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $compile, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;
     $scope.editInvoiceField = true;
@@ -17253,9 +17254,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         });
     }
+    
+    function getContentById(htmlContent, id) {
+        var div = document.createElement('div');
+        div.innerHTML = htmlContent;
+        var element = div.querySelector('#' + id);
+        return element ? element.textContent : null;
+    }
 
+    function b64toBlob(b64Data, contentType) {
+        var byteCharacters = atob(b64Data);
+        var byteNumbers = new Array(byteCharacters.length);
+        for (var i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        var byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: contentType });
+    }
     
     $scope.printIt = function (number) {
+        
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
         //$scope.noneCls = "";
 
@@ -17274,19 +17292,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('#irrecoverable').hide();
         angular.element('#editInvoiceSave').hide();
 
-        kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
-            group.options.set("font", "8px DejaVu Sans");
-            // group.options.set("pdf", {
-            //     margin: {
-            //         left   : "40mm",
-            //         top    : "0mm",
-            //         right  : "40mm",
-            //         bottom : "0mm"
-            //     },
-            //     paperSize: "A4",
-            // });
-            kendo.drawing.pdf.saveAs(group, number + ".pdf");
+        // kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
+        //     group.options.set("font", "8px DejaVu Sans");
+        //     // group.options.set("pdf", {
+        //     //     margin: {
+        //     //         left   : "40mm",
+        //     //         top    : "0mm",
+        //     //         right  : "40mm",
+        //     //         bottom : "0mm"
+        //     //     },
+        //     //     paperSize: "A4",
+        //     // });
+        //     kendo.drawing.pdf.saveAs(group, number + ".pdf");
+        // });
+
+
+        //var htmlContent = $('#pdfExport').html();
+        //var htmlContent = document.getElementById('pdfExport').innerHTML
+        //$scope.pdfDownloadFn(number, true )
+        $scope.pdfDownloadFn(number, true ).then((pdfDownload) =>{
+            console.log('pdfDownload', pdfDownload)
         });
+        
         $timeout(function () {
             angular.element('#btnPaid').show();
             angular.element('#btnMarkAsCancel').show();
@@ -17368,6 +17395,57 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    $scope.pdfDownloadFn = function(number, isDownload){
+        var deferred = $q.defer();
+        const invoicePdfData = {};
+        $http.get("tpl/invoicepdfCommon.html")
+        .then(function(response) {
+          var htmlContent = response.data;
+          var compiledHTML = $compile(htmlContent)($scope);
+          console.log("compiledHTML", compiledHTML);
+          setTimeout(() => {
+            $scope.$apply();
+            // Extract content by ID from compiled HTML
+            var invoiceContent = compiledHTML.find(".invoiceContent").html();
+            var invoiceHeader = compiledHTML.find(".invoiceHeader").html();
+            var invoiceFooter = compiledHTML.find(".invoiceFooter").html();
+            //console.log("Specific Element Content:", specificElementContent);
+            invoicePdfData.pdfContent = invoiceContent
+            invoicePdfData.pdfHeader = invoiceHeader
+            invoicePdfData.pdfFooter = invoiceFooter
+            invoicePdfData.pdfFileName = number + '-file'+ (getDatetime(new Date())).toString().replace(/[^a-z0-9]/ig, '')+'.pdf' ;
+            invoicePdfData.base64Content = true
+            
+            rest.path = 'downloadinvoice';
+            rest.post(invoicePdfData).success(function (data) {
+                if(data && data.status ==200 && data.pdfFile){
+                    if(isDownload === true){
+                        var pdfBlob = b64toBlob(data.pdfFile, "application/pdf");
+                        // Create a URL for the Blob object
+                        var pdfUrl = URL.createObjectURL(pdfBlob);
+                        var aDownloadTag = document.createElement('a');
+                        aDownloadTag.href = pdfUrl;
+                        aDownloadTag.download = number + '.pdf';
+                        document.body.appendChild(aDownloadTag);
+                        aDownloadTag.click();
+                        document.body.removeChild(aDownloadTag);
+                        deferred.resolve(pdfBlob);
+                    }else{
+                        // base64 string
+                        deferred.resolve(data.pdfFile);
+                    }
+                }
+            }).error(errorCallback);
+          }, 100);
+        })
+        .catch(function(error) {
+          //console.error("Error loading HTML:", error);
+          deferred.reject();
+        });
+
+        return deferred.promise;
+    }
+
     $scope.sendInvoiceEmail = function (type, number) {
         if (type) {
             let companycontactEmail = $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail;
@@ -17381,42 +17459,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         });
                     })
                     .done(function (data) {
-
-                        var invoicemailDetail = {
-                            'pdfData': data,
-                            'invoice_id': $scope.invoiceDetail.invoice_id,
-                            'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
-                            'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
-                            'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-                            'freelanceName': $scope.invoiceDetail.freelanceName,
-                            'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                            'companycontactEmail': companycontactEmail,
-                            'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
-                            'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
-                            'isClientInvoice' : 1
-                        };
-                        
-                        var modalInstance = $uibModal.open({
-                            animation: $scope.animationsEnabled,
-                            templateUrl: 'tpl/generalmsg.html',
-                            controller: 'generalmsgController',
-                            size: '',
-                            resolve: {
-                                items: function () {
-                                    angular.element('#btnPaid').show();
-                                    angular.element('#btnMarkAsCancel').show();
-                                    angular.element('#btnDraft').show();
-                                    angular.element('#btnCancel').show();
-                                    angular.element('#irrecoverable').show();
-                                    angular.element('#editInvoiceSave').show();
-                                    angular.element('.invoiceInput input').addClass('invoiceInputborder');
-                                    
-                                    if(type == 'invoice_reminder' ==1 )
-                                        angular.element('#btnSave').show();
-                                    
-                                    return invoicemailDetail;
-                                }
+                        $scope.pdfDownloadFn(number, false ).then((pdfBase64Data) =>{
+                            //console.log('pdfBase64Data', pdfBase64Data)
+                            if(pdfBase64Data){
+                                var invoicemailDetail = {
+                                    'pdfData': 'data:application/pdf;base64,'+ pdfBase64Data,
+                                    'invoice_id': $scope.invoiceDetail.invoice_id,
+                                    'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
+                                    'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
+                                    'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+                                    'freelanceName': $scope.invoiceDetail.freelanceName,
+                                    'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
+                                    'companycontactEmail': companycontactEmail,
+                                    'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
+                                    'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
+                                    'isClientInvoice' : 1
+                                };
+                                
+                                var modalInstance = $uibModal.open({
+                                    animation: $scope.animationsEnabled,
+                                    templateUrl: 'tpl/generalmsg.html',
+                                    controller: 'generalmsgController',
+                                    size: '',
+                                    resolve: {
+                                        items: function () {
+                                            angular.element('#btnPaid').show();
+                                            angular.element('#btnMarkAsCancel').show();
+                                            angular.element('#btnDraft').show();
+                                            angular.element('#btnCancel').show();
+                                            angular.element('#irrecoverable').show();
+                                            angular.element('#editInvoiceSave').show();
+                                            angular.element('.invoiceInput input').addClass('invoiceInputborder');
+                                            
+                                            if(type == 'invoice_reminder' ==1 )
+                                                angular.element('#btnSave').show();
+                                            
+                                            return invoicemailDetail;
+                                        }
+                                    }
+                                });
                             }
+
                         });
                         
                     });
@@ -30671,6 +30754,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     }
+
+    
 
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

@@ -3434,6 +3434,7 @@ $app->get('/getFreelanceInvoicePartPayments/:id','authenticate', function($id) {
     $result = $invoice->getFreelanceInvoicePartPayments($id);
     echoResponse(200, $result);
 });
+
 //-------------------END Freelancer Invoice manage----------------//
 
 function echoResponse($status_code, $response) {
@@ -3563,6 +3564,13 @@ $app->get('/clientInvoiceSetting/','authenticate', function () use($app) {
     $result = $invoice->getClientInvoiceSetting();
     echoResponse(200, $result);
 });
+$app->post('/downloadinvoice','authenticate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->downloadInvoicePDF($data);
+    echoResponse(200, $result);
+});
+
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {
     $userposition = new userposition ();

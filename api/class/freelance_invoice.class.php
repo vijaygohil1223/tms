@@ -2,6 +2,7 @@
 require_once 'users.class.php';
 require_once 'client.class.php';
 require_once 'functions.class.php';
+require_once 'mpdf.class.php';
 
 class Freelance_invoice {
 
@@ -618,6 +619,7 @@ class Freelance_invoice {
         }
         return $result;
     }
+    
 
 
 }

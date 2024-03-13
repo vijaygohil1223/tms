@@ -2,7 +2,7 @@
 require_once 'users.class.php';
 require_once 'client.class.php';
 require_once 'functions.class.php';
-
+require_once 'mpdf.class.php';
 
 class Client_invoice {
 
@@ -164,7 +164,7 @@ class Client_invoice {
                 //$this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
                 $this->_db->join('tms_client_contact tcc','tcc.iContactId = tcu.contact', 'LEFT');
                 $this->_db->join('tms_client_contact tcce', 'tcce.iClientId = tci.iClientId AND tcce.is_client_invoice = 1', 'LEFT');
-                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tci.invoice_no_of_days, tci.client_currency, tci.vCenterid, tcc.vEmail as companycontactEmail, tcce.vEmail as companyInvoiceEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tum.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tx.tax_percentage as tax_rate, ti.po_number');
+                $data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.order_id AS orderId, ti.price as scoopPrice, ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tci.invoice_no_of_days, tci.client_currency, tci.vCenterid, tcc.vEmail as companycontactEmail, tcce.vEmail as companyInvoiceEmail, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tum.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tx.tax_percentage as tax_rate, ti.po_number, ti.item_name');
                 
                 //echo $this->_db->getLastQuery(); 
                 
@@ -832,6 +832,24 @@ class Client_invoice {
             }
         }
         return $data;
+    }
+
+    public function downloadInvoicePDF($data){
+        //print_r($data);
+        //exit;
+        $htmlConent = $data && isset($data['pdfContent']) ? $data : '';
+        $mpdf = new mpdf();
+        $isPdfDownload = $mpdf->downloadPDF($htmlConent);
+        if($isPdfDownload){
+            $result['pdfFile'] = $isPdfDownload;
+            $result['status'] = 200;
+            $result['msg'] = "Download";
+        }else{
+            $result['pdfFile'] = $isPdfDownload;
+            $result['status'] = 422;
+            $result['msg'] = "Not downloaded";
+        }
+        return $result;
     }
     
 }
