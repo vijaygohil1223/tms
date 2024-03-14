@@ -2,7 +2,7 @@
 require_once 'users.class.php';
 require_once 'client.class.php';
 require_once 'functions.class.php';
-//require_once 'mpdf.class.php';
+require_once 'mpdf.class.php';
 
 class Client_invoice {
 
