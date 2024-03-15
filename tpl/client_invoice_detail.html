@@ -161,7 +161,7 @@
                           style="display: none" ng-model="invoiceL.invoice_id" />
                       </td>
                       <td class="nowrap">
-                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View"> {{ invoiceL.invoice_number }} </a>
+                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View"> {{ invoiceL.invoice_number ? invoiceL.invoice_number : 'invoice' }} </a>
                       </td>
                       <td>
                         {{ invoiceL.clientCompanyName }}

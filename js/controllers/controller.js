@@ -17614,13 +17614,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.invoiceDetail.freelancePhone){
                 var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
                 var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
-                $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
+                $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':').pop().trim() + ')' + ' ' + mobileNo;
             }
 
             if($scope.invoiceDetail.companyPhone){
                 var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
                 var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
-                $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
+                $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':').pop().trim() + ')' + ' ' + mobileNo1;
             }
 
             //$scope.vat = $scope.invoiceDetail.vat ? $scope.invoiceDetail.vat : 0;
