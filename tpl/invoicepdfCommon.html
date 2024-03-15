@@ -71,18 +71,22 @@
           font-size: 14px;
           padding-top: 8px;
           padding-bottom: 8px;
-          
+
         }
-        .smlFont{
+
+        .smlFont {
           font-size: 12px !important;
         }
-        .textleft{
+
+        .textleft {
           text-align: left;
         }
-        .textcenter{
+
+        .textcenter {
           text-align: center !important;
         }
-        .textright{
+
+        .textright {
           text-align: right !important;
           /* padding-left: 25px !important; */
         }
@@ -192,8 +196,8 @@
                 <div ng-if="invoiceDetail.clientVatinfo"> {{invoiceDetail.clientVatinfo}} </div>
               </div>
             </div>
-            <div style="padding-top: 0px;">
-              <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
+            <div style="padding-top: 15px;">
+              <!-- <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
                 <p class="mb-d"><strong>Contact</strong></p>
                 {{invoiceDetail.freelanceName}}
               </div>
@@ -202,11 +206,33 @@
               </div>
               <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
                 <p class="mb-d"><strong>Email</strong></p> {{invoiceDetail.freelanceEmail}}
-              </div>
+              </div> 
               <div class="col-sm-3">
                 <p class="mb-d"><strong>Date</strong></p>
                 {{invoiceDetail.invoice_date}}
-              </div>
+              </div> -->
+              <table style="width: 100%;">
+                <thead>
+                  <tr>
+                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Contact</th>
+                    <td style="font-weight: bold;"  ng-if="invoiceSettingData.server_no===2"> Telephone</th>
+                    <td style="font-weight: bold;"  ng-if="invoiceSettingData.server_no===2">Email </th>
+                    <td style="font-weight: bold;" >Date </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="width: 25%;"  ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceName}}
+                    </td>
+                    <td style="width: 25%;"  ng-if="invoiceSettingData.server_no===2">
+                      {{invoiceDetail.freelancePhone}}</td>
+                    <td style="width: 25%;"  ng-if="invoiceSettingData.server_no===2">
+                      {{invoiceDetail.freelanceEmail}}</td>
+                    <td style="width: 25%;" > {{invoiceDetail.invoice_date}} </td>
+                  </tr>
+
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -245,7 +271,7 @@
             ng-init="invL.item.subTotal = {}" style="width: 100%;">
             <tbody>
               <tr>
-                <td class="table-data-txt" colspan="2" > Subtotal excl. TAX </td>
+                <td class="table-data-txt" colspan="2"> Subtotal excl. TAX </td>
                 <td class="table-data-txt" style="width:20%;"> {{invoiceTotal}} </td>
               </tr>
               <tr>
@@ -317,7 +343,8 @@
               <td class="table-data-text smlFont textright">Foretaksregisteret: </td>
             </tr>
             <tr>
-              <td class="table-data-text smlFont textleft"> {{ invoiceSettingData.postcode }} {{ invoiceSettingData.city }} </td>
+              <td class="table-data-text smlFont textleft"> {{ invoiceSettingData.postcode }} {{ invoiceSettingData.city
+                }} </td>
               <td class="table-data-text smlFont textcenter"> <span ng-if="invoiceSettingData.server_no==2"> Web: {{
                   invoiceSettingData.web_address }}</span> </td>
               <td class="table-data-text smlFont textright">{{ invoiceSettingData.vat_number }}</td>

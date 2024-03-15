@@ -237,7 +237,7 @@ td.table-data-text {
                           <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
                           class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
                             <tr class="thfont">
-                              <td class="table-data-txt"> {{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }}</td>
+                              <td class="table-data-txt"> {{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }} | {{ invL.item_name }} </td>
                               <td class="table-data-txt"> {{invL.po_number}}</td>
                               <td class="table-data-txt"> 
                                 <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled" />
