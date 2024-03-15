@@ -602,6 +602,15 @@ function downloadFileFn(url) {
     link.click();
     document.body.removeChild(link);
 }
+function b64toBlob(b64Data, contentType) {
+    var byteCharacters = atob(b64Data);
+    var byteNumbers = new Array(byteCharacters.length);
+    for (var i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    var byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: contentType });
+}
 //  date format for comment
 function commentDateToformat(nwdate, dtseperator = '-') {
     var d = new Date(nwdate);
@@ -17262,16 +17271,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return element ? element.textContent : null;
     }
 
-    function b64toBlob(b64Data, contentType) {
-        var byteCharacters = atob(b64Data);
-        var byteNumbers = new Array(byteCharacters.length);
-        for (var i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        var byteArray = new Uint8Array(byteNumbers);
-        return new Blob([byteArray], { type: contentType });
-    }
-    
     $scope.printIt = function (number) {
         
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
@@ -17526,6 +17525,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
 
+    rest.path = "clientInvoiceSetting";
+    rest.get().success(function (settingData) {
+        console.log('staticData', settingData);
+        if (settingData && settingData.length > 0) {
+            const defaultSetting = settingData.find(elData => elData.is_default == 1);
+            $scope.invoiceSettingData = defaultSetting || settingData[0];
+        }
+    });
+    
     if ($routeParams.id) {
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
@@ -17672,47 +17680,76 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 500);
 
             // invoice setting Data - invoice address based on selected business unit
-            rest.path = "clientInvoiceSetting";
-            rest.get().success(function (settingData) {
-                console.log('staticData', settingData)
-                if(settingData){
-                    $scope.invoiceSettingData = settingData[0];
-                    if($scope.invoiceDetail.vCenterid && $scope.invoiceSettingData.server_no === 2){
-                        let invoiceSettingFltr = settingData.filter( (elData) => (elData.branch_center_id.toString().split(',')).includes($scope.invoiceDetail.vCenterid.toString())  );
-                        console.log('$scope.invoiceSettingData==2', $scope.invoiceSettingData)
-                        if(invoiceSettingFltr.length > 0)
-                            $scope.invoiceSettingData = invoiceSettingFltr[0]; 
-                    }
-                }
-                //$scope.invoiceDesignType = $scope.invoiceSettingData.server_no > 1 ? 2 : 1;
-                //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
-            })
+            // rest.path = "clientInvoiceSetting";
+            // rest.get().success(function (settingData) {
+            //     console.log('staticData', settingData)
+            //     if(settingData){
+            //         $scope.invoiceSettingData = settingData[0];
+            //         if($scope.invoiceDetail.vCenterid && $scope.invoiceSettingData.server_no === 2){
+            //             let invoiceSettingFltr = settingData.filter( (elData) => (elData.branch_center_id.toString().split(',')).includes($scope.invoiceDetail.vCenterid.toString())  );
+            //             if(invoiceSettingFltr.length > 0)
+            //                 $scope.invoiceSettingData = invoiceSettingFltr[0]; 
+            //         }
+            //     }
+            //     //$scope.invoiceDesignType = $scope.invoiceSettingData.server_no > 1 ? 2 : 1;
+            //     //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
+            // })
 
         }).error(errorCallback);
     }
 
     $scope.printIt = function (invoiceNo) {
-        
+        const invoicePdfData = {};
         let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
         //$scope.noneCls = "";
+        setTimeout(() => {
+            //$scope.$apply();
+            // Extract content by ID from compiled HTML
+            var invoiceContent = $(".invoiceContent").html();
+            var invoiceHeader = $(".invoiceHeader").html();
+            var invoiceFooter = $(".invoiceFooter").html();
+            //console.log("Specific Element Content:", specificElementContent);
+            invoicePdfData.pdfContent = invoiceContent
+            invoicePdfData.pdfHeader = invoiceHeader
+            invoicePdfData.pdfFooter = invoiceFooter
+            invoicePdfData.pdfFileName = invoiceNo + '-file'+ (getDatetime(new Date())).toString().replace(/[^a-z0-9]/ig, '')+'.pdf' ;
+            invoicePdfData.base64Content = true
+            
+            rest.path = 'downloadinvoice';
+            rest.post(invoicePdfData).success(function (data) {
+                if(data && data.status ==200 && data.pdfFile){
+                    var pdfBlob = b64toBlob(data.pdfFile, "application/pdf");
+                    // Create a URL for the Blob object
+                    var pdfUrl = URL.createObjectURL(pdfBlob);
+                    var aDownloadTag = document.createElement('a');
+                    aDownloadTag.href = pdfUrl;
+                    aDownloadTag.download = invoiceNo + '.pdf';
+                    document.body.appendChild(aDownloadTag);
+                    aDownloadTag.click();
+                    document.body.removeChild(aDownloadTag);
+                    $timeout(function () {
+                        $scope.cancel();
+                    }, 500);
+                }
+            }).error(errorCallback);
+        }, 100);
 
-        kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
-            group.options.set("font", "12px DejaVu Sans");
-            // group.options.set("pdf", {
-            //     margin: {
-            //         left: "40mm",
-            //         top: "0mm",
-            //         right: "40mm",
-            //         bottom: "0mm"
-            //     }
-            // });
-            kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
-        });
-        $timeout(function () {
-            $scope.cancel();
-            //angular.element('.invoiceInput input').removeClass('invoiceInputborder');
-        }, 500);
+        // kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
+        //     group.options.set("font", "12px DejaVu Sans");
+        //     // group.options.set("pdf", {
+        //     //     margin: {
+        //     //         left: "40mm",
+        //     //         top: "0mm",
+        //     //         right: "40mm",
+        //     //         bottom: "0mm"
+        //     //     }
+        //     // });
+        //     kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
+        // });
+        // $timeout(function () {
+        //     $scope.cancel();
+        // }, 500);
         
     }
 
@@ -30735,25 +30772,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
+    var data = {
+        message: 'Hello, Modal!'
+    };
     $scope.pdfInvoice = function (id) {
         var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
-            templateUrl: 'tpl/invoicePdf.html',
+            templateUrl: 'tpl/invoicepdfCommon.html',
             controller: 'invoicePdfController',
-            //size: '',
-            //width: 1000,
             resolve: {
                 items: function () {
                     return id;
                 }
-            }
-        });
-
-        modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
-            $route.reload();
+            },
+            windowClass: 'hidden-modal', // Apply a CSS class to hide the modal
+            backdrop: 'static',          // To prevent closing on backdrop click
+            keyboard: false              // To prevent closing on Esc key press
         });
     }
+    // $scope.pdfInvoice = function (id) {
+    //     var modalInstance = $uibModal.open({
+    //         animation: $scope.animationsEnabled,
+    //         templateUrl: 'tpl/invoicePdf.html',
+    //         controller: 'invoicePdfController',
+    //         //size: '',
+    //         //width: 1000,
+    //         resolve: {
+    //             items: function () {
+    //                 return id;
+    //             }
+    //         }
+    //     });
+
+    //     modalInstance.result.then(function (selectedItem) {
+    //         $scope.selected = selectedItem;
+    //         $route.reload();
+    //     });
+    // }
 
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
