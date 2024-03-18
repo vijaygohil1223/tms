@@ -2,9 +2,11 @@
     .modal-dialog {
         width: 90%;
     }
+
     .app-content-body {
         float: none;
     }
+
     .tagsinput {
         border-radius: 3px;
         border: 1px solid #D5D5D5;
@@ -93,7 +95,7 @@
     }
 
     .itemfield .form-group {
-         /* margin-bottom: 5px !important; */
+        /* margin-bottom: 5px !important; */
     }
 
     .itemfield .fa-times:before,
@@ -132,6 +134,7 @@
     .invoice-header h1 {
         margin-top: 50px;
     }
+
     .invoice-footer p {
         margin-top: 10px;
     }
@@ -145,24 +148,25 @@
         left: -80%;
         bottom: 0;
     }
-    #emailTemplateText{
+
+    #emailTemplateText {
         /* display: none; */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border: 1px solid #ccc;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ccc;
     }
+
     /* purchase order css end */
-    
 </style>
 <div class="bolck">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
             style="margin-right:50px;display:none;" ng-click="cancel()">×</button>
-        <h3 class="modal-title" style="float:left;">Edit job:</h3>
+        <h3 class="modal-title" style="float:left;">Edit job</h3>
 
         <a class="btn btn-info" ng-click="savejobDetail('jobDetails-form');"><i class="fa fa-floppy-o"
                 aria-hidden="true"></i> Save</a>
@@ -186,24 +190,22 @@
                                         <div class="col-sm-12 p-0 projectDetailsbox">
                                             <div class="col-sm-4">
                                                 <div class="form-group" style="margin-top: 26px;">
-                                                    <label>Job Number :</label>
-                                                    <label><strong>{{jobdetail.po_number}}</strong></label>
+                                                    <label>Job Number : <span><strong> {{jobdetail.po_number}}</strong></span> </label>
                                                     <!-- <label><strong>{{jobdetail.job_code}}{{jobdetail.job_no | numberFixedLen:3}}</strong></label> -->
                                                 </div>
                                             </div>
 
                                             <div class="col-sm-4">
                                                 <div class="form-group" style="margin-top: 26px;">
-                                                    <label>Company Code :</label>
-                                                    <label
-                                                        id="companyCode"><strong>{{jobdetail.company_code}}</strong></label>
+                                                    <label>Company Code : <span id="companyCode"> <strong> {{jobdetail.company_code}}</strong></span></label>
+                                                    <!-- <label id="companyCode"> <strong> {{jobdetail.company_code}}</strong></label> -->
                                                 </div>
                                             </div>
                                             <div class="col-sm-4">
                                                 <div class="form-group" style="margin-top: 26px;">
-                                                    <label>Creation Date :</label>
-                                                    <label><strong>{{jobdetail.created_date |
-                                                            globalDtFormat}}</strong></label>
+                                                    <label>Creation Date : <span> <strong> {{jobdetail.created_date | globalDtFormat}}</strong></span></label>
+                                                    <!-- <label> <strong> {{jobdetail.created_date |
+                                                            globalDtFormat}}</strong></label> -->
                                                 </div>
                                             </div>
                                             <!--  <div class="col-sm-4">
@@ -349,8 +351,7 @@
                                                     <div class="left">
                                                         <label>Comment</label>
                                                         <textarea class="form-control" name="description"
-                                                            ng-model="jobdetail.jobDesc"
-                                                            required></textarea>
+                                                            ng-model="jobdetail.jobDesc" required></textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -359,16 +360,16 @@
                                             <div class="col-sm-2">
                                                 <!-- <a style="padding:2px" href="javascript:void(0)" ng-click="filemanagerSource('source')"><span class="orderin"></span>Source &nbsp;(<span class="sourceC" id="popSourceCount"></span>)</a> -->
                                                 <a style="padding:2px" href="javascript:void(0)"
-                                                    ng-click="filemanagerSource('target')"><span
-                                                        class="orderout"></span>Download &nbsp;(<span class="targteC"
-                                                        id="popTargetCount"></span>)</a>
+                                                    ng-click="filemanagerSource('source')"><span
+                                                        class="orderin"></span>Upload &nbsp;(<span class="sourceC"
+                                                        id="popSourceCount"></span>)</a>
                                             </div>
                                             <div class="col-sm-2 filetarget">
                                                 <!-- <a style="padding:2px" href="javascript:void(0)" ng-click="filemanagerSource('target')"><span class="orderout"></span>Target &nbsp;(<span class="targteC" id="popTargetCount"></span>)</a> -->
                                                 <a style="padding:2px" href="javascript:void(0)"
-                                                    ng-click="filemanagerSource('source')"><span
-                                                        class="orderin"></span>Upload &nbsp;(<span class="sourceC"
-                                                        id="popSourceCount"></span>)</a>
+                                                    ng-click="filemanagerSource('target')"><span
+                                                        class="orderout"></span>Download &nbsp;(<span class="targteC"
+                                                        id="popTargetCount"></span>)</a>
                                             </div>
                                         </div>
                                         <div class="col-sm-12 pl-0" ng-if="jobdetail.rejection"
@@ -515,8 +516,12 @@
                                             <!-- <a ng-click="sendPO('SendOrder')" class="btn btn-info">Send PO</a> -->
                                             <!-- <a ng-click="sendPO('Download')" class="btn btn-info">
                                                 <i class="fa fa-download"></i> PO</a> -->
-                                            <a ng-click="sendPoPopup('SendOrder')" ng-class="jobdetail.isPoSent ? 'btn btn-success' : 'btn btn-info' " ng-disabled="!sendPoBtn || !jobdetail.resource">{{jobdetail.isPoSent ? 'Sent' : 'Send'}} PO </a>
-                                            <a ng-click="sendPoPopup('Download')" class="btn btn-info" ng-disabled="!sendPoBtn || !jobdetail.resource">
+                                            <a ng-click="sendPoPopup('SendOrder')"
+                                                ng-class="jobdetail.isPoSent ? 'btn btn-success' : 'btn btn-info' "
+                                                ng-disabled="!sendPoBtn || !jobdetail.resource">{{jobdetail.isPoSent ?
+                                                'Sent' : 'Send'}} PO </a>
+                                            <a ng-click="sendPoPopup('Download')" class="btn btn-info"
+                                                ng-disabled="!sendPoBtn || !jobdetail.resource">
                                                 <i class="fa fa-download"></i> PO </a>
                                         </div>
                                     </div>
@@ -799,7 +804,7 @@
                                     <p>{{poSettingData.address1}} </br>
                                         {{poSettingData.postcode}} {{poSettingData.city}} </br>
                                         {{poSettingData.country}} </br>
-                                        {{poSettingData.vat_number}}</P>      
+                                        {{poSettingData.vat_number}}</P>
                                 </div>
                             </div>
 
@@ -819,10 +824,12 @@
                                     </p>
                                 </div>
                                 <div class="col-xs-6 text-right">
-                                    <p class="h4"> <strong>PO #{{jobdetail.po_number}} <!-- {{purchaseDetail.purchaseOrderNo }}--> </strong></p>
+                                    <p class="h4"> <strong>PO #{{jobdetail.po_number}}
+                                            <!-- {{purchaseDetail.purchaseOrderNo }}--> </strong></p>
                                     <br />
                                     <p>
-                                        PO date: <br /><span ng-bind="purchaseDetail.purchaseOrderDate | globalDtFormat"></span></br>
+                                        PO date: <br /><span
+                                            ng-bind="purchaseDetail.purchaseOrderDate | globalDtFormat"></span></br>
                                         <strong>Project Name:</strong> <br />
                                         <span ng-bind="jobdetail.projectName"></span>
                                     </p>
@@ -843,7 +850,8 @@
                                         </tr>
                                     </thead>
                                     <tbody class="table table-striped bg-white b-a">
-                                        <tr class="thfont" ng-repeat="invL in itemPriceUni[jobdetail.job_summmeryId] track by $index">
+                                        <tr class="thfont"
+                                            ng-repeat="invL in itemPriceUni[jobdetail.job_summmeryId] track by $index">
                                             <th>{{$index + 1}}</th>
                                             <th> {{ invL.pricelist }}</th>
                                             <th>{{invL.quantity}}</th>
@@ -874,11 +882,11 @@
                 </div>
                 <!-- Design 2 for beconnected and dosina server -->
                 <div class="po s2_downloadPO" id="downloadpo_s2">
-                    <div id="emailTemplate"  class="emailTemplate" ng-show="poTempate">
+                    <div id="emailTemplate" class="emailTemplate" ng-show="poTempate">
                         <!-- Pdf Content Dynamic -->
                     </div>
                 </div>
-            </div> 
+            </div>
             <!-- End Purchase order pdf  -->
 
         </div>

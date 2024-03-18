@@ -1147,17 +1147,18 @@ class jobs_detail
             $jobDetails = $this->_db->getone('tms_summmery_view');
 
             $jobnumber = isset($jobDetails['po_number']) ? $jobDetails['po_number'] : ''; 
-            if (isset($jobDetails['due_date'])){
-                try {
-                    $datetime = new DateTime($jobDetails['due_date']);
-                    $duedateFrmt = $datetime->format('d.m.Y H:i');
-                } catch (Exception $e) {
-                    $duedateFrmt = '';
-                }
-                $duedate = $duedateFrmt;
+            if (isset($jobDetails['due_date'])) {
+                $format = 'Y-m-d H:i:s';
+                $due_date = $jobDetails['due_date'] ?? '';
+            
+                $datetime = DateTime::createFromFormat($format, $due_date);
+                $duedateFrmt = ($datetime && $datetime->format($format) === $due_date) ? $datetime->format('d.m.Y H:i') : '';
+            
+                $duedate = $duedateFrmt ?? '';
+            } else {
+                $duedate = '';
             }
-            else
-                $duedate = " ";
+
             if (isset($jobDetails['ItemLanguage']))
                 $langPair = $jobDetails['ItemLanguage'];
             else
