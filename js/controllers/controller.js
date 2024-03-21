@@ -17520,25 +17520,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.vatTax = 0;
     //change jobitem price module
 
-    $routeParams.id = items;
+    if(items && items.id){
+        $routeParams.id = items.id;
+        console.log('items', items)
+    }else{
+        return false;
+    }
 
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
 
     rest.path = "clientInvoiceSetting";
     rest.get().success(function (settingData) {
-        console.log('staticData', settingData);
         if (settingData && settingData.length > 0) {
             const defaultSetting = settingData.find(elData => elData.is_default == 1);
             $scope.invoiceSettingData = defaultSetting || settingData[0];
         }
     });
     
+    $scope.invoiceDetail = {};
     if ($routeParams.id) {
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             
             $scope.invoiceDetail = data[0];
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
@@ -17575,31 +17581,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.tax_rate = $scope.invoiceDetail.tax_rate ? $scope.invoiceDetail.tax_rate : 0; 
             $scope.vatTax = $scope.invoiceDetail.tax_rate;
             $scope.vatAmount = 0;
+            
+            $scope.vBankInfo = Array.isArray($scope.invoiceDetail.vBankInfo) ? $scope.invoiceDetail.vBankInfo[0] : '';
+                
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
                 //$scope.userData = dataUser.userData;
                 $scope.userPaymentData = dataUser.userPaymentData;
-                //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
-                var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
-                $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
-                //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
-                //$scope.currencyType = vBankInfo.currency_code;
-
-                //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
-                $scope.currencyPaymentMethod = 'Bank Transfer';
-                $scope.vBankInfo.currency_code = 'EUR';
-                //$scope.currencyType = '€ ';
-                if ($scope.currencyPaymentMethod == 'Bank Transfer') {
-                    $timeout(function () {
-                        $("#Bank").prop('checked', true);
-                    }, 100);
-                } else {
-                    $timeout(function () {
-                        $("#Paypal").prop('checked', true);
-                    }, 100);
-                }
-                $scope.invoiceDetail.payment = $scope.currencyPaymentMethod;
+                
 
             }).error(errorCallback);
 
@@ -17669,15 +17659,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.reminderBtnHideShow = false;
             $timeout(function () {
                 var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, $scope.invoiceDetail.number_of_days)
-                
-                if (($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')) {
-                    if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
-                        $scope.reminderBtnHideShow = true;
-                    }
-                }
                 // print invoice after all data load    
                 $scope.printIt($scope.invoiceDetail.invoice_number);
-            }, 500);
+            }, 1000);
 
             // invoice setting Data - invoice address based on selected business unit
             // rest.path = "clientInvoiceSetting";
@@ -17699,6 +17683,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.printIt = function (invoiceNo) {
+
+        console.log('$scope.invoiceDetail', $scope.invoiceDetail)
         const invoicePdfData = {};
         let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
@@ -17719,37 +17705,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'downloadinvoice';
             rest.post(invoicePdfData).success(function (data) {
                 if(data && data.status ==200 && data.pdfFile){
+                    const pdffileName = invoiceNo ? invoiceNo + '.pdf' : 'invoice' + '.pdf';
                     var pdfBlob = b64toBlob(data.pdfFile, "application/pdf");
                     // Create a URL for the Blob object
-                    var pdfUrl = URL.createObjectURL(pdfBlob);
-                    var aDownloadTag = document.createElement('a');
-                    aDownloadTag.href = pdfUrl;
-                    aDownloadTag.download = invoiceNo + '.pdf';
-                    document.body.appendChild(aDownloadTag);
-                    aDownloadTag.click();
-                    document.body.removeChild(aDownloadTag);
+                    if(! items.isMultiple){
+                        var pdfUrl = URL.createObjectURL(pdfBlob);
+                        var aDownloadTag = document.createElement('a');
+                        aDownloadTag.href = pdfUrl;
+                        aDownloadTag.download = pdffileName;
+                        document.body.appendChild(aDownloadTag);
+                        aDownloadTag.click();
+                        document.body.removeChild(aDownloadTag);
+                    }
+                    var pdfDataArr = {
+                        name: pdffileName,
+                        data: data.pdfFile
+                    }
+                    $uibModalInstance.close(pdfDataArr);
+                        
                     $timeout(function () {
-                        $scope.cancel();
-                    }, 500);
+                        //$scope.cancel();
+                        //$uibModalInstance.close(pdfDataArr);
+                        $scope.invoiceDetail = {};
+                        pdfDataArr = {}
+                    }, 50);
                 }
             }).error(errorCallback);
-        }, 100);
-
-        // kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
-        //     group.options.set("font", "12px DejaVu Sans");
-        //     // group.options.set("pdf", {
-        //     //     margin: {
-        //     //         left: "40mm",
-        //     //         top: "0mm",
-        //     //         right: "40mm",
-        //     //         bottom: "0mm"
-        //     //     }
-        //     // });
-        //     kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
-        // });
-        // $timeout(function () {
-        //     $scope.cancel();
-        // }, 500);
+        }, 500);
         
     }
 
@@ -27130,6 +27112,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.put($scope.childprice).success(function () {
                     notification('Record updated successfully.', 'success');
                     $route.reload();
+                    //$scope.childPriceListFn()
                 }).error(errorCallback);
             } else {
                 $scope.childprice.rate = $scope.childprice.rate ? numberFormatCommaToPoint($scope.childprice.rate) : 0;
@@ -27143,11 +27126,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    rest.path = 'childPriceGet';
-    rest.get().success(function (data) {
-        $scope.childunitlist = data;
-        $scope.childEmpty = jQuery.isEmptyObject(data);
-    })
+    $scope.childPriceListFn = function(){
+        rest.path = 'childPriceGet';
+        rest.get().success(function (data) {
+            $scope.childunitlist = data;
+            //console.log('$scope.childunitlist', $scope.childunitlist)
+            $scope.childEmpty = jQuery.isEmptyObject(data);
+        })
+    }
+    $scope.childPriceListFn()
 
     $scope.ChildunitEdit = function (id, eID) {
         rest.path = 'childpriceGetOne/' + id;
@@ -30196,6 +30183,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.resourceDefault = $window.localStorage.getItem("session_iUserId");
     $scope.resourceId = '0';
+    $scope.isDisabledExportpdf = false;
     
     $scope.changeResource = function(resourceId){
         
@@ -30772,42 +30760,204 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
-    var data = {
-        message: 'Hello, Modal!'
-    };
-    $scope.pdfInvoice = function (id) {
+    rest.path = "clientInvoiceSetting";
+    rest.get().success(function (settingData) {
+        if (settingData && settingData.length > 0) {
+            const defaultSetting = settingData.find(elData => elData.is_default == 1);
+            $scope.invoiceSettingData = defaultSetting || settingData[0];
+            console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
+        }
+    });
+
+    $scope.pdfInvoice = function (id, isMultiple=false) {
+        console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
+        console.log('id', id)
+        var deferred = $q.defer(); // Create a deferred object
+        $scope.data = {
+            id: id,
+            isMultiple: isMultiple
+        }
+        
+        console.log('$scope.data', $scope.data)
         var modalInstance = $uibModal.open({
             templateUrl: 'tpl/invoicepdfCommon.html',
             controller: 'invoicePdfController',
+            // controller: function($scope, $uibModalInstance, items){
+            //     //console.log('items', items)
+            //     $scope.items = items;
+            //     const invoicePdfData = {};
+            //     var invoiceNo = "invoice-"+id
+            //     let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
+                
+            //     $scope.invoiceDetail = {};
+            //     rest.path = "clientInvoiceViewOne/" + id;
+            //     rest.get().success(function (data) {
+            //         //console.log('data', data)
+            //         $scope.invoiceDetail = data[0];
+            //         $scope.invoiceList = data;
+                    
+            //         $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].invoice_date, data[0].number_of_days);
+            //         $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(data[0].invoice_date)
+
+            //         if($scope.invoiceDetail.freelancePhone){
+            //             var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
+            //             var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
+            //             $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':').pop().trim() + ')' + ' ' + mobileNo;
+            //         }
+
+            //         if($scope.invoiceDetail.companyPhone){
+            //             var mobileNo1 = JSON.parse($scope.invoiceDetail.companyPhone).mobileNumber;
+            //             var countryCode1 = JSON.parse($scope.invoiceDetail.companyPhone).countryTitle;
+            //             $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':').pop().trim() + ')' + ' ' + mobileNo1;
+            //         }
+
+            //         //$scope.vat = $scope.invoiceDetail.vat ? $scope.invoiceDetail.vat : 0;
+            //         //$scope.invoiceTotal = $scope.invoiceDetail.item_total ? $scope.invoiceDetail.item_total : 0;
+            //         $scope.invoiceTotal = 0;
+            //         var invoiceTotal = $scope.invoiceTotal;
+            //         $scope.grandTotal = 0;
+            //         angular.forEach($scope.invoiceList, function (val, i) {
+                        
+            //             if (val.item) {
+            //                 var itemTotal = 0;
+            //                 angular.forEach(val.item, function (v, i2) {
+            //                     //$scope.invoiceTotal += v.itemTotal;
+            //                     itemTotal += v.itemTotal;
+            //                 })
+            //                 //$scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(itemTotal);
+            //             }
+                        
+            //             $scope.invoiceTotal += parseFloat(val.scoop_value);
+            //             $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
+            //             $scope.invoiceList[i].item.priceWithTax = parseFloat(val.scoop_value);
+            //         })
+            //         //$scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
+            //         $scope.vatAmount = taxRateAmountCalc(parseFloat($scope.invoiceTotal), $scope.vatTax);
+            //         $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vatAmount);
+            //         //$scope.grandTotal = parseFloat($scope.invoiceTotal);
+            //         $scope.invoiceList[0].Invoice_cost = $scope.grandTotal;
+            //         //$scope.invoiceList[0].Invoice_cost = $scope.invoiceTotal;
+            //         $scope.totalDue = $scope.invoiceList[0].Invoice_cost - $scope.invoiceList[0].paid_amount;
+                    
+            //         $scope.invoiceTotal = (invoiceTotal.toString().includes(',')) ? $scope.invoiceTotal : $filter('customNumber')($scope.invoiceTotal);
+            //         //$scope.vat = $filter('customNumber')($scope.vat);
+            //         if($scope.invoiceList[0].paid_amount > 0){
+            //             $scope.dueAmountText = 'DUE AMOUNT'; 
+            //         }
+                    
+            //         setTimeout( ()=>{
+            //             console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            //             var invoiceContent = $(".invoiceContent").html();
+            //             var invoiceHeader = $(".invoiceHeader").html();
+            //             var invoiceFooter = $(".invoiceFooter").html();
+            //             //console.log("Specific Element Content:", specificElementContent);
+            //             invoicePdfData.pdfContent = invoiceContent
+            //             invoicePdfData.pdfHeader = invoiceHeader
+            //             invoicePdfData.pdfFooter = invoiceFooter
+            //             invoicePdfData.pdfFileName = invoiceNo + '-file'+ (getDatetime(new Date())).toString().replace(/[^a-z0-9]/ig, '')+'.pdf' ;
+            //             invoicePdfData.base64Content = true
+
+            //             rest.path = 'downloadinvoice';
+            //             rest.post(invoicePdfData).success(function (data) {
+            //                 console.log('data-pdfff=>', data)
+            //                 if(data && data.status ==200 && data.pdfFile){
+            //                     const pdffileName = invoiceNo ? invoiceNo + '.pdf' : 'invoice' + '.pdf';
+            //                     var pdfBlob = b64toBlob(data.pdfFile, "application/pdf");
+            //                     // Create a URL for the Blob object
+            //                     var pdfUrl = URL.createObjectURL(pdfBlob);
+            //                     var aDownloadTag = document.createElement('a');
+            //                     aDownloadTag.href = pdfUrl;
+            //                     aDownloadTag.download = pdffileName;
+            //                     document.body.appendChild(aDownloadTag);
+            //                     aDownloadTag.click();
+            //                     document.body.removeChild(aDownloadTag);
+            //                     var pdfDataArr =  {
+            //                         name: pdffileName,
+            //                         data: data.pdfFile
+            //                     }
+            //                     $uibModalInstance.close(pdfDataArr);
+            //                     //deferred.resolve( $uibModalInstance.close(pdfDataArr) );    
+            //                     //$timeout(function () {
+            //                         //$scope.cancel();
+            //                         //$uibModalInstance.close(pdfDataArr);
+            //                         $scope.invoiceDetail = {};
+            //                         pdfDataArr = {}
+            //                     //}, 50);
+            //                 }
+            //             }).error(errorCallback);
+            //         }, 500)
+
+            //     })
+                
+
+            // },
             resolve: {
                 items: function () {
-                    return id;
+                    return $scope.data;
                 }
             },
             windowClass: 'hidden-modal', // Apply a CSS class to hide the modal
             backdrop: 'static',          // To prevent closing on backdrop click
             keyboard: false              // To prevent closing on Esc key press
         });
-    }
-    // $scope.pdfInvoice = function (id) {
-    //     var modalInstance = $uibModal.open({
-    //         animation: $scope.animationsEnabled,
-    //         templateUrl: 'tpl/invoicePdf.html',
-    //         controller: 'invoicePdfController',
-    //         //size: '',
-    //         //width: 1000,
-    //         resolve: {
-    //             items: function () {
-    //                 return id;
-    //             }
-    //         }
-    //     });
+        modalInstance.result.then(function (rtnItem) {
+            console.log('rtnItem', rtnItem)
+            $scope.selected = rtnItem;
+            //$route.reload();
+            //generateZip(pdfFiles);
+            deferred.resolve(rtnItem);
 
-    //     modalInstance.result.then(function (selectedItem) {
-    //         $scope.selected = selectedItem;
-    //         $route.reload();
-    //     });
-    // }
+        });
+
+        return deferred.promise;
+    }
+
+    $scope.exportPdf = async function() {
+        if($scope.checkedIds && $scope.checkedIds.length>0){
+            $scope.isDisabledExportpdf = true;
+            var pdfPromises = []; // Array to store promises for PDF generation
+            for (let val of $scope.checkedIds) {
+                console.log('val', val);
+                try {
+                    const pData = await $scope.pdfInvoice(val, true);
+                    console.log('pData', pData);
+                    pdfPromises.push(pData);
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                }
+            }
+            // After all promises are resolved
+            Promise.all(pdfPromises).then(pdfDataArray => {
+                var pdfFile = pdfDataArray.map((pdfData, index) => ({
+                    name: pdfData.name,
+                    data: pdfData.data
+                }));
+                // Proceed with handling the generated PDF files
+                $scope.generateZipFn(pdfFile);
+                $scope.isDisabledExportpdf = false;
+            }).catch(error => {
+                console.error('Error generating PDFs:', error);
+                $scope.isDisabledExportpdf = false;
+            });
+        }
+    }
+    
+
+    $scope.generateZipFn = function(pdfFiles){
+        const zip = new JSZip();
+        pdfFiles.forEach(({ name, data }) => {
+            zip.file(name, data, { base64: true });
+        });
+        zip.generateAsync({ type: 'blob' }).then(content => {
+            const zipBlob = new Blob([content]);
+            const zipUrl = URL.createObjectURL(zipBlob);
+
+            const link = document.createElement('a');
+            link.href = zipUrl;
+            link.download = 'invoices.zip';
+            link.click();
+        });
+    }
 
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
