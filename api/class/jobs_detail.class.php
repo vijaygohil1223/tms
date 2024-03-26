@@ -1776,8 +1776,8 @@ class jobs_detail
 
                 $clientName = $this->_db->getOne('tms_client');
 
-                $data[$key]['Client'] = $clientName['vUserName'];
-                $data[$key]['clientlogo'] = $clientName['vLogo'];
+                $data[$key]['Client'] = isset($clientName['vUserName']) ? $clientName['vUserName'] : '';
+                $data[$key]['clientlogo'] = isset($clientName['vLogo']) ? $clientName['vLogo'] : '';
             }
 
             if ($value['indirectClient']) {
@@ -1786,7 +1786,7 @@ class jobs_detail
 
                 $IndirectClientName = $this->_db->getOne('tms_client_indirect');
 
-                $data[$key]['indirectClient'] = $IndirectClientName['vUserName'];
+                $data[$key]['indirectClient'] = isset($IndirectClientName['vUserName']) ? $IndirectClientName['vUserName'] : '';
             }
 
             if ($value['resource']) {
@@ -1796,7 +1796,7 @@ class jobs_detail
                 $resourceData = $this->_db->getOne('tms_users');
 
                 $data[$key]['resource'] = $resourceData ? $resourceData['vFirstName']. " " .$resourceData['vLastName'] : '';
-                $data[$key]['resourceId'] = $value['resource'];
+                $data[$key]['resourceId'] = isset($value['resource']) ? $value['resource'] : '';
             }
 
             if ($value['contact_person']) {
