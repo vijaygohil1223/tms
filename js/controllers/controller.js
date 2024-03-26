@@ -1570,7 +1570,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.proejctsToDisplay = [];
     $window.localStorage.scoopReport = '';
     $scope.dateToday = dateFormat(new Date()).split(".").reverse().join("-");
-
     
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
@@ -30783,7 +30782,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             templateUrl: 'tpl/invoicepdfCommon.html',
             controller: 'invoicePdfController',
             // controller: function($scope, $uibModalInstance, items){
-                // if you don't want to make controller
+                // if you don't want to make seperate controller
             // },
             resolve: {
                 items: function () {
