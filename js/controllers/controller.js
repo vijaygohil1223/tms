@@ -14461,6 +14461,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewdirectdataget/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.info = data;
+            console.log('$scope.info', $scope.info)
             
             // rest.path = 'getTaxName/' + $scope.info.vTextType;
             // rest.get().success(function(data) {
