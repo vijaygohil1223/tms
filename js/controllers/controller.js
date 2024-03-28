@@ -17966,7 +17966,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     }
-}).controller('invoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter) {
+}).controller('invoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $q, $compile) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.gloabalDateFormat = $window.localStorage.getItem('global_dateFormat')
     $scope.isDisabledApprvd = false;
@@ -18069,6 +18069,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency == 'NOK,kr'){
                 $scope.showSecondCUrrency = true;
             }
+            $scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency == 'NOK,kr' ? '' : $('.linguistcurrency').hide(); 
+            
             angular.forEach($scope.currencyAllData, function (item, i) {    
                 if(item.currency_code == 'NOK,kr')
                     $scope.nokRate = item.current_curency_rate 
@@ -18396,22 +18398,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // angular.element('#editInvoiceSave2').hide();
         // angular.element('.btnSave').hide();
 
+        $scope.pdfDownloadFn(number, true)
         
         setTimeout( ()=>{
-            
-            console.log('$scope.hideElemnt',$scope.hideElemnt )
-            kendo.drawing.drawDOM($("#exportable")).then(function (group) {
-                group.options.set("font", "8px DejaVu Sans");
-                /*group.options.set("pdf", {
-                    margin: {
-                        left   : "40mm",
-                        top    : "0mm",
-                        right  : "40mm",
-                        bottom : "0mm"
-                    }
-                });*/
-                kendo.drawing.pdf.saveAs(group, number + ".pdf");
-            });
+            // kendo.drawing.drawDOM($("#exportable")).then(function (group) {
+            //     group.options.set("font", "8px DejaVu Sans");
+            //     kendo.drawing.pdf.saveAs(group, number + ".pdf");
+            // });
         }, 200)
 
         $timeout(function () {
@@ -18454,35 +18447,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //angular.element('.btnSave').hide();
 
         setTimeout( ()=> {
-            kendo.drawing.drawDOM($("#exportable"))
-                .then(function (group) {
-                    // Render the result as a PDF file
-                    return kendo.drawing.exportPDF(group, {
-                        //paperSize: "auto",
-                    });
-                })
-                .done(function (data) {
-                    $scope.invoicemailDetail = {
-                        'pdfData': data,
-                        'invoiceno': number,
-                        'invoice_id': $routeParams.id,
-                        'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-                        'freelanceName': $scope.invoiceDetail.freelanceName,
-                        'emailRemind1': $scope.invoiceDetail.emailRemind1,
-                        'emailRemind2': $scope.invoiceDetail.emailRemind2,
-                        'outstanding_reminder': 1,
-                    };
-                    rest.path = 'sendInvoiceMail';
-                    rest.post($scope.invoicemailDetail).success(function (data) {
-                        if (data.status == 200) {
-                            angular.element('.invoiceInput input').removeClass('invoiceInputborder');
-                            $scope.hideElemnt = true;
-                            $scope.viewBtn = true;
-                            notification('Reminder mail has been sent successfully', 'success');
-                        }
-                    }).error(errorCallback);
+            // kendo.drawing.drawDOM($("#exportable"))
+            //     .then(function (group) {
+            //         // Render the result as a PDF file
+            //         return kendo.drawing.exportPDF(group, {
+            //             //paperSize: "auto",
+            //         });
+            //     })
+            //     .done(function (data) {
+                    $scope.pdfDownloadFn(number, false).then( (pdfBase64Data)=>{
+                        $scope.invoicemailDetail = {
+                            'pdfData': 'data:application/pdf;base64,'+ pdfBase64Data,
+                            'invoiceno': number,
+                            'invoice_id': $routeParams.id,
+                            'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+                            'freelanceName': $scope.invoiceDetail.freelanceName,
+                            'emailRemind1': $scope.invoiceDetail.emailRemind1,
+                            'emailRemind2': $scope.invoiceDetail.emailRemind2,
+                            'outstanding_reminder': 1,
+                        };
+                        rest.path = 'sendInvoiceMail';
+                        rest.post($scope.invoicemailDetail).success(function (data) {
+                            if (data.status == 200) {
+                                angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+                                $scope.hideElemnt = true;
+                                $scope.viewBtn = true;
+                                notification('Reminder mail has been sent successfully', 'success');
+                            }
+                        }).error(errorCallback);
+                    })
                     
-                });
+                //});
             }, 200)
             
             setTimeout( ()=> {
@@ -18509,60 +18504,64 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.isPdfdownload = true;
             $window.localStorage.generalMsg = $scope.invoicesetInfoData.invoice_receive_email ? $scope.invoicesetInfoData.invoice_receive_email : '';
             setTimeout( ()=> {
-                kendo.drawing.drawDOM($("#exportable"))
-                    .then(function (group) {
-                        // Render the result as a PDF file
-                        return kendo.drawing.exportPDF(group, {
-                            //paperSize: "auto",
-                        });
-                    })
-                    .done(function (data) {
-                        var invoicemailDetail = {
-                            'pdfData': data,
-                            'invoiceno': number,
-                            'invoice_id': $routeParams.id,
-                            'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-                            'freelanceName': $scope.invoiceDetail.freelanceName,
-                            'emailRemind1': $scope.invoiceDetail.emailRemind1,
-                            'emailRemind2': $scope.invoiceDetail.emailRemind2,
-                            'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
-                            'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
-                        };
-                        
-                        var modalInstance = $uibModal.open({
-                            animation: $scope.animationsEnabled,
-                            templateUrl: 'tpl/generalmsg.html',
-                            controller: 'generalmsgController',
-                            size: '',
-                            resolve: {
-                                items: function () {
-                                    return invoicemailDetail;
+                // kendo.drawing.drawDOM($("#exportable"))
+                //     .then(function (group) {
+                //         // Render the result as a PDF file
+                //         return kendo.drawing.exportPDF(group, {
+                //             //paperSize: "auto",
+                //         });
+                //     })
+                //     .done(function (data) {
+                        // create PDF at backend-side and get base64 content
+                        $scope.pdfDownloadFn(number, false).then( (pdfBase64Data)=>{
+                            var invoicemailDetail = {
+                                'pdfData': 'data:application/pdf;base64,'+ pdfBase64Data,
+                                'invoiceno': number,
+                                'invoice_id': $routeParams.id,
+                                'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+                                'freelanceName': $scope.invoiceDetail.freelanceName,
+                                'emailRemind1': $scope.invoiceDetail.emailRemind1,
+                                'emailRemind2': $scope.invoiceDetail.emailRemind2,
+                                'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
+                                'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
+                            };
+                            
+                            var modalInstance = $uibModal.open({
+                                animation: $scope.animationsEnabled,
+                                templateUrl: 'tpl/generalmsg.html',
+                                controller: 'generalmsgController',
+                                size: '',
+                                resolve: {
+                                    items: function () {
+                                        return invoicemailDetail;
+                                    }
                                 }
-                            }
-                        });
-                        // rest.path = 'sendInvoiceMail';
-                        // rest.post($scope.invoicemailDetail).success(function (data) {
-                        //     if (data.status == 200) {
-                        //         angular.element('.invoiceInput input').removeClass('invoiceInputborder');
-                        //         $scope.hideElemnt = true;
-                        //         $scope.viewBtn = true;
-                        //         notification('Reminder mail has been sent successfully', 'success');
-                        //     }
-                        // }).error(errorCallback);
+                            });
+                            // rest.path = 'sendInvoiceMail';
+                            // rest.post($scope.invoicemailDetail).success(function (data) {
+                            //     if (data.status == 200) {
+                            //         angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+                            //         $scope.hideElemnt = true;
+                            //         $scope.viewBtn = true;
+                            //         notification('Reminder mail has been sent successfully', 'success');
+                            //     }
+                            // }).error(errorCallback);
 
-                        modalInstance.result.then(function (data) {
-                            $route.reload();
-                        });
+                            modalInstance.result.then(function (data) {
+                                $route.reload();
+                            });
 
-                        // setTimeout( ()=> {
-                        //     angular.element('.invoiceInput input').removeClass('invoiceInputborder');
-                        //     $scope.isPdfdownload = false;
-                        //     // hide show input element
-                        //     $scope.hideElemnt = true;
-                        //     $scope.viewBtn = true;
-                        // }, 1000)
+                            // setTimeout( ()=> {
+                            //     angular.element('.invoiceInput input').removeClass('invoiceInputborder');
+                            //     $scope.isPdfdownload = false;
+                            //     // hide show input element
+                            //     $scope.hideElemnt = true;
+                            //     $scope.viewBtn = true;
+                            // }, 1000)
+
+                        })
                         
-                    });
+                    //});
 
                 }, 200)
         } else {
@@ -18579,16 +18578,68 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
             downloadFileFn(fileUrl);
         }else{
-            kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
-                group.options.set("font", "8px DejaVu Sans");
-                kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
-                if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
-                    var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
-                    downloadFileFn(fileUrl);
-                }
-            });
+            notification('This invoice does not have a corresponding file.', 'warning')
+            // kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
+            //     group.options.set("font", "8px DejaVu Sans");
+            //     kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
+            //     if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+            //         var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+            //         downloadFileFn(fileUrl);
+            //     }
+            // });
         }    
     
+    }
+
+    $scope.pdfDownloadFn = function(number, isDownload){
+        var deferred = $q.defer();
+        const invoicePdfData = {};
+        $http.get("tpl/invoicepdf-linguist.html")
+        .then(function(response) {
+          var htmlContent = response.data;
+          var compiledHTML = $compile(htmlContent)($scope);
+          console.log("compiledHTML", compiledHTML);
+          setTimeout(() => {
+            $scope.$apply();
+            // Extract content by ID from compiled HTML
+            var invoiceContent = compiledHTML.find(".invoiceContent").html();
+            var invoiceHeader = compiledHTML.find(".invoiceHeader").html();
+            var invoiceFooter = compiledHTML.find(".invoiceFooter").html();
+            //console.log("Specific Element Content:", specificElementContent);
+            invoicePdfData.pdfContent = invoiceContent
+            invoicePdfData.pdfHeader = invoiceHeader
+            invoicePdfData.pdfFooter = invoiceFooter
+            invoicePdfData.pdfFileName = number + '-file'+ (getDatetime(new Date())).toString().replace(/[^a-z0-9]/ig, '')+'.pdf' ;
+            invoicePdfData.base64Content = true
+            
+            rest.path = 'downloadinvoice';
+            rest.post(invoicePdfData).success(function (data) {
+                if(data && data.status ==200 && data.pdfFile){
+                    if(isDownload === true){
+                        var pdfBlob = b64toBlob(data.pdfFile, "application/pdf");
+                        // Create a URL for the Blob object
+                        var pdfUrl = URL.createObjectURL(pdfBlob);
+                        var aDownloadTag = document.createElement('a');
+                        aDownloadTag.href = pdfUrl;
+                        aDownloadTag.download = number + '.pdf';
+                        document.body.appendChild(aDownloadTag);
+                        aDownloadTag.click();
+                        document.body.removeChild(aDownloadTag);
+                        deferred.resolve(pdfBlob);
+                    }else{
+                        // base64 string
+                        deferred.resolve(data.pdfFile);
+                    }
+                }
+            }).error(errorCallback);
+          }, 100);
+        })
+        .catch(function(error) {
+          //console.error("Error loading HTML:", error);
+          deferred.reject();
+        });
+
+        return deferred.promise;
     }
 
 }).controller('linguistInvoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
@@ -32478,13 +32529,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
     }
 
-}).controller('InvoiceCreateController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $filter, fileReader) {
+}).controller('invoiceCreateController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $filter, fileReader) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceList = [];
     $scope.editInvoiceField = true;
     $scope.taxPercentage = 0;
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
-    console.log('$scope.invoiceNumOfdays', $scope.invoiceNumOfdays)
     $scope.currencyRate = 1;
     $scope.nokRate = 1;
     $scope.showSecondCUrrency = false; // freelacer Second currency selected as nok
@@ -32524,6 +32574,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency == 'NOK,kr'){
                 $scope.showSecondCUrrency = true;
             }
+            $scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency == 'NOK,kr' ? '' : $('.linguistcurrency').hide(); 
+            
             angular.forEach($scope.currencyAllData, function (item, i) {    
                 if(item.currency_code == 'NOK,kr')
                     $scope.nokRate = item.current_curency_rate 

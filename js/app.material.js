@@ -566,7 +566,7 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             role: '2'
         }).when('/invoice-create', {
             templateUrl: modulesPath + 'invoice_create.html',
-            controller: 'InvoiceCreateController',
+            controller: 'invoiceCreateController',
             activetab: 'invoice-detail',
             role: ['1', '2']
         }).when('/invoice-linguist-jobs', {

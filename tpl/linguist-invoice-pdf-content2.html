@@ -98,17 +98,25 @@
     font-size: 14px;
   }
 
-  tbody, td, tfoot, th, thead, tr {
+  tbody,
+  td,
+  tfoot,
+  th,
+  thead,
+  tr {
     border-style: unset !important;
   }
+
   .panel-body.table-payment-title {
     margin-top: 50px;
   }
+
   .list-unstyled li a {
     font-weight: 600;
     text-decoration: none;
     color: #000082;
   }
+
   .list-unstyled-one p,
   .list-unstyled-two {
     list-style-type: none;
@@ -252,11 +260,12 @@
             <div class="col-lg-12 col-md-12 col-sm-12" style="padding-left:0px;">
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <p class="address-title"> <span ng-if="invoiceDetail.freelanceName">{{invoiceDetail.freelanceName}} | </span>
+                  <p class="address-title">
+                    <span ng-if="invoiceDetail.freelanceName">{{invoiceDetail.freelanceName}} | </span>
                     <span ng-if="invoiceDetail.freelanceAddress">{{invoiceDetail.freelanceAddress}}, </span>
                     <span ng-if="freelanceZipcode">{{freelanceZipcode}}</span>
-                    <span ng-if="freelanceCity">{{freelanceCity}}, </span> <span
-                      ng-if="freelanceCountry">{{freelanceCountry}}</span>
+                    <span ng-if="freelanceCity">{{freelanceCity}}, </span>
+                    <span ng-if="freelanceCountry">{{freelanceCountry}} </span>
                   </p>
                 </div>
 
@@ -356,7 +365,7 @@
                     <td class="table-data-txt" colspan="2"> {{taxPercentage }} % Tax </td>
                     <td class="table-data-txt"> {{taxValue | customNumber }}</td>
                   </tr>
-                  <tr>
+                  <tr class="linguistcurrency">
                     <td class="table-data-txt" colspan="2"> {{taxPercentage }} % Tax (In NOK) </td>
                     <td class="table-data-txt">
                       <span ng-hide="hideElemnt">{{ taxValue2 }}</span>
@@ -379,7 +388,7 @@
                       <strong> {{grandJobTotal | customNumber}} </strong>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="linguistcurrency">
                     <td class="table-data-txt" colspan="2"> <strong>Total Price (In NOK)</strong> </td>
                     <td class="table-data-txt" style="border-top:1px solid #000; border-bottom:1px solid #000;">
                       <span ng-hide="hideElemnt"> <strong> {{ grandTotalNok }} </strong> </span>

@@ -1,0 +1,363 @@
+<style>
+  .hidden-modal {
+    display: none !important;
+  }
+</style>
+<div class="container invoice">
+  <div class="invoice-body">
+
+    <div class="row invoiceHeader">
+
+    </div>
+
+    <div class="invoiceContent">
+      <style>
+        .header-tr-border {
+          background-color: #bebebe;
+        }
+
+        table.table.table-bordered.table-condensed-second {
+          margin: 0px;
+          margin-top: 10px;
+          background-color: #d9d9d9 !important;
+        }
+
+        table.table.table-bordered.table-condensed-second tbody tr:nth-of-type(odd) td {
+          background: #d9d9d9 !important;
+        }
+
+        .table-condensed-second tbody tr {
+          background: #d9d9d9 !important;
+        }
+
+        .invoice {
+          margin: 10px auto;
+          font-family: Khmer UI, serif;
+          margin-left: -15px;
+        }
+
+        .invoice .panel-heading {
+          background-color: #fff !important;
+          border-color: #fff !important;
+        }
+
+        .invoice .invoice-header {
+          padding: 25px 25px 15px;
+        }
+
+        .invoice .invoice-header h1 {
+          margin: 0;
+        }
+
+        .invoice .invoice-header .media .media-body {
+          font-size: 0.9em;
+          margin: 0;
+        }
+
+        .invoice .invoice-body {
+          border-radius: 10px;
+          padding: 25px 60px;
+          background: #fff;
+        }
+
+        .dl-horizontal {
+          margin: 0;
+          line-height: 1.2;
+          padding: 12px;
+        }
+
+        .invoice-heading {
+          font-size: 18px;
+        }
+
+        .table-data-txt {
+          font-size: 14px;
+          padding-top: 8px;
+          padding-bottom: 8px;
+
+        }
+
+        .smlFont {
+          font-size: 12px !important;
+        }
+
+        .textleft {
+          text-align: left;
+        }
+
+        .textcenter {
+          text-align: center !important;
+        }
+
+        .textright {
+          text-align: right !important;
+          /* padding-left: 25px !important; */
+        }
+
+        tbody,
+        td,
+        tfoot,
+        th,
+        thead,
+        tr {
+          border-style: unset !important;
+        }
+
+        .panel-body.table-payment-title {
+          margin-top: 50px;
+        }
+
+        .list-unstyled li a {
+          font-weight: 600;
+          text-decoration: none;
+          color: #000082;
+        }
+
+        .list-unstyled-one p,
+        .list-unstyled-two {
+          list-style-type: none;
+          margin: 0px;
+        }
+
+        .list-unstyled-one a {
+          font-size: 18px;
+          text-decoration: none;
+        }
+
+        .list-unstyled-two a {
+          font-size: 18px;
+          color: #000;
+        }
+
+        p.panel-title-footer-end {
+          text-align: end;
+        }
+
+        p.panel-titlefooter-start,
+        p.panel-title-footer-end {
+          padding-top: 10px;
+        }
+
+        .invoice-header-total {
+          margin-bottom: 20px;
+          border-bottom: 1px solid #dee2e6;
+        }
+
+        td.table-data-text {
+          padding: 0px 10px !important;
+        }
+
+        .invoice .panel {
+          margin-bottom: initial !important;
+        }
+
+        .invoice .panel-body {
+          padding-left: initial !important;
+        }
+
+        .invoice .panel>.panel-body+.table {
+          border-top: none;
+        }
+
+        .inv-footer .table-data-text {
+          color: #808080;
+        }
+
+        .copytext {
+          text-align: center;
+          margin-top: 10px;
+          color: #808080;
+        }
+
+        .table-condensed-second>tbody>tr>td {
+          padding-bottom: 3px !important;
+          padding-bottom: 3px !important;
+        }
+
+        .mb-d {
+          padding-bottom: 0px;
+          margin-bottom: 0px;
+        }
+      </style>
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <p style="padding-left:0;margin-left:0;font-size:12px;color: #808080;width:425px;">
+                <span ng-if="invoiceDetail.freelanceName">{{invoiceDetail.freelanceName}} | </span>
+                <span ng-if="invoiceDetail.freelanceAddress">{{invoiceDetail.freelanceAddress}}, </span>
+                <span ng-if="freelanceZipcode">{{freelanceZipcode}}</span>
+                <span ng-if="freelanceCity">{{freelanceCity}}, </span>
+                <span ng-if="freelanceCountry">{{freelanceCountry}} </span>
+              </p>
+            </div>
+
+            <div style="padding-left:0;margin-left:0;">
+              <div style="padding-left:0;margin-left:0;">
+                <div style="margin-bottom: 8px;"><strong> {{invoicesetInfoData.company_name}} </strong></div>
+                <div> {{invoicesetInfoData.address1}} </div>
+                <div> {{invoicesetInfoData.postcode}} <span ng-if="clientCity">{{invoicesetInfoData.city}}</span></div>
+                <div>{{invoicesetInfoData.country}}</div>
+                <div ng-if="invoiceDetail.clientVatinfo"> {{invoicesetInfoData.vat_number}} </div>
+              </div>
+            </div>
+            <div style="padding-top: 15px;">
+              <table style="width: 100%;">
+                <thead>
+                  <tr>
+                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Contact</th>
+                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2"> Telephone</th>
+                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Email </th>
+                    <td style="font-weight: bold;">Date </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceName}}
+                    </td>
+                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2">
+                      {{invoiceDetail.freelancePhone}}</td>
+                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2">
+                      {{invoiceDetail.freelanceEmail}}</td>
+                    <td style="width: 25%;"> {{invoiceDetail.invoice_date}} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row ">
+        <div class="panel panel-default invoice-header-height">
+          <div style="margin-top:15px;margin-bottom:15px;">
+            <div class="invoice-heading">
+              <div class="d-flex"> <strong>Invoice</strong>
+                <span> #{{invoiceDetail.custom_invoice_no}}</span>
+              </div>
+            </div>
+          </div>
+          <table class="table table-bordered table-condensed" style="width: 100%;">
+            <thead>
+              <tr class="header-tr-border">
+                <th style="width:30%;">PO Number</th>
+                <th style="width:50%;">Job Description</th>
+                <th style="width:20%;">Price in {{currencyType}} </th>
+              </tr>
+            </thead>
+            <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
+              class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
+              <tr class="thfont">
+                <td class="table-data-txt"> {{invL.scoop_poNumber}}</td>
+                <td class="table-data-txt"> {{invL.poNumber}} | {{invL.item_name}} </td>
+                <td class="table-data-txt"> {{invL.price_per_job}} </td>
+              </tr>
+
+            </tbody>
+          </table>
+          <table class="table table-bordered table-condensed-second" ng-init="invoiceLength = invoiceList.length - 1"
+            ng-init="invL.item.subTotal = {}" style="width: 100%;">
+            <tbody>
+              <tr>
+                <td class="table-data-txt" colspan="2"> Subtotal excl. TAX </td>
+                <td class="table-data-txt" style="width:20%;"> {{invoiceTotal}} </td>
+              </tr>
+              <tr>
+                <td class="table-data-txt" colspan="2"> {{taxPercentage }} % TAX </td>
+                <td class="table-data-txt"> {{taxValue | customNumber }} </td>
+              </tr>
+              <tr class="linguistcurrency" ng-if="showSecondCUrrency">
+                <td class="table-data-txt" colspan="2"> {{taxPercentage }} % Tax (In NOK) </td>
+                <td class="table-data-txt"> {{ taxValue2 }} </td>
+              </tr>
+              <tr ng-if="invoiceDetail.paid_amount > 0">
+                <td class="table-data-txt" colspan="2"> Paid </td>
+                <td class="table-data-txt"> {{invoiceDetail.paid_amount | customNumber}}</td>
+              </tr>
+              <tr ng-if="invoiceDetail.paid_amount > 0">
+                <td class="table-data-txt" colspan="2"> Total Due Amount</td>
+                <td class="table-data-txt"> {{grandJobTotal - invoiceDetail.paid_amount | customNumber}} </td>
+              </tr>
+              <tr class="linguistcurrency" ng-if="showSecondCUrrency">
+                <td class="table-data-txt" colspan="2"> <strong>Total Price (In NOK)</strong> </td>
+                <td class="table-data-txt">
+                  <strong> {{ grandTotalNok }} </strong>
+                </td>
+              </tr>
+              <tr>
+                <td class="table-data-txt" colspan="2"> <strong>Total Price</strong> </td>
+                <td class="table-data-txt" style="border-top:1px solid #000; border-bottom:1px solid #000;">
+                  <strong> {{grandJobTotal | customNumber}} </strong>
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div style="margin-top:20px;">
+                <div>{{ invoiceSettingData.description }} </div>
+                <div>Payment for this invoice is due by <span
+                    ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span>. </div><br>
+                <div><strong>Payment details:</strong> </div>
+                <div>Bank Name: <span ng-bind="vBankInfo.bank_name"></span></div>
+                <div>Bank Address: <span ng-bind="vBankInfo.address"></span></div>
+                <div>Account holder: <span ng-bind="vBankInfo.holder_name"></span></div>
+                <div>IBAN: <span ng-bind="vBankInfo.iban"></span></div>
+                <div>SWIFT: <span ng-bind="vBankInfo.bic"></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row invoiceFooter">
+      <div style="margin-left: -50px;margin-right: -50px;">
+        <div style="width: 100%;">
+          <p class="smlFont" style="text-align: center;color: #808080;">{PAGENO}/{nbpg}</p>
+        </div>
+        <div style="width: 100%;">
+          <div style="width: 100%;">
+            <div style="float:left; width:25%; border-top: 1px solid #ea7227;"> </div>
+            <div style="float:left; width:25%; border-top: 1px solid #e63132;"> </div>
+            <div style="float:left; width:25%; border-top: 1px solid #4c9acc;"> </div>
+            <div style="float:right; width:25%; border-top: 1px solid #5fc752;margin-top:-1px;"> </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-left: -30px;margin-right: -30px;">
+        <table class="table table-bordered table-condensed inv-footer" style="margin-top: 10px;width: 100%;">
+          <tbody>
+            <tr>
+              <td class="table-data-text smlFont textleft"> <strong>{{ invoiceDetail.freelanceName }}</strong> </td>
+              <td class="table-data-text smlFont textcenter"> </td>
+              <td class="table-data-text smlFont textright"> <strong> VAT NUMBER:</strong> </td>
+            </tr>
+            <tr>
+              <td class="table-data-text smlFont textleft"> {{ invoiceDetail.freelanceAddress }} </td>
+              <td class="table-data-text smlFont textcenter"> Email:<a href="mailto:{{invoiceDetail.freelanceEmail}}"
+                  style="text-decoration: none;"> {{ invoiceDetail.freelanceEmail }}</a> </td>
+              <td class="table-data-text smlFont textright"> {{vatNo}} </td>
+            </tr>
+            <tr>
+              <td class="table-data-text smlFont textleft"> {{ freelanceZipcode }} {{ freelanceCity }} </td>
+              <td class="table-data-text smlFont textcenter"> <span ng-if="invoiceSettingData.server_no==2"> Web: {{
+                invoiceSettingData.web_address }}</span> </td>
+              <td class="table-data-text smlFont textright"> </td>
+            </tr>
+            <tr>
+              <td class="table-data-text smlFont textleft"> {{ invoiceSettingData.country }} </td>
+              <td class="table-data-text smlFont textcenter"> </td>
+              <td class="table-data-text smlFont textright"> </td>
+            </tr>
+          </tbody>
+        </table>
+        <div>
+          
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
