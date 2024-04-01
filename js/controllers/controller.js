@@ -2422,15 +2422,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.fillDashboardTabFn(11, $scope.projectsUpcoming, $scope.projectsUpcomingCount)
                 }
                 //To be Assigned - Assign
-                if (val.itemStatusId == "1") {
-                //if (val.itemStatusId == "To be Assigned") {
-                    val.progrss_precentage = 0;
-                    val.projectstatus_class = 'projectstatus_assigned';
-                    val.projectstatus_color = '#ffea3c';
-                    $scope.projectsAssigned.push(val);
-                    $scope.projectsAssignedCount++;
-                    $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
-                }
+                // if (val.itemStatusId == "1") {
+                // //if (val.itemStatusId == "To be Assigned") {
+                //     val.progrss_precentage = 0;
+                //     val.projectstatus_class = 'projectstatus_assigned';
+                //     val.projectstatus_color = '#ffea3c';
+                //     $scope.projectsAssigned.push(val);
+                //     $scope.projectsAssignedCount++;
+                //     $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
+                // }
                 
                 // To be Delivered - Delivery
                 if (val.itemStatusId == "3") {
@@ -2531,15 +2531,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //     $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
                     // }    
                 }
-                // In Progress - Ongoing (as per new changes)
-                if ( ! ([4,5,6,7,9].includes(val.itemStatusId)) )  {
-                    val.progrss_precentage = 25;
-                    val.projectstatus_class = 'projectstatus_inprogress';
-                    val.projectstatus_color = '#fec106';
-                    $scope.projectsInProgress.push(val);
-                    $scope.projectsInprogressCount++;
+                // Assign And In Progress
+                if ( ! ([4,6,7,8,9].includes(val.itemStatusId)) )  {
+                    let isResourceAssign = $scope.jobListDelivered.find( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.resource > 0 && jb.item_status != 'In preparation' );
+                    // ongoing
+                    if(isResourceAssign){
+                        val.progrss_precentage = 25;
+                        val.projectstatus_class = 'projectstatus_inprogress';
+                        val.projectstatus_color = '#fec106';
+                        $scope.projectsInProgress.push(val);
+                        $scope.projectsInprogressCount++;
 
-                    $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
+                        $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
+                    }
+                    // Assign
+                    if(! isResourceAssign){
+                        val.progrss_precentage = 0;
+                        val.projectstatus_class = 'projectstatus_assigned';
+                        val.projectstatus_color = '#ffea3c';
+                        $scope.projectsAssigned.push(val);
+                        $scope.projectsAssignedCount++;
+                        $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
+                    }
                 }
                 // PM Ready
                 if (val.itemStatusId == "12") {
