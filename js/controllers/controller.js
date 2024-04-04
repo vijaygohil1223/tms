@@ -16376,11 +16376,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }
-                if (val.is_approved == 1 && val.invoice_status != 'Complete') {
+                if (val.is_approved == 1 && !['Complete','Completed','Partly Paid','Paid'].includes(val.invoice_status) ) {
                     $scope.approvedInvcCount++;
                     $scope.approvedInvc.push(val);
                 }
-                if (val.invoice_status == 'Complete') {
+                if (['Complete','Completed'].includes(val.invoice_status) ) {
                     $scope.completedInvcCount++;
                     $scope.completeInvc.push(val);
                 }
@@ -27114,10 +27114,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-}).controller('masterpriceController', function ($window, $log, $scope, $location, $route, rest, $routeParams) {
+}).controller('masterpriceController', function ($window, $log, $scope, $location, $route, rest, $routeParams, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.save = function (formId, id) {
+
+        $scope.btDataTableFn('#masterPriceList');
+        
         if (angular.element('#' + formId).valid()) {
             if ($scope.master.master_price_id) {
                 $routeParams.id = $scope.master.master_price_id;
@@ -27140,6 +27143,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.path = 'masterPriceGet';
     rest.get().success(function (data) {
         $scope.masterList = data;
+
+        setTimeout(() => {
+            $scope.setCurrentPage(1) 
+        }, 100);
     });
 
     $scope.getMasterPrice = function (id, eID) {
@@ -27153,6 +27160,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.deleteMasterprice = function (id) {
         bootbox.confirm("Are you sure you want to delete this row?", function (result) {
             if (result == true) {
+                $scope.btDataTableFn('#masterPriceList');
                 rest.path = 'masterPriceDelete/' + id;
                 rest.delete().success(function () {
                     notification('Record deleted successfully.', 'success');
@@ -27161,11 +27169,40 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
+    // to keep visited page active 
+    $scope.btDataTableFn = function(id){
+        if(id){
+            var dataTable = $(id).DataTable();
+            var pageInfo = dataTable.page.info();
+            $window.localStorage.setItem('curruntPageLength', pageInfo.length);
+            $window.localStorage.setItem('curruntPageNo',pageInfo.page)
+        }
+    }
+    $scope.setCurrentPage = function(cPageno){
+        const currentPageNo = $window.localStorage.getItem('curruntPageNo');
+        const currentPageLength = $window.localStorage.getItem('curruntPageLength');
+        if(currentPageNo){
+            $scope.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('paging', true)
+            .withOption('initComplete', function(settings, json) {
+                if(currentPageLength && currentPageLength > 0)
+                    this.api().page.len(Number(currentPageLength)).draw(false);
+                this.api().page(Number(currentPageNo)).draw(false);
+                setTimeout( () => {
+                    $window.localStorage.setItem('curruntPageNo', 0);
+                    $window.localStorage.setItem('curruntPageLength', 0);
+                }, 100)
+            });
+        }
+    }
 
-}).controller('childpriceController', function ($window, $log, $scope, $location, $route, rest, $routeParams) {
+}).controller('childpriceController', function ($window, $log, $scope, $location, $route, rest, $routeParams, DTOptionsBuilder ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.save = function (formId, id) {
+
+        $scope.btDataTableFn('#masterPriceList');
+       
         if (angular.element('#' + formId).valid()) {
             if ($scope.childprice.child_price_id) {
                 $routeParams.id = $scope.childprice.child_price_id;
@@ -27175,8 +27212,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'childpriceupdate';
                 rest.put($scope.childprice).success(function () {
                     notification('Record updated successfully.', 'success');
+                    //$scope.childPriceListFn();
+                    //$scope.setCurrentPage($scope.curruntPageNo)
                     $route.reload();
-                    //$scope.childPriceListFn()
+                    
                 }).error(errorCallback);
             } else {
                 $scope.childprice.rate = $scope.childprice.rate ? numberFormatCommaToPoint($scope.childprice.rate) : 0;
@@ -27196,6 +27235,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.childunitlist = data;
             //console.log('$scope.childunitlist', $scope.childunitlist)
             $scope.childEmpty = jQuery.isEmptyObject(data);
+            setTimeout(() => {
+                $scope.setCurrentPage(1)
+            }, 100);
         })
     }
     $scope.childPriceListFn()
@@ -27216,6 +27258,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.deleteChildprice = function (id) {
         bootbox.confirm("Are you sure you want to delete this row?", function (result) {
             if (result == true) {
+                $scope.btDataTableFn('#masterPriceList');
+                
                 rest.path = 'childPriceDelete/' + id;
                 rest.delete().success(function () {
                     notification('Record deleted successfully.', 'success');
@@ -27223,6 +27267,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }).error(errorCallback);
             }
         });
+    }
+
+    $scope.btDataTableFn = function(id){
+        if(id){
+            var dataTable = $(id).DataTable();
+            var pageInfo = dataTable.page.info();
+            $window.localStorage.setItem('curruntPageLength', pageInfo.length);
+            $window.localStorage.setItem('curruntPageNo',pageInfo.page)
+        }
+    }
+    $scope.setCurrentPage = function(cPageno){
+        const currentPageNo = $window.localStorage.getItem('curruntPageNo');
+        const currentPageLength = $window.localStorage.getItem('curruntPageLength');
+
+        if(currentPageNo){
+            $scope.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('paging', true)
+            .withOption('initComplete', function(settings, json) {
+                // Navigate to the third page after the table is initialized
+                if(currentPageLength && currentPageLength > 0)
+                    this.api().page.len(Number(currentPageLength)).draw(false);
+                this.api().page(Number(currentPageNo)).draw(false);
+                //var currentPage = this.api().page.info().page ;
+                //console.log('Current Page:=>', currentPage);
+                setTimeout( ()=> {
+                    $window.localStorage.setItem('curruntPageNo', 0);
+                    $window.localStorage.setItem('curruntPageLength', 0);
+                }, 100)
+            });
+        }
     }
 
 }).controller('roundingPriceController', function ($window, $log, $scope, $location, $route, rest, $routeParams) {
@@ -30050,7 +30124,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceUnpaid = [];
             $scope.invoiceCompleted = [];
             angular.forEach(invoices, function (val, i) {
-                if (val.invoice_status == 'Complete') {
+                if (['Complete','Completed'].includes(val.invoice_status)) {
                     $scope.invoiceCompleted.push(val);
                 } else {
                     $scope.invoiceUnpaid.push(val);
@@ -30108,11 +30182,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }
-                if (val.is_approved == 1 && val.invoice_status != 'Complete') {
+                if (val.is_approved == 1 && !['Partly Paid','Paid','Complete','Completed'].includes(val.invoice_status)) {
                     $scope.approvedInvcCount++;
                     $scope.approvedInvc.push(val);
                 }
-                if (val.invoice_status == 'Complete') {
+                if (['Complete','Completed'].includes(val.invoice_status)) {
                     $scope.completedInvcCount++;
                     $scope.completeInvc.push(val);
                 }
@@ -30124,7 +30198,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
                 }
-                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete'].includes(val.invoice_status) ){
+                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed'].includes(val.invoice_status) ){
                     $scope.overdueInvcCount++ 
                     $scope.overdueInvc.push(val);
                 }

@@ -303,27 +303,42 @@ class currency {
     public function currencyExchange(){
         $rowQuery = 'UPDATE `tms_currency` SET `is_active`=1';
         $this->_db->rawQuery($rowQuery);
+        
+        // Load exchange rates from ECB API
+        $xref = simplexml_load_file('http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml');
 
+        // Fetch all necessary exchange rates from the XML
+        $exchangeRates = [];
+        foreach ($xref->Cube->Cube->Cube as $node) {
+            $currency = (string)$node['currency'];
+            $rate = (float)$node['rate'];
+            $exchangeRates[$currency] = $rate;
+        }
+
+        // Update currencies with automatic exchange rate and not EUR
         $info = self::getAll();
-        foreach ($info as $key => $value) {
-            if($value['ob_exchange_rate_auto'] == 1 && $value['country_name'] != 'EUR'){
-                $xref  = simplexml_load_file('http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml');
-                $nodes = $xref->xpath('//*[@currency="'.$value['country_name'].'"]');
-                
-                $data['current_curency_rate'] = ((array) $nodes[0]['rate']);
-                $data['current_curency_rate'] = $data['current_curency_rate'][0];
-                if($value['current_curency_rate'] != $data['current_curency_rate']){
-                    $data['updated_date'] = date('Y-m-d H:i:s');
-                    $this->_db->where('currency_id', $value['currency_id']);
-                    $id = $this->_db->update('tms_currency', $data);
+        foreach ($info as $value) {
+            if ($value['ob_exchange_rate_auto'] == 1 && $value['country_name'] != 'EUR') {
+                if (isset($exchangeRates[$value['country_name']])) {
+                    $currentCurrencyRate = $exchangeRates[$value['country_name']];
+                    
+                    // Update currency rate if it has changed
+                    if ($value['current_curency_rate'] != $currentCurrencyRate) {
+                        $this->_db->where('currency_id', $value['currency_id']);
+                        $this->_db->update('tms_currency', [
+                            'current_curency_rate' => $currentCurrencyRate,
+                            'updated_date' => date('Y-m-d H:i:s')
+                        ]);
+                    }
                 }
-                
             }
         }
-        
-        $return['status']   = 200;
-        $return['msg']      = 'All currecy rates updated successfully';
-        return $return; 
+
+        // Prepare response
+        $return['status'] = 200;
+        $return['msg'] = 'All currency rates updated successfully';
+        return $return;
+
     }
 
 }
