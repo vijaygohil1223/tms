@@ -16367,7 +16367,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var InDuedate = new Date(invoice_duedate); 
                 
                 val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
-                val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
+                //val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
+                val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Outstanding' : val.invoice_status;
                 val.invoice_number = val.custom_invoice_no && val.custom_invoice_no !== '' ? val.custom_invoice_no : val.invoice_number;
 
                 $scope.allInvcData.push(val);
@@ -24493,8 +24494,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.model().success(function (data) {
         
         angular.forEach(data, function (val, i) {
-            const resPosition = val.vResourcePosition.toString().split(',')
-            const fullName = val.vFirstName + ' ' + val.vLastName
+            const resPosition = (val?.vResourcePosition || '').toString().split(',')
+            const fullName = val?.vFirstName + ' ' + val?.vLastName
             // index based on api (project_coordinator,project_manager QA_specialist)
             if (i===0 && resPosition.includes('3') ) {
                 angular.element('#coordinatorIcon').html(fullName);
@@ -30174,7 +30175,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.invoice_number = val.custom_invoice_no && val.custom_invoice_no !== '' ? val.custom_invoice_no : val.invoice_number;
                 
                 val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
-                val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
+                val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Outstanding' : val.invoice_status;
+                //val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
                 
                 $scope.allInvcData.push(val);
                 if (val.invoice_status == 'Open') {
