@@ -35,12 +35,12 @@ class freelanceJob {
                     $this->_db->where("iClientId", $getCustomerData['client']);
                     $getClient = $this->_db->getOne('tms_client');
                     
-                    $data[$key]['clientName'] = $getClient['vUserName'];
+                    $data[$key]['clientName'] = $getClient ? $getClient['vUserName'] : '';
 
                     $this->_db->where("iClientId", $getCustomerData['indirect_customer']);
                     $getIndirectClient = $this->_db->getOne('tms_client_indirect');
 
-                    $data[$key]['IndirectClientName'] = $getIndirectClient['vUserName'];
+                    $data[$key]['IndirectClientName'] = $getIndirectClient ? $getIndirectClient['vUserName'] : '';
                     
                 }
             }
