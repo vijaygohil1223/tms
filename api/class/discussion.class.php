@@ -1,5 +1,6 @@
 <?php
 
+require_once 'functions.class.php';
 require_once 'customer.class.php';
 require_once 'client.class.php';
 
@@ -23,9 +24,47 @@ class discussion {
             $data['user_has_upvoted'] = "true";
         else
             $data['user_has_upvoted'] = "false";
+
+        $sendEmail = false;
+        if(isset($data['isCommentEmailsend']) && $data['isCommentEmailsend'] == true){
+            $sendEmail = true;
+            unset($data['isCommentEmailsend']);
+        }    
         
         $id = $this->_db->insert('tms_discussion',$data);
         if($id) {
+            if ($sendEmail && isset($data['job_id']) && $data['job_id'] > 0) {
+                
+                $this->_db->where("job_summmeryId", $data['job_id']);
+                $jobData = $this->_db->getOne('tms_summmery_view');
+                // UPLOADS_ROOT
+                if ($jobData && isset($jobData['resource'])) {
+                    //$this->_db->where("iUserId", $data['user_id']);
+                    //$fromData = $this->_db->getOne('tms_users');
+                
+                    $this->_db->where("iUserId", $jobData['resource']);
+                    $userData = $this->_db->getOne('tms_users');
+                    if ($userData && $userData['vEmailAddress'] != '') {
+                        $attachment = '';
+                        if (isset($data['fileURL'])) {
+                            $fileURL = SITE_URL.'/' . $data['fileURL'];
+                            $filename = basename($fileURL);
+                            $attachment = " \n ";
+                            $attachment .= "Attachment: \n ";
+                            $attachment .= " <a target='_blank' href=\"$fileURL\" target=\"_blank\">$filename</a>";
+                        }
+                        
+                        $html = nl2br(htmlspecialchars(" \n "));
+                        $html .= isset($data['content']) ? nl2br(htmlspecialchars($data['content'])) : '';
+                        $html .= $attachment; // Attach the file name wrapped in <a> tag to the email content
+                        $userEmail = $userData['vEmailAddress']; 
+                        $to_name = '';
+                        $subject = 'Job comment: '.$jobData['po_number'];
+                        $send_fn = new functions();
+                        $response = $send_fn->send_email_smtp($userEmail, $to_name, $cc='', $bcc='', $subject, $html, $attachments='');
+                    }
+                }
+            }
             $result['Status'] = 200;
             $result['msg'] = "Inserted Successfully";
         } else {

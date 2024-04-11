@@ -2883,6 +2883,12 @@ $app->get('/getfolderByjobid/:id/','authenticate', function ($id) {
     $result = $filemanager->getfolderByjobid($id);
     echoResponse(200, $result);
 });
+$app->post('/fileManagerFileupload', function () use($app) {
+    $filemanager = new filemanager ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $filemanager->saveFileupload($data);
+    echoResponse(200, $result);
+});
 
 //----------------order status search---------------------//
 $app->get('/statusorderReportFind', 'authenticate',function () use($app) {
@@ -3041,7 +3047,6 @@ $app->get('/resourceAssetsGetOne/:id/:jobId','authenticate', function ($id, $job
 });
 //---------------Discussion board----------------------//
 $app->post('/discussionOrder','authenticate', function () use($app) {
-
     $discuss = new discussion();
     $data = json_decode($app->request->getBody(), TRUE);
     $result = $discuss->discussionOrder($data);
@@ -3711,7 +3716,6 @@ $app->get('/currencyExchange','authenticate', function () use($app) {
     $result = $currency->currencyExchange();
     echoResponse(200, $result);
 });
-
 $app->post('/saveFvMenu','authenticate', function () use($app) {
     $users = new users ();
     $data = json_decode($app->request->getBody(), TRUE);

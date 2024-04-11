@@ -519,25 +519,35 @@
                                                                     title="delete"><i
                                                                         class="iconDelete glyph-icon fa-times"></i></a>
 
-                                                                <a href="javascript:void(0)"
-                                                                    ng-click="jobSendRequest(it.resource, it.job_summmeryId)"
-                                                                    class="btn btn-info btn-sm"
-                                                                    style="padding:2px 10px;"
-                                                                    ng-if="it.item_status=='In preparation' || it.item_status=='Requested'"><i
-                                                                        class="glyphicon glyphicon-envelope"></i>
-                                                                    Request </a>
+                                                                <div class="d-flex">
+                                                                    <a href="javascript:void(0)"
+                                                                        ng-click="jobSendRequest(it.resource, it.job_summmeryId)"
+                                                                        class="btn btn-info btn-sm"
+                                                                        style="padding:2px 10px;"
+                                                                        ng-if="it.item_status=='In preparation' || it.item_status=='Requested'"><i
+                                                                            class="glyphicon glyphicon-envelope"></i>
+                                                                        Request </a>
+                                                                    <a href="javascript:void(0)"
+                                                                        ng-click="jobDiscussion(it.job_summmeryId)"
+                                                                        class="btn btn-info btn-sm"
+                                                                        style="padding:2px 10px;margin-left:5px;"
+                                                                        ng-if=" it.vUserName!='' "><i
+                                                                            class="fa fa-commenting-o "></i> </a>
+                                                                </div>
                                                             </td>
                                                             <td>
                                                                 <span class="labeltitle">
                                                                     <span>
                                                                         <p>
-                                                                            <span id="smalltext{{it.job_summmeryId}}">{{ it.description | limitTo: 15 }} </span>
+                                                                            <span id="smalltext{{it.job_summmeryId}}">{{
+                                                                                it.description | limitTo: 15 }} </span>
                                                                             <span class="more-text"
                                                                                 id="addmoretext{{it.job_summmeryId}}">{{it.description}}</span>
                                                                             <span> <a ng-if="it.description.length > 15"
                                                                                     ng-click="toggleReadMore(it.job_summmeryId)"
                                                                                     class="read-more-button"
-                                                                                    id="read-more-button{{it.job_summmeryId}}">Read more</a> </span>
+                                                                                    id="read-more-button{{it.job_summmeryId}}">Read
+                                                                                    more</a> </span>
                                                                         </p>
                                                                     </span>
                                                                 </span>

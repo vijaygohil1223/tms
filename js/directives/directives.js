@@ -1220,11 +1220,13 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
     return {
         restrict: 'EA',
         require: 'ngModel',
-        link: function(scope, element) {
+        link: function(scope, element, attrs) {
             rest.path = 'select2Jobdata';
             rest.get().success(function(data) {
+
+                const jobData = attrs?.typeid > 0 && data.filter((itms) => itms.order_id == attrs.typeid) || data;
                 var prType = [];
-                angular.forEach(data, function(value, key) {
+                angular.forEach(jobData, function(value, key) {
                     var obj = {
                         id: value.job_summmeryId,
                         text: value.po_number
@@ -1234,6 +1236,7 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
+                        placeholder: "Select job",
                         data: prType,
                         multiple:true,
                         //maximumSelectionSize:1,

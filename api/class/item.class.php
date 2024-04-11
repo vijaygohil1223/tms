@@ -372,7 +372,8 @@ class item {
                 
                 $ItemId = $this->_db->insert('tms_items',$Idata);
                 if($ItemId){
-                    $fdata['name'] = 'Item'.str_pad($i,3, "0", STR_PAD_LEFT);
+                    //$fdata['name'] = 'Item'.str_pad($i,3, "0", STR_PAD_LEFT);
+                    $fdata['name'] = 'Scoop'.str_pad($i,3, "0", STR_PAD_LEFT);
                     $fdata['order_id'] = $data['order_id'];
                     $fdata['item_id'] = $ItemId;
                     $fdata['parent_id'] = $info['fmanager_id'];

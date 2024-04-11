@@ -2129,6 +2129,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.goTocommentChat = function (viewType) {
         if (viewType) {
+            $window.localStorage.setItem("isLinguistChat", false);
+            $window.localStorage.setItem("jobIdLinguistChat", 0)
+        
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
                 templateUrl: 'tpl/commentchatPopup.html',
@@ -6602,10 +6605,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.allFilesArr = [];
     var allFilesArr = [];
 
+    console.log('rest',rest)
+
     var uploadObj;
     $timeout(function () {
         uploadObj = $("#multipleupload").uploadFile({
-            url: 'filemanager-upload.php',
+            url: rest.baseUrl+'fileManagerFileupload',
+            //url: 'filemanager-upload.php',
             multiple: true,
             dragDrop: true,
             dragDropStr: "<span class='spandragdrop'><b>Drag & Drop Files</b></span>",
@@ -20984,7 +20990,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.ItemData.order_id = $scope.routeOrderID ? $scope.routeOrderID : $window.localStorage.getItem('orderID');
                 rest.path = 'AddNumberOfItems';
                 rest.post($scope.ItemData).success(function (data) {
-                    notification('Items created successfully.', 'success');
+                    notification('Scoop created successfully.', 'success');
                     $timeout(function () {
                         $route.reload();
                     }, 100);
@@ -21563,10 +21569,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //$route.reload();
                                 
                         if(!$scope.isAllScoopCopy && !$scope.isAllScoopUpdate){
-                            notification('Item successfully updated.', 'success');
+                            notification('Scoop successfully updated.', 'success');
                         }else{
                             if( $scope.itemList[$scope.itemList.length-1].itemId == $scope.itemList[formIndex].itemId ){
-                                notification('All items successfully updated.', 'success');
+                                notification('All Scoop successfully updated.', 'success');
                                 $scope.isAllScoopCopy = false;
                                 $route.reload();
                             }
@@ -22396,10 +22402,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
-    $scope.jobDiscussion = function () {
+    $scope.jobDiscussion = function (jobId=0) {
+        if(jobId && jobId > 0){
+            $window.localStorage.setItem("isLinguistChat", true)
+            $window.localStorage.setItem("jobIdLinguistChat", jobId)
+        }
         $location.path('discussion/' + $routeParams.id);
+        
     }
-
+    
     //$scope.dtOptions = DTOptionsBuilder.newOptions().withOption('scrollY', '100%').withOption('scrollX', '100%').withOption('scrollCollapse', true).withOption('paging', false).withOption('paging', false).withOption('paging', false);
     $scope.dtOptions = DTOptionsBuilder.newOptions().
         withOption('scrollX', 'true').
@@ -24450,8 +24461,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     var loginid = $window.localStorage.getItem("session_iUserId");
     var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
-    $scope.isLinguist = false;
-
+    //$scope.isLinguist = $window.localStorage.getItem("isLinguistChat") ? $window.localStorage.getItem("isLinguistChat") : false;
+    $scope.isLinguist = $window.localStorage.getItem("isLinguistChat") === "true";
+    console.log('$scope.isLinguist', $scope.isLinguist)
+    $scope.pageOrderId = $routeParams.id ? $routeParams.id : 0
+    
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
     $scope.currencyName = 'EUR';
     rest.path = 'viewProjectCustomerDetail';
@@ -24472,6 +24486,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
            $scope.currencyName = $scope.customer.client_currency ? $scope.customer.client_currency.split(',')[0] : 'EUR';   
            
     }).error(errorCallback);
+
+    $scope.chatRefresh = function(){
+        location.reload();
+    }
 
     //$routeParams.id;
     $scope.jobLinguist = [];
@@ -24629,13 +24647,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var usercommentsArr = [];
         var newUserCommentsArr = [];
         $scope.msgIDArr = [];
-        $scope.commentsArrayAll = async function () {
+        $scope.commentsArrayAll = function () {
             rest.path = "discussionOrder/" + $routeParams.id;
             rest.get().success(function (data2) {
-                let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
-                var data = data2.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
                 
-                console.log('$window.localStorage.getItem("isLinguistChat")==================>', $window.localStorage.getItem("isLinguistChat"))
+                let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
+                if(isLinguistJobChat > 0){
+                    $scope.linguistJob = isLinguistJobChat;
+                }
+                let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
+                var data = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
+                
                 setTimeout(function () {
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function (val, i) {
@@ -24809,7 +24831,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $scope.msgIDArr.push(val.id)
                                 }
                             //}    
-                        });
+                    });
 
                         $(".comment-wrapper").each(function (i, v) {
                             /*var dateTime = $(this).find('time')[0].innerText;
@@ -24887,29 +24909,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //$scope.emojimap=[];
     // we are using this for emoji
     var emojimap = {
-        "<3": "\u2764\uFE0F",
-        "</3": "\uD83D\uDC94",
-        ":D": "\uD83D\uDE00",
-        //":)": "\uD83D\uDE03",
-        ":)": "🙂",
-        ";)": "\uD83D\uDE09",
-        ":(": "\uD83D\uDE12",
-        ":p": "\uD83D\uDE1B",
-        ";p": "\uD83D\uDE1C",
-        ":'(": "\uD83D\uDE22",
-        ":o)": "\uD83D\uDE2E",
-        ":*": "\uD83D\uDC8B",
-        ":>": "\uD83D\uDE06",
-        ":blush": "\uD83D\uDE0A",
-        ">:(": "\uD83D\uDE20",
-        ":-)": "\uD83D\uDE42",
-        ":'(": "\uD83D\uDE22",
-        "):": "\uD83D\uDE1E",
-        ":-\\\\": "\uD83D\uDE15",
-        "<\\/3": "\uD83D\uDC94",
-        "8)": "\uD83D\uDE0E",
-        ":|": "\uD83D\uDE10",
-        ":o": "\uD83D\uDE2E"
+        "<3": "\u2764\uFE0F",      // Heart
+        "</3": "\uD83D\uDC94",     // Broken heart
+        ":)": "\uD83D\uDE42",      // Slightly smiling face (🙂)
+        ":'(": "\uD83D\uDE22",     // Crying face
+        ":(": "\uD83D\uDE12",       // Frowning face
+        ":*": "\uD83D\uDC8B",       // Kiss mark
+        ":>": "\uD83D\uDE06",       // Smiling face with sunglasses
+        ":D": "\uD83D\uDE00",       // Grinning face
+        ":|": "\uD83D\uDE10",       // Neutral face
+        ":blush": "\uD83D\uDE0A",   // Blushing face
+        ":o": "\uD83D\uDE2E",        // Surprised face
+        ":o)": "\uD83D\uDE2E",       // Surprised face
+        ":p": "\uD83D\uDE1B",        // Tongue sticking out
+        ";)": "\uD83D\uDE09",        // Winking face
+        ";p": "\uD83D\uDE1C",        // Winking face with tongue out
+        ">:(": "\uD83D\uDE20",      // Angry face
+        ":-)": "\uD83D\uDE42",      // Slightly smiling face
+        ":-\\": "\uD83D\uDE15",     // Confused face
+        "8)": "\uD83D\uDE0E"         // Smiling face with sunglasses
     };
 
     $timeout(function () {
@@ -24929,36 +24947,44 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
         //$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
+        var addEmojiElement = $("#addemoji");
+        if(addEmojiElement.length){
+            addEmojiElement.emojioneArea({
+                autoHideFilters: true,
+                useSprite: true,
+                //accepts values: 'image',
+                //default: 'unicode',
+                //accepts values: 'unicode' | 'shortname' | 'image'
+                //pickerPosition: "bottom"
+            });
 
-        jQuery("#addemoji").emojioneArea({
-            autoHideFilters: true,
-            useSprite: true,
-            //accepts values: 'image',
-            //default: 'unicode',
-            //accepts values: 'unicode' | 'shortname' | 'image'
-            //pickerPosition: "bottom"
-        });
+            var el = addEmojiElement.emojioneArea();
+            el[0].emojioneArea.on("emojibtn.click", function () {
+                const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+                const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
+                $('.textarea').append(emoji).trigger("change");
+            });
+
+        }
 
     }, 2800);
 
     $timeout(function () {
 
-        var el = $("#addemoji").emojioneArea();
-        el[0].emojioneArea.on("emojibtn.click", function () {
-            const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-            //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
-            const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
-            $('.textarea').append(emoji).trigger("change");
+        // var el = $("#addemoji").emojioneArea();
+        // el[0].emojioneArea.on("emojibtn.click", function () {
+        //     const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+        //     //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+        //     const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
+        //     $('.textarea').append(emoji).trigger("change");
 
-            //$('.textarea').val($('.textarea').val()+emoji);
-        });
+        //     //$('.textarea').val($('.textarea').val()+emoji);
+        // });
 
         //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
         //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
     }, 3000);
-
-    console.log('$window.localStorage.getItem("isLinguistChat") ', $window.localStorage.getItem("isLinguistChat") )
 
     $scope.commentsFn = function(){
         var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
@@ -24975,9 +25001,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var interval = setInterval(() => {
                             rest.path = "discussionOrder/" + $routeParams.id;
                             rest.get().success(function (data) {
+                                
+                                let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
                                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
                                 //var data = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
-                                var NewcommentsArray = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
+                                var NewcommentsArray = data.filter( (itm) =>  { return  itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat } );
                                 //console.log('NewcommentsArray', NewcommentsArray)
                                 
                                 //console.log('$scope.isLinguistCall--interval',$scope.isLinguistCall )
@@ -25059,6 +25087,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var urlExist = window.location.href;
                             if (!(urlExist.includes('#/discussion/'))) {
                                 clearInterval(interval);
+                                //return;
                             }
 
                         }, 5000);
@@ -25117,13 +25146,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // }, 500);
 
                 console.log('$window.localStorage.getItem("isLinguistChat")=>post', $window.localStorage.getItem("isLinguistChat"))
-                data.job_id = 0;
                 data.order_id = $routeParams.id;
                 data.user_id = $window.localStorage.getItem("session_iUserId");
                 data.fullname = $window.localStorage.getItem("session_vUserName");
                 data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
                 data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
                 data.externalChat = ($window.localStorage.getItem("isLinguistChat") === 'true') ? 1 : 0;
+                //data.job_id = 0;
+                data.job_id = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0; // insert job id for specific job
+                data.isCommentEmailsend = localStorage.getItem("jobIdLinguistChat") > 0 ? true : false; 
                 
                 function escapeSpecialChars(regex) {
                     return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
@@ -25157,6 +25188,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             putComment: function (data, success, error) {
                 $routeParams.id = data.id;
                 data.login_userid = $window.localStorage.getItem("session_iUserId");
+                data.job_id = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0; // insert job id for specific job
                 data.externalChat = $window.localStorage.getItem("isLinguistChat") === 'true' ? 1 : 0;
                 rest.path = 'discussionOrder';
                 rest.put(data).success(function (res) {
@@ -25218,11 +25250,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         "modified": dataArray[index].modified,
                         "created_by_current_user": '1',
                         "upvote_count": '0',
-                        "job_id": 0,
                         "user_has_upvoted": '0',
-                        'externalChat' : $window.localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0,
+                        "externalChat": ($window.localStorage.getItem("isLinguistChat") === 'true') ? 1 : 0,
+                        //data.job_id = 0;
+                        "job_id": localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0,
+                        "isCommentEmailsend": localStorage.getItem("jobIdLinguistChat") > 0 ? true : false, 
                         "read_id": $window.localStorage.getItem("session_iUserId") + ',',
-
                     }
                     rest.path = "discussionOrder";
                     rest.post(obj).success(function (info) {
@@ -25243,11 +25276,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.isLinguist = !$scope.isLinguist;
         console.log('$scope.isLinguist', $scope.isLinguist)
         $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
-        //var commentsArray_ = [...commentsArray] 
-        //console.log('commentsArray_', commentsArray_)
-        //commentsArray = commentsArray_.filter( (itm) => { return itm.externalChat == 0 } );
         $scope.commentsArrayAll();
-        //$scope.isLinguistCall = true
         $scope.commentsFn()
 
         setTimeout(() => {
@@ -25256,11 +25285,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 useSprite: true,
             });
         }, 200);
-        //console.log('CommentedElement', CommentedElement)
-        //CommentedElement.getComments
-        //CommentedElement.navigationElementClicked
     }
 
+    //$scope.linguistJob = 377
+    $scope.changeLinguistJob = function(jobId){
+        const linstJobid = jobId?.toString().split(',').pop();
+        if(linstJobid && linstJobid>0){
+            $window.localStorage.setItem("isLinguistChat", true);
+            $window.localStorage.setItem("jobIdLinguistChat", linstJobid)
+            $scope.isLinguist = true;
+        }else{
+            $window.localStorage.setItem("isLinguistChat", false);
+            $window.localStorage.setItem("jobIdLinguistChat", 0)
+            $scope.isLinguist = false;
+        }
+        setTimeout( ()=>{
+            $scope.commentsArrayAll();
+            $scope.commentsFn()
+            setTimeout(() => {
+                jQuery("#addemoji").emojioneArea({
+                    autoHideFilters: true,
+                    useSprite: true,
+                });
+            }, 200);
+        },100)
+    }
 
 
 }).controller('userstatusController', function ($scope, $location, $route, rest, $routeParams, $window) {
@@ -31538,7 +31587,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + $scope.jobdetail.item_id;
                 rest.get().success(function (data) {
                     $scope.totalPrice = data.total_amount;
-                    $scope.itemList = JSON.parse(data.price);
+                    $scope.itemList = data.price ? JSON.parse(data.price) : {};
                     $scope.itemPriceEmpty = jQuery.isEmptyObject($scope.itemList);
                 })
             }
@@ -31747,8 +31796,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.model().success(function (data) {
             
             angular.forEach(data, function (val, i) {
-                const resPosition = val.vResourcePosition.toString().split(',')
-                const fullName = val.vFirstName + ' ' + val.vLastName
+                const resPosition = val?.vResourcePosition ? val.vResourcePosition.toString().split(',') : '';
+                const fullName = val?.vFirstName + ' ' + val?.vLastName
                 // index based on api (project_coordinator,project_manager QA_specialist)
                 if (i===0 && resPosition.includes('3') ) {
                     angular.element('#coordinatorIcon').html(fullName);
@@ -34591,7 +34640,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.post($scope.logMaster).success(function (data) { });
                         //log file end
                         //$route.reload();
-                        notification('Item successfully updated.', 'success');
+                        notification('Scoop successfully updated.', 'success');
                         setTimeout(() => {
                             $route.reload();
                         }, 200);
