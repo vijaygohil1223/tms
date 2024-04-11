@@ -26,8 +26,8 @@ class discussion {
             $data['user_has_upvoted'] = "false";
 
         $sendEmail = false;
-        if(isset($data['isCommentEmailsend']) && $data['isCommentEmailsend'] == true){
-            $sendEmail = true;
+        if(isset($data['isCommentEmailsend']) ){
+            $sendEmail = $data['isCommentEmailsend'] == true ? true : false;
             unset($data['isCommentEmailsend']);
         }    
         
