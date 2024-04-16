@@ -3745,10 +3745,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.modalOpen = false;
     // After Linguist login
-    $scope.projectJobdetail = function (jobId) {
+    $scope.projectJobdetail = function (jobId, isJobDiscussion) {
         scrollBodyToTop();
         //$location.path('/job-summery-details/' + id);
         $routeParams.id = jobId;
+        const itemObj = {
+            jobId:jobId,
+            isCommentTab: isJobDiscussion && isJobDiscussion==1 ? true : false
+        }
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'tpl/jobDetailPopup.html',
@@ -3756,7 +3760,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             size: '',
             resolve: {
                 items: function () {
-                    return $scope.data;
+                    return itemObj;
                 }
             }
         });
@@ -24641,7 +24645,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
 
         var commentsArray = [];
-        var NewcommentsArray = [];
+        var newcommentsArray = [];
         $scope.commentReadArray = [];
         var promises = [];
         var usercommentsArr = [];
@@ -24652,6 +24656,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (data2) {
                 
                 let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
+                console.log('jobbbb==isLinguistJobChat==>', isLinguistJobChat)
                 if(isLinguistJobChat > 0){
                     $scope.linguistJob = isLinguistJobChat;
                 }
@@ -24850,7 +24855,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 }, 1500);
                 
-                commentsArray = data;
+                commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
+                //console.log('commentsArray==', commentsArray)
+                //commentsArray = data;
                 //var data = data2.filter( (itm) => itm.externalChat == ( ($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) )
                 //commentsArray = data.filter( (itm) => itm.externalChat == ( ($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) );
                 //console.log('commentsArray=='+isLinguistChat, commentsArray)
@@ -25004,31 +25011,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 
                                 let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
                                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
+                                //console.log('isLinguistChat=>', isLinguistChat)
                                 //var data = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
-                                var NewcommentsArray = data.filter( (itm) =>  { return  itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat } );
-                                //console.log('NewcommentsArray', NewcommentsArray)
+                                var newcommentsArray = data.filter( (itm) =>  { return  itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat } );
                                 
-                                //console.log('$scope.isLinguistCall--interval',$scope.isLinguistCall )
-                                    
-                                // if($scope.isLinguistCall){
-                                //     NewcommentsArray = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
-                                //     console.log('NewcommentsArray', NewcommentsArray)
-                                //     //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                                //     $scope.commentsArrayAll();
-                                //     success(NewcommentsArray);
-                                //     setTimeout( () => {
-                                //         $scope.isLinguistCall = false
-                                //         //var isLinguistCall = false
-                                //         console.log('$scope.isLinguistCall=============', $scope.isLinguistCall)
-                                //     },100)
-                                // }
-                                
-                                var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArr) { return NewcommentsArr.user_id != loginid });
-                                //var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
+                                var newUserCommentsArr = newcommentsArray.filter(function (NewcommentsArr) { return NewcommentsArr.user_id != loginid });
+                                //var newUserCommentsArr = newcommentsArray.filter(function (newcommentsArray) { return newcommentsArray.user_id != loginid });
                                 var cmtArr = [];
-                                var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-                                var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-
+                                var cmtArr = newcommentsArray.filter(function (ncommentsArray) { var isReadtrue = ncommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                var newcmtArr = commentsArray.filter(function (cmtsArray) { var isReadtrue = cmtsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                //console.log('commentsArray==19==>', commentsArray)
+                                
                                 // --- update read id //
                                 $scope.newCommentReadArray = [];
                                 if (cmtArr) {
@@ -25049,8 +25042,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         }
                                     });
                                 }
-                                //success(NewcommentsArray);
-                                //if( (NewcommentsArray.length > commentsArray.length && ) )
+                                
+                                //success(newcommentsArray);
+                                //if( (newcommentsArray.length > commentsArray.length && ) )
                                 
                                 var arrayNotload = $('#comment-list').find(' > li').length;
                                 if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
@@ -25062,7 +25056,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         }
                                     });
                                     $scope.commentsArrayAll();
-                                    success(NewcommentsArray);
+                                    // issue while changes job (last active)
+                                    //success(newcommentsArray);
+                                    
                                     
                                     $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
                                     
@@ -25287,9 +25283,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }, 200);
     }
 
-    //$scope.linguistJob = 377
     $scope.changeLinguistJob = function(jobId){
-        const linstJobid = jobId?.toString().split(',').pop();
+        const linstJobid = jobId ? jobId?.toString().split(',').pop() : $('#linguistJob').val('').trigger('change');
         if(linstJobid && linstJobid>0){
             $window.localStorage.setItem("isLinguistChat", true);
             $window.localStorage.setItem("jobIdLinguistChat", linstJobid)
@@ -25298,8 +25293,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $window.localStorage.setItem("isLinguistChat", false);
             $window.localStorage.setItem("jobIdLinguistChat", 0)
             $scope.isLinguist = false;
+            $scope.isLinguist = '';
         }
         setTimeout( ()=>{
+            console.log('linstJobid',linstJobid )
             $scope.commentsArrayAll();
             $scope.commentsFn()
             setTimeout(() => {
@@ -25308,6 +25305,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     useSprite: true,
                 });
             }, 200);
+            //$route.reload();
         },100)
     }
 
@@ -31490,12 +31488,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/project-detail/' + $routeParams.id);
     }
 
-}).controller('projectjobDetailPopupController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, $uibModalInstance, rest, $route, $rootScope, $routeParams, $location, $q) {
+}).controller('projectjobDetailPopupController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, $uibModalInstance, rest, $route, $rootScope, $routeParams, $location, $q, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.DetailId = $window.localStorage.projectJobChainOrderId;
     $window.localStorage.jobfolderId = $routeParams.id;
     // $window.localStorage.orderID = " ";
     const userRight = $scope.userRight  
+    setTimeout(() => {
+        $scope.isCooementTab = items && items.isCommentTab == true ? $('#linguistJobDiscussion').click() : false;
+    }, 500);
     
     $window.localStorage.pId = " ";
     $window.localStorage.setItem("parentId", " ");
@@ -31746,9 +31747,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     // Start comment chat Linguist Dashboard
-    $scope.discussionChat = function () {
+    $scope.discussionChat = function (chatJobId) {
         $routeParams.id = $scope.jobDiscussionRedirect;
-        console.log('$routeParams.id', $routeParams.id)
         var loginid = $window.localStorage.getItem("session_iUserId");
         var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
         $scope.login_userid = $window.localStorage.getItem("session_iUserId");
@@ -31906,8 +31906,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
             });
 
-
-
         }
 
         if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
@@ -31928,7 +31926,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if ($routeParams.id) {
 
             var commentsArray = [];
-            var NewcommentsArray = [];
+            var newcommentsArray = [];
             $scope.commentReadArray = [];
             var promises = [];
             var usercommentsArr = [];
@@ -31939,7 +31937,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                 rest.get().success(function (data2) {
                     let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
-                    var data = data2.filter( (itm) => { return itm.externalChat == isLinguistChat } );
+                    var data = data2.filter( (itm) => { return itm.job_id==chatJobId && itm.externalChat == isLinguistChat } );
                     
                     setTimeout(function () {
                         
@@ -32020,22 +32018,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
                                 $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
 
-                                if (val.content == '' || val.content == null) {
-                                    //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                    //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                                } else {
-                                    //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
-                                    //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
-                                }
                                 if (msgReadArrFilter.length > 0) {
                                     $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
-                                }
-                            } else {
-                                //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
-                                //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
-                                if (val.content == "" || val.content == null) {
-                                    //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                    //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
                                 }
                             }
                             // if (file_type == 'image' || file_type == 'video') {
@@ -32086,7 +32070,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             } else {
                                 var cmtObj = {
                                     id: val.id,
-                                    read_id: loginid
+                                    read_id: loginid,
+                                    isLinguist: true,
+                                    job_id: val.job_id
                                 }
                                 $scope.commentReadArray.push(cmtObj);
                             }
@@ -32104,20 +32090,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         });
 
                         deferred.resolve(promises);
-                        $(".comment-wrapper").each(function (i, v) {
-
-                        });
-
-                        if (data.length == promises.length) {
-                            //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                        }
+                        
+                        // if (data.length == promises.length) {
+                        //     //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                        // }
 
                     }, 1500);
                     //commentsArray = data.filter( (itm) => { return itm.externalChat === 1 } );
                     commentsArray = data;
                     
-                }).error(errorCallback);
-
+                }).error(function () {
+                    deferred.reject();
+                });
                 //return deferred.promise;
             }
             $scope.commentsArrayAll();
@@ -32178,6 +32162,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $timeout(function () {
             if ($scope.jobDiscussionRedirect) {
+
+                console.log('$scope.commentReadArray',$scope.commentReadArray )
                 //$timeout(function() {
                 rest.path = "discussionCommentread";
                 rest.put($scope.commentReadArray).success(function (res) {
@@ -32232,22 +32218,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $timeout(function () {
                         if ($scope.jobDiscussionRedirect) {
 
-                            var newLoginidArr = commentsArray.filter(function (commentsArray) { return commentsArray.user_id != loginid });
-                            //var usercommentsArrLen = usercommentsArr.length ;
+                            var newLoginidArr = commentsArray.filter(function (itmCmt) { return itmCmt.user_id != loginid });
                             var usercommentsArrLen = newLoginidArr.length;
-
+                            
                             setInterval(() => {
                                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                                 rest.get().success(function (data2) {
-                                    //var NewcommentsArray = data;
+                                    //var newcommentsArray = data;
                                     let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
-                                    var NewcommentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat } );
-                                    //var NewcommentsArray = data.filter( itm => itm.externalChat === 1 );
+                                    var newcommentsArray = data2.filter( (itm) => { return itm.job_id == chatJobId && itm.externalChat == isLinguistChat } );
+                                    //var newcommentsArray = data.filter( itm => itm.externalChat === 1 );
                                     // other side user send message
-                                    var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
+                                    var newUserCommentsArr = newcommentsArray.filter(function (newCmt) { return newCmt.user_id != loginid });
                                     // FOR read unread comments
                                     var cmtArr = [];
-                                    var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                    var cmtArr = newcommentsArray.filter(function (newcommentsArray) { var isReadtrue = newcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
                                     
                                     var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
@@ -32257,7 +32242,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         angular.forEach(cmtArr, function (cmtval, cmti) {
                                             var newCmtObj = {
                                                 id: cmtval.id,
-                                                read_id: loginid
+                                                read_id: loginid,
+                                                isLinguist: 1,
+                                                job_id: cmtval.job_id
                                             }
                                             $scope.newCommentReadArray.push(newCmtObj);
                                             if ($scope.newCommentReadArray.length == cmtArr.length) {
@@ -32270,7 +32257,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             }
                                         });
                                     }
-                                    //if( (NewcommentsArray.length > commentsArray.length && ) )
+                                    //if( (newcommentsArray.length > commentsArray.length && ) )
                                     
                                     var arrayNotload = $('#comment-list').find(' > li').length;
 
@@ -32288,25 +32275,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             }
                                         });
                                         $scope.commentsArrayAll();
-                                        success(NewcommentsArray);
+                                        success(newcommentsArray);
                                         $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                                        jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                                        $('#comment-list').find(' > li[data-id^=c]').hide();
+                                        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                                        if ($('#comment-list').length > 0) {
+                                            $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                                            $('#comment-list').find(' > li[data-id^=c]').hide();
+                                        }
                                         usercommentsArr = [];
-                                        // to remove same date li div
-                                        // var seen = {};
-                                        // $('.seperatordate').each(function() {
-                                        //     var txt = $(this).text();
-                                        //     if (seen[txt])
-                                        //         $(this).remove();
-                                        //     else
-                                        //         seen[txt] = true;
-                                        // });
-                                        // end script
+                                        
                                     }
                                 });
                                 
-                            }, 5000);
+                            }, 10000);
                         }
 
                         success(commentsArray);

@@ -283,11 +283,12 @@ li.seperatordate.comment {
           <div class="row panel-heading font-bold" style="padding-top: 0;">
             <a href="javascript:history.back()" class="btn btn-back fa fa-angle-left"></a>
             <h4>Discussion Board</h4>
-            <!-- <button class="btn linguistDiscussion" ng-click="changeLinguistJob()"  style="margin-left:20px;"> <i class="fa fa-refresh"></i></button> -->
             <!-- <button class="btn linguistDiscussion" data-sort-key="isLinguist=='true' ? 1 : 0" ng-class=" {'btn-default':!isLinguist, 'btn-success':isLinguist }" ng-click="chatLinguist()"  style="margin-left:20px;">{{  isLinguist ? 'Linguist' : 'Internal' }} Chat</button> -->
             <div style="margin-left: 30px;width:18%;">
               <input type="text" select2-jobs typeid="{{pageOrderId}}" id="linguistJob" class="form-control" name="linguistJob" ng-model="linguistJob" ng-change="changeLinguistJob(linguistJob)" />
             </div>
+            <button class="btn linguistDiscussion" ng-click="changeLinguistJob()"  style="margin-left:20px;"> <i class="fa fa-refresh"></i></button>
+            
           </div>
           <div class="panel-body">
             <div class="row d-flex">
