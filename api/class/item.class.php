@@ -354,11 +354,16 @@ class item {
             $genData = $this->_db->getOne('tms_general');
             $gen_due_date = $genData['due_date']; // default due date for scoop item
             //echo $itemId;exit;
+            $this->_db->where('is_default',1);
+            $this->_db->where('is_active',1);
+            $scoopStatus = $this->_db->getOne('tms_item_status');
+            $statusId = $scoopStatus ? $scoopStatus['item_status_id'] : '';
             for($i=$itemId+1;$i<=$no_of_items+$itemId;$i++){
                 $Idata['item_number'] =$i;
                 $Idata['contact_person'] = $contactPerson;
                 $Idata['item_name'] =$itemName;
                 $Idata['order_id'] = $data['order_id'];
+                $Idata['item_status'] = $statusId;
                 $Idata['due_date'] = $gen_due_date;
                 $Idata['created_date'] = date('Y-m-d H:i:s');
                 $Idata['updated_date'] = date('Y-m-d H:i:s');
@@ -462,6 +467,20 @@ class item {
     public function checkItemPonumberExist($id, $searchText){
         $data = $this->_db->rawQuery("SELECT itemId FROM `tms_items` WHERE itemId != '".$id."' AND po_number='".$searchText."' ");
         return $this->_db->count;
+    }
+
+    public function itemStatusUpdate($id){
+        // status 1 = Assign
+        if($id){
+            $this->_db->where("itemId", $id);
+            $update = $this->_db->update('tms_items', array('item_status' => 1));
+            $result['status'] = 200;
+            $result['msg'] = 'Record updated';
+        }else{
+            $result['status'] = 422;
+            $result['msg'] = 'Not updated';
+        }
+        return $result;
     }
 
 }

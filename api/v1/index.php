@@ -2044,6 +2044,13 @@ $app->post('/scoopStatusChange','authenticate', function () use($app) {
     $result = $item->scoopStatusChange($data);
     echoResponse($result ['status'], $result);
 });
+$app->put('/itemStatusUpdate/:id', 'authenticate',function ($id) use($app) {
+    $item = new item ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $item->itemStatusUpdate($id, $data);
+    echoResponse($result ['status'], $result);
+});
+
 // ---------All Languages List ----------//
 $app->get('/allLanguages', 'authenticate',function () {
     $currency = new item ();

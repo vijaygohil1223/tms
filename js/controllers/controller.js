@@ -2535,7 +2535,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // }    
                 }
                 // Assign And In Progress
-                if ( ! ([4,6,7,8,9].includes(val.itemStatusId)) )  {
+                if ( ! ([4,6,7,8,9,14].includes(val.itemStatusId)) )  {
                     let isResourceAssign = $scope.jobListDelivered.find( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.resource > 0 && jb.item_status != 'In preparation' );
                     // ongoing
                     if(isResourceAssign){
@@ -20577,7 +20577,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.clientData = data;
             $timeout(function () {
-                if ($scope.clientData.client_currency) {
+                if ( $scope.clientData && $scope.clientData.client_currency) {
                     $scope.ClientCurrency = $scope.clientData.client_currency.split(',').pop();
                     console.log('$scope.ClientCurrency', $scope.ClientCurrency)
                     $scope.ClientCurrencyName = $scope.clientData.client_currency.split(',')[0] ? $scope.clientData.client_currency.split(',')[0] : 'EUR' ;
@@ -22293,6 +22293,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }).error(errorCallback);
         } else {
             //notification('Please Project scoop.', 'warning');
+        }
+    }
+
+    rest.path = 'ItemStatusget';
+    rest.get().success(function (data) {
+        const statusFilterData = data.find( (itm) => { 
+            if(itm.is_active == 1 && itm.is_default == 1){
+                return itm
+            }
+         })
+
+         $scope.defaultScoopStatus =  statusFilterData?.item_status_id
+         
+         console.log('$scope.defaultScoopStatus', $scope.defaultScoopStatus) 
+    }).error(errorCallback)
+
+    $scope.scoopStatusUpdate = function(id){
+        $scope.scoopStatus = {'scoop_status_id':id }
+        if(id){
+            $routeParams.id = id;
+            rest.path = 'itemStatusUpdate';    
+            rest.put($scope.scoopStatus).success(function (data) {
+                if(data && data.status == 200){
+                    notification('Scoop status updated successfully.', 'success');
+                }else{
+                    notification('Status not updated.', 'warning');
+                }
+                setTimeout(() => {
+                    $route.reload(); 
+                }, 100);
+            }).error( function(){
+                notification('Something went wrong.', 'warning');
+                $route.reload();    
+            })
+        }else{
+            notification('Status not updated.', 'warning');
+            $route.reload();
         }
     }
 
