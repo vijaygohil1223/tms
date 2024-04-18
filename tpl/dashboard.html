@@ -1127,7 +1127,7 @@ td { font-size: 11px; } */
                                     <th style="width:320px;">Comment</th>
                                     <th>Due date</th>
                                     <th>Status</th>
-                                    <th> Action </th>
+                                    <th> Messages </th>
                                     <!-- <th ng-if="highlightSearch == 'In_progress' || highlightSearch == 'All' "> Action </th> -->
                                   </thead>
                                   <!-- <tfoot>
@@ -1181,7 +1181,7 @@ td { font-size: 11px; } */
                                       </td>
                                       <td class="nowrap">
                                         <div class="d-flex">
-                                          <div ng-if="job.item_status != 'Ongoing' "> - </div>
+                                          <!-- <div ng-if="job.item_status != 'Ongoing' "> - </div>
                                           <div class="d-flex fileicon" ng-if="job.item_status == 'Ongoing' " ng-if="highlightSearch == 'In_progress' || highlightSearch == 'All' ">
                                             <a ng-click="downloadFiles(job.job_summmeryId, job.poNumber)">
                                               <span class="btn btn-primary"> <i class="fa fa-download"></i> </span>
@@ -1193,7 +1193,7 @@ td { font-size: 11px; } */
                                               ng-click="linguistJobComplete(job.job_summmeryId)"> <span
                                                 class="btn btn-primary" > <i class="fa fa-check"></i> </span> </a>
 
-                                          </div>
+                                          </div> -->
                                           <div style="float:right;">
                                             <a style="margin-left:20px" href="javascript:void(0)"
                                                 ng-click="projectJobdetail(job.job_summmeryId, 1)"> 

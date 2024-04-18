@@ -2159,7 +2159,7 @@ class jobs_detail
                     $this->_db->rawQuery($qry_up);
                 }
                 if (isset($data['job_summmeryId']) && $data['job_summmeryId'] != '') {
-                    $qry_up = "UPDATE `tms_summmery_view` SET `item_status` = 'Ongoing' WHERE job_summmeryId = '" . $data['job_summmeryId'] . "' AND `item_status` = 'In preparation' ";
+                    $qry_up = "UPDATE `tms_summmery_view` SET `item_status` = 'Ongoing' WHERE job_summmeryId = '" . $data['job_summmeryId'] . "' AND (`item_status` = 'In preparation'  OR `item_status` = 'Requested') ";
                     $this->_db->rawQuery($qry_up);
                     $qry_up2 = "UPDATE `tms_summmery_view` SET `isPoSent` = 1 WHERE job_summmeryId = '" . $data['job_summmeryId'] . "' ";
                     $this->_db->rawQuery($qry_up2);

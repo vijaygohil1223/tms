@@ -29024,10 +29024,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.post($scope.invoicemailDetail).success(function (data) {
             if (data.status == 200) {
                 notification('Purchase order has been sent successfully', 'success');
-                $scope.poTempate = false; 
+                $scope.poTempate = false;
+
                 setTimeout(() => {
                     $uibModalInstance.close({id : jobSummeryId, purchaseOrderSent: 1});     
-                }, 500);
+                    $route.reload();
+                }, 200);
                 //$uibModalInstance.dismiss('cancel');
             }
         }).error(errorCallback);
