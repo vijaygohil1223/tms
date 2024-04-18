@@ -4242,9 +4242,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         });
 
                         modalInstance.result.then(function (updatedData) {
+                            console.log('updatedData', updatedData)
                             if(updatedData && updatedData.purchaseOrderSent){
                                 $scope.purchaseOrderSent = true;
                                 $scope.jobdetail.isPoSent = 1;
+                                if( ['In preparation','Requested'].includes(angular.element('#itemStatus').val()) ){
+                                    angular.element('#itemStatus').val('Ongoing').trigger('change');
+                                }
+                                //$route.reload();
                             }
                             $scope.dataNew = updatedData; // Receive updated data from modal
                             console.log('$scope.dataNew', $scope.dataNew)
