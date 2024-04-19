@@ -715,11 +715,11 @@ array(
         }
         if (isset($id['created_id']) && $id['created_id']) {
             $created = $user->getUserAllfile('iUserId', $id['created_id']);
-            $id['createdBy'] = $created['vUserName'];
+            $id['createdBy'] = $created && isset($created['vUserName']) ? $created['vUserName'] : '';
         }
         if (isset($id['modified_id']) && $id['modified_id']) {
             $modified = $user->getUserAllfile('iUserId', $id['modified_id']);
-            $id['modifiedBy'] = $modified['vUserName'];
+            $id['modifiedBy'] = $modified && isset($modified['vUserName']) ? $modified['vUserName'] : '';
         }
         return $id;
     }
