@@ -1091,7 +1091,7 @@ td { font-size: 11px; } */
                                       <span ng-if="!Approved" class="badge bg-info">0</span>
                                   </li>
                                   <li class="list-group-item tab-overdue"
-                                    ng-class="(highlightSearch == 'Calculated') ? 'active' : ''">
+                                    ng-class="(highlightSearch == 'Calculated') ? 'active' : ''" style="display: none;">
                                     <a href="javascript:void(0)" ng-click="sortJob('Calculated', 'middle')">Calculated
                                       (Status report - Jobs)</a>
                                   </li>

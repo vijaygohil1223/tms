@@ -66,6 +66,11 @@
                                              ng-model="it.start_date" required onkeydown="return false" readonly=""
                                              style="width: auto;" />
                                        </div>
+                                       <!-- <a href="javascript:void(0)" ng-if="it.item_status==defaultScoopStatus"
+                                             ng-click="scoopStatusUpdate(it.itemId)" title="status update"
+                                             style="padding:8px 10px;">
+                                             <i class="fa fa-rocket fa-2x"></i>
+                                       </a> -->
                                        <a href="javascript:void(0)" ng-click="deleteItemsId(it.itemId,it.item_number)"
                                           title="delete" style="padding:8px 10px;">
                                           <i class="iconDelete glyph-icon fa-times"></i>

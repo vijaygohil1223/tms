@@ -3180,10 +3180,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$scope.jobRow = "Approved";
                 $scope.highlightSearch = "Approved";
                 break;
-            case "Calculated":
-                $scope.jobRow = "";
-                $scope.highlightSearch = "Calculated";
-                break;
+            // case "Calculated":
+            //     $scope.jobRow = "";
+            //     $scope.highlightSearch = "Calculated";
+            //     break;
         }
 
         console.log('$scope.highlightSearch', $scope.highlightSearch)
@@ -22303,10 +22303,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return itm
             }
          })
-
          $scope.defaultScoopStatus =  statusFilterData?.item_status_id
-         
-         console.log('$scope.defaultScoopStatus', $scope.defaultScoopStatus) 
     }).error(errorCallback)
 
     $scope.scoopStatusUpdate = function(id){
@@ -31821,15 +31818,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'jobsummeryGet/' + $scope.jobDiscussionRedirect;
             rest.get().success(function (data) {
                 //$scope.jobLinguist = data;
-                angular.forEach(data, function (val, i) {
-                    // var linguistObj = {
-                    //     id: val.id,
-                    //     read_id: loginid
-                    // }
+                const sessionUserId = $window.localStorage.getItem("session_iUserId");
+                $scope.jobLinguist = data.filter( (val)=> {
                     if (val.resource) {
-                        $scope.jobLinguist.push(val);
+                        if ($scope.userRight == 2 && val.resource == sessionUserId) {
+                            return true;
+                        }
+                        if ($scope.userRight == 1) {
+                            return true;
+                        }
                     }
-                });
+                    return false
+                })
                 $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
                 
 
@@ -35626,6 +35626,40 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         // } else {
         // }
+    }
+
+    rest.path = 'ItemStatusget';
+    rest.get().success(function (data) {
+        const statusFilterData = data.find( (itm) => { 
+            if(itm.is_active == 1 && itm.is_default == 1){
+                return itm
+            }
+         })
+         $scope.defaultScoopStatus =  statusFilterData?.item_status_id
+    }).error(errorCallback)
+
+    $scope.scoopStatusUpdate = function(id){
+        $scope.scoopStatus = {'scoop_status_id':id }
+        if(id){
+            $routeParams.id = id;
+            rest.path = 'itemStatusUpdate';    
+            rest.put($scope.scoopStatus).success(function (data) {
+                if(data && data.status == 200){
+                    notification('Scoop status updated successfully.', 'success');
+                }else{
+                    notification('Status not updated.', 'warning');
+                }
+                setTimeout(() => {
+                    $route.reload(); 
+                }, 100);
+            }).error( function(){
+                notification('Something went wrong.', 'warning');
+                $route.reload();    
+            })
+        }else{
+            notification('Status not updated.', 'warning');
+            $route.reload();
+        }
     }
 
 }).controller('resourceAdvanceSearchController', function ($timeout, $scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $filter) {
