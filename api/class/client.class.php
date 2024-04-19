@@ -29,7 +29,7 @@ class client {
          if($results){
             $user = new users();
             $userData = $user->getUserUsingId($results['created_id']);
-            $results['created_id'] = $userData['vUserName'];
+            $results['created_id'] = $userData && isset($userData['vUserName']) ? $userData['vUserName'] : '';
          }
          return $results;
         }
