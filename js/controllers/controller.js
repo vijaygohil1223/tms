@@ -24921,9 +24921,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach(data.data, function (val, i) {
                 var uObj = {
                     id: val.iUserId,
-                    fullname: val.vUserName,
+                    fullname: val?.vFirstName + ' '+ val?.vLastName,
                     email: val.vEmailAddress,
-                    profile_picture_url: "uploads/profilePic/user-icon.png"
+                    profile_picture_url: val.vProfilePic ? 'uploads/profilePic/'+val.vProfilePic : "uploads/profilePic/user-icon.png"
                 }
                 $scope.usersArray.push(uObj);
             });
@@ -31930,7 +31930,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             angular.forEach(data.data, function (val, i) {
                 //if(val.iUserId != loginid && val.freelancer == 'freelancer' ){
-                if (val.iUserId != loginid) {
+                if (val.iUserId != loginid ) {
                     $scope.teamArray.push(val.iUserId);
                 }
             });
@@ -32158,13 +32158,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$timeout(function () {
             rest.get().success(function (data) {
                 angular.forEach(data.data, function (val, i) {
-                    var uObj = {
-                        id: val.iUserId,
-                        fullname: val.vUserName,
-                        email: val.vEmailAddress,
-                        profile_picture_url: "uploads/profilePic/user-icon.png"
+                    if(val.iFkUserTypeId == 1){
+                        var uObj = {
+                            id: val.iUserId,
+                            fullname: val?.vFirstName + ' '+ val?.vLastName,
+                            email: val.vEmailAddress,
+                            profile_picture_url: val.vProfilePic ? 'uploads/profilePic/'+val.vProfilePic : "uploads/profilePic/user-icon.png"
+                        }
+                        $scope.usersArray.push(uObj);
                     }
-                    $scope.usersArray.push(uObj);
                 });
 
             }).error(errorCallback);
@@ -37819,9 +37821,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach(data.data, function (val, i) {
                 var uObj = {
                     id: val.iUserId,
-                    fullname: val.vUserName,
+                    fullname: val?.vFirstName + ' '+ val?.vLastName,
                     email: val.vEmailAddress,
-                    profile_picture_url: "uploads/profilePic/user-icon.png"
+                    profile_picture_url: val.vProfilePic ? 'uploads/profilePic/'+val.vProfilePic : "uploads/profilePic/user-icon.png"
                 }
                 $scope.usersArray.push(uObj);
             });
