@@ -222,9 +222,11 @@ class Freelance_invoice {
 
                 //invoiceNumber Count
                 $data['invoiceCount'] = count(self::get('tms_invoice'));
-                $this->_db->where('item_number',$data['item_number']);
-                $this->_db->where('order_id',$data['orderId']);
-                $info = $this->_db->getOne('tms_items');
+                if($data && isset($data['item_number']) && isset($data['orderId'])){
+                    $this->_db->where('item_number',$data['item_number']);
+                    $this->_db->where('order_id',$data['orderId']);
+                    $info = $this->_db->getOne('tms_items');
+                }
                 
                 // if($info){
                 //     if($info['price']){

@@ -873,21 +873,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         validMsg.addClass("hide");
     };
 
-    telInput.blur(function () {
-        reset();
-        $timeout(function () {
-            if ($.trim(telInput.val())) {
-                if (telInput.intlTelInput("isValidNumber")) {
-                    $scope.isValidMobileNumber = true;
-                    validMsg.removeClass("hide");
-                    $('#error-msg').addClass('hide');
-                } else {
-                    $scope.isValidMobileNumber = false;
-                    $('#error-msg').removeClass('hide');
-                }
-            }
-        }, 200);
-    });
+    // telInput.blur(function () {
+    //     reset();
+    //     $timeout(function () {
+    //         if ($.trim(telInput.val())) {
+    //             if (telInput.intlTelInput("isValidNumber")) {
+    //                 $scope.isValidMobileNumber = true;
+    //                 validMsg.removeClass("hide");
+    //                 $('#error-msg').addClass('hide');
+    //             } else {
+    //                 $scope.isValidMobileNumber = false;
+    //                 $('#error-msg').removeClass('hide');
+    //             }
+    //         }
+    //     }, 200);
+    // });
     telInput.on("keyup change", reset);
     /* Mobile Validation END */
 
@@ -1034,6 +1034,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
                 var mobile = angular.element('#iMobile').val();
+                console.log('mobile', mobile)
                 var phone = angular.element('#iphone').val();
 
                 var countryObj = {
@@ -1041,6 +1042,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     "countryFlagClass": countryClass,
                     "mobileNumber": mobile
                 }
+
+                console.log('countryObj',countryObj )
 
                 var mobile = angular.element('#iMobile').val();
                 var phone = angular.element('#iphone').val();
@@ -1083,7 +1086,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var Ccode = flagClass.split(' ')[1];
                     var CcodeNum = flagTitle.split(':')[1].trim();
 
-                    var FinalMobileNum = CcodeNum + JSON.parse($scope.userprofiledata.iMobile).mobileNumber;
+                    //var FinalMobileNum = CcodeNum + JSON.parse($scope.userprofiledata.iMobile).mobileNumber;
+                    var FinalMobileNum = JSON.parse($scope.userprofiledata.iMobile).mobileNumber;
 
                     $timeout(function () {
                         $('#iMobile').intlTelInput("setNumber", FinalMobileNum);
