@@ -345,6 +345,7 @@ class client {
                 if (isset($id)) {
                     $this->_db->where('iClientId', $id);
                     $data = $this->_db->getOne('tms_client');
+
                     $image = $data['vLogo'];
                     if (isset($image)) {
                         $path = "../../uploads/logo/";
@@ -376,6 +377,18 @@ class client {
             $this->_db->where('iClientId', $id);
             $id = $this->_db->update('tms_client', $info);
             if ($id) {
+                // update vCodeRights field
+                $this->_db->where('is_default', 1);
+                $center = $this->_db->getOne('tms_centers');
+                
+                $client = $this->_db->rawQuery("SELECT * FROM `tms_client` WHERE vCenterid = '' ");
+                if($center){
+                    foreach ($client as $key => $value) {
+                        $this->_db->where('iClientId', $value['iClientId']);
+                        $this->_db->update('tms_client', array('vCenterid' => $center['center_id'] ));
+                    }
+                }
+
                 $return ['status'] = 200;
                 $return ['msg'] = 'Updated Successfully.';
                 $return ['iClientId'] = $id;
