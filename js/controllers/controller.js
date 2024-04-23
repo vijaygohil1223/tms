@@ -2597,21 +2597,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // }
                 // val.DueDate - due Today
                 //let statusExistArr = ["Delivered","Approved","Invoiced","Paid"];
-                let statusExistArr = [4,5,6,7];
+                //let statusExistArr = [4,5,6,7];
+                let statusExistArr = [4,5,6,7,8,9,14];
                 let scoopDueDate = val.itemDuedate;
                     
                 if(scoopDueDate && !(statusExistArr.indexOf(val.itemStatusId) > -1) ){
-                    if (scoopDueDate.split(' ')[0] == $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
+                    let dueDateCmp = scoopDueDate.split(' ')[0];
+                    if (dueDateCmp == $scope.dateToday  ) {
+                    //if (scoopDueDate.split(' ')[0] == $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsDueToday.push(val);
                         $scope.projectsDueTodayCount++;
                         $scope.fillDashboardTabFn(0, $scope.projectsDueToday, $scope.projectsDueTodayCount) 
                     }
-                    if (scoopDueDate.split(' ')[0] == TodayAfterNumberOfDays(new Date(), 1)  && [1,2].indexOf(val.itemStatusId) > -1 ) {
+                    if (dueDateCmp == TodayAfterNumberOfDays(new Date(), 1)   ) {
                         $scope.projectsDueTomorrow.push(val);
                         $scope.projectsDueTomorrowCount++;
                         $scope.fillDashboardTabFn(9, $scope.projectsDueTomorrow, $scope.projectsDueTomorrowCount) 
                     }
-                    if (scoopDueDate.split(' ')[0] < $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
+                    if (dueDateCmp < $scope.dateToday ) {
                         $scope.projectsOverdue.push(val);
                         $scope.projectsOverdueCount++;
                         $scope.fillDashboardTabFn(8, $scope.projectsOverdue, $scope.projectsOverdueCount) 
