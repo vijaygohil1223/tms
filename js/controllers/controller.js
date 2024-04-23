@@ -2417,11 +2417,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.fillDashboardTabFn(13, $scope.projectsAll, $scope.projectsAllCount)
                 }
                 // My Projects
-                if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
-                    $scope.projectsMyproj.push(val);
-                    $scope.projectsMyprojCount++;
-                    $scope.fillDashboardTabFn(10, $scope.projectsMyproj, $scope.projectsMyprojCount)
-                }
+                // if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
+                //     $scope.projectsMyproj.push(val);
+                //     $scope.projectsMyprojCount++;
+                //     $scope.fillDashboardTabFn(10, $scope.projectsMyproj, $scope.projectsMyprojCount)
+                // }
                 // upcoming Projects - Heads up
                 if (val.heads_up == 1 ) {
                     $scope.projectsUpcoming.push(val);
@@ -2539,7 +2539,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // }    
                 }
                 // Assign And In Progress
-                if ( ! ([4,6,7,8,9,14].includes(val.itemStatusId)) )  {
+                if ( ! ([4,5,6,7,8,9,14].includes(val.itemStatusId)) )  {
                     let isResourceAssign = $scope.jobListDelivered.find( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.resource > 0 && jb.item_status != 'In preparation' );
                     // ongoing
                     if(isResourceAssign){
@@ -2559,6 +2559,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.projectsAssigned.push(val);
                         $scope.projectsAssignedCount++;
                         $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
+                    }
+                    // my Projects
+                    if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
+                        $scope.projectsMyproj.push(val);
+                        $scope.projectsMyprojCount++;
+                        $scope.fillDashboardTabFn(10, $scope.projectsMyproj, $scope.projectsMyprojCount)
                     }
                 }
                 // PM Ready

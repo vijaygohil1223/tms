@@ -241,6 +241,18 @@ class client {
                     $return ['iClientId'] = $id;
                     $return ['clientData'] = $this->getClientId($id);
                 }
+                // update vCodeRights field
+                $this->_db->where('is_default', 1);
+                $center = $this->_db->getOne('tms_centers');
+                
+                $client = $this->_db->rawQuery("SELECT * FROM `tms_client` WHERE vCenterid = '' ");
+                if($center){
+                    foreach ($client as $key => $value) {
+                        $this->_db->where('iClientId', $value['iClientId']);
+                        $this->_db->update('tms_client', array('vCenterid' => $center['center_id'] ));
+                    }
+                }
+                
             } else {
                 $return ['status'] = 422;
                 $return ['msg'] = 'Not inserted.';
