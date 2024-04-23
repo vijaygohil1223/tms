@@ -282,7 +282,32 @@ class order {
 
     
 
-    public function orderdataget($id){
+    // optmised function
+    public function orderdataget($id) {
+        if (!isset($id) || $id === 'undefined') {
+            return null; 
+        }
+        $this->_db->where('iClientId', $id);
+        $data = $this->_db->getone('tms_client');
+        if (empty($data) || !isset($data['vCenterid']) || empty($data['vCenterid'])) {
+            return null; 
+        }
+        $this->_db->where('center_id', $data['vCenterid']);
+        $business_unit = $this->_db->getone('tms_centers');
+        if (empty($business_unit)) {
+            return null; 
+        }
+        // Determine vCodeRights
+        if (!empty($business_unit['order_number'])) {
+            $bzJson = json_decode($business_unit['order_number'], true);
+            $data['vCodeRights'] = (!empty($bzJson) && isset($bzJson[0]['value']) && !empty($bzJson[0]['value'])) ? str_replace('_', '', $bzJson[0]['value']) : $business_unit['abbrivation'];
+        } else {
+            $data['vCodeRights'] = $business_unit['abbrivation'];
+        }
+        return $data['vCodeRights'];
+    }
+    
+    public function orderdataget__($id){
         if(isset($id) && $id != 'undefined' ){
             $this->_db->where('iClientId',$id);
             $data = $this->_db->getone('tms_client');
@@ -301,7 +326,6 @@ class order {
                         $data['vCodeRights'] = $business_unit['abbrivation'];
                     }
                 }
-                
             }
     	 return $data['vCodeRights'];
         }

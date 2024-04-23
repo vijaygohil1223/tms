@@ -19706,8 +19706,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.getContact = function (id, element) {
-        console.log('id', id)
         if(id && id != undefined){
+            var id = id.split(',').pop();
             $window.localStorage.setItem('directClientIdStore', id);
             $routeParams.id = id;
             rest.path = 'contact';
@@ -19728,7 +19728,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             rest.path = 'orderdataget/' + id;
             rest.get().success(function (data) {
-                
+                $scope.code = data;
                 $scope.orderNumber(data);
             }).error(errorCallback);
 
@@ -19742,9 +19742,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //order number get
     $scope.orderNumber = function (id) {
-        $window.localStorage.Checkordernm = id;
+        $window.localStorage.checkOrdernm = id;
         rest.path = 'orderNumberget/' + id;
         rest.get().success(function (data) {
+            var data = data ? data : ''
+            var id = id ? id : ''
             $scope.code = id;
             $scope.number = data + 1;
             angular.element('#order_number_id').val($scope.code + pad($scope.number, 4));
@@ -19997,13 +19999,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $scope.general.project_status = $scope.proStatusData.pr_status_id;
                     $scope.general.project_createdBy = $window.localStorage.getItem('session_iUserId');
+                    $scope.general.orderPreCode = $scope.code
                     
-                        
                     rest.path = 'general';
                     rest.post($scope.general).success(function (data) {
                         
                         $window.localStorage.setItem('tmpOrderId', data.order_data.order_id);
                         $scope.tmpOrderId = data.order_data.order_id;
+                        angular.element(document.querySelector("[id^=order_number_id]")).val(data.order_data.order_no)
+                        
+                        // order update and insert in customer
+                        $window.localStorage.ContactPerson = $scope.customer.contact;
+                        $window.localStorage.clientproCustomerName = $scope.customer.client;
+                        $scope.project_coordinator = angular.element('#projectCoordinator').val();
+                        $scope.project_manager = angular.element('#projectManager').val();
+                        $scope.QA_specialist = angular.element('#qaSpecialist').val();
+                        $scope.customer.project_coordinator = $scope.project_coordinator;
+                        $scope.customer.project_manager = $scope.project_manager;
+                        $scope.customer.QA_specialist = $scope.QA_specialist;
+                        $scope.customer.order_id = $scope.routeOrderID;
+                        rest.path = 'customer';
+                        rest.post($scope.customer).success(function (data) {
+
+                        }).error(errorCallback);
+
+                        $scope.or = {};
+                        $scope.order_number = data.order_data.order_no;
+                        console.log('$scope.order_number', $scope.order_number)
+                        //$scope.order_number = angular.element("[id^=order_number_id]").val();
+                        //$scope.abbrivation = angular.element("[id^=companyCode]").val();
+                        $scope.or.order_number = $scope.order_number.toString().slice(-4) ;
+                        //$scope.or.abbrivation = $scope.abbrivation;
+                        $scope.or.abbrivation = $scope.CompanyCodeVal;
+                        $routeParams.id = $scope.routeOrderID;
+                        rest.path = 'order';
+                        rest.put($scope.or).success(function (data) {
+                            $window.localStorage.iUserId = data.order_id;
+                            $window.localStorage.userType = 3;
+                            //setTimeout(() => {
+                                if($scope.tmpOrderId)
+                                    $location.path('/items/'+$scope.tmpOrderId);
+                            //}, 100);
+                            $window.localStorage.setItem("isNewProject", "false");
+                        }).error(errorCallback);
+                        
                         //log file start 
                         $scope.logMaster = {};
                         $scope.logMaster.log_type_id = $scope.general.order_id;
@@ -20019,9 +20058,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //$location.path('/items');
                         // if($scope.tmpOrderId)
                         //     $location.path('/items/'+$scope.tmpOrderId);
-                        
+                        $('#due_date').trigger('change') // temp soln
                     }).error(errorCallback);
-
+                    
                     //customer
                     $timeout(function () {
 
@@ -20035,34 +20074,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                             }).error(errorCallback);
                         } else {
-                            
-                            $window.localStorage.ContactPerson = $scope.customer.contact;
-                            $window.localStorage.clientproCustomerName = $scope.customer.client;
-                            $scope.project_coordinator = angular.element('#projectCoordinator').val();
-                            $scope.project_manager = angular.element('#projectManager').val();
-                            $scope.QA_specialist = angular.element('#qaSpecialist').val();
-                            $scope.customer.project_coordinator = $scope.project_coordinator;
-                            $scope.customer.project_manager = $scope.project_manager;
-                            $scope.customer.QA_specialist = $scope.QA_specialist;
-                            $scope.customer.order_id = $scope.routeOrderID;
-                            rest.path = 'customer';
-                            rest.post($scope.customer).success(function (data) {
+                            console.log('upppdate statusss===>', angular.element(document.querySelector("[id^=order_number_id]")).val() )    
+                            // $window.localStorage.ContactPerson = $scope.customer.contact;
+                            // $window.localStorage.clientproCustomerName = $scope.customer.client;
+                            // $scope.project_coordinator = angular.element('#projectCoordinator').val();
+                            // $scope.project_manager = angular.element('#projectManager').val();
+                            // $scope.QA_specialist = angular.element('#qaSpecialist').val();
+                            // $scope.customer.project_coordinator = $scope.project_coordinator;
+                            // $scope.customer.project_manager = $scope.project_manager;
+                            // $scope.customer.QA_specialist = $scope.QA_specialist;
+                            // $scope.customer.order_id = $scope.routeOrderID;
+                            // rest.path = 'customer';
+                            // rest.post($scope.customer).success(function (data) {
 
-                            }).error(errorCallback);
+                            // }).error(errorCallback);
 
-                            $scope.or = {};
-                            $scope.order_number = angular.element("[id^=order_number_id]").val();
-                            //$scope.abbrivation = angular.element("[id^=companyCode]").val();
-                            $scope.or.order_number = $scope.order_number.slice(-4);
-                            //$scope.or.abbrivation = $scope.abbrivation;
-                            $scope.or.abbrivation = $scope.CompanyCodeVal;
-                            $routeParams.id = $scope.routeOrderID;
-                            rest.path = 'order';
-                            rest.put($scope.or).success(function (data) {
+                            // move this code to project POST insert api
+                            // $scope.or = {};
+                            // $scope.order_number = angular.element("[id^=order_number_id]").val();
+                            // //$scope.abbrivation = angular.element("[id^=companyCode]").val();
+                            // $scope.or.order_number = $scope.order_number.slice(-4);
+                            // //$scope.or.abbrivation = $scope.abbrivation;
+                            // $scope.or.abbrivation = $scope.CompanyCodeVal;
+                            // $routeParams.id = $scope.routeOrderID;
+                            // rest.path = 'order';
+                            // rest.put($scope.or).success(function (data) {
                                 
-                                $window.localStorage.iUserId = data.order_id;
-                                $window.localStorage.userType = 3;
-                            }).error(errorCallback);
+                            //     $window.localStorage.iUserId = data.order_id;
+                            //     $window.localStorage.userType = 3;
+                            // }).error(errorCallback);
+                            // Move end
 
                             // //filemanager add order id                
                             // $scope.cu = {};
@@ -20094,12 +20135,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     $timeout(function () {
                         
-                        if($scope.tmpOrderId)
-                            $location.path('/items/'+$scope.tmpOrderId);
-                        else
-                            $location.path('/items');
+                        // if($scope.tmpOrderId)
+                        //     $location.path('/items/'+$scope.tmpOrderId);
+                        // else
+                        //     $location.path('/items');
                         //set isNewProject to false
-                        $window.localStorage.setItem("isNewProject", "false");
+                        //$window.localStorage.setItem("isNewProject", "false");
                     }, 1000);
 
                     /*Add Number Of Items in item Section defined in general section END*/

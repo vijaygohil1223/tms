@@ -1,6 +1,7 @@
 <?php
 require_once 'users.class.php';
 require_once 'client.class.php';
+require_once 'order.class.php';
 require_once 'tasktype.class.php';
 require_once 'functions.class.php';
 require_once 'sendmail/class.phpmailer.php';
@@ -11,6 +12,16 @@ class general {
     }
 
     public function save($info) {
+        if(isset($info['orderPreCode'])){
+            $order = new order;
+            $numberPrfx = $order->orderNumberget($info['orderPreCode']);
+            $numberPrfx = $numberPrfx ? $numberPrfx : 0;
+            $newOrderNumber = $info['orderPreCode']. str_pad($numberPrfx + 1, 4, '0', STR_PAD_LEFT);
+            $info['order_no'] = $newOrderNumber; 
+        }
+        if(isset($info['orderPreCode']))
+            unset($info['orderPreCode']);
+        
         $info['created_date'] = date('Y-m-d H:i:s');
         $info['modified_date'] = date('Y-m-d H:i:s');
         $id = $this->_db->insert('tms_general', $info);
