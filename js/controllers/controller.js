@@ -19728,6 +19728,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             rest.path = 'orderdataget/' + id;
             rest.get().success(function (data) {
+                console.log('data', data)
                 $scope.code = data;
                 $scope.orderNumber(data);
             }).error(errorCallback);
@@ -19742,11 +19743,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //order number get
     $scope.orderNumber = function (id) {
+        console.log('id==before', id)
         $window.localStorage.checkOrdernm = id;
         rest.path = 'orderNumberget/' + id;
         rest.get().success(function (data) {
-            var data = data ? data : ''
-            var id = id ? id : ''
+            id = id===null ? '' : id
             $scope.code = id;
             $scope.number = data + 1;
             angular.element('#order_number_id').val($scope.code + pad($scope.number, 4));
