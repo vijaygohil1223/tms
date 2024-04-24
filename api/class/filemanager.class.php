@@ -1022,6 +1022,21 @@ array(
         }
         return $newFileName;
     }
+    public function sanitizeFileName($fileName) {
+        // Extract the file extension
+        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+        
+        // Remove the extension from the file name
+        $fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
+        
+        // Replace special characters with underscores
+        $sanitizedFileName = preg_replace('/[^\w\-\.]/', '_', $fileNameWithoutExtension);
+        
+        // Concatenate the sanitized file name with the extension
+        $sanitizedFileName = $sanitizedFileName . '.' . $extension;
+        
+        return $sanitizedFileName;
+    }
     public function saveFileupload($data) {
         // print_r($_FILES["myfile"]['name']);
         // echo "===Anill==";
@@ -1033,7 +1048,9 @@ array(
             $error = $_FILES["myfile"]["error"]; {
                 if (!is_array($_FILES["myfile"]['name'])) //single file
                 {
-                    $defaultFileName = $_FILES['myfile']['name'];
+                    //$defaultFileName = $_FILES['myfile']['name'];
+                    $defaultFileName = self::sanitizeFileName($_FILES['myfile']['name']);
+                    
                     $extensionName = pathinfo($defaultFileName, PATHINFO_EXTENSION);
                     $fname = self::checkFileExist($output_dir, $defaultFileName, $extensionName);
                     $filename = $fname ? $fname : $defaultFileName;
