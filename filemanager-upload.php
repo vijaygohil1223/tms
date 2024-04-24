@@ -36,12 +36,29 @@ function checkFileExist($output_dir, $fileNameToCheck, $extensionName){
     return $newFileName;
 }
 
+function sanitizeFileName($fileName) {
+    // Extract the file extension
+    $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+    
+    // Remove the extension from the file name
+    $fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
+    
+    // Replace special characters with underscores
+    $sanitizedFileName = preg_replace('/[^\w\-\.]/', '_', $fileNameWithoutExtension);
+    
+    // Concatenate the sanitized file name with the extension
+    $sanitizedFileName = $sanitizedFileName . '.' . $extension;
+    
+    return $sanitizedFileName;
+}
+
 if (isset($_FILES["myfile"])) {
     $ret = array();
     $error = $_FILES["myfile"]["error"]; {
         if (!is_array($_FILES["myfile"]['name'])) //single file
         {
-            $defaultFileName = $_FILES['myfile']['name'];
+            $defaultFileName = sanitizeFileName($_FILES['myfile']['name']);
+            //$defaultFileName = $_FILES['myfile']['name'];
             $extensionName = pathinfo($defaultFileName, PATHINFO_EXTENSION);
             $fname = checkFileExist($output_dir, $defaultFileName, $extensionName);
             $filename = $fname ? $fname : $defaultFileName;
