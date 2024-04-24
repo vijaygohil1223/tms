@@ -2425,22 +2425,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     $scope.fillDashboardTabFn(10, $scope.projectsMyproj, $scope.projectsMyprojCount)
                 // }
                 // upcoming Projects - Heads up
-                if (val.heads_up == 1 ) {
-                    $scope.projectsUpcoming.push(val);
-                    $scope.projectsUpcomingCount++;
-                    $scope.fillDashboardTabFn(11, $scope.projectsUpcoming, $scope.projectsUpcomingCount)
-                }
-                //To be Assigned - Assign
-                // if (val.itemStatusId == "1") {
-                // //if (val.itemStatusId == "To be Assigned") {
-                //     val.progrss_precentage = 0;
-                //     val.projectstatus_class = 'projectstatus_assigned';
-                //     val.projectstatus_color = '#ffea3c';
-                //     $scope.projectsAssigned.push(val);
-                //     $scope.projectsAssignedCount++;
-                //     $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
+                // if (val.heads_up == 1 ) {
+                //     $scope.projectsUpcoming.push(val);
+                //     $scope.projectsUpcomingCount++;
+                //     $scope.fillDashboardTabFn(11, $scope.projectsUpcoming, $scope.projectsUpcomingCount)
                 // }
-                
+                //To be Assigned - Assign
+                if (val.itemStatusId == "1") {
+                    val.progrss_precentage = 0;
+                    val.projectstatus_class = 'projectstatus_assigned';
+                    val.projectstatus_color = '#ffea3c';
+                    $scope.projectsAssigned.push(val);
+                    $scope.projectsAssignedCount++;
+                    $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
+                }
+
                 // To be Delivered - Delivery
                 if (val.itemStatusId == "3") {
                     val.progrss_precentage = 80;
@@ -2512,15 +2511,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //if ( ([1,3,4,5,6,7,8,9,11,12,13].includes(val.itemStatusId)==false) && (val.itemStatusId == "10" || isQaReady)) {
                 if ( ([2,10].includes(val.itemStatusId))) {
                     console.log('scoopitemStatusId=', val.itemStatusId)
-                    var checkAllComplete = false;
+                    var checkAllJobComplete = false;
                     if($scope.jobListDelivered.length > 0){
                         let scoopJobs = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number );
                         if(scoopJobs.length){
-                            checkAllComplete = scoopJobs.every( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
+                            checkAllJobComplete = scoopJobs.every( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
                         }
                     }
                     // QA Ready
-                    if(val.itemStatusId == "10" || checkAllComplete){
+                    if(val.itemStatusId == "10" || checkAllJobComplete){
                         val.progrss_precentage = 75;
                         val.projectstatus_class = 'projectstatus_ready';
                         val.projectstatus_color = '#019788';
@@ -2530,7 +2529,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.fillDashboardTabFn(3, $scope.projectsQaready, $scope.projectsQaReadyCount) 
                     }
                     // // In Progress - Ongoing
-                    // if (val.itemStatusId == "2"  && checkAllComplete==false)  {
+                    // if (val.itemStatusId == "2"  && checkAllJobComplete==false)  {
                     //     val.progrss_precentage = 25;
                     //     val.projectstatus_class = 'projectstatus_inprogress';
                     //     val.projectstatus_color = '#fec106';
@@ -2540,11 +2539,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //     $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
                     // }    
                 }
-                // Assign And In Progress
-                if ( ! ([4,5,6,7,8,9,14].includes(val.itemStatusId)) )  {
-                    let isResourceAssign = $scope.jobListDelivered.find( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.resource > 0 && jb.item_status != 'In preparation' );
-                    // ongoing
-                    if(isResourceAssign){
+                // In Progress And My project
+                if ( ! ([4,5,6,7,8,9].includes(val.itemStatusId)) )  {
+                    //let isResourceAssign = $scope.jobListDelivered.find( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && jb.resource > 0 && jb.item_status != 'In preparation' );
+                    // Ongoing
+                    if( ! ([1,14].includes(val.itemStatusId)) ){
                         val.progrss_precentage = 25;
                         val.projectstatus_class = 'projectstatus_inprogress';
                         val.projectstatus_color = '#fec106';
@@ -2553,17 +2552,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                         $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
                     }
-                    // Assign
-                    if(! isResourceAssign){
-                        val.progrss_precentage = 0;
-                        val.projectstatus_class = 'projectstatus_assigned';
-                        val.projectstatus_color = '#ffea3c';
-                        $scope.projectsAssigned.push(val);
-                        $scope.projectsAssignedCount++;
-                        $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
-                    }
                     // my Projects
-                    if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID)) {
+                    if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID) ) {
                         $scope.projectsMyproj.push(val);
                         $scope.projectsMyprojCount++;
                         $scope.fillDashboardTabFn(10, $scope.projectsMyproj, $scope.projectsMyprojCount)
@@ -2576,9 +2566,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsPmready.push(val);
                     val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#f44237';
-
                     $scope.fillDashboardTabFn(5, $scope.projectsPmready, $scope.projectsPmReadyCount) 
-                    console.log('$scope.projectsPmready=>called', $scope.projectsPmready)
                 }
                 // QA issue
                 if (val.itemStatusId == "13") {
@@ -5368,7 +5356,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             showPreview: true,
             previewHeight: "35px",
             previewWidth: "35px",
-            maxFileCount: 5,
+            maxFileCount: 100,
             //maxFileSize: 15 * 1024 * 1024,
             showDelete: true,
             autoSubmit: false,
@@ -6657,7 +6645,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             showPreview: true,
             previewHeight: "35px",
             previewWidth: "35px",
-            maxFileCount: 5,
+            maxFileCount: 100,
             //maxFileSize: 15 * 1024 * 1024,
             showDelete: true,
             autoSubmit: false,
