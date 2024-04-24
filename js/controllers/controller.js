@@ -2598,7 +2598,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // val.DueDate - due Today
                 //let statusExistArr = ["Delivered","Approved","Invoiced","Paid"];
                 //let statusExistArr = [4,5,6,7];
-                let statusExistArr = [4,5,6,7,8,9,14];
+                let statusExistArr = [4];
                 let scoopDueDate = val.itemDuedate;
                     
                 if(scoopDueDate && !(statusExistArr.indexOf(val.itemStatusId) > -1) ){
@@ -2614,7 +2614,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.projectsDueTomorrowCount++;
                         $scope.fillDashboardTabFn(9, $scope.projectsDueTomorrow, $scope.projectsDueTomorrowCount) 
                     }
-                    if (dueDateCmp < $scope.dateToday ) {
+                    if (dueDateCmp < $scope.dateToday && ![8,9].includes(val.itemStatusId) ) {
                         $scope.projectsOverdue.push(val);
                         $scope.projectsOverdueCount++;
                         $scope.fillDashboardTabFn(8, $scope.projectsOverdue, $scope.projectsOverdueCount) 
