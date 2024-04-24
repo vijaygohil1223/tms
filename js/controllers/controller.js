@@ -2270,8 +2270,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // filter data based on branch
                 //$scope.projectData = data.filter(pd => pd.project_branch == $window.localStorage.projectBranch)
                 $scope.projectData = data.filter( pd => pd.orderNumber.startsWith($window.localStorage.projectBranch) )
+                console.log('$scope.projectData ==IIFFF', $scope.projectData)
             } else {
                 $scope.projectData = data;
+                console.log('$scope.projectData==else', $scope.projectData)
             }
             console.log('$scope.projectData', $scope.projectData)
             angular.forEach($scope.projectData, function (val, i) {
@@ -2627,7 +2629,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 $scope.showDataLoader = false;
             });
-            if(data.length == 0)
+            if($scope.projectData.length == 0)
                 $scope.showDataLoader = false;
 
             // edit/update project scoop stay on same tabs
@@ -3735,7 +3737,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).
         withOption('pageLength', 100).
         // withOption('scrollCollapse', true).
-        withOption('dom', 'frtilp');
+        withOption('dom', 'frtilp').
+        // deadline column please changes index if any change
+        withOption('order', [[10, 'desc']]); 
+        // withOption('createdRow', function(row, data, dataIndex) {
+        //     // Add event listener for sorting
+        //     $(row).on('click', 'th', function() {
+        //         if (dataIndex !== 10) { // Assuming deadline date column index is 1
+        //             // Revert to default sorting order for the deadline column
+        //             $scope.dtOptions.DataTable.order([[1, 'desc']]).draw();
+        //         }
+        //     });
+        // });
 
     $scope.dtOptionsJob = DTOptionsBuilder.newOptions().
         withOption('responsive', true).
@@ -3750,7 +3763,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //withOption('pageLength', 25).
         // withOption('scrollCollapse', true).
         //withOption('retrieve', true).
-        withOption('dom', 'tfrilp');
+        withOption('dom', 'tfrilp').
+        // deadline column please changes index if any change
+        withOption('order', [[8, 'desc']])
 
     // $scope.dtOptionsJob2 = DTOptionsBuilder.newOptions().
     //     withOption('responsive', true).
