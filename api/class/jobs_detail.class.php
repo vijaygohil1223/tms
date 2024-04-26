@@ -1762,50 +1762,50 @@ class jobs_detail
 
     public function getJobsFromTmsSummeryView()
     {
-
-        // $qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.*,tpt.project_name As type FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_project_type AS tpt ON tpt.pr_type_id = tg.project_type INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id";
-        //$qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.* FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id";
-        $qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.*,tsv.item_status as jobStatus, ti.item_status as scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tmp.name AS job_type_name, tcus.project_coordinator as project_coordinator_id, tcus.project_manager as project_manager_id, tcus.QA_specialist as qa_specialist_id,tpc.iUserId AS job_manager_id FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_master_price AS tmp ON ti.project_type = tmp.master_price_id WHERE ti.item_number = tsv.item_id";
+        $qry = "SELECT tcus.client AS Client, tcus.indirect_customer AS indirectClient, tsv.*, tsv.item_status AS jobStatus, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tjb.service_name AS job_type_name, tcus.project_coordinator AS project_coordinator_id, tcus.project_manager AS project_manager_id, tcus.QA_specialist AS qa_specialist_id, tpc.iUserId AS job_manager_id, tc.vUserName AS clientName, tc.vLogo AS clientLogo, tic.vUserName AS indirectClientName, tu.vFirstName AS resourceFirstName, tu.vLastName AS resourceLastName, tu2.vFirstName AS contactFirstName, tu2.vLastName AS contactLastName FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id";
 
         $data = $this->_db->rawQuery($qry);
 
+        foreach ($data as &$row) {
+            $row['Client'] = isset($row['clientName']) ? $row['clientName'] : '';
+            $row['clientlogo'] = isset($row['clientLogo']) ? $row['clientLogo'] : '';
+            $row['indirectClient'] = isset($row['indirectClientName']) ? $row['indirectClientName'] : '';
+            $row['resource'] = isset($row['resourceFirstName']) ? $row['resourceFirstName'] . " " . $row['resourceLastName'] : '';
+            $row['resourceId'] = isset($row['resource']) ? $row['resource'] : '';
+            $row['contact_person'] = isset($row['contactFirstName']) ? $row['contactFirstName'] . " " . $row['contactLastName'] : '';
+        }
+
+        return $data;
+    }
+    public function getJobsFromTmsSummeryView__()
+    {
+        // $qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.*,tpt.project_name As type FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_project_type AS tpt ON tpt.pr_type_id = tg.project_type INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id";
+        //$qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.* FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id";
+        //$qry = "select tcus.client As Client , tcus.indirect_customer As indirectClient ,tsv.*,tsv.item_status as jobStatus, ti.item_status as scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tmp.name AS job_type_name, tcus.project_coordinator as project_coordinator_id, tcus.project_manager as project_manager_id, tcus.QA_specialist as qa_specialist_id,tpc.iUserId AS job_manager_id FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer As tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_master_price AS tmp ON ti.project_type = tmp.master_price_id WHERE ti.item_number = tsv.item_id";
+        $qry = "SELECT tcus.client AS Client, tcus.indirect_customer AS indirectClient, tsv.*, tsv.item_status AS jobStatus, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tjb.service_name AS job_type_name, tcus.project_coordinator AS project_coordinator_id, tcus.project_manager AS project_manager_id, tcus.QA_specialist AS qa_specialist_id, tpc.iUserId AS job_manager_id FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id WHERE ti.item_number = tsv.item_id";
+        $data = $this->_db->rawQuery($qry);
+
         foreach ($data as $key => $value) {
-
             if ($value['Client']) {
-
                 $this->_db->where('iClientId', $value['Client']);
-
                 $clientName = $this->_db->getOne('tms_client');
-
                 $data[$key]['Client'] = isset($clientName['vUserName']) ? $clientName['vUserName'] : '';
                 $data[$key]['clientlogo'] = isset($clientName['vLogo']) ? $clientName['vLogo'] : '';
             }
-
             if ($value['indirectClient']) {
-
                 $this->_db->where('iClientId', $value['indirectClient']);
-
                 $IndirectClientName = $this->_db->getOne('tms_client_indirect');
-
                 $data[$key]['indirectClient'] = isset($IndirectClientName['vUserName']) ? $IndirectClientName['vUserName'] : '';
             }
-
             if ($value['resource']) {
-
                 $this->_db->where('iUserId', $value['resource']);
-
                 $resourceData = $this->_db->getOne('tms_users');
-
                 $data[$key]['resource'] = $resourceData ? $resourceData['vFirstName']. " " .$resourceData['vLastName'] : '';
                 $data[$key]['resourceId'] = isset($value['resource']) ? $value['resource'] : '';
             }
-
             if ($value['contact_person']) {
-
                 $this->_db->where('iUserId', $value['contact_person']);
-
                 $resourceName = $this->_db->getOne('tms_users');
-
                 $data[$key]['contact_person'] = $resourceName ? $resourceName['vFirstName']. " " .$resourceName['vLastName'] : '';
             }
         }
