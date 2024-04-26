@@ -2211,6 +2211,64 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    const sortDataAsync = async (data) => {
+        // Current date and time in UTC
+        const now = new Date();
+        const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+      
+        // Function to parse date in YYYY-MM-DD HH:mm:ss format
+        const parseDate = (dateString) => {
+          if (!dateString) return null;
+          const [datePart, timePart] = dateString.split(' ');
+          const [year, month, day] = datePart.split('-').map(Number);
+          const [hours, minutes, seconds] = timePart.split(':').map(Number);
+          return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+        };
+      
+        // Sorting data
+        data.sort((a, b) => {
+          const dateA = parseDate(a.itemDuedate_new);
+          const dateB = parseDate(b.itemDuedate_new);
+      
+          if (!dateA) return 1; // Move null dates to the end
+          if (!dateB) return -1; // Move null dates to the end
+      
+          // Convert dates to UTC for consistent comparison
+          const dateAUtc = new Date(Date.UTC(dateA.getFullYear(), dateA.getMonth(), dateA.getDate()));
+          const dateBUtc = new Date(Date.UTC(dateB.getFullYear(), dateB.getMonth(), dateB.getDate()));
+      
+          // Tasks due today come first
+          if (dateAUtc.getTime() === todayUTC.getTime()) {
+            if (dateBUtc.getTime() === todayUTC.getTime()) {
+              // If both tasks are due today, sort by time
+              return dateA - dateB;
+            } else {
+              // Task A is due today, so it comes first
+              return -1;
+            }
+          }
+      
+          // Task B is due today, so it comes first
+          if (dateBUtc.getTime() === todayUTC.getTime()) {
+            return 1;
+          }
+      
+          // For tasks due in the future, sort by due date in descending order
+          if (dateA > todayUTC && dateB > todayUTC) {
+            return dateB - dateA;
+          }
+      
+          // For tasks past due, sort by due date in descending order
+          return dateB - dateA;
+        });
+      
+        return data;
+      };
+      
+      // Call the async function and log the sorted data
+      
+      
+
     $scope.fillDashboardTabFn = function(index, scoopArr, scoopCount){
         $scope.dashboardTabList[index].projectScoopData = scoopArr
         $scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
@@ -2265,17 +2323,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             
+        // sortDataAsync(data)
+        // .then((sortedData) => {
+        //     console.log('sortedData', sortedData)
+        // })
+        // .catch((error) => {
+        //   console.error("An error occurred:", error);
+        // });
+
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
                 // filter data based on branch
                 //$scope.projectData = data.filter(pd => pd.project_branch == $window.localStorage.projectBranch)
                 $scope.projectData = data.filter( pd => pd.orderNumber.startsWith($window.localStorage.projectBranch) )
-                console.log('$scope.projectData ==IIFFF', $scope.projectData)
+                //console.log('$scope.projectData ==IIFFF', $scope.projectData)
             } else {
                 $scope.projectData = data;
-                console.log('$scope.projectData==else', $scope.projectData)
+                //console.log('$scope.projectData==else', $scope.projectData)
             }
-            console.log('$scope.projectData', $scope.projectData)
+            //console.log('$scope.projectData', $scope.projectData)
             angular.forEach($scope.projectData, function (val, i) {
                 val.progrss_precentage = -1;
                 // Scoop project manager - (Substituted project manager)
@@ -3728,15 +3794,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('dom', 'frtilp').
         // deadline column please changes index if any change
         withOption('order', [[10, 'desc']]); 
-        // withOption('createdRow', function(row, data, dataIndex) {
-        //     // Add event listener for sorting
-        //     $(row).on('click', 'th', function() {
-        //         if (dataIndex !== 10) { // Assuming deadline date column index is 1
-        //             // Revert to default sorting order for the deadline column
-        //             $scope.dtOptions.DataTable.order([[1, 'desc']]).draw();
-        //         }
-        //     });
-        // });
 
     $scope.dtOptionsJob = DTOptionsBuilder.newOptions().
         withOption('responsive', true).
@@ -4183,6 +4240,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         if(emailTemplate){
             $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
+            console.log('$scope.emailTemplate', $scope.emailTemplate)
             $('.emailTemplate').html($scope.emailTemplate);
             if ($("#invoiceContent").length === 0) {
                 //$('.emailTemplate').append($scope.emailTemplate);
