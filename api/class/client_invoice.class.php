@@ -174,7 +174,7 @@ class Client_invoice {
 
                 //payment due date number of day
                 //$data['number_of_days'] = $paymentDue[0]['number_of_days'];
-                $data['number_of_days'] = $data['invoice_no_of_days'] > 0 ? $data['invoice_no_of_days'] : $paymentDue[0]['number_of_days'];
+                $data['number_of_days'] = isset($data['invoice_no_of_days']) && $data['invoice_no_of_days'] > 0 ? $data['invoice_no_of_days'] : $paymentDue[0]['number_of_days'];
             
                 //invoiceNumber Count
                 $data['invoiceCount'] = count(self::get('tms_invoice_client'));
