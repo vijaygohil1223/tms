@@ -5016,7 +5016,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if ($routeParams.id) {
             $scope.jobdetail.due_date = angular.element('#duedate').val();
             
-            $scope.jobdetail.description = $scope.jobdetail.jobDesc;
+            $scope.jobdetail.description = $scope.jobdetail.jobDesc || '';
             delete $scope.jobdetail['jobDesc'];
 
             //Error message if job due date is greater then project due date.
@@ -5092,22 +5092,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 return el;
             });
 
-            if($cookieStore.get){
-                var arr2 = $.map($cookieStore.get('editJobact'), function (el) {
-                    return el;
-                });
-                if (array_diff(arr1, arr2) != "") {
-                    var obj = [];
-                    if ($cookieStore.get('jobRecentEdit') != undefined) {
-                        angular.forEach($cookieStore.get('jobRecentEdit'), function (val, i) {
-                            obj.push(val);
-                        });
+            if ($cookieStore.get) {
+                var arr2 = $cookieStore.get('editJobact');
+                if (arr2) {
+                    arr2 = $.map(arr2, function(el) {
+                        return el;
+                    });
+                    if (arr1 && array_diff(arr1, arr2) != "") {
+                        var obj = [];
+                        if ($cookieStore.get('jobRecentEdit') != undefined) {
+                            angular.forEach($cookieStore.get('jobRecentEdit'), function(val, i) {
+                                obj.push(val);
+                            });
+                        }
+                        obj.push($routeParams.id);
+                        $cookieStore.put('jobRecentEdit', obj);
+                        $cookieStore.remove('editJobact');
                     }
-                    obj.push($routeParams.id);
-                    $cookieStore.put('jobRecentEdit', obj);
-                    $cookieStore.remove('editJobact')
                 }
-            }    
+            }
+            
 
             if ($scope.jobdetail.resource != '' && $scope.jobdetail.item_status == 'In preparation') {
                 //$scope.jobdetail.item_status = 'In-progress';
@@ -5119,6 +5123,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.jobdetail.hasOwnProperty('vCenterid'))
                 delete $scope.jobdetail['vCenterid'];    
             
+
+                console.log('$scope.jobdetail',$scope.jobdetail )
+
             $routeParams.id;
             rest.path = 'jobSummeryJobDetailsUpdate';
             rest.put($scope.jobdetail).success(function (data) {
