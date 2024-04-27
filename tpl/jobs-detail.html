@@ -310,7 +310,7 @@
 
                                                         <tr ng-repeat="it in itemListFinal[$index]" class="tableRowId">
                                                             <td>
-                                                                <input type="checkbox" ng-model="confirmed"
+                                                                <input type="checkbox" ng-model="it.itemChecked"
                                                                     ng-change="checkBoxCheckFromMultiple(it.itemChecked,it.job_summmeryId)"
                                                                     id="jobId-{{it.job_summmeryId}}" />
                                                                 <input type="text" class="none"

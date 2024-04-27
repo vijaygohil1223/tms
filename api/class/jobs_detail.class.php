@@ -245,7 +245,18 @@ class jobs_detail
 
     public function jobitemDelete($id)
     {
+        $this->_db->where('job_summmeryId', $id);
+        $jobSummeryData = $this->_db->getOne('tms_summmery_view');
 
+        if($jobSummeryData){
+            if($jobSummeryData['resource'] > 0 && $jobSummeryData['item_status'] != 'In preparation'){
+                $return['is_delete'] = false;
+                $return['status'] = 200;
+                $return['msg'] = 'You can not delete. Status is '.$jobSummeryData['item_status'];
+                return $return;      
+            }
+        }
+        
         $invoiceAlreadyAdded = false;
 
         if ($id) {
@@ -263,14 +274,13 @@ class jobs_detail
         }
 
         if ($invoiceAlreadyAdded) {
-            $this->_db->where('job_summmeryId', $id);
-            $jobSummeryData = $this->_db->getOne('tms_summmery_view');
-
+            
             if ($jobSummeryData) {
                 $return['jobNumber'] = $jobSummeryData['po_number'];
             }
 
-            $return['status'] = 422;
+            $return['is_invoice_exist'] = true;
+            $return['status'] = 200;
             $return['msg'] = 'You can not delete invoice created job.';
             return $return;
         } else {

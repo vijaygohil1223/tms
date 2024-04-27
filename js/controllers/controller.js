@@ -2211,59 +2211,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    const sortDataAsync = async (data) => {
-        // Current date and time in UTC
-        const now = new Date();
-        const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-      
-        // Function to parse date in YYYY-MM-DD HH:mm:ss format
-        const parseDate = (dateString) => {
-          if (!dateString) return null;
-          const [datePart, timePart] = dateString.split(' ');
-          const [year, month, day] = datePart.split('-').map(Number);
-          const [hours, minutes, seconds] = timePart.split(':').map(Number);
-          return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
-        };
-      
-        // Sorting data
-        data.sort((a, b) => {
-          const dateA = parseDate(a.itemDuedate_new);
-          const dateB = parseDate(b.itemDuedate_new);
-      
-          if (!dateA) return 1; // Move null dates to the end
-          if (!dateB) return -1; // Move null dates to the end
-      
-          // Convert dates to UTC for consistent comparison
-          const dateAUtc = new Date(Date.UTC(dateA.getFullYear(), dateA.getMonth(), dateA.getDate()));
-          const dateBUtc = new Date(Date.UTC(dateB.getFullYear(), dateB.getMonth(), dateB.getDate()));
-      
-          // Tasks due today come first
-          if (dateAUtc.getTime() === todayUTC.getTime()) {
-            if (dateBUtc.getTime() === todayUTC.getTime()) {
-              // If both tasks are due today, sort by time
-              return dateA - dateB;
+    function compareDueDates(a, b) {
+        const dateA = new Date(a.itemDuedate);
+        const dateB = new Date(b.itemDuedate);
+        const today = new Date();
+
+        if (dateA.getDate() === today.getDate() && dateA.getMonth() === today.getMonth() && dateA.getFullYear() === today.getFullYear()) {
+            // If task A is due today
+            if (dateB.getDate() !== today.getDate() || dateB.getMonth() !== today.getMonth() || dateB.getFullYear() !== today.getFullYear()) {
+                return -1; // A comes before B
             } else {
-              // Task A is due today, so it comes first
-              return -1;
+                return dateA - dateB; // Sort by time if both tasks are due today
             }
-          }
-      
-          // Task B is due today, so it comes first
-          if (dateBUtc.getTime() === todayUTC.getTime()) {
-            return 1;
-          }
-      
-          // For tasks due in the future, sort by due date in descending order
-          if (dateA > todayUTC && dateB > todayUTC) {
-            return dateB - dateA;
-          }
-      
-          // For tasks past due, sort by due date in descending order
-          return dateB - dateA;
-        });
-      
-        return data;
-      };
+        } else if (dateA > today && dateB > today) {
+            return dateA - dateB; // Sort future tasks by due date
+        } else if (dateA < today && dateB < today) {
+            return dateB - dateA; // Sort past due tasks by due date
+        } else if (dateA < today && dateB > today) {
+            return 1; // Task A is past due, so it comes after task B
+        } else {
+            return -1; // Task B is past due, so it comes before task A
+        }
+    }
       
       // Call the async function and log the sorted data
       
@@ -2322,14 +2291,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
+            //console.log('data', data.sort(compareDueDates))
             
-        // sortDataAsync(data)
-        // .then((sortedData) => {
-        //     console.log('sortedData', sortedData)
-        // })
-        // .catch((error) => {
-        //   console.error("An error occurred:", error);
-        // });
+            
 
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
@@ -2339,7 +2303,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //console.log('$scope.projectData ==IIFFF', $scope.projectData)
             } else {
                 $scope.projectData = data;
-                //console.log('$scope.projectData==else', $scope.projectData)
+                //$scope.projectData = data.sort(compareDueDates)
+                console.log('$scope.projectData==else', $scope.projectData)
             }
             //console.log('$scope.projectData', $scope.projectData)
             angular.forEach($scope.projectData, function (val, i) {
@@ -2883,7 +2848,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
 
                 //Due date counts for jobs
-                if( ! ['Delivered','Completed','Paid','Invoice Ready','Invoice Accepted','Invoiced'].indexOf(val.item_status) > -1 ){
+                if( ! ['Delivered','Completed','Paid','Invoice Ready','Invoice Accepted','Invoiced','Cancelled'].indexOf(val.item_status) > -1 ){
                     if (val.due_date.split(' ')[0] == dateFormat(new Date()).split(".").reverse().join("-")) {
                         $scope.jobDueToday.push(val);
                         $scope.jobDueTodayCount++;
@@ -5041,7 +5006,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         work_name: workName
                     });
             }*/
-            $scope.jobdetail.item_status = $scope.jobdetail.item_status.split(',').pop()
+            $scope.jobdetail.item_status = $scope.jobdetail?.item_status?.split(',').pop()
 
             $scope.work_instruction = JSON.stringify(obj);
             $scope.jobdetail.work_instruction = $scope.work_instruction;
@@ -23511,34 +23476,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.checkBoxCheckFromMultiple = function (val, jobSummeryId) {
+        console.log('jobSummeryId', jobSummeryId)
         var isChecked = $("#jobId-" + jobSummeryId).prop("checked");
+        console.log('isChecked', isChecked)
         if (isChecked) {
             var obj = {
                 'id': jobSummeryId
             }
             allitCheked.push(obj);
+            console.log('allitCheked', allitCheked)
         } else {
             angular.forEach(allitCheked, function (value, key) {
                 if (value.id == jobSummeryId) {
                     allitCheked.splice(key, 1);
                 }
             });
+            console.log('allitCheked-else', allitCheked)
         }
     }
     /*JobCheckBox Check/uncheck code END*/
     // all check base on scoop
+    
     $scope.checkAlljobsScoop = function(scoopId){
         let isChecked = $("#scoopJobs"+scoopId).prop("checked");
         angular.forEach($scope.itemList, function (it) {
             if(it.item_id == scoopId){
                 if(isChecked){
-                    $("#jobId-" + it.job_summmeryId).prop("checked", true);
+                    //$("#jobId-" + it.job_summmeryId).prop("checked", true);
+                    it.itemChecked = isChecked;
                     var obj = {
                         'id': it.job_summmeryId
                     }
                     allitCheked.push(obj);
                 }else{
-                    $("#jobId-" + it.job_summmeryId).prop("checked", false);
+                    //$("#jobId-" + it.job_summmeryId).prop("checked", false);
+                    it.itemChecked = isChecked;
                     const indexOfObject = allitCheked.findIndex(object => {
                         return object.id === it.job_summmeryId;
                     });
@@ -23548,6 +23520,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     allitCheked = UniqueArraybyId(allitCheked,'id')
                 console.log('allitCheked', allitCheked)
             }
+        });
+        angular.forEach(allitCheked, function (obj) {
+            //$scope.checkBoxCheckFromMultiple(true, obj.id);
         });
     }
 
@@ -23915,14 +23890,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ($routeParams.id) {
                     //allitCheked clear to add new all checked values
                     allitCheked = [];
-
-                    $.each($("[id^='jobId']"), function () {
-                        $("#" + this.id).prop("checked", true);
-                        var jobSummmeryId = this.id.split('-')[1];
-                        allitCheked.push({
-                            id: jobSummmeryId
-                        });
+                    console.log('$scope.itemList',$scope.itemList )
+                    angular.forEach($scope.itemList, function (it) {
+                        // Update the model variable to check the checkbox
+                        it.itemChecked = true;
+                        var obj = {
+                            'id': it.job_summmeryId
+                        };
+                        allitCheked.push(obj);
                     });
+                
+                    // $.each($("[id^='jobId']"), function () {
+                    //     $("#" + this.id).prop("checked", true);
+                    //     var jobSummmeryId = this.id.split('-')[1];
+                    //     allitCheked.push({
+                    //         id: jobSummmeryId
+                    //     });
+                    // });
                     notification('All jobs selected successfully.', 'success');
                 }
                 break;
@@ -23934,8 +23918,53 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 allitCheked = [];
                 notification('All jobs selection remove successfully.', 'success');
                 break;
+
             case "Delete":
+                if (!allitCheked) {
+                    notification('Please select a job', 'warning');
+                    break;
+                }
+
+                var invoiceAddedJobs = [];
+                bootbox.confirm("Are you sure you want to delete this row?", function (result) {
+                    if (result) {
+                        var data = JSON.parse(JSON.stringify(allitCheked)); // Deep clone
+                        var promises = data.filter(val => val.id).map(val => {
+                            rest.path = 'jobitemDelete/' + val.id;
+                            //rest.delete().success(function (res) {
+                            return rest.delete()
+                                .then(res => {
+                                    if (res?.is_invoice_exist == true) {
+                                        invoiceAddedJobs.push(res.jobNumber);
+                                    }
+                                })
+                                .catch(errorCallback);
+                        });
+
+                        Promise.all(promises).then(() => {
+                            var html = '';
+                            var listArray = ['list-group-item-success', 'list-group-item-info', 'list-group-item-warning', 'list-group-item-danger'];
+                            
+                            if (invoiceAddedJobs.length > 0) {
+                                invoiceAddedJobs.forEach(val => {
+                                    var ListClass = listArray[Math.floor(Math.random() * listArray.length)];
+                                    html += `<li class="list-group-item ${ListClass}"><i class="fa fa-arrow-circle-right" aria-hidden="true"></i> ${val}</li>`;
+                                });
+                                $('#jobNumberModal').find('.modal-body ul').html(html);
+                                $('#jobNumberModal').modal('show');
+                            } else {
+                                notification('Jobs deleted successfully', 'success');
+                                $route.reload();
+                            }
+                        }).catch(console.error); // Handle promise rejection
+                    }
+                });
+                
+                break;
+
+            case "__Delete__":
                 if (allitCheked != null && allitCheked != undefined && allitCheked != "") {
+                    
                     var invoiceAddedJobs = [];
                     bootbox.confirm("Are you sure you want to delete this row?", function (result) {
                         if (result == true) {
@@ -23946,7 +23975,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 if (val.id) {
                                     rest.path = 'jobitemDelete/' + val.id;
                                     rest.delete().success(function (res) {
-                                        if (res.status == 422) {
+                                        if (res?.is_invoice_exist == true) {
                                             invoiceAddedJobs.push(res.jobNumber);
                                         }
                                         // /$route.reload();
@@ -24298,8 +24327,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (result == true) {
                 rest.path = 'jobitemDelete/' + id;
                 rest.delete().success(function (res) {
-                    if (res.status) {
-                        notification('You can not delete invoice created job.', 'error');
+                    if (res?.is_delete === false) {
+                        notification('You can not delete this job.', 'warning');
+                    }else if (res?.is_invoice_exist == true) {
+                        notification('You can not delete invoice created job.', 'warning');
                     } else {
                         //log file start 
                         $scope.logMaster = {};
@@ -24312,6 +24343,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = "saveLog";
                         rest.post($scope.logMaster).success(function (data) { });
                         //log file end
+                        notification('Job deleted successfull.', 'success');
                     }
                     $route.reload();
                 }).error(errorCallback);
@@ -35666,8 +35698,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (result == true) {
                 rest.path = 'jobitemDelete/' + id;
                 rest.delete().success(function (res) {
-                    if (res.status) {
-                        notification('You can not delete invoice created job.', 'error');
+                    if (res?.is_delete === false) {
+                        notification('You can not delete this job.', 'warning');
+                    }else if (res?.is_invoice_exist == true) {
+                        notification('You can not delete invoice created job.', 'warning');
                     } else {
                         //log file start 
                         $scope.logMaster = {};
@@ -35680,6 +35714,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = "saveLog";
                         rest.post($scope.logMaster).success(function (data) { });
                         //log file end
+                        notification('Job deleted successfully.', 'success');
                     }
                     $route.reload();
                 }).error(errorCallback);
