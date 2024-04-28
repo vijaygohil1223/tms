@@ -2211,6 +2211,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+
     function compareDueDates(a, b) {
         const dateA = new Date(a.itemDuedate);
         const dateB = new Date(b.itemDuedate);
@@ -2233,8 +2234,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return -1; // Task B is past due, so it comes before task A
         }
     }
-      
-      // Call the async function and log the sorted data
+    // Call the async function and log the sorted data
       
       
 
@@ -2291,10 +2291,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            //console.log('data', data.sort(compareDueDates))
             
-            
-
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
                 // filter data based on branch
@@ -3756,9 +3753,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).
         withOption('pageLength', 100).
         // withOption('scrollCollapse', true).
-        withOption('dom', 'frtilp').
+        withOption('dom', 'frtilp');
         // deadline column please changes index if any change
-        withOption('order', [[10, 'desc']]); 
+        //withOption('order', [[10, 'desc']]); 
 
     $scope.dtOptionsJob = DTOptionsBuilder.newOptions().
         withOption('responsive', true).
