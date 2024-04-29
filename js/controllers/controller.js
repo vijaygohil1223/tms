@@ -21291,6 +21291,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.jobi = {};
 
     $scope.saveitems = function (formId, formIndex) {
+        
         // check PoNumber Exist call fun
         $scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
 
@@ -21311,7 +21312,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
                     var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
-                    if(!srcLang || !trgLang){
+                    if(!$scope.isAllScoopUpdate && (!srcLang || !trgLang) ){
                         notification('Please select source-target language','warning')
                         return false;
                     }
@@ -21580,6 +21581,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     
                     $scope.itemList[formIndexNew].itemId ,$scope.itemList[formIndexNew].due_date;
+                    
                     if($scope.isAllScoopCopy && formIndex != 0 ){    
                         $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndexNew].due_date).format("YYYY-MM-DD HH:mm");
                     
@@ -21588,7 +21590,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
                         var due_timevl1 = angular.element('#due_time' + formIndex).val();
                         $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
-                    }    
+                    }   
                         
                     //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
                     //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
