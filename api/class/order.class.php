@@ -416,6 +416,22 @@ class order {
 
 
     public function orderupdate($id,$data){
+        $data['modified_date'] = date('Y-m-d H:i:s');
+            
+        $this->_db->where('order_number',$data['order_number']);
+        $orderNoExist = $this->_db->getOne('tms_order');
+        if($orderNoExist){
+            $orderNo = self::orderNumberget($data['abbrivation']);
+            $orderNo = $orderNo ? $orderNo+1 : 1;
+            $newOrderNumber = $data['abbrivation']. str_pad($orderNo, 4, '0', STR_PAD_LEFT);
+            $this->_db->where('order_id',$id);
+            $genUpData['order_no'] = $newOrderNumber;
+            $genUpData['modified_date'] = $data['modified_date'];
+            $upGenDataSuc = $this->_db->update('tms_general', $genUpData );
+            if($upGenDataSuc){
+                $data['order_number'] = $orderNo;
+            }
+        }
 
         $info = $data;
 
