@@ -14,9 +14,9 @@ class general {
     public function save($info) {
         if(isset($info['orderPreCode'])){
             $order = new order;
-            $numberPrfx = $order->orderNumberget($info['orderPreCode']);
-            $numberPrfx = $numberPrfx ? $numberPrfx : 0;
-            $newOrderNumber = $info['orderPreCode']. str_pad($numberPrfx + 1, 4, '0', STR_PAD_LEFT);
+            $oNumber = $order->orderNumberget($info['orderPreCode']);
+            $oNumber = $oNumber ? $oNumber : 0;
+            $newOrderNumber = $info['orderPreCode']. str_pad($oNumber + 1, 4, '0', STR_PAD_LEFT);
             $info['order_no'] = $newOrderNumber; 
         }
         if(isset($info['orderPreCode']))
