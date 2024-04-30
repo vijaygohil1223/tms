@@ -2213,13 +2213,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     function compareDueDates(a, b) {
-        const dateA = new Date(a.itemDuedate);
-        const dateB = new Date(b.itemDuedate);
+        const dateA = new Date(Date.parse(a.itemDuedate + 'Z'));
+        const dateB = new Date(Date.parse(b.itemDuedate + 'Z'));
         const today = new Date();
 
-        if (dateA.getDate() === today.getDate() && dateA.getMonth() === today.getMonth() && dateA.getFullYear() === today.getFullYear()) {
+        if (dateA.getUTCDate() === today.getUTCDate() && dateA.getUTCMonth() === today.getUTCMonth() && dateA.getUTCFullYear() === today.getUTCFullYear()) {
             // If task A is due today
-            if (dateB.getDate() !== today.getDate() || dateB.getMonth() !== today.getMonth() || dateB.getFullYear() !== today.getFullYear()) {
+            if (dateB.getUTCDate() !== today.getUTCDate() || dateB.getUTCMonth() !== today.getUTCMonth() || dateB.getUTCFullYear() !== today.getUTCFullYear()) {
                 return -1; // A comes before B
             } else {
                 return dateA - dateB; // Sort by time if both tasks are due today
@@ -2291,6 +2291,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
+            //console.log('data-sorted', data.sort(compareDueDates) )
             
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
@@ -2299,8 +2300,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectData = data.filter( pd => pd.orderNumber.startsWith($window.localStorage.projectBranch) )
                 //console.log('$scope.projectData ==IIFFF', $scope.projectData)
             } else {
-                $scope.projectData = data;
-                //$scope.projectData = data.sort(compareDueDates)
+                //$scope.projectData = data;
+                $scope.projectData = data.sort(compareDueDates);
                 console.log('$scope.projectData==else', $scope.projectData)
             }
             //console.log('$scope.projectData', $scope.projectData)
