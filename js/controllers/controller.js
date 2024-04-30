@@ -2235,6 +2235,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     // Call the async function and log the sorted data
+
+    $scope.sortBy = function(tab, column) {
+        console.log('column', column)
+        console.log('tab', tab)
+        if (tab.sortColumn === column) {
+          // If already sorting by this column, reverse the order
+          tab.sortOrder = !tab.sortOrder;
+        } else {
+          // Otherwise, sort by the new column in ascending order
+          tab.sortColumn = column;
+          tab.sortOrder = false;
+        }
+      };
       
       
 
@@ -7316,7 +7329,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     angular.forEach($scope.downloadAllfile, function (val, i) {
                                         if (val.ext != '') {
                                             var fimg = val.name;
-                                            var fOriginalName = val.original_filename;
+                                            //var fOriginalName = val.original_filename;
+                                            var fOriginalName = val.name;
                                             //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
                                             //fileList.push("uploads/fileupload/"+fimg);
                                             var fimgUrl = "uploads/fileupload/" + fimg;
