@@ -1048,7 +1048,7 @@ array(
             $error = $_FILES["myfile"]["error"]; {
                 if (!is_array($_FILES["myfile"]['name'])) //single file
                 {
-                    //$defaultFileName = $_FILES['myfile']['name'];
+                    $originalFilename = $_FILES['myfile']['name'];
                     $defaultFileName = self::sanitizeFileName($_FILES['myfile']['name']);
                     
                     $extensionName = pathinfo($defaultFileName, PATHINFO_EXTENSION);
@@ -1065,6 +1065,7 @@ array(
                     $size = $_FILES['myfile']['size'];
                     $ret['size'] = self::formatSizeUnits($size);
                     $ret['name'] = $filename;
+                    $ret['original_filename'] = $originalFilename;
                 } else {
                     $fileCount = count($_FILES["myfile"]['name']);
                     for ($i = 0; $i < $fileCount; $i++) {

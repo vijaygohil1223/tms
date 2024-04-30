@@ -2291,7 +2291,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            //console.log('data-sorted', data.sort(compareDueDates) )
+            //console.log('pre-data-sorted', data.sort(compareDueDates) )
             
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
@@ -2300,8 +2300,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.projectData = data.filter( pd => pd.orderNumber.startsWith($window.localStorage.projectBranch) )
                 //console.log('$scope.projectData ==IIFFF', $scope.projectData)
             } else {
-                //$scope.projectData = data;
-                $scope.projectData = data.sort(compareDueDates);
+                $scope.projectData = data;
+                //$scope.projectData = data.sort(compareDueDates);
                 console.log('$scope.projectData==else', $scope.projectData)
             }
             //console.log('$scope.projectData', $scope.projectData)
@@ -2310,10 +2310,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Scoop project manager - (Substituted project manager)
                 val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
                 val.qa_fullName = val.scp_sub_Qa_fullName ? val.scp_sub_Qa_fullName : val.scp_Qa_fullName ? val.scp_Qa_fullName : val.gen_sub_Qa_fullName ? val.gen_sub_Qa_fullName : val.gen_Qa_fullName 
-                //$scope.projectsAll = $scope.projectData;
+                val.attached_workflow = val.attached_workflow.split('-').pop(); 
+                
                 //var newLangData = { sourceLang: 'English (US)', dataNgSrc: 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/us.png', alt: '' };
                 var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
-                val.attached_workflow = val.attached_workflow.split('-').pop(); 
                 if (val.itemsSourceLang) {
                     $scope.projectData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
                     var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
@@ -2406,6 +2406,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
                     val.jobLinguist = lngstArr;
                 }   
+                
 
                 if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
                     val.pm_name = val.sub_pm_name
@@ -6753,6 +6754,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var allFiles = {
                         role_id: $scope.role_id,
                         name: alldata["name"],
+                        original_filename: alldata["original_filename"],
                         f_id: 1,
                         parent_id: $scope.filedata.parent_id,
                         ext: alldata["ext"],
@@ -6876,12 +6878,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $('.ajax-upload-dragdrop:eq(1)').hide();
     }, 500);
 
+    function downloadFileByAtag(filename, fileOriginalName){
+        const a = document.createElement('a');
+        const fileName = fileOriginalName ? fileOriginalName : filename;
+        const fileURL = 'uploads/fileupload/' + filename; 
+        a.setAttribute('download', fileName);
+        a.setAttribute('href', fileURL);
+        a.click();
+    }
+
     $timeout(function () {
-        $scope.addToDownload = function (fimg) {
-            const a = document.createElement('a');
-            a.download = fimg;
-            a.href = 'uploads/fileupload/' + fimg;
-            a.click();
+        $scope.addToDownload = function (fname, fOriginalName ) {
+            downloadFileByAtag(fname, fOriginalName)
+            // const a = document.createElement('a');
+            // a.download = 'testt';
+            // a.href = 'uploads/fileupload/' + fname;
+            // a.click();
         }
     }, 500);
 
@@ -7304,6 +7316,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     angular.forEach($scope.downloadAllfile, function (val, i) {
                                         if (val.ext != '') {
                                             var fimg = val.name;
+                                            var fOriginalName = val.original_filename;
                                             //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
                                             //fileList.push("uploads/fileupload/"+fimg);
                                             var fimgUrl = "uploads/fileupload/" + fimg;
@@ -7311,7 +7324,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 fileUrls.push({
                                                     'parent_id': val.parent_id,
                                                     'full_url': fimgUrl,
-                                                    'file_name': fimg,
+                                                    'file_name': fOriginalName ? fOriginalName : fimg,
                                                     'folderurl_dir': val.folderurl,
                                                 });
                                             }
@@ -7500,9 +7513,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if ($scope.menuRclkID) {
                                 var fileID = $scope.menuRclkID;
                                 var fileName = $scope.menuRclkName;
+                                var fOriginalName = $scope.menuRclkName;
                             } else {
                                 var fileID = $itemScope.display.fmanager_id;
                                 var fileName = $itemScope.display.name;
+                                var fOriginalName = $itemScope.display.original_filename;
                             }
                             /*var a = document.createElement('a');
                             document.body.appendChild(a);
@@ -7510,10 +7525,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             a.download = fileName;
                             a.href = $("#download" + fileID).attr('href');
                             a.click();*/
-                            const a = document.createElement('a');
-                            a.download = fileName;
-                            a.href = 'uploads/fileupload/' + fileName;
-                            a.click();
+                            // const a = document.createElement('a');
+                            // a.download = fileName;
+                            // a.href = 'uploads/fileupload/' + fileName;
+                            // a.click();
+                            downloadFileByAtag(fileName, fOriginalName)
+                            
                             $timeout(function () {
                                 $scope.menuRclkID = '';
                                 $scope.menuRclkName = '';

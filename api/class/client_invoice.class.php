@@ -792,6 +792,7 @@ class Client_invoice {
         $this->_db->join('tms_items ti', 'ti.itemId=tmInvoice.scoop_id','LEFT');
         $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
         $this->_db->where('tmInvoice.invoice_type', $type);
+        $this->_db->where('tmInvoice.is_deleted ', ' != 1');
         //$this->_db->where('tmInvoice.freelance_id',$userId);
         $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date');
         //echo $this->_db->getLastQuery();
@@ -810,6 +811,7 @@ class Client_invoice {
 
     // Get all invoice list
     public function getClientInvoicelistAll() {
+        $this->_db->where('is_deleted', ' != 1');
         $data = $this->_db->get('tms_invoice_client');
         return $data;
     }
