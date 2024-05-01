@@ -482,10 +482,11 @@ class Client_invoice {
         }
          
         $attachments = '';
-        $subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
+        $subject = isset($data['data']['msgEmailSubject']) && $data['data']['msgEmailSubject'] != '' ? $data['data']['msgEmailSubject'] : "Invoice";
+        //$subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
         $to_name = ' ';
         //$to = 'anil.kanhasoft@gmail.com';
-        $to = $data['companycontactEmail'];
+        $to = isset($data['data']['vEmailAddress']) && $data['data']['vEmailAddress'] != '' ? $data['data']['vEmailAddress'] : $data['companycontactEmail'];
         $cc = $bcc = '';
         if (isset($data['data']['cc'])) {
             $cc = $data['data']['cc'];

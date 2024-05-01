@@ -17577,7 +17577,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     'companycontactEmail': companycontactEmail,
                                     'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
                                     'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
-                                    'isClientInvoice' : 1
+                                    'isClientInvoice' : 1,
+                                    'subject' : 'Invoice'
                                 };
                                 
                                 var modalInstance = $uibModal.open({
@@ -28993,6 +28994,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 <p> Linguist Email : ${items.freelanceEmail}, </p> `;
         }
         if($scope.emailPopupType == 'invoice-client'){
+            $scope.cPersonMsg.msgEmailSubject = $scope.invoiceData && $scope.invoiceData?.subject ? $scope.invoiceData.subject : '';
+        
             rest.path = "emailTemplateGetAll" ;
             rest.get().success(function (data) {
                 var emailContentText = data.find( (templt) => templt.template_id == 12);
@@ -29003,6 +29006,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     };
                     $scope.emailTemplateText =  emailContentText.template_content;  
                     $scope.cPersonMsg.messageData = replaceVariables(emailContentText.template_content, rplcData);
+                    $scope.cPersonMsg.messageData += '<br />' + msgText
                 }
             })
         }
@@ -31032,15 +31036,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
         }    
         setTimeout(() => {
+            
             var vEncodeHead = '<html><head><meta charset="UTF-8"></head><body>';
             var html = document.getElementById('exportable').innerHTML;
             var vEncodeHead2 = '</body></html>';
-            var blob = new Blob([ vEncodeHead+html+vEncodeHead2 ], {
-                //type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                type: "application/vnd.ms-excel;charset=utf-8"
-                                
+            var blob = new Blob([vEncodeHead + html + vEncodeHead2], {
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             });
             saveAs(blob, "Client Invoice Report.xlsx");
+
             
             // export excel file using sheetjs
             //exportTableToExcel('exportable2','Client Invoice Report')
