@@ -373,11 +373,6 @@ class functions {
         }
         if (is_array($attachments)) {
             // Attachment parameter
-            // $mailParams['Messages'][0]['Attachments'] =  [[
-            //                                     'ContentType' => 'application/pdf',
-            //                                     'Filename' => $pdfFileName,
-            //                                     'Base64Content' => $pdfFileContent
-            //                                 ]];
             $mailParams['Messages'][0]['Attachments'] =  $attachments;
         }
         if (is_array($inlinedAttachments)) {

@@ -368,7 +368,6 @@ class contactPerMsg {
     }
 
     public function sendgeneralMsg($data){
-        $path = "../../uploads/attatchment/";
                     
         if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
@@ -382,6 +381,7 @@ class contactPerMsg {
             $emailImageData = " ";
             $sign_picture = " ";
         }
+
         
         $encoded_content = " ";
         if(isset($data['file'])) {
@@ -412,11 +412,9 @@ class contactPerMsg {
             $subject = "Information";
         }
         
-        $signImage = SITE_URL.'/uploads/attatchment/'.$sign_picture;
-        
         $body = "<div>" . $message . "</div>";
         //$body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<p><img src=\"$signImage\" width='100px'></p>";
+        $body .= "<p><img src='cid:signid' width='80px' width='100px'></p>";
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         
         $to = $data['data']['vEmailAddress'];
@@ -454,10 +452,36 @@ class contactPerMsg {
                     ]]; 
                 }
             }
-        }    
+            $inlineAttachments = false;
+        }
+        $inlineImageAttachement = '';
+        if($emailSign && isset($emailSign['sign_image']) && $emailSign['sign_picture'] !='' ){
+            $base64_image = $emailSign['sign_image'];
+            $attachInline = explode(',', $base64_image);
+            // Get the content type
+            $content_type = '';
+            if (count($attachInline) > 0) {
+                preg_match('/^data:(.*?);/', $attachInline[0], $matches);
+                if (isset($matches[1])) {
+                    $content_type = $matches[1];
+                }
+            }
+            // Get the base64 string
+            $base64_string = '';
+            if (count($attachInline) > 1) {
+                $base64_string = $attachInline[1];
+            }
+            $inlineImageAttachement =  [[
+                'ContentType' => $content_type,
+                'Filename' => 'sign.png',
+                'ContentID' => "signid",
+                'Base64Content' => $base64_string
+            ]];
+        }
+            
         // mailjet function
         $send_fn = new functions();
-        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $body, $attachments);
+        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $body, $attachments, $inlineImageAttachement);
         //$response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $message, $attachments);
         
         if ($response && $response['status']==200) { //output success or failure messages

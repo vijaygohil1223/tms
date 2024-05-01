@@ -28985,6 +28985,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cPersonMsg.vEmailAddress = $window.localStorage.generalMsg;
         $scope.cPersonMsg.msgEmailSubject = $scope.msgEmailSubject;
         let msgText = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>';
+
         // for linguist invoice / invoice Reminder
         if($scope.emailPopupType == 'invoice-linguist'){
             msgText = `Hi, <br /> 

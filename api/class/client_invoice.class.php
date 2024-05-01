@@ -469,7 +469,6 @@ class Client_invoice {
         // temp
         $this->_db->where('is_active', 1);
         $emailSign = $this->_db->getone('tms_email_sign'); 
-        $sign_picture = $emailSign && isset($emailSign['sign_picture']) ? $emailSign['sign_picture'] : '';  
 
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
@@ -486,11 +485,10 @@ class Client_invoice {
             $body = str_replace($search_array, $replace_array, $emailTemplateInvoice['template_content']);
         }
 
-        $signImage = SITE_URL.'/uploads/attatchment/'.$sign_picture;
         
         $body = "<div>" . $body . "</div>";
-        $body .= "<div><img src=\"$signImage\" width='100px'></div>";
-         
+        $body .= "<p><img src='cid:signid' width='80px' width='100px'></p>";
+
         $attachments = '';
         $subject = isset($data['data']['msgEmailSubject']) && $data['data']['msgEmailSubject'] != '' ? $data['data']['msgEmailSubject'] : "Invoice";
         //$subject = ($data['outstanding_reminder']==1) ? "Invoice Outstanding" : 'Invoice';
@@ -549,8 +547,33 @@ class Client_invoice {
                     }
                 }    
             }
+            $inlineImageAttachement = '';
+            if($emailSign && isset($emailSign['sign_image']) && $emailSign['sign_picture'] !='' ){
+                $base64_image = $emailSign['sign_image'];
+                $attachInline = explode(',', $base64_image);
+                // Get the content type
+                $content_type = '';
+                if (count($attachInline) > 0) {
+                    preg_match('/^data:(.*?);/', $attachInline[0], $matches);
+                    if (isset($matches[1])) {
+                        $content_type = $matches[1];
+                    }
+                }
+                // Get the base64 string
+                $base64_string = '';
+                if (count($attachInline) > 1) {
+                    $base64_string = $attachInline[1];
+                }
+                $inlineImageAttachement =  [[
+                    'ContentType' => $content_type,
+                    'Filename' => 'sign.png',
+                    'ContentID' => "signid",
+                    'Base64Content' => $base64_string
+                ]];
+            }
+
             $send_fn = new functions();
-            $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments);
+            $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments, $inlineImageAttachement);
                 
             if($mailResponse['status'] == 200) {
             //if ($response->success()) { //output success or failure messages
