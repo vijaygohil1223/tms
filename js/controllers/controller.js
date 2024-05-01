@@ -30844,7 +30844,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
                 // status 'Open' as 'Approved'
                 val.invoice_status = val.invoice_status == 'Open' ? 'Outstanding' : val.invoice_status
-
                 $scope.allInvcData.push(val);
                 
                 if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding')  {
@@ -31033,18 +31032,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id) });
         }    
         setTimeout(() => {
-            // var vEncodeHead = '<html><head><meta charset="UTF-8"></head><body>';
-            // var html = document.getElementById('exportable').innerHTML;
-            // var vEncodeHead2 = '</body></html>';
-            // var blob = new Blob([ vEncodeHead+html+vEncodeHead2 ], {
-            //     //type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-            //     type: "application/vnd.ms-excel;charset=utf-8"
+            var vEncodeHead = '<html><head><meta charset="UTF-8"></head><body>';
+            var html = document.getElementById('exportable').innerHTML;
+            var vEncodeHead2 = '</body></html>';
+            var blob = new Blob([ vEncodeHead+html+vEncodeHead2 ], {
+                //type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                type: "application/vnd.ms-excel;charset=utf-8"
                                 
-            // });
-            // saveAs(blob, "Client Invoice Report.xlsx");
+            });
+            saveAs(blob, "Client Invoice Report.xlsx");
             
             // export excel file using sheetjs
-            exportTableToExcel('exportable2','Client Invoice Report')
+            //exportTableToExcel('exportable2','Client Invoice Report')
             
             // on excel download add flag 1 (To display check mark)
             rest.path = 'clientInvoiceExcelStatus';
