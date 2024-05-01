@@ -7531,7 +7531,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             } else {
                                 var fileID = $itemScope.display.fmanager_id;
                                 var fileName = $itemScope.display.name;
-                                var fOriginalName = $itemScope.display.original_filename;
+                                var fOriginalName = fileName;
+                                //var fOriginalName = $itemScope.display.original_filename;
                             }
                             /*var a = document.createElement('a');
                             document.body.appendChild(a);
