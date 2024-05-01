@@ -475,7 +475,7 @@ class contactPerMsg {
                     $path = "../../uploads/attatchment/";
                     $images = glob($path.$image);
                     if($images){
-                        //unlink($path.$image);
+                        @unlink($path.$image);
                     }    
                 }    
             }
