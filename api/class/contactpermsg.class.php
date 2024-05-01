@@ -368,16 +368,19 @@ class contactPerMsg {
     }
 
     public function sendgeneralMsg($data){
-
+        $path = "../../uploads/attatchment/";
+                    
         if (isset($data['data']['messageData'])) {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
             $emailsignData = $emailSign['sign_detail'];
             $emailImage = $emailSign['sign_image']; 
             $emailImageData = $this->uploadimage($emailImage);
+            $sign_picture = $emailSign['sign_picture']; 
         } else {
             $emailsignData = " ";
             $emailImageData = " ";
+            $sign_picture = " ";
         }
         
         $encoded_content = " ";
@@ -396,21 +399,26 @@ class contactPerMsg {
             $bcc = "";
         }
         if (isset($data['data']['messageData'])) {
-            $str = $data['data']['messageData'];
-            $message = str_replace($emailsignData,"",$str);
+            //$str = $data['data']['messageData'];
+            //$message = str_replace($emailsignData,"",$str);
+            $message = $data['data']['messageData'];
         } else {
             $message = " ";
         }
-        if(isset($data['data']['msgEmailSubject'])) {
-            $subject = 'Invoice comment-' .$data['data']['msgEmailSubject'];
+        if(isset($data['data']['msgEmailSubject']) && $data['data']['msgEmailSubject']!='') {
+            $subject = $data['data']['msgEmailSubject'] ;
             $emailsignData = '';
         } else {
             $subject = "Information";
         }
-
+        
+        $signImage = SITE_URL.'/uploads/attatchment/'.$sign_picture;
+        
         $body = "<div>" . $message . "</div>";
         //$body .= "<p>" . $emailsignData . "</p>";
+        $body .= "<p><img src=\"$signImage\" width='100px'></p>";
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
+        
         $to = $data['data']['vEmailAddress'];
         
         // $this->_mailer->From = "Kanhasoft.com";
@@ -419,7 +427,7 @@ class contactPerMsg {
         if ($encoded_content != '') {
             //$this->_mailer->AddAttachment($encoded_content);
         }
-
+        
         $attachments = '';
         if(isset($data['file'])){
             $file_content = explode("base64,",$data['file']);
@@ -449,7 +457,8 @@ class contactPerMsg {
         }    
         // mailjet function
         $send_fn = new functions();
-        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $message, $attachments);
+        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $body, $attachments);
+        //$response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $message, $attachments);
         
         if ($response && $response['status']==200) { //output success or failure messages
             $result['status'] = 200;

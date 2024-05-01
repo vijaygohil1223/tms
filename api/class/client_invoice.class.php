@@ -466,6 +466,11 @@ class Client_invoice {
     }
 
     public function sendInvoiceMail($data) {
+        // temp
+        $this->_db->where('is_active', 1);
+        $emailSign = $this->_db->getone('tms_email_sign'); 
+        $sign_picture = $emailSign && isset($emailSign['sign_picture']) ? $emailSign['sign_picture'] : '';  
+
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
         $pdfFileName = $data['invoiceno'].'.pdf';
@@ -480,6 +485,11 @@ class Client_invoice {
         }else{
             $body = str_replace($search_array, $replace_array, $emailTemplateInvoice['template_content']);
         }
+
+        $signImage = SITE_URL.'/uploads/attatchment/'.$sign_picture;
+        
+        $body = "<div>" . $body . "</div>";
+        $body .= "<div><img src=\"$signImage\" width='100px'></div>";
          
         $attachments = '';
         $subject = isset($data['data']['msgEmailSubject']) && $data['data']['msgEmailSubject'] != '' ? $data['data']['msgEmailSubject'] : "Invoice";
