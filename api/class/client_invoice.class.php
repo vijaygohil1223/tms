@@ -487,7 +487,7 @@ class Client_invoice {
 
         
         $body = "<div>" . $body . "</div>";
-        $body .= "<p><img src='cid:signid' width='80px' width='100px'></p>";
+        $body .= "<div><img src='cid:signid' width='100px'></div>";
 
         $attachments = '';
         $subject = isset($data['data']['msgEmailSubject']) && $data['data']['msgEmailSubject'] != '' ? $data['data']['msgEmailSubject'] : "Invoice";

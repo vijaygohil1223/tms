@@ -31028,6 +31028,70 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(type=='payment-date')    
             $("#paymentExdate").trigger( "click" );    
     }
+
+    function replaceCommasWithPeriods(sheet) {
+        const range = XLSX.utils.decode_range(sheet['!ref']);
+    
+        for (let R = range.s.r; R <= range.e.r; ++R) {
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const cellAddress = { r: R, c: C };
+                const cellRef = XLSX.utils.encode_cell(cellAddress);
+                const cell = sheet[cellRef];
+    
+                // Check if cell value is numeric and contains commas
+                if (cell && typeof cell.v === 'number' && cell.w.includes(',')) {
+                    // Replace commas with periods in cell value
+                    const newValue = cell.w.replace(/,/g, '.');
+                    cell.w = newValue;
+                    cell.v = parseFloat(newValue.replace(',', '.'));
+                }
+            }
+        }
+    }
+
+    
+    function exportTableToExcel2(id, fileName) {
+        // Function to replace commas with periods in price columns
+        function replaceCommasWithPeriods(table) {
+            const rows = table.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                for (let j = 0; j < cells.length; j++) {
+                    const value = cells[j].innerText.trim();
+                    // Check if the cell value contains commas and looks like a price
+                    if (!isNaN(parseFloat(value.replace(',', '.')))) {
+                        // Replace commas with periods in cell value
+                        cells[j].innerText = value.replace(/,/g, '.');
+                    }
+                }
+            }
+        }
+    
+        // Get the table element
+        const table = document.getElementById(id);
+    
+        // Replace commas with periods in price columns
+        replaceCommasWithPeriods(table);
+    
+        // Convert table to workbook
+        const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+    
+        // Convert workbook to binary Excel format
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'binary' });
+    
+        // Function to convert string to ArrayBuffer
+        function s2ab(s) {
+            const buf = new ArrayBuffer(s.length);
+            const view = new Uint8Array(buf);
+            for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+    
+        // Save the Excel file
+        saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), fileName + '.xlsx');
+    }
+    
+    
     //Invoice export to excel
     $scope.exportData = function () {
         $("#exportable .dt-loading" ).remove();
@@ -31038,17 +31102,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
         setTimeout(() => {
             
-            var vEncodeHead = '<html><head><meta charset="UTF-8"></head><body>';
-            var html = document.getElementById('exportable').innerHTML;
-            var vEncodeHead2 = '</body></html>';
-            var blob = new Blob([vEncodeHead + html + vEncodeHead2], {
-                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-            });
-            saveAs(blob, "Client Invoice Report.xlsx");
+            // var vEncodeHead = '<html><head><meta charset="UTF-8"></head><body>';
+            // var html = document.getElementById('exportable').innerHTML;
+            // var vEncodeHead2 = '</body></html>';
+            // var blob = new Blob([vEncodeHead + html + vEncodeHead2], {
+            //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            // });
+            // saveAs(blob, "Client Invoice Report.xlsx");
 
             
             // export excel file using sheetjs
-            //exportTableToExcel('exportable2','Client Invoice Report')
+            exportTableToExcel('exportable2','Client Invoice Report');
+            //exportTableToExcel2('exportable2','Client Invoice Report');
             
             // on excel download add flag 1 (To display check mark)
             rest.path = 'clientInvoiceExcelStatus';

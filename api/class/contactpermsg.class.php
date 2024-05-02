@@ -414,7 +414,7 @@ class contactPerMsg {
         
         $body = "<div>" . $message . "</div>";
         //$body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<p><img src='cid:signid' width='80px' width='100px'></p>";
+        $body .= "<div><img src='cid:signid' width='100px'></div>";
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         
         $to = $data['data']['vEmailAddress'];
@@ -686,7 +686,7 @@ class contactPerMsg {
         }
 
         $body = "<div>" . $message . "</div>";
-        $body .= "<p><img src='cid:signid' width='80px' width='100px'></p>";
+        $body .= "<div><img src='cid:signid' width='100px'></div>";
         //$body .= "<p>" . $emailsignData . "</p>";
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = isset($data['data']['subject']) && $data['data']['subject'] != '' ? $data['data']['subject'] : "Information";
