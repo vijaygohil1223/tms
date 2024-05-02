@@ -239,13 +239,14 @@ class Freelance_invoice {
                 //         }
                 //     }
                 // }
-                if($data){
-                    if($data['jobPrice']){
-                        foreach (json_decode($data['jobPrice']) as $field => $val) {
-                            $data['jobpriceList'][] = (array) $val;
-                            $data['item'][] = (array) $val;
-                        }
+                if (!empty($data) && !empty($data['jobPrice'])) {
+                    foreach (json_decode($data['jobPrice']) as $field => $val) {
+                        $data['jobpriceList'][] = (array) $val;
+                        $data['item'][] = (array) $val;
                     }
+                    // check and add new code  
+                    // $decodedJobPrice = json_decode($data['jobPrice'], true); 
+                    // $data['jobpriceList'] = $data['item'] = array_values($decodedJobPrice);
                 }
 				$infoD[$k] = array_merge($data, $id1[0]);
             }
