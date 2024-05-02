@@ -2631,13 +2631,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // val.DueDate - due Today
                 //let statusExistArr = ["Delivered","Approved","Invoiced","Paid"];
                 //let statusExistArr = [4,5,6,7];
-                let statusExistArr = [4];
+                let statusExistArr = [4,5,6,8,9];
                 let scoopDueDate = val.itemDuedate;
                     
                 if(scoopDueDate && !(statusExistArr.indexOf(val.itemStatusId) > -1) ){
                     let dueDateCmp = scoopDueDate.split(' ')[0];
                     if (dueDateCmp == $scope.dateToday  ) {
-                    //if (scoopDueDate.split(' ')[0] == $scope.dateToday && [1,2].indexOf(val.itemStatusId) > -1 ) {
                         $scope.projectsDueToday.push(val);
                         $scope.projectsDueTodayCount++;
                         $scope.fillDashboardTabFn(0, $scope.projectsDueToday, $scope.projectsDueTodayCount) 

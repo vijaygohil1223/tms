@@ -386,12 +386,11 @@
                                                     <th>Status</th>
                                                     <th>Project Manager</th>
                                                     <th>Resource</th>
-                                                    <th>
-                                                        <!-- Customers -->Client
-                                                    </th>
+                                                    <th>Client</th>
                                                     <th>Target language</th>
                                                     <th>Prices</th>
                                                     <!-- <th>Scoop Status</th> -->
+                                                    <th>Due date</th>
                                                 </thead>
                                                 <tbody>
                                                     <tr ng-repeat="result in statusRes=(statusResult)">
@@ -428,6 +427,7 @@
                                                         <td ng-if="!result.ItemLanguage">--</td>
                                                         <td>{{ result.jobPrice | customNumber}}</td>
                                                         <!-- <td>{{result.itemStatus}}</td> -->
+                                                        <td style="white-space:nowrap;">{{ result.job_due_date | dateFormatDisplayFront }}</td>
                                                     </tr>
                                                     <tr ng-show="!statusRes.length">
                                                         <td colspan="8" ng-bind="dataNotFound"></td>
@@ -443,14 +443,13 @@
                                                     <th>#</th>
                                                     <th>Job Number</th>
                                                     <th>Status</th>
-                                                    <th>Contact persons</th>
+                                                    <th>Project Manager</th>
                                                     <th>Resource</th>
-                                                    <th>
-                                                    <!-- Customers -->Client
-                                                    </th>
+                                                    <th>Client</th>
                                                     <th>Target language</th>
                                                     <th>Prices</th>
-                                                    <th>Scoop Status</th>
+                                                    <!-- <th>Scoop Status</th> -->
+                                                    <th>Due date</th>
                                                 </thead>
                                                 <tbody>
                                                     <tr id="Export_{{$index}}"
@@ -464,7 +463,8 @@
                                                         <td ng-if="result.ItemLanguage">{{result.ItemLanguage}}</td>
                                                         <td ng-if="!result.ItemLanguage">--</td>
                                                         <td>{{ result.jobPrice | customNumber}}</td>
-                                                        <td>{{ result.itemStatus }}</td>
+                                                        <!-- <td>{{ result.itemStatus }}</td> -->
+                                                        <td >{{ result.job_due_date | dateFormatDisplayFront }}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

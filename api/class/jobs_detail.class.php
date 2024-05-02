@@ -1566,7 +1566,6 @@ class jobs_detail
     public function acceptJobStatus($id, $data)
     {
 
-        
         if($data && isset($data['acceptJobType']) && $data['acceptJobType']== 'accept' ){
             $loginUserId = $data && isset($data['userId']) ? $data['userId'] : 0; 
             $data['accept'] = $loginUserId;
@@ -1590,10 +1589,11 @@ class jobs_detail
 
             $this->_db->where('order_id', $jobsData['order_id']);
             $jobEmailData = $this->_db->getOne('tms_customer');
-
+            
             $this->_db->where('iUserId', $jobEmailData['project_manager']);
             $proManagerEmail = $this->_db->getOne('tms_users');
 
+            
             if ($data['item_status'] == 'Delivered' || $data['item_status'] == 'Completed') {
 
                 //Sending Email to manager after job is Delivered START
@@ -1615,7 +1615,8 @@ class jobs_detail
 
                 $to = $proManagerEmail['vEmailAddress'];
 
-                $mailSendStatus = $this->sendEmail($to, $subject, $html);
+                // temp stop email sending
+                //$mailSendStatus = $this->sendEmail($to, $subject, $html);
 
                 //Sending Email to manager after job is Delivered END
                 // Update status to QA Ready
