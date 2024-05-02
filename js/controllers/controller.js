@@ -28947,6 +28947,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if(items && (items.invoice_to_be_sent == 1 || items.outstanding_reminder == 1 ) ){
         $scope.emailPopupType = items.isClientInvoice ? 'invoice-client' : 'invoice-linguist';
         $scope.invoiceData = items;
+        console.log('$scope.invoiceData', $scope.invoiceData)
         $scope.invoiceData.invoiceName = items.pdfData ? items.invoiceno + '.pdf' : ''; 
     }
     console.log('itemsss=', items)
@@ -29074,6 +29075,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $uibModalInstance.close(data);
                 $route.reload();
             }, 500)
+        }
+    }
+
+
+    $scope.downloadBaseFile = function(fileName){
+        if (!$scope.invoiceData?.pdfData || $scope.invoiceData.pdfData === '') {
+            notification('file data not available', "warning");
+            return false;
+        }
+        const base64ContentIndex = $scope.invoiceData.pdfData.indexOf(',') + 1;
+        const base64Content = $scope.invoiceData.pdfData.substring(base64ContentIndex);
+        try {
+            const binaryContent = atob(base64Content);
+
+            // Convert the binary content to a Uint8Array
+            const bytes = new Uint8Array(binaryContent.length);
+            for (let i = 0; i < binaryContent.length; i++) {
+                bytes[i] = binaryContent.charCodeAt(i);
+            }
+            // Create a Blob from the Uint8Array
+            const blob = new Blob([bytes], { type: 'application/pdf' });
+            // Create a link element
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName ? fileName : 'download.pdf'; 
+            link.click();
+        } catch (error) {
+            console.error('Error decoding base64 content:', error);
         }
     }
 
