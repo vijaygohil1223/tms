@@ -1255,3 +1255,6 @@ Scroll Tabs css */
   right: 0px;
 }
 /* End Dashboard tabs scrolling  */
+.preline-wsp{
+  white-space: pre-line;
+}

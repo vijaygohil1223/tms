@@ -214,13 +214,15 @@ class Freelance_invoice {
                 $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tci.vCenterid as business_center_id ,tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency , tu.second_currency as freelance_second_currency , tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice, tsv.contact_person AS projectManagerId, tcm.vEmailAddress as emailRemind1, tcm.vSecondaryEmailAddress as emailRemind2, tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber, tsv.total_price as price_per_job');
                 //, tci.vEmailAddress  AS companyEmail
                 
-                $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
-                
-                $data['companyName'] = count($companyName) > 0 ? $companyName[0]['name'] : '';
+                $data['companyName'] = '';
+                if($data && isset($data['company_code']) && $data['company_code']!=''){
+                    $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
+                    $data['companyName'] = count($companyName) > 0 ? $companyName[0]['name'] : '';
+                }
                 //$data['companyName'] = $companyName[0]['name'];
                 
                 //payment due date number of day
-                $data['number_of_days'] = $paymentDue[0]['number_of_days'];
+                $data['number_of_days'] = $paymentDue ? $paymentDue[0]['number_of_days'] : 30;
 
                 //invoiceNumber Count
                 $data['invoiceCount'] = count(self::get('tms_invoice'));
