@@ -18858,7 +18858,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     //$scope.currencyType = $scope.vBankInfo.currency_code.split(',')[1];
-                    $scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
+                    //$scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
+                    if ($scope.vBankInfo.currency_code && typeof $scope.vBankInfo.currency_code === 'string') {
+                        $scope.vBankInfo.currency_code = $scope.vBankInfo.currency_code.split(',')[0];
+                    }
+                    
+
                     
                     //$scope.vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                     $scope.currencyPaymentMethod = $scope.vBankInfo.payment_method;
@@ -18888,7 +18893,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //         }
             //     })
             // })
-            $scope.currencyType = ($scope.invoiceDetail.freelance_currency).toString().includes(',') ? ($scope.invoiceDetail.freelance_currency).split(',')[0] : 'EUR';
+            //$scope.currencyType = ($scope.invoiceDetail.freelance_currency).toString().includes(',') ? ($scope.invoiceDetail.freelance_currency).split(',')[0] : 'EUR';
+            $scope.currencyType = ($scope.invoiceDetail.freelance_currency && typeof $scope.invoiceDetail.freelance_currency === 'string') ? $scope.invoiceDetail.freelance_currency.split(',')[0] : 'EUR';
+
 
             $scope.invoiceList = data;
             
