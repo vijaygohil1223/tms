@@ -19570,6 +19570,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }, 800);
     }).error(errorCallback);
 
+    $scope.copyProjectData = function(){
+        const copyObj = {
+            projectManager: $('#projectManager').val(),
+            projectCoordinator: $('#projectCoordinator').val(),
+            projectCoordinator: $('#projectCoordinator').val(),
+            dueDate: $('#due_date').val(),
+        }
+        localStorage.setItem('copyProjectData', JSON.stringify(copyObj))
+    }
+    $scope.genPasteProjectData = function(){
+        //$scope.general = $('#due_date').val()
+        const pasteProjectData = localStorage.getItem('copyProjectData')
+        if(pasteProjectData){
+            $scope.pasteProjectData = JSON.parse(pasteProjectData) 
+            angular.element('#projectManager').val($scope.pasteProjectData?.projectManager).trigger('change');
+            setTimeout(() => {
+                console.log('dataSharingService.getRecord()',  $scope.pasteProjectData)
+            }, 100);
+        }
+        
+    }
+
     //Setting Project Status when Create new END
 
     rest.path = 'getUserById/' + $window.localStorage.getItem('session_iUserId');
@@ -19665,6 +19687,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'general/' + $routeParams.id + '/' + $scope.customer.client;
                 rest.get().success(function (data) {
                     $scope.general = data;
+                    
                     
                     $scope.projectOrderName = data.order_no;
                     $window.localStorage.setItem('projectOrderName', data.order_no);
@@ -19951,7 +19974,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     //$scope.general.due_date = angular.element('#due_date').val();
                     $scope.general.project_price = parseFloat(angular.element('#project_price').val());
-                    $scope.general.project_name = angular.element('#project_name').val();
+                    //$scope.general.project_name = angular.element('#project_name').val();
 
                     //Project start recent activity store in cookie
                     if ($scope.general && $cookieStore.get('generalEdit')) {
@@ -24787,6 +24810,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $routeParams.id = $routeParams.id;
     rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
     rest.get().success(function (data) {
+        console.log('data===general data', data)
         $scope.general = data;
         //$scope.general.order_date = $scope.general.order_date;
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
