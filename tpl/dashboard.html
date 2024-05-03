@@ -519,7 +519,7 @@ td { font-size: 11px; } */
                               </td>
                               <td>
                                 <a href="javascript:void(0)"
-                                  ng-click="goToScoopViewdetail(order.itemId, order.orderId, $event)"
+                                  ng-click="goToScoopViewdetail(order.itemId, order.orderId, order.item_number, $event)"
                                   style="color:{{order.scoop_projectColor}}">
                                   {{order.orderNumber}}-{{order.item_number | numberFixedLen:3}}
                                 </a>
@@ -719,7 +719,7 @@ td { font-size: 11px; } */
                         <li class="list-group-item" ng-repeat="upcomProj in upProjDeliveries">
                           <!-- <span >{{ upcomProj.orderNumber }}</span>  -->
                           <a href="javascript:void(0)" class="text-eclipse"
-                            ng-click="goToScoopViewdetail(upcomProj.itemId, upcomProj.orderId, $event)">
+                            ng-click="goToScoopViewdetail(upcomProj.itemId, upcomProj.orderId, upcomProj.item_number, $event)">
                             {{upcomProj.orderNumber}}-{{upcomProj.item_number | numberFixedLen:3}}
                           </a>
                           <!-- goToProjectViewdetail(upcomProj.orderId) -->

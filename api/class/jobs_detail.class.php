@@ -1617,7 +1617,8 @@ class jobs_detail
 
                 // temp stop email sending
                 //$mailSendStatus = $this->sendEmail($to, $subject, $html);
-
+                $mailSendStatus['emailSend'] = "true";
+                
                 //Sending Email to manager after job is Delivered END
                 // Update status to QA Ready
                 if (isset($jobsData['order_id']) && isset($jobsData['item_id'])) {

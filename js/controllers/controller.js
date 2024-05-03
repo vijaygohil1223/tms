@@ -2083,7 +2083,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
-    $scope.goToScoopViewdetail = function (viewType, orderId, event) {
+    $scope.goToScoopViewdetail = function (viewType, orderId, scoopItemNumber, event) {
         
         if(event.ctrlKey && orderId){
             rest.path = 'order/' + orderId + '/' + $window.localStorage.getItem("session_iUserId");
@@ -2123,7 +2123,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     size: '',
                     resolve: {
                         items: function () {
-                            return {scoop_id: viewType,order_id:orderId};
+                            return {scoop_id: viewType,order_id:orderId, scoopItemNumber: scoopItemNumber};
                         }
                     }
                 });
@@ -3632,6 +3632,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
         const currentDatestr = new Date();
         const currentDate = currentDatestr.toISOString().split('T')[0];
+
         if ($scope.vResourcePosition == 2) {
             $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId"));
             //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
@@ -19576,6 +19577,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             projectCoordinator: $('#projectCoordinator').val(),
             projectCoordinator: $('#projectCoordinator').val(),
             dueDate: $('#due_date').val(),
+
         }
         localStorage.setItem('copyProjectData', JSON.stringify(copyObj))
     }
@@ -31782,7 +31784,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.put($scope.job).success(function (data) {
                 if (data.status == 200 && data.emailSend == 'true') {
                     if ($scope.job.item_status == 'Delivered') {
-                        notification('job is delivered successfully and email sent to project manager.', 'success');
+                        notification('job is delivered successfully', 'success');
+                        //notification('job is delivered successfully and email sent to project manager.', 'success');
                     } else {
                         notification('job is accepted successfully and email sent to project manager.', 'success');
                     }
@@ -32057,10 +32060,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             rest.path = 'acceptJobStatus';
             rest.put($scope.job).success(function (data) {
+                console.log('data=====>hideemail', data)
                 if (data.status == 200 && data.emailSend == 'true') {
                     // Delevered status renamed as Completed
                     if ($scope.job.item_status == 'Delivered' || $scope.job.item_status == 'Completed') {
-                        notification('job is delivered successfully and email sent to project manager.', 'success');
+                        notification('job is delivered successfully.', 'success');
+                        $('#jobStatusCompleted').hide();
+                        //notification('job is delivered successfully and email sent to project manager.', 'success');
                     } else {
                         notification('job is accepted successfully and email sent to project manager.', 'success');
                     }
@@ -34224,6 +34230,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $routeParams.id = items ? items.order_id : 0;
     $scope.order_id = items ? items.order_id : 0;
     $scope.scoop_id = items ? items.scoop_id : 0;
+    $scope.scoopItemNumber = items?.scoopItemNumber || 0;
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
     $scope.newchildPriceArr = [];
     
@@ -35591,8 +35598,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.item = $routeParams.id;
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
+            if($scope.scoopItemNumber > 0){
+                $scope.itemjobList = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.scoopItemNumber);
+            }else{
+                $scope.itemjobList = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.item_number);
+            }
             
-            $scope.itemjobList = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.item_number);
         }).error(errorCallback);
         rest.path = 'jobDetailLanguageGet/' + $routeParams.id;
         rest.get().success(function (data) {
