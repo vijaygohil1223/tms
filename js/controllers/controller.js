@@ -19573,11 +19573,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.copyProjectData = function(){
         const copyObj = {
-            projectManager: $('#projectManager').val(),
-            projectCoordinator: $('#projectCoordinator').val(),
-            projectCoordinator: $('#projectCoordinator').val(),
+            projectManager: $scope.customer?.project_manager,
+            projectCoordinator: $scope.customer?.project_coordinator,
+            qaSpecialist: $scope.customer?.QA_specialist,
             dueDate: $('#due_date').val(),
-
+            dueTime: $('#due_time').val(),
+            specialization: $scope.general?.specialization,
+            accountName: $scope.customer?.indirect_customer, 
+            contactPerson : $scope.customer?.contact,
+            clientId: $scope.customer?.client,
         }
         localStorage.setItem('copyProjectData', JSON.stringify(copyObj))
     }
@@ -19587,8 +19591,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(pasteProjectData){
             $scope.pasteProjectData = JSON.parse(pasteProjectData) 
             angular.element('#projectManager').val($scope.pasteProjectData?.projectManager).trigger('change');
+            angular.element('#projectCoordinator').val($scope.pasteProjectData?.projectCoordinator).trigger('change');
+            angular.element('#qaSpecialist').val($scope.pasteProjectData?.qaSpecialist).trigger('change');
+            angular.element('#specialization').val($scope.pasteProjectData?.specialization).trigger('change');
+            angular.element('#due_date').val($scope.pasteProjectData?.dueDate);
+            angular.element('#due_time').val($scope.pasteProjectData?.dueTime);
+
+            //angular.element('#clientId2').select($scope.pasteProjectData?.clientId);
+            //angular.element('#clientId2').trigger('change');
+            angular.element('#clientId2').val($scope.pasteProjectData?.clientId).trigger('change');
+            setTimeout(() => {
+                $scope.getContact($scope.pasteProjectData?.clientId, 'conatct-person');
+            }, 100);
+            angular.element('#conatct-person').val($scope.pasteProjectData?.contactPerson).trigger('change');
+            angular.element('#indirect_customer').val($scope.pasteProjectData?.accountName).trigger('change');
+            
             setTimeout(() => {
                 console.log('dataSharingService.getRecord()',  $scope.pasteProjectData)
+                console.log('customer=>',  $scope.customer)
             }, 100);
         }
         
@@ -19811,7 +19831,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.getContact = function (id, element) {
         if(id && id != undefined){
-            var id = id.split(',').pop();
+            var id = id.toString().split(',').pop();
             $window.localStorage.setItem('directClientIdStore', id);
             $routeParams.id = id;
             rest.path = 'contact';
