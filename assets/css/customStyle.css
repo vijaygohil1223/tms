@@ -1258,3 +1258,6 @@ Scroll Tabs css */
 .preline-wsp{
   white-space: pre-line;
 }
+.bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
+  color: #502dc4;
+}

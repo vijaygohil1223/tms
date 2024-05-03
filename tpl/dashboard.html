@@ -507,6 +507,7 @@ td { font-size: 11px; } */
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
                             <!-- <th>Action</th> -->
+                            <th class="none">Scoop Name</th>
                           </thead>
                           <tbody>
                             <tr ng-repeat="order in myTabs.projectScoopData | orderBy:tab.sortColumn:tab.sortOrder">
@@ -663,6 +664,7 @@ td { font-size: 11px; } */
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
                               </td>
+                              <td class="none">{{order.itemName}}</td>
                               <!-- <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
