@@ -66,11 +66,9 @@
                                              ng-model="it.start_date" required onkeydown="return false" readonly=""
                                              style="width: auto;" />
                                        </div>
-                                       <!-- <a href="javascript:void(0)" ng-if="it.item_status==defaultScoopStatus"
-                                             ng-click="scoopStatusUpdate(it.itemId)" title="status update"
-                                             style="padding:8px 10px;">
-                                             <i class="fa fa-rocket fa-2x"></i>
-                                       </a> -->
+                                       <div>
+                                          <div style="margin-top: 6px; margin-left:5px;"> {{ clientName }} </div>
+                                       </div>
                                        <a href="javascript:void(0)" ng-click="deleteItemsId(it.itemId,it.item_number)"
                                           title="delete" style="padding:8px 10px;">
                                           <i class="iconDelete glyph-icon fa-times"></i>
@@ -591,39 +589,6 @@
                                           <td style="width:15%;">
                                              <label class="d-flex align-center"
                                                 ng-hide="it.job_summmeryId==id || job[{{$index}}]">
-
-                                                <!-- <div class="job-table-status btn inpreprartionColor"
-                                                   ng-if="it.item_status == 'In preparation'"></div>
-                                                <div class="job-table-status btn requestedColor"
-                                                   ng-if="it.item_status == 'Requested'"></div>
-                                                <div class="job-table-status btn assignedwaitongColor"
-                                                   ng-if="it.item_status == 'Assigned-waiting'"></div>
-                                                <div class="job-table-status btn inprogressColor"
-                                                   ng-if="it.item_status == 'In-progress'"></div>
-                                                <div class="job-table-status btn overdueColor"
-                                                   ng-if="it.item_status == 'Overdue'"></div>
-                                                <div class="job-table-status btn deliveredColor"
-                                                   ng-if="it.item_status == 'Delivered'"></div>
-                                                <div class="job-table-status btn approvedColor"
-                                                   ng-if="it.item_status == 'Approved'"></div>
-                                                <div class="job-table-status btn invoicecreatedColor"
-                                                   ng-if="it.item_status == 'Invoice created'"></div>
-                                                <div class="job-table-status btn invoiceckedColor"
-                                                   ng-if="it.item_status == 'Invoice checked'"></div>
-                                                <div class="job-table-status btn invoiceacceptedColor"
-                                                   ng-if="it.item_status == 'Invoice Accepted'"></div>
-                                                <div class="job-table-status btn paidColor"
-                                                   ng-if="it.item_status == 'Paid'"></div>
-                                                <div class="job-table-status btn canceledColor"
-                                                   ng-if="it.item_status == 'Canceled'"></div>
-                                                <div class="job-table-status btn withoutInvoiceColor"
-                                                   ng-if="it.item_status == 'Without invoice'"></div>
-                                                <div class="job-table-status btn newJob"
-                                                   ng-if="it.item_status == 'New'"></div>
-                                                <div class="job-table-status btn completedColor"
-                                                   ng-if="it.item_status == 'Completed'"></div>
-                                                <div class="job-table-status btn rdyToDeliverColor"
-                                                   ng-if="it.item_status == 'Ready to be Delivered'"></div> -->
 
                                                 <div class="job-table-status btn inpreprartionColor"
                                                    ng-if="it.item_status == 'In preparation'"></div>

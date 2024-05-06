@@ -16027,7 +16027,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         switch (action) {
             case "Change status to":
-                var jobStatus = angular.element('#jobStatusdata').val();
+                var jobStatus = angular.element(document.querySelector('#jobStatusdata')).val().split(',').pop();
                 for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
                     var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
                     if (jobselect == 'true') {
@@ -34551,8 +34551,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             });
         }
-
     }, 2000);
+    
+    $scope.itemQuentityDelete = function (id, index, parentIndex) {
+        $scope.itemPriceUni[id].splice(index, 1);
+    
+        var grandTotal = 0;
+        if ($scope.itemPriceUni[id].length) {
+            $scope.itemPriceUni[id].forEach(function (element) {
+                var elVal = parseFloat(element.itemTotal);
+                elVal = isNaN(elVal) ? 0 : elVal;
+                grandTotal += elVal;
+            });
+            var decimalPoint = decimalNumberCount(grandTotal);    
+            $scope.itemList[parentIndex].total_price = Math.round(grandTotal * decimalPoint) / decimalPoint;
+        } else {
+            $scope.itemList[parentIndex].total_price = '00';
+        }
+    }
     
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
         // var totalPrice1 = $scope.itemList[parentIndex].total_price;
@@ -35033,8 +35049,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.getItems = function () {
         var popitemList = [];
         rest.path = 'itemsGet/' + $scope.order_id;
-        rest.get().success(function (data) {
-            var data = data.filter(itemData => itemData.itemId == $scope.scoop_id);
+        rest.get().success(function (response) {
+            var data = response.filter(itemData => itemData.itemId == $scope.scoop_id);
             $scope.itemList = data;
             console.log('$scope.itemList', $scope.itemList)
             $scope.TblItemList = data;  
@@ -35341,10 +35357,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'viewProjectCustomerDetail';
         rest.model().success(function (data) {
             $scope.customer = data;
+            console.log('$scope.customer===>', $scope.customer)
             $window.localStorage.clientproCustomerName = $scope.customer.client;
             $window.localStorage.ContactPerson = $scope.customer.contact;
             $routeParams.ClientIdd = data['client'];
             $window.localStorage.ClientName = $routeParams.ClientIdd;
+            $scope.clientName = $routeParams.ClientIdd
+            console.log('$scope.clienyName', $scope.clientName)
+            console.log('$window.localStorage.ClientName', $window.localStorage.ClientName)
             if ($scope.customer.memo) {
                 $scope.warn = true;
                 $timeout(function () {
