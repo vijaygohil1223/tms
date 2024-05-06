@@ -5389,6 +5389,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var allFilesArr = [];
     $timeout(function () {
         uploadObj = $("#multipleupload").uploadFile({
+            //url: rest.baseUrl+'fileManagerFileupload',
             url: 'filemanager-upload.php',
             multiple: true,
             dragDrop: true,
@@ -7328,9 +7329,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     var fileIndex = 0;
                                     angular.forEach($scope.downloadAllfile, function (val, i) {
                                         if (val.ext != '') {
-                                            var fimg = val.name;
-                                            //var fOriginalName = val.original_filename;
-                                            var fOriginalName = val.name;
+                                            //var fimg = val.name;
+                                            var fimg = val.original_filename;
+                                            const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
+                                            if (sameNameExist.length > 1) {
+                                                fimg = val.name; 
+                                            }
                                             //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
                                             //fileList.push("uploads/fileupload/"+fimg);
                                             var fimgUrl = "uploads/fileupload/" + fimg;
@@ -7338,7 +7342,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 fileUrls.push({
                                                     'parent_id': val.parent_id,
                                                     'full_url': fimgUrl,
-                                                    'file_name': fOriginalName ? fOriginalName : fimg,
+                                                    'file_name': fimg,
                                                     'folderurl_dir': val.folderurl,
                                                 });
                                             }
@@ -7531,8 +7535,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             } else {
                                 var fileID = $itemScope.display.fmanager_id;
                                 var fileName = $itemScope.display.name;
-                                var fOriginalName = fileName;
-                                //var fOriginalName = $itemScope.display.original_filename;
+                                //var fOriginalName = fileName;
+                                var fOriginalName = $itemScope.display.original_filename;
                             }
                             /*var a = document.createElement('a');
                             document.body.appendChild(a);

@@ -1038,10 +1038,6 @@ array(
         return $sanitizedFileName;
     }
     public function saveFileupload($data) {
-        // print_r($_FILES["myfile"]['name']);
-        // echo "===Anill==";
-        // print_r($data);
-        // exit;
         $output_dir = UPLOADS_ROOT."fileupload/";
         if (isset($_FILES["myfile"])) {
             $ret = array();
