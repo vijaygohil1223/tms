@@ -2453,7 +2453,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 //$scope.projectsAllCount++;
                 val.projectstatus_class = 'projectstatus_common';
-                val.projectstatus_color = '#FFFF';
+                val.projectstatus_color = '#8d9296';
                 
                 // Projects All
                 if (val) {
@@ -30952,7 +30952,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
                 }
-                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed','Cancel'].includes(val.invoice_status) ){
+                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed','Cancel','Irrecoverable'].includes(val.invoice_status) ){
                     $scope.overdueInvcCount++ 
                     $scope.overdueInvc.push(val);
                 }
