@@ -20963,6 +20963,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
+    $scope.getCustomerData = function(){
+        if($scope.routeOrderID){
+            rest.path = 'customer/' + $scope.routeOrderID;
+            rest.get().success(function (res) {
+                $scope.customer = res;
+                console.log('$scope.customer', $scope.customer)
+                if ($scope.customer) {
+                    rest.path = 'client/' + $scope.customer.client;
+                    rest.get().success(function (cData) {
+                        $scope.directClientData = cData
+                        $scope.directClientName = cData?.vUserName
+                        $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                    }).error(function (data, error, status) { });
+                }
+            })
+        }
+    }
+    $scope.getCustomerData();
+
     $scope.itemfolderOpen = function (id) {
         closeWindows();
         localStorage['scoopfolderId'] = id;
@@ -20971,17 +20990,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.ItemClient = '';
         $window.localStorage.ItemFolderid = id;
         // start to get downloaded folder name with client name
-        rest.path = 'customer/' + $scope.routeOrderID;
-        rest.get().success(function (res) {
-            $scope.customer = res;
-            if ($scope.customer) {
-                rest.path = 'client/' + $scope.customer.client;
-                rest.get().success(function (cData) {
-                    $scope.directClientData = cData
-                    $window.localStorage.ItemClient = $scope.directClientData.vUserName;
-                }).error(function (data, error, status) { });
-            }
-        })
+        $scope.getCustomerData();
+        // rest.path = 'customer/' + $scope.routeOrderID;
+        // rest.get().success(function (res) {
+        //     $scope.customer = res;
+        //     if ($scope.customer) {
+        //         rest.path = 'client/' + $scope.customer.client;
+        //         rest.get().success(function (cData) {
+        //             $scope.directClientData = cData
+        //             $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+        //         }).error(function (data, error, status) { });
+        //     }
+        // })
         // end
         var ItemcodeNumber = angular.element('.itemCode' + id).text();
         //var ItemClient = angular.element('.itemClient'+id).text();
