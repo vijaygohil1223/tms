@@ -264,12 +264,22 @@ class jobs_detail
             $invoiceRecords = $this->_db->get('tms_invoice');
 
             foreach ($invoiceRecords as $k => $v) {
-                foreach (json_decode($v['job_id'], true) as $ke => $val) {
-                    $existedJobId = $val['id'];
-                    if ($id == $existedJobId) {
-                        $invoiceAlreadyAdded = true;
+                $decodedJobIds = json_decode($v['job_id'], true);
+                if (is_array($decodedJobIds)) {
+                    foreach ($decodedJobIds as $ke => $val) {
+                        $existedJobId = $val['id'];
+                        if ($id == $existedJobId) {
+                            $invoiceAlreadyAdded = true;
+                            break; 
+                        }
                     }
                 }
+                // foreach (json_decode($v['job_id'], true) as $ke => $val) {
+                //     $existedJobId = $val['id'];
+                //     if ($id == $existedJobId) {
+                //         $invoiceAlreadyAdded = true;
+                //     }
+                // }
             }
         }
 
@@ -298,7 +308,7 @@ class jobs_detail
                             $images = glob($path . $value['name']);
 
                             if ($images) {
-                                unlink($path . $value['name']);
+                                @unlink($path . $value['name']);
                             }
 
                             $in = $filed->filefolderGet($value['fmanager_id'], $id, $externalResourceUserId);
@@ -307,7 +317,7 @@ class jobs_detail
                                     $path = "../../uploads/fileupload/";
                                     $images = glob($path . $value['name']);
                                     if ($images) {
-                                        unlink($path . $value['name']);
+                                        @unlink($path . $value['name']);
                                     }
                                 }
 
@@ -320,8 +330,6 @@ class jobs_detail
                         $this->_db->where('fmanager_id', $value['parent_id']);
 
                         $this->_db->delete('tms_filemanager');
-
-
 
                         $this->_db->where('parent_id', $value['parent_id']);
 

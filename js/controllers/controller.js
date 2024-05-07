@@ -5389,8 +5389,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var allFilesArr = [];
     $timeout(function () {
         uploadObj = $("#multipleupload").uploadFile({
-            //url: rest.baseUrl+'fileManagerFileupload',
-            url: 'filemanager-upload.php',
+            url: rest.baseUrl+'fileManagerFileupload',
+            //url: 'filemanager-upload.php',
             multiple: true,
             dragDrop: true,
             dragDropStr: "<span class='spandragdrop'><b>Drag & Drop Files</b></span>",
@@ -5452,18 +5452,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.filedata.size = getFileSize;
                 
 
-                /*rest.path = 'fileAdd';
-                rest.post($scope.filedata).success(function(data) {
-    
-                }).error(errorCallback);*/
                 var filelength = angular.element('.ajax-file-upload-statusbar').length;
-
-                //if(datalist){
+                
                 if (datalist) {
                     var alldata = JSON.parse(datalist);
                     var allFiles = {
                         role_id: $scope.role_id,
                         name: alldata["name"],
+                        original_filename: alldata["original_filename"],
                         f_id: 1,
                         parent_id: $scope.filedata.parent_id,
                         ext: alldata["ext"],
@@ -5473,17 +5469,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.path = 'fileAdd';
                     if (filelength == $scope.allFilesArr.length) {
                         rest.post($scope.allFilesArr).success(function (data) {
-                            /*if(data.status == 200){
+                            if (data.status == 200) {
                                 notification('Files uploaded successfully', 'success');
-                                $timeout(function() {
+                                $timeout(function () {
                                     $route.reload();
+
                                 }, 100);
-                            }else{
+                            } else {
                                 notification('Some files not uploaded!', 'success');
-                                $timeout(function() {
+                                $timeout(function () {
                                     $route.reload();
                                 }, 100);
-                            }*/
+                            }
                         }).error(errorCallback);
                     }
                 }
@@ -5877,6 +5874,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     angular.forEach($scope.downloadAllfile, function (val, i) {
                                         if (val.ext != '') {
                                             var fimg = val.name;
+                                            var fimg = val.original_filename;
+                                            const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
+                                            if (sameNameExist.length > 1) {
+                                                fimg = val.name; 
+                                            }
                                             //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
                                             //fileList.push("uploads/fileupload/"+fimg);
                                             var fimgUrl = "uploads/fileupload/" + fimg;
@@ -6515,6 +6517,58 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $('.ajax-upload-dragdrop:eq(1)').hide();
     }, 1500);
 
+    $scope.getFileClass = function(ext) {
+        switch (ext.toLowerCase()) {
+            case 'pdf':
+                return 'pdf';
+            case 'png':
+            case 'jpg':
+            case 'jpeg':
+            case 'gif':
+            case 'jfif':
+            case 'svg':
+            case 'webp':
+            case 'bmp':
+                return 'image';
+            case 'zip':
+            case 'gz':
+            case 'rar':
+                return 'zip';
+            case 'doc':
+            case 'docx':
+            case 'rtf':
+                return 'doc';
+            case 'msg':
+                return 'fileicon';
+            case 'xlsx':
+            case 'xlsm':
+            case 'xls':
+            case 'csv':
+                return 'xls';
+            case 'ppt':
+            case 'pptx':
+                return 'ppt';
+            case 'mp3':
+            case 'wav':
+            case 'wma':
+                return 'mp3';
+            case 'mp4':
+            case 'wmv':
+            case 'avi':
+            case '3gp':
+            case 'mov':
+            case 'vob':
+                return 'video';
+            case 'exe':
+                return 'exe';
+            case 'txt':
+                return 'txt';
+            default:
+                return 'txt'; // Default class if extension not matched
+        }
+    };
+    
+
 }).controller('filemanagerCtrl', function ($scope, $sce, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval) {
     $scope.clientId = $window.localStorage.getItem("contactclientId");
     $scope.userId = $window.localStorage.getItem("contactUserId");
@@ -6794,6 +6848,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }).error(errorCallback);
                     }
                 }
+                
                 // previous code
                 /*rest.post($scope.filedata).success(function(data) {
 
