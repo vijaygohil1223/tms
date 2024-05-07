@@ -5470,11 +5470,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if (filelength == $scope.allFilesArr.length) {
                         rest.post($scope.allFilesArr).success(function (data) {
                             if (data.status == 200) {
-                                notification('Files uploaded successfully', 'success');
-                                $timeout(function () {
-                                    $route.reload();
+                                // notification('Files uploaded successfully', 'success');
+                                // $timeout(function () {
+                                //     $route.reload();
 
-                                }, 100);
+                                // }, 100);
                             } else {
                                 notification('Some files not uploaded!', 'success');
                                 $timeout(function () {
@@ -16770,6 +16770,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     //Linguist Invoice export to excel
     $scope.exportData = function (type) {
+        console.log('type', type)
         $("#exportable .dt-loading" ).remove();
         $scope.invoiceListSelected = [];
         if($scope.checkedIds.length > 0){
@@ -16779,7 +16780,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceListSelected = invoiceListClone.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
         }
         switch (type) {
-            case "Allexcel":
+            //case "Allexcel":
+            case "excel":    
 
                 setTimeout(() => {
                     // var blob = new Blob([document.getElementById('exportable').innerHTML], {
@@ -19908,18 +19910,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     data: cont
                 });
             }).error(errorCallback);
-
-            rest.path = 'orderdataget/' + id;
-            rest.get().success(function (data) {
-                console.log('data', data)
-                $scope.code = data;
-                $scope.orderNumber(data);
-            }).error(errorCallback);
+            
+            if (!$scope.general || !$scope.general.general_id) {
+                rest.path = 'orderdataget/' + id;
+                rest.get().success(function (data) {
+                    console.log('data', data)
+                    $scope.code = data;
+                    $scope.orderNumber(data);
+                }).error(errorCallback);
+            }
 
             rest.path = 'client/' + $scope.customer.client;
             rest.get().success(function (cData) {
                 $scope.directClientData = cData
             }).error(function (data, error, status) { });
+
+            $scope.customer.contact = ''
         }    
 
     };

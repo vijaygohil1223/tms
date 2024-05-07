@@ -69,7 +69,7 @@
                 <div class="panel panel-default boxgtr">
 
                     <div class="panel-body w-100">
-                        <form id="item-form">
+                        <form id="item-form" name="generalForm">
                             <div class="d-flex w-100 col-sm-12" style="margin: 15px 0 30px;">
                                 <div class="d-flex align-center w-100" style="max-width: 250px;">
                                     <label class="no-wrap m-0">Project Number:</label>
@@ -109,14 +109,18 @@
                                                             <label>Client </label> <a ng-if="customer.client"
                                                                 href="#/edit-client/{{customer.client}}" title="edit"><i
                                                                     class="fa fa-pencil"></i></a>
-                                                            <input type="text" select2-client class="form-control"
-                                                                name="client" id="clientId1" ng-model="customer.client"
-                                                                ng-change="getContact(customer.client, 'conatct-person')"
-                                                                required ng-hide="customerField" />
-                                                            <input type="text" select2-client class="form-control"
+                                                                    <input type="text" select2-client class="form-control"
                                                                 name="client" id="clientId2" ng-model="customer.client"
                                                                 ng-change="getContact(customer.client, 'conatct-person')"
-                                                                readonly ng-show="customerField" />
+                                                                 />
+                                                            <!-- <input type="text" select2-client class="form-control"
+                                                                name="client" id="clientId1" ng-model="customer.client"
+                                                                ng-change="getContact(customer.client, 'conatct-person')"
+                                                                required ng-hide="customerField" /> -->
+                                                            <!-- <input type="text" select2-client class="form-control"
+                                                                name="client" id="clientId2" ng-model="customer.client"
+                                                                ng-change="getContact(customer.client, 'conatct-person')"
+                                                                readonly ng-show="customerField" /> -->
                                                         </div>
                                                         <div class="right">
                                                             <div ng-if="customer.client">
@@ -139,6 +143,7 @@
                                                             <input type="text" id="conatct-person" class="form-control"
                                                                 name="contact" ng-model="customer.contact"
                                                                 ng-disabled="!customer.client" required />
+                                                                
                                                         </div>
                                                         <div class="right">
                                                             <a href="javascript:void(0)"
