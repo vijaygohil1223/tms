@@ -745,12 +745,15 @@ class Client_invoice {
         if($data['scoop_id']){
             $invoiceRecords = $this->_db->get('tms_invoice_client');
             foreach ($invoiceRecords as $k => $v) {
-                foreach (json_decode($v['scoop_id'],true) as $ke => $val) {
-                    $existedJobId = $val['id'];
-                    foreach (json_decode($data['scoop_id'],true) as $k1 => $v1) {
-                        $postedJobId = $v1['id'];
-                        if($postedJobId == $existedJobId){
-                            $invoiceAlreadyAdded = true;
+                $decodedScoopId = json_decode($v['scoop_id'], true);
+                if($decodedScoopId !== null){
+                    foreach (json_decode($v['scoop_id'],true) as $ke => $val) {
+                        $existedJobId = $val['id'];
+                        foreach (json_decode($data['scoop_id'],true) as $k1 => $v1) {
+                            $postedJobId = $v1['id'];
+                            if($postedJobId == $existedJobId){
+                                $invoiceAlreadyAdded = true;
+                            }
                         }
                     }
                 }
