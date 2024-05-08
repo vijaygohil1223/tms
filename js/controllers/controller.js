@@ -6239,18 +6239,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $scope.displayfolder = [];  
                             }
                         }else{
-                            $scope.displayfolder = data;
-                        
-                            //Change ItemFolder Name to item001 -> Files-001
-                            angular.forEach($scope.displayfolder, function (val, i) {
-                                if (val.item_id != 0) {
-                                    var ItemNo;
-                                    ItemNo = val.name.match(/\d+$/);
-                                    if (ItemNo) {
-                                        $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
-                                    }
-                                }
-                            })
+                            //** we can not display all folders **/ //
+
+                            // $scope.displayfolder = data;
+                            // //Change ItemFolder Name to item001 -> Files-001
+                            // angular.forEach($scope.displayfolder, function (val, i) {
+                            //     if (val.item_id != 0) {
+                            //         var ItemNo;
+                            //         ItemNo = val.name.match(/\d+$/);
+                            //         if (ItemNo) {
+                            //             $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
+                            //         }
+                            //     }
+                            // })
 
                         }
                         //$window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
@@ -6678,6 +6679,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     } else if ($routeParams.id == 'internal' && $scope.userId != "") {
         if ($window.localStorage.getItem("parentId") == undefined || $window.localStorage.getItem("parentId") == 0) {
+            
+            console.log('$scope.userIdInternal', $scope.userIdInternal)
             rest.path = 'Userfilefront/' + $scope.userIdInternal; //Internal
             rest.get().success(function (data) {
                 $window.localStorage.setItem("parentId", data.fmanager_id);
@@ -7789,28 +7792,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }, 200);
             }).error(errorCallback);
         } else {
-            rest.path = 'fileManagerGet';
-            rest.get().success(function (data) {
-                $scope.displayfolder = data;
-                //Change ItemFolder Name to item001 -> Files-001
-                angular.forEach($scope.displayfolder, function (val, i) {
-                    if (val.categories) {
-                        $scope.displayfolder[i].countchild = val.categories.length;
-                    }
-                    $scope.displayfolder[i].name = val.name.toString();
+            // we can not display all folders
+            // rest.path = 'fileManagerGet';
+            // rest.get().success(function (data) {
+            //     $scope.displayfolder = data;
+            //     //Change ItemFolder Name to item001 -> Files-001
+            //     angular.forEach($scope.displayfolder, function (val, i) {
+            //         if (val.categories) {
+            //             $scope.displayfolder[i].countchild = val.categories.length;
+            //         }
+            //         $scope.displayfolder[i].name = val.name.toString();
 
-                    if (val.item_id != 0) {
-                        var ItemNo;
-                        ItemNo = val.name.match(/\d+$/);
-                        if (ItemNo) {
-                            $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
+            //         if (val.item_id != 0) {
+            //             var ItemNo;
+            //             ItemNo = val.name.match(/\d+$/);
+            //             if (ItemNo) {
+            //                 $scope.displayfolder[i].name = 'Files-' + ItemNo[0];
 
-                        }
-                    }
-                })
+            //             }
+            //         }
+            //     })
 
-                $window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
-            }).error(errorCallback);
+            //     $window.localStorage.setItem("parentId", $scope.displayfolder[0].parent_id);
+            // }).error(errorCallback);
         }
 
         ++is_setint;
@@ -31553,14 +31557,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
         $scope.allInvoice = data;
         
-        $scope.allInvoice.filter( function (allInvoice) {
-            let scoopIds = JSON.parse(allInvoice.scoop_id);
-                if(scoopIds){
-                    scoopIds.map((elm) => {
-                        return $scope.scoopIds.push(elm.id)
-                      });
+        $scope.allInvoice.filter(function(allInvoice) {
+            try {
+                let scoopIds = JSON.parse(allInvoice.scoop_id);
+                if (Array.isArray(scoopIds)) {
+                    scoopIds.forEach(function(elm) {
+                        $scope.scoopIds.push(elm.id);
+                    });
+                } else {
+                    console.error("scoop_id is not an array:", scoopIds);
                 }
-        })
+            } catch (error) {
+                console.error("Error parsing scoop_id:", error);
+            }
+        });
+
 
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {

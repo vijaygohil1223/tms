@@ -175,6 +175,7 @@ class filemanager {
 
 
    public function filefolderGet($id,$root,$externalResourceUserId){
+        $data = [];
         if($externalResourceUserId !='null'){
             $chkIfRoot = $this->_db->rawQuery("SELECT * FROM tms_filemanager where fmanager_id = $id AND is_ex_project_folder =1 AND is_default_folder =1");
             if($chkIfRoot){
@@ -202,46 +203,49 @@ class filemanager {
                         $data = $this->_db->rawQuery($filemanagerSql);
                        
                     }else{
-                        $this->_db->where('parent_id',$id);
-                        $data = $this->_db->get('tms_filemanager');
+                        // $this->_db->where('parent_id',$id);
+                        // $data = $this->_db->get('tms_filemanager');
+
                     }
             }else{
                     $chkForProjectFolder = $this->_db->rawQuery("SELECT * FROM tms_filemanager where fmanager_id = $id AND  name= 'Projects'");
                     if($chkForProjectFolder){
                        $chkAssignResource = $this->_db->rawQuery("SELECT * FROM tms_summmery_view where resource = $externalResourceUserId");
-                    foreach ($chkAssignResource as $key => $value) {
-                        $orderId = $value['order_id'];
-                        $filemanagerWhereSql = 'WHERE parent_id = "'.$id.'" AND order_id="'.$value['order_id'].'"';
-                        
-                        $chkIsProjectFolder = $this->_db->rawQuery("SELECT * FROM tms_filemanager where order_id = $orderId AND is_project_folder = 1");
-                        
-                        if($chkIsProjectFolder){
-                            foreach($chkIsProjectFolder as $chkIsProjectFolder_row){
-                                $filemanagerWhereSql .= ' OR fmanager_id = "'.$chkIsProjectFolder_row['fmanager_id'].'"';
+                        foreach ($chkAssignResource as $key => $value) {
+                            $orderId = $value['order_id'];
+                            $filemanagerWhereSql = 'WHERE parent_id = "'.$id.'" AND order_id="'.$value['order_id'].'"';
+                            
+                            $chkIsProjectFolder = $this->_db->rawQuery("SELECT * FROM tms_filemanager where order_id = $orderId AND is_project_folder = 1");
+                            
+                            if($chkIsProjectFolder){
+                                foreach($chkIsProjectFolder as $chkIsProjectFolder_row){
+                                    $filemanagerWhereSql .= ' OR fmanager_id = "'.$chkIsProjectFolder_row['fmanager_id'].'"';
+                                }
                             }
                         }
+                        
+                        $filemanagerSql = "SELECT * FROM tms_filemanager " . $filemanagerWhereSql;
+                        $data = $this->_db->rawQuery($filemanagerSql);
+                    }else{
+                        // $this->_db->where('parent_id',$id);
+                        // $data = $this->_db->get('tms_filemanager');
                     }
-                    
-                    $filemanagerSql = "SELECT * FROM tms_filemanager " . $filemanagerWhereSql;
-                    $data = $this->_db->rawQuery($filemanagerSql);
-                }else{
-                    $this->_db->where('parent_id',$id);
-                    $data = $this->_db->get('tms_filemanager');
-                }
             }
             
         }else{
-            $this->_db->where('parent_id',$id);
-            $data = $this->_db->get('tms_filemanager');    
-            $dataArr = $this->_db->get('tms_filemanager');    
-            $i = 0;
-            foreach($data as $data1){
-                $data[$i]['countchild'] = 0;
-                $data[$i]['categories'] = [];
-                if($data1['ext'] == ''){
-                    $data[$i]['categories'] = self::buildTree($dataArr,$data[$i]['fmanager_id']);
-                } 
-                $i++;
+            if($id > 0){
+                $this->_db->where('parent_id',$id);
+                $data = $this->_db->get('tms_filemanager');    
+                $dataArr = $this->_db->get('tms_filemanager');    
+                $i = 0;
+                foreach($data as $data1){
+                    $data[$i]['countchild'] = 0;
+                    $data[$i]['categories'] = [];
+                    if($data1['ext'] == ''){
+                        $data[$i]['categories'] = self::buildTree($dataArr,$data[$i]['fmanager_id']);
+                    } 
+                    $i++;
+                }
             }
         }
         return $data;
