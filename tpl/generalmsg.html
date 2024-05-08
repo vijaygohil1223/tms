@@ -91,15 +91,20 @@
       
       <div class="form-group">
         <label class="col-md-2 control-label">Attachments:</label>
-        <div class="col-md-3">
-          <input type="file" ng-model="message.attachment" id="" ng-file-select="onFileSelect($files)" />
-          <span ng-bind="fileAttatchName" class="fileAttatchM"></span>
-        </div>
-        <div class="col-md-7">
+        <div class="col-md-2" ng-if="invoiceData.invoiceName">
           <p ng-if="!fileAttatchName" class="d-flex">
-            <span ng-if="invoiceData.invoiceName">Attached pdf: </span>
             <a ng-if="invoiceData.invoiceName" href="javascript:void(0)" ng-click="downloadBaseFile(invoiceData.invoiceName)">  &nbsp;&nbsp; {{invoiceData.invoiceName}} </a>
           </p>
+          <!-- <input type="file" ng-model="message.attachment" id="" ng-file-select="onFileSelect($files)" />
+          <span ng-bind="fileAttatchName" class="fileAttatchM"></span> -->
+        </div>
+        <div class="col-md-8">
+          <input type="file" ng-model="message.attachment" id="" ng-file-select="onFileSelect($files)" />
+          <span ng-bind="fileAttatchName" class="fileAttatchM"></span>
+          <!-- <p ng-if="!fileAttatchName" class="d-flex">
+            <span ng-if="invoiceData.invoiceName">Attached pdf: </span>
+            <a ng-if="invoiceData.invoiceName" href="javascript:void(0)" ng-click="downloadBaseFile(invoiceData.invoiceName)">  &nbsp;&nbsp; {{invoiceData.invoiceName}} </a>
+          </p> -->
         </div>
       </div><br><br>
       <div class="form-group">
@@ -108,9 +113,9 @@
           ng-model="cPersonMsg.messageData" required> </div>
       </div>
       <div class="pull-right">
-        <button class="btn btn-info" ng-click="ok('message_form', cPersonMsg)"><span class="fa fa-envelope"></span>
+        <!-- <button class="btn btn-info" ng-click="ok('message_form', cPersonMsg)"><span class="fa fa-envelope"></span>
           Send</button>
-        <button class="btn btn-info" ng-click="cancel()"><span class="fa fa-times"></span> Cancel</button>
+        <button class="btn btn-info" ng-click="cancel()"><span class="fa fa-times"></span> Cancel</button> -->
       </div>
     </div>
   </form>

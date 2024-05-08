@@ -17631,10 +17631,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.pdfDownloadFn(number, false ).then((pdfBase64Data) =>{
                             //console.log('pdfBase64Data', pdfBase64Data)
                             if(pdfBase64Data){
+                                let clientInvoiceNumber = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
                                 var invoicemailDetail = {
                                     'pdfData': 'data:application/pdf;base64,'+ pdfBase64Data,
                                     'invoice_id': $scope.invoiceDetail.invoice_id,
-                                    'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
+                                    'invoiceno': clientInvoiceNumber,
                                     'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
                                     'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
                                     'freelanceName': $scope.invoiceDetail.freelanceName,
@@ -17643,7 +17644,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
                                     'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
                                     'isClientInvoice' : 1,
-                                    'subject' : 'Invoice'
+                                    'subject' : 'Invoice ' + clientInvoiceNumber
                                 };
                                 
                                 var modalInstance = $uibModal.open({
@@ -31126,7 +31127,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.contactlist = data;
             let invoiceEmail = $scope.contactlist.filter( (el)=> el.is_client_invoice == 1 ) 
             invoiceEmail = invoiceEmail.length > 0 ? invoiceEmail[0].vEmail : ($scope.contactlist.length > 0) ? $scope.contactlist[0].vEmail : '' ;
-            $scope.msgEmailSubject = invoiceNo;
+            $scope.msgEmailSubject = 'Invoice ' +invoiceNo;
             if (id != undefined && id != " " && id != null) {
                 $window.localStorage.generalMsg = invoiceEmail;
                 var modalInstance = $uibModal.open({
