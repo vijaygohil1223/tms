@@ -420,7 +420,7 @@ class order {
             
         $this->_db->where('order_number',$data['order_number']);
         $orderNoExist = $this->_db->getOne('tms_order');
-        if($orderNoExist){
+        //if($orderNoExist){
             if(isset($data['abbrivation']) && $data['abbrivation']!=''){
                 $orderNo = self::orderNumberget($data['abbrivation']);
                 $orderNo = $orderNo ? $orderNo+1 : 1;
@@ -433,7 +433,7 @@ class order {
                     $data['order_number'] = $orderNo;
                 }
             }
-        }
+        //}
 
         $info = $data;
 
