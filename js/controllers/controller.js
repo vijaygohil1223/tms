@@ -31586,11 +31586,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
 
+        // Fetch dashboard projects orders
+        // rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+        // rest.get().success(function (data) {
+        //     $scope.InvoiceResult = data.filter(function (el) {
+        //         el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
+        //         // Filter items with status Approved (id: 5) and not in scoopIds
+        //         if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId))
+        //             return el;
+        //     });
+
+        //     // Sort results by contactName
+        //     $scope.InvoiceResult.sort(function (a, b) {
+        //         if (a.contactName < b.contactName) {
+        //             return -1;
+        //         }
+        //         if (a.contactName > b.contactName) {
+        //             return 1;
+        //         }
+        //         return 0;
+        //         //return a.contactName.localeCompare(b.contactName);
+        //     });
+        // });
 
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            $scope.InvoiceResult = data;
-            
+            //$scope.InvoiceResult = data;
             $scope.InvoiceResult = data.filter(function (el) {
                 el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
                 // status Approved = 5 id
@@ -31601,15 +31622,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
 
             $scope.InvoiceResult.sort(function (a, b) {
-            if (a.contactName < b.contactName) {
-                return -1;
-            }
-            if (a.contactName > b.contactName) {
-                return 1;
-            }
-            return 0;
+                if (a.contactName < b.contactName) {
+                    return -1;
+                }
+                if (a.contactName > b.contactName) {
+                    return 1;
+                }
+                return 0;
             });
-            
         })    
     
     })    
