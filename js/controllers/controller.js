@@ -31586,29 +31586,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
 
-        // Fetch dashboard projects orders
-        // rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
-        // rest.get().success(function (data) {
-        //     $scope.InvoiceResult = data.filter(function (el) {
-        //         el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
-        //         // Filter items with status Approved (id: 5) and not in scoopIds
-        //         if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId))
-        //             return el;
-        //     });
-
-        //     // Sort results by contactName
-        //     $scope.InvoiceResult.sort(function (a, b) {
-        //         if (a.contactName < b.contactName) {
-        //             return -1;
-        //         }
-        //         if (a.contactName > b.contactName) {
-        //             return 1;
-        //         }
-        //         return 0;
-        //         //return a.contactName.localeCompare(b.contactName);
-        //     });
-        // });
-
         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             //$scope.InvoiceResult = data;
@@ -31671,9 +31648,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var total = 0;
         angular.forEach($scope.InvoiceResult, function(invoice) {
             if (invoice.iClientId === iClientId) {
-            total += parseFloat(invoice.totalAmount);
+                console.log('invoice', invoice)
+                // Ensure invoice totalAmount is a valid number
+                if (!isNaN(parseFloat(invoice.totalAmount))) {
+                    total += parseFloat(invoice.totalAmount);
+                }
             }
         });
+        // Round total to 2 decimal places and format it
         return $filter('customNumber')(total);
     };
 
