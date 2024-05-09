@@ -394,7 +394,7 @@
                         <div class="panel-body">
                            <div class="col-sm-12">
                               <div class="row wrapper" ng-show="staturRes.length">
-                                 <div class="col-sm-6 m-b-xs">
+                                 <div class="col-sm-8 m-b-xs">
                                     <div class="col-sm-4">
                                        <select class="input-sm form-control w-sm inline v-middle" ng-model="action"
                                           ng-change="statucOrderAction(action)">
@@ -414,19 +414,26 @@
                                           id="itemStatusdata" class="input-sm form-control w-sm inline v-middle"
                                           ng-model="itemStatus" />
                                     </div>
+                                    
                                     <div class="col-sm-1">
+                                       
                                        <button class="btn btn-sm btn-info"
                                           ng-click="statusAction(action,projectStatus)"><i
                                              class="glyphicon glyphicon-ok"></i></button>
                                     </div>
                                  </div>
-                                 <div>
-                                    <button ng-show="staturRes.length" class="btn m-b-xs btn-info pull-right"
-                                       ng-click="exportData('result')">Excel</button>
+                                 <div class="col-sm-4 m-b-xs">
+                                    <div class="d-flex justify-space-between">
+                                       <div>
+                                          <strong>Total:</strong> {{ calculateTotal() | customNumber }}
+                                       </div>
+                                       <button ng-show="staturRes.length" class="btn m-b-xs btn-info"
+                                          ng-click="exportData('result')">Excel</button>
+                                    </div>
                                  </div>
                               </div>
                               <div class="table-responsive">
-                                 <table class="table m-b-none default footable-loaded footable" >
+                                 <table class="table m-b-none default footable-loaded footable" datatable="ng" dt-options="dtOptions">
                                     <thead>
                                        <th>#</th>
                                        <th>Orders Number</th>
@@ -436,6 +443,7 @@
                                        <th>Client</th>
                                        <th>Account</th>
                                        <th>Status</th>
+                                       <th>Due date</th>
                                        <th>Prices</th>
                                        <!-- <th>Price in selected currency</th> -->
                                     </thead>
@@ -454,7 +462,7 @@
                                                 name="orderCheckData{{$index}}" style="display: none;"
                                                 ng-model="result.orderId">
                                           </td>
-                                          <td>
+                                          <td class="nowrap">
                                              <a href="#/items/{{result.orderId}}" ng-click="storeScoopOrders()" 
                                                 class="summeryColor">{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3 }}</a>
                                              <!-- <a href="#/viewProject/{{result.orderId}}" ng-click="storeScoopOrders()" 
@@ -468,20 +476,24 @@
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td> {{ result.indirectAccountName}} </td>
                                           <td ng-bind="result.clientStatus"></td>
-                                          <td ng-bind="result.totalAmount | customNumber">--</td>
-                                          <!-- <td>{{ result.jobTotalPrice }}</td> -->
+                                          <td class="nowrap"> <span class="none"> {{result.scoop_due_date}}</span> {{ result.scoop_due_date | dateFormatDisplayFront }}</td>
+                                          <td ng-bind="result.totalAmount | customNumber"> <span class="none">{{result.totalAmount}}</span> </td>
+                                          
                                        </tr>
-                                       <tr ng-if="staturRes.length">
+                                       <!-- <tr ng-if="staturRes.length">
                                           <td colspan="5"></td>
                                           <td> <strong> Gross Profit </strong> </td>
                                           <td> <strong>{{ clReportTotal | customNumber }}</strong> </td>
-                                       </tr>
-                                       <tr ng-show="!staturRes.length">
+                                       </tr> -->
+                                       <!-- <tr ng-show="!staturRes.length">
                                           <td colspan="7" ng-bind="dataNotFound"></td>
-                                       </tr>
+                                       </tr> -->
                                     </tbody>
                                  </table>
                               </div>
+                              <!-- <div ng-if="statusResult.length" style="text-align: center;">
+                                 <strong>Total:</strong> {{ calculateTotal() | customNumber }}
+                             </div> -->
                               <!-- use for export excel -->
                               <div class="table-responsive" id="exportable" style="display: none">
                                  <table class="table m-b-none default footable-loaded footable">

@@ -8134,7 +8134,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('orderstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter) {
+}).controller('orderstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
 
@@ -8955,6 +8955,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 break;
         }
     }
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100);
+
+    $scope.calculateTotal = function() {
+        var total = 0;
+        angular.forEach($scope.statusResult, function(result) {
+            total += parseFloat(result.totalAmount);
+        });
+        return total;
+    };
+
 }).controller('projectStatisticsController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
@@ -31548,7 +31561,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.close();
     }
-}).controller('clientInvoiceScoopController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore) {    
+}).controller('clientInvoiceScoopController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $filter) {    
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.InvoiceResult = [];
     $scope.searchOrderNumber = '';
@@ -31633,6 +31646,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     }
+
+    $scope.calculateTotalForClient = function(clientName) {
+        var total = 0;
+        angular.forEach($scope.InvoiceResult, function(invoice) {
+            if (invoice.contactName === clientName) {
+            total += parseFloat(invoice.totalAmount);
+            }
+        });
+        return $filter('customNumber')(total);
+    };
 
 }).controller('projectjobDetailController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
