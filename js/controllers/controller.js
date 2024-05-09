@@ -31648,7 +31648,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var total = 0;
         angular.forEach($scope.InvoiceResult, function(invoice) {
             if (invoice.iClientId === iClientId) {
-                console.log('invoice', invoice)
+                console.log('invoice==>id==>'+iClientId , invoice)
                 // Ensure invoice totalAmount is a valid number
                 if (!isNaN(parseFloat(invoice.totalAmount))) {
                     total += parseFloat(invoice.totalAmount);
@@ -31656,7 +31656,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
         // Round total to 2 decimal places and format it
-        return $filter('customNumber')(total);
+        return total;
     };
 
 }).controller('projectjobDetailController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location) {

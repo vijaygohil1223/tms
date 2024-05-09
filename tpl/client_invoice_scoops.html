@@ -36,7 +36,7 @@
                   </tr>
                 </thead>
                 <tbody ng-init="invLen = InvoiceResult.length - 1"
-                  ng-repeat="invoiceL in InvoiceResult  track by $index">
+                  ng-repeat="invoiceL in InvoiceResult  track by $index" >
                   <tr>
                     <td colspan="7" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
                       ng-if="$index ==0 || InvoiceResult[$index-1].iClientId !== invoiceL.iClientId">Client: {{
@@ -64,11 +64,19 @@
                     <td ng-bind="invoiceL.client_currency"></td>
 
                   </tr>
-                  <tr ng-if="$last || InvoiceResult[$index+1].iClientId !== invoiceL.iClientId">
+                  <tr ng-if="$last || !$last && (InvoiceResult[$index+1] && InvoiceResult[$index+1].iClientId !== invoiceL.iClientId)">
+                    <td colspan="6" style="text-align: right !important;font-weight:bold;">Total:</td>
+                    <td ng-init="totalForClient = calculateTotalForClient(invoiceL.iClientId)">
+                      {{ totalForClient | customNumber }}
+                    </td>
+                    <td></td>
+                  </tr>
+                
+                  <!-- <tr ng-if="$last || InvoiceResult[$index+1].iClientId !== invoiceL.iClientId">
                     <td colspan="6" style="text-align: right !important;font-weight:bold;">Total:</td>
                     <td>{{ calculateTotalForClient(invoiceL.iClientId) }}</td>
                     <td></td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </table>
             </div>
