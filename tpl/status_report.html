@@ -475,7 +475,8 @@
                                                 class="summeryColor"><span>{{result.contactName}}</span></a></td>
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td> {{ result.indirectAccountName}} </td>
-                                          <td ng-bind="result.clientStatus"></td>
+                                          <!-- <td ng-bind="result.clientStatus"></td> -->
+                                          <td ng-bind="result.scoop_status_name"></td>
                                           <td class="nowrap"> <span class="none"> {{result.scoop_due_date}}</span> {{ result.scoop_due_date | dateFormatDisplayFront }}</td>
                                           <td ng-bind="result.totalAmount | customNumber"> <span class="none">{{result.totalAmount}}</span> </td>
                                           
@@ -506,7 +507,9 @@
                                        <th>
                                        <!-- Customers -->Client
                                        </th>
+                                       <th>Account</th>
                                        <th>Status</th>
+                                       <th>Due date</th>
                                        <th>Prices</th>
 
                                     </thead>
@@ -518,7 +521,10 @@
                                           <td>{{ result.emailSubject }}</td>
                                           <td><span>{{result.contactName}}</span></td>
                                           <!-- <td ng-bind="result.projectName"></td> -->
-                                          <td ng-bind="result.clientStatus"></td>
+                                          <td> {{ result.indirectAccountName}} </td>
+                                          <td ng-bind="result.scoop_status_name"></td>
+                                          <td>{{ result.scoop_due_date | dateFormatDisplayFront }}</td>
+                                          
                                           <td ng-bind="result.totalAmount | customNumber">--</td>
 
 

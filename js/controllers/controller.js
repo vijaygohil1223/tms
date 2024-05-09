@@ -31647,10 +31647,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-    $scope.calculateTotalForClient = function(clientName) {
+    $scope.calculateTotalForClient = function(iClientId) {
         var total = 0;
         angular.forEach($scope.InvoiceResult, function(invoice) {
-            if (invoice.contactName === clientName) {
+            if (invoice.iClientId === iClientId) {
             total += parseFloat(invoice.totalAmount);
             }
         });
