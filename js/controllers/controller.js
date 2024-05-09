@@ -31567,65 +31567,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.searchOrderNumber = '';
 
     $scope.scoopIds = [];
-    // rest.path = "getClientInvoicelistAll";
-    // rest.get().success(function (data) {
-    //     $scope.allInvoice = data;
+    rest.path = "getClientInvoicelistAll";
+    rest.get().success(function (data) {
+        $scope.allInvoice = data;
         
-    //     $scope.allInvoice.filter(function(allInvoice) {
-    //         try {
-    //             let scoopIds = JSON.parse(allInvoice.scoop_id);
-    //             if (Array.isArray(scoopIds)) {
-    //                 scoopIds.forEach(function(elm) {
-    //                     $scope.scoopIds.push(elm.id);
-    //                 });
-    //             } else {
-    //                 console.error("scoop_id is not an array:", scoopIds);
-    //             }
-    //         } catch (error) {
-    //             console.error("Error parsing scoop_id:", error);
-    //         }
-    //     });
-
-    //     rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
-    //     rest.get().success(function (data) {
-    //         //$scope.InvoiceResult = data;
-    //         $scope.InvoiceResult = data.filter(function (el) {
-    //             el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
-    //             // status Approved = 5 id
-    //             //if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
-    //             if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId))
-    //                 return el;
-    //         });
-    //         //$scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
-
-    //         $scope.InvoiceResult.sort(function (a, b) {
-    //             if (a.contactName < b.contactName) {
-    //                 return -1;
-    //             }
-    //             if (a.contactName > b.contactName) {
-    //                 return 1;
-    //             }
-    //             return 0;
-    //         });
-    //     })    
-    
-    // })  
-    
-
-    async function fetchData() {
-        try {
-            // Fetch all invoices
-            const allInvoiceData = await fetchAllInvoices();
-            // Filter and process dashboard projects orders
-            const dashboardProjectsOrderData = await fetchDashboardProjectsOrders();
-            // Filter dashboard projects orders and calculate totals
-            $scope.InvoiceResult = dashboardProjectsOrderData.filter(function(el) {
-                el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
-                if (el.itemStatusId == '5' && !$scope.scoopIds.includes(el.itemId)) {
-                    return el;
+        $scope.allInvoice.filter(function(allInvoice) {
+            try {
+                let scoopIds = JSON.parse(allInvoice.scoop_id);
+                if (Array.isArray(scoopIds)) {
+                    scoopIds.forEach(function(elm) {
+                        $scope.scoopIds.push(elm.id);
+                    });
+                } else {
+                    console.error("scoop_id is not an array:", scoopIds);
                 }
+            } catch (error) {
+                console.error("Error parsing scoop_id:", error);
+            }
+        });
+
+        rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+        rest.get().success(function (data) {
+            //$scope.InvoiceResult = data;
+            $scope.InvoiceResult = data.filter(function (el) {
+                el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
+                // status Approved = 5 id
+                //if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
+                if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId))
+                    return el;
             });
-            $scope.InvoiceResult.sort(function(a, b) {
+            //$scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
+
+            $scope.InvoiceResult.sort(function (a, b) {
                 if (a.contactName < b.contactName) {
                     return -1;
                 }
@@ -31634,48 +31607,75 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 return 0;
             });
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    }
+        })    
+    
+    })  
+    
 
-    async function fetchAllInvoices() {
-        return new Promise(function(resolve, reject) {
-            rest.path = "getClientInvoicelistAll";
-            rest.get().success(function(data) {
-                data.forEach(function(allInvoice) {
-                    try {
-                        let scoopIds = JSON.parse(allInvoice.scoop_id);
-                        if (Array.isArray(scoopIds)) {
-                            scoopIds.forEach(function(elm) {
-                                $scope.scoopIds.push(elm.id);
-                            });
-                        } else {
-                            console.error("scoop_id is not an array:", scoopIds);
-                        }
-                    } catch (error) {
-                        console.error("Error parsing scoop_id:", error);
-                    }
-                });
-                resolve(data);
-            }).error(function(error) {
-                reject(error);
-            });
-        });
-    }
+    // async function fetchData() {
+    //     try {
+    //         // Fetch all invoices
+    //         const allInvoiceData = await fetchAllInvoices();
+    //         // Filter and process dashboard projects orders
+    //         const dashboardProjectsOrderData = await fetchDashboardProjectsOrders();
+    //         // Filter dashboard projects orders and calculate totals
+    //         $scope.InvoiceResult = dashboardProjectsOrderData.filter(function(el) {
+    //             el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
+    //             if (el.itemStatusId == '5' && !$scope.scoopIds.includes(el.itemId)) {
+    //                 return el;
+    //             }
+    //         });
+    //         $scope.InvoiceResult.sort(function(a, b) {
+    //             if (a.contactName < b.contactName) {
+    //                 return -1;
+    //             }
+    //             if (a.contactName > b.contactName) {
+    //                 return 1;
+    //             }
+    //             return 0;
+    //         });
+    //     } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //     }
+    // }
 
-    async function fetchDashboardProjectsOrders() {
-        return new Promise(function(resolve, reject) {
-            rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
-            rest.get().success(function(data) {
-                resolve(data);
-            }).error(function(error) {
-                reject(error);
-            });
-        });
-    }
+    // async function fetchAllInvoices() {
+    //     return new Promise(function(resolve, reject) {
+    //         rest.path = "getClientInvoicelistAll";
+    //         rest.get().success(function(data) {
+    //             data.forEach(function(allInvoice) {
+    //                 try {
+    //                     let scoopIds = JSON.parse(allInvoice.scoop_id);
+    //                     if (Array.isArray(scoopIds)) {
+    //                         scoopIds.forEach(function(elm) {
+    //                             $scope.scoopIds.push(elm.id);
+    //                         });
+    //                     } else {
+    //                         console.error("scoop_id is not an array:", scoopIds);
+    //                     }
+    //                 } catch (error) {
+    //                     console.error("Error parsing scoop_id:", error);
+    //                 }
+    //             });
+    //             resolve(data);
+    //         }).error(function(error) {
+    //             reject(error);
+    //         });
+    //     });
+    // }
 
-    fetchData();
+    // async function fetchDashboardProjectsOrders() {
+    //     return new Promise(function(resolve, reject) {
+    //         rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+    //         rest.get().success(function(data) {
+    //             resolve(data);
+    //         }).error(function(error) {
+    //             reject(error);
+    //         });
+    //     });
+    // }
+
+    // fetchData();
 
 
 
@@ -31722,7 +31722,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }
         });
-        // Round total to 2 decimal places and format it
         return total;
     };
 
