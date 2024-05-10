@@ -2974,11 +2974,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.showDataLoaderJob = false;
     };
 
-    $scope.jobList_tabFilter()
-        .then(function (invoicePromiseData) {
-            //$scope.jobstatusRecord('jobs', '');
+    // $scope.jobList_tabFilter()
+    //     .then(function (invoicePromiseData) {
+    //         //$scope.jobstatusRecord('jobs', '');
 
-    });
+    // });
 
     // Jobs tabs section
 
@@ -3536,9 +3536,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })
         //return false;
     }
-    if ($cookieStore.get('session_iUserId') != undefined) {
-        $scope.countryHolidayGet();
-    }
+    // if ($cookieStore.get('session_iUserId') != undefined) {
+    //     $scope.countryHolidayGet();
+    // }
     $timeout(function () {
         $('#holidaysLoading').addClass('hide');
     }, 200);
