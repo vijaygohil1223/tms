@@ -10562,6 +10562,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('viewExternaldetailController', function ($cookieStore, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $route, $rootScope, $routeParams, $location) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.loginUserId = $window.localStorage.getItem("session_iUserId");
+    
     $routeParams.userTypeId = 1;
     $window.localStorage.iUserId = $routeParams.id;
     $scope.ContactPersonName = $window.localStorage.getItem("contactPersonId");
@@ -10571,6 +10572,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
     $scope.overAllshow = true;
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
+
+
+    if($scope.userRight == 2){
+        $routeParams.id = $scope.loginUserId;
+    }
 
     $scope.changeUserStatus = function (currentStatus) {
         
@@ -11344,6 +11350,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout, $filter ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.superAdmin = $window.localStorage.getItem("session_superAdmin");
+    $scope.loginUserId = $window.localStorage.getItem("session_iUserId");
+    
   
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.setItem("contactUserId", $routeParams.id);
@@ -11358,7 +11366,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.abscentDateArr = [];
     $scope.isSecondCurrency = false;
 
-    console.log('$window.localStorage.getItem("session_iUserId")', $window.localStorage.getItem("session_iUserId"))
+    if($scope.userRight == 2){
+        $routeParams.id = $scope.loginUserId;
+    }
+    
     // login user data
     if($scope.userRight == 1){
         rest.path = 'getProfile/' + $window.localStorage.getItem("session_iUserId");
