@@ -2259,7 +2259,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // ** Dashoboard Project TABS start ** //
     $scope.projBranchChange = false;
     // Tab view Project List
-
+    $scope.showDataLoader = false;
     $scope.allProjectListing = function () {
         $scope.projectsAll = [];
         $scope.projectsMyproj = [];
@@ -2687,7 +2687,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
 
     };
-    $scope.allProjectListing();
+    //$scope.allProjectListing();
     // Branch change (Norway-Bulgaria) call function again
     $scope.projectBranchchange = function (id) {
         $scope.projBranchChange = true;
