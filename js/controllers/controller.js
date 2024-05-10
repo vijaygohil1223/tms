@@ -2170,13 +2170,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Jobs delivered status
     $scope.jobListDelivered = [];
-    if ($cookieStore.get('session_iUserId') != undefined) {
-        rest.path = 'getJobsAll';
-        rest.get().success(function (data) {
-            $scope.jobListDelivered = data;
+    // if ($cookieStore.get('session_iUserId') != undefined) {
+    //     rest.path = 'getJobsAll';
+    //     rest.get().success(function (data) {
+    //         $scope.jobListDelivered = data;
             
-        })
-    }         
+    //     })
+    // }         
     
     $scope.dashboardTabList = [ 
         { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 } 
@@ -2306,17 +2306,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             //console.log('pre-data-sorted', data.sort(compareDueDates) )
             
+            $scope.projectData = data;
+            //$scope.projectData = data.sort(compareDueDates);
+                
             //if($window.localStorage.projectBranch != ' '){
             if ($scope.projBranchChange) {
                 // filter data based on branch
                 //$scope.projectData = data.filter(pd => pd.project_branch == $window.localStorage.projectBranch)
                 $scope.projectData = data.filter( pd => pd.orderNumber.startsWith($window.localStorage.projectBranch) )
                 //console.log('$scope.projectData ==IIFFF', $scope.projectData)
-            } else {
-                $scope.projectData = data;
-                //$scope.projectData = data.sort(compareDueDates);
-                console.log('$scope.projectData==else', $scope.projectData)
-            }
+            } 
             //console.log('$scope.projectData', $scope.projectData)
             angular.forEach($scope.projectData, function (val, i) {
                 val.progrss_precentage = -1;
@@ -2329,37 +2328,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
                 if (val.itemsSourceLang) {
                     $scope.projectData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
-                    var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
-                    if(sourceLangName){
-                        if($scope.langsListAll){
-                            var sourceLang = allLanguages.find(obj => {
-                                return obj.title === sourceLangName;
-                            })
-                            if(sourceLang){
-                                $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id.toString().split('_').join('-');
-                                //$scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id;
-                            }
-                        }
-                    }
+                    // var sourceLangName = $scope.projectData[i].itemsSourceLang.sourceLang;
+                    // if(sourceLangName){
+                    //     if($scope.langsListAll){
+                    //         var sourceLang = allLanguages.find(obj => {
+                    //             return obj.title === sourceLangName;
+                    //         })
+                    //         if(sourceLang){
+                    //             $scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id.toString().split('_').join('-');
+                    //             //$scope.projectData[i].itemsSourceLang.sourceLang = sourceLang.id;
+                    //         }
+                    //     }
+                    // }
                 } else {
                     $scope.projectData[i].itemsSourceLang = newLangData;
                 }
                 if (val.itemsTargetLang) {
                     $scope.projectData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
-                    var targetLangName = $scope.projectData[i].itemsTargetLang.sourceLang;
-                    //console.log('targetLangName', targetLangName)
-                    if(targetLangName){
-                        var targetLang = allLanguages.find(obj => {
-                            return obj.title == targetLangName
-                        })
-                        if(targetLang){
-                            $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id.toString().split('_').join('-');
-                            //$scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id;
-                        }
-                    }
+                    // console.log('$scope.projectData[i].itemsTargetLang', $scope.projectData[i].itemsTargetLang)
+                    // var targetLangName = $scope.projectData[i].itemsTargetLang.sourceLang;
+                    // if(targetLangName){
+                    //     var targetLang = allLanguages.find(obj => {
+                    //         return obj.title == targetLangName
+                    //     })
+                    //     if(targetLang){
+                    //         $scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id.toString().split('_').join('-');
+                    //         //$scope.projectData[i].itemsTargetLang.sourceLang = targetLang.id;
+                    //     }
+                    // }
                 } else {
                     $scope.projectData[i].itemsTargetLang = newLangData;
                 }
+
                 var scoopWords = 0;
                 var scoopHours = 0;
                 val.scoop_projectColor = '#3B9C9C';
@@ -2554,15 +2554,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //if ( ([1,3,4,5,6,7,8,9,11,12,13].includes(val.itemStatusId)==false) && (val.itemStatusId == "10" || isQaReady)) {
                 if ( ([2,10].includes(val.itemStatusId))) {
                     console.log('scoopitemStatusId=', val.itemStatusId)
-                    var checkAllJobComplete = false;
-                    if($scope.jobListDelivered.length > 0){
-                        let scoopJobs = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number );
-                        if(scoopJobs.length){
-                            checkAllJobComplete = scoopJobs.every( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
-                        }
-                    }
+                    // var checkAllJobComplete = false;
+                    // if($scope.jobListDelivered.length > 0){
+                    //     let scoopJobs = $scope.jobListDelivered.filter( jb => jb.order_id == val.orderId && jb.item_id == val.item_number );
+                    //     if(scoopJobs.length){
+                    //         checkAllJobComplete = scoopJobs.every( jb => jb.order_id == val.orderId && jb.item_id == val.item_number && ['Completed','Delivered'].includes(jb.item_status) );
+                    //     }
+                    // }
                     // QA Ready
-                    if(val.itemStatusId == "10" || checkAllJobComplete){
+                    // if(val.itemStatusId == "10" || checkAllJobComplete){
+                    //     val.progrss_precentage = 75;
+                    //     val.projectstatus_class = 'projectstatus_ready';
+                    //     val.projectstatus_color = '#019788';
+                    //     $scope.projectsQaready.push(val);
+                    //     $scope.projectsQaReadyCount++;
+
+                    //     $scope.fillDashboardTabFn(3, $scope.projectsQaready, $scope.projectsQaReadyCount) 
+                    // }
+                    if(val.itemStatusId == "10"){
                         val.progrss_precentage = 75;
                         val.projectstatus_class = 'projectstatus_ready';
                         val.projectstatus_color = '#019788';
@@ -3771,6 +3780,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('dom', 'frtilp');
         // deadline column please changes index if any change
         //withOption('order', [[10, 'desc']]); 
+        
 
     $scope.dtOptionsJob = DTOptionsBuilder.newOptions().
         withOption('responsive', true).
@@ -3842,24 +3852,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     // END - edit/update project scoop stay on same tabs
 
-    if ($cookieStore.get('session_iUserId') != undefined) {
-        // currency exchange rate update every day
-        if($window.localStorage.getItem("currencyExchangeUpdated") != true){
-            rest.path = 'currencyExchange' ;
-            rest.get().success(function(data){
-                $window.localStorage.setItem("currencyExchangeUpdated", true)
-            })
-        } 
-        // Latest api rate
-        // fetch("https://api.exchangerate-api.com/v4/latest/EUR")
-        // .then(response => response.json())
-        // .then(data => {
-        //     console.log('crncy-api-rate',data); // JSON data
-        // })
-        // .catch(error => {
-        //     console.error("Error fetching data:", error);
-        // });
-    }
+    // if ($cookieStore.get('session_iUserId') != undefined) {
+    //     // currency exchange rate update every day
+    //     if($window.localStorage.getItem("currencyExchangeUpdated") != true){
+    //         rest.path = 'currencyExchange' ;
+    //         rest.get().success(function(data){
+    //             $window.localStorage.setItem("currencyExchangeUpdated", true)
+    //         })
+    //     } 
+    //     // Latest api rate
+    //     // fetch("https://api.exchangerate-api.com/v4/latest/EUR")
+    //     // .then(response => response.json())
+    //     // .then(data => {
+    //     //     console.log('crncy-api-rate',data); // JSON data
+    //     // })
+    //     // .catch(error => {
+    //     //     console.error("Error fetching data:", error);
+    //     // });
+    // }
 
 
     $scope.linguistJobComplete = function (jobId) {

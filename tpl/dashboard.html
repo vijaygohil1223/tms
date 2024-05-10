@@ -386,7 +386,8 @@ td { font-size: 11px; } */
   .tabfx .tab-pane {
     padding-top: 40px;
   }
-  .fileicon .btn{
+
+  .fileicon .btn {
     padding: 3px 10px !important;
   }
 
@@ -481,7 +482,8 @@ td { font-size: 11px; } */
 
                     <tab ng-repeat="myTabs in dashboardTabList" class="{{myTabs.tabClassName}}"
                       ng-if="myTabs.tabPermission"
-                      ng-click="changeProjectTabs(myTabs.tabClassName); $event.stopPropagation();" ng-init="myTabs.sortColumn = ''; myTabs.sortOrder = false">
+                      ng-click="changeProjectTabs(myTabs.tabClassName); $event.stopPropagation();"
+                      ng-init="myTabs.sortColumn = ''; myTabs.sortOrder = false">
                       <tab-heading>
                         <i class="glyphicon glyphicon-triangle-bottom"></i> {{myTabs.tabName}}
                         <span class="badge bg-info">{{myTabs.projectScoopCount}}</span>
@@ -504,7 +506,9 @@ td { font-size: 11px; } */
                             <th>Deadline</th>
                             <!-- <th>Progress</th> -->
                             <!-- <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th> -->
-                            <th ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1">Status</th>
+                            <th
+                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1">
+                              Status</th>
                             <th>Price</th>
                             <!-- <th>PO Number</th> -->
                             <!-- <th>Action</th> -->
@@ -553,7 +557,27 @@ td { font-size: 11px; } */
                                 </article>
                               </td>
                               <td>
-                                <div class="langtd"
+                                <div ng-if="order.itemsSourceLang.sourceLang || order.itemsTargetLang.sourceLang">
+                                  <div class="d-flex" style="margin-bottom:5px;">
+                                    <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
+                                        alt="..." /></span>
+                                    <span class="labeltitle">
+                                      {{ order.itemsSourceLang.sourceLang
+                                      }}
+                                    </span>
+                                  </div>
+                                  <div class="d-flex">
+                                    <span class="langflag"><img ng-src="{{ order.itemsTargetLang.dataNgSrc }}"
+                                        alt="..." /></span>
+                                    <div class="media-body">
+                                      <span class="labeltitle">
+                                        {{ order.itemsTargetLang.sourceLang
+                                        }}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- <div class="langtd"
                                   ng-if="order.itemsSourceLang.sourceLang || order.itemsTargetLang.sourceLang">
                                   <span class="langflag"><img ng-src="{{ order.itemsSourceLang.dataNgSrc }}"
                                       alt="..." /></span>
@@ -574,7 +598,7 @@ td { font-size: 11px; } */
                                       }}
                                     </span>
                                   </div>
-                                </div>
+                                </div> -->
                                 <!-- <div class="block m-t-sm">
                                   <span class="badge bg-warning">Linguist</span>
                                 </div> -->
@@ -652,7 +676,8 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td> -->
-                              <td ng-if=" ['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1 ">
+                              <td
+                                ng-if=" ['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1 ">
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
@@ -801,7 +826,8 @@ td { font-size: 11px; } */
                         <li class="list-group-item" ng-if="!absentLngstlist.length">No absences linguist</li>
                       </ul>
                       <div class="panel-footer" style="background: #e6e9ef">
-                        <span class="pull-right badge bg-info" ng-if="absentLngstlist" ng-bind="absentLngstlist.length"></span>
+                        <span class="pull-right badge bg-info" ng-if="absentLngstlist"
+                          ng-bind="absentLngstlist.length"></span>
                         <span class="pull-right badge bg-info" ng-if="!absentLngstlist"> 0 </span>
                         <span>&nbsp;</span>
                       </div>
@@ -1197,9 +1223,11 @@ td { font-size: 11px; } */
                                           </div> -->
                                           <div style="float:right;">
                                             <a style="margin-left:20px" href="javascript:void(0)"
-                                                ng-click="projectJobdetail(job.job_summmeryId, 1)"> 
-                                                <span class="" style="color: {{ job.comment_read==1 ? 'red' : 'inherit' }}"> <i class="fa fa-commenting-o fa-2x"></i> </span> 
-                                              </a> 
+                                              ng-click="projectJobdetail(job.job_summmeryId, 1)">
+                                              <span class=""
+                                                style="color: {{ job.comment_read==1 ? 'red' : 'inherit' }}"> <i
+                                                  class="fa fa-commenting-o fa-2x"></i> </span>
+                                            </a>
                                           </div>
                                         </div>
                                       </td>
