@@ -1491,6 +1491,15 @@ $app->get('/languagesGet','authenticate', function () {
     $result = $language->languagesGetAll();
     echoResponse(200, $result);
 });
+$app->get('/languagesGetPaginate','authenticate', function () {
+    $language = new language();
+    // Fetch paginated results directly from the database
+    $response = $language->languagesGetAllPage();
+    
+
+    echoResponse(200, $response);
+});
+
 $app->get('/LangsgetOne/:id','authenticate', function ($id) {
     $language = new language ();
     $result = $language->langsgetOne($id);

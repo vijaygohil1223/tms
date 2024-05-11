@@ -190,6 +190,40 @@ class language {
         return $return;
     }
 
+    public function languagesGetAllPage() {
+        
+        $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : 10;
+        $currentPage = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $offset = ($currentPage - 1) * $perPage;
+        
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+        $whereCond = '';
+        if($search != ''){
+            $whereCond = " where title LIKE '%$search%' ";
+            $currentPage = 0;
+        }
+        $qry = "SELECT * from tms_languages $whereCond  ";
+        $tCount = $this->_db->rawQuery($qry);
+        $totalCount = count($tCount);
+
+        $totalPages = ceil($totalCount / $perPage);
+        
+        $qry = "SELECT * from tms_languages $whereCond limit $perPage offset $offset ";
+        $results = $this->_db->rawQuery($qry);
+        
+        // Prepare response
+        $results = array(
+            'totalItems' => $totalCount,
+            'totalPages' => $totalPages,
+            'currentPage' => $currentPage,
+            'data' => $results
+        );
+
+        return $results;
+    }
+    
+    
+
 
 
 }

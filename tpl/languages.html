@@ -60,6 +60,7 @@
             <tbody>
               <tr ng-repeat="l in langsList" ng-class="(l.lang_id == langs.lang_id) ? 'rowactivate' : ''">
                 <td ng-bind="$index + 1"></td>
+                <!-- <td ng-bind="$index + 1 + (currentPage - 1) * itemsPerPage"></td> -->
                 <td style="text-align:center;"><span ng-if="l.is_favourite==1" style="float: right;color: #FFD700;"
                     class=""><i class="fa fa-star"></i></span><span style="margin:0 auto;">{{l.title}}</span> </td>
                 <td>{{l.name}}

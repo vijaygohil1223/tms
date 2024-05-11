@@ -37843,7 +37843,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
     };
-}).controller('languagesController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {
+}).controller('languagesController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.CurrentDate = new Date();
     $scope.editOn = 0;
@@ -37911,6 +37911,45 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
+
+    // demo for custom pagination
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 10; // Number of items per page
+    $scope.totalItems = 0;
+    $scope.langsList = [];
+
+    $scope.loadData  = function (page) {
+        $scope.currentPage = page ? page : $scope.currentPage
+        
+        var urlString = 'page=' + $scope.currentPage + '&perPage=' + $scope.itemsPerPage;
+        if($scope.searchText && $scope.searchText!=''){
+            urlString += '&search=' + $scope.searchText
+            console.log('urlString', urlString)
+        }
+        rest.path = 'languagesGetPaginate?' + urlString;
+        rest.get().success(function (response) {
+                console.log('response', response)
+                $scope.totalItems = response.totalItems;
+                $scope.totalPages = response.totalPages;
+                $scope.langsList = response.data;
+                $scope.filterData();
+                //$scope.navigateToMatchingPage(); 
+            });
+    };
+
+    // Function to filter data based on search criteria
+    $scope.filterData = function () {
+        $scope.filteredLangsList = $filter('filter')($scope.langsList, $scope.searchText);
+        console.log('$scope.filteredLangsList', $scope.filteredLangsList)
+    };
+    // Function to handle search input changes
+    $scope.handleSearchInput = function () {
+        $scope.loadData(); // Reload data when search criteria change
+    };
+
+    //$scope.loadData(); 
+    //** END */ 
+
 }).controller('specializedController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.CurrentDate = new Date();
