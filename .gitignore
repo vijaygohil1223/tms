@@ -16,3 +16,6 @@ application/logs/*
 !application/logs/.htaccess
 
 api/includes/config.php
+knowledge/api/includes/config.php
+uploads/fileupload/
+uploads/*

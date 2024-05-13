@@ -3031,6 +3031,16 @@ $app->get('/dashboardProjectsOrderGet/:id', function ($id) use ($app) {
     $result = $dashboard->ProjectsOrderGet($id);
     echoResponse(200, $result);
 });
+$app->get('/dashboardProjectsOrderScoopGet/:id', function ($id) use ($app) {
+    $dashboard = new dashboard ();
+    $result = $dashboard->projectsOrderScoopGet($id);
+    echoResponse(200, $result);
+});
+$app->get('/dashboardProjectsOrderCount/:id', function ($id) use ($app) {
+    $dashboard = new dashboard ();
+    $result = $dashboard->projectsOrderCount($id);
+    echoResponse(200, $result);
+});
 
 $app->get('/searchProjectHeader/:id', function ($id) use ($app) {
     $dashboard = new dashboard ();

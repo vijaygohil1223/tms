@@ -1,23 +1,26 @@
 <?php
-define('SITE_URL', "http://" . $_SERVER['SERVER_NAME'] . "/");
+define('SITE_URL', "http://" . $_SERVER['SERVER_NAME'] . "/tms");
 define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT'] . "/");
-define('UPLOADS_ROOT', DOCUMENT_ROOT . "uploads/");
+define('UPLOADS_ROOT', DOCUMENT_ROOT . "tms/uploads/");
 
 //db constants
 define('DB_SERVER', 'localhost'); //please enter mysql server name
 define('DB_USERNAME', 'root'); // please enter mysql user name
-define('DB_PASSWORD', 'kWb24pEBdUj4uKOA'); // please enter mysql user password
+define('DB_PASSWORD', ''); // please enter mysql user password
 define('DB_DATABASE', 'kanhawhp_tms'); // please enter your database name
-// smtp mail
+
+// smtp gmail
 //define('SMTP_EMAIL_USER', 'chrisgilesitworks@gmail.com');
 //define('SMTP_EMAIL_PASSWORD', 'kanha@tmschris');
+//define('SMTP_EMAIL_USER', 'tms.kanhasoft@gmail.com');
 define('SMTP_EMAIL_USER', 'tms.kanhasoft@gmail.com');
-define('SMTP_EMAIL_PASSWORD', 'yizzlgrzyojjghmy'); // tms@anil567kanha
+define('SMTP_EMAIL_PASSWORD', 'qaht sbfd mhkv xana'); // tms@anil567kanha
 // mailJET
 define('EMAIL_API_KEY', '4d5ded6fff23e16a88fc58f0f6d9667c');
 define('EMAIL_SECRETE_KEY', 'b1168bedb467db13e3973f27567b7259');
-define('SMTP_FROM_NAME','TMS');
-define('SMTP_FROM_EMAIL','tms.kanhasoft@gmail.com');
+define('SMTP_FROM_NAME','SpellUp');
+define('SMTP_FROM_EMAIL','tms@spellup.no');
+define('ACTIVATION_URL', SITE_URL); // Email activation
 
 define('DB_PREFIX', 'tms_');
 define('LOGOUT_TIME', 1800);
