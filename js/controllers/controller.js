@@ -2836,7 +2836,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         val.pm_name = val.sub_pm_name
                     }
                     
-                    var currenciesClnt = val.client_currency.split(',')[0];
+                    var currenciesClnt = val.client_currency?.split(',')[0];
                     val.price_currency = currenciesClnt ? currenciesClnt : 'EUR';
                 
                     // Comment read unRead
@@ -3263,7 +3263,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // };
     // $scope.jobstatusRecord('all');
 
-
+    
     $scope.goTojobsList = function (jobStatus, count) {
         if (count == 0) {
             notification("Nothing jobs available in " + jobStatus + ".", "warning");
@@ -3761,95 +3761,108 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('#rightMenu').fadeToggle();
     }
 
-    angular.element('#holidaysLoading').css('dispaly', 'block');
-    $scope.countryHolidayGet = function () {
-        //$scope.countryListHoliday = country;
-        $scope.countryListHoliday = ['norway', 'sweden', 'denmark', 'finland'];
-        //National Holiay List current date to higher date get
-        var currentYear = new Date().getFullYear();
 
-        var upcomming = [];
-        var ongoing = [];
+    $scope.isoverviewsection = false
+    $scope.isHolidayApiCall = false
 
-        angular.forEach($scope.countryListHoliday, function (val, i) {
-            rest.path = "holidayGet/" + val;
-            rest.get().success(function (data) {
-                angular.forEach(data, function (val, i) {
-                    var currentDate = new Date;
-                    var holiday = new Date(val[0] + ' ' + currentYear);
+    $scope.overviewsesctionTab = function(){
 
-                    if (currentDate <= holiday) {
-                        var dayMon = val[0].split(' ');
-                        var fullDate = dayMon[1] + ' ' + dayMon[0] + ' ' + currentYear;
-                        upcomming.push({
-                            'date': fullDate,
-                            'holidayName': val[2],
-                            'holidayStatus': val[3]
+        $scope.isoverviewsection = !$scope.isoverviewsection;
+
+        angular.element('#holidaysLoading').css('dispaly', 'block');
+        $scope.countryHolidayGet = function () {
+            //$scope.countryListHoliday = country;
+            $scope.countryListHoliday = ['norway', 'sweden', 'denmark', 'finland'];
+            //National Holiay List current date to higher date get
+            var currentYear = new Date().getFullYear();
+
+            var upcomming = [];
+            var ongoing = [];
+
+            if($scope.isHolidayApiCall == false){
+                $scope.isHolidayApiCall = true;
+                angular.forEach($scope.countryListHoliday, function (val, i) {
+                    rest.path = "holidayGet/" + val;
+                    rest.get().success(function (data) {
+                        angular.forEach(data, function (val, i) {
+                            var currentDate = new Date;
+                            var holiday = new Date(val[0] + ' ' + currentYear);
+
+                            if (currentDate <= holiday) {
+                                var dayMon = val[0].split(' ');
+                                var fullDate = dayMon[1] + ' ' + dayMon[0] + ' ' + currentYear;
+                                upcomming.push({
+                                    'date': fullDate,
+                                    'holidayName': val[2],
+                                    'holidayStatus': val[3]
+                                });
+                            } else {
+                                var dayMon = val[0].split(' ');
+                                var fullDate = dayMon[1] + ' ' + dayMon[0] + ' ' + currentYear;
+                                if (val[0]) {
+                                    ongoing.push({
+                                        'date': fullDate,
+                                        'holidayName': val[2],
+                                        'holidayStatus': val[3]
+                                    });
+                                }
+                            }
                         });
-                    } else {
-                        var dayMon = val[0].split(' ');
-                        var fullDate = dayMon[1] + ' ' + dayMon[0] + ' ' + currentYear;
-                        if (val[0]) {
-                            ongoing.push({
-                                'date': fullDate,
-                                'holidayName': val[2],
-                                'holidayStatus': val[3]
-                            });
-                        }
-                    }
-                });
 
-                $scope.upcommingList = upcomming;
-                $scope.ongoingList = ongoing.reverse();
-                $scope.upLength = $scope.upcommingList.length;
-                $scope.onLength = $scope.ongoingList.length;
-            }).error(errorCallback);
-            
-        })
-        //return false;
-    }
-    if ($cookieStore.get('session_iUserId') != undefined) {
-        $scope.countryHolidayGet();
-    }
-    $timeout(function () {
-        $('#holidaysLoading').addClass('hide');
-    }, 200);
-    /*if (!$cookieStore.get('session_holidayCountry')) {
-        $scope.country = "Bulgaria";
-        $scope.countryListHoliday.push({ 'Cname': $scope.country });
-        $scope.countryHolidayGet("Bulgaria");
-    } else {
-        $scope.countryHolidayGet(JSON.parse($cookieStore.get('session_holidayCountry')));
-    }*/
-
-    //holiday Status wise show
-    $scope.holidayStatus = function (status) {
-        if (status == "Upcoming") {
-            $timeout(function () {
-                angular.element('.holidayTab2').removeClass('holidayTabActive');
-                angular.element('.holidayTab1').addClass('holidayTabActive');
-            }, 100);
-            $scope.holidayShow = false;
-        } else {
-            angular.element('.holidayTab2').addClass('holidayTabActive');
-            angular.element('.holidayTab1').removeClass('holidayTabActive');
-            $scope.holidayShow = true;
+                        $scope.upcommingList = upcomming;
+                        $scope.ongoingList = ongoing.reverse();
+                        $scope.upLength = $scope.upcommingList.length;
+                        $scope.onLength = $scope.ongoingList.length;
+                    }).error(errorCallback);
+                    
+                })
+            }
+            //return false;
         }
-    }
+        if ($cookieStore.get('session_iUserId') != undefined) {
+            $scope.countryHolidayGet();
+        }
+        $timeout(function () {
+            $('#holidaysLoading').addClass('hide');
+        }, 200);
+        /*if (!$cookieStore.get('session_holidayCountry')) {
+            $scope.country = "Bulgaria";
+            $scope.countryListHoliday.push({ 'Cname': $scope.country });
+            $scope.countryHolidayGet("Bulgaria");
+        } else {
+            $scope.countryHolidayGet(JSON.parse($cookieStore.get('session_holidayCountry')));
+        }*/
 
-    $scope.holidayStatus("Upcoming");
+        //holiday Status wise show
+        $scope.holidayStatus = function (status) {
+            if (status == "Upcoming") {
+                $timeout(function () {
+                    angular.element('.holidayTab2').removeClass('holidayTabActive');
+                    angular.element('.holidayTab1').addClass('holidayTabActive');
+                }, 100);
+                $scope.holidayShow = false;
+            } else {
+                angular.element('.holidayTab2').addClass('holidayTabActive');
+                angular.element('.holidayTab1').removeClass('holidayTabActive');
+                $scope.holidayShow = true;
+            }
+        }
 
-    // widget Absent Linguist
-    /* function selectWeek(date) {
-        return Array(7).fill(new Date(date)).map((el, idx) => 
-            new Date(el.setDate(el.getDate() - el.getDay() + idx)).toISOString().split('T')[0] )
-    } */
-    const up7Days = [...Array(7).keys()].map(index => {
-        const date = new Date();
-        date.setDate(date.getDate() + index);
-        return date.toISOString().split('T')[0];
-    });
+        $scope.holidayStatus("Upcoming");
 
+        // widget Absent Linguist
+        /* function selectWeek(date) {
+            return Array(7).fill(new Date(date)).map((el, idx) => 
+                new Date(el.setDate(el.getDate() - el.getDay() + idx)).toISOString().split('T')[0] )
+        } */
+        const up7Days = [...Array(7).keys()].map(index => {
+            const date = new Date();
+            date.setDate(date.getDate() + index);
+            return date.toISOString().split('T')[0];
+        });
+
+    }    
+    
     $scope.absentLinguistlist = function () {
         if ($cookieStore.get('session_iUserId') != undefined) {
             rest.path = 'user/' + 2;
@@ -3907,27 +3920,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             }
         });
+
+
+        //setTimeout(() => {
+            //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
+            const currentDatestr = new Date();
+            const currentDate = currentDatestr.toISOString().split('T')[0];
+    
+            if ($scope.vResourcePosition == 2) {
+                $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId"));
+                //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
+            }
+            if ($scope.vResourcePosition == 3) {
+                $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_coordinator_id == $window.localStorage.getItem("session_iUserId"));
+                //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
+            }
+            if ($scope.vResourcePosition == 4) {
+                $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId"));
+                //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
+            }
+            
+        //}, 1500);
+
     }
 
-    setTimeout(() => {
-        //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
-        const currentDatestr = new Date();
-        const currentDate = currentDatestr.toISOString().split('T')[0];
-
-        if ($scope.vResourcePosition == 2) {
-            $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId"));
-            //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
-        }
-        if ($scope.vResourcePosition == 3) {
-            $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_coordinator_id == $window.localStorage.getItem("session_iUserId"));
-            //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.project_coordinator_id == $window.localStorage.getItem("session_iUserId") );
-        }
-        if ($scope.vResourcePosition == 4) {
-            $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.qa_specialist_id == $window.localStorage.getItem("session_iUserId"));
-            //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.qa_specialist_id == $window.localStorage.getItem("session_iUserId") );
-        }
-        
-    }, 1500);
+    
 
     $scope.jobDiscussion = (orderId) => {
         $location.path('discussion/' + orderId);
