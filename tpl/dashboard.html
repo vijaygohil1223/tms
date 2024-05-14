@@ -50,6 +50,9 @@ td { font-size: 11px; } */
     right: 5px;
     top: 5px;
   }
+  .projecttable .dataTables_filter {
+    display: none;
+  }
 
   .projecttable .tab-content .dataTables_info {
     padding-left: 15px;
@@ -397,6 +400,14 @@ td { font-size: 11px; } */
     padding: 3px 10px !important;
   }
 
+  .customsearchbox {
+    width: 200px;
+    height: 35px;
+    font-size: 13px;
+    border-radius: 19px;
+    margin-left: 10px;
+  }
+  
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
     .sidenav {
@@ -495,33 +506,42 @@ td { font-size: 11px; } */
                         <span class="badge bg-info">{{myTabs.projectScoopCount}}</span>
                       </tab-heading>
                       <div class="table-responsive">
-                        <table class="table table-striped" datatable="ng" dt-options="dtOptions">
+                        <div>
+                          <div class="col-sm-4">
+                            <input type="search" class="form-control customsearchbox" id="scoopsearch"
+                              ng-model="searchText" placeholder="Search..." ng-change="handleSearchInput(searchText)">
+                          </div>
+                        </div>
+                        <table class="table table-striped" >
+                          <!-- <table class="table table-striped" datatable="ng" dt-options="dtOptions"> -->
                           <thead>
                             <th>#</th>
-                            <th>Project Number</th>
-                            <th>Customer</th>
+                            <th ng-click="sortBy('order_no')">Project Number</th>
+                            <th ng-click="sortBy('clientName')" ng-class="getClass('clientName')">Customer</th>
                             <!-- <th>Account</th> -->
-                            <th>Languages</th>
-                            <th ng-click="sortBy(myTabs, 'itemPonumber')">PO Number</th>
+                            <th >Languages</th>
+                            <th ng-click="sortBy('po_number')" ng-class="getClass('po_number')">PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th style="white-space: nowrap">QA Specialist</th>
-                            <th>Job</th>
+                            <th ng-click="sortBy('attached_workflow')">Job</th>
                             <th>Linguist</th>
                             <!-- <th>Heads Up</th> -->
                             <th>Comment</th>
-                            <th>Deadline</th>
+                            <th ng-click="sortBy('deadline')">Deadline</th>
                             <!-- <th>Progress</th> -->
                             <!-- <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th> -->
                             <th
-                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1">
+                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1" >
                               Status</th>
-                            <th>Price</th>
+                            <th ng-click="sortBy('total_price')">Price</th>
                             <!-- <th>PO Number</th> -->
                             <!-- <th>Action</th> -->
                             <th class="none">Scoop Name</th>
                             <th class="none">Email Subject</th>
                           </thead>
                           <tbody>
+                            
+                            <!-- <tr ng-repeat="order in myTabs.projectScoopData | orderBy:sortByField:reverse "> -->
                             <tr ng-repeat="order in myTabs.projectScoopData | orderBy:tab.sortColumn:tab.sortOrder">
                               <td>
                                 <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)"
@@ -726,8 +746,7 @@ td { font-size: 11px; } */
                                 <div class="pagination pull-right">
                                   <uib-pagination class="pagination-sm pagination" total-items="totalItems"
                                     ng-model="currentPage" ng-change="dashboardScoopLoad(currentPage)"
-                                    previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page="itemsPerPage"
-                                    >
+                                    previous-text="&lsaquo;" next-text="&rsaquo;" items-per-page="itemsPerPage">
                                   </uib-pagination>
                                 </div>
                               </td>

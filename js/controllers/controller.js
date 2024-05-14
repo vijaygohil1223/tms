@@ -2236,21 +2236,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     // Call the async function and log the sorted data
 
-    $scope.sortBy = function(tab, column) {
-        console.log('column', column)
-        console.log('tab', tab)
-        if (tab.sortColumn === column) {
-          // If already sorting by this column, reverse the order
-          tab.sortOrder = !tab.sortOrder;
-        } else {
-          // Otherwise, sort by the new column in ascending order
-          tab.sortColumn = column;
-          tab.sortOrder = false;
-        }
-      };
-      
-      
-
+    
     $scope.fillDashboardTabFn = function(index, scoopArr, scoopCount){
         console.log('scoopArr', scoopArr)
         $scope.dashboardTabList[index].projectScoopData = scoopArr
@@ -2715,60 +2701,61 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (response) {
         console.log('data-datacount=>', response)
 
-        angular.forEach($scope.dashboardTabList, function (itm, i) {
-            if(itm.tabClassName == 'tab-due-today'){
-                itm.projectScoopCount = response.dueToday || 0
-            }
-            if(itm.tabClassName == 'tab-due-tomorrow'){
-                itm.projectScoopCount = response.dueTomorrow || 0
-            }
-            if(itm.tabClassName == 'tab-all'){
-                itm.projectScoopCount = response.tabAll || 0
-            }
-            if(itm.tabClassName == 'tab-assigned'){
-                var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
-                itm.projectScoopCount = asigncount?.totalItems || 0
-            }
-            if(itm.tabClassName == 'tab-ongoing'){
-                var onGoingcount = response.tabStatus.find( (val) => val.item_status == 2 );
-                itm.projectScoopCount = onGoingcount?.totalItems || 0 
-            }
-            if(itm.tabClassName == 'tab-qa-ready'){
-                var tQa = response.tabStatus.find( (val) => val.item_status == 10 );
-                itm.projectScoopCount = tQa?.totalItems || 0
-            }
-            if(itm.tabClassName == 'tab-qa-issue'){
-                var tQaissue = response.tabStatus.find( (val) => val.item_status == 13 );
-                itm.projectScoopCount = tQaissue?.totalItems || 0
-            }
-            if(itm.tabClassName == 'tab-pm-ready'){
-                var tPmready = response.tabStatus.find( (val) => val.item_status == 12 );
-                itm.projectScoopCount = tPmready?.totalItems || 0
-            }
-            if(itm.tabClassName == 'tab-to-be-delivered'){
-                var tTobDel = response.tabStatus.find( (val) => val.item_status == 3 );
-                itm.projectScoopCount = tTobDel?.totalItems || 0
-            }
-            if(itm.tabClassName == 'tab-completed'){
-                var tComp = response.tabStatus.find( (val) => val.item_status == 4 );
-                itm.projectScoopCount = tComp?.totalItems || 0
-            }
-            if(itm.tabClassName == 'tab-overdue'){
-                var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
-                itm.projectScoopCount = tTobDel?.totalItems || 0
-            }
-            if(itm.tabClassName == 'tab-my-projects'){
-                var tmyProj = response.tabStatus.find( (val) => val.item_status == 3 );
-                itm.projectScoopCount = tmyProj?.totalItems || 0
-            }
-            if(itm.tabClassName == 'tab-my-upcoming'){
-                itm.projectScoopCount = response.upcommingProj || 0
-            }
-            if(itm.tabClassName == 'tab-approved'){
-                var tmyProj = response.tabStatus.find( (val) => val.item_status == 5 );
-                itm.projectScoopCount = response.approved || 0
-            }
-        })
+        if(response){
+            angular.forEach($scope.dashboardTabList, function (itm, i) {
+                if(itm.tabClassName == 'tab-due-today'){
+                    itm.projectScoopCount = response.dueToday || 0
+                }
+                if(itm.tabClassName == 'tab-due-tomorrow'){
+                    itm.projectScoopCount = response.dueTomorrow || 0
+                }
+                if(itm.tabClassName == 'tab-all'){
+                    itm.projectScoopCount = response.tabAll || 0
+                }
+                if(itm.tabClassName == 'tab-assigned'){
+                    var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
+                    itm.projectScoopCount = asigncount?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-ongoing'){
+                    itm.projectScoopCount = response.ongoing || 0
+                }
+                if(itm.tabClassName == 'tab-qa-ready'){
+                    var tQa = response.tabStatus.find( (val) => val.item_status == 10 );
+                    itm.projectScoopCount = tQa?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-qa-issue'){
+                    var tQaissue = response.tabStatus.find( (val) => val.item_status == 13 );
+                    itm.projectScoopCount = tQaissue?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-pm-ready'){
+                    var tPmready = response.tabStatus.find( (val) => val.item_status == 12 );
+                    itm.projectScoopCount = tPmready?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-to-be-delivered'){
+                    var tTobDel = response.tabStatus.find( (val) => val.item_status == 3 );
+                    itm.projectScoopCount = tTobDel?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-completed'){
+                    var tComp = response.tabStatus.find( (val) => val.item_status == 4 );
+                    itm.projectScoopCount = tComp?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-overdue'){
+                    var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
+                    itm.projectScoopCount = response.overdue
+                }
+                if(itm.tabClassName == 'tab-my-projects'){
+                    itm.projectScoopCount = response?.myProject || 0
+                }
+                if(itm.tabClassName == 'tab-my-upcoming'){
+                    itm.projectScoopCount = response.upcomming || 0
+                }
+                if(itm.tabClassName == 'tab-approved'){
+                    var tmyProj = response.tabStatus.find( (val) => val.item_status == 5 );
+                    itm.projectScoopCount = response.approved || 0
+                }
+            })
+        }
+
     });
 
     function findIndexByTabClassName(tabClassName) {
@@ -2798,10 +2785,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if($scope.tabName && $scope.tabName!=''){
             urlString += '&tabName=' + $scope.tabName
         }
+        console.log('$scope.searchText', $scope.searchText)
+            
         if($scope.searchText && $scope.searchText!=''){
             urlString += '&search=' + $scope.searchText
             console.log('urlString', urlString)
         }
+        if($scope.sortByFieldName && $scope.sortByFieldName != ''){
+            const sortOrderBy = $scope.sortOrder ? 'DESC' : 'ASC'
+            urlString += '&sortBy=' + $scope.sortByFieldName
+            urlString += '&sortOrder=' + sortOrderBy
+        }
+        
         rest.path = 'dashboardProjectsOrderScoopGet/' + $window.localStorage.getItem("session_iUserId") + '?' + urlString;
         rest.get().success(function (response) {
             console.log('response', response)
@@ -2890,30 +2885,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Function to filter data based on search criteria
     $scope.filterData = function () {
         $scope.filteredLangsList = $filter('filter')($scope.langsList, $scope.searchText);
-        console.log('$scope.filteredLangsList', $scope.filteredLangsList)
+        //console.log('$scope.filteredLangsList', $scope.filteredLangsList)
     };
     // Function to handle search input changes
-    $scope.handleSearchInput = function () {
-        $scope.dashboardScoopLoad(); // Reload data when search criteria change
-    };
-
-    if($window.localStorage.getItem("projectActiveTab") ){
+    $scope.handleSearchInput = function (searchText) {
+        $scope.searchText = searchText;
+        //$('.tab-pane.active input').val()
         $scope.tabName = $window.localStorage.getItem("projectActiveTab")
         var tabIndex = findIndexByTabClassName($scope.tabName);
         $scope.dashboardScoopLoad(1, tabIndex);
-        setTimeout(() => {
-            angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
-        }, 200);
-        
-    }else{
-        $scope.dashboardScoopLoad(1);
+    };
+
+    $scope.activeTabfn = function(){
+        if($window.localStorage.getItem("projectActiveTab") ){
+            $scope.tabName = $window.localStorage.getItem("projectActiveTab")
+            console.log('$scope.tabName========>', $scope.tabName)
+            var tabIndex = findIndexByTabClassName($scope.tabName);
+            $scope.dashboardScoopLoad(1, tabIndex);
+            setTimeout(() => {
+                angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
+            }, 200);
+            
+        }else{
+            var tabIndex = findIndexByTabClassName('tab-due-today');
+            console.log('tabIndex====>', tabIndex)
+            $scope.tabName = 'tab-due-today';
+            $scope.dashboardScoopLoad(1,tabIndex);
+        }
     }
+    $scope.activeTabfn();
 
     $scope.changeProjectTabs2 = function(className, tabIndex){
-        console.log('tabIndex===called', tabIndex)
         $scope.tabName = className;
         $window.localStorage.setItem("projectActiveTab", className);
         $scope.dashboardScoopLoad(1, tabIndex, className);
+        $scope.searchText = '';
         // $scope.fillDashboardTabFn__ = function(index, scoopArr, scoopCount){
         //     $scope.dashboardTabList[index].projectScoopData = scoopArr
         //     $scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
@@ -2928,6 +2934,49 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $window.localStorage.setItem("projectActiveTab", '');
     }
 
+    $scope.reverse = false;
+    $scope.sortByFieldName = '';
+    $scope.sortOrder = '';
+    $scope.sortBy = function (fieldName) {
+        if(fieldName){
+            console.log('fieldName', fieldName)
+            if ($scope.sortByField === fieldName) {
+                $scope.reverse = !$scope.reverse;
+                console.log('$scope.reverse', $scope.reverse)
+            } else {
+                $scope.sortByField = fieldName;
+                $scope.reverse = false;
+                console.log('$scope.reverse', $scope.reverse)
+            }
+            $scope.sortByFieldName = fieldName 
+            $scope.sortOrder = $scope.reverse 
+            $scope.activeTabfn()
+        }
+    };
+    $scope.getClass = function (fieldName) {
+        return {
+            'scoopascdesc fa fa-caret-up': $scope.sortByFieldName === fieldName && !$scope.reverse,
+            'scoopascdesc fa fa-caret-down': $scope.sortByFieldName === fieldName && $scope.reverse
+        };
+    };
+
+    // $scope.customSort = function (person) {
+    //     console.log('person', person)
+    //     var fieldValue = person[$scope.sortByField];
+    //     return $scope.reverse ? -fieldValue : fieldValue;
+    // };
+    // $scope.sortBy = function(tab, column) {
+    //     console.log('column', column)
+    //     console.log('tab', tab)
+    //     if (tab.sortColumn === column) {
+    //       // If already sorting by this column, reverse the order
+    //       tab.sortOrder = !tab.sortOrder;
+    //     } else {
+    //       // Otherwise, sort by the new column in ascending order
+    //       tab.sortColumn = column;
+    //       tab.sortOrder = false;
+    //     }
+    // };
 
 
     $scope.checkedIds = [];
