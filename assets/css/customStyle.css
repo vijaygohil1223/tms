@@ -1276,3 +1276,6 @@ Scroll Tabs css */
 .tab-pane table{
   padding-top: 16px;
 }
+.pageentry label{
+  display: flex;
+}
