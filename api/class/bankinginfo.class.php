@@ -23,16 +23,17 @@ class bankinginfo {
     }
 
     public function save($data) {
-        $this->_db->where('bank_code',$data['bank_code']);
-        $exists = $this->_db->getOne('tms_banking_info');
-        if($exists){
-            $return['status'] = 422;
-            $return['msg'] = 'Currency already exists.';
-        }else{
+        // $this->_db->where('bank_code',$data['bank_code']);
+        // $exists = $this->_db->getOne('tms_banking_info');
+        // if($exists){
+        //     $return['status'] = 422;
+        //     $return['msg'] = 'Currency already exists.';
+        // }else{
 
             $data['created_date'] = date('Y-m-d H:i:s');
             $data['updated_date'] = date('Y-m-d H:i:s');
-            unset($data['curDef']);
+            if(isset($data['curDef']))    
+                unset($data['curDef']);
             $id = $this->_db->insert('tms_banking_info', $data);
             if ($id) {
                 $return['status'] = 200;
@@ -41,28 +42,30 @@ class bankinginfo {
                 $return['status'] = 422;
                 $return['msg'] = 'Not inserted.';
             }
-        }
+        //}
         return $return;
     }
 
     public function update($id, $data) {
-        $this->_db->where('bank_code',$data['bank_code']);
-        $exists = $this->_db->getOne('tms_banking_info');
-        if($exists && $exists['bank_id'] != $id){
-            $return['status'] = 422;
-            $return['msg'] = 'Currency already exists.';
-        }else{
-            $data['updated_date'] = date('Y-m-d H:i:s');
-            $this->_db->where('bank_id', $id);
-            $id = $this->_db->update('tms_banking_info', $data);
+        // $this->_db->where('bank_code',$data['bank_code']);
+        // $exists = $this->_db->getOne('tms_banking_info');
+        // if($exists && $exists['bank_id'] != $id){
+        //     $return['status'] = 422;
+        //     $return['msg'] = 'Currency already exists.';
+        // }else{
             if ($id) {
-                $return['status'] = 200;
-                $return['msg'] = 'Insert Successfully.';
+                $data['updated_date'] = date('Y-m-d H:i:s');
+                $this->_db->where('bank_id', $id);
+                
+                $id = $this->_db->update('tms_banking_info', $data);
+                
+                $return['status'] = $id ? 200 : 422;
+                $return['msg'] = $id ? 'Insert Successfully.' : 'Not inserted.';
             } else {
                 $return['status'] = 422;
                 $return['msg'] = 'Not inserted.';
             }
-        }
+        //}
         return $return;
     }
 

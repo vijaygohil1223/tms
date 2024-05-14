@@ -70,6 +70,162 @@ class dashboard {
         return $data;
     }
 
+    public function projectsOrderCount($id) {
+        $data = [];
+        $qry = "SELECT tis.item_status_name, its.item_status ,COUNT(*) AS totalItems FROM tms_items as its LEFT JOIN tms_item_status as tis ON tis.item_status_id = its.item_status GROUP BY its.item_status";
+        $data1 = $this->_db->rawQuery($qry);
+        if($data1){
+            $data['tabStatus'] = $data1;
+        }
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items WHERE item_status NOT IN (1,4,5,6,7,8,9,14) ";
+        $dataOn = $this->_db->rawQuery($qry);
+        if($dataOn){
+            $data['ongoing'] = $dataOn[0]['totalItems'];
+        }
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items its LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id WHERE (cust.project_manager = $id || cust.project_coordinator = $id || cust.QA_specialist = $id || cust.project_coordinator = $id || cust.sub_pm = $id) AND its.item_status NOT IN (4,5,6,7,8,9) ";
+        $dataMyProj = $this->_db->rawQuery($qry);
+        if($dataMyProj){
+            $data['myProject'] = $dataMyProj[0]['totalItems'];
+        }
+        
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items WHERE DATE(due_date) = CURDATE() AND item_status  NOT IN (4, 5, 6, 8, 9) ";
+        $data2 = $this->_db->rawQuery($qry);
+        if($data2){
+            $data['dueToday'] = $data2[0]['totalItems'];
+        }
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items WHERE DATE(due_date) = CURDATE() + INTERVAL 1 DAY AND item_status  NOT IN (4, 5, 6, 8, 9) ";
+        $data3 = $this->_db->rawQuery($qry);
+        if($data3){
+            $data['dueTomorrow'] = $data3[0]['totalItems'];
+        }
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items WHERE DATE(due_date) = CURDATE() + INTERVAL 1 DAY AND item_status  NOT IN (4, 5, 6, 8, 9) ";
+        $dataOd = $this->_db->rawQuery($qry);
+        if($dataOd){
+            $data['overDue'] = $dataOd[0]['totalItems'];
+        }
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items WHERE DATE(due_date) > CURDATE() + INTERVAL 1 DAY AND item_status NOT IN (4, 5, 6, 8, 9) ";
+        $dataUp = $this->_db->rawQuery($qry);
+        if($dataUp){
+            $data['upcomming'] = $dataUp[0]['totalItems'];
+        }
+
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items";
+        $data4 = $this->_db->rawQuery($qry);
+        if($data4){
+            $data['tabAll'] = $data4[0]['totalItems'];
+        }
+        return $data;
+    }
+
+    public function projectsOrderScoopGet($id) {
+        
+        $perPage = isset($_GET['perPage']) ? intval($_GET['perPage']) : 10;
+        $currentPage = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $offset = ($currentPage - 1) * $perPage;
+        $whereCond = '';
+        
+        $tabName = isset($_GET['tabName']) ? $_GET['tabName'] : '';
+        if($tabName != ''){
+            //$statusId = 1;
+            if($tabName == 'tab-assigned'){
+                $statusId = 1;
+            }
+            
+            if($tabName == 'tab-qa-ready'){
+                $statusId = 10;
+            }
+            if($tabName == 'tab-qa-issue'){
+                $statusId = 13;
+            }
+            if($tabName == 'tab-pm-ready'){
+                $statusId = 12;
+            }
+            if($tabName == 'tab-to-be-delivered'){
+                $statusId = 3;
+            }
+            if($tabName == 'tab-completed'){
+                $statusId = 4;
+            }
+            
+            if($tabName == 'tab-approved'){
+                $statusId = 5;
+            }
+            if(isset($statusId)){
+                $whereCond = " AND its.item_status = $statusId ";
+            }
+            if($tabName == 'tab-ongoing'){
+                $whereCond = " AND its.item_status NOT IN (1,4,5,6,7,8,9,14) ";
+            }
+            //
+            if($tabName == 'tab-due-today'){
+                $whereCond = " AND DATE(its.due_date) = CURDATE() AND its.item_status NOT IN (4, 5, 6, 8, 9) ";
+            }
+            if($tabName == 'tab-due-tomorrow'){
+                $whereCond = " AND DATE(its.due_date) = CURDATE() + INTERVAL 1 DAY AND its.item_status NOT IN (4, 5, 6, 8, 9) ";
+            }
+            if($tabName == 'tab-all'){
+                //$whereCond = " ";
+            }
+            if($tabName == 'tab-overdue'){
+                $whereCond = " AND DATE(its.due_date) < CURDATE() AND its.item_status NOT IN (4, 5, 6, 8, 9)";
+            }
+            if($tabName == 'tab-my-upcoming'){
+                $whereCond = " AND DATE(its.due_date) > CURDATE() + INTERVAL 1 DAY AND its.item_status NOT IN (4, 5, 6, 8, 9)";
+            }
+            if($tabName == 'tab-my-projects'){
+                $whereCond = " AND (cust.project_manager = $id || cust.project_coordinator = $id || cust.QA_specialist = $id || cust.project_coordinator = $id || cust.sub_pm = $id) AND its.item_status NOT IN (4,5,6,7,8,9)  ";
+                //$whereCond = " AND (its.project_manager_id = $id OR its.project_coordinator_id = $id OR its.qa_specialist_id = $id OR its.qa_specialist_id = $id OR its.sub_pm_id = $id  ) ";
+            }
+            //$currentPage = 0;
+        }
+
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+        if($search != ''){
+            $sLang = "its.source_lang LIKE '%\"sourceLang\":\"$search\"%' ";
+            $tLang = "its.target_lang LIKE '%\"sourceLang\":\"$search\"%' ";
+            $clientName = " OR c.vUserName LIKE '%$search%' ";
+            $attached_workflow = " OR its.attached_workflow LIKE '%$search%' ";
+            $scoopName = "OR its.item_name"; 
+            $scoopEmailSubject = "OR its.item_email_subject"; 
+
+            $whereCond = " AND its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject ";
+            $currentPage = 0;
+        }
+
+        $sortBy = ' its.itemId  DESC';
+        if(isset($_GET['sortBy']) && $_GET['sortBy']!=''){
+            $sortBy = $_GET['sortBy'];
+            if($_GET['sortBy'] == 'clientName')
+                $sortBy = 'c.vUserName';
+                
+            if($_GET['sortBy'] == 'deadline')
+                $sortBy = 'DATE(its.due_date)';    
+            
+            $sortOrder = isset($_GET['sortOrder']) && $_GET['sortOrder'] != '' ? $_GET['sortOrder'] : 'ASC' ;
+            $sortBy = " $sortBy $sortOrder  ";
+        }
+
+        $qry = "SELECT its.itemId from tms_items as its LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId where its.order_id != 0  $whereCond  ";
+        $tCount = $this->_db->rawQuery($qry);
+        $totalCount = count($tCount);
+
+        $totalPages = ceil($totalCount / $perPage);
+        
+        //$qry = "SELECT * from tms_languages $whereCond limit $perPage offset $offset ";
+        $qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, its.subPm AS scoop_subPm_id, its.attached_workflow, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, plang.source_lang AS sourceLanguage, plang.target_lang AS targetLanguage, its.total_price AS totalAmount, its.item_name AS scoopName, its.item_email_subject AS itemEmailSubject, inc.vUserName AS accountname, tu.vUserName AS pm_name, CONCAT(tu.vFirstName, ' ', tu.vLastName) AS pm_fullName, CONCAT( sub_tu.vFirstName, ' ', sub_tu.vLastName ) AS sub_pm_name, CONCAT( sub_scp_tu.vFirstName, ' ', sub_scp_tu.vLastName ) AS sub_scoopPm_name, CONCAT(gen_Qa.vFirstName, ' ', gen_Qa.vLastName) AS gen_Qa_fullName, CONCAT(sub_gen_Qa.vFirstName, ' ', sub_gen_Qa.vLastName) AS gen_sub_Qa_fullName, CONCAT(scp_Qa.vFirstName, ' ', scp_Qa.vLastName) AS scp_Qa_fullName, CONCAT(sub_scp_Qa.vFirstName, ' ', sub_scp_Qa.vLastName) AS scp_sub_Qa_fullName, cust.project_coordinator AS project_coordinator_id, cust.project_manager AS project_manager_id, cust.QA_specialist AS qa_specialist_id, cust.sub_pm AS sub_pm_id, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, cp2.price_currency AS price_currency2, GROUP_CONCAT(DISTINCT(jsv.resources)) AS linguistId, GROUP_CONCAT( DISTINCT( CONCAT( jsv.vFirstName, ' ', jsv.vLastName ) ) ) AS linguistName, COUNT(td.id) AS comment_status, COUNT(td.id) AS comment_id FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON ( its.order_id = jsv.order_id AND its.item_number = jsv.item_id ) LEFT JOIN tms_discussion AS td ON ( td.order_id = its.order_id AND(NOT FIND_IN_SET('1', td.read_id)) ) WHERE its.order_id != 0 $whereCond GROUP BY its.itemId ORDER BY $sortBy limit $perPage offset $offset ";
+        $results = $this->_db->rawQuery($qry);
+        
+        // Prepare response
+        $results = array(
+            'totalItems' => $totalCount,
+            'totalPages' => $totalPages,
+            'currentPage' => $currentPage,
+            'data' => $results
+        );
+
+        return $results;
+    }
+
     public function searchProjectHeader($id) {
         //$qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, c.vlogo AS clientlogo, c.tPoInfo AS ponumber, gen.company_code AS companyCode, gen.project_price, gen.expected_start_date, cust.contact AS contactPerson, its.item_number, its.po_number AS itemPonumber, its.start_date AS itemStartdate, its.due_date AS itemDuedate, its.upcomingDate, its.source_lang AS itemsSourceLang, its.target_lang AS itemsTargetLang, its.price AS scoop_price, gen.project_status AS projectStatus, gen.project_type AS projectType, c.project_branch, plang.source_lang AS sourceLanguage, plang.target_lang AS targetLanguage, its.total_amount AS totalAmount, inc.vUserName AS accountname, tu.vUserName AS pm_name, CONCAT(tu.vFirstName, ' ', tu.vLastName) AS pm_fullName, sub_tu.vUserName AS sub_pm_name, cust.project_coordinator AS project_coordinator_id, cust.project_manager AS project_manager_id, cust.QA_specialist AS qa_specialist_id, cust.sub_pm AS sub_pm_id, ps.project_status_name AS projectstatus_name, ps.status_color AS projectstatus_color, tis.item_status_name AS itemStatus, tis.item_status_id AS itemStatusId, c.client_currency, cp.price_currency, cp2.price_currency AS price_currency2, GROUP_CONCAT(DISTINCT(jsv.resources)) AS linguistId, GROUP_CONCAT(DISTINCT(jsv.vUserName)) AS linguistName, COUNT(td.id) as comment_status, COUNT(td.id) as comment_id FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN ( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN ( SELECT tu.iUserId AS resources, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON ( its.order_id = jsv.order_id AND its.item_number = jsv.item_id ) LEFT JOIN tms_discussion AS td ON ( td.order_id = its.order_id AND ( NOT FIND_IN_SET('1', td.read_id)) ) WHERE its.order_id != 0 GROUP BY its.itemId ";
         $qry = "SELECT its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, gen.project_name AS projectName, gen.company_code AS companyCode, its.item_number, its.po_number AS itemPonumber FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id WHERE its.order_id != 0 ";

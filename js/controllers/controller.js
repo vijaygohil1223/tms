@@ -2236,22 +2236,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     // Call the async function and log the sorted data
 
-    $scope.sortBy = function(tab, column) {
-        console.log('column', column)
-        console.log('tab', tab)
-        if (tab.sortColumn === column) {
-          // If already sorting by this column, reverse the order
-          tab.sortOrder = !tab.sortOrder;
-        } else {
-          // Otherwise, sort by the new column in ascending order
-          tab.sortColumn = column;
-          tab.sortOrder = false;
-        }
-      };
-      
-      
-
+    
     $scope.fillDashboardTabFn = function(index, scoopArr, scoopCount){
+        console.log('scoopArr', scoopArr)
         $scope.dashboardTabList[index].projectScoopData = scoopArr
         $scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
     }
@@ -2480,7 +2467,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_color = '#ffea3c';
                     $scope.projectsAssigned.push(val);
                     $scope.projectsAssignedCount++;
-                    $scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
+                    //$scope.fillDashboardTabFn(1, $scope.projectsAssigned, $scope.projectsAssignedCount)
                 }
 
                 // To be Delivered - Delivery
@@ -2578,7 +2565,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.projectsQaready.push(val);
                         $scope.projectsQaReadyCount++;
 
-                        $scope.fillDashboardTabFn(3, $scope.projectsQaready, $scope.projectsQaReadyCount) 
+                        //$scope.fillDashboardTabFn(3, $scope.projectsQaready, $scope.projectsQaReadyCount) 
                     }
                     // // In Progress - Ongoing
                     // if (val.itemStatusId == "2"  && checkAllJobComplete==false)  {
@@ -2602,7 +2589,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.projectsInProgress.push(val);
                         $scope.projectsInprogressCount++;
 
-                        $scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
+                        //$scope.fillDashboardTabFn(2, $scope.projectsInProgress, $scope.projectsInprogressCount) 
                     }
                     // my Projects
                     if (val.project_manager_id == $scope.userLoginID || val.project_coordinator_id == $scope.userLoginID || val.qa_specialist_id == $scope.userLoginID || (val.sub_pm_id == $scope.userLoginID) ) {
@@ -2618,7 +2605,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.projectsPmready.push(val);
                     val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#f44237';
-                    $scope.fillDashboardTabFn(5, $scope.projectsPmready, $scope.projectsPmReadyCount) 
+                    //$scope.fillDashboardTabFn(5, $scope.projectsPmready, $scope.projectsPmReadyCount) 
                 }
                 // QA issue
                 if (val.itemStatusId == "13") {
@@ -2628,7 +2615,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     val.projectstatus_class = 'projectstatus_ready';
                     val.projectstatus_color = '#f44237';
 
-                    $scope.fillDashboardTabFn(4, $scope.projectsQaissue, $scope.projectsQaIssueCount) 
+                    //$scope.fillDashboardTabFn(4, $scope.projectsQaissue, $scope.projectsQaIssueCount) 
                 }
                 
                 // Overdue
@@ -2648,7 +2635,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if (dueDateCmp == $scope.dateToday  ) {
                         $scope.projectsDueToday.push(val);
                         $scope.projectsDueTodayCount++;
-                        $scope.fillDashboardTabFn(0, $scope.projectsDueToday, $scope.projectsDueTodayCount) 
+                        //$scope.fillDashboardTabFn(0, $scope.projectsDueToday, $scope.projectsDueTodayCount) 
                     }
                     if (dueDateCmp == TodayAfterNumberOfDays(new Date(), 1)   ) {
                         $scope.projectsDueTomorrow.push(val);
@@ -2687,7 +2674,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
 
     };
-    $scope.allProjectListing();
+    //$scope.allProjectListing();
     // Branch change (Norway-Bulgaria) call function again
     $scope.projectBranchchange = function (id) {
         $scope.projBranchChange = true;
@@ -2706,6 +2693,291 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.branchRefresh = function () {
         $route.reload();
     }
+
+    // $scope.dashboardTabList = [ 
+    //         { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 } 
+    //     ];
+    rest.path = "dashboardProjectsOrderCount/" + $window.localStorage.getItem("session_iUserId");
+    rest.get().success(function (response) {
+        console.log('data-datacount=>', response)
+
+        if(response){
+            angular.forEach($scope.dashboardTabList, function (itm, i) {
+                if(itm.tabClassName == 'tab-due-today'){
+                    itm.projectScoopCount = response.dueToday || 0
+                }
+                if(itm.tabClassName == 'tab-due-tomorrow'){
+                    itm.projectScoopCount = response.dueTomorrow || 0
+                }
+                if(itm.tabClassName == 'tab-all'){
+                    itm.projectScoopCount = response.tabAll || 0
+                }
+                if(itm.tabClassName == 'tab-assigned'){
+                    var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
+                    itm.projectScoopCount = asigncount?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-ongoing'){
+                    itm.projectScoopCount = response.ongoing || 0
+                }
+                if(itm.tabClassName == 'tab-qa-ready'){
+                    var tQa = response.tabStatus.find( (val) => val.item_status == 10 );
+                    itm.projectScoopCount = tQa?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-qa-issue'){
+                    var tQaissue = response.tabStatus.find( (val) => val.item_status == 13 );
+                    itm.projectScoopCount = tQaissue?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-pm-ready'){
+                    var tPmready = response.tabStatus.find( (val) => val.item_status == 12 );
+                    itm.projectScoopCount = tPmready?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-to-be-delivered'){
+                    var tTobDel = response.tabStatus.find( (val) => val.item_status == 3 );
+                    itm.projectScoopCount = tTobDel?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-completed'){
+                    var tComp = response.tabStatus.find( (val) => val.item_status == 4 );
+                    itm.projectScoopCount = tComp?.totalItems || 0
+                }
+                if(itm.tabClassName == 'tab-overdue'){
+                    var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
+                    itm.projectScoopCount = response.overdue
+                }
+                if(itm.tabClassName == 'tab-my-projects'){
+                    itm.projectScoopCount = response?.myProject || 0
+                }
+                if(itm.tabClassName == 'tab-my-upcoming'){
+                    itm.projectScoopCount = response.upcomming || 0
+                }
+                if(itm.tabClassName == 'tab-approved'){
+                    var tmyProj = response.tabStatus.find( (val) => val.item_status == 5 );
+                    itm.projectScoopCount = response.approved || 0
+                }
+            })
+        }
+
+    });
+
+    function findIndexByTabClassName(tabClassName) {
+        for (var i = 0; i < $scope.dashboardTabList.length; i++) {
+            if ($scope.dashboardTabList[i].tabClassName === tabClassName) {
+                return i; // Return the index if match found
+            }
+        }
+        return -1; // Return -1 if no match found
+    }
+    
+    // Usage example
+
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 50; // Number of items per page
+    $scope.totalItems = 0;
+    $scope.orderList = [];
+
+    $scope.dashboardScoopLoad  = function (page, tabIndex=0, newTabName) {
+        var projectScoopData = [];
+        console.log('newTabName', newTabName)
+        var assignOrderData = [];
+        var tabIndex = parseInt(tabIndex)
+        $scope.currentPage = page ? page : $scope.currentPage
+        
+        var urlString = 'page=' + $scope.currentPage + '&perPage=' + $scope.itemsPerPage;
+        if($scope.tabName && $scope.tabName!=''){
+            urlString += '&tabName=' + $scope.tabName
+        }
+        console.log('$scope.searchText', $scope.searchText)
+            
+        if($scope.searchText && $scope.searchText!=''){
+            urlString += '&search=' + $scope.searchText
+            console.log('urlString', urlString)
+        }
+        if($scope.sortByFieldName && $scope.sortByFieldName != ''){
+            const sortOrderBy = $scope.sortOrder ? 'DESC' : 'ASC'
+            urlString += '&sortBy=' + $scope.sortByFieldName
+            urlString += '&sortOrder=' + sortOrderBy
+        }
+        
+        rest.path = 'dashboardProjectsOrderScoopGet/' + $window.localStorage.getItem("session_iUserId") + '?' + urlString;
+        rest.get().success(function (response) {
+            console.log('response', response)
+            projectScoopData = response?.data
+            
+            //$scope.dashboardTabList[1].projectScoopData = response?.data
+            if(projectScoopData){
+                angular.forEach(projectScoopData, function (val, i) {
+                    val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
+                    val.qa_fullName = val.scp_sub_Qa_fullName ? val.scp_sub_Qa_fullName : val.scp_Qa_fullName ? val.scp_Qa_fullName : val.gen_sub_Qa_fullName ? val.gen_sub_Qa_fullName : val.gen_Qa_fullName 
+                    val.attached_workflow = val.attached_workflow.split('-').pop(); 
+                    
+                    var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
+                    if (val.itemsSourceLang) {
+                        projectScoopData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
+                    } else {
+                        projectScoopData[i].itemsSourceLang = newLangData;
+                    }
+                    if (val.itemsTargetLang) {
+                        projectScoopData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
+                    } else {
+                        projectScoopData[i].itemsTargetLang = newLangData;
+                    }
+                    
+                    //  ----linguist List----- / 
+                    val.jobLinguist = [];
+                    if(val.linguistName){
+                        let linguistId = (val.linguistId).toString().split(',');
+                        var lngstArr = [];
+                        (val.linguistName).split(',').forEach((ele,i) => {
+                            lngstArr.push( { resources: linguistId[i], vUserName: ele } )    
+                        });
+                        val.jobLinguist = lngstArr;
+                    }   
+                    
+                    if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
+                        val.pm_name = val.sub_pm_name
+                    }
+                    
+                    var currenciesClnt = val.client_currency.split(',')[0];
+                    val.price_currency = currenciesClnt ? currenciesClnt : 'EUR';
+                
+                    // Comment read unRead
+                    var cmtcolor = '#0190d8';
+                    var is_comment = 0;
+                    var comment_id = 0;
+                    // if (val.comment.length > 0) {
+                    //     var is_comment = scoopData[i].comment[0].comment_status;
+                    // }
+
+                    if (val.comment_status > 0) {
+                        cmtcolor = '#d30c39';
+                    }
+                    if (val.comment_status == 0) {
+                        cmtcolor = '#67bb0a';
+                    }
+                    val.comment = cmtcolor;
+
+                    //$scope.projectsAllCount++;
+                    val.projectstatus_class = 'projectstatus_common';
+                    val.projectstatus_color = '#8d9296';
+
+                })
+            }
+
+            //$scope.fillDashboardTabFn(parseInt(tabIndex), projectScoopData, response?.totalItems)    
+            angular.forEach($scope.dashboardTabList, function (itm, indx) {
+                if(itm.tabClassName == $scope.tabName){
+                    //itm.projectScoopData = projectScoopData;
+                    $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems)    
+                }
+            })
+            //$scope.dashboardTabList[1].projectScoopData = projectScoopData
+            $scope.totalItems = response.totalItems;
+            $scope.totalPages = response.totalPages;
+            //$scope.orderList = response.data;
+            //$scope.filterData();
+            $scope.showDataLoader = false;
+        }).catch(function(error) {
+            //console.error("Error loading HTML:", error);
+            $scope.showDataLoader = false;
+          });
+    
+    };
+
+    // Function to filter data based on search criteria
+    $scope.filterData = function () {
+        $scope.filteredLangsList = $filter('filter')($scope.langsList, $scope.searchText);
+        //console.log('$scope.filteredLangsList', $scope.filteredLangsList)
+    };
+    // Function to handle search input changes
+    $scope.handleSearchInput = function (searchText) {
+        $scope.searchText = searchText;
+        //$('.tab-pane.active input').val()
+        $scope.tabName = $window.localStorage.getItem("projectActiveTab")
+        var tabIndex = findIndexByTabClassName($scope.tabName);
+        $scope.dashboardScoopLoad(1, tabIndex);
+    };
+
+    $scope.activeTabfn = function(){
+        if($window.localStorage.getItem("projectActiveTab") ){
+            $scope.tabName = $window.localStorage.getItem("projectActiveTab")
+            console.log('$scope.tabName========>', $scope.tabName)
+            var tabIndex = findIndexByTabClassName($scope.tabName);
+            $scope.dashboardScoopLoad(1, tabIndex);
+            setTimeout(() => {
+                angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
+            }, 200);
+            
+        }else{
+            var tabIndex = findIndexByTabClassName('tab-due-today');
+            console.log('tabIndex====>', tabIndex)
+            $scope.tabName = 'tab-due-today';
+            $scope.dashboardScoopLoad(1,tabIndex);
+        }
+    }
+    $scope.activeTabfn();
+
+    $scope.changeProjectTabs2 = function(className, tabIndex){
+        $scope.tabName = className;
+        $window.localStorage.setItem("projectActiveTab", className);
+        $scope.dashboardScoopLoad(1, tabIndex, className);
+        $scope.searchText = '';
+        // $scope.fillDashboardTabFn__ = function(index, scoopArr, scoopCount){
+        //     $scope.dashboardTabList[index].projectScoopData = scoopArr
+        //     $scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
+        // }
+    }
+    $scope.lastProjectTabs = function(){
+        let projectActiveTab = $window.localStorage.getItem("projectActiveTab");
+        $scope.changeProjectTabs2(projectActiveTab);
+        if(!projectActiveTab || projectActiveTab != 'due-today' )
+            angular.element('.'+projectActiveTab+' > a ').triggerHandler('click');
+        else    
+            $window.localStorage.setItem("projectActiveTab", '');
+    }
+
+    $scope.reverse = false;
+    $scope.sortByFieldName = '';
+    $scope.sortOrder = '';
+    $scope.sortBy = function (fieldName) {
+        if(fieldName){
+            console.log('fieldName', fieldName)
+            if ($scope.sortByField === fieldName) {
+                $scope.reverse = !$scope.reverse;
+                console.log('$scope.reverse', $scope.reverse)
+            } else {
+                $scope.sortByField = fieldName;
+                $scope.reverse = false;
+                console.log('$scope.reverse', $scope.reverse)
+            }
+            $scope.sortByFieldName = fieldName 
+            $scope.sortOrder = $scope.reverse 
+            $scope.activeTabfn()
+        }
+    };
+    $scope.getClass = function (fieldName) {
+        return {
+            'scoopascdesc fa fa-caret-up': $scope.sortByFieldName === fieldName && !$scope.reverse,
+            'scoopascdesc fa fa-caret-down': $scope.sortByFieldName === fieldName && $scope.reverse
+        };
+    };
+
+    // $scope.customSort = function (person) {
+    //     console.log('person', person)
+    //     var fieldValue = person[$scope.sortByField];
+    //     return $scope.reverse ? -fieldValue : fieldValue;
+    // };
+    // $scope.sortBy = function(tab, column) {
+    //     console.log('column', column)
+    //     console.log('tab', tab)
+    //     if (tab.sortColumn === column) {
+    //       // If already sorting by this column, reverse the order
+    //       tab.sortOrder = !tab.sortOrder;
+    //     } else {
+    //       // Otherwise, sort by the new column in ascending order
+    //       tab.sortColumn = column;
+    //       tab.sortOrder = false;
+    //     }
+    // };
+
 
     $scope.checkedIds = [];
     // Remove Element from array
@@ -3758,15 +4030,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }, 500);
 
-    /*$scope.dtOptions = {
-      "pageLength"  : 100,
-      'dom': 'frtilp',
-      "oLanguage": {
-          "sSearch": ' _INPUT_' //search
-        },
-      'scrollX': true,  
-      'scrolly': true,  
-    };*/
     $scope.dtOptions = DTOptionsBuilder.newOptions().
         //withOption('scrollY', '100%').
         //withOption('scrollX', '100%').
