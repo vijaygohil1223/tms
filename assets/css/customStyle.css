@@ -1266,3 +1266,13 @@ Scroll Tabs css */
 .bootstrap-datetimepicker-widget table td, .bootstrap-datetimepicker-widget table td {
   text-align: center !important; 
 }
+
+
+.tab-pane{
+  position: relative;
+  top: -40px;
+}
+
+.tab-pane table{
+  padding-top: 16px;
+}
