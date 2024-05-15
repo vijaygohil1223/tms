@@ -88,7 +88,7 @@ class dashboard {
             $data['myProject'] = $dataMyProj[0]['totalItems'];
         }
         
-        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items WHERE DATE(due_date) = CURDATE() AND item_status  NOT IN (4, 5, 6, 8, 9) ";
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items WHERE DATE(due_date) = CURDATE() AND item_status NOT IN (4, 5, 6, 8, 9) ";
         $data2 = $this->_db->rawQuery($qry);
         if($data2){
             $data['dueToday'] = $data2[0]['totalItems'];
@@ -98,7 +98,7 @@ class dashboard {
         if($data3){
             $data['dueTomorrow'] = $data3[0]['totalItems'];
         }
-        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items WHERE DATE(due_date) = CURDATE() + INTERVAL 1 DAY AND item_status  NOT IN (4, 5, 6, 8, 9) ";
+        $qry = "SELECT COUNT(*) AS totalItems FROM tms_items as its WHERE DATE(its.due_date) < CURDATE() AND its.item_status NOT IN (4, 5, 6, 8, 9) ";
         $dataOd = $this->_db->rawQuery($qry);
         if($dataOd){
             $data['overDue'] = $dataOd[0]['totalItems'];
@@ -208,7 +208,7 @@ class dashboard {
         $qry = "SELECT its.itemId from tms_items as its LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId where its.order_id != 0  $whereCond  ";
         $tCount = $this->_db->rawQuery($qry);
         $totalCount = count($tCount);
-
+        
         $totalPages = ceil($totalCount / $perPage);
         
         //$qry = "SELECT * from tms_languages $whereCond limit $perPage offset $offset ";

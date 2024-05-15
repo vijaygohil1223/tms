@@ -1268,12 +1268,11 @@ Scroll Tabs css */
 }
 
 
-.tab-pane{
+.projecttable .tab-pane{
   position: relative;
   top: -40px;
 }
-
-.tab-pane table{
+.projecttable .tab-pane table{
   padding-top: 16px;
 }
 .pageentry label{
