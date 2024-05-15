@@ -979,6 +979,12 @@ td { font-size: 11px; } */
                     <div class="overview-list projecttable" ng-show="isoverviewJobs">
                       <div ng-show="n.tabName == jobstatusFilter" ng-repeat="n in jobsTabArr" id="jobtab_{{n.id}}"
                         class="table-responsive">
+                        <div>
+                          <div class="col-sm-4">
+                            <input type="search" class="form-control customsearchbox" id="jobsearch_{{n.id}}"
+                              ng-model="jobsearch" placeholder="Search..." ng-change="handleSearchInputjob(jobsearch)">
+                          </div>
+                        </div>
                         <table class="table table-striped b-b">
                           <!-- <table class="table table-striped b-b" datatable="ng" dt-options="dtOptionsJob">   -->
                           <thead>
@@ -1104,8 +1110,8 @@ td { font-size: 11px; } */
                               <td colspan="4">
                                 <div class="pagination pull-left">
                                   <span>Showing {{(jobcurrentPage - 1) * jobitemsPerPage + 1}} to {{ (jobcurrentPage *
-                                    jobitemsPerPage < totalItems) ? (jobcurrentPage * jobitemsPerPage) : totalItems }} of
-                                      {{totalItems}} entries </span>
+                                    jobitemsPerPage < jobtotalItems) ? (jobcurrentPage * jobitemsPerPage) : jobtotalItems }} of
+                                      {{jobtotalItems}} entries </span>
                                 </div>
                               </td>
                               <td colspan="4">

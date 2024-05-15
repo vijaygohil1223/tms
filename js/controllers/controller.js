@@ -3296,6 +3296,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.jobtotalItems = 0;
 
     $scope.dashboardJobLoad  = function (page, tabIndex=0, jobTabName) {
+        var jobTabName = $window.localStorage.getItem("scoopActiveTab")
+        
+        console.log('$window.localStorage.getItem("scoopActiveTab")', $window.localStorage.getItem("scoopActiveTab"))
         var projectjobData = [];
         console.log('jobTabName', jobTabName)
         var assignOrderData = [];
@@ -3344,9 +3347,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 })
 
-                //$scope.jobOverDue = projectjobData;
-                //$scope.jobsListAll = $scope.jobOverDue;
-                //$scope.jobsTabArr[4].jobsListAll = $scope.jobOverDue
+                $scope.jobOverDue = projectjobData;
+                $scope.jobsListAll = $scope.jobOverDue;
+                $scope.jobsTabArr[4].jobsListAll = $scope.jobOverDue
 
                 switch(jobTabName){
                     case 'Requested':
@@ -3366,8 +3369,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.jobsTabArr[3].jobsListAll = projectjobData
                         break;
                     case 'Overdue':
-                        $scope.jobsListAll = projectjobData;
-                        $scope.jobsTabArr[4].jobsListAll = projectjobData
+                        $scope.jobOverDue = projectjobData
+                        console.log('$scope.jobOverDue==>', $scope.jobOverDue)
+                        $scope.jobsListAll = $scope.jobOverDue;
+                        $scope.jobsTabArr[4].jobsListAll = $scope.jobOverDue
                         break;         
                 }
                 
@@ -3382,7 +3387,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
             //$scope.dashboardTabList[1].projectjobData = projectjobData
             $scope.jobtotalItems = response.totalItems;
-            //$scope.totalPages = response.totalPages;
+            $scope.totalPages = response.totalPages;
             //$scope.filterData();
             $scope.showDataLoader = false;
         }).catch(function(error) {
@@ -3403,6 +3408,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.jobstatusFilter = 'all';
             $scope.jobstatusFilter = '';
         }
+        $window.localStorage.setItem("scoopActiveTab", $scope.jobstatusFilter)
+        
         $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
 
         switch($scope.jobstatusFilter){
@@ -3451,7 +3458,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.handleSearchInputjob = function (searchText) {
         $scope.searchText = searchText;
         //$('.tab-pane.active input').val()
-        $scope.jobtabName = $window.localStorage.getItem("projectActiveTab")
+        $scope.jobtabName = $window.localStorage.getItem("scoopActiveTab")
         var tabIndex = findIndexByTabClassName($scope.jobtabName);
         $scope.dashboardJobLoad(1, tabIndex);
     };
