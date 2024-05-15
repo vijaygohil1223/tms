@@ -2789,7 +2789,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if($scope.tabName && $scope.tabName!=''){
             urlString += '&tabName=' + $scope.tabName
         }
-        console.log('$scope.searchText', $scope.searchText)
+        console.log('$scope.searchText-apiiii', $scope.searchText)
             
         if($scope.searchText && $scope.searchText!=''){
             urlString += '&search=' + $scope.searchText
@@ -2893,6 +2893,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     // Function to handle search input changes
     $scope.handleSearchInput = function (searchText) {
+        console.log('searchText', searchText)
         $scope.searchText = searchText;
         //$('.tab-pane.active input').val()
         $scope.tabName = $window.localStorage.getItem("projectActiveTab")
@@ -3425,12 +3426,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     // Function to filter data based on search criteria
-    $scope.filterData = function () {
+    $scope.filterDatajob = function () {
         $scope.filteredLangsList = $filter('filter')($scope.langsList, $scope.searchText);
         //console.log('$scope.filteredLangsList', $scope.filteredLangsList)
     };
     // Function to handle search input changes
-    $scope.handleSearchInput = function (searchText) {
+    $scope.handleSearchInputjob = function (searchText) {
         $scope.searchText = searchText;
         //$('.tab-pane.active input').val()
         $scope.tabName = $window.localStorage.getItem("projectActiveTab")

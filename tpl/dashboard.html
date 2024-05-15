@@ -508,7 +508,7 @@ td { font-size: 11px; } */
                       <div class="table-responsive">
                         <div>
                           <div class="col-sm-4">
-                            <input type="search" class="form-control customsearchbox" id="scoopsearch"
+                            <input type="search" class="form-control customsearchbox" id="scoopsearch_{{myTabs.tabClassName}}"
                               ng-model="searchText" placeholder="Search..." ng-change="handleSearchInput(searchText)">
                           </div>
                         </div>
@@ -516,24 +516,24 @@ td { font-size: 11px; } */
                           <!-- <table class="table table-striped" datatable="ng" dt-options="dtOptions"> -->
                           <thead>
                             <th>#</th>
-                            <th ng-click="sortBy('order_no')">Project Number</th>
+                            <th ng-click="sortBy('order_no')" ng-class="getClass('order_no')">Project Number</th>
                             <th ng-click="sortBy('clientName')" ng-class="getClass('clientName')">Customer</th>
                             <!-- <th>Account</th> -->
                             <th >Languages</th>
                             <th ng-click="sortBy('po_number')" ng-class="getClass('po_number')">PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th style="white-space: nowrap">QA Specialist</th>
-                            <th ng-click="sortBy('attached_workflow')">Job</th>
+                            <th ng-click="sortBy('attached_workflow')" ng-class="getClass('attached_workflow')">Job</th>
                             <th>Linguist</th>
                             <!-- <th>Heads Up</th> -->
                             <th>Comment</th>
-                            <th ng-click="sortBy('deadline')">Deadline</th>
+                            <th ng-click="sortBy('deadline') " ng-class="getClass('deadline')">Deadline</th>
                             <!-- <th>Progress</th> -->
                             <!-- <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th> -->
                             <th
                               ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1" >
                               Status</th>
-                            <th ng-click="sortBy('total_price')">Price</th>
+                            <th ng-click="sortBy('total_price')" ng-class="getClass('total_price')">Price</th>
                             <!-- <th>PO Number</th> -->
                             <!-- <th>Action</th> -->
                             <th class="none">Scoop Name</th>

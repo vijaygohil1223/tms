@@ -185,8 +185,9 @@ class dashboard {
             $tLang = "its.target_lang LIKE '%\"sourceLang\":\"$search\"%' ";
             $clientName = " OR c.vUserName LIKE '%$search%' ";
             $attached_workflow = " OR its.attached_workflow LIKE '%$search%' ";
-            $scoopName = "OR its.item_name"; 
-            $scoopEmailSubject = "OR its.item_email_subject"; 
+            $attached_workflow = " OR gen.order_no LIKE '$search%' ";
+            $scoopName = "OR its.item_name  LIKE '%$search%' " ; 
+            $scoopEmailSubject = "OR its.item_email_subject LIKE '%$search%' "; 
 
             $whereCond = " AND its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject ";
             $currentPage = 0;
@@ -205,9 +206,10 @@ class dashboard {
             $sortBy = " $sortBy $sortOrder  ";
         }
 
-        $qry = "SELECT its.itemId from tms_items as its LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId where its.order_id != 0  $whereCond  ";
+        //$qry = "SELECT its.itemId from tms_items as its LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId where its.order_id != 0  $whereCond  ";
+        $qry = "SELECT COUNT(*) AS totalCount FROM ( SELECT its.itemId FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN ( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN ( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON (its.order_id = jsv.order_id AND its.item_number = jsv.item_id) LEFT JOIN tms_discussion AS td ON (td.order_id = its.order_id AND (NOT FIND_IN_SET('1', td.read_id))) WHERE its.order_id != 0 $whereCond GROUP BY its.itemId ) AS subquery";
         $tCount = $this->_db->rawQuery($qry);
-        $totalCount = count($tCount);
+        $totalCount = $tCount && isset($tCount[0]['totalCount']) ? $tCount[0]['totalCount'] : 0 ;
         
         $totalPages = ceil($totalCount / $perPage);
         
