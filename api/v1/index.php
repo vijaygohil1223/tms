@@ -3681,6 +3681,11 @@ $app->get('/getJobsFromTmsSummeryView', function () {
     $result = $jobList->getJobsFromTmsSummeryView();
     echoResponse(200, $result);
 });
+$app->get('/getJobsFromTmsSummeryViewDashboard', function () {
+    $jobList = new jobs_detail ();
+    $result = $jobList->getJobsFromTmsSummeryViewDashboard();
+    echoResponse(200, $result);
+});
 $app->get('/getJobsFromTmsSummeryViewCount', function () {
     $jobList = new jobs_detail ();
     $result = $jobList->getJobsFromTmsSummeryViewCount();

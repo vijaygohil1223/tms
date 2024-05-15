@@ -2746,7 +2746,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 if(itm.tabClassName == 'tab-overdue'){
                     //var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
-                    itm.projectScoopCount = response?.overdue || 0
+                    itm.projectScoopCount = response?.overDue || 0
                 }
                 if(itm.tabClassName == 'tab-my-projects'){
                     itm.projectScoopCount = response?.myProject || 0
@@ -3208,7 +3208,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
       
     $scope.alljobsWidget = [];
     $scope.isoverviewJobs = false;
-    $scope.jobstatusRecord = function (statusType, jobStatus) {
+    $scope.jobstatusRecord__ = function (statusType, jobStatus) {
         $scope.showDataLoaderJob = true;
         if (jobStatus) {
             $scope.jobstatusFilter = jobStatus;
@@ -3251,49 +3251,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.showDataLoaderJob = false;
     };
 
-    $scope.jobList_tabFilter()
-        .then(function (invoicePromiseData) {
-            //$scope.jobstatusRecord('jobs', '');
+    // $scope.jobList_tabFilter()
+    //     .then(function (invoicePromiseData) {
+    //         //$scope.jobstatusRecord('jobs', '');
 
-    });
+    // });
 
     // Jobs tabs section
 
     rest.path = "getJobsFromTmsSummeryViewCount" ;
     rest.get().success(function (response) {
-        console.log('data-jobb=>', response)
+        console.log('data-count-jobbbbb=>', response)
 
         if(response){
-            angular.forEach($scope.dashboardTabList, function (itm, i) {
-                // if(itm.tabClassName == 'tab-due-today'){
-                //     itm.projectScoopCount = response.dueToday || 0
-                // }
-                // if(itm.tabClassName == 'tab-due-tomorrow'){
-                //     itm.projectScoopCount = response.dueTomorrow || 0
-                // }
-                // if(itm.tabClassName == 'tab-to-be-delivered'){
-                //     var tTobDel = response.tabStatus.find( (val) => val.item_status == 3 );
-                //     itm.projectScoopCount = tTobDel?.totalItems || 0
-                // }
-                // if(itm.tabClassName == 'tab-completed'){
-                //     var tComp = response.tabStatus.find( (val) => val.item_status == 4 );
-                //     itm.projectScoopCount = tComp?.totalItems || 0
-                // }
-                // if(itm.tabClassName == 'tab-overdue'){
-                //     var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
-                //     itm.projectScoopCount = response.overdue
-                // }
-                // if(itm.tabClassName == 'tab-my-projects'){
-                //     itm.projectScoopCount = response?.myProject || 0
-                // }
-                // if(itm.tabClassName == 'tab-my-upcoming'){
-                //     itm.projectScoopCount = response.upcomming || 0
-                // }
-                // if(itm.tabClassName == 'tab-approved'){
-                //     var tmyProj = response.tabStatus.find( (val) => val.item_status == 5 );
-                //     itm.projectScoopCount = response.approved || 0
-                // }
-            })
+            $scope.jobRequestesCount = response?.requested || 0;
+            $scope.jobInProgressCount = response?.inProgress || 0;
+            $scope.jobDueTodayCount = response?.dueToday || 0;
+            $scope.jobDueTomorrowCount = response?.dueTomorrow || 0;
+            $scope.jobOverDueCount = response?.overdue || 0;
+
+            // angular.forEach($scope.jobsTabArr, function (itm, i) {
+            // })
         }
 
     });
@@ -3309,25 +3287,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.fillDashboardJobTabFn = function(index, scoopArr, scoopCount){
         console.log('scoopArr', scoopArr)
-        $scope.dashboardTabList[index].projectScoopData = scoopArr
-        $scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
+        //$scope.dashboardTabList[index].projectScoopData = scoopArr
+        //$scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
     }
 
     $scope.currentPageJob = 1;
     $scope.jobitemsPerPage = 50; // Number of items per page
     $scope.jobtotalItems = 0;
 
-    $scope.dashboardJobLoad  = function (page, tabIndex=0, newTabName) {
+    $scope.dashboardJobLoad  = function (page, tabIndex=0, jobTabName) {
         var projectjobData = [];
-        console.log('newTabName', newTabName)
+        console.log('jobTabName', jobTabName)
         var assignOrderData = [];
         var tabIndex = parseInt(tabIndex)
         $scope.currentPageJob = page ? page : $scope.currentPageJob
         
         var urlString = 'page=' + $scope.currentPageJob + '&perPage=' + $scope.jobitemsPerPage;
-        if($scope.tabName && $scope.tabName!=''){
-            urlString += '&tabName=' + $scope.tabName
+        if(jobTabName && jobTabName!=''){
+            urlString += '&tabName=' + jobTabName
         }
+        // if($scope.jobtabName && $scope.jobtabName!=''){
+        //     urlString += '&tabName=' + $scope.jobtabName
+        // }
         console.log('$scope.searchText', $scope.searchText)
             
         if($scope.searchText && $scope.searchText!=''){
@@ -3340,90 +3321,126 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             urlString += '&sortOrder=' + sortOrderBy
         }
         
-        // rest.path = 'dashboardProjectsOrderScoopGet/' + $window.localStorage.getItem("session_iUserId") + '?' + urlString;
-        // rest.get().success(function (response) {
-        //     console.log('response', response)
-        //     projectjobData = response?.data
+        rest.path = 'getJobsFromTmsSummeryViewDashboard?' + urlString;
+        rest.get().success(function (response) {
+            console.log('job--==>response', response)
+            projectjobData = response?.data
             
-        //     //$scope.dashboardTabList[1].projectjobData = response?.data
-        //     if(projectjobData){
-        //         angular.forEach(projectjobData, function (val, i) {
-        //             val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
-        //             val.qa_fullName = val.scp_sub_Qa_fullName ? val.scp_sub_Qa_fullName : val.scp_Qa_fullName ? val.scp_Qa_fullName : val.gen_sub_Qa_fullName ? val.gen_sub_Qa_fullName : val.gen_Qa_fullName 
-        //             val.attached_workflow = val.attached_workflow.split('-').pop(); 
-                    
-        //             var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
-        //             if (val.itemsSourceLang) {
-        //                 projectjobData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
-        //             } else {
-        //                 projectjobData[i].itemsSourceLang = newLangData;
-        //             }
-        //             if (val.itemsTargetLang) {
-        //                 projectjobData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
-        //             } else {
-        //                 projectjobData[i].itemsTargetLang = newLangData;
-        //             }
-                    
-        //             //  ----linguist List----- / 
-        //             val.jobLinguist = [];
-        //             if(val.linguistName){
-        //                 let linguistId = (val.linguistId).toString().split(',');
-        //                 var lngstArr = [];
-        //                 (val.linguistName).split(',').forEach((ele,i) => {
-        //                     lngstArr.push( { resources: linguistId[i], vUserName: ele } )    
-        //                 });
-        //                 val.jobLinguist = lngstArr;
-        //             }   
-                    
-        //             if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
-        //                 val.pm_name = val.sub_pm_name
-        //             }
-                    
-        //             var currenciesClnt = val.client_currency?.split(',')[0];
-        //             val.price_currency = currenciesClnt ? currenciesClnt : 'EUR';
+            //$scope.dashboardTabList[1].projectjobData = response?.data
+            if(projectjobData){
+                angular.forEach(projectjobData, function (val, i) {
+                    val.item_id = pad(val.item_id, 3);
+                    if (val.ItemLanguage) {
+                        val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
+                    }
+                    if (val.item_source_lang) {
+                        val.item_source_lang = JSON.parse(val.item_source_lang);
+                    }
+                    if (val.item_source_lang) {
+                        val.item_target_lang = JSON.parse(val.item_target_lang);
+                    }
+                    val.proj_scoop_no = val.po_number ? val.po_number.substr(0, val.po_number.indexOf('_')) + '-' + val.item_id : val.item_id;
+
+
+                })
+
+                //$scope.jobOverDue = projectjobData;
+                //$scope.jobsListAll = $scope.jobOverDue;
+                //$scope.jobsTabArr[4].jobsListAll = $scope.jobOverDue
+
+                switch(jobTabName){
+                    case 'Requested':
+                        $scope.jobsListAll = projectjobData;
+                        $scope.jobsTabArr[0].jobsListAll = projectjobData
+                        break;    
+                    case 'inProgress':
+                        $scope.jobsListAll = projectjobData;
+                        $scope.jobsTabArr[1].jobsListAll = projectjobData
+                        break;
+                    case 'DueToday':
+                        $scope.jobsListAll = projectjobData;
+                        $scope.jobsTabArr[2].jobsListAll = projectjobData
+                        break;             
+                    case 'DueTomorrow':
+                        $scope.jobsListAll = projectjobData;
+                        $scope.jobsTabArr[3].jobsListAll = projectjobData
+                        break;
+                    case 'Overdue':
+                        $scope.jobsListAll = projectjobData;
+                        $scope.jobsTabArr[4].jobsListAll = projectjobData
+                        break;         
+                }
                 
-        //             // Comment read unRead
-        //             var cmtcolor = '#0190d8';
-        //             var is_comment = 0;
-        //             var comment_id = 0;
-        //             // if (val.comment.length > 0) {
-        //             //     var is_comment = scoopData[i].comment[0].comment_status;
-        //             // }
+            }
 
-        //             if (val.comment_status > 0) {
-        //                 cmtcolor = '#d30c39';
-        //             }
-        //             if (val.comment_status == 0) {
-        //                 cmtcolor = '#67bb0a';
-        //             }
-        //             val.comment = cmtcolor;
-
-        //             //$scope.projectsAllCount++;
-        //             val.projectstatus_class = 'projectstatus_common';
-        //             val.projectstatus_color = '#8d9296';
-
-        //         })
-        //     }
-
-        //     //$scope.fillDashboardJobTabFn(parseInt(tabIndex), projectjobData, response?.jobtotalItems)    
-        //     angular.forEach($scope.dashboardTabList, function (itm, indx) {
-        //         if(itm.tabClassName == $scope.tabName){
-        //             //itm.projectjobData = projectjobData;
-        //             $scope.fillDashboardJobTabFn(indx, projectjobData, response?.jobtotalItems)    
-        //         }
-        //     })
-        //     //$scope.dashboardTabList[1].projectjobData = projectjobData
-        //     $scope.jobtotalItems = response.jobtotalItems;
-        //     $scope.totalPages = response.totalPages;
-        //     //$scope.orderList = response.data;
-        //     //$scope.filterData();
-        //     $scope.showDataLoader = false;
-        // }).catch(function(error) {
-        //     //console.error("Error loading HTML:", error);
-        //     $scope.showDataLoader = false;
-        // });
+            //$scope.fillDashboardJobTabFn(parseInt(tabIndex), projectjobData, response?.jobtotalItems)    
+            angular.forEach($scope.dashboardTabList, function (itm, indx) {
+                if(itm.tabClassName == $scope.jobtabName){
+                    //itm.projectjobData = projectjobData;
+                    //$scope.fillDashboardJobTabFn(indx, projectjobData, response?.jobtotalItems)    
+                }
+            })
+            //$scope.dashboardTabList[1].projectjobData = projectjobData
+            $scope.jobtotalItems = response.totalItems;
+            //$scope.totalPages = response.totalPages;
+            //$scope.filterData();
+            $scope.showDataLoader = false;
+        }).catch(function(error) {
+            //console.error("Error loading HTML:", error);
+            $scope.showDataLoader = false;
+        });
     
     };
+
+    $scope.jobstatusRecord = function (statusType, jobStatus) {
+        $scope.showDataLoaderJob = true;
+        if (jobStatus) {
+            $scope.jobstatusFilter = jobStatus;
+            $scope.isoverviewJobs = true;
+            //$scope.jobsListAll = [];
+            $scope.showDataLoaderJob = true;
+        } else {
+            //$scope.jobstatusFilter = 'all';
+            $scope.jobstatusFilter = '';
+        }
+        $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
+
+        switch($scope.jobstatusFilter){
+            case 'all':
+                $scope.jobsListAll = $scope.allJobsData;
+                break;
+            case 'Requested':
+                $scope.dashboardJobLoad(1, 1, 'Requested');
+                angular.element('#jobAllTbl_'+jobStatus).show();
+                $scope.jobsListAll = $scope.requested;
+                $scope.jobsTabArr[0].jobsListAll = $scope.requested
+                break;    
+            case 'inProgress':
+                $scope.dashboardJobLoad(1, 1, 'inProgress');
+                $scope.jobsListAll = $scope.inProgerss;
+                $scope.jobsTabArr[1].jobsListAll = $scope.inProgerss
+                break;
+            case 'DueToday':
+                $scope.dashboardJobLoad(1, 1, 'DueToday');
+                $scope.jobsListAll = $scope.jobDueToday;
+                $scope.jobsTabArr[2].jobsListAll = $scope.jobDueToday
+                break;             
+            case 'DueTomorrow':
+                $scope.dashboardJobLoad(1, 1, 'DueTomorrow');
+                $scope.jobsListAll = $scope.jobDueTomorrow;
+                $scope.jobsTabArr[3].jobsListAll = $scope.jobDueTomorrow
+                break;
+            case 'Overdue':
+                $scope.dashboardJobLoad(1, 1, 'Overdue');
+                $scope.jobsListAll = $scope.jobOverDue;
+                $scope.jobsTabArr[4].jobsListAll = $scope.jobOverDue
+                break;         
+        }
+        
+        
+        $scope.showDataLoaderJob = false;
+    };
+    //$scope.dashboardJobLoad(1, 1);
 
     // Function to filter data based on search criteria
     $scope.filterDatajob = function () {
@@ -3434,16 +3451,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.handleSearchInputjob = function (searchText) {
         $scope.searchText = searchText;
         //$('.tab-pane.active input').val()
-        $scope.tabName = $window.localStorage.getItem("projectActiveTab")
-        var tabIndex = findIndexByTabClassName($scope.tabName);
+        $scope.jobtabName = $window.localStorage.getItem("projectActiveTab")
+        var tabIndex = findIndexByTabClassName($scope.jobtabName);
         $scope.dashboardJobLoad(1, tabIndex);
     };
 
     $scope.activeJobTabfn = function(){
         if($window.localStorage.getItem("projectActiveTab") ){
-            $scope.tabName = $window.localStorage.getItem("projectActiveTab")
-            console.log('$scope.tabName========>', $scope.tabName)
-            var tabIndex = findIndexByTabClassName($scope.tabName);
+            $scope.jobtabName = $window.localStorage.getItem("projectActiveTab")
+            console.log('$scope.jobtabName========>', $scope.jobtabName)
+            var tabIndex = findIndexByTabClassName($scope.jobtabName);
             $scope.dashboardJobLoad(1, tabIndex);
             setTimeout(() => {
                 angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
@@ -3452,26 +3469,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }else{
             var tabIndex = findIndexByTabClassName('tab-due-today');
             console.log('tabIndex====>', tabIndex)
-            $scope.tabName = 'tab-due-today';
+            $scope.jobtabName = 'tab-due-today';
             $scope.dashboardJobLoad(1,tabIndex);
         }
     }
-    $scope.activeJobTabfn();
+    //$scope.activeJobTabfn();
 
     $scope.changeJobTabs = function(className, tabIndex){
-        $scope.tabName = className;
+        $scope.jobtabName = className;
         $window.localStorage.setItem("projectActiveTab", className);
         $scope.dashboardJobLoad(1, tabIndex, className);
         $scope.searchText = '';
     }
-    $scope.lastJobTabs = function(){
-        let projectActiveTab = $window.localStorage.getItem("projectActiveTab");
-        $scope.changeProjectTabs2(projectActiveTab);
-        if(!projectActiveTab || projectActiveTab != 'due-today' )
-            angular.element('.'+projectActiveTab+' > a ').triggerHandler('click');
-        else    
-            $window.localStorage.setItem("projectActiveTab", '');
-    }
+    // $scope.lastJobTabs = function(){
+    //     let projectActiveTab = $window.localStorage.getItem("projectActiveTab");
+    //     $scope.changeProjectTabs2(projectActiveTab);
+    //     if(!projectActiveTab || projectActiveTab != 'due-today' )
+    //         angular.element('.'+projectActiveTab+' > a ').triggerHandler('click');
+    //     else    
+    //         $window.localStorage.setItem("projectActiveTab", '');
+    // }
 
     $scope.jobreverse = false;
     $scope.jobsortByFieldName = '';
