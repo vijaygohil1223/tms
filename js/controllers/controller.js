@@ -2718,6 +2718,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     itm.projectScoopCount = asigncount?.totalItems || 0
                 }
                 if(itm.tabClassName == 'tab-ongoing'){
+                    //2
                     itm.projectScoopCount = response.ongoing || 0
                 }
                 if(itm.tabClassName == 'tab-qa-ready'){
@@ -2741,10 +2742,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     itm.projectScoopCount = tComp?.totalItems || 0
                 }
                 if(itm.tabClassName == 'tab-approved'){
-                    var tApprvd = response.tabStatus.find( (val) => val.item_status == 4 );
+                    var tApprvd = response.tabStatus.find( (val) => val.item_status == 5 );
                     itm.projectScoopCount = tApprvd?.totalItems || 0
                 }
                 if(itm.tabClassName == 'tab-overdue'){
+                    // 11
                     //var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
                     itm.projectScoopCount = response?.overDue || 0
                 }
@@ -3285,6 +3287,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return -1; // Return -1 if no match found
     }
 
+    $scope.calculateJobIndex = function(index) {
+        var offset = ($scope.currentPageJob - 1) * $scope.jobitemsPerPage;
+        return index + 1 + offset;
+    };
+
     $scope.fillDashboardJobTabFn = function(index, scoopArr, scoopCount){
         console.log('scoopArr', scoopArr)
         //$scope.dashboardTabList[index].projectScoopData = scoopArr
@@ -3292,13 +3299,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.currentPageJob = 1;
+    //$scope.jobcurrentPageJob = 1;
     $scope.jobitemsPerPage = 50; // Number of items per page
     $scope.jobtotalItems = 0;
 
     $scope.dashboardJobLoad  = function (page, tabIndex=0, jobTabName) {
-        var jobTabName = $window.localStorage.getItem("scoopActiveTab")
+        var jobTabName = $window.localStorage.getItem("jobActiveTab")
         
-        console.log('$window.localStorage.getItem("scoopActiveTab")', $window.localStorage.getItem("scoopActiveTab"))
         var projectjobData = [];
         console.log('jobTabName', jobTabName)
         var assignOrderData = [];
@@ -3312,10 +3319,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // if($scope.jobtabName && $scope.jobtabName!=''){
         //     urlString += '&tabName=' + $scope.jobtabName
         // }
-        console.log('$scope.searchText', $scope.searchText)
+        console.log('$scope.jobsearchText', $scope.jobsearchText)
             
-        if($scope.searchText && $scope.searchText!=''){
-            urlString += '&search=' + $scope.searchText
+        if($scope.jobsearchText && $scope.jobsearchText!=''){
+            urlString += '&search=' + $scope.jobsearchText
             console.log('urlString', urlString)
         }
         if($scope.sortByFieldName && $scope.sortByFieldName != ''){
@@ -3408,7 +3415,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.jobstatusFilter = 'all';
             $scope.jobstatusFilter = '';
         }
-        $window.localStorage.setItem("scoopActiveTab", $scope.jobstatusFilter)
+        $window.localStorage.setItem("jobActiveTab", $scope.jobstatusFilter)
         
         $scope.jobsactive = $scope.jobsactive == jobStatus ? '' : jobStatus;
 
@@ -3456,11 +3463,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     // Function to handle search input changes
     $scope.handleSearchInputjob = function (searchText) {
-        $scope.searchText = searchText;
+        $scope.jobsearchText = searchText;
         //$('.tab-pane.active input').val()
-        $scope.jobtabName = $window.localStorage.getItem("scoopActiveTab")
-        var tabIndex = findIndexByTabClassName($scope.jobtabName);
-        $scope.dashboardJobLoad(1, tabIndex);
+        $scope.jobtabName = $window.localStorage.getItem("jobActiveTab")
+        //var tabIndex = findIndexByTabClassName($scope.jobtabName);
+        $scope.dashboardJobLoad(1, 0, $scope.jobtabName);
     };
 
     $scope.activeJobTabfn = function(){
