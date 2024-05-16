@@ -2676,7 +2676,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     //$scope.allProjectListing();
     // Branch change (Norway-Bulgaria) call function again
-    $scope.projectBranchchange = function (id) {
+    $scope.projectBranchchange_ = function (id) {
         $scope.projBranchChange = true;
         $scope.projectBranch = {};
         $scope.projectBranch = angular.element('#projectBranch').select2('data');
@@ -2966,6 +2966,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             'scoopascdesc fa fa-caret-down': $scope.sortByFieldName === fieldName && $scope.reverse
         };
     };
+
+    $scope.projectBranchchange = function (id) {
+        //$scope.projBranchChange = true;
+        $scope.projectBranch = {};
+        // $scope.projectBranch = angular.element('#projectBranch').select2('data');
+        // var projBranchVal = $scope.projectBranch ? $scope.projectBranch.id : '';
+        // $window.localStorage.projectBranch = projBranchVal;
+        //$scope.activeTabfn()
+    }
+    // $scope.branchRefresh = function () {
+    //     $route.reload();
+    // }
+    $scope.proejectPageselected = 100;
+    $scope.proejectPageSelect = function() {
+
+        console.log('proejectPageselectedOption', proejectPageselectedOption)
+    }
+
+
 
     // $scope.customSort = function (person) {
     //     console.log('person', person)
@@ -3325,10 +3344,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             urlString += '&search=' + $scope.jobsearchText
             console.log('urlString', urlString)
         }
-        if($scope.sortByFieldName && $scope.sortByFieldName != ''){
-            const sortOrderBy = $scope.sortOrder ? 'DESC' : 'ASC'
-            urlString += '&sortBy=' + $scope.sortByFieldName
-            urlString += '&sortOrder=' + sortOrderBy
+        console.log('$scope.sortByFieldName===>', $scope.jobsortByFieldName)
+            
+        if($scope.jobsortByFieldName && $scope.jobsortByFieldName != ''){
+            console.log('$scope.jobsortByFieldName', $scope.jobsortByFieldName)
+            const sortOrderByJob = $scope.jobsortOrder ? 'DESC' : 'ASC'
+            urlString += '&sortBy=' + $scope.jobsortByFieldName
+            urlString += '&sortOrder=' + sortOrderByJob
         }
         
         rest.path = 'getJobsFromTmsSummeryViewDashboard?' + urlString;
@@ -3508,25 +3530,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.jobsortByFieldName = '';
     $scope.jobsortOrder = '';
     $scope.jobsortBy = function (fieldName) {
+        console.log('fieldName', fieldName)
         if(fieldName){
             console.log('fieldName', fieldName)
-            if ($scope.sortByField === fieldName) {
+            if ($scope.jobsortByFieldName === fieldName) {
                 $scope.jobreverse = !$scope.jobreverse;
                 console.log('$scope.jobreverse', $scope.jobreverse)
             } else {
-                $scope.sortByField = fieldName;
+                $scope.jobsortByFieldName = fieldName;
                 $scope.jobreverse = false;
                 console.log('$scope.jobreverse', $scope.jobreverse)
             }
             $scope.jobsortByFieldName = fieldName 
+            console.log('$scope.jobsortByFieldName', $scope.jobsortByFieldName)
             $scope.jobsortOrder = $scope.jobreverse 
-            $scope.activeTabfn()
+            //$scope.activeTabfn()
+            $scope.jobtabName = $window.localStorage.getItem("jobActiveTab")
+            $scope.dashboardJobLoad(1, 0, $scope.jobtabName);
         }
     };
     $scope.getClassJob = function (fieldName) {
         return {
-            'scoopascdesc fa fa-caret-up': $scope.sortByFieldName === fieldName && !$scope.reverse,
-            'scoopascdesc fa fa-caret-down': $scope.sortByFieldName === fieldName && $scope.reverse
+            'jobascdesc fa fa-caret-up': $scope.sortByFieldName === fieldName && !$scope.jobreverse,
+            'jobascdesc fa fa-caret-down': $scope.sortByFieldName === fieldName && $scope.jobreverse
         };
     };
 

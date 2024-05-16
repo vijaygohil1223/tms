@@ -742,12 +742,16 @@ td { font-size: 11px; } */
                               </td>
                               <td colspan="3">
                                 <div class="pagination pull-left pageentry">
-                                  <label>Show <select name="" class="form-control input-sm">
+                                  <label>Show 
+                                    <select name="pageSelect" class="form-control input-sm">
                                       <option value="10">10</option>
                                       <option value="25">25</option>
                                       <option value="50">50</option>
                                       <option value="100" selected>100</option>
-                                    </select> entries</label>
+                                    </select> 
+                                    <!-- <select ng-model="selectedOption" ng-options="option for option in [10,25,50,100]" ng-change="selectChange()">
+                                    </select> -->
+                                    entries</label>
                                 </div>
                               </td>
                               <td colspan="5">
@@ -990,18 +994,18 @@ td { font-size: 11px; } */
                           <thead>
                             <tr>
                               <th>#</th>
-                              <th>Job Number</th>
-                              <th>Scoop Number</th>
-                              <th>Client</th>
+                              <th ng-click="jobsortBy('jobNumber')" ng-class="getClassJob('jobNumber')" >Job Number</th>
+                              <th ng-click="jobsortBy('scoopNumber')" ng-class="getClassJob('scoopNumber')" >Scoop Number</th>
+                              <th ng-click="jobsortBy('clientName')" ng-class="getClassJob('clientName')">Client</th>
                               <!-- <th>Account</th> -->
                               <!-- <th>Type</th> -->
                               <th>Language Pair</th>
-                              <th>Project Manager</th>
-                              <th>Resource</th>
-                              <th>Job Type</th>
-                              <th>Job Due Date</th>
-                              <th>Project Due Date</th>
-                              <th>Status</th>
+                              <th ng-click="jobsortBy('jobProjectManager')" ng-class="getClassJob('jobProjectManager')">Project Manager</th>
+                              <th ng-click="jobsortBy('jobResource')" ng-class="getClassJob('jobResource')">Resource</th>
+                              <th ng-click="jobsortBy('jobType')" ng-class="getClassJob('jobType')">Job Type</th>
+                              <th ng-click="jobsortBy('jobDuedate')" ng-class="getClassJob('jobDuedate')">Job Due Date</th>
+                              <th ng-click="jobsortBy('projectDuedate')" ng-class="getClassJob('projectDuedate')">Project Due Date</th>
+                              <th ng-click="jobsortBy('jobStatus')" ng-class="getClassJob('jobStatus')">Status</th>
                               <!-- <th>Start Date</th> -->
                               <!-- <th>Deadline</th> -->
                             </tr>

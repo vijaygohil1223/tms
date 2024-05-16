@@ -1877,29 +1877,51 @@ class jobs_detail
 
         $search = isset($_GET['search']) ? $_GET['search'] : '';
         if($search != ''){
-            $sLang = "its.source_lang LIKE '%\"sourceLang\":\"$search\"%' ";
-            $tLang = "its.target_lang LIKE '%\"sourceLang\":\"$search\"%' ";
-            $clientName = " OR c.vUserName LIKE '%$search%' ";
+            $sLang = " OR ti.source_lang LIKE '%\"sourceLang\":\"$search\"%' ";
+            $tLang = " OR ti.target_lang LIKE '%\"sourceLang\":\"$search\"%' ";
+            $clientName = " OR tc.vUserName LIKE '%$search%' ";
+            $clientName_indirect = " OR tic.vUserName LIKE '%$search%'";
+            $find_resource = "OR CONCAT(tu.vFirstName,' ',tu.vLastName) LIKE '%$search%'";
+            $find_project_m = "OR CONCAT(tu2.vFirstName,' ',tu2.vLastName) LIKE '%$search%'";
             $attached_workflow = " OR its.attached_workflow LIKE '%$search%' ";
-            // $attached_workflow = " OR gen.order_no LIKE '$search%' ";
-            // $scoopName = "OR its.item_name  LIKE '%$search%' " ; 
-            // $scoopEmailSubject = "OR its.item_email_subject LIKE '%$search%' "; 
-
-            $whereCond = " AND tsv.po_number LIKE '%$search%' ";
+            $job_type = " OR tjb.service_name LIKE '%$search%'";
+            $scoop_number = '';
+            if (strpos($search, '-') !== false) {
+                $parts = explode('-', $search);
+                $beforeHyphen = $parts[0];
+                $scoop_number = " OR tsv.company_code LIKE '%$beforeHyphen%'";
+            }
+        
+            $whereCond .= " AND (tsv.po_number LIKE '%$search%'$sLang $tLang $clientName $clientName_indirect $find_resource $find_project_m $job_type $scoop_number)";
             //$currentPage = 0;
         }
         
         $sortBy = ' tsv.job_summmeryId  DESC';
         if(isset($_GET['sortBy']) && $_GET['sortBy']!=''){
-            // $sortBy = $_GET['sortBy'];
-            // if($_GET['sortBy'] == 'clientName')
-            //     $sortBy = 'c.vUserName';
+            $sortBy = $_GET['sortBy'];
+            if($_GET['sortBy'] == 'jobNumber')
+                $sortBy = 'tsv.po_number';
+            if($_GET['sortBy'] == 'scoopNumber')
+                $sortBy = 'tsv.po_number';
+            if($_GET['sortBy'] == 'jobStatus')
+                $sortBy = 'tsv.item_status';
+            if($_GET['sortBy'] == 'clientName')
+                $sortBy = 'tc.vUserName';
+            if($_GET['sortBy'] == 'jobType')
+                $sortBy = 'tjb.service_name';
+            if($_GET['sortBy'] == 'jobResource')
+                $sortBy = 'tu.vLastName';
+            if($_GET['sortBy'] == 'jobProjectManager')
+                $sortBy = 'tu2.vFirstName';
+
                 
-            // if($_GET['sortBy'] == 'deadline')
-            //     $sortBy = 'DATE(its.due_date)';    
+            if($_GET['sortBy'] == 'jobDuedate')
+                $sortBy = 'DATE(tsv.due_date)';
+            if($_GET['sortBy'] == 'projectDuedate')
+                $sortBy = 'DATE(ti.due_date)';    
             
-            // $sortOrder = isset($_GET['sortOrder']) && $_GET['sortOrder'] != '' ? $_GET['sortOrder'] : 'ASC' ;
-            // $sortBy = " $sortBy $sortOrder  ";
+            $sortOrder = isset($_GET['sortOrder']) && $_GET['sortOrder'] != '' ? $_GET['sortOrder'] : 'ASC' ;
+            $sortBy = " $sortBy $sortOrder  ";
         }
 
         //$qry = "SELECT its.itemId from tms_items as its LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId where its.order_id != 0  $whereCond  ";
@@ -1923,6 +1945,8 @@ class jobs_detail
             $data = $this->_db->rawQuery($selqry);
         }else{
             $selqry = "SELECT tcus.client AS Client, tcus.indirect_customer AS indirectClient, tsv.*, tsv.item_status AS jobStatus, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tjb.service_name AS job_type_name, tcus.project_coordinator AS project_coordinator_id, tcus.project_manager AS project_manager_id, tcus.QA_specialist AS qa_specialist_id, tpc.iUserId AS job_manager_id, tc.vUserName AS clientName, tc.vLogo AS clientLogo, tic.vUserName AS indirectClientName, tu.vFirstName AS resourceFirstName, tu.vLastName AS resourceLastName, tu2.vFirstName AS contactFirstName, tu2.vLastName AS contactLastName FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id $whereCond ORDER BY $sortBy limit $perPage offset $offset  ";
+            // echo $selqry;
+            // exit;
             $stmt = $this->_conn->prepare($selqry);
             $stmt->execute();
             $get_query = $stmt->get_result();
@@ -1984,10 +2008,15 @@ class jobs_detail
 
         // $qry = " SELECT COUNT(*) AS totalItems FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id AND DATE(tsv.due_date) < CURDATE() AND tsv.item_status IN ('In preparation','Requested','Assigned-waiting','Waiting','In-progress','Ongoing')  ";
         // $dataOverdue = $this->_db->rawQuery($qry);
-        $this->_db->where('DATE(tsv.due_date) < CURDATE() AND tsv.item_status IN ("In preparation","Requested","Assigned-waiting","Waiting","In-progress","Ongoing")');
-        $qry_job = $this->_db->get('tms_summmery_view AS tsv', null);
-        $data['overdue'] = (isset($qry_job) && !empty($qry_job)) ? count($qry_job) : 0;
-        
+        // $this->_db->where('DATE(tsv.due_date) < CURDATE() AND tsv.item_status IN ("In preparation","Requested","Assigned-waiting","Waiting","In-progress","Ongoing")');
+        // $qry_job = $this->_db->get('tms_summmery_view AS tsv', null);
+        // $data['overdue'] = (isset($qry_job) && !empty($qry_job)) ? count($qry_job) : 0;
+        $sql = "SELECT COUNT(*) AS totalItems FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id AND DATE(tsv.due_date) < CURDATE() AND tsv.item_status IN ('In preparation','Requested','Assigned-waiting','Waiting','In-progress','Ongoing')";
+        $stmt = $this->_conn->prepare($sql);
+        $stmt->execute();
+        $get_query = $stmt->get_result();
+        $tCount = $get_query->fetch_all(MYSQLI_ASSOC);
+        $data['overdue'] = ($tCount && isset($tCount[0]['totalItems'])) ? $tCount[0]['totalItems'] : 0 ;
 
         return $data;
     }

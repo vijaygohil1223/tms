@@ -197,11 +197,11 @@ class dashboard {
             $tLang = "its.target_lang LIKE '%\"sourceLang\":\"$search\"%' ";
             $clientName = " OR c.vUserName LIKE '%$search%' ";
             $attached_workflow = " OR its.attached_workflow LIKE '%$search%' ";
-            $attached_workflow = " OR gen.order_no LIKE '$search%' ";
+            $pOrderNo = " OR gen.order_no LIKE '$search%' ";
             $scoopName = "OR its.item_name  LIKE '%$search%' " ; 
             $scoopEmailSubject = "OR its.item_email_subject LIKE '%$search%' "; 
 
-            $whereCond = " AND its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject ";
+            $whereCond .= " AND its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject $pOrderNo ";
             $currentPage = 0;
         }
 
