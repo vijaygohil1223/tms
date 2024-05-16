@@ -2773,8 +2773,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return -1; // Return -1 if no match found
     }
     
-    // Usage example
-
     $scope.currentPage = 1;
     $scope.itemsPerPage = 100; // Number of items per page
     $scope.totalItems = 0;
@@ -2877,7 +2875,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
             //$scope.dashboardTabList[1].projectScoopData = projectScoopData
             $scope.totalItems = response.totalItems;
+            console.log('$scope.totalItems', $scope.totalItems)
             $scope.totalPages = response.totalPages;
+
+            $scope.pageShowRec = $scope.totalItems > 0 ? ($scope.currentPage - 1) * $scope.itemsPerPage + 1 : $scope.totalItems ; 
+            
             //$scope.orderList = response.data;
             //$scope.filterData();
             $scope.showDataLoader = false;
@@ -2887,6 +2889,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
           });
     
     };
+
+    //$scope.pageShowRec = $scope.totalItems ? ($scope.currentPage - 1) * ($scope.itemsPerPage + 1) : $scope.totalItems ; 
 
     // Function to filter data based on search criteria
     $scope.filterData = function () {
@@ -3417,6 +3421,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.dashboardTabList[1].projectjobData = projectjobData
             $scope.jobtotalItems = response.totalItems;
             $scope.totalPages = response.totalPages;
+
+            $scope.pageShowJob = $scope.jobtotalItems > 0 ? ($scope.currentPageJob - 1) * $scope.jobitemsPerPage + 1 : $scope.jobtotalItems ; 
+            
             //$scope.filterData();
             $scope.showDataLoader = false;
         }).catch(function(error) {

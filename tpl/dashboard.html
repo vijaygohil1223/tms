@@ -91,11 +91,11 @@ td { font-size: 11px; } */
     position: relative;
   }
   .projecttable .fa-caret-up:before, .projecttable .fa-caret-down:before {
-    position: absolute;
-    right: 0;
-    top: 7px;
-    margin-right: -10px;
-}
+      position: absolute;
+      right: 0;
+      top: 7px;
+      margin-right: -10px;
+  }
   .mainprojectdv.hbox {
     height: auto;
   }
@@ -415,7 +415,24 @@ td { font-size: 11px; } */
     border-radius: 19px;
     margin-left: 10px;
   }
-  
+  /* .projectSorttable thead th:after {
+      content: "";
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 10px solid #ccc;
+      position: absolute;
+      top: 13px;    
+      right: 1px;
+  }
+  .projectSorttable thead th:before{
+    display: none !important;
+  }
+  .projectSorttable thead th.active:after{
+    border-top-color: rgb(73, 73, 221);
+  } */
+
   /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
   @media screen and (max-height: 450px) {
     .sidenav {
@@ -520,14 +537,14 @@ td { font-size: 11px; } */
                               ng-model="searchText" placeholder="Search..." ng-change="handleSearchInput(searchText)">
                           </div>
                         </div>
-                        <table class="table table-striped" >
+                        <table class="table table-striped projectSorttable" >
                           <!-- <table class="table table-striped" datatable="ng" dt-options="dtOptions"> -->
                           <thead>
                             <th>#</th>
-                            <th ng-click="sortBy('order_no')" ng-class="getClass('order_no')">Project Number</th>
+                            <th ng-click="sortBy('order_no')" ng-class="getClass('order_no')" class="sorting">Project Number</th>
                             <th ng-click="sortBy('clientName')" ng-class="getClass('clientName')">Customer</th>
                             <!-- <th>Account</th> -->
-                            <th >Languages</th>
+                            <th>Languages</th>
                             <th ng-click="sortBy('po_number')" ng-class="getClass('po_number')">PO Number</th>
                             <th style="white-space: nowrap">Project Manager</th>
                             <th style="white-space: nowrap">QA Specialist</th>
@@ -735,7 +752,7 @@ td { font-size: 11px; } */
                             <tr>
                               <td colspan="3">
                                 <div class="pagination pull-left">
-                                  <span>Showing {{(currentPage - 1) * itemsPerPage + 1}} to {{ (currentPage *
+                                  <span>Showing {{pageShowRec}} to {{ (currentPage *
                                     itemsPerPage < totalItems) ? (currentPage * itemsPerPage) : totalItems }} of
                                       {{totalItems}} entries </span>
                                 </div>
@@ -1114,7 +1131,7 @@ td { font-size: 11px; } */
                             <tr>
                               <td colspan="4">
                                 <div class="pagination pull-left">
-                                  <span>Showing {{(currentPageJob - 1) * jobitemsPerPage + 1}} to {{ (currentPageJob *
+                                  <span>Showing {{pageShowJob}} to {{ (currentPageJob *
                                     jobitemsPerPage < jobtotalItems) ? (currentPageJob * jobitemsPerPage) : jobtotalItems }} of
                                       {{jobtotalItems}} entries </span>
                                 </div>
