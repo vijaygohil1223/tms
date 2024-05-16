@@ -2966,8 +2966,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     $scope.getClass = function (fieldName) {
         return {
-            'scoopascdesc fa fa-caret-up': $scope.sortByFieldName === fieldName && !$scope.reverse,
-            'scoopascdesc fa fa-caret-down': $scope.sortByFieldName === fieldName && $scope.reverse
+            'scoopasc active': $scope.sortByFieldName === fieldName && !$scope.reverse,
+            'scoopdesc active': $scope.sortByFieldName === fieldName && $scope.reverse
         };
     };
 
@@ -2982,10 +2982,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // $scope.branchRefresh = function () {
     //     $route.reload();
     // }
-    $scope.proejectPageselected = 100;
-    $scope.proejectPageSelect = function() {
-
-        console.log('proejectPageselectedOption', proejectPageselectedOption)
+    $scope.selectedOptionPage = 100;
+    $scope.selectChangePage = function(selectedPage) {
+        $scope.itemsPerPage = selectedPage;
+        $scope.activeTabfn()
+        console.log('proejectPageselectedOption', selectedPage)
     }
 
 
@@ -3558,10 +3559,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     $scope.getClassJob = function (fieldName) {
         return {
-            'jobascdesc fa fa-caret-up': $scope.sortByFieldName === fieldName && !$scope.jobreverse,
-            'jobascdesc fa fa-caret-down': $scope.sortByFieldName === fieldName && $scope.jobreverse
+            'jobascdesc active': $scope.jobsortByFieldName === fieldName && !$scope.jobreverse,
+            'jobascdesc active': $scope.jobsortByFieldName === fieldName && $scope.jobreverse
         };
     };
+
+    $scope.selectedOptionPageJob = 100;
+    $scope.selectChangePageJob = function(selectedPage) {
+        $scope.jobitemsPerPage = selectedPage;
+        $scope.jobtabName = $window.localStorage.getItem("jobActiveTab")
+        //var tabIndex = findIndexByTabClassName($scope.jobtabName);
+        $scope.dashboardJobLoad(1, 0, $scope.jobtabName);
+        console.log('proejectPageselectedOption', selectedPage)
+    }
 
 
     // $scope.jobstatusRecord = function(jobStatus) {
