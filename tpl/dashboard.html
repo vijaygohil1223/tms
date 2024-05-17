@@ -420,8 +420,8 @@ td { font-size: 11px; } */
     border-radius: 19px;
     margin-left: 10px;
   }
-
-  .projectSorttable thead th:after {
+  
+  .projectSorttable thead th:after, .projectJobSorttable thead th:after {
     content: "";
     width: 0;
     height: 0;
@@ -433,7 +433,7 @@ td { font-size: 11px; } */
     right: 1px;
   }
 
-  .projectSorttable thead th:before {
+  .projectSorttable thead th:before, .projectJobSorttable thead th:before {
     content: "";
     width: 0;
     height: 0;
@@ -445,19 +445,46 @@ td { font-size: 11px; } */
     right: 1px;
     transform: rotate(180deg);
   }
-  .projectSorttable thead th.active:after {
-    top: 12px;
-    transform: rotate(180deg);
+  
+  .projectSorttable thead th.active.scoopdesc:after, .projectJobSorttable thead th.active.scoopdesc:after {
+    top: 17px;
+    transform: rotate(360deg);
   }
 
+  /* scoopasc , scoopdes */
   .projectSorttable thead th.active:after,
   .projectSorttable thead th.active::before {
     border-top-color: #502ec3;
   }
+
+  .projectSorttable thead .scoopasc.active::after {
+    opacity: 0;
+  }
+  .projectSorttable thead .scoopdes.active::before {
+    opacity: 0;
+  }
+
+  .projectSorttable thead .scoopdesc.active::before {
+    opacity: 0;
+  }
+
+  
+  .projectJobSorttable thead .jobasc.active::after {
+    opacity: 0;
+  }
+  .projectJobSorttable thead .jobdesc.active::before {
+    opacity: 0;
+  }
+
   .projectJobSorttable thead th.active:after,
   .projectJobSorttable thead th.active::before {
     border-top-color: #502ec3;
   }
+  /* .projectJobSorttable thead th.active:after,
+  .projectJobSorttable thead th.active::before {
+    border-top-color: #502ec3;
+  } */
+
   /* .projectSorttable thead th:before{
     display: none !important;
   } */
@@ -568,7 +595,7 @@ td { font-size: 11px; } */
                               ng-change="handleSearchInput(searchText)">
                           </div>
                         </div>
-                        <table class="table table-striped projectSorttable projectJobSorttable">
+                        <table class="table table-striped projectSorttable">
                           <!-- <table class="table table-striped" datatable="ng" dt-options="dtOptions"> -->
                           <thead>
                             <th>#</th>
@@ -578,17 +605,17 @@ td { font-size: 11px; } */
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
                             <th ng-click="sortBy('po_number')" ng-class="getClass('po_number')">PO Number</th>
-                            <th style="white-space: nowrap">Project Manager</th>
-                            <th style="white-space: nowrap">QA Specialist</th>
+                            <th ng-click="sortBy('projectManager')" ng-class="getClass('projectManager')" style="white-space: nowrap">Project Manager</th>
+                            <th ng-click="sortBy('qaSpecialist')" ng-class="getClass('qaSpecialist')" style="white-space: nowrap">QA Specialist</th>
                             <th ng-click="sortBy('attached_workflow')" ng-class="getClass('attached_workflow')">Job</th>
-                            <th>Linguist</th>
+                            <th ng-click="sortBy('linguist')" ng-class="getClass('linguist')">Linguist</th>
                             <!-- <th>Heads Up</th> -->
                             <th>Comment</th>
                             <th ng-click="sortBy('deadline') " ng-class="getClass('deadline')">Deadline</th>
                             <!-- <th>Progress</th> -->
                             <!-- <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th> -->
                             <th
-                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1">
+                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1" ng-click="sortBy('scoopStatus')" ng-class="getClass('scoopStatus')">
                               Status</th>
                             <th ng-click="sortBy('total_price')" ng-class="getClass('total_price')">Price</th>
                             <!-- <th>PO Number</th> -->
@@ -798,7 +825,9 @@ td { font-size: 11px; } */
                                       <option value="50">50</option>
                                       <option value="100" selected>100</option>
                                     </select> -->
-                                    <select ng-model="selectedOptionPage" ng-options="option for option in [10, 25, 50, 100]" ng-change="selectChangePage(selectedOptionPage)" class="form-control input-sm">
+                                    <select ng-model="selectedOptionPage"
+                                      ng-options="option for option in [10, 25, 50, 100]"
+                                      ng-change="selectChangePage(selectedOptionPage)" class="form-control input-sm">
                                     </select> entries</label>
                                 </div>
                               </td>
@@ -1038,7 +1067,7 @@ td { font-size: 11px; } */
                               ng-model="jobsearch" placeholder="Search..." ng-change="handleSearchInputjob(jobsearch)">
                           </div>
                         </div>
-                        <table class="table table-striped b-b projectSorttable">
+                        <table class="table table-striped b-b projectJobSorttable">
                           <!-- <table class="table table-striped b-b" datatable="ng" dt-options="dtOptionsJob">   -->
                           <thead>
                             <tr>
@@ -1175,16 +1204,19 @@ td { font-size: 11px; } */
                               </td>
                               <td colspan="4">
                                 <div class="pagination pull-left pageentry">
-                                  <label>Show 
+                                  <label>Show
                                     <!-- <select name="" class="form-control input-sm">
                                       <option value="10">10</option>
                                       <option value="25">25</option>
                                       <option value="50">50</option>
                                       <option value="100" selected>100</option>
                                     </select> -->
-                                    <select ng-model="selectedOptionPageJob" ng-options="option for option in [10, 25, 50, 100]" ng-change="selectChangePageJob(selectedOptionPageJob)" class="form-control input-sm">
+                                    <select ng-model="selectedOptionPageJob"
+                                      ng-options="option for option in [10, 25, 50, 100]"
+                                      ng-change="selectChangePageJob(selectedOptionPageJob)"
+                                      class="form-control input-sm">
                                     </select>
-                                     entries</label> 
+                                    entries</label>
                                 </div>
                               </td>
                               <td colspan="5">

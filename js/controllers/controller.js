@@ -3559,8 +3559,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     $scope.getClassJob = function (fieldName) {
         return {
-            'jobascdesc active': $scope.jobsortByFieldName === fieldName && !$scope.jobreverse,
-            'jobascdesc active': $scope.jobsortByFieldName === fieldName && $scope.jobreverse
+            'jobdesc active': $scope.jobsortByFieldName === fieldName && !$scope.jobreverse,
+            'jobasc active': $scope.jobsortByFieldName === fieldName && $scope.jobreverse
         };
     };
 
