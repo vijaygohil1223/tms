@@ -10918,46 +10918,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }    
         }
     }
-
-    $scope.changePassword = function (userId) {
-        const obj = {
-            userId : userId,
-        }
-        var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
-            templateUrl: 'tpl/change_password.html',
-            controller: 'ChangePasswordController',
-            size: '',
-            resolve: {
-                items: function () {
-                    return obj;
-                }
-            }
-        });
-        modalInstance.result.then(function (selectedItem) {
-            
-            // debugger;
-            // $scope.selected = selectedItem;
-            // $routeParams.id = clientId;
-            // rest.path = 'contact';
-            // rest.model().success(function (data) {
-            //     var cont = [];
-            //     angular.forEach(data.data, function (val, i) {
-            //         cont.push({
-            //             'id': val.iContactId,
-            //             'text': val.vFirstName + ' ' + val.vLastName
-            //         });
-            //     });
-
-            //     angular.element('#conatct-person').select2({
-            //         allowClear: true,
-            //         data: cont
-            //     });
-            // }).error(errorCallback);
-
-        });
-    };
-
 }).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.bccShow = function () {
@@ -11993,7 +11953,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //},100)
         }
     }
-
+    $scope.changePassword = function (userId) {
+        const obj = {
+            userId : userId,
+        }
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/change_password.html',
+            controller: 'ChangePasswordController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return obj;
+                }
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+        });
+    };
 
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout, $filter ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -40656,7 +40633,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }).error(errorCallback);                                                                                                                                                                                                                                                   
             } else {
-                notification('Password not updated', 'warning');
+                notification('Password not updated !!!!!!!!!!!!!!!', 'warning');
             }
         }
     };
