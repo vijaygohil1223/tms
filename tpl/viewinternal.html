@@ -69,6 +69,10 @@
                                         ng-click="viewFileManagerInternal(userprofiledata.iUserId)" title="File Manager"
                                         style="margin-left:0px;"><i class="fa fa-folder-open"
                                             style="margin-right:5px"></i>File Manager</a>
+                                    <a href="javascript:void(0)" class="btn btn-info"
+                                        ng-click="changePassword(userprofiledata.iUserId)" title="Change Password"
+                                        style="margin-left:0px;"><i class="fa fa-key"
+                                            style="margin-right:5px"></i>Change Password</a>
                                     <button ng-hide="userprofiledata.iUserId == 1" class="btn btn-info"
                                         ng-click="deleteUser(userprofiledata.iUserId,userprofiledata.vProfilePic,userprofiledata.vUserName, userprofiledata.iFkUserTypeId)"
                                         title="Delete" style="margin-left:0px;"><i
