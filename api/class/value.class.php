@@ -74,7 +74,7 @@ class value {
         $array = explode(",", $ids);
         foreach ($array as $key => $value) {
             $values = self::getTypeById($value);
-            $return[$key] = $values['value_name'];
+            $return[$key] = (isset($values['value_name']) ? $values['value_name'] : "");
         }
         $result = implode(", ", $return);
         return $result;

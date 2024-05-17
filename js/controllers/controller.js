@@ -10918,7 +10918,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }    
         }
     }
-
 }).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.bccShow = function () {
@@ -11954,7 +11953,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //},100)
         }
     }
-
+    $scope.changePassword = function (userId) {
+        const obj = {
+            userId : userId,
+        }
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/change_password.html',
+            controller: 'ChangePasswordController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return obj;
+                }
+            }
+        });
+        modalInstance.result.then(function (selectedItem) {
+        });
+    };
 
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout, $filter ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -40590,4 +40606,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$location.path($scope.baseURL+'/#');
     }
     
+}).controller('ChangePasswordController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.changepassword = {};
+    $scope.changepassword.userId = items.userId;
+    $scope.updatePassword = function (formId, id) {
+        if (angular.element("#" + formId).valid()) {
+            if ($scope.changepassword.userId) {
+                rest.path = 'changepassword';
+                rest.post($scope.changepassword).success(function (data) {
+                    if(!data.match){
+                        notification('Old password is wrong', 'warning');
+                    }else{
+                        notification('Password has been updated', 'success');
+                        // log file start 
+                        $scope.logMaster = {};
+                        $scope.logMaster.log_title = $window.localStorage.getItem("session_vUserFullName");
+                        $scope.logMaster.log_type_id = items.userId;
+                        $scope.logMaster.log_type = "update - profile password";
+                        $scope.logMaster.log_status = "external_res";
+                        $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                        rest.path = "saveLog";
+                        rest.post($scope.logMaster).success(function (data) { });
+                        // log file end
+                        $uibModalInstance.close();
+                    }
+                }).error(errorCallback);                                                                                                                                                                                                                                                   
+            } else {
+                notification('Password not updated !!!!!!!!!!!!!!!', 'warning');
+            }
+        }
+    };
+    
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
 });

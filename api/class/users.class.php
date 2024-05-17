@@ -1535,5 +1535,38 @@ array(
         return $return;
     }
 
+    public function changepassword($user) {
+        $userId = $user["userId"];
+        $this->_db->where("iUserId", $userId);
+        $results = $this->_db->getOne(TBL_USERS);
 
+        if ($this->_db->count > 0) {
+            $oldPassword = $user["vOldPassword"];
+            $vNewPassword = $user["vNewPassword"];
+            if($results && !empty($results)){
+                $this->_db->where("org_pass", $oldPassword)->where("iUserId", $userId);
+                $passwordresults = $this->_db->getOne(TBL_USERS);
+                if($passwordresults && !empty($passwordresults)){
+                    $this->_db->where("iUserId", $userId);
+                    $this->_db->update('tms_users',array("vPassword"=>md5($vNewPassword),"org_pass"=>$vNewPassword, "dtUpdatedDate"=>date('Y-m-d H:i:s')));
+                    $return['status'] = 200;
+                    $return['match'] = true;
+                    $return['msg'] = 'Password has been updated';
+                }else{
+                    $return['status'] = 200;
+                    $return['match'] = false;
+                    $return['msg'] = 'Old password is wrong';
+                }
+            }else{
+                $return['status'] = 422;
+                $return['match'] = false;
+                $return['msg'] = 'User not found';
+            }
+        } else {
+            $return['status'] = 422;
+            $return['match'] = false;
+            $return['msg'] = 'You are not Registered in System';
+        }
+        return $return;
+    }
 }

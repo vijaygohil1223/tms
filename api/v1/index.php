@@ -129,7 +129,12 @@ $app->post('/resetpassword1', function () use($app) {
     $result = $user->resetPassword1($data);
     echoResponse($result ['status'], $result);
 });
-
+$app->post('/changepassword','authenticate', function () use($app) {
+    $user = new users ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $user->changepassword($data);
+    echoResponse($result ['status'], $result);
+});
 $app->put('/userUpdate_Byid/:id','authenticate', function ($id) use($app) {
     $user = new users ();
     $data = json_decode($app->request->getBody());
