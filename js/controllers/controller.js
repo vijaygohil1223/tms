@@ -548,22 +548,9 @@ function CommaToPoint4Digit(input, decN=0) {
         var part1 = inputString[0];
         var n2 = part1 ? '.00' : '';
         var n1 = '';
-        // if(inputString && inputString.length > 1 ){
-        //     var  part2 = inputString[1].toString();
-        //     var n2 = '.' + part2.slice(0, decNo);
-        // }
+        
         var n2 = inputString && inputString.length > 1 ? '.' + inputString[1].toString().slice(0, decNo) : n2;
-        // var numarray = input.toString().split(',');
-        // var a = new Array();
-        // a = numarray;
-        // var a1 = a[0];
-        // var n2 = '.00';
-        // var n1 = '';
-        // if (a[1] == undefined && a[1] !== '00') {
-        //     a[1] = '';
-        // } else {
-        //     var n2 = '.' + a[1].slice(0, decNo);
-        // }
+        
         
         var n1 = part1.toString().replace(/\./g, "");
         return n1 + n2;
@@ -2871,14 +2858,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.fillDashboardTabFn(parseInt(tabIndex), projectScoopData, response?.totalItems)    
             angular.forEach($scope.dashboardTabList, function (itm, indx) {
                 if(itm.tabClassName == $scope.tabName){
-                    console.log('$scope.tabName====>1111', $scope.tabName)
                     //itm.projectScoopData = projectScoopData;
                     $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems)    
                 }
             })
             //$scope.dashboardTabList[1].projectScoopData = projectScoopData
             $scope.totalItems = response.totalItems;
-            console.log('$scope.totalItems======>222', $scope.totalItems)
             $scope.totalPages = response.totalPages;
 
             $scope.pageShowRec = $scope.totalItems > 0 ? ($scope.currentPage - 1) * $scope.itemsPerPage + 1 : $scope.totalItems ; 
@@ -2886,7 +2871,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.orderList = response.data;
             //$scope.filterData();
             $scope.showDataLoader = false;
-            if (!$scope.$$phase) $scope.$apply();
+            //if (!$scope.$$phase) $scope.$apply();
         }).catch(function(error) {
             //console.error("Error loading HTML:", error);
             $scope.showDataLoader = false;
@@ -19166,10 +19151,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editInvoiceLinguist = function (id) {
         //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)
+        
         $scope.upInvoiceData.vat = numberFormatCommaToPoint($scope.vat);
-        $scope.upInvoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
+        const customVatNOK =  $('#vatnok').val();
+        $scope.upInvoiceData.vat2 = customVatNOK != '' ? numberFormatCommaToPoint(customVatNOK) : ''; // for second Currencty nok
+        //$scope.upInvoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
         $scope.upInvoiceData.Invoice_cost = $scope.grandJobTotal;
-        $scope.upInvoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
+        const grandTotalNokInv =  $('#grandTotalNok').val();
+        $scope.upInvoiceData.Invoice_cost2 = grandTotalNokInv !='' ? numberFormatCommaToPoint(grandTotalNokInv) : ''; // for second Currencty nok
+        //$scope.upInvoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
+
 
         console.log('$scope.invoiceDetail.custom_invoice_no',$scope.invoiceDetail.custom_invoice_no )
         $scope.upInvoiceData.custom_invoice_no = $scope.invoiceDetail.custom_invoice_no;
@@ -19184,6 +19175,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     'value': numberFormatCommaToPoint(elItemVal),
             // })
         });
+        
         rest.path = 'saveEditedInvoiceLinguist';
         rest.put($scope.upInvoiceData).success(function (data) {
             if (data) {
@@ -34187,6 +34179,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         $scope.resourceInvoiceFileName = file.name;
     };
+
     $scope.save = function (frmId, invoiceType) {
         
         if ($scope.invoiceD == undefined || $scope.invoiceD == null || $scope.invoiceD == "") {
@@ -34226,11 +34219,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.custom_invoice_no = $scope.invoiceDetail.custom_invoice_no;
 
         //$scope.invoiceData.vat = numberFormatCommaToPoint($scope.vat);
-        $scope.invoiceData.vat = $scope.vat;
-        $scope.invoiceData.vat2 = $scope.taxValue2 != '' ? numberFormatCommaToPoint($scope.taxValue2) : ''; // for second Currencty nok
+
+        //$scope.invoiceData.vat = $scope.vat;
+        $scope.invoiceData.vat = $scope.taxValue;
+        const customVatNOK =  $('#vatnok').val();
+        $scope.invoiceData.vat2 = customVatNOK != '' ? numberFormatCommaToPoint(customVatNOK) : ''; // for second Currencty nok
+        //$scope.invoiceData.vat2 = $scope.taxValue2 != '' ? numberFormatCommaToPoint($scope.taxValue2) : ''; // for second Currencty nok
+        
         $scope.invoiceData.job_total = numberFormatCommaToPoint($scope.invoiceTotal);
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
-        $scope.invoiceData.Invoice_cost2 = $scope.grandTotalNok != '' ? numberFormatCommaToPoint($scope.grandTotalNok) : ''; // for second Currencty nok
+        const grandTotalNokInv =  $('#grandTotalNok').val();
+        $scope.invoiceData.Invoice_cost2 = grandTotalNokInv != '' ? numberFormatCommaToPoint(grandTotalNokInv) : ''; // for second Currencty nok
+        //$scope.invoiceData.Invoice_cost2 = $scope.grandTotalNok != '' ? numberFormatCommaToPoint($scope.grandTotalNok) : ''; // for second Currencty nok
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
         $scope.invoiceData.currency_rate = $scope.currencyRate ;
 
