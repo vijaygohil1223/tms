@@ -2800,7 +2800,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             const sortOrderBy = $scope.sortOrder ? 'DESC' : 'ASC'
             urlString += '&sortBy=' + $scope.sortByFieldName
             urlString += '&sortOrder=' + sortOrderBy
-            $scope.showDataLoader = false;
+            //$scope.showDataLoader = false;
         }
         
         rest.path = 'dashboardProjectsOrderScoopGet/' + $window.localStorage.getItem("session_iUserId") + '?' + urlString;
@@ -2871,13 +2871,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.fillDashboardTabFn(parseInt(tabIndex), projectScoopData, response?.totalItems)    
             angular.forEach($scope.dashboardTabList, function (itm, indx) {
                 if(itm.tabClassName == $scope.tabName){
+                    console.log('$scope.tabName====>1111', $scope.tabName)
                     //itm.projectScoopData = projectScoopData;
                     $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems)    
                 }
             })
             //$scope.dashboardTabList[1].projectScoopData = projectScoopData
             $scope.totalItems = response.totalItems;
-            console.log('$scope.totalItems', $scope.totalItems)
+            console.log('$scope.totalItems======>222', $scope.totalItems)
             $scope.totalPages = response.totalPages;
 
             $scope.pageShowRec = $scope.totalItems > 0 ? ($scope.currentPage - 1) * $scope.itemsPerPage + 1 : $scope.totalItems ; 
@@ -2885,6 +2886,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.orderList = response.data;
             //$scope.filterData();
             $scope.showDataLoader = false;
+            if (!$scope.$$phase) $scope.$apply();
         }).catch(function(error) {
             //console.error("Error loading HTML:", error);
             $scope.showDataLoader = false;

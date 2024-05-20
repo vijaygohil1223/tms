@@ -228,7 +228,8 @@ class dashboard {
             $currentPage = 0;
         }
         
-        $sortBy = ' its.due_date DESC';
+        //$sortBy = ' its.due_date DESC';
+        $sortBy = " STR_TO_DATE(its.due_date, '%Y-%m-%d %H:%i:%s') DESC";
         if(isset($_GET['sortBy']) && $_GET['sortBy']!=''){
             $sortBy = $_GET['sortBy'];
             if($_GET['sortBy'] == 'clientName')
@@ -244,7 +245,8 @@ class dashboard {
                 
                 
             if($_GET['sortBy'] == 'deadline')
-                $sortBy = 'DATE(its.due_date)';    
+                $sortBy = "  STR_TO_DATE(its.due_date, '%Y-%m-%d %H:%i:%s') ";    
+            //$sortBy = 'DATE(its.due_date)';    
             
             $sortOrder = isset($_GET['sortOrder']) && $_GET['sortOrder'] != '' ? $_GET['sortOrder'] : 'ASC' ;
             $sortBy = " $sortBy $sortOrder  ";
