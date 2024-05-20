@@ -726,7 +726,7 @@ array(
             $this->_db->where('status_type', 2);
             $this->_db->where('status_id', $id['vStatus']);
             $data = $this->_db->getone('tms_user_status');
-            $id['vStatus'] = $data['status_name'];
+            $id['vStatus'] = (isset($data['status_name'])) ? $data['status_name'] : "";
         }
         if(isset($id['vCodeRights']) && $id['vCodeRights']){
             //$substr = substr($id["vCodeRights"], 0, 3);
