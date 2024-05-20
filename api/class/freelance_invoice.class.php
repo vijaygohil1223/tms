@@ -104,20 +104,49 @@ class Freelance_invoice {
         }
 
         $invoiceAlreadyAdded = false;
-        if($data['job_id']){
-            $invoiceRecords = $this->_db->get('tms_invoice');
-            foreach ($invoiceRecords as $k => $v) {
-                foreach (json_decode($v['job_id'],true) as $ke => $val) {
-                    $existedJobId = $val['id'];
-                    foreach (json_decode($data['job_id'],true) as $k1 => $v1) {
-                        $postedJobId = $v1['id'];
-                        if($postedJobId == $existedJobId){
-                            $invoiceAlreadyAdded = true;
+        try{
+            if (!empty($data['job_id'])) {
+                $invoiceRecords = $this->_db->get('tms_invoice');
+                if (is_array($invoiceRecords)) {
+                    foreach ($invoiceRecords as $k => $v) {
+                        $jobIds = json_decode($v['job_id'], true);
+                        if (is_array($jobIds)) {
+                            foreach ($jobIds as $ke => $val) {
+                                $existedJobId = $val['id'];
+                                $postedJobIds = json_decode($data['job_id'], true);
+                                if (is_array($postedJobIds)) {
+                                    foreach ($postedJobIds as $k1 => $v1) {
+                                        $postedJobId = $v1['id'];
+                                        if ($postedJobId == $existedJobId) {
+                                            $invoiceAlreadyAdded = true;
+                                            break 3; // Exit all loops once a match is found
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
+        }catch(Exception $e){
+            // 
+        }        
+        
+        // if($data['job_id']){
+        //     $invoiceRecords = $this->_db->get('tms_invoice');
+        //     foreach ($invoiceRecords as $k => $v) {
+        //         foreach (json_decode($v['job_id'],true) as $ke => $val) {
+        //             $existedJobId = $val['id'];
+        //             foreach (json_decode($data['job_id'],true) as $k1 => $v1) {
+        //                 $postedJobId = $v1['id'];
+        //                 if($postedJobId == $existedJobId){
+        //                     $invoiceAlreadyAdded = true;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
         if(isset($data['job'])){
             $jobData = $data['job'];
             unset($data['job']);

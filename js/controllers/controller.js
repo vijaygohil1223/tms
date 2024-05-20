@@ -2779,6 +2779,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.orderList = [];
 
     $scope.dashboardScoopLoad  = function (page, tabIndex=0, newTabName) {
+        $scope.showDataLoader = true;
         var projectScoopData = [];
         console.log('newTabName', newTabName)
         var assignOrderData = [];
@@ -2799,6 +2800,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             const sortOrderBy = $scope.sortOrder ? 'DESC' : 'ASC'
             urlString += '&sortBy=' + $scope.sortByFieldName
             urlString += '&sortOrder=' + sortOrderBy
+            $scope.showDataLoader = false;
         }
         
         rest.path = 'dashboardProjectsOrderScoopGet/' + $window.localStorage.getItem("session_iUserId") + '?' + urlString;
@@ -8832,8 +8834,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //         // Show here for your model, and do what you need**
     //     }
     // });
-    $scope.storeScoopOrders = function(){
+    $scope.storeScoopOrders = function(id){
         $window.localStorage.scoopReport = JSON.stringify($scope.orderReport);
+        if (id) {
+            rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function (data) {
+                if (data.userName != null) {
+                    $scope.orderdata = data;
+
+                    $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
+                    $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
+                    $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
+
+                    $window.localStorage.orderNo = $scope.orderdata.order_number;
+                    $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+                    $window.localStorage.orderID = id;
+                    $window.localStorage.iUserId = id;
+                    $window.localStorage.userType = 3;
+                    $window.localStorage.currentUserName = data.vClientName;
+                    $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject", "false");
+
+                    $location.path('/general/'+data.order_id);
+                    $window.localStorage.orderBlock = 1;
+                    // $timeout(function () {
+                    //     $scope.cancel();
+                    // }, 500);
+                } else {
+                    notification('Information not available', 'warning');
+                }
+            }).error(errorCallback);
+        }
     }
     $rootScope.$on('$locationChangeSuccess', function() {
         $rootScope.actualLocation = $location.path();
@@ -34236,6 +34269,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
 
+    // var loginid = $window.localStorage.getItem("session_iUserId");
+    // rest.path = 'viewExternalget/' + loginid;
+    // rest.get().success(function (intenalData) {
+    //     $scope.loginUserData = intenalData;
+    //     console.log('$scope.loginUserData', $scope.loginUserData)
+        
+    // })
+
     //get data of invoice
     if ($cookieStore.get('invoiceScoopId').length) {
         var obj = [];
@@ -34390,6 +34431,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('staticData', settingData)
                 if(settingData){
                     $scope.invoiceSettingData = settingData[0];
+                    
+                    console.log('$scope.invoiceDetail.vCenterid==', $scope.invoiceDetail.vCenterid)
                     if($scope.invoiceDetail.vCenterid && $scope.invoiceSettingData.server_no === 2){
                         let invoiceSettingFltr = settingData.filter( (elData) => (elData.branch_center_id.toString().split(',')).includes($scope.invoiceDetail.vCenterid.toString())  );
                         console.log('$scope.invoiceSettingData==2', $scope.invoiceSettingData)
