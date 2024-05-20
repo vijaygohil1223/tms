@@ -2901,12 +2901,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     // Function to handle search input changes
     $scope.handleSearchInput = function (searchText) {
+        $scope.showDataLoader = true;
         console.log('searchText', searchText)
-        $scope.searchText = searchText;
-        //$('.tab-pane.active input').val()
-        $scope.tabName = $window.localStorage.getItem("projectActiveTab")
-        var tabIndex = findIndexByTabClassName($scope.tabName);
-        $scope.dashboardScoopLoad(1, tabIndex);
+        try {
+            $scope.searchText = searchText;
+            //$('.tab-pane.active input').val()
+            $scope.tabName = $window.localStorage.getItem("projectActiveTab")
+            var tabIndex = findIndexByTabClassName($scope.tabName);
+            $scope.dashboardScoopLoad(1, tabIndex);
+        } catch (error) {
+            $scope.showDataLoader = false;
+            console.log('error', error)
+        }
     };
 
     $scope.activeTabfn = function(){

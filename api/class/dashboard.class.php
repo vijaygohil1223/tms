@@ -224,7 +224,7 @@ class dashboard {
             $find_job = "OR its.attached_workflow LIKE '%$search%' ";
             $find_linguist = "OR CONCAT( jsv.vFirstName, ' ', jsv.vLastName ) LIKE '%$search%'";
             
-            $whereCond .= " AND its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject $pOrderNo $find_project_m $find_qa_spc $find_job $find_linguist $pOrderNo2";
+            $whereCond .= " AND ( its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject $pOrderNo $find_project_m $find_qa_spc $find_job $find_linguist $pOrderNo2 ) ";
             $currentPage = 0;
         }
         
