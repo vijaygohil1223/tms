@@ -86,7 +86,7 @@ class dashboard {
             $data['ongoing'] = $dataOn[0]['totalItems'];
         }
         // $qry = "SELECT COUNT(*) AS totalItems FROM tms_items its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN (SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN (SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource) AS jsv ON (its.order_id = jsv.order_id AND its.item_number = jsv.item_id) LEFT JOIN tms_discussion AS td ON (td.order_id = its.order_id AND (NOT FIND_IN_SET('1', td.read_id))) WHERE (cust.project_manager = $id || cust.project_coordinator = $id || cust.QA_specialist = $id || cust.project_coordinator = $id || cust.sub_pm = $id) AND its.item_status NOT IN (4,5,6,7,8,9) ";
-        $qry = "SELECT COUNT(*) AS totalItems FROM ( SELECT its.itemId FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN ( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN ( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON (its.order_id = jsv.order_id AND its.item_number = jsv.item_id) LEFT JOIN tms_discussion AS td ON (td.order_id = its.order_id AND (NOT FIND_IN_SET('1', td.read_id))) WHERE its.order_id != 0 AND (cust.project_manager = $id || cust.project_coordinator = $id || cust.QA_specialist = $id || cust.project_coordinator = $id || cust.sub_pm = $id) AND its.item_status NOT IN (4,5,6,7,8,9)  GROUP BY its.itemId ) AS subquery";
+        $qry = "SELECT COUNT(*) AS totalItems FROM ( SELECT its.itemId FROM tms_items AS its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id LEFT JOIN tms_customer AS cust ON its.order_id = cust.order_id LEFT JOIN tms_proj_language AS plang ON its.order_id = plang.order_id LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id LEFT JOIN tms_client_indirect AS inc ON inc.iClientId = cust.indirect_customer LEFT JOIN tms_users AS tu ON tu.iUserId = cust.project_manager LEFT JOIN tms_users AS sub_tu ON sub_tu.iUserId = cust.sub_pm LEFT JOIN tms_users AS sub_scp_tu ON sub_scp_tu.iUserId = its.subPm LEFT JOIN tms_users AS gen_Qa ON gen_Qa.iUserId = cust.QA_specialist LEFT JOIN tms_users AS sub_gen_Qa ON sub_gen_Qa.iUserId = cust.sub_qa LEFT JOIN tms_users AS scp_Qa ON scp_Qa.iUserId = its.qaSpecialist LEFT JOIN tms_users AS sub_scp_Qa ON sub_scp_Qa.iUserId = its.subQa LEFT JOIN tms_project_status AS ps ON ps.pr_status_id = gen.project_status LEFT JOIN tms_customer_price_list AS cp ON its.project_pricelist = cp.price_list_id LEFT JOIN tms_item_status AS tis ON its.item_status = tis.item_status_id LEFT JOIN ( SELECT resource_id, price_currency FROM tms_customer_price_list WHERE price_id = 1 GROUP BY resource_id ) AS cp2 ON cp2.resource_id = cust.client LEFT JOIN ( SELECT tu.iUserId AS resources, tu.vFirstName, tu.vLastName, tu.vUserName, tsv.order_id, tsv.item_id, tsv.job_summmeryId FROM tms_summmery_view AS tsv LEFT JOIN tms_users AS tu ON tu.iUserId = tsv.resource ) AS jsv ON (its.order_id = jsv.order_id AND its.item_number = jsv.item_id) LEFT JOIN tms_discussion AS td ON (td.order_id = its.order_id AND (NOT FIND_IN_SET('1', td.read_id))) WHERE its.order_id != 0 AND (cust.project_manager = $id || cust.project_coordinator = $id || cust.QA_specialist = $id || cust.project_coordinator = $id || cust.sub_pm = $id || its.manager = $id || its.coordinator = $id || its.qaSpecialist = $id || its.subPm = $id || its.subPc = $id || its.subQa = $id) AND its.item_status NOT IN (4,5,6,7,8,9)  GROUP BY its.itemId ) AS subquery";
         $dataMyProj = $this->_db->rawQuery($qry);
         if($dataMyProj){
             $data['myProject'] = $dataMyProj[0]['totalItems'];
@@ -186,7 +186,7 @@ class dashboard {
                 $whereCond = " AND DATE(its.due_date) > CURDATE() + INTERVAL 1 DAY AND its.item_status NOT IN (4, 5, 6, 8, 9)";
             }
             if($tabName == 'tab-my-projects'){
-                $whereCond = " AND (cust.project_manager = $id || cust.project_coordinator = $id || cust.QA_specialist = $id || cust.project_coordinator = $id || cust.sub_pm = $id) AND its.item_status NOT IN (4,5,6,7,8,9)  ";
+                $whereCond = " AND (cust.project_manager = $id || cust.project_coordinator = $id || cust.QA_specialist = $id || cust.project_coordinator = $id || cust.sub_pm = $id || its.manager = $id || its.coordinator = $id || its.qaSpecialist = $id || its.subPm = $id || its.subPc = $id || its.subQa = $id) AND its.item_status NOT IN (4,5,6,7,8,9)  ";
                 //$whereCond = " AND (its.project_manager_id = $id OR its.project_coordinator_id = $id OR its.qa_specialist_id = $id OR its.qa_specialist_id = $id OR its.sub_pm_id = $id  ) ";
             }
             //$currentPage = 0;
@@ -198,13 +198,25 @@ class dashboard {
             $tLang = "its.target_lang LIKE '%\"sourceLang\":\"$search\"%' ";
             $clientName = " OR c.vUserName LIKE '%$search%' ";
             $attached_workflow = " OR its.attached_workflow LIKE '%$search%' ";
-            $pOrderNo = '';
+            $pOrderNo = $pOrderNo2 = '';
             if (strpos($search, '-') !== false) {
+                // alternate 1
+                // $parts = explode('-', $search);
+                // $beforeHyphen = $parts[0];
+                // $pOrderNo = " OR gen.order_no LIKE '$beforeHyphen%' ";
+                
+                // alternate 2
                 $parts = explode('-', $search);
-                $beforeHyphen = $parts[0];
-                $pOrderNo = " OR gen.order_no LIKE '$beforeHyphen%' ";
+                if (isset($parts[1]) && strlen($parts[1]) === 3) {
+                    $parts[1] = ltrim($parts[1], '0');
+                }else{
+                    $pOrderNo2 = "OR gen.order_no  LIKE '%$search%' " ;
+                }
+                $combinedSearch = implode('-', $parts);
+                $pOrderNo = "OR CONCAT(gen.order_no, '-', its.item_number) LIKE '%$combinedSearch%'";
+            }else{
+                $pOrderNo2 = "OR gen.order_no  LIKE '%$search%' " ;
             }
-            $pOrderNo2 = "OR gen.order_no  LIKE '%$search%' " ;
             $scoopName = "OR its.item_name  LIKE '%$search%' " ; 
             $scoopEmailSubject = "OR its.item_email_subject LIKE '%$search%' ";
             $find_project_m = "OR CONCAT(tu.vFirstName, ' ', tu.vLastName) LIKE '%$search%'";
@@ -216,7 +228,7 @@ class dashboard {
             $currentPage = 0;
         }
         
-        $sortBy = ' its.itemId  DESC';
+        $sortBy = ' DATE(its.due_date) DESC';
         if(isset($_GET['sortBy']) && $_GET['sortBy']!=''){
             $sortBy = $_GET['sortBy'];
             if($_GET['sortBy'] == 'clientName')
