@@ -3,7 +3,7 @@ class dashboard {
 
     public function __construct() {
         $this->_db = db::getInstance();
-        $this->_conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE, 3307);
+        $this->_conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
     }
 
     public function OrderGet() {
@@ -228,7 +228,7 @@ class dashboard {
             $currentPage = 0;
         }
         
-        $sortBy = ' its.itemId  DESC';
+        $sortBy = ' DATE(its.due_date) DESC';
         if(isset($_GET['sortBy']) && $_GET['sortBy']!=''){
             $sortBy = $_GET['sortBy'];
             if($_GET['sortBy'] == 'clientName')
