@@ -836,7 +836,7 @@ td { font-size: 11px; } */
                                   <uib-pagination id="scoopPagination" class="pagination-sm pagination"
                                     total-items="totalItems" ng-model="currentPage"
                                     ng-change="dashboardScoopLoad(currentPage)" previous-text="&lsaquo;"
-                                    next-text="&rsaquo;" items-per-page="itemsPerPage">
+                                    next-text="&rsaquo;" items-per-page="itemsPerPage" max-size="10">
                                   </uib-pagination>
                                 </div>
                               </td>
@@ -1224,7 +1224,7 @@ td { font-size: 11px; } */
                                   <uib-pagination id="jobPagination" class="pagination-sm pagination"
                                     total-items="jobtotalItems" ng-model="jobcurrentPage"
                                     ng-change="dashboardJobLoad(jobcurrentPage)" previous-text="&lsaquo;"
-                                    next-text="&rsaquo;" items-per-page="jobitemsPerPage">
+                                    next-text="&rsaquo;" items-per-page="jobitemsPerPage" max-size="10">
                                   </uib-pagination>
                                 </div>
                               </td>
