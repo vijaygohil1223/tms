@@ -3,7 +3,7 @@ class dashboard {
 
     public function __construct() {
         $this->_db = db::getInstance();
-        $this->_conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+        $this->_conn = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE, 3307);
     }
 
     public function OrderGet() {
@@ -198,13 +198,25 @@ class dashboard {
             $tLang = "its.target_lang LIKE '%\"sourceLang\":\"$search\"%' ";
             $clientName = " OR c.vUserName LIKE '%$search%' ";
             $attached_workflow = " OR its.attached_workflow LIKE '%$search%' ";
-            $pOrderNo = '';
+            $pOrderNo = $pOrderNo2 = '';
             if (strpos($search, '-') !== false) {
+                // alternate 1
+                // $parts = explode('-', $search);
+                // $beforeHyphen = $parts[0];
+                // $pOrderNo = " OR gen.order_no LIKE '$beforeHyphen%' ";
+                
+                // alternate 2
                 $parts = explode('-', $search);
-                $beforeHyphen = $parts[0];
-                $pOrderNo = " OR gen.order_no LIKE '$beforeHyphen%' ";
+                if (isset($parts[1]) && strlen($parts[1]) === 3) {
+                    $parts[1] = ltrim($parts[1], '0');
+                }else{
+                    $pOrderNo2 = "OR gen.order_no  LIKE '%$search%' " ;
+                }
+                $combinedSearch = implode('-', $parts);
+                $pOrderNo = "OR CONCAT(gen.order_no, '-', its.item_number) LIKE '%$combinedSearch%'";
+            }else{
+                $pOrderNo2 = "OR gen.order_no  LIKE '%$search%' " ;
             }
-            $pOrderNo2 = "OR gen.order_no  LIKE '%$search%' " ;
             $scoopName = "OR its.item_name  LIKE '%$search%' " ; 
             $scoopEmailSubject = "OR its.item_email_subject LIKE '%$search%' ";
             $find_project_m = "OR CONCAT(tu.vFirstName, ' ', tu.vLastName) LIKE '%$search%'";
