@@ -228,7 +228,7 @@ class dashboard {
             $currentPage = 0;
         }
         
-        $sortBy = ' DATE(its.due_date) DESC';
+        $sortBy = ' its.due_date DESC';
         if(isset($_GET['sortBy']) && $_GET['sortBy']!=''){
             $sortBy = $_GET['sortBy'];
             if($_GET['sortBy'] == 'clientName')
