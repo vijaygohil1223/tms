@@ -19161,7 +19161,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.upInvoiceData.Invoice_cost2 = grandTotalNokInv !='' ? numberFormatCommaToPoint(grandTotalNokInv) : ''; // for second Currencty nok
         //$scope.upInvoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
 
-
         console.log('$scope.invoiceDetail.custom_invoice_no',$scope.invoiceDetail.custom_invoice_no )
         $scope.upInvoiceData.custom_invoice_no = $scope.invoiceDetail.custom_invoice_no;
         console.log('$scope.upInvoiceData.custom_invoice_no', $scope.upInvoiceData.custom_invoice_no)
@@ -34228,7 +34227,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         $scope.invoiceData.job_total = numberFormatCommaToPoint($scope.invoiceTotal);
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
-        const grandTotalNokInv =  $('#grandTotalNok').val();
+        const grandTotalNokInv =  $('#grandTotalNok').val(); 
         $scope.invoiceData.Invoice_cost2 = grandTotalNokInv != '' ? numberFormatCommaToPoint(grandTotalNokInv) : ''; // for second Currencty nok
         //$scope.invoiceData.Invoice_cost2 = $scope.grandTotalNok != '' ? numberFormatCommaToPoint($scope.grandTotalNok) : ''; // for second Currencty nok
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
