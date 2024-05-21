@@ -150,6 +150,9 @@ class Client_invoice {
     public function clientInvoiceViewOne($id) {
     	$id1 = self::getAll('invoice_id',$id,'tms_invoice_client');
         $paymentDue = self::getAll('invoice_due_id',1,'tms_invoice_due_period');
+        $this->_db->where('tic.invoice_id', $id);
+        $this->_db->join('tms_invoice_client tic', 'tic.customer_id=tp.iClientId', 'LEFT');
+        $paymentInfo = $this->_db->getOne('tms_payment tp', 'tp.vPaymentInfo');
 
     		foreach (json_decode($id1[0]['scoop_id']) as $k => $v) {
                 $this->_db->where('ti.itemId', $v->id);
@@ -199,6 +202,7 @@ class Client_invoice {
                     
                     $data['vBankInfo'] = self::getDefaultbankDetails();
                 }
+                $data['paymentInfoClient'] = (isset($paymentInfo) && !empty($paymentInfo)) ? $paymentInfo['vPaymentInfo'] : "";
 				$infoD[$k] = array_merge($data, $id1[0]);
 	    	}
 	    	return $infoD;
@@ -701,11 +705,11 @@ class Client_invoice {
 			$this->_db->join('tms_client tci', 'tci.iClientId=tcu.client', 'LEFT');
             //$this->_db->join('tms_payment tp', 'tp.iClientId=tcu.client', 'LEFT');
             $this->_db->join('tms_payment tp', 'tp.iClientId = tci.iClientId AND tp.iType = 2', 'LEFT');
+            $this->_db->join('tms_payment tpp', 'tpp.iClientId = tci.iClientId', 'LEFT');
 			$this->_db->join('tms_tax tx', 'tp.tax_rate = tx.tax_id', 'LEFT');
             $this->_db->join('tms_client_contact tcc','tcc.iClientId = tci.iClientId', 'INNER');
 			//$data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone, tu.iUserId AS freelanceId, tu.vUserName AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tg.company_code, tsv.job_code AS jobCode');
-			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.item_name, ti.order_id AS orderId,ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS companyAddressDtl,tci.invoice_no_of_days, tci.client_currency, tci.vCenterid, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tx.tax_percentage as tax_rate, ti.po_number');
-
+			$data = $this->_db->getOne('tms_items ti', 'ti.itemId AS itemId,ti.item_number, ti.item_name, ti.order_id AS orderId,ti.total_price as scoop_value, gen.heads_up, gen.order_no AS orderNumber, tci.iClientId AS clientId, tci.vUserName as clientCompanyName, tci.vAddress1 AS companyAddress, tci.vEmailAddress  AS companyEmail, tci.vPhone AS companyPhone,tci.address1Detail AS companyAddressDtl,tci.invoice_no_of_days, tci.client_currency, tci.vCenterid, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tp.vPaymentInfo as clientVatinfo, tx.tax_percentage as tax_rate, ti.po_number, tpp.vPaymentInfo');
             // echo $this->_db->getLastQuery();
             //$companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
 			//$data['companyName'] = $companyName;
@@ -733,6 +737,7 @@ class Client_invoice {
                 }
 
                 $data['vBankInfo'] = self::getDefaultbankDetails();
+                $data['paymentInfoClient'] = (isset($data) && !empty($data)) ? $data['vPaymentInfo'] : "";
 			}
 			$infoD[$k] = $data;
 		}
