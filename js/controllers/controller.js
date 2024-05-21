@@ -12289,6 +12289,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $window.localStorage.currentUserName = data.vFirstName + " " + data.vLastName;
             $scope.currentUserName = $window.localStorage.currentUserName;
             $scope.imgshow = true;
+            $scope.signimgshow = true;
 
             $scope.userprofiledata.iResourceNumber = $filter('numberFixedLen')($scope.userprofiledata.iResourceNumber, 4);
 
@@ -12593,12 +12594,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     // ----------------save image section ------------------//
-    $scope.getFile = function (file) {
+    $scope.getFile = function (file, type) {
         fileReader.readAsDataUrl(file, $scope)
             .then(function (result) {
                 if (file.type == 'image/jpeg' || file.type == 'image/jpg' || file.type == 'image/png' || file.type == 'image/gif') {
-                    $scope.imgshow = false;
-                    $scope.imageSrc = result;
+                    if (type && type === 'signature') {
+                        $scope.signimgshow = false;
+                        $scope.signimageSrc = result;
+                    }else{
+                        $scope.imgshow = false;
+                        $scope.imageSrc = result;
+                    }
                 } else {
                     notification("Please select image", "error");
                 }
@@ -12682,6 +12688,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.iMobile = JSON.stringify(countryObj);
                 $scope.userprofiledata.vPhoneNumber = phone;
                 $scope.userprofiledata.image = $scope.imageSrc;
+                $scope.userprofiledata.vSignUpload = $scope.signimageSrc;
 
                 rest.path = 'saveuserprofileexternel';
                 rest.put($scope.userprofiledata).success(function (data) {
@@ -12764,6 +12771,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.vTimeZoneCity = angular.element('#address1_locality').val();
                 // ---------address over -----------------//
                 $scope.userprofiledata.image = $scope.imageSrc;
+                $scope.userprofiledata.vSignUpload = $scope.signimageSrc;
                 $scope.userprofiledata.created_by = $window.localStorage.session_iUserId;
                 var countryCodeData = angular.element('#iMobile').parent().find('.selected-flag').attr('title');
                 var countryClass = angular.element('#iMobile').parent().find('.selected-flag').find('.iti-flag').attr('class');
@@ -12908,6 +12916,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 // ---------------address only -----------------//
                 $scope.userprofiledata.image = $scope.imageSrc;
+                $scope.userprofiledata.vSignUpload = $scope.signimageSrc;
                 var $oldUser_id = $window.localStorage.getItem("session_internalResourceUpdatedId");
                 var $recentUser_id = $window.localStorage.getItem("session_iUserId");
 
@@ -13039,6 +13048,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 /*delete $scope.userprofiledata["cPassword"];*/
                 // --------address only -----------------//
                 $scope.userprofiledata.image = $scope.imageSrc;
+                $scope.userprofiledata.vSignUpload = $scope.signimageSrc;
                 $scope.userprofiledata.created_by = $window.localStorage.session_iUserId;
                 
                 var countryCodeData = angular.element('#iMobile').parent().find('.selected-flag').attr('title');

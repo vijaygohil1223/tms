@@ -241,7 +241,8 @@ class users {
             $user['iFkUserTypeId'] = '1';
             $user['org_pass'] = $user['vPassword'];
             $user['vPassword'] = md5($user['vPassword']);
-            $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : ''; 
+            $user['vProfilePic'] = isset($user['image']) ? $this->uploadimage($user) : '';
+            $user['vSignUpload'] = isset($user['vSignUpload']) ? $this->uploadSignimage($user) : '';
             $user['dtBirthDate'] = (isset($user['dtBirthDate']) && $user['dtBirthDate'] != 'Invalid Date' && $user['dtBirthDate'] != '') ? date('Y-m-d', strtotime($user['dtBirthDate'])) : NULL;
             $user['dtCreationDate'] = date('Y-m-d H:i:s'); /*$user['dtCreationDate']*/
             $user['dtCreatedDate'] = date('Y-m-d H:i:s');
@@ -407,6 +408,24 @@ class users {
                 }    
                 $user['vProfilePic'] = $this->uploadimage($user);
             }
+
+            // for sign upload
+            if (isset($user['vSignUpload']) && !empty($user['vSignUpload'])) {
+                if(isset($id)){
+                    $path = "../../uploads/signImages/";
+                    $this->_db->where('iUserId',$id);
+                    $data = $this->_db->getOne('tms_users');
+                    $image = $data['vSignUpload'];
+                    if(isset($data['vSignUpload']) && $data['vSignUpload'] ){    
+                        if(file_exists($path.$image)){
+                            unlink($path.$image);
+                        }
+                    }
+                    $image = $user['vSignUpload'];
+                    $images = @glob($path.$image);
+                }    
+                $user['vSignUpload'] = $this->uploadSignimage($user);
+            }
             
             //$user['dtBirthDate'] = date('Y-m-d', strtotime($user['dtBirthDate']));
             $user['dtBirthDate'] = ($user['dtBirthDate'] == 'Invalid date' || $user['dtBirthDate'] == '') ? NULL : date('Y-m-d', strtotime($user['dtBirthDate']));
@@ -503,6 +522,26 @@ class users {
         }
         $filename = time() . "." . $mimetype;
         $output_file = UPLOADS_ROOT . "profilePic/" . $filename;
+        $ifp = fopen($output_file, "wb");
+        fwrite($ifp, $finalstring);
+        fclose($ifp);
+        return $filename;
+    }
+
+    // save another images from the client profile.
+    public function uploadSignimage($data) {
+        $result = explode(',', $data['vSignUpload']);
+        
+        $getFileType = explode(';',explode(':',$result[0])[1]);
+        
+        $finalstring = base64_decode($result[1]);
+
+        $mimetype = self::getImageMimeType($finalstring,$getFileType[0]);
+        if($mimetype == 'jpeg'){
+            $mimetype = 'jpg';
+        }
+        $filename = time() . "." . $mimetype;
+        $output_file = UPLOADS_ROOT . "signImages/" . $filename;
         $ifp = fopen($output_file, "wb");
         fwrite($ifp, $finalstring);
         fclose($ifp);
