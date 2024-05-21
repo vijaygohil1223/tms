@@ -251,6 +251,30 @@
                                                                     ng-model="userprofiledata.menu_access" required>
                                                             </div>
                                                         </div>
+
+                                                        <div class="form-group">
+                                                            <div class="col-sm-8">
+                                                                <label>Signature Upload</label>
+                                                                <input type="file"
+                                                                    ng-model="userprofiledata.vSignUpload"
+                                                                    ng-file-select="onFileSelect($files)" data-type="signature"/>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="thumb-info mb-md">
+                                                                    <img id="new_sign_upload" ng-show="signimgshow"
+                                                                        ng-if="userprofiledata.vSignUpload != undefined"
+                                                                        ng-src="uploads/signImages/{{userprofiledata.vSignUpload}}"
+                                                                        class="img-thumbnail" alt="Add a Signature">
+                                                                    <img id="new_sign_upload" ng-show="signimgshow"
+                                                                        ng-if="userprofiledata.vSignUpload == undefined"
+                                                                        ng-src="assets/img/blank.png"
+                                                                        class="img-thumbnail" alt="Add a Signature">
+                                                                    <img id="new_sign_upload" ng-show="!signimgshow"
+                                                                        ng-src="{{signimageSrc ? signimageSrc : 'assets/img/blank.png'}}"
+                                                                        class="img-thumbnail" alt="Add a Signature">
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
