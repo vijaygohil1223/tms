@@ -17700,6 +17700,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.viewBtn = true;
     $scope.invoiceNumOfdays = 30;
     $scope.currencyRate = 1;
+    var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
     //$scope.noneCls = "none"
     
     // invoice setting Data
@@ -18033,7 +18034,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;
         $scope.upInvoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
         //$scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
-        const invoiceDateString = moment($scope.invoiceDetail.invoice_date);
+        const invoiceDateString = moment($scope.invoiceDetail.invoice_date, customDateFormat);
         $scope.upInvoiceData.invoice_date = invoiceDateString.isValid() ? invoiceDateString.format('YYYY-MM-DD') : '0000-00-00';
         $scope.upInvoiceData.currency_rate = $scope.currencyRate;
 
