@@ -111,8 +111,8 @@
                       <!-- <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList"> -->
                       <thead>
                         <th>#</th>
+                        <th>Custom Invoice number</th>
                         <th>Invoice number</th>
-                        <th>Company name</th>
                         <th>Freelancer name</th>
                         <th>Amount</th>
                         <th>Currency</th>
@@ -135,14 +135,16 @@
                               style="display: none;" ng-model="invoiceL.invoice_id">
                           </td>
                           <td>
-                            <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"> {{invoiceL.invoice_number}} </a>
+                            <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"># {{invoiceL.invoice_number}} </a>
                           </td>
-                          <td ng-bind="invoiceL.companyName"></td>
+                          <td>
+                            <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"><span>{{padNumber(invoiceL.org_invoice_number)}}</span></a>
+                          </td>
                           <td ng-bind="invoiceL.freelanceName"></td>
                           <td ng-bind="invoiceL.Invoice_cost"></td>
                           <td ng-bind="invoiceL.freelance_currency"></td>
                           <td>{{ invoiceL.created_date | globalDtFormat }}</td>
-                          <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                          <td>{{ invoiceL.invoice_duedate | globalDtFormat }} <a href="javascript:void(0)" title="edit duedate" class="trActionIcon" ng-click="editDueDate(invoiceL.invoice_id,invoiceL.invoice_duedate | globalDtFormat, invoiceL.created_date | globalDtFormat)"><i class="fa fa-pencil"></i></a></td>
                           <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                           <td>
                             <span ng-bind="invoiceL.invoice_status"></span>
