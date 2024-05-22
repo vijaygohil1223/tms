@@ -226,6 +226,11 @@ td.table-data-text {
                                   <input class="form-control" type="text" ng-model="invoiceDetail.custom_invoice_number" id="custom_invoice_number" name="custom_invoice_number" ng-disabled="editDisabled"  style="width: 150px; font-weight:bold;margin-left: 5px;margin-top: -3px;" />
                                 </div>
                               </dd>
+                              <dd class="invoice-heading" style="margin-top:10px;">
+                                <div class="d-flex"> <strong>Notes</strong>
+                                    <textarea class="form-control" name="inv_notes" ng-model="invoiceDetail.inv_notes" style="resize: none;margin-left: 20px;width: 300px;" rows="3" ng-disabled="editDisabled"></textarea>
+                                </div>
+                              </dd>
                       </div>
                       <table class="table table-bordered table-condensed">
                           <thead>

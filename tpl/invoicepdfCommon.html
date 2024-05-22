@@ -250,6 +250,11 @@
                 <span>{{invoiceDetail.custom_invoice_number}}</span>
               </div>
             </div>
+            <div ng-if="invoiceDetail.inv_notes" class="invoice-heading" style="margin-top:10px;">
+              <div class="d-flex"> <span style="margin-bottom: 0px !important;"><strong>Notes</strong></span>
+                <span style="margin-top: 0px !important;font-size: 14px !important; padding-top: 0px !important;">{{invoiceDetail.inv_notes}}</span>
+              </div>
+            </div>
           </div>
           <table class="table table-bordered table-condensed" style="width: 100%;">
             <thead>
@@ -262,8 +267,10 @@
             <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
               class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
               <tr class="thfont">
-                <td class="table-data-txt"> {{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }} | {{
-                  invL.item_name }}</td>
+                <td class="table-data-txt"> 
+                  <span>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }} | {{invL.item_name }}</span><br>
+                  <span><pre style="white-space: pre;font-family: Khmer UI, serif;">{{invoiceDetail.accounting_inv_comment}}</pre></span>
+                </td>
                 <td class="table-data-txt"> {{invL.po_number}}</td>
                 <td class="table-data-txt">
                   {{invL.item.itemTotalVal}}
