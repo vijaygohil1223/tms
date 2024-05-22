@@ -7172,6 +7172,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('filemanagerCtrl', function ($scope, $sce, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval) {
     $scope.clientId = $window.localStorage.getItem("contactclientId");
     $scope.userId = $window.localStorage.getItem("contactUserId");
+    console.log('$scope.userId', $scope.userId)
     $scope.userIdInternal = $window.localStorage.getItem("internal");
     $scope.IndirectClientId = $window.localStorage.getItem("IndirectClientId");
 
@@ -11992,6 +11993,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         modalInstance.result.then(function (selectedItem) {
         });
     };
+
+    $scope.activateAccount = function (userId) {
+        if(userId){
+            bootbox.confirm("Are you sure you want activate?", function (result) {
+                if (result == true) {
+                    $scope.actiationData = {
+                        "userId": userId,
+                        "manualActive": 1,
+                    }
+            
+                    rest.path = 'activateAccount';
+                    rest.post($scope.actiationData).success(function (data) {
+                        if (data) {
+                            //data.msg
+                            notification('Account has been activated succesfully', 'success');
+                            //$location.path('/');
+                            setTimeout(() => {
+                                $route.reload();
+                            }, 500);
+                        }
+                    }).error(errorCallback);   
+                }
+            });
+        }
+        
+    }
 
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout, $filter ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

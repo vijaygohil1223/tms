@@ -1217,8 +1217,13 @@ array(
         return $return;
     }
     public function activateAccount($data) {
-        $this->_db->where('activation_token', $data['activationToken']);
-        $data = $this->_db->getone('tms_users');
+        if($data && isset($data['userId'])){
+            $this->_db->where('iUserId', $data['userId'] );
+            $data = $this->_db->getone('tms_users');
+        }else{
+            $this->_db->where('activation_token', $data['activationToken']);
+            $data = $this->_db->getone('tms_users');
+        }
         if($data){
             if($data['activation_status'] == 1){
                 $return['status'] = 401;

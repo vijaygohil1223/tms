@@ -463,8 +463,10 @@
                                                 ng-model="result.orderId">
                                           </td>
                                           <td class="nowrap">
-                                             <a href="#/items/{{result.orderId}}" ng-click="storeScoopOrders()" 
-                                                class="summeryColor">{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3 }}</a>
+                                             <a ng-click="storeScoopOrders(result.orderId)" 
+                                             class="summeryColor" >{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3 }}</a>
+                                             <!-- <a href="#/items/{{result.orderId}}" ng-click="storeScoopOrders()" 
+                                                class="summeryColor">{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3 }}</a> -->
                                              <!-- <a href="#/viewProject/{{result.orderId}}" ng-click="storeScoopOrders()" 
                                                 class="summeryColor">{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3 }}</a>  -->
                                           </td>
