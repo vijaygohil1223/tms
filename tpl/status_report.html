@@ -441,6 +441,7 @@
                                        <th>Scoop name</th>
                                        <th>Email Subject</th>
                                        <th>Client</th>
+                                       <th>Tripletex</th>
                                        <th>Account</th>
                                        <th>Status</th>
                                        <th>Due date</th>
@@ -475,6 +476,7 @@
                                           <!-- <td ng-bind="result.orderDate | globalDtFormat"></td> -->
                                           <td><a href="#/viewdirect/{{result.customer}}"
                                                 class="summeryColor"><span>{{result.contactName}}</span></a></td>
+                                          <td>{{result.accounting_tripletex}}</td>
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td> {{ result.indirectAccountName}} </td>
                                           <!-- <td ng-bind="result.clientStatus"></td> -->
@@ -509,6 +511,7 @@
                                        <th>
                                        <!-- Customers -->Client
                                        </th>
+                                       <th>Tripletex</th>
                                        <th>Account</th>
                                        <th>Status</th>
                                        <th>Due date</th>
@@ -522,6 +525,7 @@
                                           <td>{{ result.projectName }}</td>
                                           <td>{{ result.emailSubject }}</td>
                                           <td><span>{{result.contactName}}</span></td>
+                                          <td>{{result.accounting_tripletex}}</td>
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td> {{ result.indirectAccountName}} </td>
                                           <td ng-bind="result.scoop_status_name"></td>
