@@ -207,8 +207,9 @@ class dashboard {
                 
                 // alternate 2
                 $parts = explode('-', $search);
-                if (isset($parts[1]) && strlen($parts[1]) === 3) {
-                    $parts[1] = ltrim($parts[1], '0');
+                //if (isset($parts[1]) && strlen($parts[1]) === 3) {
+                if (isset($parts[1])) {
+                        $parts[1] = ltrim($parts[1], '0');
                 }else{
                     $pOrderNo2 = "OR gen.order_no  LIKE '%$search%' " ;
                 }

@@ -2869,7 +2869,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.pageShowRec = $scope.totalItems > 0 ? ($scope.currentPage - 1) * $scope.itemsPerPage + 1 : $scope.totalItems ; 
             
             //$scope.orderList = response.data;
-            //$scope.filterData();
             $scope.showDataLoader = false;
             //if (!$scope.$$phase) $scope.$apply();
         }).catch(function(error) {
@@ -2881,15 +2880,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //$scope.pageShowRec = $scope.totalItems ? ($scope.currentPage - 1) * ($scope.itemsPerPage + 1) : $scope.totalItems ; 
 
-    // Function to filter data based on search criteria
-    $scope.filterData = function () {
-        $scope.filteredLangsList = $filter('filter')($scope.langsList, $scope.searchText);
-        //console.log('$scope.filteredLangsList', $scope.filteredLangsList)
-    };
     // Function to handle search input changes
     $scope.handleSearchInput = function (searchText) {
         $scope.showDataLoader = true;
-        console.log('searchText', searchText)
+        console.log('$scope.showDataLoader', $scope.showDataLoader)
         try {
             $scope.searchText = searchText;
             //$('.tab-pane.active input').val()
@@ -2910,7 +2904,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.dashboardScoopLoad(1, tabIndex);
             setTimeout(() => {
                 angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
-            }, 200);
+            }, 1000);
             
         }else{
             var tabIndex = findIndexByTabClassName('tab-due-today');
@@ -2922,10 +2916,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.activeTabfn();
 
     $scope.changeProjectTabs2 = function(className, tabIndex){
+        $scope.searchText = '';
+        $('#scoopsearch_'+className).val('');
         $scope.tabName = className;
         $window.localStorage.setItem("projectActiveTab", className);
         $scope.dashboardScoopLoad(1, tabIndex, className);
-        $scope.searchText = '';
         // $scope.fillDashboardTabFn__ = function(index, scoopArr, scoopCount){
         //     $scope.dashboardTabList[index].projectScoopData = scoopArr
         //     $scope.dashboardTabList[index].projectScoopCount = scoopCount ? scoopCount : 0
