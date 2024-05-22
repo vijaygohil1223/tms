@@ -17685,7 +17685,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    $scope.editDueDate = function(id, inv_due_date, created_Date){
+    $scope.editDueDate = function(id, inv_due_date){
         var html = angular.element(
             '<div class="col-sm-12">' +
             '<div class="col-sm-6">'+
