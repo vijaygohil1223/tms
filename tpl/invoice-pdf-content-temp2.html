@@ -190,6 +190,7 @@ td.table-data-text {
                           <div class="panel-body" style="padding-top: 0px;">
                               <dl class="dl-horizontal">
                                   <dd style="margin-bottom: 8px;"><strong> {{invoiceDetail.clientCompanyName}} </strong></dd>
+                                  <dd ng-if="invoiceDetail.disaplyAccountName">Accounting Name: {{invoiceDetail.disaplyAccountName}}</dd>
                                   <dd> {{invoiceDetail.companyAddress}} </dd>
                                   <dd> {{clientZipcode}} <span ng-if="clientCity">{{clientCity}}</span></dd>
                                   <dd>{{clientCountry}}</dd>
@@ -204,7 +205,7 @@ td.table-data-text {
                                 <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
                                   <p class="mb-d"><strong>Telephone</strong></p>{{invoiceDetail.freelancePhone}}
                                 </div>
-                                <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2" style="word-break: break-word;">
                                   <p class="mb-d"><strong>Email</strong></p> {{invoiceDetail.freelanceEmail}}
                                 </div>
                                 <div class="col-sm-3">

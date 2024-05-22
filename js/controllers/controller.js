@@ -17685,6 +17685,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.viewBtn = true;
     $scope.invoiceNumOfdays = 30;
     $scope.currencyRate = 1;
+    var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
     //$scope.noneCls = "none"
     
     // invoice setting Data
@@ -17819,6 +17820,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             $scope.invoiceDetail = data[0];
             
+            // override new contact details here
+            $scope.invoiceDetail.freelanceName = $scope.invoiceDetail.sender_contact;
+            $scope.invoiceDetail.freelancePhone = $scope.invoiceDetail.sender_phone;
+            $scope.invoiceDetail.freelanceEmail = $scope.invoiceDetail.sender_email;
+            try{
+                var disaplyAccountName = ($scope.invoiceDetail.paymentInfoClient) ? JSON.parse($scope.invoiceDetail.paymentInfoClient) : '';
+                $scope.invoiceDetail.disaplyAccountName = disaplyAccountName?.accounting_name;
+            }catch(error){console.log('-- accounting name not found --');}
+            // override new contact details here
+
             $scope.invoiceDetail.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
             
             if ($scope.invoiceDetail.clientVatinfo) {
@@ -18010,7 +18021,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.upInvoiceData = {};
     $scope.editInvoiceClient = function (id) {
-        
         $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         //$scope.upInvoiceData.item_total = $scope.invoiceTotal
         //$scope.upInvoiceData.vat = $scope.vat
@@ -18018,7 +18028,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;
         $scope.upInvoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
         //$scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
-        const invoiceDateString = moment($scope.invoiceDetail.invoice_date);
+        const invoiceDateString = moment($scope.invoiceDetail.invoice_date, customDateFormat);
         $scope.upInvoiceData.invoice_date = invoiceDateString.isValid() ? invoiceDateString.format('YYYY-MM-DD') : '0000-00-00';
         $scope.upInvoiceData.currency_rate = $scope.currencyRate;
 
@@ -34294,6 +34304,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
     // })
 
+    // new to get login details
+    $scope.loginDetails = {};
+    rest.path = 'getProfile/' + $window.localStorage.getItem("session_iUserId");
+    rest.get().success(function (result) {
+        $scope.loginDetails = result;
+    }).error(errorCallback);
+    // new to get login details
+
     //get data of invoice
     if ($cookieStore.get('invoiceScoopId').length) {
         var obj = [];
@@ -34469,7 +34487,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$scope.invoiceDesignType = $scope.invoiceSettingData.server_no > 1 ? 2 : 1;
                 //$scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
             })
-
+            // new append login details (override values)
+            $scope.invoiceDetail.freelanceName = $scope.loginDetails?.vFirstName + ' ' + $scope.loginDetails?.vLastName;
+            $scope.invoiceDetail.freelancePhone = $scope.loginDetails?.vPhoneNumber;
+            $scope.invoiceDetail.freelanceEmail = $scope.loginDetails?.vEmailAddress;
+            try{
+                var disaplyAccountName = ($scope.invoiceDetail.paymentInfoClient) ? JSON.parse($scope.invoiceDetail.paymentInfoClient) : '';
+                $scope.invoiceDetail.disaplyAccountName = disaplyAccountName?.accounting_name;
+            }catch(error){console.log('-- accounting name not found --');}
         });
     }
 
@@ -34571,7 +34596,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         // $scope.upInvoiceData.vat = $scope.vat
-        // $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;  
+        // $scope.upInvoiceData.Invoice_cost = $scope.grandTotal; 
+
+        // new contact details added
+        $scope.invoiceData.sender_contact = $scope.loginDetails?.vFirstName + ' ' + $scope.loginDetails?.vLastName;
+        $scope.invoiceData.sender_phone = $scope.loginDetails?.vPhoneNumber;
+        $scope.invoiceData.sender_email = $scope.loginDetails?.vEmailAddress;
+        $scope.invoiceData.created_by = $scope.loginDetails?.iUserId;
+        // new contact details added
+
+
         $scope.invoiceData.item = [];
         $scope.invoiceList.forEach(element => {
             const elItemID = element.itemId;
