@@ -213,7 +213,7 @@ class Freelance_invoice {
 		$this->_db->orderBy('tmInvoice.invoice_id', 'asc');
     	$this->_db->where('tmInvoice.invoice_type', $type);
     	$this->_db->where('tmInvoice.is_deleted', ' != 1');
-    	$data = $this->_db->get('tms_invoice tmInvoice', null,'tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.paid_date, tmInvoice.created_date,tmInvoice.is_approved,tmInvoice.reminder_sent,tmInvoice.is_excel_download, tmInvoice.currency_rate, tmInvoice.job_id as jobInvoiceIds, tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName ');
+    	$data = $this->_db->get('tms_invoice tmInvoice', null,'tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount,tmInvoice.invoice_date,tmInvoice.paid_date, tmInvoice.created_date,tmInvoice.is_approved,tmInvoice.reminder_sent,tmInvoice.is_excel_download, tmInvoice.currency_rate, tmInvoice.job_id as jobInvoiceIds, tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName, CAST(tmInvoice.invoice_number AS CHAR) AS org_invoice_number, tmInvoice.inv_due_date');
     	foreach ($data as $key => $value) {
     		$companyName = self::getAll('abbrivation',substr($value['company_code'],0,-2),'tms_centers');
     		$data[$key]['companyName'] = isset($companyName[0]['name'])?$companyName[0]['name']:'';	
@@ -657,6 +657,17 @@ class Freelance_invoice {
         return $result;
     }
     
-
-
+    public function freelanceInvoiceDueDate($data){
+        $updataData['inv_due_date'] = (isset($data['post_inv_due_date'])) ? $data['post_inv_due_date'] : date('Y-m-d');
+        $this->_db->where('invoice_id', $data['invoice_id']);
+        $dueDateUpdate = $this->_db->update('tms_invoice', $updataData);
+        if($dueDateUpdate){
+            $result['status'] = 200;
+            $result['msg'] = "Successfully Updated";
+        }else{
+            $result['status'] = 422;
+            $result['msg'] = "Not updated";
+        }
+        return $result;
+    }
 }

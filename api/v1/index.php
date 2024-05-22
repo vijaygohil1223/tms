@@ -3470,7 +3470,12 @@ $app->get('/getFreelanceInvoicePartPayments/:id','authenticate', function($id) {
     $result = $invoice->getFreelanceInvoicePartPayments($id);
     echoResponse(200, $result);
 });
-
+$app->post('/freelanceInvoiceDueDate', function () use($app) {
+    $stmt = new Freelance_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $stmt->freelanceInvoiceDueDate($data);
+    echoResponse(200, $result);
+});
 //-------------------END Freelancer Invoice manage----------------//
 
 function echoResponse($status_code, $response) {
