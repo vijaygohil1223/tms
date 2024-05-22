@@ -18099,6 +18099,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.upInvoiceData.vat = $scope.vatTax;
         $scope.upInvoiceData.Invoice_cost = $scope.grandTotal;
         $scope.upInvoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
+        $scope.upInvoiceData.inv_notes = $scope.invoiceDetail.inv_notes ? $scope.invoiceDetail.inv_notes : '';
         //$scope.upInvoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
         const invoiceDateString = moment($scope.invoiceDetail.invoice_date, customDateFormat);
         $scope.upInvoiceData.invoice_date = invoiceDateString.isValid() ? invoiceDateString.format('YYYY-MM-DD') : '0000-00-00';
@@ -34656,6 +34657,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.payment_type = $scope.invoiceDetail.payment;
         $scope.invoiceData.invoice_number = $scope.invoiceDetail.invoiceNumber;
         $scope.invoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number;
+        $scope.invoiceData.inv_notes = $scope.invoiceDetail.inv_notes;
 
         $scope.invoiceData.vat = $scope.vat;
         //$scope.invoiceData.item_total = $scope.invoiceTotal;

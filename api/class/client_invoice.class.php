@@ -225,6 +225,7 @@ class Client_invoice {
         $updata['invoice_date'] = $data['invoice_date'];
         $updata['vat'] = isset($data['vat']) ? $data['vat'] : 0;
         $updata['custom_invoice_number'] = isset($data['custom_invoice_number']) ? $data['custom_invoice_number'] : $data['invoice_number'];
+        $updata['inv_notes'] = isset($data['inv_notes']) ? $data['inv_notes'] : "";
         
         if(isset($data['currency_rate']))
             $updata['currency_rate'] = $data['currency_rate'];
