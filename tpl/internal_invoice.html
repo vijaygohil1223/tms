@@ -174,8 +174,8 @@
                 dt-options="{ paging: false, searching: false, info: false }">
                 <thead>
                   <th>#</th>
+                  <th>Custom Invoice number</th>
                   <th>Invoice number</th>
-                  <th>Company name</th>
                   <th>Freelancer name</th>
                   <th>Price</th>
                   <th>Currency</th>
@@ -188,12 +188,12 @@
                   <tr ng-repeat="invoiceL in invoiceListAll">
                     <td ng-bind="$index + 1"></td>
                     <td ng-bind="invoiceL.invoice_number"></td>
-                    <td ng-bind="invoiceL.companyName"></td>
+                    <td>{{padNumber(invoiceL.org_invoice_number)}}</td>
                     <td ng-bind="invoiceL.freelanceName"></td>
                     <td ng-bind="invoiceL.Invoice_cost"></td>
                     <td ng-bind="invoiceL.freelance_currency"></td>
                     <td>{{ invoiceL.created_date | globalDtFormat }}</td>
-                    <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
+                    <td>{{ invoiceL.inv_due_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                     <td ng-show="invoiceStatus[{{$index}}]">
                       <span ng-bind="invoiceL.invoice_status"></span>
