@@ -227,8 +227,11 @@ class filemanager {
                         $filemanagerSql = "SELECT * FROM tms_filemanager " . $filemanagerWhereSql;
                         $data = $this->_db->rawQuery($filemanagerSql);
                     }else{
-                        // $this->_db->where('parent_id',$id);
-                        // $data = $this->_db->get('tms_filemanager');
+                        if($id > 0){
+                            $this->_db->where('parent_id',$id);
+                            $data = $this->_db->get('tms_filemanager');
+                        }
+                        
                     }
             }
             
