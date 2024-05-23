@@ -373,8 +373,12 @@ class contactPerMsg {
             $this->_db->where('is_active', 1);
             $emailSign = $this->_db->getone('tms_email_sign');   
             $emailsignData = $emailSign['sign_detail'];
-            $emailImage = $emailSign['sign_image']; 
-            $emailImageData = $this->uploadimage($emailImage);
+            $emailImage = $emailSign['sign_image'];
+            try{
+                $emailImageData = $this->uploadimage($emailImage);
+            }catch(Exception $e){
+                $emailImageData = " ";
+            }
             $sign_picture = $emailSign['sign_picture']; 
         } else {
             $emailsignData = " ";
@@ -414,7 +418,9 @@ class contactPerMsg {
         
         $body = "<div>" . $message . "</div>";
         //$body .= "<p>" . $emailsignData . "</p>";
-        $body .= "<div><img src='cid:signid' width='100px'></div>";
+        if(!isset($data['sentInvoiceClientListing'])){
+            $body .= "<div><img src='cid:signid' width='100px'></div>";
+        }
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         
         $to = $data['data']['vEmailAddress'];
@@ -455,7 +461,7 @@ class contactPerMsg {
             $inlineAttachments = false;
         }
         $inlineImageAttachement = '';
-        if($emailSign && isset($emailSign['sign_image']) && $emailSign['sign_picture'] !='' ){
+        if(!isset($data['sentInvoiceClientListing']) && $emailSign && isset($emailSign['sign_image']) && $emailSign['sign_picture'] !='' ){
             $base64_image = $emailSign['sign_image'];
             $attachInline = explode(',', $base64_image);
             // Get the content type
