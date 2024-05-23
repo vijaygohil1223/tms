@@ -2052,6 +2052,11 @@ $app->get('/getFilestotal/:id', 'authenticate',function ($id) {
     $result = $item->getFilestotal($id);
     echoResponse(200, $result);
 });
+$app->get('/getScoopFilestotal/:id', 'authenticate',function ($id) {
+    $item = new filemanager ();
+    $result = $item->getScoopFilestotal($id);
+    echoResponse(200, $result);
+});
 $app->post('/scoopStatusChange','authenticate', function () use($app) {
     $item = new item ();
     $data = json_decode($app->request->getBody(), TRUE);

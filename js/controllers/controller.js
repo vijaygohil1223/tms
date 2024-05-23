@@ -17257,7 +17257,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }
-                if (val.is_approved == 1 && !['Complete','Completed','Partly Paid','Paid'].includes(val.invoice_status) ) {
+                if ( (val.is_approved == 1 || val.invoice_status == 'Approved') && !['Complete','Completed','Partly Paid','Paid'].includes(val.invoice_status) ) {
                     $scope.approvedInvcCount++;
                     $scope.approvedInvc.push(val);
                 }
@@ -21809,7 +21809,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var id1 = $window.localStorage.getItem("scoopFolderRoot");
 
             // files count 
-            rest.path = 'getFilestotal/' + id;
+            // rest.path = 'getFilestotal/' + id;
+            // rest.get().success(function (data) {
+            //     if (data) {
+            //         $scope.Filestotal = data[0].totalfile;
+            //         console.log('$scope.Filestotal', $scope.Filestotal)
+            //     }
+            //     //angular.element('#filescount' + id).text($scope.Filestotal);
+            //     $('#filescount' + id).text($scope.Filestotal);
+            // }).error(errorCallback);
+            rest.path = 'getScoopFilestotal/' + id;
             rest.get().success(function (data) {
                 if (data) {
                     $scope.Filestotal = data[0].totalfile;
@@ -21818,6 +21827,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //angular.element('#filescount' + id).text($scope.Filestotal);
                 $('#filescount' + id).text($scope.Filestotal);
             }).error(errorCallback);
+            
             // files couunt end
             
             return false;
@@ -21829,13 +21839,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (itemPopup.closed !== false) { // !== is required for compatibility with Opera
                 window.clearInterval(pollTimer);
                 // files count //
-                rest.path = 'getFilestotal/' + id;
+                // rest.path = 'getFilestotal/' + id;
+                // rest.get().success(function (data) {
+                //     if (data) {
+                //         $scope.Filestotal = data[0].totalfile;
+                //         console.log('$scope.Filestotal-interval', $scope.Filestotal)
+                //     }
+                //     angular.element('#filescount' + id).text($scope.Filestotal);
+                // }).error(errorCallback);
+                rest.path = 'getScoopFilestotal/' + id;
                 rest.get().success(function (data) {
                     if (data) {
                         $scope.Filestotal = data[0].totalfile;
-                        console.log('$scope.Filestotal-interval', $scope.Filestotal)
+                        console.log('$scope.Filestotal', $scope.Filestotal)
                     }
-                    angular.element('#filescount' + id).text($scope.Filestotal);
+                    //angular.element('#filescount' + id).text($scope.Filestotal);
+                    $('#filescount' + id).text($scope.Filestotal);
                 }).error(errorCallback);
                 // files couunt end //
             }
@@ -23049,22 +23068,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }).error(errorCallback);
 
                 $scope.Filestotal = 0;
-                rest.path = 'getFilestotal/' + val.itemId;
+                // rest.path = 'getFilestotal/' + val.itemId;
+                // rest.get().success(function (data) {
+                //     if (data) {
+                //         console.log('data-f1', data)
+                //         $scope.Filestotal = data[0].totalfile;
+                //     }
+                //     angular.element('#filescount' + val.itemId).text($scope.Filestotal);
+                // }).error(errorCallback);
+
+                rest.path = 'getScoopFilestotal/' + val.itemId;
                 rest.get().success(function (data) {
                     if (data) {
-                        console.log('data-f1', data)
+                        console.log('data-filecount=======', data)
                         $scope.Filestotal = data[0].totalfile;
-                    }
-                    angular.element('#filescount' + val.itemId).text($scope.Filestotal);
-                }).error(errorCallback);
-
-
-                rest.path = 'getFilestotal/' + val.itemId;
-                rest.get().success(function (data) {
-                    if (data) {
-                        console.log('data', data)
+                        angular.element('#filescount' + val.itemId).text(data[0].totalfile);
                     }
                 }).error(errorCallback);
+
+                // rest.path = 'getFilestotal/' + val.itemId;
+                // rest.get().success(function (data) {
+                //     if (data) {
+                //         console.log('data', data)
+                //     }
+                // }).error(errorCallback);
 
 
 
@@ -35469,7 +35496,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var id1 = $window.localStorage.getItem("scoopFolderRoot");
 
             // files count 
-            rest.path = 'getFilestotal/' + id;
+            // rest.path = 'getFilestotal/' + id;
+            // rest.get().success(function (data) {
+            //     if (data) {
+            //         $scope.Filestotal = data[0].totalfile;
+            //     }
+            //     //angular.element('#filescount' + id).text($scope.Filestotal);
+            //     $('#filescount' + id).text($scope.Filestotal);
+            // }).error(errorCallback);
+            rest.path = 'getScoopFilestotal/' + id;
             rest.get().success(function (data) {
                 if (data) {
                     $scope.Filestotal = data[0].totalfile;
@@ -35477,6 +35512,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //angular.element('#filescount' + id).text($scope.Filestotal);
                 $('#filescount' + id).text($scope.Filestotal);
             }).error(errorCallback);
+            
             // files couunt end
             
             return false;
@@ -35488,13 +35524,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if (itemPopup.closed !== false) { // !== is required for compatibility with Opera
                 window.clearInterval(pollTimer);
                 // files count //
-                rest.path = 'getFilestotal/' + id;
+                // rest.path = 'getFilestotal/' + id;
+                // rest.get().success(function (data) {
+                //     if (data) {
+                //         $scope.Filestotal = data[0].totalfile;
+                //     }
+                //     angular.element('#filescount' + id).text($scope.Filestotal);
+                // }).error(errorCallback);
+                rest.path = 'getScoopFilestotal/' + id;
                 rest.get().success(function (data) {
                     if (data) {
                         $scope.Filestotal = data[0].totalfile;
                     }
                     angular.element('#filescount' + id).text($scope.Filestotal);
                 }).error(errorCallback);
+                
                 // files couunt end //
             }
         }, 200);
@@ -36356,13 +36400,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }).error(errorCallback);
 
                 $scope.Filestotal = 0;
-                rest.path = 'getFilestotal/' + val.itemId;
+                // rest.path = 'getFilestotal/' + val.itemId;
+                // rest.get().success(function (data) {
+                //     if (data) {
+                //         $scope.Filestotal = data[0].totalfile;
+                //     }
+                //     angular.element('#filescount' + val.itemId).text($scope.Filestotal);
+                // }).error(errorCallback);
+                
+                rest.path = 'getScoopFilestotal/' + val.itemId;
                 rest.get().success(function (data) {
                     if (data) {
                         $scope.Filestotal = data[0].totalfile;
                     }
                     angular.element('#filescount' + val.itemId).text($scope.Filestotal);
                 }).error(errorCallback);
+                
 
                 setTimeout( ()=> {
                     angular.element('.more-text').addClass('none');

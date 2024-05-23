@@ -13,7 +13,9 @@ class filemanager {
     private $parentId;
     public $parents_data=array();
     public $treeArr_data=array();
-
+    
+    public $treeArr_data_count=array();
+    
     public function __construct() {
         $this->_db = db::getInstance();
     }
@@ -81,6 +83,25 @@ class filemanager {
                         if($element['fmanager_id']) {
                             $branch = array_merge($branch,Self::buildTreePath($elements, $element['fmanager_id']));
                         }
+            }
+        }
+
+        return $branch;
+    }
+
+    public function buildTreePathForFielsCount(array $elements, $parentId = 0) {
+        $branch = array();
+
+        foreach ($elements as $key => $element) {
+            
+            if ($element['parent_id'] == $parentId ) {
+                // echo "<pre/>";
+                // print_r($parentId);
+                $branch[] = $element;
+                //if(count($element['fmanager_id']) > 0) {
+                if($element['fmanager_id']  ) {
+                    $branch = array_merge($branch,Self::buildTreePathForFielsCount($elements, $element['fmanager_id']));
+                }
             }
         }
 
@@ -993,6 +1014,30 @@ array(
         if($fmanagerId){
             $this->treeArr_data = self::buildTreePath($dataArr,$fmanagerId['fmanager_id']);
             $data[0]['totalfile'] = $this->treeArr_data ? count($this->treeArr_data) : 0;   
+        }
+        return $data;
+    }
+
+    public function getScoopFilestotal($id){
+        $this->treeArr_data_count = array();
+        $this->_db->where('item_id',$id);
+        $fmanagerId = $this->_db->getOne('tms_filemanager');    
+
+        $dataArr = $this->_db->get('tms_filemanager');    
+        $data = [];   
+        //$data[0]['totalfile'] = 0;   
+        if($fmanagerId){
+            $this->treeArr_data_count = self::buildTreePathForFielsCount($dataArr,$fmanagerId['fmanager_id']);
+            $count = 0;
+            if (is_array($this->treeArr_data_count)) {
+                foreach ($this->treeArr_data_count as $item) {
+                    if (isset($item['f_id']) && $item['f_id'] > 0) {
+                        $count++;
+                    }
+                }
+            }
+            $data[0]['totalfile'] = $count;
+            //$data[0]['totalfile'] = $this->treeArr_data_count ? count($this->treeArr_data_count) : 0;   
         }
         return $data;
     }
