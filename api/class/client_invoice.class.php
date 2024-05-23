@@ -150,13 +150,21 @@ class Client_invoice {
     public function clientInvoiceViewOne($id) {
     	$id1 = self::getAll('invoice_id',$id,'tms_invoice_client');
         $paymentDue = self::getAll('invoice_due_id',1,'tms_invoice_due_period');
+        
+        // get payment information
         $this->_db->where('tic.invoice_id', $id);
         $this->_db->join('tms_invoice_client tic', 'tic.customer_id=tp.iClientId', 'LEFT');
         $paymentInfo = $this->_db->getOne('tms_payment tp', 'tp.vPaymentInfo');
+
         // get sign data.
         $this->_db->where('tic.created_by', $id1[0]['created_by']);
         $this->_db->join('tms_invoice_client tic', 'tic.created_by=tu.iUserId', 'LEFT');
         $userSignInfo = $this->_db->getOne('tms_users tu', 'tu.vSignUpload,tu.vFirstName,tu.vLastName');
+
+        // get client payment info for the invoice details
+        $this->_db->where('tmc.iClientId',$id1[0]['customer_id']);
+        $this->_db->join('tms_client tmc', 'tmc.client_currency=tb.currency_code', 'LEFT');
+        $matchBankInfo = $this->_db->getOne('tms_banking_info tb', 'tb.*');
 
     		foreach (json_decode($id1[0]['scoop_id']) as $k => $v) {
                 $this->_db->where('ti.itemId', $v->id);
@@ -208,6 +216,7 @@ class Client_invoice {
                 }
                 $data['paymentInfoClient'] = (isset($paymentInfo) && !empty($paymentInfo)) ? $paymentInfo['vPaymentInfo'] : "";
                 $data['userSignInfo'] = (isset($userSignInfo) && !empty($userSignInfo)) ? $userSignInfo : "";
+                $data['matchBankInfo'] = (isset($matchBankInfo) && !empty($matchBankInfo)) ? $matchBankInfo : "";
 				$infoD[$k] = array_merge($data, $id1[0]);
 	    	}
 	    	return $infoD;
@@ -747,6 +756,13 @@ class Client_invoice {
 
                 $data['vBankInfo'] = self::getDefaultbankDetails();
                 $data['paymentInfoClient'] = (isset($data) && !empty($data)) ? $data['vPaymentInfo'] : "";
+                $matchBankInfo = "";
+                if(isset($data['clientId']) && !empty($data['clientId'])){
+                    $this->_db->where('tmc.iClientId',$data['clientId']);
+                    $this->_db->join('tms_client tmc', 'tmc.client_currency=tb.currency_code', 'LEFT');
+                    $matchBankInfo = $this->_db->getOne('tms_banking_info tb', 'tb.*');
+                }
+                $data['matchBankInfo'] = (isset($matchBankInfo) && !empty($matchBankInfo)) ? $matchBankInfo : "";
 			}
 			$infoD[$k] = $data;
 		}
