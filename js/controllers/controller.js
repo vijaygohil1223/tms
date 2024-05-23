@@ -7852,7 +7852,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $timeout(function () {
                     
                     console.log('$routeParams.id', $routeParams.id)
-                    if( ($routeParams.id).includes('externalresource') ){
+                    //if( ($routeParams.id).includes('externalresource') ){
+                    if ($routeParams.id && $routeParams.id.includes('externalresource')) {
                         $scope.displayfolder = data.filter(item => item.name !== 'Projects');
                     }else{
                         $scope.displayfolder = data;
@@ -21830,8 +21831,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }).error(errorCallback);
                 // files couunt end //
             }
-        }, 200);
+        }, 2000);
     }
+
     var getCountScoopFolder = function () {
         var count = $window.localStorage.getItem("scoopFolderCount");
         if (!count) {
