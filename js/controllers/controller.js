@@ -36149,18 +36149,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     
                     $scope.custPriceAll().then((prData) => {
                         let customerpriceFltr =  $scope.customerpriceAll ;
-                        angular.element('#currency'+ val.itemId).text('EUR');
+                        // angular.element('#currency'+ val.itemId).text('EUR');
                         customerpriceFltr.filter( (el) => {
                             if(val.project_pricelist){
                                 if(el.price_list_id == val.project_pricelist){
                                     let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'EUR';
-                                    angular.element('#currency'+ val.itemId).text(price_currency);
+                                    // angular.element('#currency'+ val.itemId).text(price_currency);
                                     return el;
                                 }
                             }else{
                                 if(el.resource_id == data.client){
                                     let price_currency = el.price_currency.includes(',') ? el.price_currency.split(',')[0] : 'EUR';
-                                    angular.element('#currency'+ val.itemId).text(price_currency);
+                                    // angular.element('#currency'+ val.itemId).text(price_currency);
                                     return el;
                                 }
                             }
@@ -36397,6 +36397,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.model().success(function (data) {
             $scope.customer = data;
             console.log('$scope.customer===>', $scope.customer)
+            $scope.ClientCurrencyName = $scope.customer.client_currency ? $scope.customer.client_currency.split(',')[0] : 'EUR' ; // new currency code for popup
+            console.log($scope.ClientCurrencyName,"== **** $scope.ClientCurrencyName *** ====");
             $window.localStorage.clientproCustomerName = $scope.customer.client;
             $window.localStorage.ContactPerson = $scope.customer.contact;
             $routeParams.ClientIdd = data['client'];
