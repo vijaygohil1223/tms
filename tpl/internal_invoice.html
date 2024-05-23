@@ -138,7 +138,7 @@
                             <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"><span>{{padNumber(invoiceL.org_invoice_number)}}</span></a>
                           </td>
                           <td ng-bind="invoiceL.freelanceName"></td>
-                          <td ng-bind="invoiceL.Invoice_cost"></td>
+                          <td ng-bind="invoiceL.Invoice_cost | customNumber"></td>
                           <td ng-bind="invoiceL.freelance_currency"></td>
                           <td>
                             <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"># {{invoiceL.invoice_number}} </a>
