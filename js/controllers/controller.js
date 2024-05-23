@@ -12056,7 +12056,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'getProfile/' + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (result) {
             console.log('result', result)
-            $scope.internalUserPosition = result.vResourcePosition ? result.vResourcePosition.split(',') : []
+            $scope.internalUserPosition = result?.vResourcePosition?.split(',') ?? [];
+            //$scope.internalUserPosition = result.vResourcePosition ? result.vResourcePosition.split(',') : []
         }).error(errorCallback);
     }
 
@@ -17156,7 +17157,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays) {
+}).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     var allInvoiceListArr = [];
@@ -17712,6 +17713,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         modalInstance.result.then(function (selectedItem) {
             $scope.selected = selectedItem;
             $route.reload();
+        });
+    }
+
+    $scope.editDueDate = function(id, inv_due_date){
+        var html = angular.element(
+            ' <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;">' +
+            '<div class="col-sm-6">'+
+            '<lable><strong> Select due date </strong> <lable>'+
+            '<input class="form-control" type="text" ng-model="inv_due_date" id="inv_due_date" ng-datepicker2 name="inv_due_date" ng-disabled="editDisabled" style="margin-top: 20px;" />'+
+            '</div></div>' );
+        setTimeout(() => {
+            $('#inv_due_date').val(inv_due_date);
+        }, 1000);
+        $compile(html)($scope);
+        var dialog = bootbox.dialog({
+            title: "Change due date",
+            message: html,
+            buttons: {
+                success: {
+                    label: "Save",
+                    onEscape: true,
+                    className: "btn-info",
+                    callback: function () {
+                        var get_inv_due_date = $('#inv_due_date').val();
+                        var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
+                        var post_date = moment(get_inv_due_date, customDateFormat);
+                        post_date = post_date.isValid() ? post_date.format('YYYY-MM-DD') : '0000-00-00';
+                        let objStatus = {
+                            'invoice_id':id,
+                            'post_inv_due_date':post_date
+                        }
+                        rest.path = "freelanceInvoiceDueDate";
+                        rest.post(objStatus).success(function (data) {
+                            if(data){
+                                notification('Date successfully updated', 'success');
+                                $route.reload();
+                            }
+                        }).error(errorCallback);  
+                    }
+                }
+            }
         });
     }
 

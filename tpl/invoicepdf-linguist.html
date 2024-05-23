@@ -298,7 +298,7 @@
               <div style="margin-top:20px;">
                 <div>{{ invoiceSettingData.description }} </div>
                 <div>Payment for this invoice is due by <span
-                    ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span>. </div><br>
+                    ng-bind="invoiceDetail.inv_due_date| globalDtFormat"></span>. </div><br>
                 <div><strong>Payment details:</strong> </div>
                 <div>Bank Name: <span ng-bind="vBankInfo.bank_name"></span></div>
                 <div>Bank Address: <span ng-bind="vBankInfo.address"></span></div>
