@@ -111,15 +111,15 @@
                       <!-- <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList"> -->
                       <thead>
                         <th>#</th>
-                        <th>Custom Invoice number</th>
-                        <th>Invoice number</th>
-                        <th>Freelancer name</th>
+                        <th>Invoice Number (Internal)</th>
+                        <th>Freelancer Name</th>
                         <th>Amount</th>
                         <th>Currency</th>
+                        <th>Custom Invoice Number</th>
                         <th ng-click="dtExcelTable('create-date')">Creation Date</th>
                         <th ng-click="dtExcelTable('due-date')">Due Date</th>
                         <th ng-click="dtExcelTable('payment-date')">Payment Date</th>
-                        <th>Invoice status</th>
+                        <th>Invoice Status</th>
                         <th>Action</th>
                       </thead>
                       <tbody>
@@ -135,14 +135,14 @@
                               style="display: none;" ng-model="invoiceL.invoice_id">
                           </td>
                           <td>
-                            <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"># {{invoiceL.invoice_number}} </a>
-                          </td>
-                          <td>
                             <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"><span>{{padNumber(invoiceL.org_invoice_number)}}</span></a>
                           </td>
                           <td ng-bind="invoiceL.freelanceName"></td>
                           <td ng-bind="invoiceL.Invoice_cost"></td>
                           <td ng-bind="invoiceL.freelance_currency"></td>
+                          <td>
+                            <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"># {{invoiceL.invoice_number}} </a>
+                          </td>
                           <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                           <td>{{ invoiceL.inv_due_date | globalDtFormat }} <a href="javascript:void(0)" title="edit duedate" class="trActionIcon" ng-click="editDueDate(invoiceL.invoice_id,invoiceL.inv_due_date | globalDtFormat)"><i class="fa fa-pencil"></i></a></td>
                           <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
@@ -174,24 +174,24 @@
                 dt-options="{ paging: false, searching: false, info: false }">
                 <thead>
                   <th>#</th>
-                  <th>Custom Invoice number</th>
-                  <th>Invoice number</th>
-                  <th>Freelancer name</th>
+                  <th>Invoice Number (Internal)</th>
+                  <th>Freelancer Name</th>
                   <th>Price</th>
                   <th>Currency</th>
+                  <th>Custom Invoice Number</th>
                   <th id="crExdate">Creation Date</th>
                   <th id="dueExdate">Due Date</th>
                   <th id="paymentExdate">Payment Date</th>
-                  <th>Invoice status</th>
+                  <th>Invoice Status</th>
                 </thead>
                 <tbody>
                   <tr ng-repeat="invoiceL in invoiceListAll">
                     <td ng-bind="$index + 1"></td>
-                    <td ng-bind="invoiceL.invoice_number"></td>
                     <td>{{padNumber(invoiceL.org_invoice_number)}}</td>
                     <td ng-bind="invoiceL.freelanceName"></td>
                     <td ng-bind="invoiceL.Invoice_cost"></td>
                     <td ng-bind="invoiceL.freelance_currency"></td>
+                    <td ng-bind="invoiceL.invoice_number"></td>
                     <td>{{ invoiceL.created_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.inv_due_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
