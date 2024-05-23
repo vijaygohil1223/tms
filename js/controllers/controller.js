@@ -17901,6 +17901,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             
             $scope.invoiceDetail = data[0];
+            console.log("clientInvoiceViewOne data ===>>>>", $scope.invoiceDetail);
             
             // override new contact details here
             $scope.invoiceDetail.freelanceName = $scope.invoiceDetail.sender_contact;
@@ -17960,13 +17961,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.vatTax = $scope.invoiceDetail.tax_rate;
             $scope.vatAmount = 0;
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
+
+            // new code to get matching client bank info in invoice
+            $scope.vBankInfo = ($scope.invoiceDetail.matchBankInfo) ? $scope.invoiceDetail.matchBankInfo : $scope.invoiceDetail['vBankInfo'][0];
+            // new code to get matching client bank info in invoice
+
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
                 //$scope.userData = dataUser.userData;
                 $scope.userPaymentData = dataUser.userPaymentData;
                 //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
-                $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                // $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
                 //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
                 //$scope.currencyType = vBankInfo.currency_code;
 
@@ -34435,7 +34441,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.post($scope.invoiceLt).success(function (data) {
             
             $scope.invoiceDetail = data[0];
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            console.log('$scope.invoiceDetail===========', $scope.invoiceDetail)
             
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
@@ -34482,12 +34488,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 })
             })
 
+            // new code for the payment info invoice
+            $scope.vBankInfo = ($scope.invoiceDetail?.matchBankInfo) ? $scope.invoiceDetail?.matchBankInfo : $scope.invoiceDetail['vBankInfo'][0];
+            // new code for the payment info invoice
+            
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
                 $scope.userPaymentData = dataUser.userPaymentData;
                 //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
                 var vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
-                $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
+                // $scope.vBankInfo = $scope.invoiceDetail['vBankInfo'][0];
                 //$scope.currencyType = vBankInfo.currency_code.split(',')[1];
                 
                 //$scope.currencyType = vBankInfo.currency_code;
@@ -34508,7 +34518,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.invoiceDetail.payment = $scope.currencyPaymentMethod;
 
             }).error(errorCallback);
-
             var mobileNo = $scope.invoiceDetail.freelancePhone ? JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber : '';
             var countryCode = $scope.invoiceDetail.freelancePhone ? JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle : ':';
             $scope.invoiceDetail.freelancePhone = '(' + countryCode.split(':')[1].trim() + ')' + ' ' + mobileNo;
