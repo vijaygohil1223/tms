@@ -153,6 +153,10 @@ class Client_invoice {
         $this->_db->where('tic.invoice_id', $id);
         $this->_db->join('tms_invoice_client tic', 'tic.customer_id=tp.iClientId', 'LEFT');
         $paymentInfo = $this->_db->getOne('tms_payment tp', 'tp.vPaymentInfo');
+        // get sign data.
+        $this->_db->where('tic.created_by', $id1[0]['created_by']);
+        $this->_db->join('tms_invoice_client tic', 'tic.created_by=tu.iUserId', 'LEFT');
+        $userSignInfo = $this->_db->getOne('tms_users tu', 'tu.vSignUpload,tu.vFirstName,tu.vLastName');
 
     		foreach (json_decode($id1[0]['scoop_id']) as $k => $v) {
                 $this->_db->where('ti.itemId', $v->id);
@@ -203,6 +207,7 @@ class Client_invoice {
                     $data['vBankInfo'] = self::getDefaultbankDetails();
                 }
                 $data['paymentInfoClient'] = (isset($paymentInfo) && !empty($paymentInfo)) ? $paymentInfo['vPaymentInfo'] : "";
+                $data['userSignInfo'] = (isset($userSignInfo) && !empty($userSignInfo)) ? $userSignInfo : "";
 				$infoD[$k] = array_merge($data, $id1[0]);
 	    	}
 	    	return $infoD;
@@ -492,7 +497,10 @@ class Client_invoice {
 
         
         $body = "<div>" . $body . "</div>";
-        $body .= "<div><img src='cid:signid' width='100px'></div>";
+        // $body .= "<div><img src='cid:signid' width='100px'></div>";
+        // if(isset($data['data']['userSign']) && !empty($data['data']['userSign'])){
+        //     $body .= "<div><img src='".SITE_URL.$data['data']['userSign']."' width='100px'></div>";
+        // }
 
         $attachments = '';
         $subject = isset($data['data']['msgEmailSubject']) && $data['data']['msgEmailSubject'] != '' ? $data['data']['msgEmailSubject'] : "Invoice";
@@ -553,29 +561,29 @@ class Client_invoice {
                 }    
             }
             $inlineImageAttachement = '';
-            if($emailSign && isset($emailSign['sign_image']) && $emailSign['sign_picture'] !='' ){
-                $base64_image = $emailSign['sign_image'];
-                $attachInline = explode(',', $base64_image);
-                // Get the content type
-                $content_type = '';
-                if (count($attachInline) > 0) {
-                    preg_match('/^data:(.*?);/', $attachInline[0], $matches);
-                    if (isset($matches[1])) {
-                        $content_type = $matches[1];
-                    }
-                }
-                // Get the base64 string
-                $base64_string = '';
-                if (count($attachInline) > 1) {
-                    $base64_string = $attachInline[1];
-                }
-                $inlineImageAttachement =  [[
-                    'ContentType' => $content_type,
-                    'Filename' => 'sign.png',
-                    'ContentID' => "signid",
-                    'Base64Content' => $base64_string
-                ]];
-            }
+            // if($emailSign && isset($emailSign['sign_image']) && $emailSign['sign_picture'] !='' ){
+            //     $base64_image = $emailSign['sign_image'];
+            //     $attachInline = explode(',', $base64_image);
+            //     // Get the content type
+            //     $content_type = '';
+            //     if (count($attachInline) > 0) {
+            //         preg_match('/^data:(.*?);/', $attachInline[0], $matches);
+            //         if (isset($matches[1])) {
+            //             $content_type = $matches[1];
+            //         }
+            //     }
+            //     // Get the base64 string
+            //     $base64_string = '';
+            //     if (count($attachInline) > 1) {
+            //         $base64_string = $attachInline[1];
+            //     }
+            //     $inlineImageAttachement =  [[
+            //         'ContentType' => $content_type,
+            //         'Filename' => 'sign.png',
+            //         'ContentID' => "signid",
+            //         'Base64Content' => $base64_string
+            //     ]];
+            // }
 
             $send_fn = new functions();
             $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc, $bcc, $subject, $body, $attachments, $inlineImageAttachement);
@@ -837,7 +845,7 @@ class Client_invoice {
         $this->_db->where('tmInvoice.invoice_type', $type);
         $this->_db->where('tmInvoice.is_deleted ', ' != 1');
         //$this->_db->where('tmInvoice.freelance_id',$userId);
-        $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date');
+        $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date, tu.vSignUpload');
         //echo $this->_db->getLastQuery();
         foreach ($data as $key => $value) {
             $data[$key]['companyName'] = ''; 

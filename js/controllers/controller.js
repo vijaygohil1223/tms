@@ -18410,6 +18410,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //console.log('pdfBase64Data', pdfBase64Data)
                             if(pdfBase64Data){
                                 let clientInvoiceNumber = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
+                                let userSignInfo = $scope.invoiceDetail.userSignInfo ? $scope.invoiceDetail.userSignInfo : "";
                                 var invoicemailDetail = {
                                     'pdfData': 'data:application/pdf;base64,'+ pdfBase64Data,
                                     'invoice_id': $scope.invoiceDetail.invoice_id,
@@ -18422,7 +18423,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
                                     'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
                                     'isClientInvoice' : 1,
-                                    'subject' : 'Invoice ' + clientInvoiceNumber
+                                    'userSignInfo' : userSignInfo
+
                                 };
                                 
                                 var modalInstance = $uibModal.open({
@@ -29870,14 +29872,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.emailPopupType = 'general';
 
     // Invoice email 
-    $scope.invoiceData = {} 
+    $scope.invoiceData = {}
     if(items && (items.invoice_to_be_sent == 1 || items.outstanding_reminder == 1 ) ){
         $scope.emailPopupType = items.isClientInvoice ? 'invoice-client' : 'invoice-linguist';
         $scope.invoiceData = items;
         console.log('$scope.invoiceData', $scope.invoiceData)
-        $scope.invoiceData.invoiceName = items.pdfData ? items.invoiceno + '.pdf' : ''; 
+        $scope.invoiceData.invoiceName = items.pdfData ? items.invoiceno + '.pdf' : '';
     }
     console.log('itemsss=', items)
+
+    // new for the invoice list direct
+    if(items && (items.sentInvoiceClientListing == 1) ){
+    }
+    // new for the invoice list direct
             
     $scope.bccShow = function () {
         $scope.bccshow = true;
@@ -29912,7 +29919,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cPersonMsg = data;
         $scope.cPersonMsg.vEmailAddress = $window.localStorage.generalMsg;
         $scope.cPersonMsg.msgEmailSubject = $scope.msgEmailSubject;
-        let msgText = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>';
+        // let msgText = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>';
+        // let userSign = $scope.invoiceData && $scope.invoiceData?.userSignInfo?.vSignUpload ? 'uploads/signImages/' + $scope.invoiceData.userSignInfo?.vSignUpload : '';
+        var imgbaseUrl = $location.absUrl().split('#')[0];
+        if(items && (items.sentInvoiceClientListing == 1) ){    
+            var userSign = items && items?.emailUserSign ? imgbaseUrl + 'uploads/signImages/' + items?.emailUserSign : '';
+        }else{
+            var userSign = $scope.invoiceData && $scope.invoiceData?.userSignInfo?.vSignUpload ? imgbaseUrl + 'uploads/signImages/' + $scope.invoiceData?.userSignInfo?.vSignUpload : '';
+        }
+        let msgText = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + userSign + '" width="100px"></div>';
+        // let sendUserSign = $scope.invoiceData && $scope.invoiceData?.userSignInfo?.vSignUpload ? '/uploads/signImages/' + $scope.invoiceData.userSignInfo?.vSignUpload : '';
+        // $scope.cPersonMsg.userSign = sendUserSign;
 
         // for linguist invoice / invoice Reminder
         if($scope.emailPopupType == 'invoice-linguist'){
@@ -29948,6 +29965,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             "file": $scope.attachementfile,
             "data": message
         };
+        if(items && (items.sentInvoiceClientListing == 1) ){
+            data.sentInvoiceClientListing = 1;
+        }
 
         if (angular.element("#" + frmId).valid()) {
             switch($scope.emailPopupType){
@@ -31906,13 +31926,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // ****** END invioce TABS ******* //
 
     $scope.msgEmailSubject = '';
-    $scope.generalEmail = function (id, invoiceNo) {
+    $scope.generalEmail = function (id, invoiceNo, userSign) {
         rest.path = 'viewcontactdirectEdit/' + id;
         rest.get().success(function (data) {
             $scope.contactlist = data;
             let invoiceEmail = $scope.contactlist.filter( (el)=> el.is_client_invoice == 1 ) 
             invoiceEmail = invoiceEmail.length > 0 ? invoiceEmail[0].vEmail : ($scope.contactlist.length > 0) ? $scope.contactlist[0].vEmail : '' ;
             $scope.msgEmailSubject = 'Invoice ' +invoiceNo;
+            $scope.emailUserSign = (userSign) ? userSign : "";
+            var arrObj = {
+                'msgEmailSubject': $scope.msgEmailSubject,
+                'emailUserSign': $scope.emailUserSign,
+                'sentInvoiceClientListing': 1
+            };
             if (id != undefined && id != " " && id != null) {
                 $window.localStorage.generalMsg = invoiceEmail;
                 var modalInstance = $uibModal.open({
@@ -31923,7 +31949,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     scope: $scope,
                     resolve: {
                         items: function () {
-                            return $scope.msgEmailSubject;
+                            return arrObj;
                         }
                     }
                 });
