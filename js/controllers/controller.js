@@ -32353,6 +32353,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    $scope.deleteInvoice = function (id) {
+        bootbox.confirm("Are you sure you want to delete this invoice ?", function (result) {
+            if (result == true) {
+                rest.path = 'deleteInvoice/' + id;
+                rest.delete().success(function () {
+                    notification('Invoice deleted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        });
+    };
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.InvoiceResult = items[0].InvoiceList;
