@@ -921,4 +921,34 @@ class Client_invoice {
         return $result;
     }
     
+    public function deleteInvoice($id){
+        $this->_db->where('invoice_id', $id);
+        $getInvoiceData = $this->_db->getOne('tms_invoice_client', 'scoop_id');
+        if(isset($getInvoiceData) && !empty($getInvoiceData)){
+            foreach (json_decode($getInvoiceData['scoop_id']) as $k => $itemId) {
+                try{
+                    // updating status of items once we delete invoice.
+                    $updateItemData['item_status'] = 5;
+                    $this->_db->where('itemId', $itemId->id);
+                    $this->_db->update('tms_items',$updateItemData);
+                } catch (ExceptionType $e) {}
+            }
+
+            // delete invoice
+            $this->_db->where('invoice_id', $id);
+            $delete = $this->_db->delete('tms_invoice_client');
+            if ($delete) {
+                $return ['status'] = 200;
+                $return ['msg'] = 'Successfully deleted.';
+            } else {
+                $return ['status'] = 422;
+                $return ['msg'] = 'Not deleted.';
+            }
+        }else{
+            $return ['status'] = 422;
+            $return ['msg'] = 'Details not found.';
+        }
+
+        return $return;
+    }
 }
