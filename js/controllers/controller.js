@@ -17922,21 +17922,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.vatNo = '';
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
             if ($scope.invoiceDetail.companyAddressDtl) {
-                let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
-                angular.forEach(clientAddDetail, function (clientAddress, i) {
-                    if (clientAddress.id == 'address1_locality') {
-                        $scope.clientCity = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_administrative_area_level_1') {
-                        $scope.clientState = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_country') {
-                        $scope.clientCountry = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_postal_code') {
-                        $scope.clientZipcode = clientAddress.value;
-                    }
-                })
+                try {
+                    let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                    angular.forEach(clientAddDetail, function (clientAddress, i) {
+                        if (clientAddress.id == 'address1_locality') {
+                            $scope.clientCity = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_administrative_area_level_1') {
+                            $scope.clientState = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_country') {
+                            $scope.clientCountry = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_postal_code') {
+                            $scope.clientZipcode = clientAddress.value;
+                        }
+                    })
+                } catch (error) {
+                    console.log('error', error)
+                    
+                }
             }
             rest.path = "customerpriceAll/1";
             rest.get().success(function (dataPrice) {
@@ -18513,21 +18518,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.vatNo = '';
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
             if ($scope.invoiceDetail.companyAddressDtl) {
-                let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
-                angular.forEach(clientAddDetail, function (clientAddress, i) {
-                    if (clientAddress.id == 'address1_locality') {
-                        $scope.clientCity = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_administrative_area_level_1') {
-                        $scope.clientState = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_country') {
-                        $scope.clientCountry = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_postal_code') {
-                        $scope.clientZipcode = clientAddress.value;
-                    }
-                })
+                try {
+                    let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                    angular.forEach(clientAddDetail, function (clientAddress, i) {
+                        if (clientAddress.id == 'address1_locality') {
+                            $scope.clientCity = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_administrative_area_level_1') {
+                            $scope.clientState = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_country') {
+                            $scope.clientCountry = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_postal_code') {
+                            $scope.clientZipcode = clientAddress.value;
+                        }
+                    })
+                } catch (error) {
+                    console.log('error', error)
+                }
             }
             rest.path = "customerpriceAll/1";
             rest.get().success(function (dataPrice) {
@@ -34541,22 +34550,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.tax_rate = $scope.invoiceDetail.tax_rate ? $scope.invoiceDetail.tax_rate : 0 ;
             $scope.clientZipcode = $scope.clientCountry = $scope.clientCity = '';
             if ($scope.invoiceDetail.companyAddressDtl) {
-                let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
-                angular.forEach(clientAddDetail, function (clientAddress, i) {
-                    if (clientAddress.id == 'address1_locality') {
-                        $scope.clientCity = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_administrative_area_level_1') {
-                        $scope.clientState = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_country') {
-                        $scope.clientCountry = clientAddress.value;
-                    }
-                    if (clientAddress.id == 'address1_postal_code') {
-                        $scope.clientZipcode = clientAddress.value;
-                    }
-                })
-
+                try {
+                    let clientAddDetail = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                    angular.forEach(clientAddDetail, function (clientAddress, i) {
+                        if (clientAddress.id == 'address1_locality') {
+                            $scope.clientCity = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_administrative_area_level_1') {
+                            $scope.clientState = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_country') {
+                            $scope.clientCountry = clientAddress.value;
+                        }
+                        if (clientAddress.id == 'address1_postal_code') {
+                            $scope.clientZipcode = clientAddress.value;
+                        }
+                    })
+                } catch (error) {
+                    console.log('error', error)
+                }
             }
             rest.path = "customerpriceAll/1";
             rest.get().success(function (dataPrice) {
@@ -34867,16 +34879,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             $scope.clientZipcode = $scope.clientCountry = $scope.clientCity = '';
             if ($scope.invoiceDetail.companyAddressDtl) {
-                const companyAddressDtl = JSON.parse($scope.invoiceDetail.companyAddressDtl);
-                if (companyAddressDtl.length > 4) {
-                    $scope.clientCity = (companyAddressDtl[1].value) ? companyAddressDtl[1].value + ', ' : '';
-                    const stateAddr = (companyAddressDtl[2].value) ? companyAddressDtl[2].value + ', ' : '';
-                    $scope.clientCountry = (companyAddressDtl[3].value) ? companyAddressDtl[3].value : '';
-                    $scope.clientZipcode = (companyAddressDtl[4].value) ? companyAddressDtl[4].value : '';
-                    $scope.invoiceDetail.companyAddressDtl = $scope.clientCity;
-                    $scope.clientCountry = $scope.clientCountry;
+                try {
+                    const companyAddressDtl = JSON.parse($scope.invoiceDetail.companyAddressDtl);
+                    if (companyAddressDtl.length > 4) {
+                        $scope.clientCity = (companyAddressDtl[1].value) ? companyAddressDtl[1].value + ', ' : '';
+                        const stateAddr = (companyAddressDtl[2].value) ? companyAddressDtl[2].value + ', ' : '';
+                        $scope.clientCountry = (companyAddressDtl[3].value) ? companyAddressDtl[3].value : '';
+                        $scope.clientZipcode = (companyAddressDtl[4].value) ? companyAddressDtl[4].value : '';
+                        $scope.invoiceDetail.companyAddressDtl = $scope.clientCity;
+                        $scope.clientCountry = $scope.clientCountry;
+                    }
+                } catch (error) {
+                    console.log('error', error)
                 }
-
             }
 
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
