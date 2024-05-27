@@ -17894,6 +17894,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.invoiceSettingData = [];
+    $scope.newClientId = '';
 
     if ($routeParams.id) {
         
@@ -17902,6 +17903,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             $scope.invoiceDetail = data[0];
             console.log("clientInvoiceViewOne data ===>>>>", $scope.invoiceDetail);
+            $scope.newClientId = $scope.invoiceDetail?.clientId;
             
             // override new contact details here
             $scope.invoiceDetail.freelanceName = $scope.invoiceDetail.sender_contact;
@@ -17993,6 +17995,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             }).error(errorCallback);
 
+            $scope.availItemsId = [];
             $scope.invoiceList = data;
             
             $scope.invoiceNumOfdays = data[0].number_of_days;
@@ -18020,7 +18023,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var invoiceTotal = $scope.invoiceTotal;
             $scope.grandTotal = 0;
             angular.forEach($scope.invoiceList, function (val, i) {
-                
+                $scope.availItemsId.push(val.itemId)
                 if (val.item) {
                     var itemTotal = 0;
                     angular.forEach(val.item, function (v, i2) {
@@ -18470,6 +18473,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
+    // for the popup of scoope add things
+    $scope.newScoopPopupCreate = function (clientId, itemarr) {
+        rest.path = "getClientScoopData/" + clientId;
+        rest.get().success(function (data) {
+            $scope.InvoiceResult = data;
+            // Filter out items with itemId present in removeIds
+            $scope.InvoiceResult = $scope.InvoiceResult.filter(item => !itemarr.includes(item.itemId));
+            var obj = [];
+            obj.push({
+                'InvoiceList': $scope.InvoiceResult
+            });
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/clientScoopListingInvoice.html',
+                controller: 'clientInvoiceCreatePopupCtrl',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return obj;
+                    }
+                }
+            });
+        }).error(errorCallback);
+    }
 }).controller('invoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;
@@ -32456,6 +32483,64 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.close();
     }
+
+    $scope.addInvoiceNew = function (data) {
+        var client = "";
+        var flag = 0;
+        var array = [];
+        angular.forEach(data, function (val, i) {
+            if (val.SELECTED == 1) {
+                
+                if (!client) {
+                    client = val.contactName;
+                }
+                if (val.contactName != client) {
+                    flag = 1;
+                } else {
+                    array.push(val.itemId);
+                }
+            }
+        });
+        var oldScoopObj = [];
+        var newScoopObj = [];
+        var existingInvoiceId = ($routeParams.id) ? $routeParams.id : "";
+        if (flag != 1 && array.length) {
+            // get existing scoop id
+            rest.path = "getSingleInvoiceScoopId/" + existingInvoiceId;
+            rest.get().success(function (scoopdata) {
+                oldScoopObj = JSON.parse(scoopdata.scoop_id);
+                angular.forEach(array, function (itemId, i) {
+                    newScoopObj.push({ "id": itemId });
+                });
+                var mergedArray = oldScoopObj.concat(newScoopObj);
+                // Create a unique array based on `id`
+                const uniqueArray = [];
+                const ids = new Set();
+                for (const item of mergedArray) {
+                    if (!ids.has(item.id)) {
+                        ids.add(item.id);
+                        uniqueArray.push(item);
+                    }
+                }
+                var postScoopArray = JSON.stringify(uniqueArray);
+                rest.path = 'updateScoopIds';
+                rest.put(postScoopArray).success(function (data) {
+                    if (data) {
+                        $uibModalInstance.close();
+                        notification('Scoop Updated successfully.', 'success');
+                        $location.path("/client-invoice-show/" + $routeParams.id);
+                        $route.reload();
+                    }
+                });
+            }).error(errorCallback);
+        } else {
+            if ($scope.InvoiceResult != undefined && flag != 1) {
+                notification("Pelase select Project scoop to create invoice.", "warning");
+            } else {
+                notification("You cannot add two different client invoice", "warning");
+            }
+        }
+    }
 }).controller('clientInvoiceScoopController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $filter) {    
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.InvoiceResult = [];
@@ -34852,6 +34937,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/invoice-client');
     }
 
+    $scope.newScoopPopupCreate = function (clientId, itemarr) {}
 }).controller('clientInvoiceViewController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;

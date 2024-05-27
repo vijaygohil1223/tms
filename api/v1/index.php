@@ -3626,6 +3626,22 @@ $app->get('/getUserDetails/:id','authenticate', function ($id) {
     $result = $invoice->getUserDetails($id);
     echoResponse(200, $result);
 });
+$app->get('/getClientScoopData/:id','authenticate', function ($id) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getClientScoopData($id);
+    echoResponse(200, $result);
+});
+$app->get('/getSingleInvoiceScoopId/:id','authenticate', function ($id) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getSingleInvoiceScoopId($id);
+    echoResponse(200, $result);
+});
+$app->put('/updateScoopIds/:id','authenticate', function ($id) use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result1 = $invoice->updateScoopIds($data, $id);
+    echoResponse(200, $result1);
+});
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {
     $userposition = new userposition ();
