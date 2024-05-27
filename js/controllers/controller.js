@@ -10995,6 +10995,30 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.messageEmailSign = data.info;
             //$scope.message.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
             $scope.message.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</div>';
+
+            // new code to get logged user details
+            var loggedUserIdSend = $window.localStorage.getItem("session_iUserId");
+            $scope.loggedUserDetailsReminder = '';
+            rest.path = 'getUserDetails/' + loggedUserIdSend;
+            rest.get().success(function (data) {
+                $scope.loggedUserDetailsReminder = data;
+                $scope.invoiceSenderContactReminder = $scope.loggedUserDetailsReminder[0].vUserName;
+                $scope.invoiceSenderEmailReminder = $scope.loggedUserDetailsReminder[0].vEmailAddress;
+                $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+                if($scope.loggedUserDetailsReminder.length > 0){
+                    var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+                    var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                    $scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
+                }
+                const rplcClientData = {
+                    SENDER_NAME: ($scope.invoiceSenderContactReminder) ? $scope.invoiceSenderContactReminder : "",
+                    RESOURCE_POSITION: ($scope.invoiceClinetpositionReminder) ? $scope.invoiceClinetpositionReminder : "",
+                    RESOURCE_EMAIL: ($scope.invoiceSenderEmailReminder) ? $scope.invoiceSenderEmailReminder : "",
+                };
+                $scope.message.messageData = replaceVariables($scope.message.messageData, rplcClientData);
+            }).error(errorCallback);
+            // new code to get logged user details
+
         }).error(errorCallback);
     }
 
