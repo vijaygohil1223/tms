@@ -937,6 +937,11 @@ class Client_invoice {
             // delete invoice
             $this->_db->where('invoice_id', $id);
             $delete = $this->_db->delete('tms_invoice_client');
+
+            // delete invoice payment data
+            $this->_db->where('invoice_id', $id);
+            $paymentdelete = $this->_db->delete('tms_invoice_client_payments');
+
             if ($delete) {
                 $return ['status'] = 200;
                 $return ['msg'] = 'Successfully deleted.';
