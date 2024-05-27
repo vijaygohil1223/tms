@@ -956,4 +956,9 @@ class Client_invoice {
 
         return $return;
     }
+
+    public function getUserDetails($id){
+        $data = $this->_db->rawQuery("SELECT concat(tu.vFirstName, ' ', tu.vLastName) as vUserName, tu.vEmailAddress, tup.position_name FROM `tms_users` tu LEFT JOIN tms_user_position tup ON FIND_IN_SET(tup.position_id, tu.vResourcePosition) WHERE tu.iUserId = $id");
+        return $data;
+    }
 }

@@ -3621,6 +3621,11 @@ $app->delete('/deleteInvoice/:id','authenticate', function ($id) {
     $result = $invoice->deleteInvoice($id);
     echoResponse($result ['status'], $result);
 });
+$app->get('/getUserDetails/:id','authenticate', function ($id) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getUserDetails($id);
+    echoResponse(200, $result);
+});
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {
     $userposition = new userposition ();

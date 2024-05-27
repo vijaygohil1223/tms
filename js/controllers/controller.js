@@ -18417,6 +18417,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if(pdfBase64Data){
                                 let clientInvoiceNumber = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
                                 let userSignInfo = $scope.invoiceDetail.userSignInfo ? $scope.invoiceDetail.userSignInfo : "";
+                                let clientSenderContact = $scope.invoiceDetail?.sender_contact ? $scope.invoiceDetail?.sender_contact : "";
+                                let clientSenderEmail = $scope.invoiceDetail?.sender_email ? $scope.invoiceDetail?.sender_email : "";
                                 var invoicemailDetail = {
                                     'pdfData': 'data:application/pdf;base64,'+ pdfBase64Data,
                                     'invoice_id': $scope.invoiceDetail.invoice_id,
@@ -18429,8 +18431,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
                                     'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
                                     'isClientInvoice' : 1,
-                                    'userSignInfo' : userSignInfo
-
+                                    'userSignInfo' : userSignInfo,
+                                    'clientSenderContact': clientSenderContact,
+                                    'clientSenderEmail': clientSenderEmail,
                                 };
                                 
                                 var modalInstance = $uibModal.open({
@@ -29989,8 +29992,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             })
         }
-        $scope.cPersonMsg.messageData = msgText;
         
+        // new code to get logged user details
+        var loggedUserIdSend = $window.localStorage.getItem("session_iUserId");
+        $scope.loggedUserDetailsReminder = '';
+        rest.path = 'getUserDetails/' + loggedUserIdSend;
+        rest.get().success(function (data) {
+            $scope.loggedUserDetailsReminder = data;
+            $scope.invoiceSenderContactReminder = $scope.loggedUserDetailsReminder[0].vUserName;
+            $scope.invoiceSenderEmailReminder = $scope.loggedUserDetailsReminder[0].vEmailAddress;
+            $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+            if($scope.loggedUserDetailsReminder.length > 0){
+                var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+                var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                $scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
+            }
+            
+            const rplcClientData = {
+                SENDER_NAME: ($scope.invoiceSenderContactReminder) ? $scope.invoiceSenderContactReminder : $scope.invoiceSenderContact,
+                RESOURCE_POSITION: ($scope.invoiceClinetpositionReminder) ? $scope.invoiceClinetpositionReminder : $scope.invoiceClinetposition,
+                RESOURCE_EMAIL: ($scope.invoiceSenderEmailReminder) ? $scope.invoiceSenderEmailReminder : $scope.invoiceClinetposition,
+            };
+            msgText = replaceVariables(msgText, rplcClientData);
+            $scope.cPersonMsg.messageData = msgText; 
+        }).error(errorCallback);
+        // new code to get logged user details
+        
+        // $scope.cPersonMsg.messageData = msgText;
     }).error(errorCallback);
 
     $scope.ok = function (frmId, message) {
@@ -31967,11 +31995,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             invoiceEmail = invoiceEmail.length > 0 ? invoiceEmail[0].vEmail : ($scope.contactlist.length > 0) ? $scope.contactlist[0].vEmail : '' ;
             $scope.msgEmailSubject = 'Invoice ' +invoiceNo;
             $scope.emailUserSign = (userSign) ? userSign : "";
-            var arrObj = {
-                'msgEmailSubject': $scope.msgEmailSubject,
-                'emailUserSign': $scope.emailUserSign,
-                'sentInvoiceClientListing': 1
-            };
+            
+            // new code to get user details
+            var loggedUserId = $window.localStorage.getItem("session_iUserId");
+            let loggedUserDetails = '';
+            $scope.invoiceSenderContact = '';
+            $scope.invoiceSenderEmail = '';
+            $scope.invoiceClinetposition = '';
+            let arrObj = {};
+            rest.path = 'getUserDetails/' + loggedUserId;
+            rest.get().success(function (data) {
+                loggedUserDetails = data;
+                $scope.invoiceSenderContact = loggedUserDetails[0].vUserName;
+                $scope.invoiceSenderEmail = loggedUserDetails[0].vEmailAddress;
+                $scope.invoiceClinetposition = (loggedUserDetails[0].position_name) ? loggedUserDetails[0].position_name : "";
+                if(loggedUserDetails.length > 0){
+                    var position1 = (loggedUserDetails[0].position_name) ? loggedUserDetails[0].position_name : "";
+                    var position2 = (loggedUserDetails[1].position_name) ? loggedUserDetails[1].position_name : "";
+                    $scope.invoiceClinetposition = position1 + " & " + position2;
+                }
+                arrObj = {
+                    'msgEmailSubject': $scope.msgEmailSubject,
+                    'emailUserSign': $scope.emailUserSign,
+                    'sentInvoiceClientListing': 1,
+                    'senderContact': ($scope.invoiceSenderContact) ? $scope.invoiceSenderContact : "",
+                    'senderEmail': ($scope.invoiceSenderEmail) ? $scope.invoiceSenderEmail : "",
+                    'clinetposition': ($scope.invoiceClinetposition) ? $scope.invoiceClinetposition : ""
+                };
+            }).error(errorCallback);
+            // new code to get user details
+
             if (id != undefined && id != " " && id != null) {
                 $window.localStorage.generalMsg = invoiceEmail;
                 var modalInstance = $uibModal.open({
