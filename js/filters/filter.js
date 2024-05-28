@@ -562,7 +562,8 @@ app.filter('NumbersCommaformat', function($filter) {
             //var str1 = input.toFixed(2);
             var decNo = 2;
             // Remove characters except numbers or decimal numbers
-            var inputNo = input.toString().replace(/[^0-9.]/g, '');
+            // var inputNo = input.toString().replace(/[^0-9.]/g, '');
+            var inputNo = input.toString().replace(/[^0-9.-]/g, '');
             var numarray = inputNo.toString().split('.');
             var a1 = numarray[0];
             var a2 = ',00';
