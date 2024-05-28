@@ -17184,7 +17184,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile) {
+}).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     var allInvoiceListArr = [];
@@ -17286,6 +17286,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ( (val.is_approved == 1 || val.invoice_status == 'Approved') && !['Complete','Completed','Partly Paid','Paid'].includes(val.invoice_status) ) {
                     $scope.approvedInvcCount++;
                     $scope.approvedInvc.push(val);
+
+                    // if (!$scope.approvedInvcByDate[val.inv_due_date]) {
+                    //     $scope.approvedInvcByDate[val.inv_due_date] = [];
+                    // }
+                    // $scope.approvedInvcByDate[val.inv_due_date].push(val);
+
                 }
                 if (['Complete','Completed'].includes(val.invoice_status) ) {
                     $scope.completedInvcCount++;
@@ -17305,6 +17311,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 //Due date counts for Invoice
             });
+
+            $scope.approvedInvc.sort((a, b) => new Date(a.inv_due_date) - new Date(b.inv_due_date));
+            console.log('$scope.approvedInvc', $scope.approvedInvc)
             //deferred.resolve($scope.openInvc);
             //deferred.resolve($scope.completeInvc);
             //deferred.resolve($scope.partPaidInvc);
@@ -17376,6 +17385,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invcStatusRecord('all');
     });
     // ****** END invioce TABS ******* //
+
+    $scope.calculateTotalForApprovedDueDate = function(inv_due_date) {
+        var total = 0;
+        angular.forEach($scope.approvedInvc, function(invoice) {
+            if (invoice.inv_due_date == inv_due_date) {
+                // Ensure invoice Invoice_cost is a valid number
+                if (!isNaN(parseFloat(invoice.Invoice_cost))) {
+                    total += parseFloat(invoice.Invoice_cost);
+                }
+            }
+        });
+        return total;
+    };
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('scrollX', 'true').
+        withOption('responsive', true).
+        withOption('pageLength', 10).
+        withOption('ordering', false);
+        //withOption('scrollCollapse', true);
 
     $scope.invoiceCheck = function (status, id, statusId) {
         var obj = [];
