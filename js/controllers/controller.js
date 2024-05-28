@@ -702,15 +702,46 @@ function calculateAveragePercentage(percentages) {
 }
 
 function exportTableToExcel(id, fileName){
-    var wb = XLSX.utils.table_to_book(document.getElementById(id), {sheet:"Sheet JS"});
+    // var wb = XLSX.utils.table_to_book(document.getElementById(id), {sheet:"Sheet JS"});
+    // var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+    // function s2ab(s) {
+    //                 var buf = new ArrayBuffer(s.length);
+    //                 var view = new Uint8Array(buf);
+    //                 for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+    //                 return buf;
+    // }
+    // saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), fileName+'.xlsx');
+
+    var table = document.getElementById(id);
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.table_to_sheet(table);
+
+    // Apply number formatting to cells containing numbers
+    var range = XLSX.utils.decode_range(ws['!ref']);
+    for(var R = range.s.r; R <= range.e.r; ++R) {
+        for(var C = range.s.c; C <= range.e.c; ++C) {
+            var cell_address = {c:C, r:R};
+            var cell_ref = XLSX.utils.encode_cell(cell_address);
+            if(ws[cell_ref] && typeof ws[cell_ref].v === 'number') {
+                // ws[cell_ref].z = "#,##0.00"; // Format numbers with comma separator
+                ws[cell_ref].t = 's'; // Set cell type to 's' for string
+                ws[cell_ref].v = numberWithCommas(ws[cell_ref].v); // Format number with comma separators
+            }
+        }
+    }
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet JS");
     var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
     function s2ab(s) {
-                    var buf = new ArrayBuffer(s.length);
-                    var view = new Uint8Array(buf);
-                    for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-                    return buf;
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
     }
-    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), fileName+'.xlsx');
+    function numberWithCommas(x) {
+        return x.toString().replace('.',",");
+        // return temp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    saveAs(new Blob([s2ab(wbout)], {type:"application/octet-stream"}), fileName + '.xlsx');
 }
 
 app.controller('loginController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope) {
