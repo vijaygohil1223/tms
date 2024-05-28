@@ -11007,8 +11007,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
                 if($scope.loggedUserDetailsReminder.length > 0){
                     var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
-                    var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
-                    $scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
+                    //var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                    //$scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
+                    var position2Reminder = ($scope.loggedUserDetailsReminder.length > 1 && $scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                    $scope.invoiceClinetpositionReminder = position1Reminder + (position2Reminder ? " & " + position2Reminder : "");
                 }
                 const rplcClientData = {
                     SENDER_NAME: ($scope.invoiceSenderContactReminder) ? $scope.invoiceSenderContactReminder : "",
@@ -30064,8 +30066,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
             if($scope.loggedUserDetailsReminder.length > 0){
                 var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
-                var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
-                $scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
+                //var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                //$scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
+                var position2Reminder = ($scope.loggedUserDetailsReminder.length > 1 && $scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                $scope.invoiceClinetpositionReminder = position1Reminder + (position2Reminder ? " & " + position2Reminder : "");
             }
             
             const rplcClientData = {
