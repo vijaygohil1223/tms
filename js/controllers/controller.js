@@ -9608,7 +9608,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return total;
     };
 
-    $scope.calculateProfitMargin = function calculateProfitMargin(revenue, cost) {
+    $scope.calculateProfitMargin = function (revenue, cost) {
         if (revenue === 0) {
             return 0; // To handle the case where revenue is zero to avoid division by zero
         }
@@ -9617,7 +9617,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return profitMargin.toFixed(2); // Rounding to two decimal places
     }
 
-    $scope.calculateGrossProfit = function calculateProfitMargin(revenue, cost) {
+    $scope.calculateGrossProfit = function (revenue, cost) {
         const grossProfit = revenue - cost;
         return grossProfit;
     }
@@ -19369,31 +19369,49 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.upInvoiceData = {};
     $scope.editInvoiceLinguist = function (id) {
-        //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
-        $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)
         
-        $scope.upInvoiceData.vat = numberFormatCommaToPoint($scope.vat);
-        const customVatNOK =  $('#vatnok').val();
-        $scope.upInvoiceData.vat2 = customVatNOK != '' ? numberFormatCommaToPoint(customVatNOK) : ''; // for second Currencty nok
-        //$scope.upInvoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
-        $scope.upInvoiceData.Invoice_cost = $scope.grandJobTotal;
-        const grandTotalNokInv =  $('#grandTotalNok').val();
-        $scope.upInvoiceData.Invoice_cost2 = grandTotalNokInv !='' ? numberFormatCommaToPoint(grandTotalNokInv) : ''; // for second Currencty nok
-        //$scope.upInvoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
+        try {
+            //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
+            $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)
+                    
+            $scope.upInvoiceData.vat = numberFormatCommaToPoint($scope.vat);
+            const customVatNOK =  $('#vatnok').val();
+            $scope.upInvoiceData.vat2 = customVatNOK != '' ? numberFormatCommaToPoint(customVatNOK) : ''; // for second Currencty nok
+            //$scope.upInvoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
+            $scope.upInvoiceData.Invoice_cost = $scope.grandJobTotal;
+            const grandTotalNokInv =  $('#grandTotalNok').val();
+            $scope.upInvoiceData.Invoice_cost2 = grandTotalNokInv !='' ? numberFormatCommaToPoint(grandTotalNokInv) : ''; // for second Currencty nok
+            //$scope.upInvoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
 
-        console.log('$scope.invoiceDetail.custom_invoice_no',$scope.invoiceDetail.custom_invoice_no )
-        $scope.upInvoiceData.custom_invoice_no = $scope.invoiceDetail.custom_invoice_no;
-        console.log('$scope.upInvoiceData.custom_invoice_no', $scope.upInvoiceData.custom_invoice_no)
-        
-        $scope.upInvoiceData.item = [];
-        $scope.invoiceList.forEach(element => {
-            const elItemID = element.jobId;
-            const elItemVal = $('input[name=itemVal_' + element.jobId).val();
-            // $scope.upInvoiceData.item.push({
-            //     'id': elItemID,
-            //     'value': numberFormatCommaToPoint(elItemVal),
-            // })
-        });
+            console.log('$scope.invoiceDetail.custom_invoice_no',$scope.invoiceDetail.custom_invoice_no )
+            $scope.upInvoiceData.custom_invoice_no = $scope.invoiceDetail.custom_invoice_no;
+            console.log('$scope.upInvoiceData.custom_invoice_no', $scope.upInvoiceData.custom_invoice_no)
+
+            $scope.upInvoiceData.item = [];
+            $scope.invoiceList.forEach(element => {
+                const elItemID = element.jobId;
+                const elItemVal = $('input[name=itemVal_' + element.jobId).val();
+                // $scope.upInvoiceData.item.push({
+                //     'id': elItemID,
+                //     'value': numberFormatCommaToPoint(elItemVal),
+                // })
+            });
+
+            if($scope.invoiceDetail.invoice_date != 'Invalid date'){
+                var dtFrmtDash = originalDateFormatDash($scope.invoiceDetail.invoice_date);
+                $scope.upInvoiceData.invoice_date = moment(dtFrmtDash).format('YYYY-MM-DD');
+                const invoice_duedate = calculateDueDate($scope.invoiceDetail.invoice_date, $scope.invoiceNumOfdays);
+                var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
+            }else{
+                const invoice_duedate = calculateDueDate( moment().format('YYYY-MM-DD'), $scope.invoiceNumOfdays);
+                var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
+                $scope.upInvoiceData.invoice_date = moment().format('YYYY-MM-DD');
+            }
+            $scope.upInvoiceData.inv_due_date = invDueDate            
+        } catch (error) {
+            console.log('error', error)
+            $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
+        }
         
         rest.path = 'saveEditedInvoiceLinguist';
         rest.put($scope.upInvoiceData).success(function (data) {
@@ -34667,6 +34685,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 'value': numberFormatCommaToPoint(elIntemVal)
             })
         });
+
+        if($scope.invoiceDetail.invoice_date != 'Invalid date'){
+            var dtFrmtDash = originalDateFormatDash($scope.invoiceDetail.invoice_date);
+            var inv_new_date = moment(dtFrmtDash).format('YYYY-MM-DD');
+            const invoice_duedate = calculateDueDate(inv_new_date, $scope.invoiceNumOfdays);
+            var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
+        }else{
+            const invoice_duedate = calculateDueDate( moment().format('YYYY-MM-DD'), $scope.invoiceNumOfdays);
+            var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
+        }
+        $scope.invoiceDetail.inv_due_date = invDueDate
 
         if ($scope.invoiceDetail.payment) {
             rest.path = "invoiceSave";

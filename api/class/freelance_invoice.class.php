@@ -609,6 +609,13 @@ class Freelance_invoice {
         $updata['invoice_type'] = 'save';
         $updata['vat'] = $data['vat'];
         $updata['vat2'] = $data['vat2'];
+        if($data['inv_due_date']){
+            $updata['inv_due_date'] = $data['inv_due_date'];
+        }
+        if(isset($data['invoice_date'])){
+            $updata['invoice_date'] = $data['invoice_date'];
+        }
+        
         if($id){
             $this->_db->where('invoice_id', $id);
     	    $up_id = $this->_db->update('tms_invoice',$updata);
