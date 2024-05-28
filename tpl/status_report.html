@@ -446,6 +446,9 @@
                                        <th>Status</th>
                                        <th>Due date</th>
                                        <th>Prices</th>
+                                       <th>Expense</th>
+                                       <th>Gross profit</th>
+                                       <th>Profit Margin</th>
                                        <!-- <th>Price in selected currency</th> -->
                                     </thead>
                                     <tbody >
@@ -483,6 +486,9 @@
                                           <td ng-bind="result.scoop_status_name"></td>
                                           <td class="nowrap"> <span class="none"> {{result.scoop_due_date}}</span> {{ result.scoop_due_date | dateFormatDisplayFront }}</td>
                                           <td ng-bind="result.totalAmount | customNumber"> <span class="none">{{result.totalAmount}}</span> </td>
+                                          <td ng-bind="result.total_job_price | customNumber">  </td>
+                                          <td> {{calculateGrossProfit(result.totalAmount, result.total_job_price) | customNumber }} </td>
+                                          <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) | customNumber }} % </td>
                                           
                                        </tr>
                                        <!-- <tr ng-if="staturRes.length">

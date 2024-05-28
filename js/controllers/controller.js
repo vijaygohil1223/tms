@@ -9608,6 +9608,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return total;
     };
 
+    $scope.calculateProfitMargin = function calculateProfitMargin(revenue, cost) {
+        if (revenue === 0) {
+            return 0; // To handle the case where revenue is zero to avoid division by zero
+        }
+        const profit = revenue - cost;
+        const profitMargin = (profit / revenue) * 100;
+        return profitMargin.toFixed(2); // Rounding to two decimal places
+    }
+
+    $scope.calculateGrossProfit = function calculateProfitMargin(revenue, cost) {
+        const grossProfit = revenue - cost;
+        return grossProfit;
+    }
+
+
 }).controller('projectStatisticsController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
