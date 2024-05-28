@@ -39,7 +39,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="user in userlist">
-                                    <td>{{$index + 1}}</td>
+                                    <td>{{user.iResourceNumber}}</td>
                                     <td>
                                         <a style="color:#4ba0c3" href="#/viewExternal/{{user.iUserId}}" title="View"
                                             class="trActionIcon">{{user.vFirstName}} {{user.vLastName}}</a>
