@@ -6022,7 +6022,8 @@ app.directive('allowDecimalCommaNumber', function () {
                 var value = $input.val();  
                 //value1 = value.replace(/[a-z]/g, '')  
                 
-                value = value.replace(/[^0-9\,\.]/g, '')  
+                // value = value.replace(/[^0-9\,\.]/g, '')
+                value = value.replace(/[^0-9,\.\-]/g, '')
                 var findsComma = new RegExp(/\,/g)  
                 var findsComma = value.match(findsComma)  
                 if (findsComma != null && ([188].indexOf(event.which) > -1)) {  

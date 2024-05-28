@@ -32590,7 +32590,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var mergedArr = [...new Set([...existingArr, ...array])];
             $cookieStore.put('invoiceScoopId', mergedArr);
             $uibModalInstance.close();
-            notification('Scoop Updated successfully.', 'success');
+            notification('New Item Added successfully.', 'success');
             $location.path("/client-invoice-create");
             $route.reload();
         }else{
@@ -32637,7 +32637,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.put(postScoopArray).success(function (data) {
                         if (data) {
                             $uibModalInstance.close();
-                            notification('Scoop Updated successfully.', 'success');
+                            notification('New Item Added successfully.', 'success');
                             $location.path("/client-invoice-show/" + $routeParams.id);
                             $route.reload();
                         }
