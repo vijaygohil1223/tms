@@ -34640,6 +34640,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.invoiceData.Invoice_cost2 = $scope.grandTotalNok != '' ? numberFormatCommaToPoint($scope.grandTotalNok) : ''; // for second Currencty nok
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
         $scope.invoiceData.currency_rate = $scope.currencyRate ;
+        var new_inv_due_date = calculateDueDate($scope.invoiceData.invoice_date, $scope.invoiceNumOfdays);
+        $scope.invoiceData.inv_due_date = moment(new_inv_due_date).format('YYYY-MM-DD');
 
         $scope.invoiceData.job = [];
         $scope.invoiceList.forEach(element => {
