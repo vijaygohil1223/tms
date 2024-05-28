@@ -32515,6 +32515,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.InvoiceResult = items[0].InvoiceList;
     console.log('$scope.InvoiceResult', $scope.InvoiceResult)
     $scope.searchOrderNumber = items[0].searchOrderNumber;
+    $scope.createNewScoop = (items[0]?.createNewScoop) ? items[0]?.createNewScoop : 0;
 
     $scope.addInvoice = function (data) {
         var client = "";
@@ -32551,59 +32552,88 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.addInvoiceNew = function (data) {
-        var client = "";
-        var flag = 0;
-        var array = [];
-        angular.forEach(data, function (val, i) {
-            if (val.SELECTED == 1) {
-                
-                if (!client) {
-                    client = val.contactName;
-                }
-                if (val.contactName != client) {
-                    flag = 1;
-                } else {
-                    array.push(val.itemId);
-                }
-            }
-        });
-        var oldScoopObj = [];
-        var newScoopObj = [];
-        var existingInvoiceId = ($routeParams.id) ? $routeParams.id : "";
-        if (flag != 1 && array.length) {
-            // get existing scoop id
-            rest.path = "getSingleInvoiceScoopId/" + existingInvoiceId;
-            rest.get().success(function (scoopdata) {
-                oldScoopObj = JSON.parse(scoopdata.scoop_id);
-                angular.forEach(array, function (itemId, i) {
-                    newScoopObj.push({ "id": itemId });
-                });
-                var mergedArray = oldScoopObj.concat(newScoopObj);
-                // Create a unique array based on `id`
-                const uniqueArray = [];
-                const ids = new Set();
-                for (const item of mergedArray) {
-                    if (!ids.has(item.id)) {
-                        ids.add(item.id);
-                        uniqueArray.push(item);
+        if($scope.createNewScoop){
+            // at the time of new create invoice
+            var client = "";
+            var flag = 0;
+            var array = [];
+            angular.forEach(data, function (val, i) {
+                if (val.SELECTED == 1) {
+                    
+                    if (!client) {
+                        client = val.contactName;
+                    }
+                    if (val.contactName != client) {
+                        flag = 1;
+                    } else {
+                        array.push(val.itemId);
                     }
                 }
-                var postScoopArray = JSON.stringify(uniqueArray);
-                rest.path = 'updateScoopIds';
-                rest.put(postScoopArray).success(function (data) {
-                    if (data) {
-                        $uibModalInstance.close();
-                        notification('Scoop Updated successfully.', 'success');
-                        $location.path("/client-invoice-show/" + $routeParams.id);
-                        $route.reload();
+            });
+            var existingArr = $cookieStore.get('invoiceScoopId');
+            var newSelected = array;
+            var mergedArr = [...new Set([...existingArr, ...array])];
+            $cookieStore.put('invoiceScoopId', mergedArr);
+            $uibModalInstance.close();
+            notification('Scoop Updated successfully.', 'success');
+            $location.path("/client-invoice-create");
+            $route.reload();
+        }else{
+            // at the time of update invoice
+            var client = "";
+            var flag = 0;
+            var array = [];
+            angular.forEach(data, function (val, i) {
+                if (val.SELECTED == 1) {
+                    
+                    if (!client) {
+                        client = val.contactName;
                     }
-                });
-            }).error(errorCallback);
-        } else {
-            if ($scope.InvoiceResult != undefined && flag != 1) {
-                notification("Pelase select Project scoop to create invoice.", "warning");
+                    if (val.contactName != client) {
+                        flag = 1;
+                    } else {
+                        array.push(val.itemId);
+                    }
+                }
+            });
+            var oldScoopObj = [];
+            var newScoopObj = [];
+            var existingInvoiceId = ($routeParams.id) ? $routeParams.id : "";
+            if (flag != 1 && array.length) {
+                // get existing scoop id
+                rest.path = "getSingleInvoiceScoopId/" + existingInvoiceId;
+                rest.get().success(function (scoopdata) {
+                    oldScoopObj = JSON.parse(scoopdata.scoop_id);
+                    angular.forEach(array, function (itemId, i) {
+                        newScoopObj.push({ "id": itemId });
+                    });
+                    var mergedArray = oldScoopObj.concat(newScoopObj);
+                    // Create a unique array based on `id`
+                    const uniqueArray = [];
+                    const ids = new Set();
+                    for (const item of mergedArray) {
+                        if (!ids.has(item.id)) {
+                            ids.add(item.id);
+                            uniqueArray.push(item);
+                        }
+                    }
+                    var postScoopArray = JSON.stringify(uniqueArray);
+                    rest.path = 'updateScoopIds';
+                    rest.put(postScoopArray).success(function (data) {
+                        if (data) {
+                            $uibModalInstance.close();
+                            notification('Scoop Updated successfully.', 'success');
+                            $location.path("/client-invoice-show/" + $routeParams.id);
+                            $route.reload();
+                        }
+                    });
+                }).error(errorCallback);
             } else {
-                notification("You cannot add two different client invoice", "warning");
+                if ($scope.InvoiceResult != undefined && flag != 1) {
+                    notification("Pelase select Project scoop to create invoice.", "warning");
+                } else {
+                    notification("You cannot add two different client invoice", "warning");
+                }
             }
         }
     }
@@ -34644,12 +34674,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/invoice-detail');
     }
 
-}).controller('clientInvoiceCreateController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $filter) {
+}).controller('clientInvoiceCreateController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $filter, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceList = [];
     $scope.currencyType = 'EUR';
     $scope.invoiceNumOfdays = 30;
     $scope.currencyRate = 1;
+    $scope.isCreateNewScoop = 1;
 
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
@@ -34677,6 +34708,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             obj.push({ "id": val });
         });
 
+        $scope.newClientId = '';
         $scope.invoiceLt = {};
         $scope.invoiceLt.id = obj;
         rest.path = "clientInvoiceCreate";
@@ -34684,6 +34716,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             $scope.invoiceDetail = data[0];
             console.log('$scope.invoiceDetail===========', $scope.invoiceDetail)
+            $scope.newClientId = $scope.invoiceDetail?.clientId;
             
             if ($scope.invoiceDetail.clientVatinfo) {
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
@@ -35006,7 +35039,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/invoice-client');
     }
 
-    $scope.newScoopPopupCreate = function (clientId, itemarr) {}
+    $scope.newScoopPopupCreate = function (clientId, itemarr, createNewScoop) {
+        rest.path = "getClientScoopData/" + clientId;
+        var itemarrCreate = $cookieStore.get('invoiceScoopId');
+        rest.get().success(function (data) {
+            $scope.InvoiceResult = data;
+            // Filter out items with itemId present in removeIds
+            $scope.InvoiceResult = $scope.InvoiceResult.filter(item => !itemarrCreate.includes(item.itemId));
+            var obj = [];
+            obj.push({
+                'InvoiceList': $scope.InvoiceResult,
+                'createNewScoop': createNewScoop
+            });
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/clientScoopListingInvoice.html',
+                controller: 'clientInvoiceCreatePopupCtrl',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return obj;
+                    }
+                }
+            });
+        }).error(errorCallback);
+    }
 }).controller('clientInvoiceViewController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;
