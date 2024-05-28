@@ -6045,8 +6045,9 @@ app.directive('allowDecimalCommaNumber', function () {
                 if (event.which == 64 || event.which == 16) {  
                     // numbers  
                     return false;  
-                } if ([8, 9, 13, 27, 37, 38, 39, 40, 110].indexOf(event.which) > -1) {  
-                    // tab, backspace, enter, escape, arrows  
+                } if ([8, 9, 13, 27, 37, 38, 39, 40, 110, 189, 109].indexOf(event.which) > -1) {  
+                    // tab, backspace, enter, escape, arrows
+                    // 189, 109 for minus -  
                     return true;  
                 } else if (event.which >= 48 && event.which <= 57) {  
                     // numbers  
