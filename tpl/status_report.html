@@ -441,7 +441,7 @@
                                        <th>Scoop name</th>
                                        <th>Email Subject</th>
                                        <th>Client</th>
-                                       <th>Tripletex</th>
+                                       <th>Tripletex ID</th>
                                        <th>Account</th>
                                        <th>Status</th>
                                        <th>Due date</th>
@@ -507,7 +507,7 @@
                              </div> -->
                               <!-- use for export excel -->
                               <div class="table-responsive" id="exportable" style="display: none">
-                                 <table class="table m-b-none default footable-loaded footable">
+                                 <table class="table m-b-none default footable-loaded footable" id="client_scoop_report">
                                     <thead>
                                        <th>#</th>
                                        <th>Orders Number</th>
@@ -517,7 +517,7 @@
                                        <th>
                                        <!-- Customers -->Client
                                        </th>
-                                       <th>Tripletex</th>
+                                       <th>Tripletex ID</th>
                                        <th>Account</th>
                                        <th>Status</th>
                                        <th>Due date</th>
@@ -536,10 +536,7 @@
                                           <td> {{ result.indirectAccountName}} </td>
                                           <td ng-bind="result.scoop_status_name"></td>
                                           <td>{{ result.scoop_due_date | dateFormatDisplayFront }}</td>
-                                          
-                                          <td ng-bind="result.totalAmount | customNumber">--</td>
-
-
+                                          <td ng-bind="result.totalAmount">--</td>
                                        </tr>
                                     </tbody>
                                  </table>

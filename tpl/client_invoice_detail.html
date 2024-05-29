@@ -144,6 +144,7 @@
                     </th>
                     <th >Invoice number</th>
                     <th>Company name</th>
+                    <th>Tripletex ID</th>
                     <th>Price</th>
                     <th>Currency</th>
                     <th ng-click="dtExcelTable('create-date')">Creation Date</th>
@@ -172,6 +173,7 @@
                         title="Comment" class="trActionIcon">
                           &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
                       </td>
+                      <td>{{invoiceL.accounting_tripletex}}</td>
                       <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
                       <td>{{ invoiceL.client_currency }} </td>
                       <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
@@ -211,6 +213,7 @@
                 <th>#</th>
                 <th>Invoice number</th>
                 <th>Company name</th>
+                <th>Tripletex ID</th>
                 <th>Price</th>
                 <th>Currency</th>
                 <th id="crExdate">Creation Date</th>
@@ -224,6 +227,7 @@
                   <td ng-bind="$index + 1"></td>
                   <td ng-bind="invoiceL.invoice_number"></td>
                   <td style="font-weight: initial; font-size: initial;">{{invoiceL.clientCompanyName}}</td>
+                  <td>{{invoiceL.accounting_tripletex}}</td>
                   <td>{{ invoiceL.Invoice_cost }}</td>
                   <td>{{invoiceL.client_currency}} </td>
                   <td>{{ invoiceL.created_date | globalDtFormat }}</td>

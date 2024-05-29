@@ -8793,10 +8793,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.exportData = function (action) {
         switch (action) {
             case "result":
-                var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-status-report.xls");
+                exportTableToExcel('client_scoop_report','Order-status-report')
+                // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-status-report.xls");
                 break;
             case "month":
                 var blob = new Blob([document.getElementById('itemExport').innerHTML], {
