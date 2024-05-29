@@ -8982,6 +8982,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$scope.statusCustomerType = data['customerType'];
                 $scope.totalItemAmout = 0;
                 $scope.totalJobItemAmout = 0;
+                $scope.totalGrossProfit = 0;
+                $scope.totalProfitMargin = 0;
 
                 let newStatusResult = $scope.statusResult;
                 var newResult = [];
@@ -8989,11 +8991,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     console.log('dataArray', dataArray)
                     return dataArray.reduce(function (res, dvalue) {
                         if (!res[dvalue[property]]) {
-                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0, totalJobAmount: 0 };
+                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0, totalJobAmount: 0, totalGrossProfit: 0 };
                             newResult.push(res[dvalue[property]])
                         }
                         res[dvalue[property]].totalAmount += dvalue.totalAmount;
                         res[dvalue[property]].totalJobAmount += dvalue.total_job_price;
+                        res[dvalue[property]].totalGrossProfit += (dvalue.totalAmount - dvalue.total_job_price);
                         return res;
                     }, []);
                 }
@@ -9056,6 +9059,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         angular.element('#itemAmount' + i).text(totalAmt);
                                         let totalJobAmt = value.totalJobAmount ? $filter('customNumber')(value.totalJobAmount) : 0;
                                         angular.element('#jobPrice' + i).text(totalJobAmt);
+                                        let totalGrossProfit = value.totalGrossProfit ? $filter('customNumber')(value.totalGrossProfit) : 0;
+                                        angular.element('#grossProfit' + i).text(totalGrossProfit);
+                                        
                                         //angular.element('#itemAmount' + i).text(value.TotalAmount);
                                     }
                                 }
