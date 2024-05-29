@@ -737,7 +737,10 @@ class Client_invoice {
             $data['number_of_days'] = $data['invoice_no_of_days'] > 0 ? $data['invoice_no_of_days'] : $paymentDue[0]['number_of_days'];
             
 			//invoiceNumber Count
-			$data['invoiceCount'] = count(self::get('tms_invoice_client'));
+            $maxrawQuery = 'SELECT MAX(invoice_number_max) AS max_count FROM tms_invoice_client;';
+            $maxcount = $this->_db->rawQuery($maxrawQuery);
+			// $data['invoiceCount'] = count(self::get('tms_invoice_client'));
+            $data['invoiceCount'] = (int)$maxcount[0]['max_count'];
             //echo '<pre>'; print_r($data); echo '</pre>';exit;
 
 			if(isset($data['orderId'])) {
