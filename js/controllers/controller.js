@@ -2953,6 +2953,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.dashboardScoopLoad(1, tabIndex);
             setTimeout(() => {
                 angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
+                
+                sortFieldName = $window.localStorage.getItem("sortFieldName");
+                $window.localStorage.getItem("sortFieldOrder");
+                //$scope.getClass(sortFieldName)
             }, 1000);
             
         }else{
@@ -3000,6 +3004,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             $scope.sortByFieldName = fieldName 
             $scope.sortOrder = $scope.reverse 
+            $window.localStorage.setItem("sortFieldName", $scope.sortByFieldName);
+            $window.localStorage.setItem("sortFieldOrder", $scope.sortOrder);
+
             $scope.activeTabfn()
         }
     };
@@ -8865,11 +8872,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.clReportTotal = 0;
+    $scope.scoopReportTotal = 0;
+    $scope.jobExpenseReportTotal = 0;
+    $scope.profitMarginReportTotal = 0;
     $scope.setTotals = function (item) {
         if (item) {
-            const jobTotalPrice = item.jobTotalPrice ? item.jobTotalPrice : 0;
+            //const jobTotalPrice = item.jobTotalPrice ? item.jobTotalPrice : 0;
+            const jobTotalPrice = item.total_job_price ? item.total_job_price : 0;
             const itemtotalAmount = item.totalAmount ? item.totalAmount : 0;
             $scope.clReportTotal += itemtotalAmount - jobTotalPrice;
+            $scope.scoopReportTotal += itemtotalAmount;
+            $scope.jobExpenseReportTotal += jobTotalPrice;
+            $scope.profitMarginReportTotal = $scope.calculateProfitMargin($scope.scoopReportTotal, $scope.jobExpenseReportTotal)
         }
     }
 
@@ -8967,16 +8981,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$scope.statusProjectType = data['Typeinfo'];
                 //$scope.statusCustomerType = data['customerType'];
                 $scope.totalItemAmout = 0;
+                $scope.totalJobItemAmout = 0;
 
                 let newStatusResult = $scope.statusResult;
                 var newResult = [];
                 function groupByData(dataArray, property) {
+                    console.log('dataArray', dataArray)
                     return dataArray.reduce(function (res, dvalue) {
                         if (!res[dvalue[property]]) {
-                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0 };
+                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0, totalJobAmount: 0 };
                             newResult.push(res[dvalue[property]])
                         }
                         res[dvalue[property]].totalAmount += dvalue.totalAmount;
+                        res[dvalue[property]].totalJobAmount += dvalue.total_job_price;
                         return res;
                     }, []);
                 }
@@ -9025,11 +9042,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 if (value.QuentityDate == QuentityDate) {
                                     if (val.id == value.QuentityDate) {
                                         $scope.totalItemAmout += value.totalAmount;
+                                        console.log('value.totalAmount', value.totalAmount)
+                                        $scope.totalJobItemAmout += value.totalJobAmount;
+                                        //console.log('value.totalJobAmount', value.totalJobAmount)
                                         //$scope.dtItemAmout += value.totalAmount;
                                         var prn = $scope.totalItemAmout * 12 / 100;
                                         $scope.totalItemAvg = prn;
+
+                                        var prnJob = $scope.totalJobItemAmout * 12 / 100;
+                                        $scope.totalJobItemAvg = prnJob;
+                                        
                                         let totalAmt = $filter('customNumber')(value.totalAmount);
                                         angular.element('#itemAmount' + i).text(totalAmt);
+                                        let totalJobAmt = value.totalJobAmount ? $filter('customNumber')(value.totalJobAmount) : 0;
+                                        angular.element('#jobPrice' + i).text(totalJobAmt);
                                         //angular.element('#itemAmount' + i).text(value.TotalAmount);
                                     }
                                 }
