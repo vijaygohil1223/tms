@@ -522,7 +522,9 @@
                                        <th>Status</th>
                                        <th>Due date</th>
                                        <th>Prices</th>
-
+                                       <th>Expense</th>
+                                       <th>Gross profit</th>
+                                       <th>Profit Margin</th>
                                     </thead>
                                     <tbody>
                                        <tr id="Export_{{$index}}" ng-repeat="result in statusResult">
@@ -537,6 +539,9 @@
                                           <td ng-bind="result.scoop_status_name"></td>
                                           <td>{{ result.scoop_due_date | dateFormatDisplayFront }}</td>
                                           <td ng-bind="result.totalAmount">--</td>
+                                          <td ng-bind="result.total_job_price">  </td>
+                                          <td> {{calculateGrossProfit(result.totalAmount, result.total_job_price) }} </td>
+                                          <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) }} % </td>
                                        </tr>
                                     </tbody>
                                  </table>
