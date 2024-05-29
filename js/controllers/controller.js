@@ -35125,6 +35125,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.invoice_number = $scope.invoiceDetail.invoiceNumber;
         $scope.invoiceData.custom_invoice_number = $scope.invoiceDetail.custom_invoice_number;
         $scope.invoiceData.inv_notes = $scope.invoiceDetail.inv_notes;
+        var addInvoiceNumber = parseInt($scope.invoiceDetail.invoiceCount + 1);
+        $scope.invoiceData.invoice_number_max = addInvoiceNumber;
 
         $scope.invoiceData.vat = $scope.vat;
         //$scope.invoiceData.item_total = $scope.invoiceTotal;
