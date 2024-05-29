@@ -16755,7 +16755,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('jobstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal) {
+}).controller('jobstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.clientnamec = "";
 
@@ -16778,10 +16778,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $("#Export_" + i).hide()
                 }
             }
-            var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-            });
-            saveAs(blob, "Jobs-status-report.xls");
+            exportTableToExcel('job_report_table','Jobs-status-report')
+            // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+            //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+            // });
+            // saveAs(blob, "Jobs-status-report.xls");
             $scope.jobstatusReportsearch();
         }
 
@@ -16845,7 +16846,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 console.log('data', data)
                 $scope.statusResult = data;
             })
-            scrollToId(eID);
+            var scrollID = (eID) ? eID : 'middle';
+            scrollToId(scrollID);
         }
     }
 
@@ -16938,10 +16940,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $("#Export_" + i).remove();
                         }
                     }
-                    var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                    });
-                    saveAs(blob, "Jobs-status-report11.xls");
+                    exportTableToExcel('job_report_table','Jobs-report')
+                    // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                    //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                    // });
+                    // saveAs(blob, "Jobs-status-report11.xls");
                     $scope.jobstatusReportsearch();
                 }
                 break;
@@ -17230,7 +17233,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }
     }
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100);
 
+    $scope.calculateTotal = function() {
+        var total = 0;
+        angular.forEach($scope.statusResult, function(result) {
+            total += parseFloat(result.jobPrice);
+        });
+        return total;
+    };
+    
 }).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");

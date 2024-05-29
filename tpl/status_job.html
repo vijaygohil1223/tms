@@ -372,13 +372,22 @@
                                                             class="glyphicon glyphicon-ok"></i></button>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-4 m-b-xs">
+                                                <div class="d-flex justify-space-between">
+                                                   <div>
+                                                        <strong>Total:</strong> {{ calculateTotal() | customNumber }}
+                                                   </div>
+                                                   <button ng-show="staturRes.length" class="btn m-b-xs btn-info"
+                                                      ng-click="exportData('result')">Excel</button>
+                                                </div>
+                                             </div>
                                             <div>
                                                 <button ng-show="statusRes.length" class="btn btn-info pull-right"
                                                     ng-click="exportData()">Excel</button>
                                             </div>
                                         </div>
                                         <div class="table-responsive">
-                                            <table class="table m-b-none default footable-loaded footable">
+                                            <table class="table m-b-none default footable-loaded footable" id="job_report_table" datatable="ng" dt-options="dtOptions">
                                                 <thead>
                                                     <th>Sr.no</th>
                                                     <th>#</th>
@@ -389,12 +398,10 @@
                                                     <th>Client</th>
                                                     <th>Target language</th>
                                                     <th>Prices</th>
-                                                    <!-- <th>Scoop Status</th> -->
                                                     <th>Due date</th>
                                                 </thead>
                                                 <tbody>
                                                     <tr ng-repeat="result in statusRes=(statusResult)">
-                                                    <!-- <tr ng-repeat="result in statusRes=(statusResult | filter : jobReport)"> -->
                                                         <td ng-bind="$index + 1"></td>
                                                         <td>
                                                             <input type="checkbox" id="orderCheck{{$index}}"
@@ -423,15 +430,15 @@
                                                                     href="#/viewdirect/{{result.customer}}"
                                                                     class="summeryColor">{{result.customerName}}</a></span><span
                                                                 ng-if="!result.customerName">--</span></td>
-                                                        <td ng-if="result.ItemLanguage">{{result.ItemLanguage}}</td>
-                                                        <td ng-if="!result.ItemLanguage">--</td>
+                                                        <td>
+                                                            {{result.ItemLanguage}}
+                                                        </td>
                                                         <td>{{ result.jobPrice | customNumber}}</td>
-                                                        <!-- <td>{{result.itemStatus}}</td> -->
-                                                        <td style="white-space:nowrap;">{{ result.job_due_date | dateFormatDisplayFront }}</td>
+                                                        <td style="white-space:nowrap;"><span style="display: none;">{{result.job_due_date}}</span>{{ result.job_due_date | dateFormatDisplayFront }}</td>
                                                     </tr>
-                                                    <tr ng-show="!statusRes.length">
-                                                        <td colspan="8" ng-bind="dataNotFound"></td>
-                                                    </tr>
+                                                    <!-- <tr ng-show="!statusRes.length">
+                                                        <td colspan="10" ng-bind="dataNotFound"></td>
+                                                    </tr> -->
                                                 </tbody>
                                             </table>
                                         </div>
