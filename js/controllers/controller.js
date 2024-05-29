@@ -711,7 +711,7 @@ function calculateAveragePercentage(percentages) {
     return average * 100;
 }
 
-function exportTableToExcel(id, fileName){
+function exportTableToExcel(id, fileName, dynamicColumn = ''){
     // var wb = XLSX.utils.table_to_book(document.getElementById(id), {sheet:"Sheet JS"});
     // var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
     // function s2ab(s) {
@@ -732,10 +732,18 @@ function exportTableToExcel(id, fileName){
         for(var C = range.s.c; C <= range.e.c; ++C) {
             var cell_address = {c:C, r:R};
             var cell_ref = XLSX.utils.encode_cell(cell_address);
-            if(ws[cell_ref] && typeof ws[cell_ref].v === 'number') {
-                // ws[cell_ref].z = "#,##0.00"; // Format numbers with comma separator
-                ws[cell_ref].t = 's'; // Set cell type to 's' for string
-                ws[cell_ref].v = numberWithCommas(ws[cell_ref].v); // Format number with comma separators
+            if(dynamicColumn){
+                if(dynamicColumn.includes(C) && ws[cell_ref] && typeof ws[cell_ref].v === 'number') {
+                    // ws[cell_ref].z = "#,##0.00"; // Format numbers with comma separator
+                    ws[cell_ref].t = 's'; // Set cell type to 's' for string
+                    ws[cell_ref].v = numberWithCommas(ws[cell_ref].v); // Format number with comma separators
+                }
+            }else{
+                if(ws[cell_ref] && typeof ws[cell_ref].v === 'number') {
+                    // ws[cell_ref].z = "#,##0.00"; // Format numbers with comma separator
+                    ws[cell_ref].t = 's'; // Set cell type to 's' for string
+                    ws[cell_ref].v = numberWithCommas(ws[cell_ref].v); // Format number with comma separators
+                }
             }
         }
     }
@@ -8803,7 +8811,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.exportData = function (action) {
         switch (action) {
             case "result":
-                exportTableToExcel('client_scoop_report','Order-status-report')
+                exportTableToExcel('client_scoop_report','Order-status-report',[9,10,11,12])
                 // var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                 // });
@@ -9350,10 +9358,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $("#Export_" + i).remove();
                     }
                 }
-                var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-status-report.xls");
+                exportTableToExcel('client_scoop_report','Order-status-report',[9,10,11,12])
+                // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-status-report.xls");
                 $route.reload();
                 break;
             case "Select all":

@@ -144,7 +144,7 @@
                           <td>
                             <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"># {{invoiceL.invoice_number}} </a>
                           </td>
-                          <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                          <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                           <td>{{ invoiceL.inv_due_date | globalDtFormat }} <a href="javascript:void(0)" title="edit duedate" class="trActionIcon" ng-click="editDueDate(invoiceL.invoice_id,invoiceL.inv_due_date | globalDtFormat)"><i class="fa fa-pencil"></i></a></td>
                           <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                           <td>
@@ -210,7 +210,7 @@
                             <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"># {{invoiceL.invoice_number}}
                             </a>
                           </td>
-                          <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                          <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                           <td>{{ invoiceL.inv_due_date | globalDtFormat }} <a href="javascript:void(0)"
                               title="edit duedate" class="trActionIcon"
                               ng-click="editDueDate(invoiceL.invoice_id,invoiceL.inv_due_date | globalDtFormat)"><i
@@ -273,7 +273,7 @@
                     <td ng-bind="invoiceL.Invoice_cost"></td>
                     <td ng-bind="invoiceL.freelance_currency"></td>
                     <td ng-bind="invoiceL.invoice_number"></td>
-                    <td>{{ invoiceL.created_date | globalDtFormat }}</td>
+                    <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.inv_due_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                     <td ng-show="invoiceStatus[{{$index}}]">
