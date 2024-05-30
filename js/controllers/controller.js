@@ -9030,12 +9030,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         res[dvalue[property]].totalAmount += dvalue.totalAmount;
                         res[dvalue[property]].totalJobAmount += dvalue.total_job_price;
                         res[dvalue[property]].totalGrossProfit += (dvalue.totalAmount - dvalue.total_job_price);
-                        res[dvalue[property]].totalProfitMargin += $scope.calculateProfitMargin(dvalue.totalAmount,dvalue.total_job_price);
+                        res[dvalue[property]].totalProfitMargin = $scope.calculateProfitMargin(
+                            res[dvalue[property]].totalAmount,
+                            res[dvalue[property]].totalJobAmount
+                        );
                         
                         return res;
                     }, []);
                 }
                 let statusInfo = groupByData(newStatusResult, 'QuentityDate');
+                console.log('statusInfo======>', statusInfo)
                 $scope.statusInfo = newResult;
 
                 // Project type
@@ -9071,6 +9075,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //set
                 //Month Chart start
                 angular.forEach($scope.Dateobject, function (val, i) {
+                    angular.element('#jobPrice' + i).text('0');
+                    angular.element('#grossProfit' + i).text('0');
                     angular.forEach($scope.statusInfo, function (value, j) {
                         $timeout(function () {
                             for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
@@ -9080,24 +9086,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 if (value.QuentityDate == QuentityDate) {
                                     if (val.id == value.QuentityDate) {
                                         $scope.totalItemAmout += value.totalAmount;
-                                        console.log('value.totalAmount', value.totalAmount)
                                         $scope.totalJobItemAmout += value.totalJobAmount;
+                                        $scope.totalGrossProfit += value.totalGrossProfit;
+                                        
+                                        //$scope.totalProfitMargin += parseFloat(value.totalProfitMargin);
+                                        //$scope.totalProfitMargin = $scope.calculateProfitMargin(parseFloat($scope.totalItemAmount), parseFloat($scope.totalJobItemAmount) );
+                                        console.log('$scope.totalProfitMargin==='+i, $scope.totalProfitMargin)
                                         //console.log('value.totalJobAmount', value.totalJobAmount)
                                         //$scope.dtItemAmout += value.totalAmount;
                                         var prn = $scope.totalItemAmout * 12 / 100;
                                         $scope.totalItemAvg = prn;
-
                                         var prnJob = $scope.totalJobItemAmout * 12 / 100;
                                         $scope.totalJobItemAvg = prnJob;
+                                        var prnGrossPrft = $scope.totalJobItemAmout * 12 / 100;
+                                        $scope.totalGorssProfitAvg = prnGrossPrft;
+                                        // var prnMargin = $scope.totalProfitMargin * 12 / 100;
+                                        // $scope.totalProfitMarginAvg = prnMargin;
                                         
                                         let totalAmt = $filter('customNumber')(value.totalAmount);
                                         angular.element('#itemAmount' + i).text(totalAmt);
-                                        let totalJobAmt = value.totalJobAmount ? $filter('customNumber')(value.totalJobAmount) : 0;
+                                        let totalJobAmt = $filter('customNumber')(value.totalJobAmount);
                                         angular.element('#jobPrice' + i).text(totalJobAmt);
-                                        let totalGrossProfit = value.totalGrossProfit ? $filter('customNumber')(value.totalGrossProfit) : 0;
+                                        let totalGrossProfit = $filter('customNumber')(value.totalGrossProfit);
                                         angular.element('#grossProfit' + i).text(totalGrossProfit);
-                                        let totalProfitMargin = value.totalProfitMargin ? $filter('customNumber')(value.totalProfitMargin) : 0;
-                                        angular.element('#profitMargin' + i).text(totalGrossProfit);
+                                        let totalProfitMargin = $filter('customNumber')(value.totalProfitMargin);
+                                        angular.element('#profitMargin' + i).text(totalProfitMargin + ' %');
+
+                                        console.log('$scope.Dateobject=======>'+i, QuentityDate)
+                    
                                         
                                         //angular.element('#itemAmount' + i).text(value.TotalAmount);
                                     }
@@ -9106,6 +9122,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }, 100);
                     })
                 })
+
+                //$scope.totalProfitMargin = $scope.calculateProfitMargin($scope.totalItemAmount, $scope.totalJobItemAmount);
+                //console.log('$scope.totalProfitMargin', $scope.totalProfitMargin)
+
 
                 var obj = [];
                 $timeout(function () {

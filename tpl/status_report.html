@@ -581,9 +581,9 @@
                                        <tr ng-repeat="d in Dateobject" class="itemData">
                                           <td id="itemDate{{$index}}" ng-bind="d.id"></td>
                                           <td id="itemAmount{{$index}}"></td>
-                                          <td id="jobPrice{{$index}}"></td>
-                                          <td id="grossProfit{{$index}}"></td>
-                                          <td id="profitMargin{{$index}}"></td>
+                                          <td id="jobPrice{{$index}}">0</td>
+                                          <td id="grossProfit{{$index}}">0</td>
+                                          <td id="profitMargin{{$index}}">0</td>
                                           <td id="itemShare{{$index}}"></td>
                                        </tr>
                                     </div>
@@ -591,13 +591,13 @@
                                        <td>Total</td>
                                        <td id="totalItemAmout" ng-bind="totalItemAmout | customNumber"></td>
                                        <td id="totaljobPrice">
-                                          <span ng-bind="totalJobItemAmout | customNumber"></span>
+                                          <span >{{ totalJobItemAmout | customNumber}}</span>
                                        </td>
                                        <td id="grossProfitTtl">
                                           <span ng-bind="totalGrossProfit | customNumber"></span>
                                        </td>
                                        <td id="profitMrgn">
-                                          <span ng-bind="totalProfitMargin | customNumber"></span>
+                                          <span > {{ profitAvg = calculateProfitMargin(totalItemAmout, totalJobItemAmout) | customNumber }} %</span>
                                        </td>
                                        <td id="totalItemPer"><span ng-if='totalItemAmout'>100%</span></td>
                                     </tr>
@@ -606,7 +606,7 @@
                                        <td ng-bind="totalItemAvg | customNumber"></td>
                                        <td ng-bind="totalJobItemAvg | customNumber"></td>
                                        <td ng-bind="totalGorssProfitAvg | customNumber"></td>
-                                       <td ng-bind="totalProfitMarginAvg | customNumber"></td>
+                                       <td > {{ ((profitAvg * 12)/100)  | customNumber }} % </td>
                                        <td id="totalAvgPer"><span ng-if="totalItemAvg">12%</span></td>
                                     </tr>
                                     <tr>
