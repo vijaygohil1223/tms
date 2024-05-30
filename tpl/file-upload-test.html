@@ -1,0 +1,57 @@
+<style type="text/css">
+    md-progress-linear .md-bar {
+        background-color: rgb(45, 150, 243);
+    }
+
+    .boxEffect {
+        -webkit-box-shadow: 0 10px 6px -6px #777;
+        -moz-box-shadow: 0 10px 6px -6px #777;
+        box-shadow: 0 10px 6px -6px #777;
+    }
+
+    .ajax-file-upload-statusbar {
+    padding: 10px;
+    text-align: initial;
+    min-height: auto;
+    max-height: initial;
+    box-shadow: none;
+    width: 100% !important;
+    float: none;
+    display: inline-flex;
+  }
+</style>
+<div class="container w-xxl w-auto-xs">
+    <a href class="navbar-brand block m-t-xxl">
+        <img src="assets/img/BeConnected_Logo.png" class="img-full" alt="..."
+            style="max-height: 50px; max-width: 100%; width: auto;">
+    </a>
+    <div class="m-b-lg">
+        <div class="wrapper text-center">
+            <strong>File Upload.</strong>
+        </div>
+        <form name="login-form" id="fileuploadForm" class="form-validation">
+            <div class="panel panel-default boxEffect">
+                <div class="panel-body">
+
+                    <div class="col-sm-8 pl-0" style="margin-bottom: 20px;">
+                        <div id="filesContainer" context-menu="menuOptionsPaste">
+                            <div id="uploadContainer" class="">
+                                <div id="w4-tab1" class="tab-pane active" style="display: block;">
+                                    <div class="panel panel-default" style="width:70%;border:none;margin:10px auto;">
+                                        <div class="panel-heading filehead brdrfile">
+                                            <div id="multipleupload" style="float:left;height: 125px;"><!-- Upload -->
+                                            </div>
+                                            <a href="javascript:void(0)" style="margin-left:0px;padding:4px 10px;"
+                                                ng-click="uploadClick();" class="btn btn-info">Upload</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+        </form>
+    </div>
+
+</div>

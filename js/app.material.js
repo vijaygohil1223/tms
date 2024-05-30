@@ -683,6 +683,10 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'activitydetailController',
             activetab: 'activity',
             role: '1'
+        }).when('/file-upload-test', {
+            templateUrl: modulesPath + 'file-upload-test.html',
+            controller: 'userActivationController',
+            activetab: 'activation-separator'
         }).otherwise({
             redirectTo: '/'
         });

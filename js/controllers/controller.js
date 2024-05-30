@@ -39122,7 +39122,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.close();
     }
-}).controller('userActivationController', function ($scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams) {
+}).controller('userActivationController', function ($scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams, fileReader ) {
     $scope.activate = function () {
         $scope.actiationData = {
             "activationToken": $routeParams.id
@@ -39136,6 +39136,67 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }).error(errorCallback);
     }
+    
+
+    // temp code start
+    $scope.uploadClick = function () { //uploadObj
+        var isFilesAvailable = angular.element('.ajax-file-upload-container').html().toString().length;
+        if (isFilesAvailable > 0) {
+            uploadObj.startUpload();
+        } else {
+            notification('No Files Selected.', 'warning');
+        }
+    }
+    var uploadObj;
+    $timeout(function () {
+        uploadObj = $("#multipleupload").uploadFile({
+            //url: rest.baseUrl+'fileManagerFileupload',
+            url: 'file-upload-test.php',
+            multiple: true,
+            dragDrop: true,
+            dragDropStr: "<span class='spandragdrop'><b>Drag & Drop Files</b></span>",
+            fileName: "myfile",
+            acceptFiles: "png",
+            showPreview: true,
+            previewHeight: "35px",
+            previewWidth: "35px",
+            maxFileCount: 100,
+            //maxFileSize: 15 * 1024 * 1024,
+            showDelete: true,
+            autoSubmit: false,
+            uploadStr: "<span class='fa fa-upload newUpload' style='color:#FFF;font-size:30px;'> </span>",
+            onLoad: function (obj) { },
+            afterUploadAll: function (obj) {
+                notification('Files uploaded successfully', 'success');
+                $timeout(function () {
+                    $route.reload();
+                }, 200);
+
+            },
+            onCancel: function (files, pd) {
+                $timeout(function () {
+                    var filenameContains = angular.element('.ajax-file-upload-filename').text();
+                    var length = angular.element("[class^='upimg']").length;
+                    angular.forEach(angular.element("[class^='upimg']"), function (res, i) {
+                        var upClassName = angular.element("[class^='upimg']")[i].className = 'upimg' + length;
+                        length--;
+                    })
+                }, 100);
+
+            },
+            onSuccess: function (files, datalist, xhr, pd) {
+                
+
+            },
+            onSelect: function (files) {
+
+                return true; //to allow file submission.
+            },
+        });
+    }, 100);
+
+    // // temp code end
+
 }).controller('passwordResetController', function ($scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams) {
     $scope.updatePassword = function (reset, formId) {
         if ($("#" + formId).valid()) {
