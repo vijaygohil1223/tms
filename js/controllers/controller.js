@@ -8875,20 +8875,53 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.scoopReportTotal = 0;
     $scope.jobExpenseReportTotal = 0;
     $scope.profitMarginReportTotal = 0;
-    $scope.setTotals = function (item) {
-        if (item) {
-            //const jobTotalPrice = item.jobTotalPrice ? item.jobTotalPrice : 0;
-            const jobTotalPrice = item.total_job_price ? item.total_job_price : 0;
-            const itemtotalAmount = item.totalAmount ? item.totalAmount : 0;
-            $scope.clReportTotal += itemtotalAmount - jobTotalPrice;
-            $scope.scoopReportTotal += itemtotalAmount;
-            $scope.jobExpenseReportTotal += jobTotalPrice;
-            $scope.profitMarginReportTotal = $scope.calculateProfitMargin($scope.scoopReportTotal, $scope.jobExpenseReportTotal)
+    $scope.resetTotals = function () {
+        $scope.clReportTotal = 0;
+        $scope.scoopReportTotal = 0;
+        $scope.jobExpenseReportTotal = 0;
+        $scope.profitMarginReportTotal = 0;
+    };
+    // Function to calculate totals for all items
+    $scope.calculateTotals = function () {
+        $scope.resetTotals();
+        angular.forEach($scope.statusResult, function(item) {
+            if (item) {
+                const jobTotalPrice = item.total_job_price ? parseFloat(item.total_job_price) : 0;
+                const itemTotalAmount = item.totalAmount ? parseFloat(item.totalAmount) : 0;
+
+                $scope.clReportTotal += itemTotalAmount - jobTotalPrice;
+                $scope.scoopReportTotal += itemTotalAmount;
+                $scope.jobExpenseReportTotal += jobTotalPrice;
+            }
+        });
+        $scope.profitMarginReportTotal = $scope.calculateProfitMargin($scope.scoopReportTotal, $scope.jobExpenseReportTotal);
+    };
+
+    $scope.calculateProfitMargin = function (revenue, cost) {
+        if (revenue === 0) {
+            return 0; // To handle the case where revenue is zero to avoid division by zero
         }
+        const profit = revenue - cost;
+        const profitMargin = (profit / revenue) * 100;
+        return profitMargin.toFixed(2); // Rounding to two decimal places
     }
+    // Watch for changes in statusResult to recalculate totals
+    $scope.$watch('statusResult', function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+            $scope.calculateTotals();
+        }
+    });
 
-
-   
+    // Initial calculation
+    $scope.calculateTotals();
+  
+    // $scope.setTotals = function (item) {
+    //     if (item) {
+    //         //const jobTotalPrice = item.jobTotalPrice ? item.jobTotalPrice : 0;
+    //         const itemtotalAmount = item.totalAmount ? parseFloat(item.totalAmount) : 0;
+    //         $scope.clReportTotal += itemtotalAmount - jobTotalPrice;
+    //     }
+    // }
     // $scope.$on('$routeChangeStart', function (scope, next, current) {
     //     console.log('current', current)
     //     console.log('next', next)
@@ -8991,12 +9024,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     console.log('dataArray', dataArray)
                     return dataArray.reduce(function (res, dvalue) {
                         if (!res[dvalue[property]]) {
-                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0, totalJobAmount: 0, totalGrossProfit: 0 };
+                            res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0, totalJobAmount: 0, totalGrossProfit: 0, totalProfitMargin: 0 };
                             newResult.push(res[dvalue[property]])
                         }
                         res[dvalue[property]].totalAmount += dvalue.totalAmount;
                         res[dvalue[property]].totalJobAmount += dvalue.total_job_price;
                         res[dvalue[property]].totalGrossProfit += (dvalue.totalAmount - dvalue.total_job_price);
+                        res[dvalue[property]].totalProfitMargin += $scope.calculateProfitMargin(dvalue.totalAmount,dvalue.total_job_price);
+                        
                         return res;
                     }, []);
                 }
@@ -9061,6 +9096,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         angular.element('#jobPrice' + i).text(totalJobAmt);
                                         let totalGrossProfit = value.totalGrossProfit ? $filter('customNumber')(value.totalGrossProfit) : 0;
                                         angular.element('#grossProfit' + i).text(totalGrossProfit);
+                                        let totalProfitMargin = value.totalProfitMargin ? $filter('customNumber')(value.totalProfitMargin) : 0;
+                                        angular.element('#profitMargin' + i).text(totalGrossProfit);
                                         
                                         //angular.element('#itemAmount' + i).text(value.TotalAmount);
                                     }
@@ -9690,15 +9727,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
         return total;
     };
-
-    $scope.calculateProfitMargin = function (revenue, cost) {
-        if (revenue === 0) {
-            return 0; // To handle the case where revenue is zero to avoid division by zero
-        }
-        const profit = revenue - cost;
-        const profitMargin = (profit / revenue) * 100;
-        return profitMargin.toFixed(2); // Rounding to two decimal places
-    }
 
     $scope.calculateGrossProfit = function (revenue, cost) {
         const grossProfit = revenue - cost;

@@ -453,8 +453,7 @@
                                     </thead>
                                     <tbody >
                                        <tr ng-repeat="result in staturRes=(statusResult)"
-                                          class="orderRClass" ng-init="setTotals(result)"
-                                          ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice">
+                                          class="orderRClass">
                                        <!-- <tr ng-repeat="result in staturRes=(statusResult | filter : orderReport)"
                                           class="orderRClass" ng-init="setTotals(result)"
                                           ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice">  -->
@@ -503,10 +502,10 @@
                                     <tfoot>
                                        <tr>
                                           <td colspan="9"></td>
-                                          <td> {{ scoopReportTotal | customNumber }} </td>
-                                          <td> {{ jobExpenseReportTotal | customNumber }} </td>
-                                          <td> {{ clReportTotal | customNumber }} </td>
-                                          <td> => {{ profitMarginReportTotal | customNumber }} % </td>
+                                          <td> <strong>{{ scoopReportTotal | customNumber }}</strong> </td>
+                                          <td> <strong>{{ jobExpenseReportTotal | customNumber }}</strong> </td>
+                                          <td> <strong>{{ clReportTotal | customNumber }}</strong> </td>
+                                          <td class="nowrap"> <strong> => {{ profitMarginReportTotal | customNumber }} % </strong> </td>
                                        </tr>
                                     </tfoot>
                                  </table>
