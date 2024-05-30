@@ -16941,6 +16941,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $routeParams.id = jobId;
                         rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
                         rest.get().success(function (data) {
+                            notification('Status updated successfully', 'success');
                             $route.reload();
                         }).error(errorCallback);
                     }
