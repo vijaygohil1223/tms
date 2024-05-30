@@ -6529,7 +6529,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     angular.forEach($scope.downloadAllfile, function (val, i) {
                                         if (val.ext != '') {
                                             var fimg = val.name;
-                                            var fimg = val.original_filename;
+                                            //var fimg = val.original_filename;
                                             const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
                                             if (sameNameExist.length > 1) {
                                                 fimg = val.name; 
@@ -8052,8 +8052,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     var fileIndex = 0;
                                     angular.forEach($scope.downloadAllfile, function (val, i) {
                                         if (val.ext != '') {
-                                            //var fimg = val.name;
-                                            var fimg = val.original_filename;
+                                            var fimg = val.name;
+                                            //var fimg = val.original_filename;
                                             const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
                                             if (sameNameExist.length > 1) {
                                                 fimg = val.name; 
