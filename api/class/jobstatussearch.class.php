@@ -74,12 +74,25 @@ class jobstatussearch {
 				$Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
 				$To = $filterParams['itemDuedateEnd'].' '.'00:00:00';
 				$this->_db->where('tmv.due_date', Array ($Frm,$To),'BETWEEN');
-			}
+			}else if(isset($filterParams['itemDuedateStart'])){
+				$Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
+				$this->_db->where('tmv.due_date', $Frm, '>');
+			}else if(isset($filterParams['itemDuedateEnd'])){
+				$To = $filterParams['itemDuedateEnd'].' '.'00:00:00';
+				$this->_db->where('tmv.due_date', $To, '<');
+			}else{}
+
 			if(isset($filterParams['createDateFrom']) && isset($filterParams['createDateTo'])){
 				$Frm = $filterParams['createDateFrom'].' '.'00:00:00';
 				$To = $filterParams['createDateTo'].' '.'00:00:00';
 				$this->_db->where('tmv.created_date', Array ($Frm,$To),'BETWEEN');
-			}
+			}else if(isset($filterParams['createDateFrom'])){
+				$Frm = $filterParams['createDateFrom'].' '.'00:00:00';
+				$this->_db->where('tmv.created_date', $Frm, '>');
+			}else if(isset($filterParams['createDateTo'])){
+				$To = $filterParams['createDateTo'].' '.'00:00:00';
+				$this->_db->where('tmv.created_date', $Frm, '<');
+			}else {}
 			$this->_db->join('tms_summmery_view tmv', 'ti.order_id = tmv.order_id','INNER');
 			$this->_db->join('tms_customer tcu', 'ti.order_id = tcu.order_id','INNER');
 			$this->_db->join('tms_client tc', 'tcu.client = tc.iClientId','INNER');

@@ -17710,16 +17710,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var file_count = 0;
                 var fileUrls = [];
                 var fileName = "";
+                var downloadfileName = '';
                 // Filter and collect valid file URLs
                 $scope.invoiceListSelected.forEach(function(val) {
                     if (val.resourceInvoiceFileName !== '') {
-                        // var fileName = val.resourceInvoiceFileName;
-                        fileName = "Oversettelsestjenester-" + val.freelanceName + '-' + val.custom_invoice_no;
+                        var fileName = val.resourceInvoiceFileName;
+                        downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no;
                         var fimgUrl = "uploads/invoice/" + fileName;
                         if (fileUrlExists(fimgUrl)) {
                             fileUrls.push({
                                 'full_url': fimgUrl,
-                                'file_name': fileName
+                                'file_name': downloadfileName
                             });
                         }
                     }
@@ -17738,7 +17739,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (file_count === fileUrls.length) {
                                 zipdwnld.generateAsync({ type: 'blob' }).then(function(content) {
                                     // saveAs(content, 'invoicePDF.zip');
-                                    saveAs(content, fileName + '.zip');
+                                    saveAs(content, 'Invoices.zip');
                                     $route.reload();
                                 });
                             }
@@ -20071,7 +20072,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.isPdfdownload = true;
         if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
             var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
-            var fileName = "Oversettelsestjenester-" + $scope.invoiceDetail.freelanceName + '-' + $scope.invoiceDetail.custom_invoice_no;
+            var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
             // downloadFileFn(fileUrl);
             downloadFileCustomFn(fileUrl, fileName)
         }else{
@@ -20080,7 +20081,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
                 if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
                     var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
-                    var fileName = "Oversettelsestjenester-" + $scope.invoiceDetail.freelanceName + '-' + $scope.invoiceDetail.custom_invoice_no;
+                    var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
                     // downloadFileFn(fileUrl);
                     downloadFileCustomFn(fileUrl, fileName)
                 }
