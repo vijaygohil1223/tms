@@ -3642,6 +3642,11 @@ $app->put('/updateScoopIds/:id','authenticate', function ($id) use($app) {
     $result1 = $invoice->updateScoopIds($data, $id);
     echoResponse(200, $result1);
 });
+$app->get('/clientInvoiceApprovedScoop/:id', function ($id) use ($app) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getClientInvoiceApprovedScoop($id);
+    echoResponse(200, $result);
+});
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {
     $userposition = new userposition ();

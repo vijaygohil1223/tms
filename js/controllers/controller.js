@@ -22558,8 +22558,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.itemList[formIndex].order_id = $scope.routeOrderID;
                     //$scope.itemList[formIndex].total_amount = $scope.total_amount;
 
-                    var sourceField = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale");
-                    var targetField = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale");
+                    if($scope.newCopyScoopBtn){
+                        var sourceField = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
+                        var targetField = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
+                    }else{
+                        var sourceField = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale");
+                        var targetField = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale");
+                    }
 
                     var sourceObj = {
                         sourceLang: srcLang,
@@ -22605,7 +22610,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //$scope.TblItemList[formIndex].total_amount = 0;
                             //return false;
                         } else {
-                            if ($scope.jobi[formId].jobSummery && $scope.workflowChange || ($scope.isAllScoopCopy && $scope.workflowChange) ) {
+                            if ($scope.jobi[formId].jobSummery && $scope.workflowChange || ($scope.isAllScoopCopy && $scope.workflowChange) || ($scope.newCopyScoopBtn && $scope.workflowChange)) {
                                 
                                 // gettingName of selected workflow job chain
                                 
@@ -22844,14 +22849,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // const hasKeyStsName = 'item_status_name' in $scope.itemList;
                     // if(hasKeyStsName)    
                     //  delete $scope.itemList.item_status_name;
-                    if($scope.isAllScoopCopy){
+                    if($scope.isAllScoopCopy || $scope.isSaveScoopPaste){
                         $scope.itemList[formIndex].project_type = $scope.itemList[0].project_type; 
                         //$scope.itemList[formIndex].po_number = $scope.itemList[0].po_number; 
                         $scope.itemList[formIndex].item_status = $scope.itemList[0].item_status; 
                         $scope.itemList[formIndex].project_pricelist = $scope.itemList[0].project_pricelist; 
                         $scope.itemList[formIndex].place_of_delivery = $scope.itemList[0].place_of_delivery; 
-                        $scope.itemList[formIndex].item_email_subject = $scope.itemList[0].item_email_subject; 
-                        $scope.itemList[formIndex].item_name = $scope.itemList[0].item_name; 
+                        // $scope.itemList[formIndex].item_email_subject = $scope.itemList[0].item_email_subject;
+                        $scope.itemList[formIndex].item_name = $scope.itemList[0].item_name;
+                        // new code for the due date & due time issue at scoop copy time
+                        let dueDateTimeNew = angular.element('.due_date_class0').val() + ' ' + angular.element('#due_time0').val();
+                        $scope.itemList[formIndex].due_date = moment(dueDateTimeNew, "DD.MM.YYYY HH:mm").format("YYYY-MM-DD HH:mm");
                     }    
                     
                     console.log('$scope.itemList[formIndex]', $scope.itemList[formIndex])
@@ -22883,6 +22891,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 
                         if(!$scope.isAllScoopCopy && !$scope.isAllScoopUpdate){
                             notification('Scoop successfully updated.', 'success');
+                            $scope.newCopyScoopBtn = false;
+                            $route.reload();
                         }else{
                             if( $scope.itemList[$scope.itemList.length-1].itemId == $scope.itemList[formIndex].itemId ){
                                 notification('All Scoop successfully updated.', 'success');
@@ -23003,7 +23013,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } 
             $scope.saveitems(val.itemId, index);
         })
-    }    
+    }
+    $scope.newCopyScoopBtn = false;
+    $scope.isSaveScoopPaste = false;
+    $scope.newScoopCopy = function(type) {
+        $scope.isCopyClick = true;
+        $scope.newCopyScoopBtn = true;
+    }
+    $scope.newScooPaste = function(itemId, index){
+        $scope.isSaveScoopPaste = true;
+        $scope.saveitems(itemId, index);
+    }
     // substitute pm,cm,qa 
     $scope.checksubPm = [];
     $scope.checksubPc = [];
@@ -32798,14 +32818,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
 
-        rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
+        // rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId"); // below applied new api here as on 30may2024
+        rest.path = "clientInvoiceApprovedScoop/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             //$scope.InvoiceResult = data;
             $scope.InvoiceResult = data.filter(function (el) {
                 el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
                 // status Approved = 5 id
                 //if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
-                if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId))
+                // if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId)) // below applied new api here as on 30may2024
+                if(! $scope.scoopIds.includes(el.itemId))
                     return el;
             });
             //$scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
