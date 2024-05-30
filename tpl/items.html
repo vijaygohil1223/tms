@@ -159,10 +159,20 @@
                                                 ng-model="it.start_date" required onkeydown="return false"
                                                 readonly="" style="width: auto;"/>
                                           </div>
-                                          <a href="javascript:void(0)" ng-if="$index==0" ng-click="scoopAllSave('copy')"
+                                          <!-- <a href="javascript:void(0)" ng-if="$index==0" ng-click="scoopAllSave('copy')"
                                              ng-if="itemList.length >0" class="btn btn-info"
                                              style="padding:7px 7px;">
                                              <i class="fa fa-right-mark"></i>Copy Scoop
+                                          </a> -->
+                                          <a href="javascript:void(0)" ng-if="$index==0" ng-click="newScoopCopy('copy')"
+                                             ng-if="itemList.length >0" class="btn btn-info"
+                                             style="padding:7px 7px;">
+                                             <i class="fa fa-right-mark"></i>Copy
+                                          </a>
+                                          <a href="javascript:void(0)" ng-if="$index!==0 && newCopyScoopBtn" ng-click="newScooPaste(it.itemId, $index)"
+                                             ng-if="itemList.length >0" class="btn btn-info"
+                                             style="padding:7px 7px;">
+                                             <i class="fa fa-copy fa-2x"></i>
                                           </a>
                                           <a href="javascript:void(0)" ng-if="it.item_status==defaultScoopStatus"
                                              ng-click="scoopStatusUpdate(it.itemId)" title="status update"
@@ -385,7 +395,7 @@
                                                                <label class="control-label">Due Date</label>
                                                                <input ng-Datepicker2
                                                                   id="showEditedByName_date{{it.itemId}}" type="text"
-                                                                  class="form-control end_date" name="end_date"
+                                                                  class="form-control end_date due_date_class{{$index}}" name="end_date"
                                                                   ng-model="it.due_date" required autocomplete=""
                                                                   onkeydown="return false" />
 
