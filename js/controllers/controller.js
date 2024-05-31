@@ -17346,6 +17346,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     
 }).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder) {
+    $scope.invoiceDisables = false;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     var allInvoiceListArr = [];
@@ -17716,6 +17717,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     //Linguist Invoice export to excel
     $scope.exportData = function (type) {
+        try{
+            $scope.invoiceDisables = true;
+        }catch{
+            $scope.invoiceDisables = false;
+        }
         console.log('type', type)
         $("#exportable .dt-loading" ).remove();
         $scope.invoiceListSelected = [];
@@ -17763,8 +17769,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Filter and collect valid file URLs
                 $scope.invoiceListSelected.forEach(function(val) {
                     if (val.resourceInvoiceFileName !== '') {
+                        var extension = val.resourceInvoiceFileName.split('.').pop();
                         var fileName = val.resourceInvoiceFileName;
-                        downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no;
+                        downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no+'.'+extension;
                         var fimgUrl = "uploads/invoice/" + fileName;
                         if (fileUrlExists(fimgUrl)) {
                             fileUrls.push({
@@ -23074,7 +23081,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.newCopyScoopBtn = false;
     $scope.isSaveScoopPaste = false;
+    $scope.copyBtnText = "Copy";
     $scope.newScoopCopy = function(type) {
+        $scope.copyBtnText = "Copied";
         $scope.isCopyClick = true;
         $scope.newCopyScoopBtn = true;
     }
