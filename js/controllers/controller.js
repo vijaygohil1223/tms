@@ -8803,17 +8803,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
 
+    // var Dateobject = [];
+    // for (var i = 11; i >= 0; i--) {
+    //     var now = new Date();
+    //     var date = new Date(now.setMonth(now.getMonth() - i));
+    //     var datex = ("0" + date.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+    //     var str = pad(date.getMonth() + 1, 2) + "-" + date.getFullYear();
+    //     console.log('str=======>month', str)
+    //     Dateobject.push({
+    //         id: str
+    //     });
+
+    // }
     var Dateobject = [];
     for (var i = 11; i >= 0; i--) {
-        var now = new Date();
-        var date = new Date(now.setMonth(now.getMonth() - i));
-        var datex = ("0" + date.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+        var now = new Date(); // Create a new date object for each iteration
+        var date = new Date(now.getFullYear(), now.getMonth() - i, 1);
         var str = pad(date.getMonth() + 1, 2) + "-" + date.getFullYear();
+        console.log('str=======>month', str);
         Dateobject.push({
             id: str
         });
     }
-
+    
     //export to excel
     $scope.exportData = function (action) {
         switch (action) {
@@ -9010,6 +9022,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.statusResult = data['data'];
                 console.log('$scope.statusResult', $scope.statusResult)
                 $scope.Dateobject = Dateobject;
+
                 //$scope.statusInfo = data['info'];
                 //$scope.statusProjectType = data['Typeinfo'];
                 //$scope.statusCustomerType = data['customerType'];
