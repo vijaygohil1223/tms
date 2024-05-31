@@ -9738,8 +9738,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.dtOptions = DTOptionsBuilder.newOptions().
         withOption('responsive', true).
-        withOption('pageLength', 100)
-        .withOption('scrollX', true);
+        withOption('pageLength', 100);
 
     $scope.calculateTotal = function() {
         var total = 0;
@@ -22578,8 +22577,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var formIdAllSave = $scope.isAllScoopCopy ? $scope.itemList[0].itemId : formId;
                     var formIndexNew = $scope.isAllScoopCopy ? 0 : formIndex;
                     
-                    var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
-                    var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
+                    if($scope.newCopyScoopBtn){
+                        var srcLang = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
+                        var trgLang = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
+                    }else{
+                        var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
+                        var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
+                    }
                     if(!$scope.isAllScoopUpdate && (!srcLang || !trgLang) ){
                         notification('Please select source-target language','warning')
                         return false;
@@ -22911,8 +22915,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         // new code for the due date & due time issue at scoop copy time
                         let dueDateTimeNew = angular.element('.due_date_class0').val() + ' ' + angular.element('#due_time0').val();
                         $scope.itemList[formIndex].due_date = moment(dueDateTimeNew, "DD.MM.YYYY HH:mm").format("YYYY-MM-DD HH:mm");
+                        // new code for job
+                        if($scope.isSaveScoopPaste){
+                            $scope.itemList[formIndex].attached_workflow = $scope.itemList[0].attached_workflow; 
+                        }
                     }    
-                    
                     console.log('$scope.itemList[formIndex]', $scope.itemList[formIndex])
                     
                     $routeParams.id = $scope.itemList[formIndex].itemId
@@ -23073,7 +23080,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.newScooPaste = function(itemId, index){
         $scope.isSaveScoopPaste = true;
-        $scope.saveitems(itemId, index);
+        let selectedWorkflow = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();
+        if($('#jobchainName'+itemId).find(':selected').val() == 'select' && selectedWorkflow != 'select' ){
+            $scope.workflowChange = true;
+            $('#jobchainName'+itemId).find('option').val(selectedWorkflow).trigger('click');
+        }else{
+            $scope.workflowChange = $scope.workflowChange ? $scope.workflowChange : false;
+        }
+        // setTimeout(() => {
+            $('#project_type'+itemId).removeAttr('required');
+            $('#upcomingDate'+itemId).removeAttr('required');
+            $('#EmailSub'+itemId).removeAttr('required');
+            $scope.saveitems(itemId, index);
+        // }, 100);
     }
     // substitute pm,cm,qa 
     $scope.checksubPm = [];
