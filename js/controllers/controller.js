@@ -9738,7 +9738,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.dtOptions = DTOptionsBuilder.newOptions().
         withOption('responsive', true).
-        withOption('pageLength', 100);
+        withOption('pageLength', 100)
+        .withOption('scrollX', true);
 
     $scope.calculateTotal = function() {
         var total = 0;
