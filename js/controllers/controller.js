@@ -17763,8 +17763,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Filter and collect valid file URLs
                 $scope.invoiceListSelected.forEach(function(val) {
                     if (val.resourceInvoiceFileName !== '') {
+                        var extension = val.resourceInvoiceFileName.split('.').pop();
                         var fileName = val.resourceInvoiceFileName;
-                        downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no;
+                        downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no+'.'+extension;
                         var fimgUrl = "uploads/invoice/" + fileName;
                         if (fileUrlExists(fimgUrl)) {
                             fileUrls.push({
