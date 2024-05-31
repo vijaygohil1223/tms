@@ -737,7 +737,7 @@ class Client_invoice {
             $data['number_of_days'] = $data['invoice_no_of_days'] > 0 ? $data['invoice_no_of_days'] : $paymentDue[0]['number_of_days'];
             
 			//invoiceNumber Count
-            $maxrawQuery = 'SELECT MAX(invoice_number_max) AS max_count FROM tms_invoice_client;';
+            $maxrawQuery = 'SELECT MAX(invoice_number_max) AS max_count FROM tms_invoice_client';
             $maxcount = $this->_db->rawQuery($maxrawQuery);
 			// $data['invoiceCount'] = count(self::get('tms_invoice_client'));
             $data['invoiceCount'] = (int)$maxcount[0]['max_count'];
@@ -798,8 +798,21 @@ class Client_invoice {
             unset($data['item']);
         }
         if(!$invoiceAlreadyAdded){
-            $data['created_date'] = date('Y-m-d');
-            $data['modified_date'] = date('Y-m-d');
+            $prfxQry = $this->_db->getOne('tms_invoice_setting');
+            $invPrefix = $prfxQry ? $prfxQry['invoiceNoPrefix']  : '';
+            $maxrawQuery = 'SELECT MAX(invoice_number_max) AS max_count FROM tms_invoice_client';
+            $maxcount = $this->_db->rawQuery($maxrawQuery);
+			$maxCount = $maxcount ? (int)$maxcount[0]['max_count'] + 1 : 1;
+            $maxInvoiceNo = $invPrefix.str_pad($maxCount, 6, '0', STR_PAD_LEFT);
+            
+            $data['invoice_number_max'] = $maxCount;
+            if($data['invoice_number'] == $data['custom_invoice_number']){
+                $data['custom_invoice_number'] = $maxInvoiceNo;
+            }
+            $data['invoice_number'] = $maxInvoiceNo;
+            
+            $data['created_date'] = date('Y-m-d H:i:s');
+            $data['modified_date'] = date('Y-m-d H:i:s');
             $data['value_date'] = date('Y-m-d');
             //$data['invoice_date'] = date('Y-m-d');
             $id = $this->_db->insert('tms_invoice_client', $data);
