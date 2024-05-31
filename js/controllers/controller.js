@@ -17346,6 +17346,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     
 }).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder) {
+    $scope.invoiceDisables = false;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     var allInvoiceListArr = [];
@@ -17716,6 +17717,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     //Linguist Invoice export to excel
     $scope.exportData = function (type) {
+        try{
+            $scope.invoiceDisables = true;
+        }catch{
+            $scope.invoiceDisables = false;
+        }
         console.log('type', type)
         $("#exportable .dt-loading" ).remove();
         $scope.invoiceListSelected = [];
@@ -23075,7 +23081,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.newCopyScoopBtn = false;
     $scope.isSaveScoopPaste = false;
+    $scope.copyBtnText = "Copy";
     $scope.newScoopCopy = function(type) {
+        $scope.copyBtnText = "Copied";
         $scope.isCopyClick = true;
         $scope.newCopyScoopBtn = true;
     }
