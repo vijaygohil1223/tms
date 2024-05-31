@@ -22680,7 +22680,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 let workflowSel = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();        
                                 
                                 $scope.jobitem = {};
-                                var dd = $scope.isAllScoopCopy ? workflowSel : $scope.jobi[formId].jobSummery;
+                                if($scope.newCopyScoopBtn){
+                                    var dd = workflowSel;
+                                }else{
+                                    var dd = $scope.isAllScoopCopy ? workflowSel : $scope.jobi[formId].jobSummery;
+                                }
                                 //$scope.jobi.jobSummery = dd.substr(1);
                                 $scope.jobi[formId].jobSummery = dd.substr(1);
                                 $scope.matchjob = dd.slice(0, 1);
@@ -23090,7 +23094,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.newScooPaste = function(itemId, index){
         $scope.isSaveScoopPaste = true;
         let selectedWorkflow = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();
-        if($('#jobchainName'+itemId).find(':selected').val() == 'select' && selectedWorkflow != 'select' ){
+        var intialPasteJob = $('#jobchainName'+itemId).find(':selected').val();
+        if((intialPasteJob == 'select' && selectedWorkflow != 'select' ) || (selectedWorkflow !== intialPasteJob)){
             $scope.workflowChange = true;
             $('#jobchainName'+itemId).find('option').val(selectedWorkflow).trigger('click');
         }else{
