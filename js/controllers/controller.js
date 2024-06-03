@@ -4452,7 +4452,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.dtOptionsJoblinguist = DTOptionsBuilder.newOptions().
         withOption('responsive', true).
-        withOption('pageLength', 50);
+        withOption('pageLength', 100);
 
     $scope.modalOpen = false;
     // After Linguist login
