@@ -2954,8 +2954,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             setTimeout(() => {
                 angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
                 
-                sortFieldName = $window.localStorage.getItem("sortFieldName");
-                $window.localStorage.getItem("sortFieldOrder");
+                //sortFieldName = $window.localStorage.getItem("sortFieldName");
+                //$window.localStorage.getItem("sortFieldOrder");
                 //$scope.getClass(sortFieldName)
             }, 1000);
             
@@ -3830,6 +3830,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //job action like all, request etc
     $scope.highlightSearch = "All";
     $scope.sortJob = function (action, eID) {
+        console.log('eID', eID)
+        console.log('action', action)
         //pagination controls
         // $scope.currentPage = 1;
         // $scope.totalItems = $scope.jobList.length;
@@ -4447,6 +4449,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // $scope.dtOptionsJob2 = DTOptionsBuilder.newOptions().
     //     withOption('responsive', true).
     //     withOption('pageLength', 25);
+
+    $scope.dtOptionsJoblinguist = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 50);
 
     $scope.modalOpen = false;
     // After Linguist login
@@ -17487,7 +17493,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //Due date counts for Invoice
             });
 
-            $scope.approvedInvc.sort((a, b) => new Date(a.inv_due_date) - new Date(b.inv_due_date));
+            // $scope.approvedInvc.sort((a, b) => new Date(a.inv_due_date) - new Date(b.inv_due_date));
+            // console.log('$scope.approvedInvc', $scope.approvedInvc)
+
+            $scope.approvedInvc.sort(function(a, b) {
+                if (! $scope.isValidDate (a.inv_due_date)) return 1;
+                if ( !$scope.isValidDate (b.inv_due_date) ) return -1;
+                return new Date(a.inv_due_date) - new Date(b.inv_due_date);
+            });
+            
             console.log('$scope.approvedInvc', $scope.approvedInvc)
             //deferred.resolve($scope.openInvc);
             //deferred.resolve($scope.completeInvc);
@@ -17997,6 +18011,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
+
+    $scope.isValidDate = function(date) {
+        return date && date !== '0000-00-00';
+    };
 
 }).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $compile, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -19609,9 +19627,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.invoiceApproved = function (frmId) {
+        if($scope.invoiceDetail.invoice_date != 'Invalid date'){
+            console.log('$scope.invoiceDetail.invoice_date=====AAAA', $scope.invoiceDetail.invoice_date)
+            var dtFrmtDash = originalDateFormatDash($scope.invoiceDetail.invoice_date);
+            var invoice_date = moment(dtFrmtDash).format('YYYY-MM-DD');
+            const invoice_duedate = calculateDueDate(invoice_date, $scope.invoiceNumOfdays);
+            var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
+        }else{
+            var dtFrmtDash = originalDateFormatDash($scope.invoiceDetail.created_date);
+            var inv_created_date = moment(dtFrmtDash).format('YYYY-MM-DD');
+            const invoice_duedate = calculateDueDate(inv_created_date, $scope.invoiceNumOfdays);
+            var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
+        }
+
         var obj = {
-            "is_approved": frmId
+            "is_approved": frmId,
+            "inv_due_date": invDueDate
         };
+        
         $routeParams.id = $scope.invoiceDetail.invoice_id;
         rest.path = "invoiceStatusApproved";
         rest.put(obj).success(function (data) {
