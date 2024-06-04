@@ -623,7 +623,7 @@ td { font-size: 11px; } */
                             <!-- <th>Progress</th> -->
                             <!-- <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th> -->
                             <th
-                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1"
+                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow', 'tab-my-upcoming', 'tab-assigned', 'tab-ongoing', 'tab-qa-ready', 'tab-pm-ready', 'tab-to-be-delivered'].indexOf(myTabs.tabClassName) !== -1"
                               ng-click="sortBy('scoopStatus')" ng-class="getClass('scoopStatus')">
                               Status</th>
                             <th ng-click="sortBy('total_price',1)" ng-class="getClass('total_price')">Price</th>
@@ -796,7 +796,7 @@ td { font-size: 11px; } */
                                 </div>
                               </td> -->
                               <td
-                                ng-if=" ['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1 ">
+                                ng-if=" ['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow', 'tab-my-upcoming', 'tab-assigned', 'tab-ongoing', 'tab-qa-ready', 'tab-pm-ready', 'tab-to-be-delivered'].indexOf(myTabs.tabClassName) !== -1 ">
                                 <span class="projstatus m-t-sm {{order.projectstatus_class}}"
                                   class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
                                   {{order.itemStatus}}</span>
