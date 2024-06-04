@@ -605,28 +605,28 @@ td { font-size: 11px; } */
                           <!-- <table class="table table-striped" datatable="ng" dt-options="dtOptions"> -->
                           <thead>
                             <th>#</th>
-                            <th ng-click="sortBy('order_no')" ng-class="getClass('order_no')">Project
+                            <th ng-click="sortBy('order_no',1)" ng-class="getClass('order_no')">Project
                               Number</th>
-                            <th ng-click="sortBy('clientName')" ng-class="getClass('clientName')">Customer</th>
+                            <th ng-click="sortBy('clientName',1)" ng-class="getClass('clientName')">Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
-                            <th ng-click="sortBy('po_number')" ng-class="getClass('po_number')">PO Number</th>
-                            <th ng-click="sortBy('projectManager')" ng-class="getClass('projectManager')"
+                            <th ng-click="sortBy('po_number', 1)" ng-class="getClass('po_number')">PO Number</th>
+                            <th ng-click="sortBy('projectManager',1)" ng-class="getClass('projectManager')"
                               style="white-space: nowrap">Project Manager</th>
-                            <th ng-click="sortBy('qaSpecialist')" ng-class="getClass('qaSpecialist')"
+                            <th ng-click="sortBy('qaSpecialist', 1)" ng-class="getClass('qaSpecialist')"
                               style="white-space: nowrap">QA Specialist</th>
-                            <th ng-click="sortBy('attached_workflow')" ng-class="getClass('attached_workflow')">Job</th>
-                            <th ng-click="sortBy('linguist')" ng-class="getClass('linguist')">Linguist</th>
+                            <th ng-click="sortBy('attached_workflow', 1)" ng-class="getClass('attached_workflow')">Job</th>
+                            <th ng-click="sortBy('linguist', 1)" ng-class="getClass('linguist')">Linguist</th>
                             <!-- <th>Heads Up</th> -->
                             <th>Comment</th>
-                            <th ng-click="sortBy('deadline') " ng-class="getClass('deadline')">Deadline</th>
+                            <th ng-click="sortBy('deadline', 1) " ng-class="getClass('deadline')">Deadline</th>
                             <!-- <th>Progress</th> -->
                             <!-- <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th> -->
                             <th
                               ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow'].indexOf(myTabs.tabClassName) !== -1"
                               ng-click="sortBy('scoopStatus')" ng-class="getClass('scoopStatus')">
                               Status</th>
-                            <th ng-click="sortBy('total_price')" ng-class="getClass('total_price')">Price</th>
+                            <th ng-click="sortBy('total_price',1)" ng-class="getClass('total_price')">Price</th>
                             <!-- <th>PO Number</th> -->
                             <!-- <th>Action</th> -->
                             <th class="none">Scoop Name</th>

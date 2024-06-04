@@ -3,6 +3,12 @@
       max-width: 100%;
       overflow-x: auto;
    }
+   .red-margin{
+      color: red;
+   }
+   .green-margin{
+      color: green;
+   }
 </style>
 <div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
    data-ng-include=" 'tpl/material.header.html' "></div>
@@ -496,8 +502,11 @@
                                           <td ng-bind="result.total_job_price | customNumber"> </td>
                                           <td> {{calculateGrossProfit(result.totalAmount, result.total_job_price) |
                                              customNumber }} </td>
-                                          <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) |
-                                             customNumber }} % </td>
+                                          <!-- <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) |
+                                             customNumber }} % </td> -->
+                                          <td ng-class="{'red-margin': calculateProfitMargin(result.totalAmount, result.total_job_price) < 50, 'green-margin': calculateProfitMargin(result.totalAmount, result.total_job_price) >= 50}">
+                                             {{calculateProfitMargin(result.totalAmount, result.total_job_price) | number:2}} %
+                                             </td>
 
                                        </tr>
                                        <!-- <tr ng-if="statusResult.length">

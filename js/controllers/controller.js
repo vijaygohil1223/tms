@@ -2833,7 +2833,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('urlString', urlString)
         }
         if($scope.sortByFieldName && $scope.sortByFieldName != ''){
-            const sortOrderBy = $scope.sortOrder ? 'DESC' : 'ASC'
+            let sortFieldOrder = $window.localStorage.getItem("sortFieldOrder")
+            if(sortFieldOrder && sortFieldOrder!=''){
+                $scope.sortOrder =  sortFieldOrder;
+            }
+            const sortOrderBy = $scope.sortOrder && $scope.sortOrder == 'true' ? 'DESC' : 'ASC'
             urlString += '&sortBy=' + $scope.sortByFieldName
             urlString += '&sortOrder=' + sortOrderBy
             //$scope.showDataLoader = false;
@@ -2945,9 +2949,54 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
+    $scope.reverse = false;
+    $scope.sortByFieldName = '';
+    $scope.sortOrder = '';
+    $scope.hitByuser = false;
+    $scope.sortBy = function (fieldName, hitByuser=0) {
+        if(fieldName){
+            console.log('fieldName', fieldName)
+            if ($scope.sortByField === fieldName) {
+                $scope.reverse = !$scope.reverse;
+                console.log('$scope.reverse', $scope.reverse)
+            } else {
+                $scope.sortByField = fieldName;
+                $scope.reverse = false;
+                console.log('$scope.reverse', $scope.reverse)
+            }
+            $scope.sortByFieldName = fieldName 
+            $scope.sortOrder = $scope.reverse
+
+            if(hitByuser == 1){ 
+                $scope.hitByuser = true;
+                $window.localStorage.setItem("sortFieldName", $scope.sortByFieldName);
+                $window.localStorage.setItem("sortFieldOrder", $scope.sortOrder);
+                $scope.activeTabfn()
+            }
+        }
+    };
+    $scope.getClass = function (fieldName) {
+        return {
+            'scoopasc active': $scope.sortByFieldName === fieldName && !$scope.reverse,
+            'scoopdesc active': $scope.sortByFieldName === fieldName && $scope.reverse
+        };
+    };
+
     $scope.activeTabfn = function(){
         if($window.localStorage.getItem("projectActiveTab") ){
             $scope.tabName = $window.localStorage.getItem("projectActiveTab")
+
+            if($window.localStorage.getItem("sortFieldName") && $scope.hitByuser == false ){
+                $scope.sortByFieldName = $window.localStorage.getItem("sortFieldName");
+                $scope.sortBy($scope.sortByFieldName)
+                let sortFieldOrderLocal = $window.localStorage.getItem("sortFieldOrder")
+                console.log('sortFieldOrderLocal', sortFieldOrderLocal)
+                if(sortFieldOrderLocal && sortFieldOrderLocal != '')
+                    $scope.reverse = sortFieldOrderLocal
+            }
+            
+            // if($window.localStorage.getItem("sortFieldOrder"))
+            //     $scope.sortOrder = $window.localStorage.getItem("sortFieldOrder");
             console.log('$scope.tabName========>', $scope.tabName)
             var tabIndex = findIndexByTabClassName($scope.tabName);
             $scope.dashboardScoopLoad(1, tabIndex);
@@ -2956,7 +3005,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 //sortFieldName = $window.localStorage.getItem("sortFieldName");
                 //$window.localStorage.getItem("sortFieldOrder");
-                //$scope.getClass(sortFieldName)
             }, 1000);
             
         }else{
@@ -2988,35 +3036,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $window.localStorage.setItem("projectActiveTab", '');
     }
 
-    $scope.reverse = false;
-    $scope.sortByFieldName = '';
-    $scope.sortOrder = '';
-    $scope.sortBy = function (fieldName) {
-        if(fieldName){
-            console.log('fieldName', fieldName)
-            if ($scope.sortByField === fieldName) {
-                $scope.reverse = !$scope.reverse;
-                console.log('$scope.reverse', $scope.reverse)
-            } else {
-                $scope.sortByField = fieldName;
-                $scope.reverse = false;
-                console.log('$scope.reverse', $scope.reverse)
-            }
-            $scope.sortByFieldName = fieldName 
-            $scope.sortOrder = $scope.reverse 
-            $window.localStorage.setItem("sortFieldName", $scope.sortByFieldName);
-            $window.localStorage.setItem("sortFieldOrder", $scope.sortOrder);
 
-            $scope.activeTabfn()
-        }
-    };
-    $scope.getClass = function (fieldName) {
-        return {
-            'scoopasc active': $scope.sortByFieldName === fieldName && !$scope.reverse,
-            'scoopdesc active': $scope.sortByFieldName === fieldName && $scope.reverse
-        };
-    };
-
+    
     $scope.projectBranchchange = function (id) {
         //$scope.projBranchChange = true;
         $scope.projectBranch = {};
@@ -8826,7 +8847,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var now = new Date(); // Create a new date object for each iteration
         var date = new Date(now.getFullYear(), now.getMonth() - i, 1);
         var str = pad(date.getMonth() + 1, 2) + "-" + date.getFullYear();
-        console.log('str=======>month', str);
         Dateobject.push({
             id: str
         });
@@ -8989,7 +9009,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //alert('Why did you use history back?');
             if($window.localStorage.scoopReport){
                 $scope.orderReport = JSON.parse($window.localStorage.scoopReport);
-                console.log('$scope.scoopReport', $scope.orderReport)
+                //console.log('$scope.scoopReport', $scope.orderReport)
                 $scope.statusReportsearch('order-status-report','middle') 
             }    
         }
@@ -9026,7 +9046,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'statusorderReportFilter';
             rest.post($scope.orderReport).success(function (data) {
                 $scope.statusResult = data['data'];
-                console.log('$scope.statusResult', $scope.statusResult)
+               // console.log('$scope.statusResult', $scope.statusResult)
                 $scope.Dateobject = Dateobject;
 
                 //$scope.statusInfo = data['info'];
@@ -9040,7 +9060,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let newStatusResult = $scope.statusResult;
                 var newResult = [];
                 function groupByData(dataArray, property) {
-                    console.log('dataArray', dataArray)
+                    //console.log('dataArray', dataArray)
                     return dataArray.reduce(function (res, dvalue) {
                         if (!res[dvalue[property]]) {
                             res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0, totalJobAmount: 0, totalGrossProfit: 0, totalProfitMargin: 0 };
@@ -9058,7 +9078,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }, []);
                 }
                 let statusInfo = groupByData(newStatusResult, 'QuentityDate');
-                console.log('statusInfo======>', statusInfo)
+                //console.log('statusInfo======>', statusInfo)
                 $scope.statusInfo = newResult;
 
                 // Project type
@@ -9110,7 +9130,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         
                                         //$scope.totalProfitMargin += parseFloat(value.totalProfitMargin);
                                         //$scope.totalProfitMargin = $scope.calculateProfitMargin(parseFloat($scope.totalItemAmount), parseFloat($scope.totalJobItemAmount) );
-                                        console.log('$scope.totalProfitMargin==='+i, $scope.totalProfitMargin)
+                                        //console.log('$scope.totalProfitMargin==='+i, $scope.totalProfitMargin)
                                         //console.log('value.totalJobAmount', value.totalJobAmount)
                                         //$scope.dtItemAmout += value.totalAmount;
                                         var prn = $scope.totalItemAmout * 12 / 100;
@@ -9131,7 +9151,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         let totalProfitMargin = $filter('customNumber')(value.totalProfitMargin);
                                         angular.element('#profitMargin' + i).text(totalProfitMargin + ' %');
 
-                                        console.log('$scope.Dateobject=======>'+i, QuentityDate)
+                                        //console.log('$scope.Dateobject=======>'+i, QuentityDate)
                     
                                         
                                         //angular.element('#itemAmount' + i).text(value.TotalAmount);
