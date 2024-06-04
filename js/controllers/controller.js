@@ -19642,7 +19642,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         var obj = {
             "is_approved": frmId,
-            "inv_due_date": invDueDate
+            "inv_due_date": invDueDate,
+            "invoice_status": "Approved"
         };
         
         $routeParams.id = $scope.invoiceDetail.invoice_id;
