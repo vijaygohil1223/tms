@@ -35,12 +35,16 @@ class orderstatussearch {
 		}
 
 		public function statusorderReportFilter($filterParams){
-			//print_r($filterParams);
+			// print_r($filterParams);
+			// exit;
 			// if(isset($filterParams['companyCode'])){
 			// 	$this->_db->where('its.companyCode', $filterParams['companyCode']);
 			// }
 			if(isset($filterParams['pm_name'])){
-				$this->_db->where('tu.iUserId', $filterParams['pm_name']);
+				//$this->_db->where('tu.iUserId', $filterParams['pm_name']);
+				$pmId = $filterParams['pm_name'];
+				//$this->_db->where('its.manager', $pmId);
+				$this->_db->where(" (cust.project_manager = $pmId OR cust.sub_pm = $pmId OR its.manager = $pmId OR its.subPm = $pmId ) ");
 			}
 			if(isset($filterParams['emailSubject'])){
 				$this->_db->where('its.item_email_subject', $filterParams['emailSubject']);
@@ -81,12 +85,12 @@ class orderstatussearch {
 				$Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
 				//$To = $filterParams['endItemDuedate'].' '.'00:00:00';
 				$To = $filterParams['itemDuedateEnd'].' '.'00:00:00';
-				$this->_db->where('its.due_date', Array ($Frm,$To),'BETWEEN');
+				$this->_db->where(' DATE(its.due_date) ', Array ($Frm,$To),'BETWEEN');
 			}
 			if(isset($filterParams['createDateFrom']) && isset($filterParams['createDateTo'])){
 				$Frm = $filterParams['createDateFrom'].' '.'00:00:00';
 				$To = $filterParams['createDateTo'].' '.'00:00:00';
-				$this->_db->where('its.start_date', Array ($Frm,$To),'BETWEEN');
+				$this->_db->where('DATE(its.start_date)', Array ($Frm,$To),'BETWEEN');
 			}
 			// if(isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])){
 			// 	$Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';

@@ -16,7 +16,8 @@ class freelanceJob {
     }
     
     public function freelanceJobget($id) {
-    	$this->_db->join('tms_general tg', 'tsv.order_id = tg.order_id', 'INNER');
+    	$this->_db->orderBy(' DATE(tsv.due_date) ', 'DESC');
+        $this->_db->join('tms_general tg', 'tsv.order_id = tg.order_id', 'INNER');
     	$this->_db->join('tms_users tu', 'tsv.resource = tu.iUserId', 'LEFT');
     	//$this->_db->where("tsv.resource = $id ");
         $this->_db->where("tsv.resource = $id OR ((tsv.accept = $id OR tsv.accept = 0) AND (tsv.item_status = 'Requested' OR tsv.item_status = 'In preparation' ) AND (FIND_IN_SET($id, tsv.send_request) AND NOT FIND_IN_SET($id, tsv.request_rejected_ids)) )");
