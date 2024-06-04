@@ -324,6 +324,9 @@ class Freelance_invoice {
             unset($data['paid_amount']);
         }
         $data['modified_date'] = date('Y-m-d H:i:s');
+        if($data['invoice_status'] == 'Approved'){
+            $data['is_approved'] = 1;
+        }
     	$this->_db->where('invoice_id', $id);
     	$upID = $this->_db->update('tms_invoice', $data);
         
