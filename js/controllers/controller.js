@@ -9454,18 +9454,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "Change item status":
-                var itemStatus = angular.element('#itemStatusdata').val();
+                var itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
+                let scoopIds = [];
+                let promises = []; // Array to store promises
                 for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
                     var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
                     if (orderselect == 'true') {
                         var orderId = angular.element('#orderCheckData' + i).val();
-                        $routeParams.id = orderId;
-                        rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
-                        rest.get().success(function (data) {
-                            $route.reload();
-                        }).error(errorCallback);
+                        scoopIds.push(orderId)
+                        promises.push(new Promise(function(resolve, reject) {
+                            resolve();
+                        }));
+                        // $routeParams.id = orderId;
+                        // rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
+                        // rest.get().success(function (data) {
+                        //     $route.reload();
+                        // }).error(errorCallback);
                     }
                 }
+                Promise.all(promises).then(function() {
+                    let postArr = {
+                        'scoop_status': itemStatus,
+                        'scoop_array': scoopIds
+                    };
+                    rest.path = 'ordersearchItemStatusBulkUpdate';
+                    rest.post(postArr).success(function (data) {
+                        notification('Status updated successfully', 'success');
+                        $route.reload();
+                    }).error(errorCallback);
+                }).catch(function(err) {
+                    console.error("An error occurred:", err);
+                });
                 break;
             case "Remove selection":
                 $scope.checkdata = false;

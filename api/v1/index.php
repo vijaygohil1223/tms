@@ -4027,6 +4027,11 @@ $app->get('/getAllSpecialization','authenticate', function () use($app) {
     $result = $specialz->getAllSpecialization();
     echoResponse(200, $result);
 });
-
+$app->post('/ordersearchItemStatusBulkUpdate', function () use($app) {
+    $statusOrder = new orderstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusOrder->ordersearchItemStatusBulkUpdate($data);
+    echoResponse(200, $result);
+});
 $app->run();
 ?>
