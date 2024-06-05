@@ -17382,7 +17382,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.dtOptions = DTOptionsBuilder.newOptions().
         withOption('responsive', true).
-        withOption('pageLength', 100);
+        withOption('pageLength', 100).
+        withOption('columnDefs',  [
+            {
+                targets: 8,
+                render: function (data, type, row) {
+                    if (type === 'sort') {
+                        let tempSort = data.replace('.', '');
+                        return parseFloat(tempSort.replace(',', '.'));
+                    }
+                    return data;
+                }
+            }
+        ]);
 
     $scope.calculateTotal = function() {
         var total = 0;
