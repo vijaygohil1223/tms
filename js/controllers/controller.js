@@ -19271,6 +19271,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.showSecondCUrrency = false;
     $scope.hideElemnt = true;
     $scope.viewBtn = true;
+    $scope.dtSeparator = window.localStorage.getItem('dtSeparator');
 
     const TmpltDesign = $window.localStorage.getItem("invoiceDesignType");
     $scope.invoiceDesignType = TmpltDesign && TmpltDesign == 2 ? '2' : '';
@@ -19626,14 +19627,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
 
             if($scope.invoiceDetail.invoice_date != 'Invalid date'){
-                var dtFrmtDash = originalDateFormatDash($scope.invoiceDetail.invoice_date);
+                //var dtFrmtDash = originalDateFormatDash($scope.invoiceDetail.invoice_date);
+                var dtFrmtDash = $scope.invoiceDetail.invoice_date?.split($scope.dtSeparator).reverse().join('-');
                 $scope.upInvoiceData.invoice_date = moment(dtFrmtDash).format('YYYY-MM-DD');
-                const invoice_duedate = calculateDueDate($scope.invoiceDetail.invoice_date, $scope.invoiceNumOfdays);
+                const invoice_duedate = calculateDueDate($scope.upInvoiceData.invoice_date, $scope.invoiceNumOfdays);
                 var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
             }else{
                 const invoice_duedate = calculateDueDate( moment().format('YYYY-MM-DD'), $scope.invoiceNumOfdays);
                 var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
                 $scope.upInvoiceData.invoice_date = moment().format('YYYY-MM-DD');
+                console.log('invDueDate======>Elseeee', invDueDate)
             }
             $scope.upInvoiceData.inv_due_date = invDueDate            
         } catch (error) {
@@ -19641,6 +19644,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
         }
         
+        // console.log('$scope.upInvoiceData===>', $scope.upInvoiceData)
+        // return false;
+
         rest.path = 'saveEditedInvoiceLinguist';
         rest.put($scope.upInvoiceData).success(function (data) {
             if (data) {
@@ -34803,7 +34809,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.invoiceNumOfdays = data[0].number_of_days;
             console.log('$scope.invoiceNumOfdays', $scope.invoiceNumOfdays)
             var date = new Date();
-            console.log('date', date)
+            console.log('date====>', date)
             //$scope.invoiceDetail.invoiceNumber = data[0].poNumber.split('_')[0] + '_' + data[0].jobCode + '_' + pad(data[0].invoiceCount + 1, 3);
             // $scope.invoiceDetail.invoiceNumber = $scope.invoiceNoPrefix + pad(data[0].invoiceCount + 1, 6);
             // $scope.invoiceDetail.invoice_number = $scope.invoiceDetail.invoiceNumber;
@@ -34815,6 +34821,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
             //$scope.invoiceDetail.paymentDueDate = $filter('globalDtFormat')(calculateDueDate(date, $scope.invoiceNumOfdays) )
             $scope.invoiceDetail.paymentDueDate = calculateDueDate(date, $scope.invoiceNumOfdays);
+            $scope.invoiceDetail.inv_due_date = $scope.invoiceDetail.paymentDueDate;
             console.log('$scope.invoiceDetail.paymentDueDate', $scope.invoiceDetail.paymentDueDate)
             
             //$scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, 0));
@@ -34969,8 +34976,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.invoiceData.Invoice_cost2 = $scope.grandTotalNok != '' ? numberFormatCommaToPoint($scope.grandTotalNok) : ''; // for second Currencty nok
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
         $scope.invoiceData.currency_rate = $scope.currencyRate ;
-        var new_inv_due_date = calculateDueDate($scope.invoiceData.invoice_date, $scope.invoiceNumOfdays);
-        $scope.invoiceData.inv_due_date = moment(new_inv_due_date).format('YYYY-MM-DD');
+        // var new_inv_due_date = calculateDueDate($scope.invoiceData.invoice_date, $scope.invoiceNumOfdays);
+        // $scope.invoiceData.inv_due_date = moment(new_inv_due_date).format('YYYY-MM-DD');
 
         $scope.invoiceData.job = [];
         $scope.invoiceList.forEach(element => {
@@ -34991,7 +34998,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             const invoice_duedate = calculateDueDate( moment().format('YYYY-MM-DD'), $scope.invoiceNumOfdays);
             var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
         }
-        $scope.invoiceDetail.inv_due_date = invDueDate
+        $scope.invoiceData.inv_due_date = invDueDate
 
         if ($scope.invoiceDetail.payment) {
             rest.path = "invoiceSave";
