@@ -75,12 +75,19 @@
                                 <button id="btnCancel" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
                                     ng-click="cancel();"> Cancel</button>
                                 <button id="btnApproved" class="btn btn-success btnSave t1"
-                                    ng-show="invoiceDetail.is_approved==1 && !isPdfdownload"
+                                    ng-show="invoiceDetail.is_approved==1"
                                     ng-click="invoiceApproved('0');" ng-disabled="isDisabledApprvd"> Approved</button>
+                                <!-- <button id="btnApproved" class="btn btn-success btnSave t1"
+                                    ng-show="invoiceDetail.is_approved==1 && !isPdfdownload"
+                                    ng-click="invoiceApproved('0');" ng-disabled="isDisabledApprvd"> Approved</button> -->
                                 <button id="btnApproved" class="btn btn-warning btnSave t2"
-                                    ng-show="invoiceDetail.is_approved==0 && !isPdfdownload"
+                                    ng-show="invoiceDetail.is_approved==0"
                                     ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd"
                                     style="color: #454f59 !important;"> Not yet approved</button>
+                                <!-- <button id="btnApproved" class="btn btn-warning btnSave t2"
+                                    ng-show="invoiceDetail.is_approved==0 && !isPdfdownload"
+                                    ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd"
+                                    style="color: #454f59 !important;"> Not yet approved</button> -->
                                 <!-- <button id="editInvoiceSave2" class="btn btn-info btnSave" ng-hide="userRight==1 || editDisabled || invoiceDetail.invoice_status != 'Open' || (userRight==2 && invoiceDetail.is_invoice_sent == 1) "
                                     ng-click="sendInvoiceEmail('invoice_to_be_sent',invoiceDetail.invoice_number)"><i
                                         class="fa fa-envelope-o"></i> To Be Sent </button> -->
