@@ -62,7 +62,8 @@ class orderstatussearch {
 				$this->_db->where('inc.iClientId', $filterParams['indirect_customer']);
 			}
 			if(isset($filterParams['itemStatus'])){
-				$this->_db->where('its.item_status', $filterParams['itemStatus']);
+				// $this->_db->where('its.item_status', $filterParams['itemStatus']);
+				$this->_db->where('its.item_status', explode(",",$filterParams['itemStatus']),'IN');
 			}
 			if(isset($filterParams['projectStatus'])){
 				$this->_db->where('gen.project_status', $filterParams['projectStatus']);

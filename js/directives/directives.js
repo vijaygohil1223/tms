@@ -3566,7 +3566,38 @@ app.directive('select2ScoopDetailitmStatus', function($http, rest, $timeout) {
         }
     }
 });
-
+app.directive('select2ScoopStatusMultiple', function($http, rest, $timeout) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            rest.path = 'scoopdetailItemStatusGet';
+            rest.get().success(function(data) {
+                var indirect = [];
+                var dataArr = [...data].sort((a, b) => a.displayOrder - b.displayOrder);
+                console.log('dataArr', dataArr)
+                $.each(dataArr, function(key, value) {
+                    var obj = {
+                        'id': value.item_status_id,
+                        //'id': value.item_status_name,
+                        'text': value.item_status_name
+                    };
+                    indirect.push(obj);
+                });
+                $timeout(function() {
+                    element.select2({
+                        allowClear: true,
+                        data: indirect,
+                        multiple:true,
+                        //maximumSelectionSize:1,
+                        // closeOnSelect:true,
+                        closeOnSelect:false
+                    });
+                }, 200);
+            }).error(function(data, error, status) {});
+        }
+    }
+});
 //------------------jobdetail-itemGet--------------------//
 app.directive('select2JobdetailItem', function($http, rest, $timeout) {
     return {
