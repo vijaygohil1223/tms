@@ -114,7 +114,7 @@ class orderstatussearch {
 			$this->_db->join('tms_project_status ps', 'ps.pr_status_id = gen.project_status','LEFT');
 			$this->_db->join('tms_item_status scs', 'scs.item_status_id = its.item_status','LEFT');
 			$this->_db->join('tms_summmery_view tsv', 'tsv.order_id = its.order_id AND tsv.item_id = its.item_number','LEFT');
-			$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, its.project_type AS projectType, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate,its.due_date as scoop_due_date, its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, tpt.project_name AS projectTypeName, its.q_date AS QuentityDate, its.total_amount AS totalAmount, its.item_name AS scoopName, concat(tu.vFirstName, " ", tu.vLastName) AS pm_name, inc.vUserName as indirectAccountName, c.client_currency, scs.item_status_name as scoop_status_name, c.accounting_tripletex, IFNULL(SUM(tsv.total_price), 0) AS total_job_price ');
+			$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, its.project_type AS projectType, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate,its.due_date as scoop_due_date, its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, tpt.project_name AS projectTypeName, its.q_date AS QuentityDate, its.total_amount AS totalAmount, its.item_name AS scoopName, concat(tu.vFirstName, " ", tu.vLastName) AS pm_name, inc.vUserName as indirectAccountName, c.client_currency, scs.item_status_name as scoop_status_name, c.accounting_tripletex, IFNULL(SUM(tsv.total_price), 0) AS total_job_price, its.itemId AS scoopId');
 			
 			//echo $this->_db->getLastQuery();
 			//print_r($data);
@@ -198,4 +198,12 @@ class orderstatussearch {
 			return $data;
 		}
 		
+		public function ordersearchItemStatusBulkUpdate($data){
+			$itemIdsString = implode(",", $data['scoop_array']);
+			$update_date = date('Y-m-d H:i:s');
+			$item_status = $data['scoop_status'];
+			$sql = "UPDATE tms_items SET item_status = $item_status, updated_date = '$update_date' WHERE itemId IN ($itemIdsString)";
+			$data = $this->_db->rawQuery($sql);
+	    	return $data;
+	    }
 }

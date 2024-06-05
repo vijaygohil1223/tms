@@ -427,7 +427,9 @@
                                           class="input-sm form-control w-sm inline v-middle" ng-model="projectStatus" />
                                     </div>
                                     <div class="col-sm-5" ng-show="itemStatus">
-                                       <input type="text" select2-job-detailitm-status data-typeid="2" id="itemStatusdata"
+                                       <!-- <input type="text" select2-job-detailitm-status data-typeid="2" id="itemStatusdata"
+                                          class="input-sm form-control w-sm inline v-middle" ng-model="itemStatus" /> -->
+                                       <input type="text" select2-scoop-detailitm-status data-typeid="2" id="itemStatusdata"
                                           class="input-sm form-control w-sm inline v-middle" ng-model="itemStatus" />
                                     </div>
 
@@ -473,11 +475,16 @@
                                              class="orderRClass" ng-init="setTotals(result)"
                                              ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice">  -->
                                           <td>
+                                             <!-- <input type="checkbox" id="orderCheck{{$index}}" name="orderCheck{{$index}}"
+                                                ng-model="checkor" ng-checked="checkdata=='ordercheck'">
+                                             <input type="text" id="orderCheckData{{$index}}"
+                                                name="orderCheckData{{$index}}" style="display: none;"
+                                                ng-model="result.orderId"> -->
                                              <input type="checkbox" id="orderCheck{{$index}}" name="orderCheck{{$index}}"
                                                 ng-model="checkor" ng-checked="checkdata=='ordercheck'">
                                              <input type="text" id="orderCheckData{{$index}}"
                                                 name="orderCheckData{{$index}}" style="display: none;"
-                                                ng-model="result.orderId">
+                                                ng-model="result.scoopId">
                                           </td>
                                           <td class="nowrap">
                                              <a ng-click="storeScoopOrders(result.orderId)"
