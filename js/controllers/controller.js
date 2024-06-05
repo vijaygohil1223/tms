@@ -13189,30 +13189,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 $scope.userprofiledata.vPhoneNumber = phone;
 
-                if($scope.superAdmin){
+                if($scope.superAdmin == 1){
+                    console.log('$scope.superAdmin', $scope.superAdmin)
                     var tabInput = angular.element('#tabPermission').select2('data');
                     let tabArr = {};
                     $.each(tabInput, function(key, value) {
                         tabArr[value.id] = true;
                     });
                     $scope.userprofiledata.tabPermission = JSON.stringify(tabArr);
-                }    
-                
+                }else {
+                    if ('tabPermission' in $scope.userprofiledata) {
+                        delete $scope.userprofiledata.tabPermission;
+                    }
+                }
+
                 // Flat Array for sidebar Menu
                 //nestedMenuFlat($scope.nodes);
                 
-                if($scope.superAdmin){
+                if($scope.superAdmin == 1){
                     var menuInput = angular.element('#menu_access').select2('data');
                     let menuArr = {};
                     $.each(menuInput, function(key, value) {
                         menuArr[value.id] = true;
                     });
                     $scope.userprofiledata.menu_access = JSON.stringify(menuArr);
+
+                    if($scope.userprofiledata.iUserId == $scope.userRight )
+                        $window.localStorage.setItem("session_menuAccess", $scope.userprofiledata.menu_access);
+                }else {
+                    if ('menu_access' in $scope.userprofiledata) {
+                        delete $scope.userprofiledata.menu_access;
+                    }
                 }
-                
-                if($scope.userprofiledata.iUserId == $scope.userRight )
-                    $window.localStorage.setItem("session_menuAccess", $scope.userprofiledata.menu_access);
-                
                 
                 //user start recent activity store in cookieStore
                 if ($cookieStore.get('editInternalUser') != undefined) {
