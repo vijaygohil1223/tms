@@ -224,8 +224,9 @@ class dashboard {
             $find_qa_spc = "OR CONCAT(gen_Qa.vFirstName, ' ', gen_Qa.vLastName) LIKE '%$search%'";
             $find_job = "OR its.attached_workflow LIKE '%$search%' ";
             $find_linguist = "OR CONCAT( jsv.vFirstName, ' ', jsv.vLastName ) LIKE '%$search%'";
+            $projectScoopName = "OR its.item_name LIKE '%$search%' ";
             
-            $whereCond .= " AND ( its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject $pOrderNo $find_project_m $find_qa_spc $find_job $find_linguist $pOrderNo2 ) ";
+            $whereCond .= " AND ( its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject $pOrderNo $find_project_m $find_qa_spc $find_job $find_linguist $pOrderNo2 $projectScoopName) ";
             $currentPage = 0;
         }
         
@@ -274,10 +275,10 @@ class dashboard {
                 $sortBy = 'jsv.vFirstName';
             if($_GET['sortBy'] == 'scoopStatus')
                 $sortBy = 'tis.item_status_name';
-                
-                
             if($_GET['sortBy'] == 'deadline')
-                $sortBy = "  STR_TO_DATE(its.due_date, '%Y-%m-%d %H:%i:%s') ";    
+                $sortBy = "  STR_TO_DATE(its.due_date, '%Y-%m-%d %H:%i:%s') ";
+            if($_GET['sortBy'] == 'projectNumber')
+                $sortBy = "its.item_name";
             //$sortBy = 'DATE(its.due_date)';    
             
             $sortOrder = isset($_GET['sortOrder']) && $_GET['sortOrder'] != '' ? $_GET['sortOrder'] : 'ASC' ;

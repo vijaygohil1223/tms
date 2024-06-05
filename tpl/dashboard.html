@@ -610,27 +610,25 @@ td { font-size: 11px; } */
                             <th ng-click="sortBy('clientName',1)" ng-class="getClass('clientName')">Customer</th>
                             <!-- <th>Account</th> -->
                             <th>Languages</th>
-                            <th ng-click="sortBy('po_number', 1)" ng-class="getClass('po_number')">PO Number</th>
+                            <th ng-click="sortBy('deadline', 1) " ng-class="getClass('deadline')">Deadline</th>
                             <th ng-click="sortBy('projectManager',1)" ng-class="getClass('projectManager')"
                               style="white-space: nowrap">Project Manager</th>
                             <th ng-click="sortBy('qaSpecialist', 1)" ng-class="getClass('qaSpecialist')"
                               style="white-space: nowrap">QA Specialist</th>
-                            <th ng-click="sortBy('attached_workflow', 1)" ng-class="getClass('attached_workflow')">Job</th>
                             <th ng-click="sortBy('linguist', 1)" ng-class="getClass('linguist')">Linguist</th>
-                            <!-- <th>Heads Up</th> -->
                             <th>Comment</th>
-                            <th ng-click="sortBy('deadline', 1) " ng-class="getClass('deadline')">Deadline</th>
-                            <!-- <th>Progress</th> -->
-                            <!-- <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th> -->
                             <th
-                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow', 'tab-my-upcoming', 'tab-assigned', 'tab-ongoing', 'tab-qa-ready', 'tab-pm-ready', 'tab-to-be-delivered'].indexOf(myTabs.tabClassName) !== -1"
+                              ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow', 'tab-my-upcoming', 'tab-assigned', 'tab-ongoing', 'tab-to-be-delivered'].indexOf(myTabs.tabClassName) !== -1"
                               ng-click="sortBy('scoopStatus')" ng-class="getClass('scoopStatus')">
                               Status</th>
+                            <th ng-click="sortBy('attached_workflow', 1)" ng-class="getClass('attached_workflow')">Job Type</th>
+                            <!-- <th>Progress</th> -->
+                            <!-- <th ng-if="myTabs.tabClassName=='tab-all' ">Status</th> -->
                             <th ng-click="sortBy('total_price',1)" ng-class="getClass('total_price')">Price</th>
+                            <th ng-click="sortBy('po_number', 1)" ng-class="getClass('po_number')">PO Number</th>
                             <!-- <th>PO Number</th> -->
                             <!-- <th>Action</th> -->
-                            <th class="none">Scoop Name</th>
-                            <th class="none">Email Subject</th>
+                            <th ng-click="sortBy('projectNumber', 1)" ng-class="getClass('projectNumber')">Project Name</th>
                           </thead>
                           <tbody>
 
@@ -722,25 +720,6 @@ td { font-size: 11px; } */
                                   <span class="badge bg-warning">Linguist</span>
                                 </div> -->
                               </td>
-                              <td>{{ order.itemPonumber }}</td>
-                              <td>{{order.pm_fullName}}</td>
-                              <td>{{order.qa_fullName}}</td>
-                              <td>{{order.attached_workflow}}</td>
-                              <td>
-                                <div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">
-                                  {{liguist.vUserName}} </div>
-                                <span ng-if="!order.jobLinguist.length"> - </span>
-                              </td>
-                              <!-- <td>
-                                <span ng-if="order.heads_up===1">{{ order.upcomingDate | dateFormatDisplayFront }}</span>
-                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
-                              </td> -->
-                              <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
-                                  <i style="color:{{order.comment}}"
-                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
-                                </a>
-                              </td>
                               <td>
                                 <span style="display: none;">{{ order.itemDuedate_new }}</span>
                                 <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
@@ -769,6 +748,31 @@ td { font-size: 11px; } */
                                   </div>
                                 </span>
                               </td>
+                              <td>{{order.pm_fullName}}</td>
+                              <td>{{order.qa_fullName}}</td>
+                              <td>
+                                <div ng-repeat="liguist in order.jobLinguist" style="white-space:nowrap;">
+                                  {{liguist.vUserName}} </div>
+                                <span ng-if="!order.jobLinguist.length"> - </span>
+                              </td>
+                              <td>
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                  <i style="color:{{order.comment}}"
+                                    class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
+                                </a>
+                              </td>
+                              <td
+                                ng-if=" ['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow', 'tab-my-upcoming', 'tab-assigned', 'tab-ongoing', 'tab-to-be-delivered'].indexOf(myTabs.tabClassName) !== -1 ">
+                                <span class="projstatus m-t-sm {{order.projectstatus_class}}"
+                                  class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
+                                  {{order.itemStatus}}</span>
+                              </td>
+                              <td>{{order.attached_workflow}}</td>
+                              <!-- <td>
+                                <span ng-if="order.heads_up===1">{{ order.upcomingDate | dateFormatDisplayFront }}</span>
+                                <span ng-if="!order.heads_up || order.heads_up==0"> - </span>
+                              </td> -->
+                             
                               <!-- <td>
                                 <span ng-if="order.progrss_precentage < 0 ">-</span>
                                 <div class="inline" ng-if="order.progrss_precentage >= 0">
@@ -795,19 +799,13 @@ td { font-size: 11px; } */
                                   </div>
                                 </div>
                               </td> -->
-                              <td
-                                ng-if=" ['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow', 'tab-my-upcoming', 'tab-assigned', 'tab-ongoing', 'tab-qa-ready', 'tab-pm-ready', 'tab-to-be-delivered'].indexOf(myTabs.tabClassName) !== -1 ">
-                                <span class="projstatus m-t-sm {{order.projectstatus_class}}"
-                                  class="fa fa-circle text-xs" style="color: {{order.projectstatus_color}}"></i>
-                                  {{order.itemStatus}}</span>
-                              </td>
                               <td>
                                 <!-- <i class="fa fa-usd"></i> -->
                                 <span class="labeltitle">{{order.totalAmount |
                                   customNumber}} {{ order.price_currency }}</span>
                               </td>
-                              <td class="none">{{order.scoopName}}</td>
-                              <td class="none">{{order.itemEmailSubject}}</td>
+                              <td>{{ order.itemPonumber }}</td>
+                              <td>{{ order.scoopName }}</td>
                               <!-- <td>
                                 <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
                                   <i style="color:{{order.comment}}"
