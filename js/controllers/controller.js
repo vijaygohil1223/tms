@@ -9795,8 +9795,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.dtOptions = DTOptionsBuilder.newOptions().
-        withOption('responsive', true).
-        withOption('pageLength', 100);
+    withOption('responsive', true).
+    withOption('pageLength', 100).
+    withOption('columnDefs',  [
+        {
+            targets: [10,11],
+            render: function (data, type, row, meta) {
+                if (type === 'sort') {
+                    let tempSort = data.replace('.', '');
+                    let sortedValue = parseFloat(tempSort.replace(',', '.'));
+                    if (meta.col === 10) {
+                        // Custom sorting for 'price' column
+                        //console.log('Sorting price column:', sortedValue);
+                    } else if (meta.col === 11) {
+                        // Custom sorting for 'expense' column
+                        //console.log('Sorting expense column:', sortedValue);
+                    }
+                    return sortedValue;
+                }
+                return data;
+            }
+        }
+    ]);
 
     $scope.calculateTotal = function() {
         var total = 0;
