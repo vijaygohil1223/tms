@@ -459,9 +459,9 @@
                                        <th>Scoop name</th>
                                        <th>Email Subject</th>
                                        <th>Client</th>
-                                       <th>Tripletex ID</th>
                                        <th>Account</th>
                                        <th>Status</th>
+                                       <th>Create date</th>
                                        <th>Due date</th>
                                        <th>Prices</th>
                                        <th>Expense</th>
@@ -500,13 +500,13 @@
                                           <!-- <td ng-bind="result.orderDate | globalDtFormat"></td> -->
                                           <td><a href="#/viewdirect/{{result.customer}}"
                                                 class="summeryColor"><span>{{result.contactName}}</span></a></td>
-                                          <td>{{result.accounting_tripletex}}</td>
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td> {{ result.indirectAccountName}} </td>
                                           <!-- <td ng-bind="result.clientStatus"></td> -->
                                           <td ng-bind="result.scoop_status_name"></td>
+                                          <td class="nowrap"> <span class="none"> {{result.scoopCreateDate}}</span> {{ result.scoopCreateDate | dateFormatDisplayFront }}</td>
                                           <td class="nowrap"> <span class="none"> {{result.scoop_due_date}}</span> {{
-                                             result.scoop_due_date | dateFormatDisplayFront }}</td>
+                                                result.scoop_due_date | dateFormatDisplayFront }}</td>
                                           <td ng-bind="result.totalAmount | customNumber"> <span
                                                 class="none">{{result.totalAmount}}</span> </td>
                                           <td ng-bind="result.total_job_price | customNumber"> </td>
@@ -515,7 +515,7 @@
                                           <!-- <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) |
                                              customNumber }} % </td> -->
                                           <td ng-class="{'red-margin': calculateProfitMargin(result.totalAmount, result.total_job_price) < 50, 'green-margin': calculateProfitMargin(result.totalAmount, result.total_job_price) >= 50}">
-                                             {{calculateProfitMargin(result.totalAmount, result.total_job_price) | number:2}} %
+                                             {{calculateProfitMargin(result.totalAmount, result.total_job_price) | customNumber }} %
                                              </td>
 
                                        </tr>
@@ -530,7 +530,7 @@
                                     </tbody>
                                     <tfoot>
                                        <tr>
-                                          <td colspan="9"></td>
+                                          <td colspan="8"></td>
                                           <td> <strong>{{ scoopReportTotal | customNumber }}</strong> </td>
                                           <td> <strong>{{ jobExpenseReportTotal | customNumber }}</strong> </td>
                                           <td> <strong>{{ clReportTotal | customNumber }}</strong> </td>
@@ -540,6 +540,7 @@
                                     </tfoot>
                                  </table>
                               </div>
+                              <div loading-widget ng-show="showDataLoader"></div>
                               <!-- <div ng-if="statusResult.length" style="text-align: center;">
                                     <strong>Total:</strong> {{ calculateTotal() | customNumber }}
                               </div> -->
@@ -556,6 +557,7 @@
                                        <th>Tripletex ID</th>
                                        <th>Account</th>
                                        <th>Status</th>
+                                       <th>Create date</th>
                                        <th>Due date</th>
                                        <th>Prices</th>
                                        <th>Expense</th>
@@ -574,11 +576,12 @@
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td> {{ result.indirectAccountName}} </td>
                                           <td ng-bind="result.scoop_status_name"></td>
+                                          <td>{{ result.scoopCreateDate | dateFormatDisplayFront }}</td>
                                           <td>{{ result.scoop_due_date | dateFormatDisplayFront }}</td>
                                           <td ng-bind="result.totalAmount">--</td>
                                           <td ng-bind="result.total_job_price"> </td>
                                           <td> {{calculateGrossProfit(result.totalAmount, result.total_job_price) }} </td>
-                                          <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) }} %
+                                          <td> &nbsp;{{calculateProfitMargin(result.totalAmount, result.total_job_price) }} %&nbsp;
                                           </td>
                                        </tr>
                                     </tbody>

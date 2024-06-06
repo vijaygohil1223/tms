@@ -1376,7 +1376,7 @@ td { font-size: 11px; } */
                                       </div>  
                                   </tfoot> -->
                                     <tbody id="middle">
-                                      <tr ng-repeat="job in jobList">
+                                      <tr ng-repeat="job in jobList track by $index">
                                         <!-- <tr ng-repeat="job in JobL=(jobList | filter : jobRow   ) | limitTo:10:10*(page-1)">  -->
                                         <!-- <tr ng-repeat="job in JobL=(jobList | filter : jobRow)"> -->
                                         <td ng-bind="$index + 1">
