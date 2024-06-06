@@ -711,7 +711,7 @@ function calculateAveragePercentage(percentages) {
     return average * 100;
 }
 
-function exportTableToExcel(id, fileName, dynamicColumn = ''){
+function exportTableToExcel(id, fileName, dynamicColumn = '', rmFixstring = ''){
     // var wb = XLSX.utils.table_to_book(document.getElementById(id), {sheet:"Sheet JS"});
     // var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
     // function s2ab(s) {
@@ -732,6 +732,17 @@ function exportTableToExcel(id, fileName, dynamicColumn = ''){
         for(var C = range.s.c; C <= range.e.c; ++C) {
             var cell_address = {c:C, r:R};
             var cell_ref = XLSX.utils.encode_cell(cell_address);
+
+            if (ws[cell_ref]) {
+                var cellValue = ws[cell_ref].v;
+                // Check if cell value is a string and contains '-staticstring-'
+                if (typeof cellValue === 'string' && cellValue.includes('-staticstring-')) {
+                    ws[cell_ref].t = 's'; // Set cell type to 's' for string
+                    if (rmFixstring == 1) {
+                        ws[cell_ref].v = removeFixStrongFn(cellValue);
+                    }
+                }
+            }
             if(dynamicColumn){
                 if(dynamicColumn.includes(C) && ws[cell_ref] && typeof ws[cell_ref].v === 'number') {
                     // ws[cell_ref].z = "#,##0.00"; // Format numbers with comma separator
@@ -756,8 +767,13 @@ function exportTableToExcel(id, fileName, dynamicColumn = ''){
         return buf;
     }
     function numberWithCommas(x) {
+        console.log('x', x)
         return x.toString().replace('.',",");
         // return temp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    function removeFixStrongFn(x){
+        // to avoid issue of price/custom number column it automatically removes comma from string
+        return x.toString().replace('-staticstring-',""); 
     }
     saveAs(new Blob([s2ab(wbout)], {type:"application/octet-stream"}), fileName + '.xlsx');
 }
@@ -3798,7 +3814,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.freelanceJobOngoing = [];
         $scope.freelanceJobDelivered = [];
         $scope.freelanceJobApproved = [];
-        
+
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
             $scope.jobList = data;
@@ -8875,7 +8891,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.exportData = function (action) {
         switch (action) {
             case "result":
-                exportTableToExcel('client_scoop_report','Order-status-report',[10,11,12])
+                exportTableToExcel('client_scoop_report','Order-status-report',[10,11,12,13], 1)
                 // var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                 // });
@@ -9827,18 +9843,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     withOption('pageLength', 100).
     withOption('columnDefs',  [
         {
-            targets: [10,11],
+            targets: [9,10],
             render: function (data, type, row, meta) {
                 if (type === 'sort') {
-                    let tempSort = data.replace('.', '');
-                    let sortedValue = parseFloat(tempSort.replace(',', '.'));
-                    if (meta.col === 10) {
-                        // Custom sorting for 'price' column
-                        //console.log('Sorting price column:', sortedValue);
-                    } else if (meta.col === 11) {
-                        // Custom sorting for 'expense' column
-                        //console.log('Sorting expense column:', sortedValue);
-                    }
+                    //let tempSort = data.replace('.', '');
+                    //let sortedValue = parseFloat(tempSort.replace(',', '.'));
+                    let tempSort = data.replace(/\./g, '').replace(',', '.');
+                    let sortedValue = parseFloat(tempSort);
+                    //return sortedValue;
+                    // if (meta.col === 10) {
+                    //     //console.log('Sorting price column:', sortedValue);
+                    // } else if (meta.col === 11) {
+                    //     //console.log('Sorting expense column:', sortedValue);
+                    // }
                     return sortedValue;
                 }
                 return data;

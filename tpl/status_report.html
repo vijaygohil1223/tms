@@ -507,8 +507,7 @@
                                           <td class="nowrap"> <span class="none"> {{result.scoopCreateDate}}</span> {{ result.scoopCreateDate | dateFormatDisplayFront }}</td>
                                           <td class="nowrap"> <span class="none"> {{result.scoop_due_date}}</span> {{
                                                 result.scoop_due_date | dateFormatDisplayFront }}</td>
-                                          <td ng-bind="result.totalAmount | customNumber"> <span
-                                                class="none">{{result.totalAmount}}</span> </td>
+                                          <td ng-bind="result.totalAmount | customNumber"> </td>
                                           <td ng-bind="result.total_job_price | customNumber"> </td>
                                           <td> {{calculateGrossProfit(result.totalAmount, result.total_job_price) |
                                              customNumber }} </td>
@@ -578,10 +577,10 @@
                                           <td ng-bind="result.scoop_status_name"></td>
                                           <td>{{ result.scoopCreateDate | dateFormatDisplayFront }}</td>
                                           <td>{{ result.scoop_due_date | dateFormatDisplayFront }}</td>
-                                          <td ng-bind="result.totalAmount">--</td>
-                                          <td ng-bind="result.total_job_price"> </td>
-                                          <td> {{calculateGrossProfit(result.totalAmount, result.total_job_price) }} </td>
-                                          <td> &nbsp;{{calculateProfitMargin(result.totalAmount, result.total_job_price) }} %&nbsp;
+                                          <td > {{result.totalAmount | customNumber}} -staticstring-</td>
+                                          <td> {{result.total_job_price | customNumber}} -staticstring- </td>
+                                          <td> {{calculateGrossProfit(result.totalAmount, result.total_job_price) | customNumber }} -staticstring- </td>
+                                          <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) | customNumber }} % -staticstring-
                                           </td>
                                        </tr>
                                     </tbody>
