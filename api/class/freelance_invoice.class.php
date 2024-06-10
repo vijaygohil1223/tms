@@ -87,20 +87,24 @@ class Freelance_invoice {
 	
 	//invoice and draft save
     public function saveInvoice($data) {
-        $pdf_content = explode("base64,",$data['resourceInvoiceFile']);
-        $bin = base64_decode($pdf_content[1], true);
-        // if (strpos($bin, '%PDF') !== 0) {
-        //     throw new Exception('Missing the PDF file ');
-        // }
-        $fileName = $data['resourceInvoiceFileName'];
+        
+        $fileName = isset($data['resourceInvoiceFileName']) ? $data['resourceInvoiceFileName'] : '' ;
         $path = '../../uploads/invoice/';
-        if (file_exists($path.$fileName) ) {
-            //mkdir ($dir, 0755);
-            $fileName = time().'-'.$data['resourceInvoiceFileName'];
-        }
-        $pdfFile = $path.$fileName;
-        if(file_put_contents($pdfFile, $bin)){
-            // file uploaded
+        
+        if(isset($data['resourceInvoiceFile']) && $data['resourceInvoiceFile']!=''){
+            $pdf_content = explode("base64,",$data['resourceInvoiceFile']);
+            $bin = base64_decode($pdf_content[1], true);
+            if (file_exists($path.$fileName) ) {
+                //mkdir ($dir, 0755);
+                $fileName = time().'-'.$data['resourceInvoiceFileName'];
+            }
+            $pdfFile = $path.$fileName;
+            if(file_put_contents($pdfFile, $bin)){
+                // file uploaded
+            }
+            // if (strpos($bin, '%PDF') !== 0) {
+            //     throw new Exception('Missing the PDF file ');
+            // }
         }
 
         $invoiceAlreadyAdded = false;

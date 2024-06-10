@@ -6783,6 +6783,40 @@ app.directive('ngDateformatdob', function () {
         }  
     }  
 });
+app.directive("ngDatepickerMaxdate", function($window) {
+    return {
+        restrict: 'EA',
+        require: 'ngModel',
+        scope: {
+            ngModel: '='
+        },
+        link: function(scope, element, attrs, ngModelCtrl) {
+            var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
+            // element.kendoCalendar({
+            //     selectable: "multiple",
+            //     weekNumber: true,
+            //     disableDates: ["we", "sa"]
+            // });
+            element.datetimepicker({
+                widgetPositioning:{
+                    horizontal: 'auto',
+                    vertical: 'bottom'
+                },
+                // minDate: moment().subtract(1,'d'),
+                //minDate:new Date(),
+                maxDate:new Date(),
+                //useCurrent:false,
+                format:globalDateFormat
+            }).on('dp.change', function(ev) {
+                ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
+                element.blur();
+            })
+            element.on('keydown', function(event) {
+                event.preventDefault();
+            });
+        }
+    };
+});
 app.directive('select2Taxrate', function($http, rest, $timeout) {
     return {
         restrict: 'EA',
