@@ -767,7 +767,6 @@ function exportTableToExcel(id, fileName, dynamicColumn = '', rmFixstring = ''){
         return buf;
     }
     function numberWithCommas(x) {
-        console.log('x', x)
         return x.toString().replace('.',",");
         // return temp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
@@ -8891,29 +8890,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.exportData = function (action) {
         switch (action) {
             case "result":
-                exportTableToExcel('client_scoop_report','Order-status-report',[10,11,12,13], 1)
+                exportTableToExcel('client_scoop_report','scoop-status-report',[10,11,12,13], 1)
                 // var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                 // });
                 // saveAs(blob, "Order-status-report.xls");
                 break;
             case "month":
-                var blob = new Blob([document.getElementById('itemExport').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-month-status-report.xls");
+                exportTableToExcel('scoopMonthReport','scoop-month-status-report', '', 1)
+                // var blob = new Blob([document.getElementById('itemExport').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-month-status-report.xls");
                 break;
             case "projectType":
-                var blob = new Blob([document.getElementById('ProjectTypeexport').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-Project-Type-status-report.xls");
+                
+                exportTableToExcel('scoopProjectTypeexport','scoop-Project-Type-status-report', '', 1)
+                // var blob = new Blob([document.getElementById('ProjectTypeexport').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-Project-Type-status-report.xls");
                 break;
             case "customers":
-                var blob = new Blob([document.getElementById('customersExports').innerHTML], {
-                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                });
-                saveAs(blob, "Order-customers-status-report.xls");
+                exportTableToExcel('scoopCustomersExports','scoop-customers-status-report', '', 1)
+                // var blob = new Blob([document.getElementById('customersExports').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-customers-status-report.xls");
                 break;
         }
     };
@@ -9252,7 +9255,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var amount = angular.element('#projectTypeAmount' + i).text();
                             var total = parseFloat(amount) * 100 / $scope.ProjectTypetotal;
                             var projectTypeName = angular.element('#projectTypeName' + i).text();
-                            angular.element('#projectTypeShare' + i).text(total.toFixed(2) + '%');
+                            let projectTypeShare = $filter('customNumber')( total.toFixed(2) );
+                            angular.element('#projectTypeShare' + i).text( projectTypeShare + '%');
                             type.push([projectTypeName, parseFloat(total)]);
                         }
                         $scope.projectTypeGraph(type);
@@ -9283,7 +9287,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 total = 0;
                             }
                             var customerTypeName = angular.element('#CustomersName' + i).text();
-                            angular.element('#customersShare' + i).text(total.toFixed(2) + '%');
+                            let customersShare = $filter('customNumber')( total.toFixed(2) );
+                            angular.element('#customersShare' + i).text(customersShare + '%');
                             custType.push([customerTypeName, parseFloat(total.toFixed(2))]);
                         }
                         $scope.CustomerTypeChart(custType);
@@ -9846,11 +9851,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             targets: [9,10],
             render: function (data, type, row, meta) {
                 if (type === 'sort') {
-                    //let tempSort = data.replace('.', '');
-                    //let sortedValue = parseFloat(tempSort.replace(',', '.'));
                     let tempSort = data.replace(/\./g, '').replace(',', '.');
                     let sortedValue = parseFloat(tempSort);
-                    //return sortedValue;
                     // if (meta.col === 10) {
                     //     //console.log('Sorting price column:', sortedValue);
                     // } else if (meta.col === 11) {
@@ -17554,6 +17556,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.irrecoverableInvc = [];
         $scope.cancelledInvc = [];
         $scope.overdueInvc = [];
+        $scope.notExportedInvc = [];
+        
         // -- Invoice count -- //
         $scope.openInvcCount = 0;
         $scope.approvedInvcCount = 0;
@@ -17562,6 +17566,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.noRecoverInvcCount = 0;
         $scope.cancelledInvcCount = 0;
         $scope.overdueInvcCount = 0;
+        $scope.notExportedInvcCount = 0;
+        
         
         rest.path = "viewAllInvoice1/save";
         rest.get().success(function (data) {
@@ -17609,6 +17615,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.invoice_status == 'Cancel') {
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
+                }
+                if (val.is_excel_download != 1) {
+                    $scope.notExportedInvcCount++;
+                    $scope.notExportedInvc.push(val);
                 }
                 if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed'].includes(val.invoice_status) ){
                     $scope.overdueInvcCount++ 
@@ -17678,6 +17688,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         break;    
                     case "Cancelled":
                         $scope.invoiceListAll = $scope.cancelledInvc;
+                        break;  
+                    case "Not-exported":
+                        $scope.invoiceListAll = $scope.notExportedInvc;
+                        setTimeout(() => {
+                            $("#checkAll").trigger( "click" );
+                        }, 200);
                         break;            
                 }
                 // if ($scope.invcstatusFilter == 'all') {
@@ -17715,9 +17731,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.dtOptions = DTOptionsBuilder.newOptions().
         withOption('scrollX', 'true').
         withOption('responsive', true).
-        withOption('pageLength', 10).
+        withOption('pageLength', 100).
         withOption('ordering', false);
         //withOption('scrollCollapse', true);
+
+    $scope.dtOptionsInv = DTOptionsBuilder.newOptions().
+        withOption('scrollX', 'true').
+        withOption('responsive', true).
+        withOption('pageLength', 100);
+
+        
 
     $scope.invoiceCheck = function (status, id, statusId) {
         var obj = [];
@@ -17891,7 +17914,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                     // });
                     // saveAs(blob, "Linguist Invoice Report.xls");
-                    exportTableToExcel('exportable2','Linguist Invoice Report')
+
+                    exportTableToExcel('exportable2','Linguist Invoice Report', '',1)
 
                     rest.path = 'freelanceInvoiceExcelStatus';
                     rest.post($scope.checkedIds).success(function (data) {
@@ -22349,23 +22373,54 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.$on('pls.onLanguageChanged', function (evt, lang) {
-        
         lang.id = lang.id.replace(/[0-9]/g, '');
         var eleId = evt.targetScope.id.replace(/\D/g, '');
         if (lang.id == 'plsSourceLang') {
             angular.element('#source_lang' + eleId).text(lang.lang.name.trim());
-            var sourceField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
-            var sourceImg = sourceField.children('img');
-            angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
-            sourceField.append(sourceImg);
-            var sourceImg = sourceField.children('img').after(lang.lang.name);
+            // var sourceField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
+            // var sourceImg = sourceField.children('img');
+            // angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
+            // sourceField.append(sourceImg);
+            // var sourceImg = sourceField.children('img').after(lang.lang.name);
+            // alternate sol 2 -------======
+            var sourceField = angular.element('#plsSourceLang' + eleId + ' .pls-selected-locale');
+            // Clear current content
+            sourceField.empty();
+            var imgElement = angular.element('<img>')
+                .attr('data-ng-if', 'model.showFlag')
+                .attr('src', lang.lang.flagImg) 
+                .attr('data-ng-src', lang.lang.flagImg)
+                .attr('alt', lang.lang.name.trim())
+                .addClass('ng-scope');
+            // Append image to the source field
+            sourceField.append(imgElement);
+            // Insert language name after the image
+            var sourceImg = sourceField.children('img').after(lang.lang.name.trim());
+            // alternate 2 end ------======
+
         } else if (lang.id == 'plsTargetLang') {
             angular.element('#target_lang' + eleId).text(lang.lang.name.trim());
-            var targetField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
-            var targetImg = targetField.children('img');
-            angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
-            targetField.append(targetImg);
-            var targetImg = targetField.children('img').after(lang.lang.name);
+            // var targetField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
+            // var targetImg = targetField.children('img');
+            // angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
+            // targetField.append(targetImg);
+            // var targetImg = targetField.children('img').after(lang.lang.name);
+
+            // alternate sol 2 ==========----------
+            var targetField = angular.element('#plsTargetLang' + eleId + ' .pls-selected-locale');
+            // Clear current content
+            targetField.empty();
+            var imgElement = angular.element('<img>')
+                .attr('data-ng-if', 'model.showFlag')
+                .attr('src', lang.lang.flagImg) 
+                .attr('data-ng-src', lang.lang.flagImg)
+                .attr('alt', lang.lang.name.trim())
+                .addClass('ng-scope');
+            // Append image to the source field
+            targetField.append(imgElement);
+            // Insert language name after the image
+            var targetImg = targetField.children('img').after(lang.lang.name.trim());
+            // alternate 2 end ===========--------
         }
         var itemIndex = parseInt(angular.element("#indexItemSource" + eleId).text());
 
@@ -32215,7 +32270,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('clientInvoiceController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $q, $filter) {
+}).controller('clientInvoiceController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $q, $filter, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.search = function (search) {
@@ -32374,6 +32429,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.irrecoverableInvc = [];
         $scope.cancelledInvc = [];
         $scope.overdueInvc = [];
+        $scope.notExportedInvc = [];
+
         // -- Invoice count -- //
         $scope.openInvcCount = 0;
         $scope.completedInvcCount = 0;
@@ -32381,10 +32438,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.noRecoverInvcCount = 0;
         $scope.cancelledInvcCount = 0;
         $scope.overdueInvcCount = 0;
+        $scope.notExportedInvcCount = 0;
         
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
+            //console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 val.invoice_number = val.custom_invoice_number ? val.custom_invoice_number : val.invoice_number; 
@@ -32417,6 +32476,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (val.invoice_status == 'Cancel') {
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
+                }
+                if (val.is_excel_download != 1) {
+                    $scope.notExportedInvcCount++;
+                    $scope.notExportedInvc.push(val);
                 }
                 if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed','Cancel','Irrecoverable'].includes(val.invoice_status) ){
                     $scope.overdueInvcCount++ 
@@ -32475,7 +32538,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         break;    
                     case "Cancelled":
                         $scope.invoiceListAll = $scope.cancelledInvc;
-                        break;            
+                        break;  
+                    case "Not-exported":
+                        $scope.invoiceListAll = $scope.notExportedInvc;
+                        setTimeout(() => {
+                            $("#checkAll").trigger( "click" );
+                        }, 200);
+                        break;    
+                                
                 }
                 // if ($scope.invcstatusFilter == 'all') {
                 //     $scope.invoiceListAll = $scope.allInvcData;
@@ -32927,6 +32997,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
+    // $scope.dtOptions = DTOptionsBuilder.newOptions().
+    // withOption('responsive', true).
+    // withOption('pageLength', 100);
+
+    $scope.dtOptionsClInvc = DTOptionsBuilder.newOptions().
+        withOption('scrollX', 'true').
+        withOption('responsive', true).
+        withOption('pageLength', 100);
+
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.InvoiceResult = items[0].InvoiceList;
@@ -36337,18 +36416,48 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var eleId = evt.targetScope.id.replace(/\D/g, '');
         if (lang.id == 'plsSourceLang') {
             angular.element('#source_lang' + eleId).text(lang.lang.name.trim());
-            var sourceField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
-            var sourceImg = sourceField.children('img');
-            angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
-            sourceField.append(sourceImg);
-            var sourceImg = sourceField.children('img').after(lang.lang.name);
+            // var sourceField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
+            // var sourceImg = sourceField.children('img');
+            // angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
+            // sourceField.append(sourceImg);
+            // var sourceImg = sourceField.children('img').after(lang.lang.name);
+            var sourceField = angular.element('#plsSourceLang' + eleId + ' .pls-selected-locale');
+            // Clear current content
+            sourceField.empty();
+            var imgElement = angular.element('<img>')
+                .attr('data-ng-if', 'model.showFlag')
+                .attr('src', lang.lang.flagImg) 
+                .attr('data-ng-src', lang.lang.flagImg)
+                .attr('alt', lang.lang.name.trim())
+                .addClass('ng-scope');
+            // Append image to the source field
+            sourceField.append(imgElement);
+            // Insert language name after the image
+            var sourceImg = sourceField.children('img').after(lang.lang.name.trim());
+            // alternate 2 end ------======
         } else if (lang.id == 'plsTargetLang') {
             angular.element('#target_lang' + eleId).text(lang.lang.name.trim());
-            var targetField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
-            var targetImg = targetField.children('img');
-            angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
-            targetField.append(targetImg);
-            var targetImg = targetField.children('img').after(lang.lang.name);
+            // var targetField = angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale");
+            // var targetImg = targetField.children('img');
+            // angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
+            // targetField.append(targetImg);
+            // var targetImg = targetField.children('img').after(lang.lang.name);
+            // alternate sol 2 ==========----------
+            var targetField = angular.element('#plsTargetLang' + eleId + ' .pls-selected-locale');
+            // Clear current content
+            targetField.empty();
+            var imgElement = angular.element('<img>')
+                .attr('data-ng-if', 'model.showFlag')
+                .attr('src', lang.lang.flagImg) 
+                .attr('data-ng-src', lang.lang.flagImg)
+                .attr('alt', lang.lang.name.trim())
+                .addClass('ng-scope');
+            // Append image to the source field
+            targetField.append(imgElement);
+            // Insert language name after the image
+            var targetImg = targetField.children('img').after(lang.lang.name.trim());
+            // alternate 2 end ===========--------
+
         }
         var itemIndex = parseInt(angular.element("#indexItemSource" + eleId).text());
 

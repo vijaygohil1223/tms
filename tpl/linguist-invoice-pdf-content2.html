@@ -291,13 +291,17 @@
                     <p class="mb-d"><strong>Email</strong></p> {{invoiceDetail.freelanceEmail}}
                   </div>
                   <div class="col-sm-3">
-                    <p class="mb-d"><strong>Date</strong></p>
+                    <p class="mb-d"><strong>Invoice date</strong></p>
                     <span ng-bind="invoiceDetail.invoice_date" ng-hide="hideElemnt"></span>
                     <input class="form-control" type="text" ng-show="hideElemnt" ng-model="invoiceDetail.invoice_date"
                       id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)"
-                      name="invoice_date" ng-disabled="editDisabled" />
+                      name="invoice_date" ng-disabled="editDisabled || userRight == 2 " />
                   </div>
-
+                  <div class="col-sm-12" style="margin-top: 12px;">
+                    <p class="mb-d"><strong>Due date</strong></p>
+                    <span> {{invoiceDetail.inv_due_date | globalDtFormat }}</span>
+                  </div>
+                  
                 </div>
               </div>
             </div>

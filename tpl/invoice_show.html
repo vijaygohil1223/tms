@@ -55,7 +55,6 @@
                             <!-- Invoice pdf Template -->
                             <!-- <linguist-invoice-pdftemplate templateType="2"></linguist-invoice-pdftemplate> -->
                             <div data-ng-include="invoiceTemplateName"></div>
-
                         </div>
                         <div class="col-sm-12">
 
@@ -82,7 +81,7 @@
                                     ng-click="invoiceApproved('0');" ng-disabled="isDisabledApprvd"> Approved</button> -->
                                 <button id="btnApproved" class="btn btn-warning btnSave t2"
                                     ng-show="invoiceDetail.is_approved==0"
-                                    ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd"
+                                    ng-click="invoiceApproved('1');" ng-disabled="isDisabledApprvd || userRight == 2 "
                                     style="color: #454f59 !important;"> Not yet approved</button>
                                 <!-- <button id="btnApproved" class="btn btn-warning btnSave t2"
                                     ng-show="invoiceDetail.is_approved==0 && !isPdfdownload"

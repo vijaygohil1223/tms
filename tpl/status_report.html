@@ -604,7 +604,7 @@
                      <div class="panel-body">
                         <div class="col-sm-12" ng-show="checkOrderItem!=0 && checkOrderItem!=undefined">
                            <div class="col-sm-5" id="itemExport">
-                              <table class="table m-b-none default footable-loaded footable">
+                              <table class="table m-b-none default footable-loaded footable" id="scoopMonthReport">
                                  <thead>
                                     <th>Month</th>
                                     <th>Total</th>
@@ -617,42 +617,55 @@
                                     <div>
                                        <tr ng-repeat="d in Dateobject" class="itemData">
                                           <td id="itemDate{{$index}}" ng-bind="d.id"></td>
-                                          <td id="itemAmount{{$index}}">0</td>
-                                          <td id="jobPrice{{$index}}">0</td>
-                                          <td id="grossProfit{{$index}}">0</td>
-                                          <td id="profitMargin{{$index}}">0</td>
-                                          <td id="itemShare{{$index}}"></td>
+                                          <td>
+                                             <span id="itemAmount{{$index}}"> 0 </span><span class="none">-staticstring-</span>
+                                          </td>
+                                          <td>
+                                             <span id="jobPrice{{$index}}"> 0 </span><span class="none">-staticstring-</span>
+                                          </td>
+                                          <td>
+                                             <span id="grossProfit{{$index}}"> 0 </span><span class="none">-staticstring-</span>
+                                          </td>
+                                          <td> 
+                                             <span id="profitMargin{{$index}}"> 0 </span><span class="none">-staticstring-</span>
+                                          </td>
+                                          <td>
+                                             <span id="itemShare{{$index}}"> 0 </span><span class="none">-staticstring-</span>
+                                          </td>
                                        </tr>
                                     </div>
                                     <tr>
                                        <td>Total</td>
-                                       <td id="totalItemAmout" ng-bind="totalItemAmout | customNumber"></td>
+                                       <td id="totalItemAmout" > {{totalItemAmout | customNumber}} <span class="none">-staticstring-</span> </td>
                                        <td id="totaljobPrice">
-                                          <span>{{ totalJobItemAmout | customNumber}}</span>
+                                          <span>{{ totalJobItemAmout | customNumber}}</span> <span class="none">-staticstring-</span>
                                        </td>
                                        <td id="grossProfitTtl">
-                                          <span ng-bind="totalGrossProfit | customNumber"></span>
+                                          <span ng-bind="totalGrossProfit | customNumber"></span> <span class="none">-staticstring-</span>
                                        </td>
                                        <td id="profitMrgn">
                                           <span> {{ profitAvg = calculateProfitMargin(totalItemAmout, totalJobItemAmout) |
-                                             customNumber }} %</span>
+                                             customNumber }} %</span> <span class="none">-staticstring-</span>
                                        </td>
-                                       <td id="totalItemPer"><span ng-if='totalItemAmout'>100%</span></td>
+                                       <td id="totalItemPer"> <span ng-if='totalItemAmout'>100%</span> <span class="none">-staticstring-</span> </td>
                                     </tr>
                                     <tr>
                                        <td>Average Month (Quantity - 12)</td>
-                                       <td ng-bind="totalItemAvg | customNumber"></td>
-                                       <td ng-bind="totalJobItemAvg | customNumber"></td>
-                                       <td ng-bind="totalGorssProfitAvg | customNumber"></td>
-                                       <td> {{ ((profitAvg * 12)/100) | customNumber }} % </td>
+                                       <td > {{totalItemAvg | customNumber}} <span class="none">-staticstring-</span> </td>
+                                       <td > {{totalJobItemAvg | customNumber}}<span class="none">-staticstring-</span> </td>
+                                       <td > {{totalGorssProfitAvg | customNumber}} <span class="none">-staticstring-</span> </td>
+                                       <td> {{ ((profitAvg * 12)/100) | customNumber }} %  <span class="none">-staticstring-</span> </td>
                                        <td id="totalAvgPer"><span ng-if="totalItemAvg">12%</span></td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                        <td colspan="4" class="even"><button class="btn btn-info"
                                              ng-click="exportData('month')">Excel</button> </td>
-                                    </tr>
+                                    </tr> -->
                                  </tbody>
                               </table>
+                              <div>
+                                 <button class="btn btn-info" ng-click="exportData('month')">Excel</button>
+                              </div>
                            </div>
                            <div class="col-sm-7">
                               <div id="monthChart" style="height: 400px" ng-bind="chart"></div>
@@ -666,7 +679,7 @@
                               <tbody>
                                  <!-- <tr ng-repeat="s in statusInfo | filter : orderReport" class="itemData"> -->
                                  <tr ng-repeat="s in statusInfo" class="itemData">
-                                    <td id="masterQDate{{$index}}">{{s.QuentityDate}}</td>
+                                    <td id="masterQDate{{$index}}">{{s.QuentityDate}} </td>
                                     <td id="masterQAmount{{$index}}">{{s.totalAmount | customNumber}}</td>
                                  </tr>
                               </tbody>
@@ -686,7 +699,7 @@
                         <div class="panel-body">
                            <div class="col-sm-12" ng-show="checkOrderItem!=0 && checkOrderItem!=undefined">
                               <div class="col-sm-5" id="ProjectTypeexport">
-                                 <table class="table m-b-none default footable-loaded footable">
+                                 <table class="table m-b-none default footable-loaded footable" id="scoopProjectTypeexport">
                                     <thead>
                                        <th>Project types</th>
                                        <th>Total</th>
@@ -697,27 +710,45 @@
                                        <!-- <tr ng-repeat="result in statusProjectType | filter : orderReport"
                                              class="orderRClass"> -->
                                        <tr ng-repeat="result in statusProjectType" class="orderRClass">
-                                          <td id="projectTypeName{{$index}}" ng-bind="result.projectTypeName"></td>
-                                          <td id="projectTypeAmount{{$index}}" ng-bind="result.TotalAmount | customNumber">
+                                          <td id="projectTypeName{{$index}}" >
+                                             {{result.projectTypeName}}
                                           </td>
-                                          <td id="projectTypeShare{{$index}}"></td>
+                                          <td id="projectTypeAmount{{$index}}" >
+                                             {{result.TotalAmount | customNumber}}<span class="none">-staticstring-</span>
+                                          </td>
+                                          <td >
+                                             <span id="projectTypeShare{{$index}}"> </span>
+                                             <span class="none">-staticstring-</span>
+                                          </td>
                                        </tr>
                                        <tr>
                                           <td>Total (EUR)</td>
-                                          <td ng-bind="ProjectTypetotal | customNumber"></td>
-                                          <td><span ng-if="ProjectTypetotal">100%</span></td>
+                                          <td>
+                                             {{ProjectTypetotal | customNumber}}
+                                             <span class="none">-staticstring-</span>
+                                          </td>
+                                          <td>
+                                             <span ng-if="ProjectTypetotal">100%</span>
+                                             <span class="none">-staticstring-</span>
+                                          </td>
                                        </tr>
                                        <tr>
                                           <td>Average Project types (Quantity - {{projectAverage}})</td>
-                                          <td ng-bind="ProjectTypeAverage | customNumber"></td>
-                                          <td>{{projectAverage}}%</td>
+                                          <td>
+                                             {{ProjectTypeAverage | customNumber}}
+                                             <span class="none">-staticstring-</span>
+                                          </td>
+                                          <td> {{projectAverage | customNumber}}% <span class="none">-staticstring-</span> </td>
                                        </tr>
-                                       <tr>
+                                       <!-- <tr>
                                           <td colspan="3" class="even"><button class="btn btn-info"
                                                 ng-click="exportData('projectType')">Excel</button> </td>
-                                       </tr>
+                                       </tr> -->
                                     </tbody>
                                  </table>
+                                 <div>
+                                    <button class="btn btn-info" ng-click="exportData('projectType')">Excel</button>
+                                 </div>
                               </div>
                               <div class="col-sm-7">
                                  <div id="projectTyp" ng-bind="chart"></div>
@@ -738,7 +769,7 @@
                         <div class="panel-body">
                            <div class="col-sm-12" ng-show="checkOrderItem!=0 && checkOrderItem!=undefined">
                               <div class="col-sm-5" id="customersExports">
-                                 <table class="table m-b-none default footable-loaded footable">
+                                 <table class="table m-b-none default footable-loaded footable" id="scoopCustomersExports">
                                     <thead>
                                        <th>Customers</th>
                                        <th>Total</th>
@@ -749,26 +780,41 @@
                                              class="orderRClass"> -->
                                        <tr ng-repeat="cust in statusCustomerType" class="orderRClass">
                                           <td id="CustomersName{{$index}}" ng-bind="cust.contactName"></td>
-                                          <td id="CustomersAmount{{$index}}" ng-bind="cust.TotalAmount | customNumber">
+                                          <td id="CustomersAmount{{$index}}" >
+                                             {{cust.TotalAmount | customNumber}}
+                                             <span class="none">-staticstring-</span>
                                           </td>
-                                          <td id="customersShare{{$index}}"></td>
+                                          <td >
+                                             <span id="customersShare{{$index}}"></span>
+                                             <span class="none">-staticstring-</span>
+                                          </td>
                                        </tr>
                                        <tr>
                                           <td>Total (EUR)</td>
-                                          <td id="CustomersTypeTotal" ng-bind="CustomersTypeTotal | customNumber"></td>
-                                          <td><span ng-if="CustomersTypeTotal">100%</span></td>
+                                          <td id="CustomersTypeTotal">
+                                             {{CustomersTypeTotal | customNumber}}
+                                             <span class="none">-staticstring-</span>
+                                          </td>
+                                          <td>
+                                             <span ng-if="CustomersTypeTotal">100%</span> <span class="none">-staticstring-</span> 
+                                          </td>
                                        </tr>
                                        <tr>
                                           <td>Average Project types (Quantity - {{TotalCustomer}})</td>
-                                          <td ng-bind="customersAverage"></td>
-                                          <td>{{TotalCustomer}}%</td>
+                                          <td >
+                                             {{ customersAverage | customNumber }}
+                                             <span class="none">-staticstring-</span>
+                                          </td>
+                                          <td>{{TotalCustomer | customNumber}}% <span class="none">-staticstring-</span> </td>
                                        </tr>
-                                       <tr>
-                                          <td colspan="3" class="even"><button class="btn btn-info"
-                                                ng-click="exportData('customers')">Excel</button> </td>
-                                       </tr>
+                                       <!-- <tr>
+                                          <td colspan="3" class="even"><button class="btn btn-info" ng-click="exportData('customers')">Excel</button> </td>
+                                       </tr> -->
                                     </tbody>
                                  </table>
+                                 <div>
+                                    <button class="btn btn-info" ng-click="exportData('customers')">Excel</button>
+                                 </div>
                               </div>
                               <div class="col-sm-7">
                                  <div id="CustomerType" ng-bind="chart"></div>

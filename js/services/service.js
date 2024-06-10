@@ -164,6 +164,7 @@ app.factory('allLanguages', function($http, $location,$q, $routeParams,rest, $co
         angular.forEach(data, function(val, i) {
             var langName = JSON.stringify('<span style="color:green;">'+val.name+'</span>');
             allLanguages.push({
+                //'id': val.lang_id,
                 'id': val.id,
                 //'title': val.name,
                 'title': val.title,

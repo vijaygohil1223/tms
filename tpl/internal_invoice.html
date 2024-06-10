@@ -100,6 +100,10 @@
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
                       Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
                   </li>
+                  <li class="list-group-item tab-not-exported" ng-class="{ 'active': invoiceActive=='Not-exported'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Not-exported')">
+                      Not exported <span class="badge bg-info">{{notExportedInvcCount}}</span></a>
+                  </li>
                   <!-- <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': invoiceActive=='Irrecoverable'}">
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Irrecoverable')">
                       Irrecoverable <span class="badge bg-info">{{noRecoverInvcCount}}</span></a>
@@ -108,7 +112,7 @@
                 <div class="overview-list projecttable">
 
                   <div class="table-responsive" ng-if="invoiceActive !== 'Approved' ">
-                    <table class="table table-striped b-b" datatable="ng" id="invoiceList">
+                    <table class="table table-striped b-b" datatable="ng" id="invoiceList" dt-options="dtOptionsInv">
                       <!-- <table class="table table-striped b-t b-b table-bordered" datatable="ng" id="externalUserList"> -->
                       <thead>
                         <th>#</th>
@@ -259,6 +263,7 @@
                   <th>Freelancer Name</th>
                   <th>Price</th>
                   <th>Currency</th>
+                  <th>Tax in NOK</th>
                   <th>Custom Invoice Number</th>
                   <th id="crExdate">Creation Date</th>
                   <th id="dueExdate">Due Date</th>
@@ -268,10 +273,11 @@
                 <tbody>
                   <tr ng-repeat="invoiceL in invoiceListAll">
                     <td ng-bind="$index + 1"></td>
-                    <td>{{padNumber(invoiceL.org_invoice_number)}}</td>
+                    <td>{{padNumber(invoiceL.org_invoice_number)}} <span class="none">-staticstring-</span> </td>
                     <td ng-bind="invoiceL.freelanceName"></td>
                     <td ng-bind="invoiceL.Invoice_cost"></td>
                     <td ng-bind="invoiceL.freelance_currency"></td>
+                    <td>{{ invoiceL.taxInNok | customNumber }} <span class="none">-staticstring-</span> </td>
                     <td ng-bind="invoiceL.invoice_number"></td>
                     <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.inv_due_date | globalDtFormat }}</td>
