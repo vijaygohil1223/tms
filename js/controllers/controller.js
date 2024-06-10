@@ -18207,16 +18207,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    $scope.editDueDate = function(id, inv_due_date){
+    $scope.editDueDate = function(id, inv_due_date, invoice_date){
+        $scope.dtInvoiceDueDate = invoice_date;
+        
         var html = angular.element(
             ' <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;">' +
             '<div class="col-sm-6">'+
             '<lable><strong> Select due date </strong> <lable>'+
-            '<input class="form-control" type="text" ng-model="inv_due_date" id="inv_due_date" ng-datepicker2 name="inv_due_date" ng-disabled="editDisabled" style="margin-top: 20px;" />'+
+            '<input class="form-control" type="text" ng-model="inv_due_date" id="inv_due_date" ng-datepicker-minmaxdate name="inv_due_date" ng-disabled="editDisabled" style="margin-top: 20px;" />'+
             '</div></div>' );
         setTimeout(() => {
             $('#inv_due_date').val(inv_due_date);
-        }, 1000);
+        }, 500);
         $compile(html)($scope);
         var dialog = bootbox.dialog({
             title: "Change due date",

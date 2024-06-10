@@ -6783,7 +6783,7 @@ app.directive('ngDateformatdob', function () {
         }  
     }  
 });
-app.directive("ngDatepickerMaxdate", function($window) {
+app.directive("ngDatepickerMinmaxdate", function($window) {
     return {
         restrict: 'EA',
         require: 'ngModel',
@@ -6792,22 +6792,24 @@ app.directive("ngDatepickerMaxdate", function($window) {
         },
         link: function(scope, element, attrs, ngModelCtrl) {
             var globalDateFormat = $window.localStorage.getItem("global_dateFormat");
-            // element.kendoCalendar({
-            //     selectable: "multiple",
-            //     weekNumber: true,
-            //     disableDates: ["we", "sa"]
-            // });
-            element.datetimepicker({
+
+            const dateOptions = {
                 widgetPositioning:{
                     horizontal: 'auto',
                     vertical: 'bottom'
                 },
-                // minDate: moment().subtract(1,'d'),
-                //minDate:new Date(),
-                maxDate:new Date(),
-                //useCurrent:false,
                 format:globalDateFormat
-            }).on('dp.change', function(ev) {
+            }
+            // Check if minrestrict attribute is present
+            scope.dtInvoiceDueDate
+            if (scope?.dtInvoiceDueDate && scope.dtInvoiceDueDate != '') {
+                dateOptions.minDate = scope.dtInvoiceDueDate;
+            }
+            if (attrs?.maxrestrict) {
+                dateOptions.maxDate = new Date();
+            }
+
+            element.datetimepicker(dateOptions).on('dp.change', function(ev) {
                 ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
                 element.blur();
             })
