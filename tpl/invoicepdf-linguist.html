@@ -210,6 +210,7 @@
                       <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2"> Telephone</th>
                       <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Email </th>
                       <td style="font-weight: bold;">Invoice date </th>
+                      <td style="font-weight: bold;">Company Name </th>  
                     </tr>
                     <tr>
 
@@ -224,6 +225,7 @@
                       <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2">
                         {{invoiceDetail.freelanceEmail}}</td>
                       <td style="width: 25%;"> {{invoiceDetail.invoice_date}} </td>
+                      <td style="width: 25%;"> {{invoiceDetail.companyName}} </td>
                     </tr>
                   </tbody>
                 </table>

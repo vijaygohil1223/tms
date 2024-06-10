@@ -19464,12 +19464,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             data[0].number_of_days = $scope.invoiceNumOfdays;
             $scope.invoiceDetail = data[0];
-            //console.log('$scope.invoiceDetail', $scope.invoiceDetail)
+            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             
             //$scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
             $scope.vatNo = '';
             // If freelacer Second currency selected as nok
-            console.log('$scope.invoiceDetail', $scope.invoiceDetail)
             if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency == 'NOK,kr'){
                 $scope.showSecondCUrrency = true;
             }
@@ -19846,7 +19845,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // angular.element('#editInvoiceSave').hide();
         // angular.element('#editInvoiceSave2').hide();
         // angular.element('.btnSave').hide();
-
         $scope.pdfDownloadFn(number, true)
         
         setTimeout( ()=>{
@@ -20024,8 +20022,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.isPdfdownload = true;
 
         if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+            var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail?.freelanceName + ' - ' + $scope.invoiceDetail?.custom_invoice_no;
             var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
-            downloadFileFn(fileUrl);
+            downloadFileCustomFn(fileUrl, fileName)
+            //downloadFileFn(fileUrl);
         }else{
             notification('This invoice does not have a corresponding file.', 'warning')
             // kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
@@ -22383,7 +22383,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // sourceField.append(sourceImg);
             // var sourceImg = sourceField.children('img').after(lang.lang.name);
             // alternate sol 2 -------======
-            var sourceField = angular.element('#plsSourceLang' + eleId + ' .pls-selected-locale');
+            //var sourceField = angular.element('#plsSourceLang' + eleId + ' .pls-selected-locale');
+            var sourceField = angular.element('#plsSourceLang' + eleId + ' .pls-selected-locale').eq(0);
             // Clear current content
             sourceField.empty();
             var imgElement = angular.element('<img>')
@@ -22407,7 +22408,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // var targetImg = targetField.children('img').after(lang.lang.name);
 
             // alternate sol 2 ==========----------
-            var targetField = angular.element('#plsTargetLang' + eleId + ' .pls-selected-locale');
+            //var targetField = angular.element('#plsTargetLang' + eleId + ' .pls-selected-locale');
+            var targetField = angular.element('#plsTargetLang' + eleId + ' .pls-selected-locale').eq(0);
             // Clear current content
             targetField.empty();
             var imgElement = angular.element('<img>')
@@ -34971,7 +34973,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let mobileNoWithCodeFrc = '';
             if (freelancePhone) {
                 try {
-                    let parsedPhoneFrlnc = JSON.parse(companyPhone);
+                    let parsedPhoneFrlnc = JSON.parse(freelancePhone);
                     if (parsedPhoneFrlnc) {
                         mobileNoFrlnc = parsedPhoneFrlnc?.mobileNumber || '';
                         countryCodeFrlnc = parsedPhoneFrlnc?.countryTitle || '';
@@ -35128,13 +35130,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    $scope.resourceInvoiceFileName = '';
+    $scope.resourceFileType = '';
     $scope.getFile = function (file) {
-        console.log('file', file)
-        fileReader.readAsDataUrl(file, $scope)
+        console.log('file==>', file)
+        $scope.resourceFileType = file?.type ?? '';
+        if(file && file != ''){
+            if(file?.type != 'application/pdf' ){
+                notification('Please select file only in pdf', 'error');
+                //return false;
+            }
+            fileReader.readAsDataUrl(file, $scope)
             .then(function (result) {
                 $scope.resourceInvoiceFile = result;
             });
-        $scope.resourceInvoiceFileName = file.name;
+            
+            $scope.resourceInvoiceFileName = file.name;
+        }else{
+            $scope.resourceInvoiceFile = '';
+            $scope.resourceInvoiceFileName = '';
+        }
     };
 
     $scope.save = function (frmId, invoiceType) {
@@ -35152,8 +35167,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return false;
         }
 
-        if(! $scope.resourceInvoiceFile){
-            notification('Please upload your invoice file.', 'warning');
+        if($scope.resourceInvoiceFile && $scope.resourceInvoiceFile != '' && $scope.resourceFileType != 'application/pdf' ){
+            notification('Please select PDF only.', 'warning');
             return false;
         }
         $scope.invoiceData.resourceInvoiceFile = $scope.resourceInvoiceFile
@@ -36421,7 +36436,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // angular.element("div#" + evt.targetScope.id).children("a.pls-selected-locale").text('');
             // sourceField.append(sourceImg);
             // var sourceImg = sourceField.children('img').after(lang.lang.name);
-            var sourceField = angular.element('#plsSourceLang' + eleId + ' .pls-selected-locale');
+            //var sourceField = angular.element('#plsSourceLang' + eleId + ' .pls-selected-locale');
+            var sourceField = angular.element('#plsSourceLang' + eleId + ' .pls-selected-locale').eq(0);
             // Clear current content
             sourceField.empty();
             var imgElement = angular.element('<img>')
@@ -36443,7 +36459,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // targetField.append(targetImg);
             // var targetImg = targetField.children('img').after(lang.lang.name);
             // alternate sol 2 ==========----------
-            var targetField = angular.element('#plsTargetLang' + eleId + ' .pls-selected-locale');
+            //var targetField = angular.element('#plsTargetLang' + eleId + ' .pls-selected-locale');
+            var targetField = angular.element('#plsTargetLang' + eleId + ' .pls-selected-locale').eq(0);
             // Clear current content
             targetField.empty();
             var imgElement = angular.element('<img>')

@@ -297,6 +297,10 @@
                       id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)"
                       name="invoice_date" ng-disabled="editDisabled || userRight == 2 " />
                   </div>
+                  <div class="col-sm-3" ng-if="invoiceDetail.companyName!='' ">
+                    <p class="mb-d"><strong>Company Name</strong></p>
+                    {{invoiceDetail.companyName}}
+                  </div>
                   <div class="col-sm-12" style="margin-top: 12px;">
                     <p class="mb-d"><strong>Due date</strong></p>
                     <span> {{invoiceDetail.inv_due_date | globalDtFormat }}</span>

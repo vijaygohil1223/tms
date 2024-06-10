@@ -240,14 +240,14 @@ class Freelance_invoice {
 			    $this->_db->join('tms_tax tx', 'tp.tax_rate = tx.tax_id', 'LEFT');
                 //$this->_db->join('tms_payment tp', 'tp.iUserId=tu.iUserId', 'LEFT');
                 $this->_db->join('tms_items ti', 'ti.order_id=tsv.order_id AND ti.item_number = tsv.item_id ', 'LEFT');
-                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tci.vCenterid as business_center_id ,tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency , tu.second_currency as freelance_second_currency , tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice, tsv.contact_person AS projectManagerId, tcm.vEmailAddress as emailRemind1, tcm.vSecondaryEmailAddress as emailRemind2, tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber, tsv.total_price as price_per_job');
+                $data = $this->_db->getOne('tms_summmery_view tsv', 'tsv.job_summmeryId AS jobId,tsv.item_id AS item_number, tsv.order_id AS orderId, tsv.po_number AS poNumber, tci.iClientId AS clientId, tci.vAddress1 AS companyAddress, tci.address1Detail AS companyAddressDtl, tci.vPhone AS companyPhone,tci.address1Detail AS clientAddresDetail,tci.vLogo AS clientLogo, tci.vCenterid as business_center_id ,tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.address1Detail AS freelanceAddressDetail, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tu.freelance_currency , tu.second_currency as freelance_second_currency , tci.vCodeRights As company_code, tsv.job_code AS jobCode, tsv.price as jobPrice, tsv.contact_person AS projectManagerId, tcm.vEmailAddress as emailRemind1, tcm.vSecondaryEmailAddress as emailRemind2, tp.vPaymentInfo as clientVatinfo, tp.tax_rate as tax_rate_id, tx.tax_percentage, ti.item_name, ti.po_number as scoop_poNumber, tsv.total_price as price_per_job, tu.companyName ');
                 //, tci.vEmailAddress  AS companyEmail
                 
-                $data['companyName'] = '';
-                if($data && isset($data['company_code']) && $data['company_code']!=''){
-                    $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
-                    $data['companyName'] = count($companyName) > 0 ? $companyName[0]['name'] : '';
-                }
+                // $data['companyName'] = '';
+                // if($data && isset($data['company_code']) && $data['company_code']!=''){
+                //     $companyName = self::getAll('abbrivation',substr($data['company_code'],0,-2),'tms_centers');
+                //     $data['companyName'] = count($companyName) > 0 ? $companyName[0]['name'] : '';
+                // }
                 //$data['companyName'] = $companyName[0]['name'];
                 
                 //payment due date number of day
