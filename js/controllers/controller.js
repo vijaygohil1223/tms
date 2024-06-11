@@ -18208,7 +18208,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.editDueDate = function(id, inv_due_date, invoice_date){
-        $scope.dtInvoiceDueDate = invoice_date;
         
         var html = angular.element(
             ' <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;">' +
@@ -18218,6 +18217,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             '</div></div>' );
         setTimeout(() => {
             $('#inv_due_date').val(inv_due_date);
+            $scope.dtInvoiceDueDate = invoice_date;
         }, 500);
         $compile(html)($scope);
         var dialog = bootbox.dialog({

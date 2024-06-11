@@ -6801,8 +6801,7 @@ app.directive("ngDatepickerMinmaxdate", function($window) {
                 format:globalDateFormat
             }
             // Check if minrestrict attribute is present
-            scope.dtInvoiceDueDate
-            if (scope?.dtInvoiceDueDate && scope.dtInvoiceDueDate != '') {
+            if (scope?.dtInvoiceDueDate) {
                 dateOptions.minDate = scope.dtInvoiceDueDate;
             }
             if (attrs?.maxrestrict) {
