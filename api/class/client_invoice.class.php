@@ -1,4 +1,5 @@
 <?php
+use PhpParser\Node\Stmt\TryCatch;
 require_once 'users.class.php';
 require_once 'client.class.php';
 require_once 'functions.class.php';
@@ -995,6 +996,17 @@ class Client_invoice {
     	$updateId = $this->_db->update('tms_invoice_client', $data);
 
         if($updateId) {
+            try{
+                foreach($scoopArr as $item){
+                    if($item && isset($item['id'])){
+                        $scpData['updated_date'] = date('Y-m-d H:i:s');
+                        $scpData['item_status'] = 6;
+                        $this->_db->where('itemId', $item['id']);
+                        $scpstsId = $this->_db->update('tms_items', $scpData);
+                    }
+                }
+            } catch (ExceptionType $e) {}
+
     		$res['status'] = 200;
     		$res['msg'] = "Successfully updated";
     	} else {

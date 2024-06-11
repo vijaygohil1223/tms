@@ -18366,7 +18366,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.dltdScoopId = id;
         if($scope.invoiceList.length > 1){
             //var newObj = [];
-            console.log('index', index)
             $scope.invoiceList.splice(index, 1);
             console.log('$scope.invoiceList', $scope.invoiceList)
             setTimeout(() => {
