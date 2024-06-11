@@ -18213,7 +18213,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             ' <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;">' +
             '<div class="col-sm-6">'+
             '<lable><strong> Select due date </strong> <lable>'+
-            '<input class="form-control" type="text" ng-model="inv_due_date" id="inv_due_date" ng-datepicker-minmaxdate name="inv_due_date" ng-disabled="editDisabled" style="margin-top: 20px;" />'+
+            '<input class="form-control" type="text" required ng-model="inv_due_date" id="inv_due_date" ng-datepicker-minmaxdate name="inv_due_date" ng-disabled="editDisabled" style="margin-top: 20px;" />'+
             '</div></div>' );
         setTimeout(() => {
             $('#inv_due_date').val(inv_due_date);
@@ -18230,20 +18230,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     className: "btn-info",
                     callback: function () {
                         var get_inv_due_date = $('#inv_due_date').val();
-                        var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
-                        var post_date = moment(get_inv_due_date, customDateFormat);
-                        post_date = post_date.isValid() ? post_date.format('YYYY-MM-DD') : '0000-00-00';
-                        let objStatus = {
-                            'invoice_id':id,
-                            'post_inv_due_date':post_date
-                        }
-                        rest.path = "freelanceInvoiceDueDate";
-                        rest.post(objStatus).success(function (data) {
-                            if(data){
-                                notification('Date successfully updated', 'success');
-                                $route.reload();
+                        if(get_inv_due_date !== ''){
+                            var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
+                            var post_date = moment(get_inv_due_date, customDateFormat);
+                            post_date = post_date.isValid() ? post_date.format('YYYY-MM-DD') : '0000-00-00';
+                            let objStatus = {
+                                'invoice_id':id,
+                                'post_inv_due_date':post_date
                             }
-                        }).error(errorCallback);  
+                            rest.path = "freelanceInvoiceDueDate";
+                            rest.post(objStatus).success(function (data) {
+                                if(data){
+                                    notification('Date successfully updated', 'success');
+                                    $route.reload();
+                                }
+                            }).error(errorCallback);  
+                        }else{
+                            notification("Please select date", 'warning');
+                            return false;
+                        }
                     }
                 }
             }
@@ -19770,7 +19775,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             if ($scope.userRight != 1)
                 $scope.isDisabledApprvd = true;
-            if ( ['Complete','Paid','Partly Paid','Cancel'].includes($scope.invoiceDetail.invoice_status)) {
+            if ( ['Complete','Paid','Partly Paid','Cancel','Approved'].includes($scope.invoiceDetail.invoice_status)) {
                 $scope.editDisabled = true;
             }    
 
@@ -33382,7 +33387,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var total = 0;
         angular.forEach($scope.InvoiceResult, function(invoice) {
             if (invoice.iClientId === iClientId) {
-                console.log('invoice==>id==>'+iClientId , invoice)
                 // Ensure invoice totalAmount is a valid number
                 if (!isNaN(parseFloat(invoice.totalAmount))) {
                     total += parseFloat(invoice.totalAmount);

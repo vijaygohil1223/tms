@@ -51,9 +51,14 @@
                         <input type="checkbox" name="invoceCheck" disabled>
                       </span>
                     </td>
-                    <td><span ng-bind="(invoiceL.orderNumber)"></span>-<span
-                        ng-bind="(invoiceL.item_number | numberFixedLen:3)"></span></td>
-                    <td>{{ invoiceL.contactName }}</td>
+                    <td>
+                      <a style="color:#4ba0c3" href="#/items/{{invoiceL.orderId}}" title="View" class="trActionIcon">
+                        <span ng-bind="(invoiceL.orderNumber)"></span>-<span ng-bind="(invoiceL.item_number | numberFixedLen:3)"></span>
+                      </a>
+                      </td>
+                    <td>
+                      <a style="color:#4ba0c3" href="#/viewdirect/{{invoiceL.iClientId}}" title="View" class="trActionIcon"> {{ invoiceL.contactName }}</a>
+                    </td>
                     <td>{{ invoiceL.itemPonumber }}</td>
                     <td ng-bind="invoiceL.itemDuedate | globalDtFormat"></td>
                     <td class="nowrap">

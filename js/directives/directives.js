@@ -6809,10 +6809,25 @@ app.directive("ngDatepickerMinmaxdate", function($window) {
             }
 
             element.datetimepicker(dateOptions).on('dp.change', function(ev) {
-                ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
-                element.blur();
+                if (ev.date) {
+                    ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
+                    scope.$apply();
+                    element.blur();
+                } else {
+                    ngModelCtrl.$setViewValue(ngModelCtrl.$modelValue);
+                    scope.$apply();
+                }
+                // ngModelCtrl.$setViewValue(moment(ev.date).format(globalDateFormat));
+                // scope.$apply();
+                // element.blur();
             })
             element.on('keydown', function(event) {
+                var key = event.keyCode || event.which;
+                if (key !== 9) { // Allow tab for navigation
+                    event.preventDefault();
+                }
+            });
+            element.on('paste', function(event) {
                 event.preventDefault();
             });
         }
