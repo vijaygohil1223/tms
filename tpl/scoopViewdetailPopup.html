@@ -311,6 +311,14 @@
                                                                id="po_numberErr{{it.itemId}}"></label>
                                                          </div>
                                                       </div>
+                                                      <div class="col-sm-12" ng-if="scoopInvoice[it.itemId].invoiceId">
+                                                         <div class="form-group">
+                                                            <label>Invoice </label>
+                                                            <br />
+                                                            <a href="#/client-invoice-show/{{ scoopInvoice[it.itemId].invoiceId }}">{{ scoopInvoice[it.itemId].invoiceNumber }}</a>
+                                                            <span>( {{scoopInvoice[it.itemId].invoice_date | globalDtFormat }} )</span>
+                                                         </div>
+                                                      </div>
                                                       <div class="col-sm-12">
                                                          <div class="form-group">
                                                             <label>Client Contact</label>

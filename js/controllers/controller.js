@@ -2178,9 +2178,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }
                 });
+
+                modalInstance.result.then(function (selectedItem) {
+                    $scope.selected = selectedItem;
+                }, function () {
+                    console.log('Modal dismissed at: ' + new Date());
+                });
+
+                $rootScope.$on('$locationChangeStart', function () {
+                    if (modalInstance) {
+                        modalInstance.close();
+                    }
+                });
+                
             }
         }    
     };
+    
 
     $scope.goTocommentChat = function (viewType) {
         if (viewType) {
@@ -23442,6 +23456,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.checksubPm = [];
     $scope.checksubPc = [];
     $scope.checksubQa = [];
+    $scope.scoopInvoice = $scope.scoopInvoice || {};
 
     $scope.getItems = function () {
         var popitemList = [];
@@ -23724,6 +23739,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             
                         }
                     }).error(errorCallback);
+
+                    // check invoice exist
+                    $scope.scoopInvoice[val.itemId] = $scope.scoopInvoice[val.itemId] || {};
+                    try {
+                        rest.path = 'getClientInvoiceByScoopId/' + val.itemId;
+                        rest.get().success(function (data) {
+                            console.log('data========>', data)
+                            if(data && data.length > 0){
+                                $scope.scoopInvoice[val.itemId].invoiceId = data[0].invoice_id || '';
+                                $scope.scoopInvoice[val.itemId].invoiceNumber = data[0].invoice_number || ''; 
+                                $scope.scoopInvoice[val.itemId].invoice_date = data[0].invoice_date || ''; 
+                            }
+                        }).error(errorCallback);
+                    } catch (error) {
+                        console.log('error', error)
+                    }
+
                 }
 
                 rest.path = 'jobItemIconsetdata/' + val.item_number + '/' + $scope.routeOrderID;
@@ -37114,6 +37146,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.checksubPm = []
     $scope.checksubPc = []
     $scope.checksubQa = []
+    $scope.scoopInvoice = $scope.scoopInvoice || {};
 
     $scope.getItems = function () {
         var popitemList = [];
@@ -37379,6 +37412,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             angular.element('#itemPer' + i).remove();
                         }
                     }).error(errorCallback);
+
+                    // check invoice exist
+                    $scope.scoopInvoice[val.itemId] = $scope.scoopInvoice[val.itemId] || {};
+                    try {
+                        rest.path = 'getClientInvoiceByScoopId/' + val.itemId;
+                        rest.get().success(function (data) {
+                            console.log('data========>', data)
+                            if(data && data.length > 0){
+                                $scope.scoopInvoice[val.itemId].invoiceId = data[0].invoice_id || '';
+                                $scope.scoopInvoice[val.itemId].invoiceNumber = data[0].invoice_number || ''; 
+                                $scope.scoopInvoice[val.itemId].invoice_date = data[0].invoice_date || ''; 
+                            }
+                        }).error(errorCallback);
+                    } catch (error) {
+                        console.log('error', error)
+                    }
+
                 }
                 rest.path = 'jobItemIconsetdata/' + val.item_number + '/' + val.order_id;
                 rest.get().success(function (data) {

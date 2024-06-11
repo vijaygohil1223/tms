@@ -1011,4 +1011,12 @@ class Client_invoice {
 
         return $data;
     }
+
+    public function getClientInvoiceByScoopId($id){
+        $qry = 'SELECT * FROM tms_invoice_client WHERE JSON_CONTAINS(scoop_id, \'{"id": ' . $id . '}\', "$")';
+        $data = $this->_db->rawQuery($qry);
+
+        return $data;
+    }
+
 }
