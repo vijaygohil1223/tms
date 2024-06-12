@@ -804,7 +804,7 @@ class Client_invoice {
             $maxrawQuery = 'SELECT MAX(invoice_number_max) AS max_count FROM tms_invoice_client';
             $maxcount = $this->_db->rawQuery($maxrawQuery);
 			$maxCount = $maxcount ? (int)$maxcount[0]['max_count'] + 1 : 1;
-            $maxInvoiceNo = $invPrefix.str_pad($maxCount, 6, '0', STR_PAD_LEFT);
+            $maxInvoiceNo = $invPrefix.str_pad($maxCount, 7, '0', STR_PAD_LEFT);
             
             $data['invoice_number_max'] = $maxCount;
             if($data['invoice_number'] == $data['custom_invoice_number']){
@@ -1005,7 +1005,9 @@ class Client_invoice {
                         $scpstsId = $this->_db->update('tms_items', $scpData);
                     }
                 }
-            } catch (ExceptionType $e) {}
+            } catch (ExceptionType $e) {
+                
+            }
 
     		$res['status'] = 200;
     		$res['msg'] = "Successfully updated";

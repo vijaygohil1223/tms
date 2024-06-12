@@ -22159,6 +22159,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
     $scope.decimalNumber = $window.localStorage.getItem("DecimalNumber") ? $window.localStorage.getItem("DecimalNumber") : 2;
+    
+    if($routeParams.id){
+        $window.localStorage.orderID = $routeParams.id;
+        $window.localStorage.setItem("isNewProject", "false");
+    }
     if ($scope.isNewProject === 'true') {
         $location.path('/dashboard1');
         notification('Please create project.', 'warning');
