@@ -20127,7 +20127,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.isPdfdownload = false;
     $scope.resourceInvoiceFileDn = function (invoiceNo) {
-        let pdfName = invoiceNo ? invoiceNo : 'Resource Invoice';
+        //let pdfName = invoiceNo ? invoiceNo : 'Resource Invoice';
+        let pdfName = "Oversettelsestjenester - " + $scope.invoiceDetail?.freelanceName + ' - ' + $scope.invoiceDetail?.custom_invoice_no;
         $scope.isPdfdownload = true;
 
         if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
@@ -20136,15 +20137,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             downloadFileCustomFn(fileUrl, fileName)
             //downloadFileFn(fileUrl);
         }else{
-            notification('This invoice does not have a corresponding file.', 'warning')
-            // kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
-            //     group.options.set("font", "8px DejaVu Sans");
-            //     kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
-            //     if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
-            //         var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
-            //         downloadFileFn(fileUrl);
-            //     }
-            // });
+            //notification('This invoice does not have a corresponding file.', 'warning')
+            kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
+                group.options.set("font", "8px DejaVu Sans");
+                kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
+                if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+                    var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+                    downloadFileFn(fileUrl);
+                }
+            });
         }    
     
     }
@@ -20434,7 +20435,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.isPdfdownload = false;
     $scope.printIt = function (invoiceNo) {
-        let pdfName = invoiceNo ? invoiceNo : 'Resource Invoice';
+        //let pdfName = invoiceNo ? invoiceNo : 'Linguist Invoice';
+        var pdfName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
         $scope.isPdfdownload = true;
         if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
             var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
@@ -20449,7 +20451,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
                     var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
                     // downloadFileFn(fileUrl);
-                    downloadFileCustomFn(fileUrl, fileName)
+                    //downloadFileCustomFn(fileUrl, fileName)
                 }
             });
         }    
@@ -39287,6 +39289,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
     };
+}).controller('mailjetemailController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.loginUserId = $window.localStorage.getItem('session_iUserId');
+
+    rest.path = 'getAllsentEmail';
+    rest.get().success(function (data) {
+        $scope.sentEmailList = data;
+    }).error(errorCallback);
 
 }).controller('statusWiseProjectController', function (items, $uibModalInstance, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams) {
     $scope.displayType = items;

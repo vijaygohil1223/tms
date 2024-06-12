@@ -45,7 +45,7 @@
                     style="margin-right: 10px;"><span class="fa fa-arrow-left"></span> Back</a>
                 <a ng-show="userRight==2" href="javascript:history.back()" class="btn btn-sm btn-info pull-right"
                     style="margin-right: 10px;"><span class="fa fa-arrow-left"></span> Back</a>
-                <h1 class="m-n font-thin h3">Invoice</h1>
+                <h1 class="m-n font-thin h3">Invoice <span style="font-size:20px;"> (Created date : {{invoiceDetail.created_date | globalDtFormat }})</span> </h1>
             </div>
             <div class="wrapper-md ng-scope">
                 <div class="panel panel-default invoiceInput">

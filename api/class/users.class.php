@@ -1613,4 +1613,22 @@ array(
         }
         return $return;
     }
+
+    public function getAllsentEmail() {
+        
+        $send_fn = new functions();
+        $response = $send_fn->mailjet_get_all_email();
+        if ($response) {
+            $return = $response;
+            $return['status'] = 200;
+            $return['msg'] = 'Updated Successfully.';
+        } else {
+            $return['status'] = 422;
+            $return['msg'] = 'Not Updated.';
+        }
+        
+        return $return;
+    }
+
+    
 }

@@ -620,4 +620,10 @@ app.filter('Textcharacter', function($filter) {
         }
     }
 });
+app.filter('localDate', ['$filter', function($filter) {
+    return function(input) {
+        var localTime = new Date(input);
+        return $filter('date')(localTime, 'medium');
+    };
+}]);
 

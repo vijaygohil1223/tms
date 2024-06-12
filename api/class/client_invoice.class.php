@@ -1033,4 +1033,46 @@ class Client_invoice {
         return $data;
     }
 
+    public function insertTempInvoiceData($id){
+        $res = [];
+        // Fetch rows from tms_invoice_client table
+        $invoices = $this->_db->rawQuery("SELECT invoice_id, scoop_id FROM tms_invoice_client where  invoice_id = $id");
+        //$invoices = $this->_db->rawQuery("SELECT invoice_id, scoop_id FROM tms_invoice_client");
+        
+        foreach ($invoices as $invoice) {
+            $invoice_id = $invoice['invoice_id'];
+            $scoop_ids = json_decode($invoice['scoop_id'], true);
+
+            foreach ($scoop_ids as $scoop) {
+                $scoop_id = $scoop['id'];
+
+                // Fetch price from tms_items table based on scoop_id
+                $price_data = $this->_db->rawQuery("SELECT total_price FROM tms_items WHERE itemId = $scoop_id");
+
+                if (count($price_data) > 0) {
+                    $price = $price_data[0]['total_price'];
+
+                    // Insert each invoice_id, scoop_id, and price into new_table
+                    //$insert_query = "INSERT INTO tms_invoice_scoops (invc_Id, invc_scoop_id, scoop_price) VALUES ($invoice_id, $scoop_id, $price)";
+                    $insertData['invc_Id'] = $invoice_id;
+                    $insertData['invc_scoop_id'] = $scoop_id;
+                    $insertData['scoop_price'] = $price;
+                    $insertData['created_date'] = date('Y-m-d H:i:s');
+                    $insertData['modified_date'] = date('Y-m-d H:i:s');
+                    $inserted = $this->_db->insert('tms_invoice_scoops', $insertData);
+                    if ($inserted) {
+                        $res['msg'] "New record created successfully for invoice_id: $invoice_id, scoop_id: $scoop_id, price: $price\n";
+                    } else {
+                        $res['msg'] "Error: " . $inserted . "\n";
+                    }
+                } else {
+                    $res['msg'] "No price found for scoop_id: $scoop_id\n";
+                }
+            }
+        }
+
+        return $res;
+
+    }
+
 }

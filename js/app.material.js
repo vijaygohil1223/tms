@@ -668,6 +668,11 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             templateUrl: modulesPath + 'decimal-separator.html',
             controller: 'decimalSeparatorController',
             activetab: 'decimal-separator',
+            role: '1'})
+        .when('/sent-email-list', {
+            templateUrl: modulesPath + 'sent-email-list.html',
+            controller: 'mailjetemailController',
+            activetab: 'sent-email-list',
             role: '1'
         }).when('/activation/:id', {
             templateUrl: modulesPath + 'activation.html',

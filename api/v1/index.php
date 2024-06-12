@@ -412,6 +412,11 @@ $app->post('/sendAcountActivationlink', 'authenticate',function () use($app) {
     $result = $users->sendAcountActivationlink($data);
     echoResponse($result ['status'], $result);
 });
+$app->get('/getAllsentEmail', 'authenticate',function () use($app) {
+    $users = new users ();
+    $result = $users->getAllsentEmail();
+    echoResponse(200, $result);
+});
 // ------------------user type section ---------------------//
 $app->get('/usertype','authenticate', function () {
     $usertype = new usertype ();
@@ -3650,6 +3655,11 @@ $app->get('/clientInvoiceApprovedScoop/:id', function ($id) use ($app) {
 $app->get('/getClientInvoiceByScoopId/:id','authenticate', function ($id) {
     $item = new Client_invoice ();
     $result = $item->getClientInvoiceByScoopId($id);
+    echoResponse(200, $result);
+});
+$app->get('/insertTempInvoiceData/:id', function ($id) {
+    $item = new Client_invoice ();
+    $result = $item->insertTempInvoiceData($id);
     echoResponse(200, $result);
 });
 //-------------------Resource Postion----------------//

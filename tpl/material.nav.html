@@ -515,6 +515,16 @@
               ng-click="addToFavouriteMenu($event);" id="decimalSeparatorMenu" title="Add to Favourite"></i>
           </li>
 
+          <li ng-class="{'active menuBg': activetab == '/sent-email-list'}"
+            ng-mouseover="menuHoverIn('decimalSeparatorMenu');" ng-mouseleave="menuHoverOut('decimalSeparatorMenu')">
+            <a href="#/sent-email-list" md-ink-ripple>
+              <span class="font-bol underSubmenu">Sent Email</span>
+            </a>
+
+            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+              ng-click="addToFavouriteMenu($event);" id="decimalSeparatorMenu" title="Add to Favourite"></i>
+          </li>
+
           <!-- <li ng-class="{active: activetab == '/to-do-lists'}">
 
                                             <a href="#/to-do-lists">

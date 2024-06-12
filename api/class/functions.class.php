@@ -390,6 +390,33 @@ class functions {
         }
     }
 
+    public function mailjet_get_all_email(){
+        //$this->_mailjet = new \Mailjet\Client(EMAIL_API_KEY, EMAIL_SECRETE_KEY,true,['version' => 'v3.1']);
+        // version v3
+        $mj = new \Mailjet\Client( EMAIL_API_KEY, EMAIL_SECRETE_KEY ,true,['version' => 'v3']);
+
+        $params = [
+            'Limit' => 1000, 
+            'ShowSubject' => true,
+            'Sort' => 'ArrivedAt DESC',
+            'ShowContactAlt' => true
+            //'ShowSubject' => true,
+            
+        ];
+        // Fetch sent emails with query parameters
+        $response = $mj->get(Resources::$Message, ['filters' => $params]);
+        if ( $response->success() ) {            
+            $result = $response->getData();
+            $result['status'] = 200;
+            $result['msg'] = 'Succes!';
+        } else {
+            $result['status'] = 422;
+            $result['msg'] = 'Could not send mail!';
+        }
+        return $result;            
+        
+    }
+
     public function send_email_smtp__imgg($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '') {
         $b64image = base64_encode(file_get_contents('http://tms.kanhasoftdev.com/assets/img/logo.png'));
 
