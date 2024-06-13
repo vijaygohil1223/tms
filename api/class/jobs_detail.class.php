@@ -623,7 +623,7 @@ class jobs_detail
                 // Update scoop status to QA Ready
                 if (isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Completed') {
 
-                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND item_status != '4' ";
+                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND item_status NOT IN (3,4,5,6) ";
                     $this->_db->rawQuery($qry_up);
 
                     // check for purchase order
@@ -1631,7 +1631,7 @@ class jobs_detail
                 //Sending Email to manager after job is Delivered END
                 // Update status to QA Ready
                 if (isset($jobsData['order_id']) && isset($jobsData['item_id'])) {
-                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' ";
+                    $qry_up = "UPDATE `tms_items` SET `item_status` = '10' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND item_status NOT IN (3,4,5,6) ";
                     $this->_db->rawQuery($qry_up);
                 }
 
@@ -2330,7 +2330,6 @@ class jobs_detail
         $resourceName = isset($data['resourceName']) ? $data['resourceName'] : '';
         $bodyTemp = "<p> Hi " . $resourceName . ", </p>";
         $bodyTemp .= "<p> Please see the attached Purchased Order : <b>" . $pdfFileName . "</b> </p>";
-        $bodyTemp .= "<p> From :SpellUp </p>";
         $body = $bodyTemp;
         if (isset($data['mailTextContent'])) {
             $body = $data['mailTextContent'];

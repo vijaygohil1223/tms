@@ -6446,7 +6446,7 @@ app.directive('select2Sidebarmenu', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            var menu = {"dashboard":'Dashboard',"resources":'Resources',"clients":'Clients',"reports":'Reports',"invoice":'Invoice', "statement":'Statement',"admin":'Admin',"knowledge-base":'Knowledge Base',"favourite":'Favourite',"activity":'Activity'};
+            var menu = {"dashboard":'Dashboard',"resources":'Resources',"clients":'Clients',"reports":'Reports',"invoice":'Invoice', "statement":'Statement',"admin":'Admin',"knowledgeBase":'Knowledge Base',"favourite":'Favourite',"activity":'Activity'};
             var arr = [];
             $.each(menu, function(key, value) {
                 var obj = {

@@ -461,6 +461,7 @@
                                        <th>Client</th>
                                        <th>Account</th>
                                        <th>Status</th>
+                                       <th>PO number</th>
                                        <th>Create date</th>
                                        <th>Due date</th>
                                        <th>Prices</th>
@@ -504,6 +505,7 @@
                                           <td> {{ result.indirectAccountName}} </td>
                                           <!-- <td ng-bind="result.clientStatus"></td> -->
                                           <td ng-bind="result.scoop_status_name"></td>
+                                          <td ng-bind="result.po_number"></td>
                                           <td class="nowrap"> <span class="none"> {{result.scoopCreateDate}}</span> {{ result.scoopCreateDate | dateFormatDisplayFront }}</td>
                                           <td class="nowrap"> <span class="none"> {{result.scoop_due_date}}</span> {{
                                                 result.scoop_due_date | dateFormatDisplayFront }}</td>
@@ -556,6 +558,7 @@
                                        <th>Tripletex ID</th>
                                        <th>Account</th>
                                        <th>Status</th>
+                                       <th>PO number</th>
                                        <th>Create date</th>
                                        <th>Due date</th>
                                        <th>Prices</th>
@@ -575,6 +578,7 @@
                                           <!-- <td ng-bind="result.projectName"></td> -->
                                           <td> {{ result.indirectAccountName}} </td>
                                           <td ng-bind="result.scoop_status_name"></td>
+                                          <td ng-bind="result.po_number"></td>
                                           <td>{{ result.scoopCreateDate | dateFormatDisplayFront }}</td>
                                           <td>{{ result.scoop_due_date | dateFormatDisplayFront }}</td>
                                           <td > {{result.totalAmount | customNumber}} -staticstring-</td>

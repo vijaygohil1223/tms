@@ -794,7 +794,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $timeout(function () {
                 rest.path = 'authenticate';
                 rest.post(user).success(function (data) {
-                    console.log('data-loginData', data)
                     $('#loginSpin').hide();
                     $scope.userProfilepic = data.session_data.vProfilePic ? data.session_data.vProfilePic : 'user-icon.png';
                     $window.localStorage.setItem("_auth", data.session_data.vPassword);
@@ -860,7 +859,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if (data) {
                             $window.localStorage.setItem("invoiceDesignType", data.invoice_design);
                         } else {
-                            $window.localStorage.setItem("invoiceDesignType", 1);
+                            $window.localStorage.setItem("invoiceDesignType", 2);
                         }
                     }).error(errorCallback);
 
@@ -2275,32 +2274,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }        
         });
     }
-
-
-    function compareDueDates(a, b) {
-        const dateA = new Date(Date.parse(a.itemDuedate + 'Z'));
-        const dateB = new Date(Date.parse(b.itemDuedate + 'Z'));
-        const today = new Date();
-
-        if (dateA.getUTCDate() === today.getUTCDate() && dateA.getUTCMonth() === today.getUTCMonth() && dateA.getUTCFullYear() === today.getUTCFullYear()) {
-            // If task A is due today
-            if (dateB.getUTCDate() !== today.getUTCDate() || dateB.getUTCMonth() !== today.getUTCMonth() || dateB.getUTCFullYear() !== today.getUTCFullYear()) {
-                return -1; // A comes before B
-            } else {
-                return dateA - dateB; // Sort by time if both tasks are due today
-            }
-        } else if (dateA > today && dateB > today) {
-            return dateA - dateB; // Sort future tasks by due date
-        } else if (dateA < today && dateB < today) {
-            return dateB - dateA; // Sort past due tasks by due date
-        } else if (dateA < today && dateB > today) {
-            return 1; // Task A is past due, so it comes after task B
-        } else {
-            return -1; // Task B is past due, so it comes before task A
-        }
-    }
-    // Call the async function and log the sorted data
-
     
     $scope.fillDashboardTabFn = function(index, scoopArr, scoopCount){
         console.log('scoopArr', scoopArr)
@@ -8904,7 +8877,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.exportData = function (action) {
         switch (action) {
             case "result":
-                exportTableToExcel('client_scoop_report','scoop-status-report',[10,11,12,13], 1)
+                exportTableToExcel('client_scoop_report','scoop-status-report',[11,12,13,14], 1)
                 // var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                 // });
@@ -25499,7 +25472,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.selectionActionOption = function (action) {
-
+        
         if (action == 'select') {
             notification('Please select option.', 'warning');
             return false;
@@ -32605,11 +32578,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.partPaidInvcCount++;
                     $scope.partPaidInvc.push(val);
                 } 
-                if (val.invoice_status == 'Irrecoverable') {
-                    $scope.noRecoverInvcCount++;
-                    $scope.irrecoverableInvc.push(val);
-                } 
-                if (val.invoice_status == 'Cancel') {
+                // if (val.invoice_status == 'Irrecoverable') {
+                //     $scope.noRecoverInvcCount++;
+                //     $scope.irrecoverableInvc.push(val);
+                // } 
+                if (val.invoice_status == 'Cancel' || val.invoice_status == 'Irrecoverable' ) {
                     $scope.cancelledInvcCount++;
                     $scope.cancelledInvc.push(val);
                 }
@@ -32637,13 +32610,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.invcStatusRecord = function (invcStatus) {
+        console.log('invcStatus', invcStatus)
         
         if (invcStatus) {
             $scope.invcstatusFilter = invcStatus;
             //$scope.invoiceListAll = [];
             $scope.showDataLoaderJob = true;
         } else {
-            $scope.invcstatusFilter = 'all';
+            $scope.invcstatusFilter = 'Open';
+            //$scope.invcstatusFilter = 'all';
             //$scope.invcstatusFilter = '';
         }
         $scope.invoiceActive = $scope.invoiceActive == invcStatus ? '' : invcStatus;
@@ -32698,7 +32673,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.invcList_tabFilter()
         .then(function (invoicePromiseData) {
-            $scope.invcStatusRecord('all');
+            $scope.invcStatusRecord('Open');
+            //$scope.invcStatusRecord('all');
     });
     // ****** END invioce TABS ******* //
 

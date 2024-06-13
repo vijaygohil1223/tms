@@ -302,8 +302,17 @@
     </ul>
   </li>
 
+  <li ng-if="superAdmin == 1 || (userRight==1 )" ng-mouseover="menuHoverIn('sent-email-list');"
+  ng-mouseleave="menuHoverOut('sent-email-list')">
+    <a href="#/sent-email-list" md-ink-ripple>
+      <i class="glyphicon glyphicon-envelope icon" style="color: #1e76e9"></i>
+      <span class="font-bol underSubmenu">Email</span>
+    </a>
+    <!-- <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+      ng-click="addToFavouriteMenu($event);" id="sent-email-list" title="Add to Favourite"></i> -->
+  </li>
 
-  <li ng-if="superAdmin == 1 || (userRight==1 && menuAccess.knowledge-base)" ng-mouseover="menuHoverIn('knowledgeBaseMenu');"
+  <li ng-if="superAdmin == 1 || (userRight==1 && menuAccess.knowledgeBase)" ng-mouseover="menuHoverIn('knowledgeBaseMenu');"
     ng-mouseleave="menuHoverOut('knowledgeBaseMenu')">
     <a href="knowledge/#/" md-ink-ripple>
       <i class="glyphicon glyphicon-paperclip icon" style="color: #7283a7"></i>
@@ -509,16 +518,6 @@
             ng-mouseover="menuHoverIn('decimalSeparatorMenu');" ng-mouseleave="menuHoverOut('decimalSeparatorMenu')">
             <a href="#/decimal-separator" md-ink-ripple>
               <span class="font-bol underSubmenu">Decimal separator</span>
-            </a>
-
-            <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
-              ng-click="addToFavouriteMenu($event);" id="decimalSeparatorMenu" title="Add to Favourite"></i>
-          </li>
-
-          <li ng-class="{'active menuBg': activetab == '/sent-email-list'}"
-            ng-mouseover="menuHoverIn('decimalSeparatorMenu');" ng-mouseleave="menuHoverOut('decimalSeparatorMenu')">
-            <a href="#/sent-email-list" md-ink-ripple>
-              <span class="font-bol underSubmenu">Sent Email</span>
             </a>
 
             <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
