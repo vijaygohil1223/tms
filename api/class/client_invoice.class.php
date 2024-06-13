@@ -1,5 +1,4 @@
 <?php
-use PhpParser\Node\Stmt\TryCatch;
 require_once 'users.class.php';
 require_once 'client.class.php';
 require_once 'functions.class.php';
@@ -1061,12 +1060,12 @@ class Client_invoice {
                     $insertData['modified_date'] = date('Y-m-d H:i:s');
                     $inserted = $this->_db->insert('tms_invoice_scoops', $insertData);
                     if ($inserted) {
-                        $res['msg'] "New record created successfully for invoice_id: $invoice_id, scoop_id: $scoop_id, price: $price\n";
+                        $res['msg'] = "New record created successfully for invoice_id: $invoice_id, scoop_id: $scoop_id, price: $price\n";
                     } else {
-                        $res['msg'] "Error: " . $inserted . "\n";
+                        $res['msg'] = "Error: " . $inserted . "\n";
                     }
                 } else {
-                    $res['msg'] "No price found for scoop_id: $scoop_id\n";
+                    $res['msg'] = "No price found for scoop_id: $scoop_id\n";
                 }
             }
         }
