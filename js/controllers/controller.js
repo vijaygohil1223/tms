@@ -18246,6 +18246,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return date && date !== '0000-00-00';
     };
 
+
 }).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $compile, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;
@@ -18652,17 +18653,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         rest.path = "clientInvoiceUpdate/" + $routeParams.id;
         rest.get().success(function (updatedata) {
-            
-            if (updatedata) {
+            //if (updatedata) {
                 // Hide button from page
-                angular.element('#btnPaid').hide();
-                angular.element('#btnMarkAsCancel').hide();
-                angular.element('#btnSave').hide();
-                angular.element('#btnDraft').hide();
-                angular.element('#btnCancel').hide();
-                angular.element('#irrecoverable').hide();
-                angular.element('#editInvoiceSave').hide();
-                angular.element('.invoiceInput input').addClass('invoiceInputborder');
+                // angular.element('#btnPaid').hide();
+                // angular.element('#btnMarkAsCancel').hide();
+                // angular.element('#btnSave').hide();
+                // angular.element('#btnDraft').hide();
+                // angular.element('#btnCancel').hide();
+                // angular.element('#irrecoverable').hide();
+                // angular.element('#editInvoiceSave').hide();
+                // angular.element('.invoiceInput input').addClass('invoiceInputborder');
                
                 var invoiceNo = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
                 
@@ -18706,9 +18706,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //             }
                 //         }).error(errorCallback);
                 //     });
-            } else {
-                $location.path('/invoice-client');
-            }
+            // } else {
+            //     $location.path('/invoice-client');
+            // }
 
         });
     }
@@ -18899,14 +18899,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let companycontactEmail = $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail;
             $window.localStorage.generalMsg = companycontactEmail;
             setTimeout( ()=> {
-                kendo.drawing.drawDOM($("#pdfExport"))
-                    .then(function (group) {
-                        // Render the result as a PDF file
-                        return kendo.drawing.exportPDF(group, {
-                            //paperSize: "auto",
-                        });
-                    })
-                    .done(function (data) {
+                // kendo.drawing.drawDOM($("#pdfExport"))
+                //     .then(function (group) {
+                //         // Render the result as a PDF file
+                //         return kendo.drawing.exportPDF(group, {
+                //             //paperSize: "auto",
+                //         });
+                //     })
+                //     .done(function (data) {
                         $scope.pdfDownloadFn(number, false ).then((pdfBase64Data) =>{
                             //console.log('pdfBase64Data', pdfBase64Data)
                             if(pdfBase64Data){
@@ -18957,7 +18957,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                         });
                         
-                    });
+                    //});
 
                 }, 200)
         } else {
@@ -24118,7 +24118,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
         $scope.cPersonMsg = data.data;
         $scope.cPersonMsg.vUserName = data.data.vFirstName + " " + data.data.vLastName
-        $scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="msgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
+        //var signImage = data?.info?.sign_image;
+        var signImage = '';
+        //$scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="msgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
+        var msgText = '<div>&nbsp;</div><div id="msgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + signImage + '" width="100px"></div>';
+
+        var loggedUserIdSend = $window.localStorage.getItem("session_iUserId");
+        $scope.loggedUserDetailsReminder = '';
+        rest.path = 'getUserDetails/' + loggedUserIdSend;
+        rest.get().success(function (data) {
+            $scope.loggedUserDetailsReminder = data;
+            $scope.invoiceSenderContactReminder = $scope.loggedUserDetailsReminder[0].vUserName;
+            $scope.invoiceSenderEmailReminder = $scope.loggedUserDetailsReminder[0].vEmailAddress;
+            $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+            if($scope.loggedUserDetailsReminder.length > 0){
+                var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+                var position2Reminder = ($scope.loggedUserDetailsReminder.length > 1 && $scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                $scope.invoiceClinetpositionReminder = position1Reminder + (position2Reminder ? " & " + position2Reminder : "");
+            }
+            
+            const rplcClientData = {
+                SENDER_NAME: ($scope.invoiceSenderContactReminder) ? $scope.invoiceSenderContactReminder : $scope.invoiceSenderContact,
+                RESOURCE_POSITION: ($scope.invoiceClinetpositionReminder) ? $scope.invoiceClinetpositionReminder : $scope.invoiceClinetposition,
+                RESOURCE_EMAIL: ($scope.invoiceSenderEmailReminder) ? $scope.invoiceSenderEmailReminder : $scope.invoiceClinetposition,
+            };
+            msgText = replaceVariables(msgText, rplcClientData);
+            $scope.cPersonMsg.messageData = msgText; 
+        
+            
+
+        }).error(function (error) {
+            
+        });
+
     }).error(errorCallback);
 
     $scope.ok = function (frmId, message) {
@@ -30584,8 +30616,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if(items && (items.invoice_to_be_sent == 1 || items.outstanding_reminder == 1 ) ){
         $scope.emailPopupType = items.isClientInvoice ? 'invoice-client' : 'invoice-linguist';
         $scope.invoiceData = items;
-        console.log('$scope.invoiceData', $scope.invoiceData)
+        //console.log('$scope.invoiceData', $scope.invoiceData)
         $scope.invoiceData.invoiceName = items.pdfData ? items.invoiceno + '.pdf' : '';
+        $scope.invoiceData.subject = items?.invoiceno ? 'Invoice '+items?.invoiceno  : '';
     }
     console.log('itemsss=', items)
 
@@ -30640,57 +30673,97 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // $scope.cPersonMsg.userSign = sendUserSign;
 
         // for linguist invoice / invoice Reminder
+        var msgContent = '';
         if($scope.emailPopupType == 'invoice-linguist'){
-            msgText = `Hi, <br /> 
-                <p> Invoice outstanding </p> 
-                <p> Invoice No : ${items.invoiceno}, </p>
-                <p> Linguist Name : ${items.freelanceName}, </p>
-                <p> Linguist Email : ${items.freelanceEmail}, </p> `;
-        }
-        if($scope.emailPopupType == 'invoice-client'){
-            $scope.cPersonMsg.msgEmailSubject = $scope.invoiceData && $scope.invoiceData?.subject ? $scope.invoiceData.subject : '';
-        
-            rest.path = "emailTemplateGetAll" ;
-            rest.get().success(function (data) {
-                var emailContentText = data.find( (templt) => templt.template_id == 12);
-                if(emailContentText){
-                    const rplcData = {
-                        INVOICENO: items.invoiceno,
-                        PAYDUE: items.invoiceDue,
-                    };
-                    $scope.emailTemplateText =  emailContentText.template_content;  
-                    $scope.cPersonMsg.messageData = replaceVariables(emailContentText.template_content, rplcData);
-                    $scope.cPersonMsg.messageData += '<br />' + msgText
-                }
-            })
-        }
-        
-        // new code to get logged user details
-        var loggedUserIdSend = $window.localStorage.getItem("session_iUserId");
-        $scope.loggedUserDetailsReminder = '';
-        rest.path = 'getUserDetails/' + loggedUserIdSend;
-        rest.get().success(function (data) {
-            $scope.loggedUserDetailsReminder = data;
-            $scope.invoiceSenderContactReminder = $scope.loggedUserDetailsReminder[0].vUserName;
-            $scope.invoiceSenderEmailReminder = $scope.loggedUserDetailsReminder[0].vEmailAddress;
-            $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
-            if($scope.loggedUserDetailsReminder.length > 0){
-                var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
-                //var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
-                //$scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
-                var position2Reminder = ($scope.loggedUserDetailsReminder.length > 1 && $scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
-                $scope.invoiceClinetpositionReminder = position1Reminder + (position2Reminder ? " & " + position2Reminder : "");
-            }
             
-            const rplcClientData = {
-                SENDER_NAME: ($scope.invoiceSenderContactReminder) ? $scope.invoiceSenderContactReminder : $scope.invoiceSenderContact,
-                RESOURCE_POSITION: ($scope.invoiceClinetpositionReminder) ? $scope.invoiceClinetpositionReminder : $scope.invoiceClinetposition,
-                RESOURCE_EMAIL: ($scope.invoiceSenderEmailReminder) ? $scope.invoiceSenderEmailReminder : $scope.invoiceClinetposition,
+            var getEmailTemplates = function() {
+                return new Promise((resolve, reject) => {
+                    msgText = `Hi, <br /> 
+                        <p> Invoice outstanding </p> 
+                        <p> Invoice No : ${items.invoiceno}, </p>
+                        <p> Linguist Name : ${items.freelanceName}, </p>
+                        <p> Linguist Email : ${items.freelanceEmail}, </p> `;
+                    msgContent = '<br />' + msgText; 
+
+                    resolve();
+                });
+            }
+
+        }else if($scope.emailPopupType == 'invoice-client'){
+            $scope.cPersonMsg.msgEmailSubject = $scope.invoiceData && $scope.invoiceData?.subject ? $scope.invoiceData.subject : 'Invoice ';
+        
+            var getEmailTemplates = function() {
+                return new Promise((resolve, reject) => {
+
+                    rest.path = "emailTemplateGetAll" ;
+                    rest.get().success(function (data) {
+                        var emailContentText = data.find( (templt) => templt.template_id == 12);
+                        console.log('emailContentText========111111111', emailContentText)
+                        if(emailContentText){
+                            const rplcData = {
+                                INVOICENO: items.invoiceno,
+                                PAYDUE: items.invoiceDue,
+                            };
+                            $scope.emailTemplateText =  emailContentText.template_content;  
+                            var clientMsgText = replaceVariables(emailContentText.template_content, rplcData);
+                            //$scope.cPersonMsg.messageData = replaceVariables(emailContentText.template_content, rplcData);
+                            //$scope.cPersonMsg.messageData += '<br />' + msgText
+                            //console.log('$scope.cPersonMsg.messageData==newwwwwwwwww', $scope.cPersonMsg.messageData)
+                            msgContent = '<br />' + clientMsgText;
+                        }
+                        resolve();
+                    }).error(function (error) {
+                        reject(error);
+                    });
+                });
+            }
+
+        }else{
+            var getEmailTemplates = function() {
+                return Promise.resolve();
             };
-            msgText = replaceVariables(msgText, rplcClientData);
-            $scope.cPersonMsg.messageData = msgText; 
-        }).error(errorCallback);
+        }
+        
         // new code to get logged user details
+        function getUserDetails() {
+            return new Promise((resolve, reject) => {
+
+                var loggedUserIdSend = $window.localStorage.getItem("session_iUserId");
+                $scope.loggedUserDetailsReminder = '';
+                rest.path = 'getUserDetails/' + loggedUserIdSend;
+                rest.get().success(function (data) {
+                    $scope.loggedUserDetailsReminder = data;
+                    $scope.invoiceSenderContactReminder = $scope.loggedUserDetailsReminder[0].vUserName;
+                    $scope.invoiceSenderEmailReminder = $scope.loggedUserDetailsReminder[0].vEmailAddress;
+                    $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+                    if($scope.loggedUserDetailsReminder.length > 0){
+                        var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+                        //var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                        //$scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
+                        var position2Reminder = ($scope.loggedUserDetailsReminder.length > 1 && $scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                        $scope.invoiceClinetpositionReminder = position1Reminder + (position2Reminder ? " & " + position2Reminder : "");
+                    }
+                    
+                    const rplcClientData = {
+                        SENDER_NAME: ($scope.invoiceSenderContactReminder) ? $scope.invoiceSenderContactReminder : $scope.invoiceSenderContact,
+                        RESOURCE_POSITION: ($scope.invoiceClinetpositionReminder) ? $scope.invoiceClinetpositionReminder : $scope.invoiceClinetposition,
+                        RESOURCE_EMAIL: ($scope.invoiceSenderEmailReminder) ? $scope.invoiceSenderEmailReminder : $scope.invoiceClinetposition,
+                    };
+                    msgText = replaceVariables(msgText, rplcClientData);
+                    $scope.cPersonMsg.messageData = msgContent + msgText; 
+                
+                    resolve();
+
+                }).error(function (error) {
+                    reject(error);
+                });
+            });
+        }
+        // new code to get logged user details
+
+        getEmailTemplates()
+        .then(getUserDetails)
+        .catch(errorCallback);
         
         // $scope.cPersonMsg.messageData = msgText;
     }).error(errorCallback);

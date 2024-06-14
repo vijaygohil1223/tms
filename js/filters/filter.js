@@ -620,10 +620,22 @@ app.filter('Textcharacter', function($filter) {
         }
     }
 });
-app.filter('localDate', ['$filter', function($filter) {
-    return function(input) {
-        var localTime = new Date(input);
-        return $filter('date')(localTime, 'medium');
+app.filter('groupByInvcDate', function() {
+    return function(items, key) {
+        if (!items || !key) return [];
+        let grouped = {};
+        items.forEach(item => {
+            let groupKey = item[key];
+            if (!grouped[groupKey]) grouped[groupKey] = [];
+            grouped[groupKey].push(item);
+        });
+        return grouped;
     };
-}]);
+});
 
+app.filter('sumByKey', function() {
+    return function(items, key) {
+        if (!items || !key) return 0;
+        return items.reduce((sum, item) => sum + item[key], 0);
+    };
+});
