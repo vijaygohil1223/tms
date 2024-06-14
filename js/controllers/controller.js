@@ -33347,6 +33347,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "clientInvoiceApprovedScoop/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
             //$scope.InvoiceResult = data;
+            
             $scope.InvoiceResult = data.filter(function (el) {
                 el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
                 // status Approved = 5 id
@@ -33355,6 +33356,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(! $scope.scoopIds.includes(el.itemId))
                     return el;
             });
+            console.log('$scope.InvoiceResult', $scope.InvoiceResult)
+            
+            
             //$scope.InvoiceResult.sort((a, b) => a.contactName.localeCompare(b.contactName))
 
             $scope.InvoiceResult.sort(function (a, b) {
@@ -33482,6 +33486,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
         return total;
     };
+
+    // not in use
+    // function arrayRemove(arr, value) { 
+    //     return arr.filter(function(ele){ 
+    //         return ele != value; 
+    //     });
+    // }
+    // not in use
+    // function debounce(func, wait) {
+    //     let timeout;
+    //     return function() {
+    //         const context = this, args = arguments;
+    //         clearTimeout(timeout);
+    //         timeout = setTimeout(() => func.apply(context, args), wait);
+    //     };
+    // }
+    $scope.checkCreateInvoiceIds = function(id, clientId) {
+        var invoiceClientSelc = $('#checkAll' + clientId).is(':checked') ? 'true' : 'false';
+    
+        angular.forEach($scope.InvoiceResult, function(item) {
+            if(item.iClientId == clientId && invoiceClientSelc === 'true') {
+                item.SELECTED = 1;
+            } else {
+                item.SELECTED = 0;
+            }
+        });
+    
+        angular.element('[id^=checkAll]').each(function() {
+            if (this.id !== 'checkAll' + clientId) {
+                angular.element(this).attr('checked', false);
+            }
+        });
+    
+        // Ensure AngularJS detects the changes to the scope
+        $scope.$applyAsync();
+    };
+    
 
 
 }).controller('projectjobDetailController', function ($interval, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location) {

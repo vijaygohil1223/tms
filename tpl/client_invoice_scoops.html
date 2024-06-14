@@ -39,13 +39,22 @@
                   ng-repeat="invoiceL in InvoiceResult  track by $index" >
                   <tr>
                     <td colspan="7" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
-                      ng-if="$index ==0 || InvoiceResult[$index-1].iClientId !== invoiceL.iClientId">Client: {{
-                      invoiceL.contactName }}</td>
+                      ng-if="$index ==0 || InvoiceResult[$index-1].iClientId !== invoiceL.iClientId">
+                      <div class="d-flex">
+                        Client: {{ invoiceL.contactName }}
+                        <div class="d-flex" style="margin-top: -4px; margin-left: 25px;">
+                          <label style="margin-top:8px; white-space:nowrap;">Check All &nbsp;&nbsp;</label>
+                          <!-- <input type="checkbox" id="checkAll{{invoiceL.iClientId}}" name="invoiceCheckAll" ng-model="checkall" ng-checked="checkalldata=='all'" ng-click="checkCreateInvoiceIds('all', invoiceL.iClientId)" > -->
+                          <input type="checkbox" ng-model="invoiceselectedAll" id="checkAll{{invoiceL.iClientId}}" ng-change="checkCreateInvoiceIds('all', invoiceL.iClientId)" /> 
+                        </div>
+                        <button class="btn btn-info" ng-click="addInvoice(InvoiceResult)" style="padding: 4px; margin-left: 30px;"><i class="fa fa-plus"></i>&nbsp;&nbsp; invoice</button>
+                      </div>
+                    </td>
                   </tr>
                   <tr>
                     <td>
                       <span ng-if="invoiceL.itemStatus=='Approved' || invoiceL.itemStatus=='Overdue'">
-                        <input type="checkbox" ng-model="invoiceL.SELECTED" ng-true-value="1" ng-false-value="0" />
+                        <input type="checkbox" ng-model="invoiceL.SELECTED" ng-true-value="1" ng-false-value="0" class="scoopInv" />
                       </span>
                       <span ng-if="invoiceL.itemStatus!='Approved'">
                         <input type="checkbox" name="invoceCheck" disabled>
