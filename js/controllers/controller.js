@@ -17644,7 +17644,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.invoiceListAll = [];
             $scope.showDataLoaderJob = true;
         } else {
-            $scope.invcstatusFilter = 'all';
+            $scope.invcstatusFilter = 'Approved';
+            //$scope.invcstatusFilter = 'all';
             //$scope.invcstatusFilter = '';
         }
         $scope.invoiceActive = $scope.invoiceActive == invcStatus ? '' : invcStatus;
@@ -17698,7 +17699,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.invcList_tabFilter()
         .then(function (invoicePromiseData) {
-            $scope.invcStatusRecord('all');
+            $scope.invcStatusRecord('Approved');
     });
     // ****** END invioce TABS ******* //
 
@@ -17928,6 +17929,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     notification('Please select check box', 'warning')
                     return false;
                 }
+
+                //$scope.exportPdf();
+                //return false;
             
                 var zipdwnld = new JSZip();
                 var fileUrls = [];
@@ -18065,6 +18069,58 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
     };
+
+    $scope.exportPdf = async function() {
+
+        if($scope.invoiceListSelected?.length>0){
+            $scope.isDisabledExportpdf = true;
+            var pdfPromises = []; // Array to store promises for PDF generation
+            for (let val of $scope.invoiceListSelected) {
+                try {
+                    const pData = await $scope.pdfInvoice(val.invoice_id, true);
+                    pdfPromises.push(pData);
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                }
+            }
+            // After all promises are resolved
+            Promise.all(pdfPromises).then(pdfDataArray => {
+                var pdfFile = pdfDataArray.map((pdfData, index) => ({
+                    name: pdfData.name,
+                    data: pdfData.data
+                }));
+                // Proceed with handling the generated PDF files
+                $scope.generateZipFn(pdfFile);
+                $scope.isDisabledExportpdf = false;
+                notification("Download successful.", "success");
+            }).catch(error => {
+                console.error('Error generating PDFs:', error);
+                $scope.isDisabledExportpdf = false;
+            });
+        }else{
+            notification("Pelase select record.", "warning");
+        }
+    }
+    
+
+    $scope.generateZipFn = function(pdfFiles){
+        const zip = new JSZip();
+        pdfFiles.forEach(({ name, data }) => {
+            zip.file(name, data, { base64: true });
+        });
+        // pdfFiles.forEach(({ name, data }) => {
+        //     zip.file(name, data, { base64: true });
+        // });
+        zip.generateAsync({ type: 'blob' }).then(content => {
+            const zipBlob = new Blob([content]);
+            const zipUrl = URL.createObjectURL(zipBlob);
+
+            const link = document.createElement('a');
+            link.href = zipUrl;
+            link.download = 'invoices.zip';
+            link.click();
+        });
+    }
 
     //search data action
     $scope.statusAction = function (action) {

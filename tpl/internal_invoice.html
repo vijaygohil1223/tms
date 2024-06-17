@@ -71,14 +71,6 @@
               </div>
               <div class="">
                 <ul class="alt projectjobdv2 overviewli">
-                  <li class="list-group-item tab-due-today" ng-class="{ 'active': invoiceActive=='all'}">
-                    <a href="javascript:void(0)" ng-click="invcStatusRecord('all')">
-                      All Invoices <span class="badge bg-info">{{allInvcCount}}</span></a>
-                  </li>
-                  <li class="list-group-item tab-requested" ng-class="{ 'active': invoiceActive=='Open'}">
-                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
-                      Waiting on approval <span class="badge bg-info">{{openInvcCount}}</span></a>
-                  </li>
                   <li class="list-group-item tab-approved" ng-class="{ 'active': invoiceActive=='Approved' }">
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Approved')">
                       Outstanding <span class="badge bg-info">{{approvedInvcCount}}</span></a>
@@ -99,9 +91,17 @@
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
                       Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
                   </li>
+                  <li class="list-group-item tab-requested" ng-class="{ 'active': invoiceActive=='Open'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
+                      Waiting on approval <span class="badge bg-info">{{openInvcCount}}</span></a>
+                  </li>
                   <li class="list-group-item tab-not-exported" ng-class="{ 'active': invoiceActive=='Not-exported'}">
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Not-exported')">
                       Not exported <span class="badge bg-info">{{notExportedInvcCount}}</span></a>
+                  </li>
+                  <li class="list-group-item tab-due-today" ng-class="{ 'active': invoiceActive=='all'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('all')">
+                      All Invoices <span class="badge bg-info">{{allInvcCount}}</span></a>
                   </li>
                   <!-- <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': invoiceActive=='Irrecoverable'}">
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Irrecoverable')">
