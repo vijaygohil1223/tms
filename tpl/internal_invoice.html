@@ -75,6 +75,10 @@
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Approved')">
                       Outstanding <span class="badge bg-info">{{approvedInvcCount}}</span></a>
                   </li>
+                  <li class="list-group-item tab-requested" ng-class="{ 'active': invoiceActive=='Open'}">
+                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
+                      Waiting on approval <span class="badge bg-info">{{openInvcCount}}</span></a>
+                  </li>
                   <!-- <li class="list-group-item tab-partPaid" ng-class="{ 'active': invoiceActive=='Partly Paid'}">
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Partly Paid')">
                       Partly Paid <span class="badge bg-info">{{partPaidInvcCount}}</span></a>
@@ -90,10 +94,6 @@
                   <li class="list-group-item tab-cancel" ng-class="{ 'active': invoiceActive=='Cancelled'}">
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
                       Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
-                  </li>
-                  <li class="list-group-item tab-requested" ng-class="{ 'active': invoiceActive=='Open'}">
-                    <a href="javascript:void(0)" ng-click="invcStatusRecord('Open')">
-                      Waiting on approval <span class="badge bg-info">{{openInvcCount}}</span></a>
                   </li>
                   <li class="list-group-item tab-not-exported" ng-class="{ 'active': invoiceActive=='Not-exported'}">
                     <a href="javascript:void(0)" ng-click="invcStatusRecord('Not-exported')">
