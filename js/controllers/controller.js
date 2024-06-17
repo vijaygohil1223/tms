@@ -17930,84 +17930,85 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     return false;
                 }
 
-                //$scope.exportPdf();
+                $scope.exportPdfAll();
+                
                 //return false;
             
-                var zipdwnld = new JSZip();
-                var fileUrls = [];
-                var file_count = 0;
-                var downloadfileName = '';
+                // var zipdwnld = new JSZip();
+                // var fileUrls = [];
+                // var file_count = 0;
+                // var downloadfileName = '';
             
-                function fileUrlExists(url) {
-                    // Function to check if file URL exists
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('HEAD', url, false);
-                    xhr.send();
-                    return xhr.status !== 404;
-                }
+                // function fileUrlExists(url) {
+                //     // Function to check if file URL exists
+                //     var xhr = new XMLHttpRequest();
+                //     xhr.open('HEAD', url, false);
+                //     xhr.send();
+                //     return xhr.status !== 404;
+                // }
             
-                // Function to collect valid file URLs
-                function collectFileUrls() {
-                    return new Promise(function(resolve, reject) {
-                        $scope.invoiceListSelected.forEach(function(val) {
-                            if (val.resourceInvoiceFileName !== '') {
-                                var extension = val.resourceInvoiceFileName.split('.').pop();
-                                var fileName = val.resourceInvoiceFileName;
-                                downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no + '.' + extension;
-                                var fimgUrl = "uploads/invoice/" + fileName;
-                                if (fileUrlExists(fimgUrl)) {
-                                    fileUrls.push({
-                                        'full_url': fimgUrl,
-                                        'file_name': downloadfileName
-                                    });
-                                }
-                            }
-                        });
-                        resolve();
-                    });
-                }
+                // // Function to collect valid file URLs
+                // function collectFileUrls() {
+                //     return new Promise(function(resolve, reject) {
+                //         $scope.invoiceListSelected.forEach(function(val) {
+                //             if (val.resourceInvoiceFileName !== '') {
+                //                 var extension = val.resourceInvoiceFileName.split('.').pop();
+                //                 var fileName = val.resourceInvoiceFileName;
+                //                 downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no + '.' + extension;
+                //                 var fimgUrl = "uploads/invoice/" + fileName;
+                //                 if (fileUrlExists(fimgUrl)) {
+                //                     fileUrls.push({
+                //                         'full_url': fimgUrl,
+                //                         'file_name': downloadfileName
+                //                     });
+                //                 }
+                //             }
+                //         });
+                //         resolve();
+                //     });
+                // }
             
-                // Function to download files and generate ZIP
-                function downloadFilesAndGenerateZip() {
-                    return new Promise(function(resolve, reject) {
-                        if (fileUrls.length === 0) {
-                            resolve();
-                        } else {
-                            fileUrls.forEach(function(url) {
-                                JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
-                                    if (err) {
-                                        reject(err);
-                                        return;
-                                    }
-                                    file_count++;
-                                    if (data !== null) {
-                                        zipdwnld.file(url.file_name, data, { binary: true });
-                                        if (file_count === fileUrls.length) {
-                                            zipdwnld.generateAsync({ type: 'blob' }).then(function(content) {
-                                                saveAs(content, 'Invoices.zip');
-                                                resolve();
-                                            });
-                                        }
-                                    }
-                                });
-                            });
-                        }
-                    });
-                }
+                // // Function to download files and generate ZIP
+                // function downloadFilesAndGenerateZip() {
+                //     return new Promise(function(resolve, reject) {
+                //         if (fileUrls.length === 0) {
+                //             resolve();
+                //         } else {
+                //             fileUrls.forEach(function(url) {
+                //                 JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
+                //                     if (err) {
+                //                         reject(err);
+                //                         return;
+                //                     }
+                //                     file_count++;
+                //                     if (data !== null) {
+                //                         zipdwnld.file(url.file_name, data, { binary: true });
+                //                         if (file_count === fileUrls.length) {
+                //                             zipdwnld.generateAsync({ type: 'blob' }).then(function(content) {
+                //                                 saveAs(content, 'Invoices.zip');
+                //                                 resolve();
+                //                             });
+                //                         }
+                //                     }
+                //                 });
+                //             });
+                //         }
+                //     });
+                // }
             
-                // Execute the promise chain
-                collectFileUrls()
-                    .then(downloadFilesAndGenerateZip)
-                    .then(function() {
-                        if (fileUrls.length === 0) {
-                            notification('No files available', 'warning');
-                        }
-                        $route.reload();
-                    })
-                    .catch(function(err) {
-                        console.error('Error:', err);
-                        $route.reload();
-                    });
+                // // Execute the promise chain
+                // collectFileUrls()
+                //     .then(downloadFilesAndGenerateZip)
+                //     .then(function() {
+                //         if (fileUrls.length === 0) {
+                //             notification('No files available', 'warning');
+                //         }
+                //         $route.reload();
+                //     })
+                //     .catch(function(err) {
+                //         console.error('Error:', err);
+                //         $route.reload();
+                //     });
             
             break;
 
@@ -18069,58 +18070,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
     };
-
-    $scope.exportPdf = async function() {
-
-        if($scope.invoiceListSelected?.length>0){
-            $scope.isDisabledExportpdf = true;
-            var pdfPromises = []; // Array to store promises for PDF generation
-            for (let val of $scope.invoiceListSelected) {
-                try {
-                    const pData = await $scope.pdfInvoice(val.invoice_id, true);
-                    pdfPromises.push(pData);
-                } catch (error) {
-                    console.error('Error generating PDF:', error);
-                }
-            }
-            // After all promises are resolved
-            Promise.all(pdfPromises).then(pdfDataArray => {
-                var pdfFile = pdfDataArray.map((pdfData, index) => ({
-                    name: pdfData.name,
-                    data: pdfData.data
-                }));
-                // Proceed with handling the generated PDF files
-                $scope.generateZipFn(pdfFile);
-                $scope.isDisabledExportpdf = false;
-                notification("Download successful.", "success");
-            }).catch(error => {
-                console.error('Error generating PDFs:', error);
-                $scope.isDisabledExportpdf = false;
-            });
-        }else{
-            notification("Pelase select record.", "warning");
-        }
-    }
-    
-
-    $scope.generateZipFn = function(pdfFiles){
-        const zip = new JSZip();
-        pdfFiles.forEach(({ name, data }) => {
-            zip.file(name, data, { base64: true });
-        });
-        // pdfFiles.forEach(({ name, data }) => {
-        //     zip.file(name, data, { base64: true });
-        // });
-        zip.generateAsync({ type: 'blob' }).then(content => {
-            const zipBlob = new Blob([content]);
-            const zipUrl = URL.createObjectURL(zipBlob);
-
-            const link = document.createElement('a');
-            link.href = zipUrl;
-            link.download = 'invoices.zip';
-            link.click();
-        });
-    }
 
     //search data action
     $scope.statusAction = function (action) {
@@ -18230,7 +18179,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     // Download PDF
-    $scope.pdfInvoice = function (id) {
+    $scope.pdfInvoice__ = function (id) {
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'tpl/linguist_invoicePdf.html',
@@ -18249,6 +18198,157 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     }
+
+    $scope.pdfInvoice = function(id){
+        $scope.pdfInvoicePopup(id, false)
+    }
+
+    $scope.pdfInvoicePopup = function (id, isMultiple=false) {
+        var deferred = $q.defer(); // Create a deferred object
+        $scope.data = {
+            id: id,
+            isMultiple: isMultiple
+        }
+        
+        console.log('$scope.data', $scope.data)
+        var modalInstance = $uibModal.open({
+            templateUrl: 'tpl/linguist_invoicePdf.html',
+            controller: 'linguistInvoicePdfController',
+            //controller: 'invoicePdfController',
+            // controller: function($scope, $uibModalInstance, items){
+                // if you don't want to make seperate controller
+            // },
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            },
+            windowClass: 'hidden-modal', // Apply a CSS class to hide the modal
+            backdrop: 'static',          // To prevent closing on backdrop click
+            keyboard: false              // To prevent closing on Esc key press
+        });
+        modalInstance.result.then(function (rtnItem) {
+            console.log('rtnItem', rtnItem)
+            $scope.selected = rtnItem;
+            //$route.reload();
+            //generateZip(pdfFiles);
+            deferred.resolve(rtnItem);
+
+        });
+
+        return deferred.promise;
+    }
+
+    // File download generated pdf and existong pdf uploaded by liguist
+    function fileUrlExists(url) {
+        // Function to check if file URL exists
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open('HEAD', url, false);
+            xhr.send();
+            return xhr.status !== 404;
+        } catch (error) {
+            console.error('Error checking file URL:', error);
+            return false;
+        }
+    }
+    
+    $scope.exportPdfAll = async function() {
+        var zipdwnld = new JSZip();
+    
+        if ($scope.invoiceListSelected?.length > 0) {
+            $scope.isDisabledExportpdf = true;
+            var pdfPromises = []; // Array to store promises for PDF generation
+            var fileUrls = [];
+            
+            for (let val of $scope.invoiceListSelected) {
+                try {
+                    if (val.resourceInvoiceFileName == '') {
+                        const pData = await $scope.pdfInvoicePopup(val.invoice_id, true);
+                        pdfPromises.push(pData);
+                    } else {
+                        var extension = val.resourceInvoiceFileName.split('.').pop();
+                        var fileName = val.resourceInvoiceFileName;
+                        var downloadfileName = "Oversettelsestjenester - " + val.freelanceName + ' - ' + val.custom_invoice_no + '.' + extension;
+                        var fimgUrl = "uploads/invoice/" + fileName;
+                        if (fileUrlExists(fimgUrl)) {
+                            fileUrls.push({
+                                'full_url': fimgUrl,
+                                'file_name': downloadfileName
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error processing invoice:', error);
+                }
+            }
+    
+            try {
+                // After all promises are resolved
+                const pdfDataArray = await Promise.all(pdfPromises);
+                var pdfFile = pdfDataArray.map((pdfData, index) => ({
+                    name: pdfData.name,
+                    data: pdfData.data
+                }));
+    
+                // Add generated PDF files to zip
+                pdfFile.forEach(({ name, data }) => {
+                    zipdwnld.file(name, data, { base64: true });
+                });
+    
+                if (fileUrls.length > 0) {
+                    var filePromises = fileUrls.map(url =>
+                        new Promise((resolve, reject) => {
+                            try {
+                                JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
+                                    if (err) {
+                                        console.error('Error downloading file:', err);
+                                        reject(err);
+                                    } else {
+                                        zipdwnld.file(url.file_name, data, { binary: true });
+                                        resolve();
+                                    }
+                                });
+                            } catch (error) {
+                                console.error('Error fetching file:', error);
+                                reject(error);
+                            }
+                        })
+                    );
+    
+                    try {
+                        await Promise.all(filePromises);
+                        const content = await zipdwnld.generateAsync({ type: 'blob' });
+                        saveAs(content, 'Invoices.zip');
+                        notification("Download successful.", "success");
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 200);
+                    } catch (error) {
+                        console.error('Error generating zip with files:', error);
+                    }
+                } else {
+                    // If there are no existing files, directly generate the zip
+                    const content = await zipdwnld.generateAsync({ type: 'blob' });
+                    saveAs(content, 'Invoices.zip');
+                    notification("Download successful.", "success");
+                    setTimeout(() => {
+                        $route.reload();
+                    }, 200);
+                }
+            } catch (error) {
+                console.error('Error generating PDFs:', error);
+            } finally {
+                $scope.isDisabledExportpdf = false;
+            }
+    
+        } else {
+            notification("Please select a record.", "warning");
+        }
+    }
+    
+    // end export pdf
+
 
     $scope.editDueDate = function(id, inv_due_date, invoice_date){
         
@@ -20230,7 +20330,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return deferred.promise;
     }
 
-}).controller('linguistInvoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
+}).controller('linguistInvoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, $q, $http, $compile, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     $scope.isDisabledApprvd = false;
@@ -20246,8 +20346,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceTemplateName = 'tpl/linguist-invoice-pdf-content'+$scope.invoiceDesignType+'.html' ;
     
     $scope.vat = 0;
+    
+    if(items &&  items.id){
+        var itemId = items.id; 
+    }else{
+        motification("Id not exist", 'warning')
+        return false;
+    }
 
-    $routeParams.id = items;
+    $routeParams.id = itemId;
     if ($routeParams.id) {
         rest.path = "invoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
@@ -20464,26 +20571,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.isPdfdownload = false;
     $scope.printIt = function (invoiceNo) {
+        console.log('invoiceNo', invoiceNo)
         //let pdfName = invoiceNo ? invoiceNo : 'Linguist Invoice';
-        var pdfName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
+        //var pdfName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
+        var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
         $scope.isPdfdownload = true;
-        if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
-            var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
-            var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
-            // downloadFileFn(fileUrl);
-            downloadFileCustomFn(fileUrl, fileName)
-        }else{
-            kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
-                group.options.set("font", "8px DejaVu Sans");
-                kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
-                if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
-                    var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
-                    var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
-                    // downloadFileFn(fileUrl);
-                    //downloadFileCustomFn(fileUrl, fileName)
-                }
-            });
-        }    
+        
+        if(items && items.isMultiple && items.isMultiple == true ){
+            $scope.pdfDownloadFn(fileName, false); 
+        }else{    
+            if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+                var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+                // downloadFileFn(fileUrl);
+                downloadFileCustomFn(fileUrl, fileName)
+            }else{
+                var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
+                //         
+                
+                $scope.pdfDownloadFn(fileName, true);
+                // kendo.drawing.drawDOM($("#pdfExport")).then(function (group) {
+                //     group.options.set("font", "8px DejaVu Sans");
+                //     kendo.drawing.pdf.saveAs(group, pdfName + ".pdf");
+                //     if($scope.invoiceDetail && $scope.invoiceDetail.resourceInvoiceFileName){
+                //         var fileUrl = 'uploads/invoice/'+$scope.invoiceDetail.resourceInvoiceFileName;
+                //         var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
+                //         // downloadFileFn(fileUrl);
+                //         //downloadFileCustomFn(fileUrl, fileName)
+                        
+                //     }
+                // });
+            } 
+        
+            
+        }   
 
         $timeout(function () {
            $scope.cancel();
@@ -20493,6 +20613,99 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.cancel = function () {
         $uibModalInstance.close();
+    }
+
+    $scope.pdfDownloadFn = function(number, isDownload){
+        var deferred = $q.defer();
+        const invoicePdfData = {};
+        $http.get("tpl/invoicepdf-linguist.html")
+        .then(function(response) {
+          var htmlContent = response.data;
+          var compiledHTML = $compile(htmlContent)($scope);
+          console.log("compiledHTML", compiledHTML);
+          setTimeout(() => {
+            $scope.$apply();
+            // Extract content by ID from compiled HTML
+            var invoiceContent = compiledHTML.find(".invoiceContent").html();
+            var invoiceHeader = compiledHTML.find(".invoiceHeader").html();
+            var invoiceFooter = compiledHTML.find(".invoiceFooter").html();
+            //console.log("Specific Element Content:", specificElementContent);
+            invoicePdfData.pdfContent = invoiceContent
+            invoicePdfData.pdfHeader = invoiceHeader
+            invoicePdfData.pdfFooter = invoiceFooter
+            invoicePdfData.pdfFileName = number + '-file'+ (getDatetime(new Date())).toString().replace(/[^a-z0-9]/ig, '')+'.pdf' ;
+            invoicePdfData.base64Content = true
+            
+            rest.path = 'downloadinvoice';
+            rest.post(invoicePdfData).success(function (data) {
+                if(data && data.status ==200 && data.pdfFile){
+                    if(isDownload === true){
+                        var pdfBlob = b64toBlob(data.pdfFile, "application/pdf");
+                        // Create a URL for the Blob object
+                        var pdfUrl = URL.createObjectURL(pdfBlob);
+                        var aDownloadTag = document.createElement('a');
+                        aDownloadTag.href = pdfUrl;
+                        aDownloadTag.download = number + '.pdf';
+                        document.body.appendChild(aDownloadTag);
+                        aDownloadTag.click();
+                        document.body.removeChild(aDownloadTag);
+                        deferred.resolve(pdfBlob);
+                    }else{
+                        // base64 string
+                        deferred.resolve(data.pdfFile);
+                        var pdfDataArr = {
+                            name: number + '.pdf',
+                            data: data.pdfFile
+                        }
+                        $uibModalInstance.close(pdfDataArr);
+                        //deferred.resolve(pdfDataArr);
+                            
+                        $timeout(function () {
+                            $scope.invoiceDetail = {};
+                            pdfDataArr = {}
+                        }, 50);
+                    }
+                }
+            }).error(errorCallback);
+            
+            // rest.path = 'downloadinvoice';
+            // rest.post(invoicePdfData).success(function (data) {
+            //     if(data && data.status ==200 && data.pdfFile){
+            //         const pdffileName = invoiceNo ? invoiceNo + '.pdf' : 'invoice' + '.pdf';
+            //         var pdfBlob = b64toBlob(data.pdfFile, "application/pdf");
+            //         // Create a URL for the Blob object
+            //         if(! items.isMultiple){
+            //             var pdfUrl = URL.createObjectURL(pdfBlob);
+            //             var aDownloadTag = document.createElement('a');
+            //             aDownloadTag.href = pdfUrl;
+            //             aDownloadTag.download = pdffileName;
+            //             document.body.appendChild(aDownloadTag);
+            //             aDownloadTag.click();
+            //             document.body.removeChild(aDownloadTag);
+            //         }
+            //         var pdfDataArr = {
+            //             name: pdffileName,
+            //             data: data.pdfFile
+            //         }
+            //         $uibModalInstance.close(pdfDataArr);
+                        
+            //         $timeout(function () {
+            //             //$scope.cancel();
+            //             //$uibModalInstance.close(pdfDataArr);
+            //             $scope.invoiceDetail = {};
+            //             pdfDataArr = {}
+            //         }, 50);
+            //     }
+            // }).error(errorCallback);
+
+          }, 100);
+        })
+        .catch(function(error) {
+          //console.error("Error loading HTML:", error);
+          deferred.reject();
+        });
+
+        return deferred.promise;
     }
 
 
