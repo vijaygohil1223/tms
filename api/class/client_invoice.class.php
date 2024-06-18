@@ -241,6 +241,13 @@ class Client_invoice {
         $updata['custom_invoice_number'] = isset($data['custom_invoice_number']) ? $data['custom_invoice_number'] : $data['invoice_number'];
         $updata['inv_notes'] = isset($data['inv_notes']) ? $data['inv_notes'] : "";
         
+        if(isset($data['scoop_additional_detail'])){
+            $updata['scoop_additional_detail'] = $data['scoop_additional_detail'];
+        }
+        if(isset($data['scoop_additional_price'])){
+            $updata['scoop_additional_price'] = $data['scoop_additional_price'];
+        }
+        
         if(isset($data['currency_rate']))
             $updata['currency_rate'] = $data['currency_rate'];
         

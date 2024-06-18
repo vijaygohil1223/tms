@@ -251,24 +251,25 @@ td.table-data-text {
                                 <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled" />
                                 <a href="javascript:void(0);" class="btnDelete" ng-hide="editDisabled" ng-click="itemScoopDelete(invL.itemId,$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
                               </td>
-                            </tr> 
-                            <!-- <tr ng-if="$index == invoiceLength">
-                              <td colspan="2">
-                                <strong>Sub Total</strong>
-                              </td>
-                              <td class="nowrap">
-                                {{invoiceTotal}} </td>
                             </tr>
-                            <tr ng-if="$index == invoiceLength && vatTax>0">
-                              <td colspan="2"><strong>{{vatTax | customNumber}}% Tax</strong></td>
-                              <td class="nowrap"> 
-                                <span ng-if="vatAmount">{{vatAmount | customNumber}}</span>
-                                <span ng-if="!vatAmount">0</span>
-                              </td>
-                            </tr>  -->
-                              
                           </tbody>
                       </table>
+                      <table class="table table-bordered table-condensed" style="margin-top:-10px;">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <span style="pointer-events: all;" ng-click="toggleAdditionalScoop()" title="Additional scoop">  <i class="fa fa-tag"></i> </span> <br>
+                              <input class="form-control" type="text" ng-model="invoiceDetail.scoop_additional_detail" placeholder="description" id="scoop_additional_detail"  name="scoop_additional_detail" ng-disabled="editDisabled" ng-show="showHideAdditionalScoop" />
+                            </td>
+                            <td></td>
+                            <td>
+                              <div class="d-flex" style="margin-top: 20px;float:right;">
+                                <input class="invoiceCal form-control" type="text" ng-model="invoiceDetail.scoop_additional_price" ng-change="changeInvoiceField($index,$parent.$index,0,'itemPrice')" placeholder="Adjust price" id="scoop_additional_price"  name="scoop_additional_price" ng-disabled="editDisabled" ng-show="showHideAdditionalScoop" style="width: 100px;" />
+                              </div>
+                            </td>
+                          </tr> 
+                        </tbody>
+                    </table>
                       <table class="table table-bordered table-condensed-second" ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}">
                           <tbody>
                               <tr>

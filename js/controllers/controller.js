@@ -18443,6 +18443,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    $scope.toggleAdditionalScoop = function() {
+        $scope.showHideAdditionalScoop = !$scope.showHideAdditionalScoop;
+        console.log('$scope.showHideAdditionalScoop', $scope.showHideAdditionalScoop)
+        
+        setTimeout(() => {
+            $scope.changeInvoiceField(0,0,0,'itemPrice') 
+        }, 200);
+    };
+
 
     $scope.vatTax = 0;
     //change jobitem price module
@@ -18450,7 +18459,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var invoiceSum = 0;
         $(".invoiceCal").each(function (indx) {
             var invPrice = numberFormatCommaToPoint(this.value)
-            if (!isNaN(invPrice) && this.value.length != 0) {
+            console.log('invPrice===>', invPrice)
+            if (invPrice && !isNaN(invPrice) && this.value.length != 0) {
                 //let amountTaxRate = taxRateAmountCalc(invPrice, $scope.invoiceList[0].tax_rate);
                 //let itemPriceTax1 = parseFloat(invPrice) + parseFloat(amountTaxRate);                        
                 //$('#priceWithTax'+indx).text($filter('customNumber')(itemPriceTax1));
@@ -18708,6 +18718,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ( ['Complete','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
                 $scope.editDisabled = true;
             }
+
+            var scoop_additional_price = $scope.invoiceDetail?.scoop_additional_price || 0
+            $scope.invoiceDetail.scoop_additional_price = $filter('customNumber')(scoop_additional_price);
+            var scoop_additional_detail = $scope.invoiceDetail?.scoop_additional_detail || ''
+            if(scoop_additional_detail !='' || (scoop_additional_price !='' && scoop_additional_price != 0) ){
+                //$scope.showHideAdditionalScoop = true;
+                setTimeout(() => {
+                    $scope.toggleAdditionalScoop()
+                }, 200);
+            }
+
             // 
             $scope.reminderBtnHideShow = false;
             $timeout(function () {
@@ -18761,6 +18782,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.upInvoiceData = {};
     $scope.editInvoiceClient = function (id) {
+
+        console.log('$scope.invoiceDetail========>',$scope.invoiceDetail )
+        //return false;
+        
         $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
         //$scope.upInvoiceData.item_total = $scope.invoiceTotal
         //$scope.upInvoiceData.vat = $scope.vat
@@ -18773,6 +18798,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.upInvoiceData.invoice_date = invoiceDateString.isValid() ? invoiceDateString.format('YYYY-MM-DD') : '0000-00-00';
         $scope.upInvoiceData.currency_rate = $scope.currencyRate;
 
+        $scope.upInvoiceData.scoop_additional_detail = $scope.invoiceDetail?.scoop_additional_detail || '';
+        let scoopNewPrice =  $scope.invoiceDetail?.scoop_additional_price || 0
+        $scope.upInvoiceData.scoop_additional_price = numberFormatCommaToPoint(scoopNewPrice);
+        
         $scope.upInvoiceData.item = [];
         $scope.invoiceList.forEach(element => {
             const elItemID = element.itemId;
@@ -19145,6 +19174,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }).error(errorCallback);
     }
+
 }).controller('invoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;
@@ -35751,6 +35781,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceNumOfdays = 30;
     $scope.currencyRate = 1;
     $scope.isCreateNewScoop = 1;
+    $scope.showHideAdditionalScoop = false;
 
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
@@ -35762,7 +35793,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //     console.log('$scope.loginUserData', $scope.loginUserData)
         
     // })
-
+    
     // new to get login details
     $scope.loginDetails = {};
     rest.path = 'getProfile/' + $window.localStorage.getItem("session_iUserId");
@@ -35900,6 +35931,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //         })
             //     }
             // })
+            
             $scope.vatTax = 0;
             $scope.vatAmount = 0;
             $scope.invoiceTotal = 0;
@@ -35958,6 +35990,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceDetail.freelanceName = $scope.loginDetails?.vFirstName + ' ' + $scope.loginDetails?.vLastName;
             $scope.invoiceDetail.freelancePhone = $scope.loginDetails?.vPhoneNumber;
             $scope.invoiceDetail.freelanceEmail = $scope.loginDetails?.vEmailAddress;
+
+            $scope.invoiceDetail.scoop_additional_detail = '';
+            $scope.invoiceDetail.scoop_additional_price = 0;
+
             try{
                 var disaplyAccountName = ($scope.invoiceDetail.paymentInfoClient) ? JSON.parse($scope.invoiceDetail.paymentInfoClient) : '';
                 $scope.invoiceDetail.disaplyAccountName = disaplyAccountName?.accounting_name;
@@ -35979,21 +36015,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var invoiceSum = 0;
         $(".invoiceCal").each(function (indx) {
             var invPrice = numberFormatCommaToPoint(this.value)
-            console.log('invPrice', invPrice)
-            if (!isNaN(invPrice) && this.value.length != 0) {
+            console.log('invPrice=====>', invPrice)
+            if (invPrice && !isNaN(invPrice) && this.value.length != 0) {
                 //let amountTaxRate = taxRateAmountCalc(invPrice, $scope.invoiceList[0].tax_rate);
                 //let itemPriceTax = parseFloat(invPrice) + parseFloat(amountTaxRate);                        
                 $('#priceWithTax'+indx).text($filter('customNumber')(invPrice));
                 //$('#priceWithTax'+indx).text($filter('customNumber')(itemPriceTax));
                 //$scope.invoiceTotal = $filter('customNumber')(itemPriceTax);
                 invoiceSum += parseFloat(invPrice);
+                console.log('invoiceSum', invoiceSum)
             }
         });
         if (type == 'invoiceTotal') {
             $scope.invoiceTotal = numberFormatCommaToPoint(itemVal);
             $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
         }
+
         if (type == 'itemPrice') {
+        
             $scope.vatAmount = taxRateAmountCalc(invoiceSum, $scope.vatTax);
             $scope.grandTotal = parseFloat(invoiceSum) + parseFloat($scope.vatAmount);
             $scope.invoiceTotal = $filter('customNumber')(invoiceSum);
@@ -36045,6 +36084,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 break;
         }
 
+        
         $scope.invoiceData.freelance_id = $scope.invoiceDetail.freelanceId;
         $scope.invoiceData.customer_id = $scope.invoiceDetail.clientId;
         $scope.invoiceData.scoop_id = newObj.length > 0 ? JSON.stringify(newObj) : JSON.stringify(obj);
@@ -36062,6 +36102,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
 
+        $scope.invoiceData.scoop_additional_detail = $scope.invoiceDetail?.scoop_additional_detail || '';
+        let scoopNewPrice =  $scope.invoiceDetail?.scoop_additional_price || 0
+        $scope.invoiceData.scoop_additional_price = numberFormatCommaToPoint(scoopNewPrice);
+        
         $scope.invoiceData.currency_rate = $scope.currencyRate;
 
         //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
@@ -36136,6 +36180,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }).error(errorCallback);
     }
+
+    $scope.toggleAdditionalScoop = function() {
+        $scope.showHideAdditionalScoop = !$scope.showHideAdditionalScoop;
+        
+        $scope.changeInvoiceField(0,0,0,'itemPrice') 
+
+    };
+
+
 }).controller('clientInvoiceViewController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.is_disabled = false;
@@ -38707,6 +38760,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //Advance Resource search start
     $scope.jobstatusReportsearch = function (frmId, eID, job) {
         //if ($scope.jobReport == undefined || $scope.jobReport == null || $scope.jobReport == "") {
+        
+        console.log('$scope.jobReport', $scope.jobReport)
         if($scope.jobReport.resourceType == 'external'){
             if (Object.keys($scope.jobReport).length < 2) {
                     notification('Please Select option', 'information');
@@ -38714,7 +38769,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 rest.path = 'searchExternalResource';
                 rest.get().success(function (data) {
-                    console.log('data', data)
+                //rest.path = 'searchExternalResource';
+                //rest.post($scope.jobReport).success(function (data) {
+                    console.log('resource-data====>', data)
 
                     let temp_data = data;
                     if($scope.jobReport.freelancerType){
