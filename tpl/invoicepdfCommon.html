@@ -271,6 +271,13 @@
                   {{invL.item.itemTotalVal}}
                 </td>
               </tr>
+              <tr ng-if="$index == invoiceLength">
+                <td colspan="2">
+                  {{invoiceDetail.scoop_additional_detail}}
+                </td>
+                <td class="nowrap">
+                  {{invoiceDetail.scoop_additional_price}} </td>
+              </tr>
 
             </tbody>
           </table>
