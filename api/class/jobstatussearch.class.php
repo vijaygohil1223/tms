@@ -147,9 +147,42 @@ class jobstatussearch {
 
 		public function searchExternalResource(){
 			//$qry = "SELECT tmv.job_no AS jobNo,tmv.job_code AS jobCode,tmu.iUserId AS contactPerson,tmu.vUserName AS contactPersonName, tmv.resource AS resource, tu.vUserName As resourceName,tu.freelancer As freelancerType,tc.vUserName AS customerName,tmv.company_code AS companyCode,tcu.client AS customer,tu.vResourceType AS serviceGroup,tg.project_type AS projectType,tmv.item_status AS jobStatus,ti.item_status AS itemStatus,tu.iFkUserTypeId AS orderTypes,tg.order_no AS orderNum,tmv.job_summmeryId AS jobId,tu.iFkUserTypeId AS ifkuserId, tmv.po_number AS poNumber,tupl.currancy_id As currency,tu.address1Detail AS userCountry ,tmv.due_date As JobDueDate,Rate.OverallRating FROM tms_items AS ti LEFT JOIN tms_summmery_view AS tmv ON ti.order_id = tmv.order_id LEFT JOIN tms_customer AS tcu ON ti.order_id = tcu.order_id LEFT JOIN tms_client AS tc ON tcu.client = tc.iClientId LEFT JOIN tms_general AS tg ON ti.order_id = tg.order_id LEFT JOIN tms_users AS tu ON tmv.resource = tu.iUserId LEFT JOIN tms_users AS tmu ON tmv.contact_person = tmu.iUserId LEFT JOIN tms_userprice_list As tupl ON tupl.iUserId = tu.iUserId group by tmv.job_summmeryId";
-			$qry = "SELECT tu.iUserId, concat(tu.vFirstName, ' ', tu.vLastName) AS resourceName, tu.vFirstName, tu.vLastName, tu.freelancer As freelancerType, tu.companyName, tu.address1Detail AS userCountry, tu.freelance_currency, tcpl.resource_id, tcpl.specialization, tcpl.price_currency, tcpl.price_language, tcpl.price_basis FROM `tms_users` as tu LEFT JOIN tms_customer_price_list as tcpl ON tcpl.resource_id = tu.iUserId where tu.iFkUserTypeId =2";	
-
+			//$qry = "SELECT tu.iUserId, concat(tu.vFirstName, ' ', tu.vLastName) AS resourceName, tu.vFirstName, tu.vLastName, tu.freelancer As freelancerType, tu.companyName, tu.address1Detail AS userCountry, tu.freelance_currency, tcpl.resource_id, tcpl.specialization, tcpl.price_currency, tcpl.price_language, tcpl.price_basis FROM `tms_users` as tu LEFT JOIN tms_customer_price_list as tcpl ON tcpl.resource_id = tu.iUserId where tu.iFkUserTypeId =2";	
+			$qry = "SELECT tu.iUserId, concat(tu.vFirstName, ' ', tu.vLastName) AS resourceName, tu.vFirstName, tu.vLastName, tu.freelancer As freelancerType, tu.companyName, tu.address1Detail AS userCountry, tu.freelance_currency, tcpl.resource_id, tcpl.specialization, tcpl.price_currency, tcpl.price_language, tcpl.price_basis FROM `tms_users` as tu LEFT JOIN tms_customer_price_list as tcpl ON tcpl.resource_id = tu.iUserId AND tcpl.price_id = 2 where tu.iFkUserTypeId =2";	
 			$data = $this->_db->rawQuery($qry);
+
+	    	return $data;
+
+	    }
+
+		public function searchExternalResourceFilter($searchParams){
+			
+			$where = ' tu.iFkUserTypeId = 2 ';
+			if($searchParams){
+				if(isset($searchParams['resourceName'])){
+					$resource = $searchParams['resourceName'];
+					$where .= " AND CONCAT(tu.vFirstName, ' ', tu.vLastName) LIKE '%$resource%'";
+				}
+				if(isset($searchParams['source_lang'])){
+					$sourceLang = $searchParams['source_lang'];
+					$where .= " AND tcpl.price_language LIKE '%\"languagePrice\":\" > $sourceLang\"%'";
+				}
+				if(isset($searchParams['target_lang'])){
+					$target_lang = $searchParams['target_lang'];
+					$where .= " AND tcpl.price_language LIKE '%\"languagePrice\":\" > $target_lang\"%'";
+				}
+				
+			}
+			//print_r($searchParams);
+			
+			//$qry = "SELECT tmv.job_no AS jobNo,tmv.job_code AS jobCode,tmu.iUserId AS contactPerson,tmu.vUserName AS contactPersonName, tmv.resource AS resource, tu.vUserName As resourceName,tu.freelancer As freelancerType,tc.vUserName AS customerName,tmv.company_code AS companyCode,tcu.client AS customer,tu.vResourceType AS serviceGroup,tg.project_type AS projectType,tmv.item_status AS jobStatus,ti.item_status AS itemStatus,tu.iFkUserTypeId AS orderTypes,tg.order_no AS orderNum,tmv.job_summmeryId AS jobId,tu.iFkUserTypeId AS ifkuserId, tmv.po_number AS poNumber,tupl.currancy_id As currency,tu.address1Detail AS userCountry ,tmv.due_date As JobDueDate,Rate.OverallRating FROM tms_items AS ti LEFT JOIN tms_summmery_view AS tmv ON ti.order_id = tmv.order_id LEFT JOIN tms_customer AS tcu ON ti.order_id = tcu.order_id LEFT JOIN tms_client AS tc ON tcu.client = tc.iClientId LEFT JOIN tms_general AS tg ON ti.order_id = tg.order_id LEFT JOIN tms_users AS tu ON tmv.resource = tu.iUserId LEFT JOIN tms_users AS tmu ON tmv.contact_person = tmu.iUserId LEFT JOIN tms_userprice_list As tupl ON tupl.iUserId = tu.iUserId group by tmv.job_summmeryId";
+			$qry = "SELECT tu.iUserId, concat(tu.vFirstName, ' ', tu.vLastName) AS resourceName, tu.vFirstName, tu.vLastName, tu.freelancer As freelancerType, tu.companyName, tu.address1Detail AS userCountry, tu.freelance_currency, tcpl.resource_id, tcpl.specialization, tcpl.price_currency, tcpl.price_language, tcpl.price_basis FROM `tms_users` as tu LEFT JOIN tms_customer_price_list as tcpl ON tcpl.resource_id = tu.iUserId AND tcpl.price_id = 2 where $where GROUP BY tu.iUserId ";	
+			echo $qry;
+			exit;
+			$data = $this->_db->rawQuery($qry);
+			echo $this->_db->getLastQuery();
+			//print_r($data);
+			exit;
 
 	    	return $data;
 

@@ -2975,6 +2975,12 @@ $app->get('/searchExternalResource','authenticate', function () use($app) {
     $result = $statusJob->searchExternalResource();
     echoResponse(200, $result);
 });
+$app->post('/searchExternalResource', 'authenticate', function () use($app) {
+    $statusJob = new jobstatussearch ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $statusJob->searchExternalResourceFilter($data);
+    echoResponse(200, $result);
+});
 $app->get('/jobsearchStatusUpdate/:id/:status','authenticate', function ($id, $status) use($app) {
     $statusJob = new jobstatussearch ();
     $result = $statusJob->jobsearchStatusUpdate($id, $status);
