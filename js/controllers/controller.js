@@ -19974,6 +19974,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.editInvoiceLinguist = function (id) {
         
         try {
+
             //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
             $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)
                     
@@ -20007,12 +20008,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 const invoice_duedate = calculateDueDate($scope.upInvoiceData.invoice_date, $scope.invoiceNumOfdays);
                 var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
             }else{
-                const invoice_duedate = calculateDueDate( moment().format('YYYY-MM-DD'), $scope.invoiceNumOfdays);
+                const invoice_duedate = calculateDueDate( moment($scope.invoiceDetail.created_date).format('YYYY-MM-DD'), $scope.invoiceNumOfdays);
                 var invDueDate = moment(invoice_duedate).format('YYYY-MM-DD');
                 $scope.upInvoiceData.invoice_date = moment().format('YYYY-MM-DD');
-                console.log('invDueDate======>Elseeee', invDueDate)
             }
-            $scope.upInvoiceData.inv_due_date = invDueDate            
+            $scope.upInvoiceData.inv_due_date = invDueDate  
+            
+            const invoiceCreateDate = moment($scope.invoiceDetail.created_date).format('YYYY-MM-DD') ;
+                          
+            if (new Date($scope.upInvoiceData.invoice_date) <= new Date(invoiceCreateDate) ) {
+            } else {
+                notification('Invoice date should be less than create date.'+invoiceCreateDate , 'warning');
+                return false;
+            }
+
         } catch (error) {
             console.log('error', error)
             $scope.invoiceDetail.invoice_date = moment($scope.invoiceDetail.invoice_date).format($window.localStorage.getItem('global_dateFormat'));
@@ -35740,6 +35749,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
         });
 
+        
         if($scope.invoiceDetail.invoice_date != 'Invalid date'){
             var dtFrmtDash = originalDateFormatDash($scope.invoiceDetail.invoice_date);
             var inv_new_date = moment(dtFrmtDash).format('YYYY-MM-DD');
@@ -35751,6 +35761,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         $scope.invoiceData.inv_due_date = invDueDate
 
+        // const invoiceCreateDate = moment().format('YYYY-MM-DD') ;
+        // console.log('invoiceCreateDate', invoiceCreateDate)
+        // if (new Date($scope.invoiceData.invoice_date) <= new Date(invoiceCreateDate) ) {
+        // } else {
+        //     notification('Invoice date should be less than create date.'+invoiceCreateDate , 'warning');
+        //     return false;
+        // }
+        
         if ($scope.invoiceDetail.payment) {
             rest.path = "invoiceSave";
             rest.post($scope.invoiceData).success(function (data) {
