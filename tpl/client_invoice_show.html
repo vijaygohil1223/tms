@@ -45,9 +45,7 @@
           <h1 class="m-n font-thin h3">Invoice</h1>
         </div>
         <div class="pull-right">
-          <a ng-show="userRight==1" href="javascript:history.back()" class="btn btn-sm btn-info invcBtn"><span
-              class="fa fa-arrow-left"></span> Back</a>
-          <a ng-show="userRight==2" href="javascript:history.back()" class="btn btn-sm btn-info invcBtn"><span
+          <a href="javascript:history.back()" class="btn btn-sm btn-info invcBtn"><span
               class="fa fa-arrow-left"></span> Back</a>
           <a href="" class="btn btn-sm btn-info invcBtn" ng-click="printIt(invoiceDetail.invoice_number)"
             ng-disabled="is_disabled">Download</a>
@@ -55,6 +53,13 @@
               class="fa fa-pencil"></i> Edit & Save</a>
           <a href="" class="btn btn-sm btn-info" ng-show="reminderBtnHideShow"
             ng-click="sendRemiderinvoice(invoiceDetail.invoice_number)" ng-disabled="is_disabled">Send Reminder</a>
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="! isCreditNotesExist" ng-click="createInvoiceCreditNote(invoiceDetail.invoice_id)" ng-disabled="isCreditNotesCreate">
+            <i class="fa fa-plus"></i> Credit Notes </a>
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="isCreditNotesExist" ng-click="downloadInvoiceCreditNote(invoiceCreditNotesNumber)" ng-disabled="isCreditNotesCreate">
+              <i class="fa fa-file-pdf-o"></i> Credit Notes </a>
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="isCreditNotesExist" ng-click="sendInvoiceEmail('credit_notes_email', invoiceCreditNotesNumber, true)" ng-disabled="isCreditNotesCreate">
+                <i class="fa fa-send-o"></i> Credit Notes </a>    
+            
         </div>
       </div>
       <div class="wrapper-md ng-scope">

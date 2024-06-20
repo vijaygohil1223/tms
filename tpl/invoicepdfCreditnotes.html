@@ -202,23 +202,10 @@
               </div>
             </div>
             <div style="padding-top: 15px;">
-              <!-- <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
-                <p class="mb-d"><strong>Contact</strong></p>
-                {{invoiceDetail.freelanceName}}
-              </div>
-              <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
-                <p class="mb-d"><strong>Telephone</strong></p>{{invoiceDetail.freelancePhone}}
-              </div>
-              <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
-                <p class="mb-d"><strong>Email</strong></p> {{invoiceDetail.freelanceEmail}}
-              </div> 
-              <div class="col-sm-3">
-                <p class="mb-d"><strong>Date</strong></p>
-                {{invoiceDetail.invoice_date}}
-              </div> -->
               <table style="width: 100%;">
                 <thead>
                   <tr>
+                    <td style="font-weight: bold;" >Invoice</th>
                     <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Contact</th>
                     <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2"> Telephone</th>
                     <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Email </th>
@@ -227,13 +214,14 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceName}}
+                    <td style="width: 20%;"> {{invoiceDetail.custom_invoice_number}} </td>
+                    <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceName}}
                     </td>
-                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2">
+                    <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2">
                       {{invoiceDetail.freelancePhone}}</td>
-                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2">
+                    <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2">
                       {{invoiceDetail.freelanceEmail}}</td>
-                    <td style="width: 25%;"> {{invoiceDetail.invoice_date}} </td>
+                    <td style="width: 20%;"> {{invoiceDetail.invoice_date}} </td>
                   </tr>
 
                 </tbody>
@@ -246,8 +234,8 @@
         <div class="panel panel-default invoice-header-height">
           <div style="margin-top:15px;margin-bottom:15px;">
             <div class="invoice-heading">
-              <div class="d-flex"> <strong>Invoice</strong>
-                <span>{{invoiceDetail.custom_invoice_number}}</span>
+              <div class="d-flex"> <strong>Credit Notes {{invoiceCreditNotesNumber}}</strong>
+                <!-- <span></span> -->
               </div>
             </div>
           </div>
@@ -271,7 +259,7 @@
                   {{invL.item.itemTotalVal}}
                 </td>
               </tr>
-              <tr ng-if="$index == invoiceLength && (invoiceDetail.scoop_additional_detail != '' )">
+              <tr ng-if="$index == invoiceLength && invoiceDetail.scoop_additional_detail != '' ">
                 <td colspan="2">
                   {{invoiceDetail.scoop_additional_detail}}
                 </td>
@@ -308,26 +296,6 @@
             </tbody>
           </table>
 
-          <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-              <div style="margin-top:20px;">
-                <div ng-if="invoiceDetail.inv_notes" class="invoice-heading" style="margin-bottom:10px;">
-                  <div class="d-flex"> <span style="margin-bottom: 0px !important;"><strong>Notes</strong></span>
-                    <span style="margin-top: 0px !important;font-size: 14px !important; padding-top: 0px !important;">{{invoiceDetail.inv_notes}}</span>
-                  </div>
-                </div>
-                <div>{{ invoiceSettingData.description }} </div>
-                <div>Payment for this invoice is due by <span
-                    ng-bind="invoiceDetail.paymentDueDate | globalDtFormat"></span>. </div><br>
-                <div><strong>Payment details:</strong> </div>
-                <div>Bank Name: <span ng-bind="vBankInfo.bank_name"></span></div>
-                <div>Bank Address: <span ng-bind="vBankInfo.address"></span></div>
-                <div>Account holder: <span ng-bind="vBankInfo.holder_name"></span></div>
-                <div>IBAN: <span ng-bind="vBankInfo.iban"></span></div>
-                <div>SWIFT: <span ng-bind="vBankInfo.swift_bic"></span></div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

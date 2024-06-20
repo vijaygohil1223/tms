@@ -19028,10 +19028,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    $scope.pdfDownloadFn = function(number, isDownload){
+    $scope.pdfDownloadFn = function(number, isDownload, htmlPage = false){
+        if(htmlPage && htmlPage == true){
+           var pageName = "tpl/invoicepdfCreditnotes.html";
+        }else{
+            var pageName = "tpl/invoicepdfCommon.html";
+        }
         var deferred = $q.defer();
         const invoicePdfData = {};
-        $http.get("tpl/invoicepdfCommon.html")
+        $http.get(pageName)
         .then(function(response) {
           var htmlContent = response.data;
           var compiledHTML = $compile(htmlContent)($scope);
@@ -19079,7 +19084,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return deferred.promise;
     }
 
-    $scope.sendInvoiceEmail = function (type, number) {
+    $scope.sendInvoiceEmail = function (type, number, sendNotesPage = false) {
         if (type) {
             let companycontactEmail = $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail;
             $window.localStorage.generalMsg = companycontactEmail;
@@ -19092,10 +19097,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //         });
                 //     })
                 //     .done(function (data) {
-                        $scope.pdfDownloadFn(number, false ).then((pdfBase64Data) =>{
+                        $scope.pdfDownloadFn(number, false, sendNotesPage ).then((pdfBase64Data) =>{
                             //console.log('pdfBase64Data', pdfBase64Data)
                             if(pdfBase64Data){
                                 let clientInvoiceNumber = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
+                                if(sendNotesPage && sendNotesPage == true){
+                                    clientInvoiceNumber = number
+                                }
                                 let userSignInfo = $scope.invoiceDetail.userSignInfo ? $scope.invoiceDetail.userSignInfo : "";
                                 let clientSenderContact = $scope.invoiceDetail?.sender_contact ? $scope.invoiceDetail?.sender_contact : "";
                                 let clientSenderEmail = $scope.invoiceDetail?.sender_email ? $scope.invoiceDetail?.sender_email : "";
@@ -19110,6 +19118,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     'companycontactEmail': companycontactEmail,
                                     'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
                                     'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
+                                    'credit_notes_email': type == 'credit_notes_email' ? 1 : 0,
                                     'isClientInvoice' : 1,
                                     'userSignInfo' : userSignInfo,
                                     'clientSenderContact': clientSenderContact,
@@ -19174,6 +19183,57 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }).error(errorCallback);
     }
+
+    $scope.isCreditNotesCreate = false; 
+    $scope.isCreditNotesExist = false; 
+    
+    $scope.invoiceCreditNotesNumber = '';
+    rest.path = 'getInvoiceCreditnotes/'+ $routeParams.id;
+    rest.get().success(function (data) {
+        console.log('creadit Notesdata===>', data)
+        if(data && data.status == 200){
+            $scope.invoiceCreditNotesNumber = data.credit_note_no;
+            $scope.isCreditNotesExist = true; 
+        }
+
+    })
+    
+    $scope.createInvoiceCreditNote = function (id) {
+        if(id){
+            $scope.creditNotesUp = {};
+            $scope.isCreditNotesCreate = true; 
+            $scope.creditNotesUp.invoice_id = id;
+            rest.path = 'createInvoiceCreditnotes';
+            rest.post($scope.creditNotesUp).success(function (data) {
+                $scope.isCreditNotesCreate = false; 
+                if(data && data.status == 200){
+                    let sucMsg = data?.msg || "Credit Notes inserted successfully"
+                    notification(sucMsg, 'success')
+                    setTimeout(() => {
+                        $route.reload();
+                    }, 200);
+                    return;
+                }else if(data && data.status == 422 && data.is_exist == true){
+                    let sucMsg = data?.msg || "Same invoice record exist!"
+                    notification(sucMsg, 'warning')
+                    setTimeout(() => {
+                        $route.reload();
+                    }, 200);
+                }else{
+                    notification("something went wrong", 'warning')
+                }
+            }).error( function(){
+                $scope.isCreditNotesCreate = false; 
+            })
+        }
+    }
+
+    $scope.downloadInvoiceCreditNote = function(number, isDownload= true){
+        $scope.pdfDownloadFn(number, true,  true).then((pdfDownload) =>{
+            console.log('pdfDownload', pdfDownload)
+        });
+    }
+
 
 }).controller('invoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -30921,14 +30981,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // Invoice email 
     $scope.invoiceData = {}
-    if(items && (items.invoice_to_be_sent == 1 || items.outstanding_reminder == 1 ) ){
+    
+    if(items && (items.invoice_to_be_sent == 1 || items.outstanding_reminder == 1  || items.credit_notes_email == 1 ) ){
         $scope.emailPopupType = items.isClientInvoice ? 'invoice-client' : 'invoice-linguist';
         $scope.invoiceData = items;
         //console.log('$scope.invoiceData', $scope.invoiceData)
+        let invoicePfxTxt = items.credit_notes_email == 1 ? 'Credit Notes ' : 'Invoice '
         $scope.invoiceData.invoiceName = items.pdfData ? items.invoiceno + '.pdf' : '';
-        $scope.invoiceData.subject = items?.invoiceno ? 'Invoice '+items?.invoiceno  : '';
+        $scope.invoiceData.subject = items?.invoiceno ? invoicePfxTxt + items?.invoiceno  : '';
     }
-    console.log('itemsss=', items)
 
     // new for the invoice list direct
     if(items && (items.sentInvoiceClientListing == 1) ){
@@ -30998,14 +31059,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
 
         }else if($scope.emailPopupType == 'invoice-client'){
+
             $scope.cPersonMsg.msgEmailSubject = $scope.invoiceData && $scope.invoiceData?.subject ? $scope.invoiceData.subject : 'Invoice ';
-        
+            
+            var templateID = 12;
+            if(items && items.credit_notes_email){
+                templateID = 16;
+            }
+
             var getEmailTemplates = function() {
                 return new Promise((resolve, reject) => {
 
                     rest.path = "emailTemplateGetAll" ;
                     rest.get().success(function (data) {
-                        var emailContentText = data.find( (templt) => templt.template_id == 12);
+                        var emailContentText = data.find( (templt) => templt.template_id == templateID);
                         console.log('emailContentText========111111111', emailContentText)
                         if(emailContentText){
                             const rplcData = {
@@ -31107,6 +31174,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 case 'invoice-client' :
                     $scope.invoiceData.file = $scope.attachementfile; 
                     $scope.invoiceData.data = message; 
+                    // send client invoice and Credit Notes email
                     rest.path = 'sendClientInvoiceMail';
                     rest.post($scope.invoiceData).success(function (data) {
                         if (data.status == 200) {
@@ -31117,6 +31185,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }
                     }).error(errorCallback);
                     break;
+                    
                 case 'general' :
                     rest.path = 'sendgeneralMsg';
                     rest.post(data).success(function (data) {

@@ -3616,7 +3616,7 @@ $app->get('/clientInvoiceDesignType','authenticate', function () use($app) {
     $result = $invoice->clientInvoiceDesignType();
     echoResponse(200, $result);
 });
-$app->get('/clientInvoiceSetting/','authenticate', function () use($app) {
+$app->get('/clientInvoiceSetting','authenticate', function () use($app) {
     $invoice = new Client_invoice ();
     $result = $invoice->getClientInvoiceSetting();
     echoResponse(200, $result);
@@ -3666,6 +3666,17 @@ $app->get('/getClientInvoiceByScoopId/:id','authenticate', function ($id) {
 $app->get('/insertTempInvoiceData/:id', function ($id) {
     $item = new Client_invoice ();
     $result = $item->insertTempInvoiceData($id);
+    echoResponse(200, $result);
+});
+$app->post('/createInvoiceCreditnotes', 'authenticate',function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->createInvoiceCreditnotes($data);
+    echoResponse(200, $result);
+});
+$app->get('/getInvoiceCreditnotes/:id', 'authenticate',function($id) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getInvoiceCreditnotes($id);
     echoResponse(200, $result);
 });
 //-------------------Resource Postion----------------//

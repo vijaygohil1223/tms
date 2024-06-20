@@ -496,11 +496,16 @@ class Client_invoice {
         $this->_db->where('is_active', 1);
         $emailSign = $this->_db->getone('tms_email_sign'); 
 
+        $tempId = 12;
+        if(isset($data['credit_notes_email']) && $data['credit_notes_email']==1){
+            $tempId = 16;
+        }
+
         $pdf_content = explode("base64,",$data['pdfData']);
         $bin = base64_decode($pdf_content[1], true);
         $pdfFileName = $data['invoiceno'].'.pdf';
         $invoiceDue = isset($data['invoiceDue']) ? $data['invoiceDue'] : '';
-        $this->_db->where('template_id',12);
+        $this->_db->where('template_id',$tempId);
         $emailTemplateInvoice = $this->_db->getOne('tms_email_templates');
         $search_array = array("[INVOICENO]", "[PAYDUE]");
         $replace_array = array($data['invoiceno'], $invoiceDue );
@@ -609,8 +614,14 @@ class Client_invoice {
                 if(isset($data['outstanding_reminder']) && $data['outstanding_reminder']==1){
                     $upData['reminder_sent'] = 1;
                 }
+                if(isset($data['credit_notes_email']) && $data['credit_notes_email']==1){
+                    $upData['is_credit_notes_email_sent'] = 1;
+                    //$upData['is_invoice_sent'] = 0;
+                }else{
+                    $upData['is_invoice_sent'] = 1;
+                }
                 $upData['modified_date'] = date('Y-m-d');
-                $upData['is_invoice_sent'] = 1;
+                
                 $this->_db->where('invoice_id', $data['invoice_id']);
                 $this->_db->update('tms_invoice_client',$upData);
 
@@ -621,7 +632,11 @@ class Client_invoice {
                     $invcScpIds = json_decode($invcData[0]['scoop_id']);
                     foreach ($invcScpIds as $key => $value) {
                         $scpData['updated_date'] = date('Y-m-d H:i:s');
-                        $scpData['item_status'] = '6'; // Invoiced status ID
+                        if(isset($data['credit_notes_email']) && $data['credit_notes_email']==1){
+                            $scpData['item_status'] = '9'; // cancel status  ID scoop status
+                        }else{
+                            $scpData['item_status'] = '6'; // Invoiced status ID scoop status
+                        }
                         $this->_db->where('itemId', $value->id);
                         $scpstsId = $this->_db->update('tms_items', $scpData);
                     }
@@ -1079,6 +1094,78 @@ class Client_invoice {
         }
 
         return $res;
+
+    }
+
+    public function getInvoiceCreditnotes($id) {
+    	$this->_db->where('tic.invoice_id', $id);
+        $this->_db->join('tms_invoice_client tic', 'tic.invoice_id=tcn.invoice_id', 'LEFT');
+        $result = $this->_db->getOne('tms_invoice_credit_notes tcn', 'tcn.*');
+        
+        if($result){
+            $result['status'] = 200;
+            $result['msg'] = "success";
+        }else{
+            $result['status'] = 422;
+            $result['msg'] = "No record";
+        }
+        return $result;
+    }
+
+    public function createInvoiceCreditnotes($postdata) {
+        if($postdata){
+            $this->_db->where('invoice_id', $postdata['invoice_id'] );
+            $sameRecordExist = $this->_db->getOne('tms_invoice_credit_notes');
+            
+            if($sameRecordExist){
+                $result['status'] = 422;
+                $result['is_exist'] = TRUE;
+                $result['msg'] = "Record alredy exist with same invoice";
+                return $result;
+            }
+            // print_r($sameRecordExist);
+            // exit;
+            //$prfxQry = $this->_db->getOne('tms_invoice_setting');
+            //$invPrefix = $prfxQry ? $prfxQry['invoiceNoPrefix']  : '';
+            $invPrefix = 'CN00-';
+            $maxRawQuery = 'SELECT MAX(credit_number_max) AS max_count FROM tms_invoice_credit_notes';
+            $maxResult = $this->_db->rawQuery($maxRawQuery);
+            // Set maxCount based on query result, defaulting to 45 if no result is found
+            $maxCount = isset($maxResult[0]['max_count']) && $maxResult[0]['max_count'] ? (int)$maxResult[0]['max_count'] : DEFAULT_CREDIT_NOTES_NO;
+            $maxCount += 1;
+            $maxCreditNoteNo = $invPrefix . str_pad($maxCount, 5, '0', STR_PAD_LEFT);
+            
+            $insdata['credit_note_no'] = $maxCreditNoteNo;
+            $insdata['credit_number_max'] = $maxCount;
+            $insdata['invoice_id'] = $postdata['invoice_id'];
+            $insdata['created_date'] = date('Y-m-d H:i:s');
+            $insdata['modified_date'] = date('Y-m-d H:i:s');
+            
+            $id = $this->_db->insert('tms_invoice_credit_notes', $insdata);
+            if($id){
+                $invData['modified_date'] = date('Y-m-d H:i:s');
+                $invData['is_credit_note'] = '1'; 
+                $invData['invoice_status'] = 'Cancel'; 
+                $this->_db->where('invoice_id', $postdata['invoice_id'] );
+                $invUpdate = $this->_db->update('tms_invoice_client', $invData);
+
+                $this->_db->where('id', $id);
+                $lastInsData = $this->_db->getOne('tms_invoice_credit_notes');
+                
+                $result['data'] = $lastInsData;
+                $result['is_exist'] = false;
+                $result['status'] = 200;
+                $result['msg'] = "Credit notes successfully created and Creadit notes number = ".$maxCreditNoteNo ;
+            } else {
+                $result['status'] = 401;
+                $result['msg'] = "Not saved";
+            }
+            return $result;
+        }else{
+            $result['status'] = 422;
+            $result['msg'] = "Post data not exist";
+            return $result;
+        }
 
     }
 
