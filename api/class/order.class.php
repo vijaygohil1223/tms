@@ -367,20 +367,20 @@ class order {
 
     public function orderNumberget($id){
 
-        $this->_db->orderBy('order_id',"desc");
+        // $this->_db->orderBy('order_id',"desc");
 
-    	$this->_db->where('abbrivation',$id);
+    	// $this->_db->where('abbrivation',$id);
 
-    	$data = $this->_db->get('tms_order',1);
+    	// $data = $this->_db->get('tms_order',1);
+        
+        // issue in previous query 
+        $maxrawQuery = "SELECT MAX(order_number) AS order_number FROM tms_order WHERE abbrivation = '$id' ";
+        $data = $this->_db->rawQuery($maxrawQuery);
 
     	if($data) {
-
             $info = $data[0]['order_number'];
-
     	} else {
-
     		$info = 0;
-
     	}        
 
     	return $info;

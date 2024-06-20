@@ -221,7 +221,8 @@
                       {{invoiceDetail.freelancePhone}}</td>
                     <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2">
                       {{invoiceDetail.freelanceEmail}}</td>
-                    <td style="width: 20%;"> {{invoiceDetail.invoice_date}} </td>
+                    <td style="width: 20%;"> {{invoiceCreditNotesDate | globalDtFormat}} </td>  
+                    <!-- <td style="width: 20%;"> {{invoiceDetail.invoice_date}} </td> -->
                   </tr>
 
                 </tbody>

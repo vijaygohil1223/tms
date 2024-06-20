@@ -19193,6 +19193,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('creadit Notesdata===>', data)
         if(data && data.status == 200){
             $scope.invoiceCreditNotesNumber = data.credit_note_no;
+            $scope.invoiceCreditNotesDate = data.created_date;
             $scope.isCreditNotesExist = true; 
         }
 
