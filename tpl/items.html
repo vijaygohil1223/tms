@@ -413,7 +413,7 @@
                                                          
                                                          <div class="col-sm-12">
                                                             <div class="form-group">
-                                                               <label>PO number</label>
+                                                               <label>PO number <span> &nbsp; <input type="checkbox" name="PO_missing" ng-true-value="1" ng-false-value="0" ng-model="it.PO_missing" ng-checked="it.PO_missing == 1" id="PO_missing{{it.itemId}}" title="Check if the final PO number is receive."> </span> </label>
                                                                <input type="text" class="form-control"
                                                                   id="po_number{{it.itemId}}"
                                                                   name="po_number{{it.itemId}}"
