@@ -17770,7 +17770,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isPaymentDate = false;
     $scope.onInputChange = function(item){
         console.log('item', item)
-        $scope.isPaymentDate = ['Paid','Complete'].includes(item.split(',').pop()) ? true : false 
+        $scope.isPaymentDate = ['Paid','Complete','Completed'].includes(item.split(',').pop()) ? true : false 
     }
 
     $scope.invoiceStatusChange = function (status, id, statusId) {
@@ -18721,7 +18721,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#irrecoverable').removeClass('btn-info');
                 $scope.is_disabled = true;
             }
-            if ( ['Complete','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
+            if ( ['Complete','Completed','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
                 $scope.editDisabled = true;
             }
 
@@ -19389,7 +19389,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#irrecoverable').removeClass('btn-info');
                 $scope.is_disabled = true;
             }
-            if ( ['Complete','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
+            if ( ['Complete','Completed','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
                 $scope.editDisabled = true;
             }
             // 
@@ -32966,7 +32966,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
                 //if(invoice_duedate)
                     //val.invoice_duedate = invoice_duedate;
-                if (val.invoice_status == 'Complete') {
+                if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed') {
                     $scope.invoiceCompleted.push(val);
                     //var ckey = $scope.invoiceUnpaid.length;
                     var ckey = $scope.invoiceCompleted.length;
