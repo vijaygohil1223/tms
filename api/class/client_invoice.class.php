@@ -895,11 +895,12 @@ class Client_invoice {
         $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','LEFT');
         $this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id','LEFT');
         $this->_db->join('tms_items ti', 'ti.itemId=tmInvoice.scoop_id','LEFT');
+        $this->_db->join('tms_invoice_credit_notes tcn', 'tcn.invoice_id=tmInvoice.invoice_id','LEFT');
         $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
         $this->_db->where('tmInvoice.invoice_type', $type);
         $this->_db->where('tmInvoice.is_deleted ', ' != 1');
         //$this->_db->where('tmInvoice.freelance_id',$userId);
-        $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date, tu.vSignUpload, tc.accounting_tripletex');
+        $data = $this->_db->get('tms_invoice_client tmInvoice', null,'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date, tmInvoice.is_credit_note, tmInvoice.is_credit_notes_email_sent, tcn.credit_note_no, tcn.created_date as credit_note_create_date, tu.vSignUpload, tc.accounting_tripletex');
         //echo $this->_db->getLastQuery();
         foreach ($data as $key => $value) {
             $data[$key]['companyName'] = ''; 
@@ -1123,10 +1124,6 @@ class Client_invoice {
                 $result['msg'] = "Record alredy exist with same invoice";
                 return $result;
             }
-            // print_r($sameRecordExist);
-            // exit;
-            //$prfxQry = $this->_db->getOne('tms_invoice_setting');
-            //$invPrefix = $prfxQry ? $prfxQry['invoiceNoPrefix']  : '';
             $invPrefix = 'CN00-';
             $maxRawQuery = 'SELECT MAX(credit_number_max) AS max_count FROM tms_invoice_credit_notes';
             $maxResult = $this->_db->rawQuery($maxRawQuery);
@@ -1145,7 +1142,7 @@ class Client_invoice {
             if($id){
                 $invData['modified_date'] = date('Y-m-d H:i:s');
                 $invData['is_credit_note'] = '1'; 
-                $invData['invoice_status'] = 'Cancel'; 
+                $invData['invoice_status'] = 'Credited'; 
                 $this->_db->where('invoice_id', $postdata['invoice_id'] );
                 $invUpdate = $this->_db->update('tms_invoice_client', $invData);
 

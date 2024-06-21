@@ -19196,11 +19196,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceCreditNotesNumber = '';
     rest.path = 'getInvoiceCreditnotes/'+ $routeParams.id;
     rest.get().success(function (data) {
-        console.log('creadit Notesdata===>', data)
         if(data && data.status == 200){
             $scope.invoiceCreditNotesNumber = data.credit_note_no;
             $scope.invoiceCreditNotesDate = data.created_date;
             $scope.isCreditNotesExist = true; 
+            $scope.editDisabled = true;
+            $scope.viewBtn = false;
         }
 
     })
@@ -32997,6 +32998,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cancelledInvc = [];
         $scope.overdueInvc = [];
         $scope.notExportedInvc = [];
+        $scope.creditedInvc = [];
 
         // -- Invoice count -- //
         $scope.openInvcCount = 0;
@@ -33006,6 +33008,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.cancelledInvcCount = 0;
         $scope.overdueInvcCount = 0;
         $scope.notExportedInvcCount = 0;
+        $scope.credtInvcCount = 0;
         
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (data) {
@@ -33028,7 +33031,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }
-                if (val.invoice_status == 'Complete') {
+                if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed' ) {
                     $scope.completedInvcCount++;
                     $scope.completeInvc.push(val);
                 }
@@ -33052,6 +33055,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.overdueInvcCount++ 
                     $scope.overdueInvc.push(val);
                 }
+
+                if (val.is_credit_note == 1) {
+                    $scope.credtInvcCount++;
+                    $scope.creditedInvc.push(val);
+                }
+
                 //Due date counts for Invoice
             });
             //deferred.resolve($scope.openInvc);
@@ -33113,7 +33122,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         setTimeout(() => {
                             $("#checkAll").trigger( "click" );
                         }, 200);
-                        break;    
+                        break;
+                    case "Credited":
+                        $scope.invoiceListAll = $scope.creditedInvc;
+                        break;        
                                 
                 }
                 // if ($scope.invcstatusFilter == 'all') {
