@@ -343,7 +343,7 @@ class Client_invoice {
         if($idd && isset($data['invoice_status'])){
             $this->_db->where('invoice_id', $id);
             $invoiceRecords = $this->_db->get('tms_invoice_client');
-            if($data['invoice_status'] == 'Complete'){
+            if($data['invoice_status'] == 'Complete' || $data['invoice_status'] == 'Completed' || $data['invoice_status'] == 'Paid'){
                 foreach (json_decode($invoiceRecords[0]['scoop_id']) as $field => $val) {
                     $scpData['updated_date'] = date('Y-m-d H:i:s');
                     //$scpData['item_status'] = 'Paid';

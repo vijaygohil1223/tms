@@ -219,17 +219,21 @@
               <table style="width: 100%;">
                 <thead>
                   <tr>
-                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Contact</th>
-                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2"> Telephone</th>
+                    <td style="font-weight: bold;" ng-if="isCreditNotesExist">Invoice</th>
+                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2 ">Contact</th>
+                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2 && ! isCreditNotesExist "> Telephone</th>
                     <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Email </th>
                     <td style="font-weight: bold;">Date </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
+                    <td ng-if="isCreditNotesExist">
+                      {{invoiceDetail.custom_invoice_number}}
+                    </td>
                     <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceName}}
                     </td>
-                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2">
+                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2 && !isCreditNotesExist ">
                       {{invoiceDetail.freelancePhone}}</td>
                     <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2">
                       {{invoiceDetail.freelanceEmail}}</td>
@@ -246,9 +250,14 @@
         <div class="panel panel-default invoice-header-height">
           <div style="margin-top:15px;margin-bottom:15px;">
             <div class="invoice-heading">
-              <div class="d-flex"> <strong>Invoice</strong>
+              <div class="d-flex" ng-if="isCreditNotesExist">
+                <strong>Credit Note</strong> 
+                {{invoiceCreditNotesNumber}}
+              </div>
+              <div class="d-flex" ng-if="! isCreditNotesExist"> <strong>Invoice</strong>
                 <span>{{invoiceDetail.custom_invoice_number}}</span>
               </div>
+              
             </div>
           </div>
           <table class="table table-bordered table-condensed" style="width: 100%;">

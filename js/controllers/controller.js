@@ -2243,7 +2243,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // }         
     
     $scope.dashboardTabList = [ 
-        { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 }, { "tabName":"missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0 } 
+        { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 }, { "tabName":"Missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0 } 
     ];
     // Tabs permission array
     //$scope.tabPermission = { "due_today": true, "to_be_assigned": true, "in_progress": true, "qa_ready": true, "to_be_delivered": true, "due_tomorrow": true, "delivered": true, "my_projects": true };
@@ -17734,6 +17734,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('responsive', true).
         withOption('pageLength', 100);
 
+    
+    // $scope.dtOptionsApproved = DTOptionsBuilder.newOptions()
+    //     .withOption('ajax', {
+    //         url: 'api.php',
+    //         type: 'GET',
+    //         dataSrc: function (json) {
+    //             $scope.users = json.data;
+    //             return json.data;
+    //         }
+    //     })
+    //     .withOption('processing', true)
+    //     .withOption('serverSide', true)
+    //     .withOption('paging', true)
+    //     .withOption('searching', true)
+    //     .withOption('order', [[1, 'asc']]) // Update the order index to match the new column structure
+    //     .withBootstrap();
+
+    // // Function to show user info
+    // $scope.showInfo = function(name) {
+    //     alert('User: ' + name);
+    // };
+
         
 
     $scope.invoiceCheck = function (status, id, statusId) {
@@ -18979,45 +19001,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $scope.sendInvoiceEmail('invoice_reminder', number)
 
-        // kendo.drawing.drawDOM($("#pdfExport"))
-        //     .then(function (group) {
-        //         // Render the result as a PDF file
-        //         return kendo.drawing.exportPDF(group, {
-        //             //paperSize: "auto",
-        //         });
-        //     })
-        //     .done(function (data) {
-        //         $scope.invoicemailDetail = {
-        //             'pdfData': data,
-        //             'invoice_id': $scope.invoiceDetail.invoice_id,
-        //             'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
-        //             'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
-        //             'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-        //             'freelanceName': $scope.invoiceDetail.freelanceName,
-        //             'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-        //             'companycontactEmail': $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
-        //             'outstanding_reminder': 1,
-        //             'clientInvoice': 1,
-        //         };
-        //         rest.path = 'sendClientInvoiceMail';
-        //         rest.post($scope.invoicemailDetail).success(function (data) {
-        //             if (data.status == 200) {
-        //                 notification('Reminder mail has been sent successfully', 'success');
-        //             }
-        //         }).error(errorCallback);
-
-        //         setTimeout(() => {
-        //             angular.element('.invoiceInput input').removeClass('invoiceInputborder');
-        //             angular.element('#btnPaid').show();
-        //             angular.element('#btnMarkAsCancel').show();
-        //             angular.element('#btnSave').show();
-        //             angular.element('#btnDraft').show();
-        //             angular.element('#btnCancel').show();
-        //             angular.element('#irrecoverable').show();
-        //             angular.element('#editInvoiceSave').show();
-        //         }, 500);
-
-        //     });
     }
     // End Invoice send Outstaing Reminder
 
@@ -19283,6 +19266,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 const clientPayment = JSON.parse($scope.invoiceDetail.clientVatinfo);
                 $scope.invoiceDetail.clientVatinfo = clientPayment.tax_id ? clientPayment.tax_id : '';
             }
+            $scope.invoiceDetail.freelanceName = $scope.invoiceDetail.sender_contact;
             $scope.vatNo = '';
             $scope.clientCity = $scope.clientCountry = $scope.clientZipcode = $scope.clientState = '';
             if ($scope.invoiceDetail.companyAddressDtl) {
@@ -19419,6 +19403,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }).error(errorCallback);
     }
+
+    $scope.isCreditNotesCreate = false; 
+    $scope.isCreditNotesExist = false; 
+    $scope.invoiceCreditNotesNumber = '';
+    rest.path = 'getInvoiceCreditnotes/'+ $routeParams.id;
+    rest.get().success(function (data) {
+        if(data && data.status == 200){
+            $scope.invoiceCreditNotesNumber = data.credit_note_no;
+            $scope.invoiceCreditNotesDate = data.created_date;
+            $scope.isCreditNotesExist = true; 
+        }
+    })
 
     $scope.printIt = function (invoiceNo) {
 
@@ -19679,13 +19675,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.inv.partPaid = $scope.inv.paid_amount;
                 $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
                 if ($scope.inv.paid_amount == items.Invoice_cost) {
-                    $scope.inv.invoice_status = "Complete";
+                    $scope.inv.invoice_status = "Completed";
                 } else {
                     $scope.inv.invoice_status = "Partly Paid";
                 }
                 if ($scope.closeAmount == true) {
                     $scope.inv.paid_amount = items.Invoice_cost;
-                    $scope.inv.invoice_status = "Complete";
+                    $scope.inv.invoice_status = "Completed";
                 }
 
                 $routeParams.id = items.statusId;
@@ -32968,6 +32964,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //if(invoice_duedate)
                     //val.invoice_duedate = invoice_duedate;
                 if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed') {
+                    val.invoice_status = 'Paid'
                     $scope.invoiceCompleted.push(val);
                     //var ckey = $scope.invoiceUnpaid.length;
                     var ckey = $scope.invoiceCompleted.length;
@@ -33031,7 +33028,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.openInvcCount++;
                     $scope.openInvc.push(val);
                 }
-                if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed' ) {
+                if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
+                    val.invoice_status = 'Paid';
                     $scope.completedInvcCount++;
                     $scope.completeInvc.push(val);
                 }
@@ -33103,6 +33101,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.invoiceListAll = $scope.openInvc;
                         break;
                     case "Completed":
+                        // complete as paid
                         $scope.invoiceListAll = $scope.completeInvc;
                         break;
                     case "Partly Paid":

@@ -198,11 +198,15 @@ td.table-data-text {
                           </div>
                           <div class="panel-body" style="padding-top: 0px;">
                             <!-- <dl class="dl-horizontal"> -->
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2 && isCreditNotesExist">
+                                  <p class="mb-d"><strong>Invoice</strong></p>
+                                  {{invoiceDetail.custom_invoice_number}}
+                                </div>
                                 <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
                                   <p class="mb-d"><strong>Contact</strong></p>
                                   {{invoiceDetail.freelanceName}}
                                 </div>
-                                <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2">
+                                <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2 && !isCreditNotesExist">
                                   <p class="mb-d"><strong>Telephone</strong></p>{{invoiceDetail.freelancePhone}}
                                 </div>
                                 <div class="col-sm-3" ng-if="invoiceSettingData.server_no===2" style="word-break: break-word;">
@@ -222,8 +226,15 @@ td.table-data-text {
                       <div class="panel-body">
                             <dl class="dl-horizontal">
                               <dd class="invoice-heading">
-                                <div class="d-flex"> <strong>Invoice</strong> 
-                                  <input class="form-control" type="text" ng-model="invoiceDetail.custom_invoice_number" id="custom_invoice_number" name="custom_invoice_number" ng-disabled="editDisabled"  style="width: 150px; font-weight:bold;margin-left: 5px;margin-top: -3px;" />
+                                <div class="d-flex"> 
+                                  <div ng-if="isCreditNotesExist">
+                                    <strong>Credit Note</strong> 
+                                    {{invoiceCreditNotesNumber}}
+                                  </div>
+                                  <div ng-if="! isCreditNotesExist">
+                                    <strong>Invoice</strong> 
+                                    <input class="form-control" type="text" ng-model="invoiceDetail.custom_invoice_number" id="custom_invoice_number" name="custom_invoice_number" ng-disabled="editDisabled"  style="width: 150px; font-weight:bold;margin-left: 5px;margin-top: -3px;" />
+                                  </div>
                                 </div>
                               </dd>
                             </dl>
@@ -248,8 +259,10 @@ td.table-data-text {
                               </td>
                               <td class="table-data-txt"> {{invL.po_number}}</td>
                               <td class="table-data-txt"> 
-                                <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled" />
+                                <div class="d-flex">
+                                  <span ng-if="isCreditNotesExist">-</span> <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled" />
                                 <a href="javascript:void(0);" class="btnDelete" ng-hide="editDisabled" ng-click="itemScoopDelete(invL.itemId,$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
+                                </div>
                               </td>
                             </tr>
                           </tbody>
@@ -274,23 +287,23 @@ td.table-data-text {
                           <tbody>
                               <tr>
                                   <td class="table-data-txt" colspan="2"> Subtotal excl. TAX </td>
-                                  <td class="table-data-txt" style="width:20%;"> {{invoiceTotal}} </td>
+                                  <td class="table-data-txt" style="width:20%;"> <span ng-if="isCreditNotesExist">-</span> {{invoiceTotal}} </td>
                               </tr>
                               <tr>
                                   <td class="table-data-txt" colspan="2"> {{vatTax | customNumber}} % TAX </td>
-                                  <td class="table-data-txt"> {{vatAmount | customNumber}}</td>
+                                  <td class="table-data-txt"> <span ng-if="isCreditNotesExist">-</span> {{vatAmount | customNumber}}</td>
                               </tr>
                               <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
                                   <td class="table-data-txt" colspan="2"> Paid </td>
-                                  <td class="table-data-txt"> {{invL.paid_amount | customNumber}}</td>
+                                  <td class="table-data-txt"> <span ng-if="isCreditNotesExist">-</span> {{invL.paid_amount | customNumber}}</td>
                               </tr>
                               <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
                                 <td class="table-data-txt" colspan="2"> Total Due Amount</td>
-                                <td class="table-data-txt"> {{totalDue | customNumber}} </td>
+                                <td class="table-data-txt"> <span ng-if="isCreditNotesExist">-</span> {{totalDue | customNumber}} </td>
                               </tr>
                               <tr>
                                   <td class="table-data-txt" colspan="2"> <strong>Total Price</strong> </td>
-                                  <td class="table-data-txt" style="border-top:1px solid #000; border-bottom:1px solid #000;">  <strong> {{grandTotal | customNumber}} </strong> </td>
+                                  <td class="table-data-txt" style="border-top:1px solid #000; border-bottom:1px solid #000;">  <strong> <span ng-if="isCreditNotesExist">-</span> {{grandTotal | customNumber}} </strong> </td>
                               </tr>
                           </tbody>
                       </table>
@@ -364,12 +377,12 @@ td.table-data-text {
       <div class="row">
         <div id="toAddEleAfterDwonload" ng-show="viewBtn"></div>
         <div class="row" style="margin-top:20px;" ng-show="viewBtn">
-          <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft'"
+          <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft' && (invoiceDetail.invoice_status != 'Completed' || invoiceDetail.invoice_status != 'Paid') "
             class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
           <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
             class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as cancel</button>
           <button id="btnSave"
-            ng-show="invoiceDetail.invoice_type!='save' || invoiceDetail.is_invoice_sent!=1 && invoiceDetail.invoice_status!='Complete' "
+            ng-show="invoiceDetail.invoice_type!='save' || invoiceDetail.is_invoice_sent!=1 && invoiceDetail.invoice_status!='Completed' "
             class="btn btn-info btnSave" ng-click="save('invoice-form', 'save');"><i class="fa fa-envelope"
               aria-hidden="true"></i>&nbsp; To be sent</button>
           <button id="btnDraft" ng-show="!invoiceDetail.invoice_type" class="btn btn-info"
