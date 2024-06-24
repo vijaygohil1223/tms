@@ -123,6 +123,10 @@
                 <a href="javascript:void(0)" ng-click="invcStatusRecord('Cancelled')">
                   Cancelled <span class="badge bg-info">{{cancelledInvcCount}}</span></a>
               </li>
+              <li class="list-group-item tab-credit" ng-class="{ 'active': invoiceActive=='Credited'}">
+                <a href="javascript:void(0)" ng-click="invcStatusRecord('Credited')">
+                  Credited <span class="badge bg-info">{{credtInvcCount}}</span></a>
+              </li>
               <!-- <li class="list-group-item tab-irrecoverable" ng-class="{ 'active': invoiceActive=='Irrecoverable'}">
                 <a href="javascript:void(0)" ng-click="invcStatusRecord('Irrecoverable')">
                   Irrecoverable <span class="badge bg-info">{{noRecoverInvcCount}}</span></a>
@@ -169,7 +173,10 @@
                           style="display: none" ng-model="invoiceL.invoice_id" />
                       </td>
                       <td class="nowrap">
-                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View"> {{ invoiceL.invoice_number ? invoiceL.invoice_number : 'invoice' }} </a>
+                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View"> 
+                          <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.invoice_number ? invoiceL.invoice_number : 'invoice' }} </span>
+                          <span ng-if="invoiceL.is_credit_note"> {{invoiceL.credit_note_no}} </span>
+                        </a>
                       </td>
                       <td>
                         <a style="color:#4ba0c3" href="#/viewdirect/{{invoiceL.clientId}}" title="View" class="trActionIcon"> {{ invoiceL.clientCompanyName }} </a>
@@ -178,13 +185,22 @@
                           &nbsp;<i class="fa fa-envelope-o" style="font-size: 18px"></i></a>
                       </td>
                       <td>{{invoiceL.accounting_tripletex}}</td>
-                      <td>{{ invoiceL.Invoice_cost | customNumber }}</td>
-                      <td>{{ invoiceL.client_currency }} </td>
-                      <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
-                      <td>{{ invoiceL.invoice_duedate | globalDtFormat }}</td>
-                      <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
                       <td>
-                        <span ng-bind="invoiceL.invoice_status"></span>
+                        <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.Invoice_cost | customNumber }} </span>
+                        <span ng-if="invoiceL.is_credit_note"> -{{ invoiceL.Invoice_cost | customNumber }} </span>
+                      </td>
+                      <td>{{ invoiceL.client_currency }} </td>
+                      <td>
+                        <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.invoice_date | globalDtFormat }} </span>
+                        <span ng-if="invoiceL.is_credit_note"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span>
+                      </td>
+                      <td>
+                        <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.invoice_duedate | globalDtFormat }} </span> </td>
+                      <td> <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.paid_date | globalDtFormat }} </span> </td> 
+                      <td>
+                        <span ng-if="! invoiceL.is_credit_note"> {{invoiceL.invoice_status}} </span>
+                        <span ng-if="invoiceL.is_credit_note"> Credited </span>
+                        
                       </td>
                       <td>
                         <div class="trActiontitle">
