@@ -17590,14 +17590,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if ( (val.is_approved == 1 || val.invoice_status == 'Approved') && !['Complete','Completed','Partly Paid','Paid'].includes(val.invoice_status) ) {
                     $scope.approvedInvcCount++;
                     $scope.approvedInvc.push(val);
-
-                    // if (!$scope.approvedInvcByDate[val.inv_due_date]) {
-                    //     $scope.approvedInvcByDate[val.inv_due_date] = [];
-                    // }
-                    // $scope.approvedInvcByDate[val.inv_due_date].push(val);
-
                 }
-                if (['Complete','Completed'].includes(val.invoice_status) ) {
+                if (['Complete','Completed','Paid'].includes(val.invoice_status) ) {
+                    val.invoice_status = 'Paid';
                     $scope.completedInvcCount++;
                     $scope.completeInvc.push(val);
                 }
