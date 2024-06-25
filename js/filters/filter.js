@@ -639,3 +639,41 @@ app.filter('sumByKey', function() {
         return items.reduce((sum, item) => sum + item[key], 0);
     };
 });
+app.filter('customFilter', function($filter) {
+    return function(items, searchText, keys) {
+        if (!searchText) {
+            return items;
+        }
+
+        // Convert search text to lowercase
+        searchText = searchText.toLowerCase();
+
+        // Function to check if searchText is a valid date in custom format (dd.MM.yyyy)
+        function isCustomDateFormat(text) {
+            const regex = /^\d{2}\.\d{2}\.\d{4}$/;
+            return regex.test(text);
+        }
+
+        // Function to parse date from custom format (dd.MM.yyyy) to standard format (yyyy-MM-dd)
+        function parseCustomDate(text) {
+            const parts = text.split('.');
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+
+        // Format the searchText as date if it is a valid custom date
+        var formattedDate = isCustomDateFormat(searchText) ? $filter('date')(parseCustomDate(searchText), 'yyyy-MM-dd') : null;
+
+        // Filter function
+        return items.filter(function(item) {
+            return keys.some(function(key) {
+                if (formattedDate && key.includes('date')) {
+                    // If searchText is a valid date, compare with formattedDate
+                    return item[key] && item[key].includes(formattedDate);
+                } else {
+                    // Otherwise, perform text search
+                    return item[key] && item[key].toString().toLowerCase().includes(searchText);
+                }
+            });
+        });
+    };
+});

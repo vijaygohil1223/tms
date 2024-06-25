@@ -174,7 +174,7 @@
                   </div>
 
                   <div class="table-responsive " ng-if="invoiceActive === 'Approved' " style="margin-top:10px;" >
-                    <input type="search" class="form-control customsearchbox" id="scoopsearch_{{myTabs.tabClassName}}" ng-model="searchText" placeholder="Search..." ng-change="handleSearchInput(searchText)" style="width: 200px; float: right; margin: 15px 15px 15px 0;">
+                    <input type="search" class="form-control customsearchbox" id="scoopsearch_{{myTabs.tabClassName}}" ng-model="searchText" placeholder="Search..." style="width: 200px; float: right; margin: 15px 15px 15px 0;">
                     <table class="table table-striped b-b" dt-options="dtOptions" id="approvedInvoiceList">
                       <!-- <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped b-b" id="approvedInvoiceList"> -->
                       <thead>
@@ -191,63 +191,84 @@
                         <th>Action</th>
                       </thead>
                       <!-- <tbody> -->
-                      <tbody ng-init="invLen = approvedInvc.length - 1"
-                        ng-repeat="invoiceL in approvedInvc track by $index">
-                        <tr>
-                          <td colspan="11" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
-                            ng-if="$index ==0 || approvedInvc[$index-1].inv_due_date !== invoiceL.inv_due_date">Due
-                            Date: {{ invoiceL.inv_due_date | globalDtFormat }}</td>
+                        <tbody ng-init="invLen = approvedInvc.length - 1">
+                          <tr ng-repeat-start="invoiceL in filteredInvoices = (approvedInvc | customFilter:searchText:['freelance_currency','org_invoice_number', 'freelanceName','invoice_date', 'inv_due_date','paid_date', 'invoice_status', 'invoice_number' ]) track by $index">
+                              <td colspan="11" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
+                                  ng-if="$index == 0 || (invoiceL.inv_due_date !== filteredInvoices[$index - 1].inv_due_date)">
+                                  Due Date: {{ invoiceL.inv_due_date | globalDtFormat }}
+                              </td>
+                          </tr>
+                          <!-- <tr ng-repeat-start="invoiceL in approvedInvc | customFilter:searchText:['freelance_currency'] track by $index">
+                              <td colspan="11" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
+                                  ng-if="$index == 0 || (invoiceL.inv_due_date !== (approvedInvc | customFilter:searchText:['freelance_currency'])[$index - 1].inv_due_date)">
+                                  Due Date: {{ invoiceL.inv_due_date | globalDtFormat }}
+                              </td>
+                          </tr> -->
+                          
+                        <!-- <tbody ng-init="invLen = approvedInvc.length - 1">
+                          <tr ng-repeat="invoiceL in approvedInvc | customFilter:searchText:['freelance_currency'] track by $index">
+                              <td colspan="11" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
+                                  ng-if="$index == 0 || approvedInvc[$index - 1].inv_due_date !== invoiceL.inv_due_date">
+                                  Due Date: {{ invoiceL.inv_due_date | globalDtFormat }}
+                              </td>
+                          </tr> -->
+                          <tr>
+                            <td class="nowrap">
+                              <input type="checkbox" id="invoiceCheck{{$index}}"
+                                ng-click="checkInvoiceIds(invoiceL.invoice_id, invoiceL)"
+                                class="invoiceCheck{{invoiceL.invoice_id}}" name="invoiceCheck{{$index}}"
+                                ng-model="checkor" ng-checked="checkdata=='invoicecheck'">
+                              <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported"
+                                style="margin-left:7px;"></span>
+                              <input type="text" id="invoiceCheckData{{$index}}"
+                                class="invoiceCheckData{{invoiceL.invoice_id}}" name="invoiceCheckData{{$index}}"
+                                style="display: none;" ng-model="invoiceL.invoice_id">
+                            </td>
+                            <td>
+                              <a href="#/invoice-show/{{invoiceL.invoice_id}}"
+                                title="View"><span>{{padNumber(invoiceL.org_invoice_number)}}</span></a>
+                            </td>
+                            <td ng-bind="invoiceL.freelanceName"></td>
+                            <td ng-bind="invoiceL.Invoice_cost | customNumber"></td>
+                            <td ng-bind="invoiceL.freelance_currency"></td>
+                            <td>
+                              <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"># {{invoiceL.invoice_number}}
+                              </a>
+                            </td>
+                            <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
+                            <td>{{ invoiceL.inv_due_date | globalDtFormat }} <a href="javascript:void(0)"
+                                title="edit duedate" class="trActionIcon"
+                                ng-click="editDueDate(invoiceL.invoice_id,invoiceL.inv_due_date | globalDtFormat)"><i
+                                  class="fa fa-pencil"></i></a></td>
+                            <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
+                            <td>
+                              <span ng-bind="invoiceL.invoice_status"></span>
+                            </td>
+                            <td>
+                              <div class="trActiontitle">
+                                <!-- <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
+                                      class="fa fa-eye"></i></a> -->
+                                <a href="javascript:void(0)" title="pdf report" class="trActionIcon"
+                                  ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
+                                    class="fa fa-download"></i></a>
+                              </div>
+                            </td>
+                          </tr>
+                          <!-- <tr ng-if="$last || !$last && (approvedInvc[$index+1] && approvedInvc[$index+1].inv_due_date !== invoiceL.inv_due_date)">
+                            <td></td>
+                            <td colspan="8" style="text-align: right !important;font-weight:bold;">Total:</td>
+                            <td ng-init="totalForDueDate = calculateTotalForApprovedDueDate(invoiceL.inv_due_date)">
+                              {{ totalForDueDate | customNumber }}
+                            </td>
+                          </tr> -->
+                          <tr ng-if="$last || invoiceL.inv_due_date !== filteredInvoices[$index + 1].inv_due_date">
+                            <td></td>
+                            <td colspan="8" style="text-align: right !important; font-weight: bold;">Total:</td>
+                            <td>
+                                {{ calculateTotalForFilteredDueDate(filteredInvoices, invoiceL.inv_due_date) | customNumber }}
+                            </td>
                         </tr>
-                        <tr>
-                          <td class="nowrap">
-                            <input type="checkbox" id="invoiceCheck{{$index}}"
-                              ng-click="checkInvoiceIds(invoiceL.invoice_id, invoiceL)"
-                              class="invoiceCheck{{invoiceL.invoice_id}}" name="invoiceCheck{{$index}}"
-                              ng-model="checkor" ng-checked="checkdata=='invoicecheck'">
-                            <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported"
-                              style="margin-left:7px;"></span>
-                            <input type="text" id="invoiceCheckData{{$index}}"
-                              class="invoiceCheckData{{invoiceL.invoice_id}}" name="invoiceCheckData{{$index}}"
-                              style="display: none;" ng-model="invoiceL.invoice_id">
-                          </td>
-                          <td>
-                            <a href="#/invoice-show/{{invoiceL.invoice_id}}"
-                              title="View"><span>{{padNumber(invoiceL.org_invoice_number)}}</span></a>
-                          </td>
-                          <td ng-bind="invoiceL.freelanceName"></td>
-                          <td ng-bind="invoiceL.Invoice_cost | customNumber"></td>
-                          <td ng-bind="invoiceL.freelance_currency"></td>
-                          <td>
-                            <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View"># {{invoiceL.invoice_number}}
-                            </a>
-                          </td>
-                          <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
-                          <td>{{ invoiceL.inv_due_date | globalDtFormat }} <a href="javascript:void(0)"
-                              title="edit duedate" class="trActionIcon"
-                              ng-click="editDueDate(invoiceL.invoice_id,invoiceL.inv_due_date | globalDtFormat)"><i
-                                class="fa fa-pencil"></i></a></td>
-                          <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
-                          <td>
-                            <span ng-bind="invoiceL.invoice_status"></span>
-                          </td>
-                          <td>
-                            <div class="trActiontitle">
-                              <!-- <a href="#/invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
-                                    class="fa fa-eye"></i></a> -->
-                              <a href="javascript:void(0)" title="pdf report" class="trActionIcon"
-                                ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
-                                  class="fa fa-download"></i></a>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr
-                          ng-if="$last || !$last && (approvedInvc[$index+1] && approvedInvc[$index+1].inv_due_date !== invoiceL.inv_due_date)">
-                          <td></td>
-                          <td colspan="8" style="text-align: right !important;font-weight:bold;">Total:</td>
-                          <td ng-init="totalForDueDate = calculateTotalForApprovedDueDate(invoiceL.inv_due_date)">
-                            {{ totalForDueDate | customNumber }}
-                          </td>
-                        </tr>
+                        <tr ng-repeat-end></tr>
                       </tbody>
                     </table>
                   </div>

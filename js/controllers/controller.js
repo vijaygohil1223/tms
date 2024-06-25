@@ -17710,10 +17710,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // ****** END invioce TABS ******* //
 
     $scope.calculateTotalForApprovedDueDate = function(inv_due_date) {
+        console.log('inv_due_date======>', inv_due_date)
         var total = 0;
         angular.forEach($scope.approvedInvc, function(invoice) {
             if (invoice.inv_due_date == inv_due_date) {
                 // Ensure invoice Invoice_cost is a valid number
+                if (!isNaN(parseFloat(invoice.Invoice_cost))) {
+                    console.log('invoice.Invoice_cost===>', invoice.Invoice_cost)
+                    total += parseFloat(invoice.Invoice_cost);
+                }
+            }
+        });
+        return total;
+    };
+    $scope.calculateTotalForFilteredDueDate = function(filteredInvoices, dueDate) {
+        var total = 0;
+        filteredInvoices.forEach(function(invoice) {
+            if (invoice.inv_due_date === dueDate) {
                 if (!isNaN(parseFloat(invoice.Invoice_cost))) {
                     total += parseFloat(invoice.Invoice_cost);
                 }
@@ -17787,6 +17800,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         return groupedArray;
     }
+
+    
     // $scope.dtColumnsApproved = [
     //     DTColumnBuilder.newColumn('create_date').withTitle('Date'),
     //     DTColumnBuilder.newColumn('name').withTitle('Name'),
