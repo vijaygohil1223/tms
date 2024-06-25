@@ -3492,6 +3492,13 @@ $app->post('/freelanceInvoiceDueDate', function () use($app) {
     $result = $stmt->freelanceInvoiceDueDate($data);
     echoResponse(200, $result);
 });
+// demo api for custom pagination
+$app->get('/invoiceListingFilter', 'authenticate',function () use($app) {
+    $invoice = new Freelance_invoice ();
+    //$data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->invoiceListingFilter();
+    echoResponse(200, $result);
+});
 //-------------------END Freelancer Invoice manage----------------//
 
 function echoResponse($status_code, $response) {

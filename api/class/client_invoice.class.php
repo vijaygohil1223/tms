@@ -148,7 +148,12 @@ class Client_invoice {
     
     //display one invoice
     public function clientInvoiceViewOne($id) {
-    	$id1 = self::getAll('invoice_id',$id,'tms_invoice_client');
+    	//$invc = self::getAll('invoice_id',$id,'tms_invoice_client');
+        $this->_db->where('ticl.invoice_id',$id);
+        $this->_db->join('tms_invoice_credit_notes tcn', 'ticl.invoice_id=tcn.invoice_id', 'LEFT');
+        $this->_db->join('tms_users tu', 'tu.iUserId=tcn.createdByUser', 'LEFT');
+        $invc = $this->_db->getOne('tms_invoice_client ticl', 'ticl.*, tcn.credit_note_no, tcn.created_date as credit_created_date, CONCAT(tu.vFirstName," ",tu.vLastName) as credit_created_by, tu.vEmailAddress as credit_user_email  ');
+        
         $paymentDue = self::getAll('invoice_due_id',1,'tms_invoice_due_period');
         
         // get payment information
@@ -157,16 +162,16 @@ class Client_invoice {
         $paymentInfo = $this->_db->getOne('tms_payment tp', 'tp.vPaymentInfo');
 
         // get sign data.
-        $this->_db->where('tic.created_by', $id1[0]['created_by']);
+        $this->_db->where('tic.created_by', $invc['created_by']);
         $this->_db->join('tms_invoice_client tic', 'tic.created_by=tu.iUserId', 'LEFT');
         $userSignInfo = $this->_db->getOne('tms_users tu', 'tu.vSignUpload,tu.vFirstName,tu.vLastName');
 
         // get client payment info for the invoice details
-        $this->_db->where('tmc.iClientId',$id1[0]['customer_id']);
+        $this->_db->where('tmc.iClientId',$invc['customer_id']);
         $this->_db->join('tms_client tmc', 'tmc.client_currency=tb.currency_code', 'LEFT');
         $matchBankInfo = $this->_db->getOne('tms_banking_info tb', 'tb.*');
 
-    		foreach (json_decode($id1[0]['scoop_id']) as $k => $v) {
+    		foreach (json_decode($invc['scoop_id']) as $k => $v) {
                 $this->_db->where('ti.itemId', $v->id);
                 $this->_db->join('tms_users tu', 'tu.iUserId=ti.contact_person', 'LEFT');
                 $this->_db->join('tms_users tum', 'tum.iUserId=ti.manager', 'LEFT');
@@ -217,7 +222,7 @@ class Client_invoice {
                 $data['paymentInfoClient'] = (isset($paymentInfo) && !empty($paymentInfo)) ? $paymentInfo['vPaymentInfo'] : "";
                 $data['userSignInfo'] = (isset($userSignInfo) && !empty($userSignInfo)) ? $userSignInfo : "";
                 $data['matchBankInfo'] = (isset($matchBankInfo) && !empty($matchBankInfo)) ? $matchBankInfo : "";
-				$infoD[$k] = array_merge($data, $id1[0]);
+				$infoD[$k] = array_merge($data, $invc);
 	    	}
 	    	return $infoD;
     }

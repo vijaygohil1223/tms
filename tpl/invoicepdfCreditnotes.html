@@ -207,7 +207,7 @@
                   <tr>
                     <td style="font-weight: bold;" >Invoice</th>
                     <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Contact</th>
-                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2"> Telephone</th>
+                    <!-- <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2"> Telephone</th> -->
                     <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Email </th>
                     <td style="font-weight: bold;">Date </th>
                   </tr>
@@ -215,13 +215,13 @@
                 <tbody>
                   <tr>
                     <td style="width: 20%;"> {{invoiceDetail.custom_invoice_number}} </td>
-                    <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceName}}
+                    <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.credit_created_by}}
                     </td>
+                    <!-- <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2">
+                      {{invoiceDetail.freelancePhone}}</td> -->
                     <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2">
-                      {{invoiceDetail.freelancePhone}}</td>
-                    <td style="width: 20%;" ng-if="invoiceSettingData.server_no===2">
-                      {{invoiceDetail.freelanceEmail}}</td>
-                    <td style="width: 20%;"> {{invoiceCreditNotesDate | globalDtFormat}} </td>  
+                      {{invoiceDetail.credit_user_email}}</td>
+                    <td style="width: 20%;"> {{invoiceDetail.credit_created_date | globalDtFormat}} </td>  
                     <!-- <td style="width: 20%;"> {{invoiceDetail.invoice_date}} </td> -->
                   </tr>
 

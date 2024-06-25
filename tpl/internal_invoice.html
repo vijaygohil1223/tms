@@ -173,7 +173,8 @@
                     </table>
                   </div>
 
-                  <div class="table-responsive" ng-if="invoiceActive === 'Approved' " style="margin-top:30px;">
+                  <div class="table-responsive " ng-if="invoiceActive === 'Approved' " style="margin-top:10px;" >
+                    <input type="search" class="form-control customsearchbox" id="scoopsearch_{{myTabs.tabClassName}}" ng-model="searchText" placeholder="Search..." ng-change="handleSearchInput(searchText)" style="width: 200px; float: right; margin: 15px 15px 15px 0;">
                     <table class="table table-striped b-b" dt-options="dtOptions" id="approvedInvoiceList">
                       <!-- <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped b-b" id="approvedInvoiceList"> -->
                       <thead>
@@ -250,6 +251,22 @@
                       </tbody>
                     </table>
                   </div>
+
+                  <!-- Remove it -->
+                  <!-- <div class="table-responsive none" ng-if="invoiceActive === 'Approved' " style="margin-top:30px; display: none;"> -->
+                    <!-- <table datatable="" dt-options="dtOptionsApproved" dt-columns="dtColumnsApproved" class="table table-striped table-bordered">
+                    </table> -->
+                      <!-- <table datatable="" dt-options="dtOptionsApproved" dt-columns="dtColumnsApproved" dt-instance="dtInstance" class="table table-striped table-bordered" id="approvedInoice1">
+                        <tbody>
+                            <tr ng-repeat="row in data">
+                                <td ng-if="!row.group">{{ row.create_date }}</td>
+                                <td ng-if="!row.group">{{ row.name }}</td>
+                                <td ng-if="!row.group">{{ row.age }}</td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+                  <!-- </div> -->
+                   <!-- remove above -->
 
 
                   <!-- Loader  -->

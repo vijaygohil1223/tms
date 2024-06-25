@@ -17483,7 +17483,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return total;
     };
     
-}).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder) {
+}).controller('invoiceInternalController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $uibModal, $q, $filter, invoiceDuePeriodDays, $compile, DTOptionsBuilder, DTColumnBuilder ) {
     $scope.invoiceDisables = false;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
@@ -17734,24 +17734,104 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('responsive', true).
         withOption('pageLength', 100);
 
-    
+
+        /// Custom pagination extra testing
+
     // $scope.dtOptionsApproved = DTOptionsBuilder.newOptions()
-    //     .withOption('ajax', {
-    //         url: 'api.php',
-    //         type: 'GET',
-    //         dataSrc: function (json) {
-    //             $scope.users = json.data;
-    //             return json.data;
-    //         }
+    //     .withOption('ajax', function (data, callback, settings) {
+    //         rest.path = "invoiceListingFilter";
+    //         rest.get().then(function (res) {
+    //             console.log('res======>result data', res);
+    //             if (res.data) {
+    //                 // Group the data by create_date
+    //                 var groupedData = groupByCreateDate(res.data.data);
+    //                 console.log('groupedData=====>', groupedData)
+    //                 // Pass the grouped data to the callback function
+    //                 callback({
+    //                     draw: res.data.draw,
+    //                     recordsTotal: res.data.recordsTotal,
+    //                     recordsFiltered: res.data.recordsFiltered,
+    //                     data: groupedData
+    //                 });
+    //             }
+    //         }).catch(errorCallback);
     //     })
+    //     .withDataProp('data') // Specify the property containing the data array
     //     .withOption('processing', true)
-    //     .withOption('serverSide', true)
     //     .withOption('paging', true)
     //     .withOption('searching', true)
-    //     .withOption('order', [[1, 'asc']]) // Update the order index to match the new column structure
-    //     .withBootstrap();
+    //     .withOption('order', [[0, 'asc']]); // Order by the first column (date)
+    
 
-    // // Function to show user info
+    // Function to group data by create_date
+    function groupByCreateDate(data) {
+        var groups = {};
+        for (var i = 0; i < data.length; i++) {
+            var createDate = data[i].create_date;
+            if (!groups[createDate]) {
+                groups[createDate] = [];
+            }
+            groups[createDate].push(data[i]);
+        }
+        // Convert groups object to array
+        var groupedArray = [];
+        for (var createDate in groups) {
+            if (groups.hasOwnProperty(createDate)) {
+                groupedArray.push({
+                    create_date: createDate, // Group header
+                    group: true // Indicate that it's a group header row
+                });
+                // Add user rows for this group
+                groupedArray = groupedArray.concat(groups[createDate]);
+            }
+        }
+        return groupedArray;
+    }
+    // $scope.dtColumnsApproved = [
+    //     DTColumnBuilder.newColumn('create_date').withTitle('Date'),
+    //     DTColumnBuilder.newColumn('name').withTitle('Name'),
+    //     DTColumnBuilder.newColumn('age').withTitle('Age')
+    // ];
+
+    // // Initialize DataTables
+    // $scope.dtInstance = {};
+
+    // // Callback function to handle DataTables initialization
+    // $scope.dtInstanceCallback = function(instance) {
+    //     $scope.dtInstance = instance;
+    // };
+
+    
+    // $scope.dtOptionsApproved = DTOptionsBuilder.newOptions().withOption('ajax', function (data, callback, settings) {
+    //         rest.path = "invoiceListingFilter";
+    //                 rest.get().success(function (res) {
+    //                     console.log('res======>result dataa', res)
+    //                     $scope.users = res.data;
+    //                     if (res) {
+    //                         callback({
+    //                             draw: res.draw,
+    //                             recordsTotal: res.recordsTotal,
+    //                             recordsFiltered: res.recordsFiltered,
+    //                             data: res.data
+    //                         });
+    //                     }
+    //                 }).error(errorCallback);  
+    //     })   
+    //     .withDataProp('data') 
+    //     //.withOption('data', data) // Use static data
+    //     .withOption('processing', true)
+    //     .withOption('paging', true)
+    //     .withOption('searching', true)
+    //     .withOption('order', [[1, 'asc']]);
+    //     .withBootstrap(); // Ensure Bootstrap styling is used
+
+    //     $scope.dtColumnsApproved = [
+    //         DTColumnBuilder.newColumn('id').withTitle('ID'),
+    //         DTColumnBuilder.newColumn('name').withTitle('Name'),
+    //         DTColumnBuilder.newColumn('age').withTitle('Age')
+    //     ];
+
+    // Function to show user info
     // $scope.showInfo = function(name) {
     //     alert('User: ' + name);
     // };
@@ -18433,6 +18513,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $compile, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $scope.loginid = $window.localStorage.getItem("session_iUserId");
     $scope.is_disabled = false;
     $scope.editInvoiceField = true;
     $scope.editDisabled = false;
@@ -18881,48 +18962,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 $scope.sendInvoiceEmail('invoice_to_be_sent', invoiceNo)
                 
-                // kendo.drawing.drawDOM($("#pdfExport"))
-                //     .then(function (group) {
-                //         // Render the result as a PDF file
-                //         return kendo.drawing.exportPDF(group, {
-                //             //paperSize: "auto",
-                //         });
-                //     })
-                //     .done(function (data) {
-                //         $scope.invoicemailDetail = {
-                //             'pdfData': data,
-                //             'invoice_id': $scope.invoiceDetail.invoice_id,
-                //             'invoiceno': $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number,
-                //             'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
-                //             'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-                //             'freelanceName': $scope.invoiceDetail.freelanceName,
-                //             'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                //             'companycontactEmail': $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail,
-                //             'outstanding_reminder': 0,
-                //         };
-                //         rest.path = 'sendClientInvoiceMail';
-                //         rest.post($scope.invoicemailDetail).success(function (data) {
-                            
-                //             if (data.status == 200) {
-                //                 notification('Invoice has been sent successfully', 'success');
-                //                 //setTimeout(() => {
-                //                 $location.path('/client-invoice-show/' + $routeParams.id);
-                //                 //}, 200);
-                //                 angular.element('#btnPaid').show();
-                //                 angular.element('#btnMarkAsCancel').show();
-                //                 //angular.element('#btnSave').show();
-                //                 angular.element('#btnDraft').show();
-                //                 angular.element('#btnCancel').show();
-                //                 angular.element('#irrecoverable').show();
-                //                 angular.element('#editInvoiceSave').show();
-                //                 angular.element('.invoiceInput input').addClass('invoiceInputborder');
-                //             }
-                //         }).error(errorCallback);
-                //     });
-            // } else {
-            //     $location.path('/invoice-client');
-            // }
-
         });
     }
     
@@ -19194,6 +19233,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.creditNotesUp = {};
             $scope.isCreditNotesCreate = true; 
             $scope.creditNotesUp.invoice_id = id;
+            $scope.creditNotesUp.createdByUser = $scope.loginid;
             rest.path = 'createInvoiceCreditnotes';
             rest.post($scope.creditNotesUp).success(function (data) {
                 $scope.isCreditNotesCreate = false; 
