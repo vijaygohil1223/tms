@@ -1140,6 +1140,7 @@ class Client_invoice {
             $insdata['credit_note_no'] = $maxCreditNoteNo;
             $insdata['credit_number_max'] = $maxCount;
             $insdata['invoice_id'] = $postdata['invoice_id'];
+            $insdata['createdByUser'] = $postdata['createdByUser'];
             $insdata['created_date'] = date('Y-m-d H:i:s');
             $insdata['modified_date'] = date('Y-m-d H:i:s');
             

@@ -647,7 +647,7 @@ app.filter('customFilter', function($filter) {
 
         // Convert search text to lowercase
         searchText = searchText.toLowerCase();
-
+        
         // Function to check if searchText is a valid date in custom format (dd.MM.yyyy)
         function isCustomDateFormat(text) {
             const regex = /^\d{2}\.\d{2}\.\d{4}$/;
