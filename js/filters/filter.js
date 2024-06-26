@@ -671,11 +671,11 @@ app.filter('customFilter', function($filter) {
                     return item[key] && item[key].includes(formattedDate);
                 } else {
                     // Otherwise, perform text search
+                    
                     let textToSearch = item[key] ? item[key].toString().toLowerCase() : '';
-                    let normalizedSearchText = searchText.replace(/,([^,]*)$/, '.$1'); // Replace only the last comma
+                    let normalizedSearchText = searchText.replace(/\./g, '').replace(/,([^,]*)$/, '.$1');
 
-                    return textToSearch.includes(searchText.toLowerCase()) ||
-                        (searchText.includes(',') && textToSearch.includes(normalizedSearchText));
+                    return textToSearch.includes(searchText.toLowerCase()) || (searchText.includes(',') && textToSearch.includes(normalizedSearchText));
                     //return item[key] && item[key].toString().toLowerCase().includes(searchText);
                 }
             });

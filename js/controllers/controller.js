@@ -35658,7 +35658,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     })
             // })
 
-            $scope.currencyType = ($scope.invoiceDetail.freelance_currency).toString().includes(',') ? ($scope.invoiceDetail.freelance_currency).split(',')[0] : 'EUR';
+            $scope.currencyType = $scope.invoiceDetail.freelance_currency && ($scope.invoiceDetail.freelance_currency).toString().includes(',') ? ($scope.invoiceDetail.freelance_currency).split(',')[0] : 'EUR';
             
             // var mobileNo = JSON.parse($scope.invoiceDetail.freelancePhone).mobileNumber;
             // var countryCode = JSON.parse($scope.invoiceDetail.freelancePhone).countryTitle;
