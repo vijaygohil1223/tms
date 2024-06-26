@@ -141,7 +141,7 @@
                           </td>
                           <td>
                             <a href="#/invoice-show/{{invoiceL.invoice_id}}"
-                              title="View"><span>{{padNumber(invoiceL.org_invoice_number)}}</span></a>
+                              title="View"><span>{{invoiceL.org_invoice_number}}</span></a>
                           </td>
                           <td ng-bind="invoiceL.freelanceName"></td>
                           <td ng-bind="invoiceL.Invoice_cost | customNumber"></td>
@@ -192,7 +192,7 @@
                       </thead>
                       <!-- <tbody> -->
                         <tbody ng-init="invLen = approvedInvc.length - 1">
-                          <tr ng-repeat-start="invoiceL in filteredInvoices = (approvedInvc | customFilter:searchText:['freelance_currency','org_invoice_number', 'freelanceName','invoice_date', 'inv_due_date','paid_date', 'invoice_status', 'invoice_number' ]) track by $index">
+                          <tr ng-repeat-start="invoiceL in filteredInvoices = (approvedInvc | customFilter:searchText:['freelance_currency','org_invoice_number', 'freelanceName','invoice_date', 'inv_due_date','paid_date', 'invoice_status', 'invoice_number', 'Invoice_cost' ]) track by $index">
                               <td colspan="11" style="background-color:white;font-weight:bold;border-top: 1px solid #ddd"
                                   ng-if="$index == 0 || (invoiceL.inv_due_date !== filteredInvoices[$index - 1].inv_due_date)">
                                   Due Date: {{ invoiceL.inv_due_date | globalDtFormat }}
@@ -226,7 +226,7 @@
                             </td>
                             <td>
                               <a href="#/invoice-show/{{invoiceL.invoice_id}}"
-                                title="View"><span>{{padNumber(invoiceL.org_invoice_number)}}</span></a>
+                                title="View"><span>{{invoiceL.org_invoice_number}}</span></a>
                             </td>
                             <td ng-bind="invoiceL.freelanceName"></td>
                             <td ng-bind="invoiceL.Invoice_cost | customNumber"></td>
@@ -318,7 +318,7 @@
                 <tbody>
                   <tr ng-repeat="invoiceL in invoiceListAll">
                     <td ng-bind="$index + 1"></td>
-                    <td>{{padNumber(invoiceL.org_invoice_number)}} <span class="none">-staticstring-</span> </td>
+                    <td>{{invoiceL.org_invoice_number}} </td>
                     <td ng-bind="invoiceL.freelanceName"></td>
                     <td ng-bind="invoiceL.Invoice_cost"></td>
                     <td ng-bind="invoiceL.freelance_currency"></td>

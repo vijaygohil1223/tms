@@ -647,7 +647,7 @@ app.filter('customFilter', function($filter) {
 
         // Convert search text to lowercase
         searchText = searchText.toLowerCase();
-        
+
         // Function to check if searchText is a valid date in custom format (dd.MM.yyyy)
         function isCustomDateFormat(text) {
             const regex = /^\d{2}\.\d{2}\.\d{4}$/;
@@ -671,9 +671,15 @@ app.filter('customFilter', function($filter) {
                     return item[key] && item[key].includes(formattedDate);
                 } else {
                     // Otherwise, perform text search
-                    return item[key] && item[key].toString().toLowerCase().includes(searchText);
+                    let textToSearch = item[key] ? item[key].toString().toLowerCase() : '';
+                    let normalizedSearchText = searchText.replace(/,([^,]*)$/, '.$1'); // Replace only the last comma
+
+                    return textToSearch.includes(searchText.toLowerCase()) ||
+                        (searchText.includes(',') && textToSearch.includes(normalizedSearchText));
+                    //return item[key] && item[key].toString().toLowerCase().includes(searchText);
                 }
             });
         });
+        
     };
 });

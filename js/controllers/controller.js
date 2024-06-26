@@ -17488,6 +17488,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
     var allInvoiceListArr = [];
+    
     $scope.padNumber = function(number) {
         let numStr = number.toString();
         while (numStr.length < 6) {
@@ -17580,7 +17581,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
                 val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Outstanding' : val.invoice_status;
                 val.invoice_number = val.custom_invoice_no && val.custom_invoice_no !== '' ? val.custom_invoice_no : val.invoice_number;
-
+                val.org_invoice_number = $scope.padNumber(val.org_invoice_number);
                 $scope.allInvcData.push(val);
                 if (val.invoice_status == 'Open') {
                     val.invoice_status = 'Waiting on approval'; // status open = Waiting on approval

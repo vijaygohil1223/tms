@@ -231,8 +231,8 @@ class Freelance_invoice
         foreach ($data as $key => $value) {
             $companyName = self::getAll('abbrivation', substr($value['company_code'], 0, -2), 'tms_centers');
             $data[$key]['companyName'] = isset($companyName[0]['name']) ? $companyName[0]['name'] : '';
+            //$data[$key]['org_invoice_number'] = "".(string)$value['org_invoice_number']."";
         }
-
         return $data;
     }
 
