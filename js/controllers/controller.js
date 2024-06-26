@@ -19931,8 +19931,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userPaymentData = dataUser.userPaymentData;
 
                 if (dataUser.userPaymentData.vPaymentInfo) {
-                    let vpaymentInfo = JSON.parse(dataUser.userPaymentData.vPaymentInfo);
-                    $scope.vatNo = vpaymentInfo.tax_id;
+                    try {
+                        let vpaymentInfo = JSON.parse(dataUser.userPaymentData.vPaymentInfo);
+                        $scope.vatNo = vpaymentInfo.tax_id;
+                        
+                        $scope.vatName = vpaymentInfo?.tax_type;
+                        //$scope.taxPercentage = dataUser.userPaymentData.tax_percentage ? dataUser.userPaymentData.tax_percentage : 0;
+                        if($scope.vatName && $scope.vatName =='Norwegian MVA'){
+                            $scope.invoiceDetail.freelance_second_currency = 'NOK,kr' ;
+                            $('.linguistcurrency').show(); 
+                            $scope.showSecondCUrrency = true;
+                        }
+                    } catch (error) {
+                        console.log('error', error)
+                    }
                 }
                 if ($scope.userPaymentData.vBankInfo) {
                     //var vBankInfo = JSON.parse($scope.userPaymentData.vBankInfo);
@@ -20088,15 +20100,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         try {
 
+            const customVatNOK =  $('#vatnok').val();
+            const grandTotalNokInv =  $('#grandTotalNok').val();
+            if($scope.showSecondCUrrency && $scope.showSecondCUrrency == true && (customVatNOK === '' || grandTotalNokInv === '') ){
+                notification('Please enter price in NOK.', 'warning');
+                return false;
+            }
+
             //$scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)  
             $scope.upInvoiceData.item_total = numberFormatCommaToPoint($scope.invoiceTotal)
                     
             $scope.upInvoiceData.vat = numberFormatCommaToPoint($scope.vat);
-            const customVatNOK =  $('#vatnok').val();
+            //const customVatNOK =  $('#vatnok').val();
             $scope.upInvoiceData.vat2 = customVatNOK != '' ? numberFormatCommaToPoint(customVatNOK) : ''; // for second Currencty nok
             //$scope.upInvoiceData.vat2 = numberFormatCommaToPoint($scope.taxValue2); // for second Currencty nok
             $scope.upInvoiceData.Invoice_cost = $scope.grandJobTotal;
-            const grandTotalNokInv =  $('#grandTotalNok').val();
+            //const grandTotalNokInv =  $('#grandTotalNok').val();
             $scope.upInvoiceData.Invoice_cost2 = grandTotalNokInv !='' ? numberFormatCommaToPoint(grandTotalNokInv) : ''; // for second Currencty nok
             //$scope.upInvoiceData.Invoice_cost2 = numberFormatCommaToPoint($scope.grandTotalNok); // for second Currencty nok
 
@@ -35513,6 +35532,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency == 'NOK,kr'){
                 $scope.showSecondCUrrency = true;
             }
+            
             $scope.invoiceDetail.freelance_second_currency && $scope.invoiceDetail.freelance_second_currency == 'NOK,kr' ? '' : $('.linguistcurrency').hide(); 
             
             angular.forEach($scope.currencyAllData, function (item, i) {    
@@ -35588,12 +35608,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.currencyPaymentMethod == 'Bank Transfer'
             rest.path = "getUserDataById/" + $scope.invoiceDetail.freelanceId;
             rest.get().success(function (dataUser) {
+                console.log('dataUser=====>', dataUser)
                 
                 $scope.userPaymentData = dataUser.userPaymentData;
                 if (dataUser.userPaymentData && dataUser.userPaymentData.vPaymentInfo) {
                     let vpaymentInfo = JSON.parse(dataUser.userPaymentData.vPaymentInfo);
-                    $scope.vatNo = vpaymentInfo.tax_id;
+                    $scope.vatNo = vpaymentInfo?.tax_id;
+                    $scope.vatName = vpaymentInfo?.tax_type;
                     $scope.taxPercentage = dataUser.userPaymentData.tax_percentage ? dataUser.userPaymentData.tax_percentage : 0;
+                    if($scope.vatName && $scope.vatName == 'Norwegian MVA'){
+                        $scope.invoiceDetail.freelance_second_currency = 'NOK,kr' ;
+                        $('.linguistcurrency').show(); 
+                        $scope.showSecondCUrrency = true;
+                    }
                     
                 }
                 
@@ -35611,6 +35638,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }, 100);
                 } else {
                     $timeout(function () {
+                        // Now we use only bank transfer
                         $("#Paypal").prop('checked', true);
                     }, 100);
                 }
@@ -35839,6 +35867,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please select PDF only.', 'warning');
             return false;
         }
+        const customVatNOK =  $('#vatnok').val();
+        const grandTotalNokInv =  $('#grandTotalNok').val();
+        if($scope.showSecondCUrrency && $scope.showSecondCUrrency == true && (customVatNOK === '' || grandTotalNokInv === '') ){
+            notification('Please enter price in NOK.', 'warning');
+            return false;
+        }
+        
         $scope.invoiceData.resourceInvoiceFile = $scope.resourceInvoiceFile
         $scope.invoiceData.resourceInvoiceFileName = $scope.resourceInvoiceFileName
         
@@ -35862,13 +35897,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         //$scope.invoiceData.vat = $scope.vat;
         $scope.invoiceData.vat = $scope.taxValue;
-        const customVatNOK =  $('#vatnok').val();
         $scope.invoiceData.vat2 = customVatNOK != '' ? numberFormatCommaToPoint(customVatNOK) : ''; // for second Currencty nok
         //$scope.invoiceData.vat2 = $scope.taxValue2 != '' ? numberFormatCommaToPoint($scope.taxValue2) : ''; // for second Currencty nok
         
         $scope.invoiceData.job_total = numberFormatCommaToPoint($scope.invoiceTotal);
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
-        const grandTotalNokInv =  $('#grandTotalNok').val(); 
         $scope.invoiceData.Invoice_cost2 = grandTotalNokInv != '' ? numberFormatCommaToPoint(grandTotalNokInv) : ''; // for second Currencty nok
         //$scope.invoiceData.Invoice_cost2 = $scope.grandTotalNok != '' ? numberFormatCommaToPoint($scope.grandTotalNok) : ''; // for second Currencty nok
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);

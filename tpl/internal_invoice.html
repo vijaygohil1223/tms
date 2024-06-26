@@ -309,6 +309,7 @@
                   <th>Price</th>
                   <th>Currency</th>
                   <th>Tax in NOK</th>
+                  <th>Price in NOK</th>
                   <th>Custom Invoice Number</th>
                   <th id="crExdate">Creation Date</th>
                   <th id="dueExdate">Due Date</th>
@@ -323,6 +324,7 @@
                     <td ng-bind="invoiceL.Invoice_cost"></td>
                     <td ng-bind="invoiceL.freelance_currency"></td>
                     <td>{{ invoiceL.taxInNok | customNumber }} <span class="none">-staticstring-</span> </td>
+                    <td>{{ invoiceL.priceInNok | customNumber }} <span class="none">-staticstring-</span> </td>
                     <td ng-bind="invoiceL.invoice_number"></td>
                     <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.inv_due_date | globalDtFormat }}</td>
