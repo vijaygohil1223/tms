@@ -5042,26 +5042,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }    
 
     // Linguist Price list fetching
+
     $scope.changeLinguistPrice = function(resourceId, specializationArr, langPair){
         if(resourceId > 0){
             let clientPricelist = $scope.customerpriceAll.filter((e) => e.resource_id == resourceId )
-            if(clientPricelist){
+            if (clientPricelist.length) {
+                
                 angular.forEach($scope.exChildPriceArr, function (val, i) {
                     $scope.exChildPriceArr[i].rate = 0;
                     angular.forEach(clientPricelist, function (val2, i2) {
+
                         val2.price_basis.find(x => {
-                                // if(val.child_price_id == x.childPriceId){
-                                //     if(val.child_price_id == x.childPriceId){
-                                //         if(val.itemId == item_id){
-                                //             $scope.exChildPriceArr[i].rate = x.basePrice; 
-                                //         }
-                                //     }
-                                //     return x;
-                                // }
                                 if(val.child_price_id == x.childPriceId){
-                                    var spclFound = specializationArr && specializationArr.length>0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
+                                    // do not remove - specialization is not compulsary
+                                    //var spclFound = specializationArr && specializationArr.length>0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
                                     const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
-                                    if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
+                                    if(val.child_price_id == x.childPriceId && lngPairFound){
+                                    //if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
                                         $scope.exChildPriceArr[i].rate = x.basePrice;  
                                     }
                                     return x;
@@ -5136,24 +5133,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.get().success(function (data) {
             $scope.jobdetail = data[0];
             console.log('$scope.jobdetail', $scope.jobdetail)
+
             // purchase order setting Data data fn 
             $scope.poSettingFn($scope.jobdetail.vCenterid)
             
             $scope.jobdetail.ItemLanguage = '';
             var srcLang = 'English (US)';
             var trgLang = 'English (US)';
-            rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
-            rest.get().success(function (data) {
-                var sourceData = JSON.parse(data.source_lang);
-                var targetData = JSON.parse(data.target_lang);
-                srcLang = sourceData.sourceLang;
-                trgLang = targetData.sourceLang;
-            });
+            
+            $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+            if($scope.jobdetail.scoop_source_lang){
+                try {
+                    var sourceData = JSON.parse($scope.jobdetail.scoop_source_lang);
+                    var targetData = JSON.parse($scope.jobdetail.scoop_target_lang);
+                    srcLang = sourceData?.sourceLang;
+                    trgLang = targetData?.sourceLang;
+                    $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+                } catch (error) {
+                    console.log('error', error)
+                }
+            }
+            // rest.path = 'jobItemQuantityget/' + data[0].order_id + '/' + data[0].item_id;
+            // rest.get().success(function (data) {
+            //     var sourceData = JSON.parse(data.source_lang);
+            //     var targetData = JSON.parse(data.target_lang);
+            //     srcLang = sourceData.sourceLang;
+            //     trgLang = targetData.sourceLang;
+            //     console.log('trgLang========', trgLang)
+            // });
 
             //var srcLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[0]).sourceLang;
             //var trgLang = JSON.parse($scope.jobdetail.ItemLanguage.split('>')[1]).sourceLang;
-            $scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
-
+            //$scope.jobdetail.ItemLanguage = srcLang + ' > ' + trgLang;
+            
             $scope.dueDate = $scope.jobdetail.due_date;
             //$scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal + ' ' + 'HH:mm');
             $scope.jobdetail.due_date = moment($scope.jobdetail.due_date).format($scope.dateFormatGlobal);
@@ -5244,13 +5256,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //var projSpecialization = $scope.jobdetail.proj_specialization.split(',');
                 var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
                 
+                // temp hide filter based on specilisation
                 //var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
-                var newPriceList = priceList.filter(function (priceList) { 
-                        if(!priceList.specialization)
-                            return false;
-                        var priceSpc = priceList.specialization.toString().split(',');
-                        return findCommonArrEle(projSpecialization, priceSpc)
-                    });
+                // var newPriceList = priceList.filter(function (priceList) { 
+                //     if(!priceList.specialization)
+                //         return false;
+                //     var priceSpc = priceList.specialization.toString().split(',');
+                //     return findCommonArrEle(projSpecialization, priceSpc)
+                // });
+                var newPriceList = priceList
+                    
                 //var projSpecialization = $scope.jobdetail.proj_specialization.toString();
                 //var newPriceList = priceList.filter(function(priceList) { const isSpclzExist = projSpecialization.includes(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist; });
                 //$scope.lngPriceList = [];
@@ -5259,6 +5274,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     const price = JSON.parse(val.price_basis);
                     angular.forEach(langList, function (val2, i2) {
                         //$scope.jobdetail.ItemLanguage = angular.element('#sourceLang').text;
+                            
                         if ($scope.jobdetail.ItemLanguage == val2.languagePrice) {
                             angular.forEach(price, function (val3, i3) {
                                 if (val3.basePriceUnit.includes($scope.jobdetail.project_type_name))
