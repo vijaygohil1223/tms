@@ -18548,6 +18548,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.currencyRate = 1;
     var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
     //$scope.noneCls = "none"
+    $scope.isCreditNotePage = $routeParams.creditNoteId;
     
     // invoice setting Data
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
@@ -18684,8 +18685,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceSettingData = [];
     $scope.newClientId = '';
 
-    if ($routeParams.id) {
-        
+    if ($routeParams.id || $routeParams.creditNoteId ) {
+        $routeParams.id = $routeParams.creditNoteId ? $routeParams.creditNoteId : $routeParams.id;
         rest.path = "clientInvoiceViewOne/" + $routeParams.id;
         rest.get().success(function (data) {
             
@@ -18868,7 +18869,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $timeout(function () {
                 var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.created_date, $scope.invoiceDetail.number_of_days)
                 
-                if (($scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')) {
+                if (( $scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')) {
                     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
                         $scope.reminderBtnHideShow = true;
                     }
@@ -19082,6 +19083,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.pdfDownloadFn = function(number, isDownload, htmlPage = false){
+        console.log('htmlPage', htmlPage)
         if(htmlPage && htmlPage == true){
            var pageName = "tpl/invoicepdfCreditnotes.html";
         }else{
@@ -19448,6 +19450,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var newPaydueDate = TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, $scope.invoiceDetail.number_of_days)
                 // print invoice after all data load    
                 $scope.printIt($scope.invoiceDetail.invoice_number);
+                
             }, 1000);
 
             // invoice setting Data - invoice address based on selected business unit
@@ -33094,7 +33097,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
-            //console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 val.invoice_number = val.custom_invoice_number ? val.custom_invoice_number : val.invoice_number; 
@@ -33107,40 +33109,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // status 'Open' as 'Approved'
                 val.invoice_status = val.invoice_status == 'Open' ? 'Outstanding' : val.invoice_status
                 $scope.allInvcData.push(val);
-                
-                if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding')  {
-                    $scope.openInvcCount++;
-                    $scope.openInvc.push(val);
-                }
-                if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
-                    val.invoice_status = 'Paid';
-                    $scope.completedInvcCount++;
-                    $scope.completeInvc.push(val);
-                }
-                if (val.invoice_status == 'Partly Paid') {
-                    $scope.partPaidInvcCount++;
-                    $scope.partPaidInvc.push(val);
-                } 
-                // if (val.invoice_status == 'Irrecoverable') {
-                //     $scope.noRecoverInvcCount++;
-                //     $scope.irrecoverableInvc.push(val);
-                // } 
-                if (val.invoice_status == 'Cancel' || val.invoice_status == 'Irrecoverable' ) {
-                    $scope.cancelledInvcCount++;
-                    $scope.cancelledInvc.push(val);
-                }
-                if (val.is_excel_download != 1) {
-                    $scope.notExportedInvcCount++;
-                    $scope.notExportedInvc.push(val);
-                }
-                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed','Cancel','Irrecoverable'].includes(val.invoice_status) ){
-                    $scope.overdueInvcCount++ 
-                    $scope.overdueInvc.push(val);
-                }
 
-                if (val.is_credit_note == 1) {
+                if (val?.credit_note_id && val.is_credit_note == 1) {
                     $scope.credtInvcCount++;
                     $scope.creditedInvc.push(val);
+                }
+                
+                if(! val?.credit_note_id){
+                    if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding')  {
+                        $scope.openInvcCount++;
+                        $scope.openInvc.push(val);
+                    }
+                    if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
+                        val.invoice_status = 'Paid';
+                        $scope.completedInvcCount++;
+                        $scope.completeInvc.push(val);
+                    }
+                    if (val.invoice_status == 'Partly Paid') {
+                        $scope.partPaidInvcCount++;
+                        $scope.partPaidInvc.push(val);
+                    } 
+                    // if (val.invoice_status == 'Irrecoverable') {
+                    //     $scope.noRecoverInvcCount++;
+                    //     $scope.irrecoverableInvc.push(val);
+                    // } 
+                    if (val.invoice_status == 'Cancel' || val.invoice_status == 'Irrecoverable' ) {
+                        $scope.cancelledInvcCount++;
+                        $scope.cancelledInvc.push(val);
+                    }
+                    if (val.is_excel_download != 1) {
+                        $scope.notExportedInvcCount++;
+                        $scope.notExportedInvc.push(val);
+                    }
+                    if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed','Cancel','Irrecoverable'].includes(val.invoice_status) ){
+                        $scope.overdueInvcCount++ 
+                        $scope.overdueInvc.push(val);
+                    }
+                    
                 }
 
                 //Due date counts for Invoice
@@ -33566,7 +33571,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     });
 
-    $scope.pdfInvoice = function (id, isMultiple=false) {
+    $scope.pdfInvoice = function (id, isMultiple=false, creditNote= false) {
         console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
         console.log('id', id)
         var deferred = $q.defer(); // Create a deferred object
@@ -33574,10 +33579,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             id: id,
             isMultiple: isMultiple
         }
-        
+        if(creditNote){
+         var pdfPage =   'tpl/invoicepdfCreditnotes.html'
+        }else{
+            var pdfPage = 'tpl/invoicepdfCommon.html'
+        }
         console.log('$scope.data', $scope.data)
         var modalInstance = $uibModal.open({
-            templateUrl: 'tpl/invoicepdfCommon.html',
+            templateUrl: pdfPage,
             controller: 'invoicePdfController',
             // controller: function($scope, $uibModalInstance, items){
                 // if you don't want to make seperate controller

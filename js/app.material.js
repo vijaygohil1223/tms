@@ -594,6 +594,11 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'clientInvoiceShowController',
             activetab: 'client-invoice-show',
             role: '1'
+        }).when('/invoice-credit-note/:creditNoteId', {
+            templateUrl: modulesPath + 'client_invoice_show.html',
+            controller: 'clientInvoiceShowController',
+            activetab: 'client-invoice-show',
+            role: '1'
         }).when('/invoice-due-period', {
             templateUrl: modulesPath + 'invoice-due-period.html',
             controller: 'InvoiceDuePeriodController',

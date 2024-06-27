@@ -910,6 +910,27 @@ class Client_invoice {
         foreach ($data as $key => $value) {
             $data[$key]['companyName'] = ''; 
         }
+
+        $creditdata = self::getAllInvoiceCreditNote();
+
+        return array_merge($data, $creditdata );
+        //return $data;
+    }
+
+    /* Get All client Credit Notes */
+    public function getAllInvoiceCreditNote() {
+        $this->_db->join('tms_invoice_client tmInvoice', 'tcn.invoice_id=tmInvoice.invoice_id','LEFT');
+        $this->_db->join('tms_users tu', 'tu.iUserId=tmInvoice.freelance_id','LEFT');
+        $this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id','LEFT');
+        $this->_db->join('tms_items ti', 'ti.itemId=tmInvoice.scoop_id','LEFT');
+        //$this->_db->join('tms_invoice_credit_notes tcn', 'tcn.invoice_id=tmInvoice.invoice_id','LEFT');
+        //$this->_db->orderBy('tcn.invoice_id', 'asc');
+        $this->_db->where('tmInvoice.is_deleted ', ' != 1');
+        $data = $this->_db->get('tms_invoice_credit_notes tcn', null,'tcn.id credit_note_id ,ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date, tmInvoice.is_credit_note, tmInvoice.is_credit_notes_email_sent, tcn.credit_note_no, tcn.created_date as credit_note_create_date, tu.vSignUpload, tc.accounting_tripletex');
+        //echo $this->_db->getLastQuery();
+        foreach ($data as $key => $value) {
+            $data[$key]['companyName'] = ''; 
+        }
         return $data;
     }
 

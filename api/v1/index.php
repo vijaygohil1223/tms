@@ -3545,6 +3545,11 @@ $app->get('/getAllInvoiceClient/:type/:userId','authenticate', function($type,$u
     $result = $invoice->getAllInvoiceClient($type,$userId);
     echoResponse(200, $result);
 });
+$app->get('/getAllInvoiceCreditNote','authenticate', function() {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getAllInvoiceCreditNote();
+    echoResponse(200, $result);
+});
 $app->get('/getClientInvoicePartPayments/:id','authenticate', function($id) {
     $invoice = new client_invoice ();
     $result = $invoice->getClientInvoicePartPayments($id);

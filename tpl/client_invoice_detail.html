@@ -173,9 +173,11 @@
                           style="display: none" ng-model="invoiceL.invoice_id" />
                       </td>
                       <td class="nowrap">
-                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View"> 
-                          <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.invoice_number ? invoiceL.invoice_number : 'invoice' }} </span>
-                          <span ng-if="invoiceL.is_credit_note"> {{invoiceL.credit_note_no}} </span>
+                        <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" ng-if="! invoiceL.credit_note_id" title="View"> 
+                          {{ invoiceL.invoice_number ? invoiceL.invoice_number : 'invoice' }}
+                        </a>
+                        <a href="#/invoice-credit-note/{{invoiceL.invoice_id}}" ng-if=" invoiceL.credit_note_id" title="View"> 
+                          {{invoiceL.credit_note_no}}
                         </a>
                       </td>
                       <td>
@@ -186,27 +188,27 @@
                       </td>
                       <td>{{invoiceL.accounting_tripletex}}</td>
                       <td>
-                        <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.Invoice_cost | customNumber }} </span>
-                        <span ng-if="invoiceL.is_credit_note"> -{{ invoiceL.Invoice_cost | customNumber }} </span>
+                        <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.Invoice_cost | customNumber }} </span>
+                        <span ng-if="invoiceL.credit_note_id"> -{{ invoiceL.Invoice_cost | customNumber }} </span>
                       </td>
                       <td>{{ invoiceL.client_currency }} </td>
                       <td>
-                        <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.invoice_date | globalDtFormat }} </span>
-                        <span ng-if="invoiceL.is_credit_note"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span>
+                        <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.invoice_date | globalDtFormat }} </span>
+                        <span ng-if="invoiceL.credit_note_id"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span>
                       </td>
                       <td>
-                        <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.invoice_duedate | globalDtFormat }} </span> </td>
-                      <td> <span ng-if="! invoiceL.is_credit_note"> {{ invoiceL.paid_date | globalDtFormat }} </span> </td> 
+                        <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.invoice_duedate | globalDtFormat }} </span> </td>
+                      <td> <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.paid_date | globalDtFormat }} </span> </td> 
                       <td>
-                        <span ng-if="! invoiceL.is_credit_note"> {{invoiceL.invoice_status}} </span>
-                        <span ng-if="invoiceL.is_credit_note"> Credited </span>
+                        <span ng-if="! invoiceL.credit_note_id"> {{invoiceL.invoice_status}} </span>
+                        <span ng-if="invoiceL.credit_note_id"> Credited </span>
                         
                       </td>
                       <td>
                         <div class="trActiontitle">
                           <!-- <a href="#/client-invoice-show/{{invoiceL.invoice_id}}" title="View" class="trActionIcon"><i
                               class="fa fa-eye"></i></a> -->
-                          <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id)" style="margin-left:15px;"><i
+                          <a href="javascript:void(0)" title="pdf report" class="trActionIcon" ng-click="pdfInvoice(invoiceL.invoice_id,false, invoiceL.credit_note_id ? true : false )" style="margin-left:15px;"><i
                               class="fa fa-download"></i></a>
                           <a href="javascript:void(0)" title="delete invoice" class="trActionIcon" ng-click="deleteInvoice(invoiceL.invoice_id)" style="margin-left:5px;"><i
                                 class="fa fa-trash"></i></a>

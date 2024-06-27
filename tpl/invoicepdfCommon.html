@@ -219,21 +219,21 @@
               <table style="width: 100%;">
                 <thead>
                   <tr>
-                    <td style="font-weight: bold;" ng-if="isCreditNotesExist">Invoice</th>
+                    <td style="font-weight: bold;" ng-if="isCreditNotePage">Invoice</th>
                     <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2 ">Contact</th>
-                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2 && ! isCreditNotesExist "> Telephone</th>
+                    <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2 && ! isCreditNotePage "> Telephone</th>
                     <td style="font-weight: bold;" ng-if="invoiceSettingData.server_no===2">Email </th>
                     <td style="font-weight: bold;">Date </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td ng-if="isCreditNotesExist">
+                    <td ng-if="isCreditNotePage">
                       {{invoiceDetail.custom_invoice_number}}
                     </td>
                     <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceName}}
                     </td>
-                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2 && !isCreditNotesExist ">
+                    <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2 && !isCreditNotePage ">
                       {{invoiceDetail.freelancePhone}}</td>
                     <td style="width: 25%;" ng-if="invoiceSettingData.server_no===2">
                       {{invoiceDetail.freelanceEmail}}</td>
@@ -250,11 +250,11 @@
         <div class="panel panel-default invoice-header-height">
           <div style="margin-top:15px;margin-bottom:15px;">
             <div class="invoice-heading">
-              <div class="d-flex" ng-if="isCreditNotesExist">
+              <div class="d-flex" ng-if="isCreditNotePage">
                 <strong>Credit Note</strong> 
                 {{invoiceCreditNotesNumber}}
               </div>
-              <div class="d-flex" ng-if="! isCreditNotesExist"> <strong>Invoice</strong>
+              <div class="d-flex" ng-if="! isCreditNotePage"> <strong>Invoice</strong>
                 <span>{{invoiceDetail.custom_invoice_number}}</span>
               </div>
               
@@ -277,7 +277,7 @@
                 </td>
                 <td class="table-data-txt"> {{invL.po_number}}</td>
                 <td class="table-data-txt">
-                  <span ng-if="isCreditNotesExist">-</span> {{invL.item.itemTotalVal}}
+                  <span ng-if="isCreditNotePage">-</span> {{invL.item.itemTotalVal}}
                 </td>
               </tr>
               <tr ng-if="$index == invoiceLength && (invoiceDetail.scoop_additional_detail != '' )">
@@ -285,7 +285,7 @@
                   {{invoiceDetail.scoop_additional_detail}}
                 </td>
                 <td class="nowrap">
-                  <span ng-if="isCreditNotesExist">-</span> {{invoiceDetail.scoop_additional_price}} </td>
+                  <span ng-if="isCreditNotePage">-</span> {{invoiceDetail.scoop_additional_price}} </td>
               </tr>
 
             </tbody>
@@ -295,7 +295,7 @@
             <tbody>
               <tr>
                 <td class="table-data-txt" colspan="2"> Subtotal excl. TAX </td>
-                <td class="table-data-txt" style="width:20%;"> <span ng-if="isCreditNotesExist">-</span> {{invoiceTotal}} </td>
+                <td class="table-data-txt" style="width:20%;"> <span ng-if="isCreditNotePage">-</span> {{invoiceTotal}} </td>
               </tr>
               <tr>
                 <td class="table-data-txt" colspan="2"> {{vatTax | customNumber}} % TAX </td>
@@ -312,7 +312,7 @@
               <tr>
                 <td class="table-data-txt" colspan="2"> <strong>Total Price</strong> </td>
                 <td class="table-data-txt" style="border-top:1px solid #000; border-bottom:1px solid #000;"> <strong>
-                  <span ng-if="isCreditNotesExist">-</span> {{grandTotal | customNumber}} </strong> </td>
+                  <span ng-if="isCreditNotePage">-</span> {{grandTotal | customNumber}} </strong> </td>
               </tr>
             </tbody>
           </table>
