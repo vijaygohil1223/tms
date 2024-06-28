@@ -18871,7 +18871,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 if (( $scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')) {
                     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
-                        $scope.reminderBtnHideShow = true;
+                        $scope.reminderBtnHideShow = isCreditNotePage ? false : true;
                     }
                 }
             }, 500);
@@ -19304,9 +19304,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.vatTax = 0;
     //change jobitem price module
 
+    $scope.isCreditNoteDn = false;
     if(items && items.id){
         $routeParams.id = items.id;
         console.log('items', items)
+        $scope.isCreditNoteDn = items?.isCreditNote ? true: false
     }else{
         return false;
     }
@@ -19489,6 +19491,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('$scope.invoiceDetail', $scope.invoiceDetail)
         const invoicePdfData = {};
         let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
+        
         angular.element('.invoiceInput input').addClass('invoiceInputborder');
         //$scope.noneCls = "";
         setTimeout(() => {
@@ -19507,7 +19510,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'downloadinvoice';
             rest.post(invoicePdfData).success(function (data) {
                 if(data && data.status ==200 && data.pdfFile){
-                    const pdffileName = invoiceNo ? invoiceNo + '.pdf' : 'invoice' + '.pdf';
+                    var pdffileName = invoiceNo ? invoiceNo + '.pdf' : 'invoice' + '.pdf';
+                    if($scope.isCreditNoteDn){
+                        pdffileName = $scope.invoiceCreditNotesNumber + '.pdf';  
+                    }
                     var pdfBlob = b64toBlob(data.pdfFile, "application/pdf");
                     // Create a URL for the Blob object
                     if(! items.isMultiple){
@@ -25296,7 +25302,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.itemjobList = data;
-            
         }).error(errorCallback);
         rest.path = 'jobDetailLanguageGet/' + $routeParams.id;
         rest.get().success(function (data) {
@@ -33577,7 +33582,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var deferred = $q.defer(); // Create a deferred object
         $scope.data = {
             id: id,
-            isMultiple: isMultiple
+            isMultiple: isMultiple,
+            isCreditNote: creditNote
         }
         if(creditNote){
          var pdfPage =   'tpl/invoicepdfCreditnotes.html'

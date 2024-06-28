@@ -35,11 +35,7 @@ class orderstatussearch {
 		}
 
 		public function statusorderReportFilter($filterParams){
-			// print_r($filterParams);
-			// exit;
-			// if(isset($filterParams['companyCode'])){
-			// 	$this->_db->where('its.companyCode', $filterParams['companyCode']);
-			// }
+
 			if(isset($filterParams['pm_name'])){
 				//$this->_db->where('tu.iUserId', $filterParams['pm_name']);
 				$pmId = $filterParams['pm_name'];
@@ -126,12 +122,16 @@ class orderstatussearch {
 			$this->_db->join('tms_project_type tpt', 'its.project_type = tpt.pr_type_id','LEFT');
 			$this->_db->join('tms_project_status ps', 'ps.pr_status_id = gen.project_status','LEFT');
 			$this->_db->join('tms_item_status scs', 'scs.item_status_id = its.item_status','LEFT');
-			$this->_db->join('tms_summmery_view tsv', 'tsv.order_id = its.order_id AND tsv.item_id = its.item_number','LEFT');
-			$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, its.project_type AS projectType, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate, its.created_date AS scoopCreateDate, its.due_date as scoop_due_date, its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, tpt.project_name AS projectTypeName, its.q_date AS QuentityDate, its.total_amount AS totalAmount, its.item_name AS scoopName, concat(tu.vFirstName, " ", tu.vLastName) AS pm_name, inc.vUserName as indirectAccountName, c.client_currency, scs.item_status_name as scoop_status_name, c.accounting_tripletex, IFNULL(SUM(tsv.total_price), 0) AS total_job_price, its.itemId AS scoopId, its.po_number');
+			//$this->_db->join('tms_summmery_view tsv', 'tsv.order_id = its.order_id AND tsv.item_id = its.item_number','LEFT');
+			$subQuery = "(SELECT order_id, item_id, SUM(total_price) AS total_job_price FROM tms_summmery_view GROUP BY order_id, item_id) tsv";
+			// Build your main query
+			$this->_db->join($subQuery, 'tsv.order_id = its.order_id AND tsv.item_id = its.item_number', 'LEFT');
+			//$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, its.project_type AS projectType, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate, its.created_date AS scoopCreateDate, its.due_date as scoop_due_date, its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, tpt.project_name AS projectTypeName, its.q_date AS QuentityDate, its.total_amount AS totalAmount, its.item_name AS scoopName, concat(tu.vFirstName, " ", tu.vLastName) AS pm_name, inc.vUserName as indirectAccountName, c.client_currency, scs.item_status_name as scoop_status_name, c.accounting_tripletex, IFNULL(SUM(tsv.total_price), 0) AS total_job_price, its.itemId AS scoopId, its.po_number');
+			$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, its.project_type AS projectType, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate, its.created_date AS scoopCreateDate, its.due_date as scoop_due_date, its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, tpt.project_name AS projectTypeName, its.q_date AS QuentityDate, its.total_amount AS totalAmount, its.item_name AS scoopName, concat(tu.vFirstName, " ", tu.vLastName) AS pm_name, inc.vUserName as indirectAccountName, c.client_currency, scs.item_status_name as scoop_status_name, c.accounting_tripletex, COALESCE(tsv.total_job_price, 0) AS total_job_price, its.itemId AS scoopId, its.po_number');
 			
-			//echo $this->_db->getLastQuery();
-			//print_r($data);
-			//exit;
+			// echo $this->_db->getLastQuery();
+			// print_r($data);
+			// exit;
 			//echo $this->_db->getLastQuery();
 			
 			//$qry = "SELECT gen.order_no AS orderNumber,gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer,gen.project_name AS projectName, c.vUserName AS contactName,stus.status_name AS clientStatus,gen.company_code AS companyCode,cust.contact AS contactPerson,its.item_status AS itemStatus,gen.project_status AS projectStatus,gen.project_type AS projectType,its.source_lang AS sourceLanguage,its.target_lang AS targetLanguage, its.q_date AS QuentityDate ,SUM(its.total_amount) As TotalAmount FROM tms_general AS gen LEFT JOIN tms_customer AS cust ON gen.order_id=cust.order_id LEFT JOIN tms_items AS its ON gen.order_id=its.order_id  LEFT JOIN tms_client AS c ON cust.client = c.iClientId LEFT JOIN tms_user_status AS stus ON c.vStatus = stus.status_id group by its.q_date";

@@ -47,7 +47,7 @@
         <div class="pull-right">
           <a href="javascript:history.back()" class="btn btn-sm btn-info invcBtn"><span
               class="fa fa-arrow-left"></span> Back</a>
-          <a href="" class="btn btn-sm btn-info invcBtn" ng-click="printIt(invoiceDetail.invoice_number)"
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="!isCreditNotePage" ng-click="printIt(invoiceDetail.invoice_number)"
             ng-disabled="is_disabled">Download</a>
           <a href="" class="btn btn-sm btn-info invcBtn" ng-hide="editDisabled" ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i
               class="fa fa-pencil"></i> Edit & Save</a>
