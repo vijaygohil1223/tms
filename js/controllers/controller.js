@@ -2345,7 +2345,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach($scope.projectData, function (val, i) {
                 val.progrss_precentage = -1;
                 // Scoop project manager - (Substituted project manager)
-                val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
+                
+                val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name : val.scoopPm_name ? val.scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
                 val.qa_fullName = val.scp_sub_Qa_fullName ? val.scp_sub_Qa_fullName : val.scp_Qa_fullName ? val.scp_Qa_fullName : val.gen_sub_Qa_fullName ? val.gen_sub_Qa_fullName : val.gen_Qa_fullName 
                 val.attached_workflow = val.attached_workflow.split('-').pop(); 
                 
@@ -2859,7 +2860,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.dashboardTabList[1].projectScoopData = response?.data
             if(projectScoopData){
                 angular.forEach(projectScoopData, function (val, i) {
-                    val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
+                    val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name  : val.scoopPm_name ? val.scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
                     val.qa_fullName = val.scp_sub_Qa_fullName ? val.scp_sub_Qa_fullName : val.scp_Qa_fullName ? val.scp_Qa_fullName : val.gen_sub_Qa_fullName ? val.gen_sub_Qa_fullName : val.gen_Qa_fullName 
                     val.attached_workflow = val.attached_workflow.split('-').pop(); 
                     
