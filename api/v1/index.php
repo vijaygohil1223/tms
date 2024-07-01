@@ -417,6 +417,12 @@ $app->get('/getAllsentEmail', 'authenticate',function () use($app) {
     $result = $users->getAllsentEmail();
     echoResponse(200, $result);
 });
+$app->post('/getMultipleReourses', 'authenticate',function () use($app) {
+    $users = new users ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $users->getMultipleReourse($data);
+    echoResponse($result ['status'], $result);
+});
 // ------------------user type section ---------------------//
 $app->get('/usertype','authenticate', function () {
     $usertype = new usertype ();

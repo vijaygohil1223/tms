@@ -33,18 +33,20 @@
                                             <div class="form-group d-flex ml-20">
                                                 <div class="">
                                                     <label class="i-checks">
-                                                        <input type="radio" ng-model="jobReport.resourceType" value="external"
-                                                            ng-true-value="1" ng-false-value="0"
-                                                            ng-checked="jobReport.resourceType == 'external'" ng-click="chnageResourceType('external')">
+                                                        <input type="radio" ng-model="jobReport.resourceType"
+                                                            value="external" ng-true-value="1" ng-false-value="0"
+                                                            ng-checked="jobReport.resourceType == 'external'"
+                                                            ng-click="chnageResourceType('external')">
                                                         <i></i>
                                                         External Resource
                                                     </label>
                                                 </div>
                                                 <div class=" ml-20">
                                                     <label class="i-checks">
-                                                        <input type="radio" ng-model="jobReport.resourceType" value="internal"
-                                                            ng-true-value="1" ng-false-value="0"
-                                                            ng-checked="jobReport.resourceType == 'internal'" ng-click="chnageResourceType('internal')">
+                                                        <input type="radio" ng-model="jobReport.resourceType"
+                                                            value="internal" ng-true-value="1" ng-false-value="0"
+                                                            ng-checked="jobReport.resourceType == 'internal'"
+                                                            ng-click="chnageResourceType('internal')">
                                                         <i></i>
                                                         Internal Resource
                                                     </label>
@@ -232,7 +234,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        
+
                                         </div>
 
                                         <!-- Internal resource Field -->
@@ -247,7 +249,7 @@
                                             <div class="col-sm-6 form-group">
                                                 <div class="col-sm-11">
                                                     <label>Resource Status</label>
-                                                    
+
                                                     <input type="text" select2-userstatus id="eUserStatus"
                                                         class="form-control" name="eUserStatus"
                                                         ng-model="jobReport.eUserStatus" />
@@ -263,7 +265,7 @@
                                             <div class="col-sm-6 form-group">
                                                 <div class="col-sm-11">
                                                     <label>Resource Position</label>
-                                                    
+
                                                     <input type="text" ng-select2-userposition id="vResourcePosition"
                                                         class="form-control" name="vResourcePosition"
                                                         ng-model="jobReport.vResourcePosition" />
@@ -279,9 +281,8 @@
                                             <div class="col-sm-6 form-group">
                                                 <div class="col-sm-11">
                                                     <label>Email</label>
-                                                    <input type="email" id="vEmailAddress"
-                                                        class="form-control" name="vEmailAddress"
-                                                        ng-model="jobReport.vEmailAddress" />
+                                                    <input type="email" id="vEmailAddress" class="form-control"
+                                                        name="vEmailAddress" ng-model="jobReport.vEmailAddress" />
                                                 </div>
                                                 <div class="col-sm-1" style="margin:33px 0 0 -14px;">
                                                     <a href="javascript:void(0)"
@@ -294,7 +295,7 @@
                                             <div class="col-sm-6 form-group">
                                                 <div class="col-sm-11">
                                                     <label>Tab Permission</label>
-                                                    
+
                                                     <input type="text" select2-tabpermission id="tabPermission"
                                                         class="form-control" name="tabPermission"
                                                         ng-model="jobReport.tabPermission" />
@@ -310,7 +311,7 @@
                                             <div class="col-sm-6 form-group">
                                                 <div class="col-sm-11">
                                                     <label>Sidebar Menu</label>
-                                                    
+
                                                     <input type="text" select2-sidebarmenu id="menu_access"
                                                         class="form-control" name="menu_access"
                                                         ng-model="jobReport.menu_access" />
@@ -323,7 +324,7 @@
                                                             aria-hidden="true"></i></a>
                                                 </div>
                                             </div>
-                                        </div>    
+                                        </div>
                                     </div>
                                     <div style="margin-left:34px;padding:10px;">
                                         <a class="btn btn-info btn-leftside"
@@ -344,8 +345,25 @@
                     <div class="panel-heading font-bold">Result</div>
                     <div class="panel-body">
                         <div class="col-sm-12">
+                            <div class="col-sm-6" style="margin-bottom:10px;">
+                                <div class="d-flex">
+                                    <div>
+                                        <label style="margin-top:5px; white-space:nowrap;">Check All
+                                            &nbsp;&nbsp;</label>
+                                        <input type="checkbox" id="checkAll" name="invoiceCheckAll" ng-model="checkall"
+                                            ng-checked="checkalldata=='all'" ng-click="checkAllresourceIds('all')" />
+                                    </div>
+
+                                    <button class="btn btn-sm btn-info" ng-click="sendEmail()"
+                                        style="padding:5px 25px; margin-left:20px;"><i
+                                            class="glyphicon glyphicon-envelope"></i> Send</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
                             <div class="table-responsive">
-                                <table class="table m-b-none default footable-loaded footable"  ng-if="jobReport.resourceType == 'external'">
+                                <table class="table m-b-none default footable-loaded footable"
+                                    ng-if="jobReport.resourceType == 'external'">
                                     <thead>
                                         <th>#</th>
                                         <th>Resource</th>
@@ -362,15 +380,28 @@
                                             <!-- <tr ng-repeat="result in statusRes=(statusResult | filter : jobReport)"> -->
                                             <td>
                                                 {{ $index + 1 }}
+                                                <input type="checkbox" id="resourceCheck{{$index}}"
+                                                    ng-click="checkAllresourceIds(result.iUserId)"
+                                                    class="resourceCheck{{result.iUserId}}"
+                                                    name="resourceCheck{{$index}}" ng-model="checkor"
+                                                    ng-checked="checkdata=='resourcecheck'" />
+                                                <input type="text" id="resourceCheckData{{$index}}"
+                                                    name="resourceCheckData{{$index}}" style="display: none"
+                                                    ng-model="result.iUserId" />
                                             </td>
                                             <td>
-                                                <a style="color:#4ba0c3" href="#/viewExternal/{{result.iUserId}}" >{{result.vFirstName}} {{result.vLastName}}</a>
+                                                <a style="color:#4ba0c3"
+                                                    href="#/viewExternal/{{result.iUserId}}">{{result.vFirstName}}
+                                                    {{result.vLastName}}</a>
                                             </td>
-                                            <td> <span ng-if="result.priceRateWords">{{ result.priceRateWords | customNumber }}</span> </td>
-                                            <td> <span ng-if="result.priceRateHours"> {{ result.priceRateHours | customNumber }} </span> </td>
+                                            <td> <span ng-if="result.priceRateWords">{{ result.priceRateWords |
+                                                    customNumber }}</span> </td>
+                                            <td> <span ng-if="result.priceRateHours"> {{ result.priceRateHours |
+                                                    customNumber }} </span> </td>
                                             <td>{{result.currency}}</td>
-                                            <td>  
-                                                <p ng-repeat="lang in result.langPair" style="margin: 0;"> {{lang.languagePrice}}  </p> 
+                                            <td>
+                                                <p ng-repeat="lang in result.langPair" style="margin: 0;">
+                                                    {{lang.languagePrice}} </p>
                                             </td>
                                             <td> {{result.hardware}} </td>
                                             <td> {{result.freelancerType}} </td>
@@ -382,7 +413,8 @@
                                     </tbody>
                                 </table>
                                 <!-- Internal Resource -->
-                                <table class="table m-b-none default footable-loaded footable"  ng-if="jobReport.resourceType == 'internal'">
+                                <table class="table m-b-none default footable-loaded footable"
+                                    ng-if="jobReport.resourceType == 'internal'">
                                     <thead>
                                         <th>#</th>
                                         <th>Resource</th>
@@ -403,7 +435,8 @@
                                             <td>{{result.vEmailAddress}}</td>
                                             <td>
                                                 <span ng-if="result.activation_status==1"> Activated</span>
-                                                <span ng-if="result.activation_status!=1" style="color:#f05050;">Not Activated</span>
+                                                <span ng-if="result.activation_status!=1" style="color:#f05050;">Not
+                                                    Activated</span>
                                             </td>
                                         </tr>
                                         <tr ng-show="!internalResult.length">

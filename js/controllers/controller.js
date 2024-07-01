@@ -11229,7 +11229,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }    
         }
     }
-}).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
+}).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
+    
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.bccShow = function () {
         $scope.bccshow = true;
@@ -11267,6 +11268,63 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return item.selected;
         };
     });
+
+    $scope.isResourceMultiple = false;
+    
+    $scope.message = {};
+    $scope.bccMultiple = {};
+    if(items && items?.isResourceMultiple ){
+        $scope.isResourceMultiple = (items?.isResourceMultiple && items?.resourceIds.length) ? true : false 
+        rest.path = "getMultipleReourses";
+        rest.post(items).success(function (data) {
+            
+            $scope.multipleResource = data?.data;
+            
+            $scope.bccMultiple = $scope.multipleResource.map(item => item.vEmailAddress).join(", ");
+
+            rest.path = 'generalMsg';
+            rest.get().success(function (data) {
+                $scope.message = data;
+
+                $scope.message.bccMultiple = $scope.multipleResource.map(item => item.vEmailAddress).join(", ");
+                
+                //$scope.message.vEmailAddress = $window.localStorage.generalMsg;
+                $scope.message.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.sign_detail + '</br><img src="' + data.sign_image + '" width="100px"></div>';
+                $scope.replaceMessageData($scope.message.messageData);
+            }).error(errorCallback);
+
+        }).error(errorCallback);
+    
+    }
+    
+
+    $scope.replaceMessageData = function(messageText){
+        // new code to get logged user details
+        var loggedUserIdSend = $window.localStorage.getItem("session_iUserId");
+        $scope.loggedUserDetailsReminder = '';
+        rest.path = 'getUserDetails/' + loggedUserIdSend;
+        rest.get().success(function (data) {
+            $scope.loggedUserDetailsReminder = data;
+            $scope.invoiceSenderContactReminder = $scope.loggedUserDetailsReminder[0].vUserName;
+            $scope.invoiceSenderEmailReminder = $scope.loggedUserDetailsReminder[0].vEmailAddress;
+            $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+            if($scope.loggedUserDetailsReminder.length > 0){
+                var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
+                //var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                //$scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
+                var position2Reminder = ($scope.loggedUserDetailsReminder.length > 1 && $scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
+                $scope.invoiceClinetpositionReminder = position1Reminder + (position2Reminder ? " & " + position2Reminder : "");
+            }
+            const rplcClientData = {
+                SENDER_NAME: ($scope.invoiceSenderContactReminder) ? $scope.invoiceSenderContactReminder : "",
+                RESOURCE_POSITION: ($scope.invoiceClinetpositionReminder) ? $scope.invoiceClinetpositionReminder : "",
+                RESOURCE_EMAIL: ($scope.invoiceSenderEmailReminder) ? $scope.invoiceSenderEmailReminder : "",
+            };
+            $scope.message.messageData = replaceVariables(messageText, rplcClientData);
+        }).error(errorCallback);
+        // new code to get logged user details
+    }
+
     $scope.mailToSecondaryEmail = $routeParams.toSecondaryEmail;
     if ($routeParams.messageId && $routeParams.messageTable == "internal" || $routeParams.messageTable == "External") {
         rest.path = 'messageUserOneget/' + $routeParams.messageId;
@@ -11276,30 +11334,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.message.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
             $scope.message.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</div>';
 
-            // new code to get logged user details
-            var loggedUserIdSend = $window.localStorage.getItem("session_iUserId");
-            $scope.loggedUserDetailsReminder = '';
-            rest.path = 'getUserDetails/' + loggedUserIdSend;
-            rest.get().success(function (data) {
-                $scope.loggedUserDetailsReminder = data;
-                $scope.invoiceSenderContactReminder = $scope.loggedUserDetailsReminder[0].vUserName;
-                $scope.invoiceSenderEmailReminder = $scope.loggedUserDetailsReminder[0].vEmailAddress;
-                $scope.invoiceClinetpositionReminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
-                if($scope.loggedUserDetailsReminder.length > 0){
-                    var position1Reminder = ($scope.loggedUserDetailsReminder[0].position_name) ? $scope.loggedUserDetailsReminder[0].position_name : "";
-                    //var position2Reminder = ($scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
-                    //$scope.invoiceClinetpositionReminder = position1Reminder + " & " + position2Reminder;
-                    var position2Reminder = ($scope.loggedUserDetailsReminder.length > 1 && $scope.loggedUserDetailsReminder[1].position_name) ? $scope.loggedUserDetailsReminder[1].position_name : "";
-                    $scope.invoiceClinetpositionReminder = position1Reminder + (position2Reminder ? " & " + position2Reminder : "");
-                }
-                const rplcClientData = {
-                    SENDER_NAME: ($scope.invoiceSenderContactReminder) ? $scope.invoiceSenderContactReminder : "",
-                    RESOURCE_POSITION: ($scope.invoiceClinetpositionReminder) ? $scope.invoiceClinetpositionReminder : "",
-                    RESOURCE_EMAIL: ($scope.invoiceSenderEmailReminder) ? $scope.invoiceSenderEmailReminder : "",
-                };
-                $scope.message.messageData = replaceVariables($scope.message.messageData, rplcClientData);
-            }).error(errorCallback);
-            // new code to get logged user details
+            $scope.replaceMessageData = ($scope.message.messageData);
 
         }).error(errorCallback);
     }
@@ -11426,6 +11461,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         };
     }
+    
 
     if ($routeParams.messageTable == 'internal' || $routeParams.messageTable == 'External') {
         if ($routeParams.messageType == '1') {
@@ -11497,6 +11533,40 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $uibModalInstance.close(data);
                     $route.reload();
                 }, 1000);
+            }
+        };
+    }
+
+    if(items && items?.isResourceMultiple){
+        $scope.ok = function (formid, message) {
+            console.log('message=======>', message)
+            var data = {
+                "file": $scope.attachementfile,
+                "data": message,
+                "isMultipleResource": true
+            };
+
+            if (angular.element("#" + formid).valid()) {
+                $routeParams.id = 'isResourceMultiple';
+                rest.path = 'sendMessage';
+                rest.put(data).success(function (data) {
+                    if(data && data.status == 200){
+                        notification('Mail send successfully', 'success');
+                    }else{
+                        notification('Email not sent', 'warning');
+                    }
+                    $timeout(function () {
+                        $uibModalInstance.close(data);
+                        $route.reload();
+                    }, 1000);
+                }).error( function(){
+                    $timeout(function () {
+                        $uibModalInstance.close(data);
+                        //$route.reload();
+                        notification('Email not sent', 'warning');
+                    }, 5000);
+                });
+                
             }
         };
     }
@@ -39625,6 +39695,86 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }
     }
+
+    $scope.checkedIds = [];
+    function arrayRemove(arr, value) { 
+        return arr.filter(function(ele){ 
+            return ele != value; 
+        });
+    }
+    $scope.checkAllresourceIds = function(id, item){
+        //var result = arrayRemove(array, 6);
+        if(id){
+            if(id == 'all'){
+                
+                let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
+                console.log('isCheckedAll', isCheckedAll)
+                console.log(`angular.element('[id^=resourceCheck]').length`, angular.element('[id^=resourceCheck]').length)
+                if(isCheckedAll == 'true'){
+                    $("input[id^=resourceCheck]:checkbox").prop("checked", true);
+
+                    angular.forEach($scope.statusResult, function(item) {
+                        var invoiceselected = $('.resourceCheck' + item.iUserId).is(':checked') ? 'true' : 'false';
+                        if (invoiceselected == 'true') {
+                            //var resIds = angular.element('.resourceCheckData' + item.iUserId).val();
+                            //console.log('resIds====', resIds)
+                            $scope.checkedIds.push((item.iUserId).toString());
+                            //$scope.checkedIds.push(resIds.toString());
+                        }
+                    });        
+                }else{
+                    $('input[id^=resourceCheck]:checkbox').removeAttr('checked');
+                    $('input[id^=checkAll]:checkbox').removeAttr('checked');
+                    //$('#checkAll').removeAttr('checked');
+                    $scope.checkedIds = [];
+                }
+
+            }else{
+                let isChecked = $('.resourceCheck' + id).is(':checked') ? 'true' : 'false';
+                if(isChecked == 'true')
+                    $scope.checkedIds.push(id.toString());
+                else
+                    $scope.checkedIds = arrayRemove($scope.checkedIds, id);
+
+            }        
+        } 
+        
+        setTimeout(() => {
+            console.log('$scope.checkedIds', $scope.checkedIds)   
+        }, 500);
+    }
+
+    $scope.sendEmail = function (id, table, type) {
+        // $routeParams.messageId = id;
+        // $window.localStorage.setItem("messageId", id);
+        // $routeParams.messageTable = table;
+        // $routeParams.messageType = type;
+        if($scope.checkedIds && $scope.checkedIds.length>0 ){
+            $scope.dataItem = {
+                'isResourceMultiple' : true,
+                'resourceIds': $scope.checkedIds,
+
+            }
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/message.html',
+                controller: 'messageController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return $scope.dataItem;
+                    }
+                }
+            });
+            modalInstance.result.then(function (selectedItem) {
+                // debugger;
+                $scope.selected = selectedItem;
+                $route.reload();
+            });
+        }else{
+            notification('Please select checkbox.', 'warning');
+        }
+    };
 
 
 }).controller('dateFormatController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {

@@ -1630,5 +1630,20 @@ array(
         return $return;
     }
 
+    public function getMultipleReourse($data) {
+        $array = $data['resourceIds'];
+        //$resIds = implode(", ", $data['resourceIds']);
+       // $this->_db->where('eUserStatus',3);
+       $this->_db->where('iUserId', $array, 'IN');
+       $this->_db->where('activation_status', 1);
+       $data = $this->_db->get('tms_users');
+        //$data = $this->_db->rawQuery("SELECT * FROM tms_users WHERE activation_status=1  AND eUserStatus = 3 AND (FIND_IN_SET($type,vResourcePosition) > 0) ");
+        //echo $this->_db->getLastQuery();
+        $result['data'] = $data;
+        $result['status'] = 200;
+        return $result;
+    
+    }
+
     
 }

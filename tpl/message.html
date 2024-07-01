@@ -50,6 +50,15 @@
         </div>
       </div>
     </div><br><br>
+    <div class="form-group" ng-if="isResourceMultiple">
+      <label class="col-md-2 control-label" > </label>
+      <div class="col-md-10">
+        <p> Each of the following emails as BCC. </p>
+        <ul ng-repeat="resource in multipleResource">
+          <li>{{$index+1}}. {{resource.vEmailAddress}}</li>
+        </ul>
+      </div>
+    </div><br><br>
     <div class="form-group">
       <label class="col-md-2 control-label" for="Equipe">User Name:</label>
       <div class="col-md-10">
@@ -85,6 +94,12 @@
         <input id="message-bcc" class="form-control" type="text" ng-model="message.bcc" name="values" />
       </div>
     </div>
+    <div class="form-group" ng-if="isResourceMultiple">
+      <label class="col-md-2 control-label" for="Equipe">Subject:</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" name="subject" ng-model="message.subject" required>
+      </div>
+    </div><br><br>
     <div class="form-group">
       <label class="col-md-2 control-label">Attachments:</label>
       <div class="col-md-10">
@@ -92,7 +107,7 @@
         <span ng-bind="fileAttatchName" class="fileAttatchM"></span>
       </div>
     </div><br><br>
-    <div class="form-group"> 
+    <div class="form-group" style="margin-top: 30px;"> 
       <!--<input type="text" class="form-control" name="cc"   ng-model="message.editor">-->
       <div style="padding-left:18%;" class="messText" text-angular="text-angular" name="htmlcontent" ng-model="message.messageData"  required> </div>
     </div>

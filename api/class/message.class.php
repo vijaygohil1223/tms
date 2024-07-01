@@ -43,13 +43,13 @@ class message {
             $message = " ";
         }
         
-        $body = "<p>" . $message . "</p>";
+        $body = "<div>" . $message . "</div>";
         //$body .= "<p>" . $emailsignData . "</p>";
         //$body .= "<p><img src='cid:logo_2u' width='80px'></p>";
         $subject = "Information";
         $Username = $data['data']['vUserName'];
         $to = $data['data']['vEmailAddress'];
-        $from = $data['data']['vEmailAddress'];
+        //$from = $data['data']['vEmailAddress'];
 
         // $this->_mailer = new PHPMailer();
         // $this->_mailer->IsSMTP();
@@ -70,6 +70,19 @@ class message {
 
         $attachments = '';
         $to_name = ' ';
+
+        if ($data && isset($data['data']['bccMultiple'])) {
+            $bccMultiple = $data['data']['bccMultiple'];
+            $bcc = isset($bcc) ? $bcc : ''; // Ensure $bcc is initialized
+        
+            if ($bcc != '') {
+                $bcc = $bccMultiple . ', ' . $bcc;
+            } else {
+                $bcc = $bccMultiple;
+            }
+        
+            $subject = isset($data['data']['subject']) ? $data['data']['subject'] : "Information";
+        }
         
         if ($encoded_content != '') {
             $type = pathinfo($encoded_content, PATHINFO_EXTENSION);
