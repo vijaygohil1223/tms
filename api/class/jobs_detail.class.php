@@ -627,7 +627,7 @@ class jobs_detail
                     $this->_db->rawQuery($qry_up);
 
                     // check for purchase order
-                    $qry = "SELECT tsv.job_summmeryId, tsv.order_id, tsv.item_id, tsv.resource, tsv.po_number, tu.vEmailAddress, tu.vFirstName, tu.vLastName from tms_summmery_view as tsv LEFT JOIN tms_users as tu ON tsv.resource = tu.iUserId WHERE tsv.job_summmeryId != " . $id . " AND tsv.order_id = " . $jobsData['order_id'] . " AND tsv.item_id = " . $jobsData['item_id'] . " AND tsv.item_status = 'In preparation'  AND tsv.resource > 0  ORDER BY tsv.job_summmeryId ASC";
+                    $qry = "SELECT tsv.job_summmeryId, tsv.order_id, tsv.item_id, tsv.resource, tsv.po_number, tu.vEmailAddress, tu.vFirstName, tu.vLastName from tms_summmery_view as tsv LEFT JOIN tms_users as tu ON tsv.resource = tu.iUserId WHERE tsv.job_summmeryId != " . $id . " AND tsv.order_id = " . $jobsData['order_id'] . " AND tsv.item_id = " . $jobsData['item_id'] . " AND tsv.item_status = 'In preparation'  AND tsv.resource > 0 AND tsv.isPoSent != 1  ORDER BY tsv.job_summmeryId ASC";
                     $scoopJoblist = $this->_db->rawQuery($qry);
                     if (count($scoopJoblist) > 0 && $scoopJoblist[0]['resource']) {
                         // $emailData = array();

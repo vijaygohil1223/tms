@@ -25868,7 +25868,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return deferredRes.promise; 
         }    
     }
-    // job -> invoice  
+    // job -> Purchase order 
     $scope.sendPoPopup = function () {
         let projDeadline =  moment($scope.purchaseDetail.due_date).format($window.localStorage.getItem('global_dateFormat') + ' ' + 'HH:mm');
         let poDueDateTime = (projDeadline != 'Invalid date') ? projDeadline : '';
@@ -26372,6 +26372,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $routeParams.id = val.id;
                                 rest.path = 'jobselectContactNameupdate';
                                 rest.put($scope.it).success(function (data) {
+                                    console.log('data=======>responsedate', data)
                                     $scope.setItemStatus = false;
                                     if(setItem_Status == 'Completed' && allitCheked.length == 1 &&  data && data.sendPurchaseOrder){
                                         $scope.sendPurchaseOrderFn(data.job_summmeryId);
@@ -39754,7 +39755,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.dataItem = {
                 'isResourceMultiple' : true,
                 'resourceIds': $scope.checkedIds,
-
             }
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
