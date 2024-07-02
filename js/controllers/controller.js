@@ -5978,7 +5978,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
-}).controller('filemanagerController', function ($interval, $scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams) {
+}).controller('filemanagerController', function ($interval, $scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $q ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.breadcrums = [''];
     $scope.statusName = $window.localStorage.jobstatusName;
@@ -6587,138 +6587,242 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 tmsfolder = 'tms';
                             }
                             if (folderId != undefined) {
+                                console.log('folderId **************=============>', folderId)
                                 $scope.showLoder = true;
                                 rest.path = 'filemanagerfolderDownload/' + folderId;
-                                rest.get().success(function (data) {
-                                    $scope.downloadAllfile = data;
-                                    var zipdwnld = new JSZip();
-                                    var fileUrls = [];
-                                    var folderArr = [];
-                                    var fileIndex = 0;
-
-                                    angular.forEach($scope.downloadAllfile, function (val, i) {
-                                        if (val.ext != '') {
-                                            var fimg = val.name;
-                                            //var fimg = val.original_filename;
-                                            const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
-                                            if (sameNameExist.length > 1) {
-                                                fimg = val.name; 
-                                            }
-                                            //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
-                                            //fileList.push("uploads/fileupload/"+fimg);
-                                            var fimgUrl = "uploads/fileupload/" + fimg;
-                                            if (fileUrlExists(fimgUrl)) {
-                                                fileUrls.push({
-                                                    'parent_id': val.parent_id,
-                                                    'full_url': fimgUrl,
-                                                    'file_name': fimg,
-                                                    'folderurl_dir': val.folderurl,
+                            
+                                try {
+                                    rest.get().success(function(data) {
+                                        try {
+                                            $scope.downloadAllfile = data;
+                                            var zipdwnld = new JSZip();
+                                            var fileUrls = [];
+                                            var folderArr = [];
+                                            var fileIndex = 0;
+                            
+                                            angular.forEach($scope.downloadAllfile, function(val, i) {
+                                                if (val.ext != '') {
+                                                    var fimg = val.name;
+                                                    const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
+                                                    if (sameNameExist.length > 1) {
+                                                        fimg = val.name; 
+                                                    }
+                                                    var fimgUrl = "uploads/fileupload/" + fimg;
+                                                    if (fileUrlExists(fimgUrl)) {
+                                                        fileUrls.push({
+                                                            'parent_id': val.parent_id,
+                                                            'full_url': fimgUrl,
+                                                            'file_name': fimg,
+                                                            'folderurl_dir': val.folderurl,
+                                                        });
+                                                    }
+                                                } else if (val.ext == '') {
+                                                    var foldername = val.name;
+                                                    var fmid = val.fmanager_id;
+                                                    folderArr.push({
+                                                        'fmanager_id': val.fmanager_id,
+                                                        'folder_name': val.name,
+                                                        'folderurl_dir': val.folderurl,
+                                                    });
+                                                }
+                                            });
+                            
+                                            if (fileUrls.length === 0 && folderArr.length > 0) {
+                                                folderArr.forEach(function(folder) {
+                                                    zipdwnld.folder(folder.folderurl_dir);
+                                                });
+                                                zipdwnld.generateAsync({ type: 'blob' }).then(function(content) {
+                                                    saveAs(content, tmsfolder + ".zip");
+                                                    $scope.showLoder = false;
+                                                    $route.reload();
+                                                });
+                                            } else {
+                                                var filePromises = fileUrls.map(function(url) {
+                                                    return $q(function(resolve, reject) {
+                                                        JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
+                                                            if (err) {
+                                                                $scope.showLoder = false;
+                                                                return reject(err);
+                                                            }
+                                                            resolve({
+                                                                url: url,
+                                                                data: data
+                                                            });
+                                                        });
+                                                    });
+                                                });
+                            
+                                                $q.all(filePromises).then(function(files) {
+                                                    files.forEach(function(file) {
+                                                        folderArr.forEach(function(folder) {
+                                                            zipdwnld.folder(folder.folderurl_dir);
+                                                        });
+                                                        if (file.data !== null) {
+                                                            zipdwnld.file(file.url.folderurl_dir + file.url.file_name, file.data, { binary: true });
+                                                        }
+                                                    });
+                            
+                                                    return zipdwnld.generateAsync({ type: 'blob' });
+                                                }).then(function(content) {
+                                                    saveAs(content, tmsfolder + ".zip");
+                                                    $scope.showLoder = false;
+                                                    $route.reload();
+                                                }).catch(function(error) {
+                                                    console.error('Error generating zip:', error);
+                                                    $scope.showLoder = false;
                                                 });
                                             }
+                                        } catch (innerError) {
+                                            console.error('Error during processing:', innerError);
+                                            $scope.showLoder = false;
                                         }
-                                        var fmid = 0;
-                                        if (val.ext == '') {
-                                            var foldername = val.name;
-                                            var fmid = val.fmanager_id;
-                                            //zipdwnld.folder(foldername);
-                                            folderArr.push({
-                                                'fmanager_id': val.fmanager_id,
-                                                'folder_name': val.name,
-                                                'folderurl_dir': val.folderurl,
-                                            });
-                                        }
-
-                                        /*if(val.childfile){
-                                            angular.forEach(val.childfile,function(val2,i2){
-                                                var prntId = 1;
-                                                if(val2.ext!=''){
-                                                    var fimg2 = val2.name;
-                                                    //fileList.push("uploads/fileupload/"+fimg2);
-                                                    var fimgUrl2 = "uploads/fileupload/"+fimg2;
-                                                    if(fileUrlExists(fimgUrl2)){
-                                                        fileUrls.push(
-                                                            {
-                                                            'parent_id':val2.parent_id,
-                                                            'full_url':fimgUrl2,
-                                                            'file_name':val2.name
-                                                            });
-                                                    }
-                                                }
-                                                if(fimg2){
-                                                    //zipdwnld.file(fimg2, "uploads/fileupload/"+fimg2);
-                                                }
-                                                if(val2.ext==''){
-                                                    var foldername2 = val2.name;
-                                                    //zipdwnld.folder(foldername2);
-                                                    folderArr.push({
-                                                        'fmanager_id':val2.fmanager_id,
-                                                        'folder_name':val2.name,
-                                                    });
-                                                }
-                                            });
-                                            //$scope.childData = val2;
-                                        }*/
-                                    })
-                                    // files download
-                                    var file_count = 0;
-                                    fileUrls.forEach(function (url) {
-                                        JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
-                                            if (err) {
-                                                throw err;
-                                            }
-                                            var folderName = '';
-                                            folderArr.forEach(function (folders) {
-                                                /*if(folders.fmanager_id == url.parent_id){
-                                                    folderName = folders.folder_name+'/';
-                                                }else{
-                                                    zipdwnld.folder(folders.folder_name);
-                                                }*/
-                                                zipdwnld.folder(folders.folderurl_dir);
-                                            });
-                                            
-                                            file_count++;
-                                            if (data != null) {
-                                                //zipdwnld.file(folderName+url.file_name, data,  {binary:true});
-                                                zipdwnld.file(url.folderurl_dir + url.file_name, data, { binary: true });
-
-                                                if (file_count == fileUrls.length) {
-                                                    zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
-                                                        saveAs(content, tmsfolder + ".zip");
-                                                    }).then(function () {
-                                                        $scope.showLoder = false;
-                                                        $route.reload();
-                                                    });
-                                                    $timeout(function () {
-                                                        $scope.showLoder = false;
-                                                        //$route.reload();
-                                                    }, 10000);
-                                                }
-                                            }
-
-                                        });
+                                    }).catch(function(error) {
+                                        console.error('Error fetching data:', error);
+                                        $scope.showLoder = false;
                                     });
-
-                                    $timeout(function () {
-                                        if (fileUrls.length == 0 && folderArr.length > 0) {
-                                            folderArr.forEach(function (folders) {
-                                                zipdwnld.folder(folders.folder_name);
-                                                zipdwnld.folder(folders.folderurl_dir);
-                                            });
-                                            zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
-                                                saveAs(content, tmsfolder + ".zip");
-                                            }).then(function () {
-                                                $scope.showLoder = false;
-                                                $route.reload();
-                                            });
-                                        }
-                                    }, 1000);
-
-                                })
-                                $timeout(function () {
+                                } catch (outerError) {
+                                    console.error('Unexpected error:', outerError);
                                     $scope.showLoder = false;
-                                }, 10000);
-
+                                }
+                            
+                                // $timeout(function() {
+                                //     $scope.showLoder = false;
+                                // }, 10000);
                             }
+                            
+                            // if (folderId != undefined) {
+                            //     $scope.showLoder = true;
+                            //     rest.path = 'filemanagerfolderDownload/' + folderId;
+                            //     rest.get().success(function (data) {
+                            //         $scope.downloadAllfile = data;
+                            //         var zipdwnld = new JSZip();
+                            //         var fileUrls = [];
+                            //         var folderArr = [];
+                            //         var fileIndex = 0;
+
+                            //         angular.forEach($scope.downloadAllfile, function (val, i) {
+                            //             if (val.ext != '') {
+                            //                 var fimg = val.name;
+                            //                 //var fimg = val.original_filename;
+                            //                 const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
+                            //                 if (sameNameExist.length > 1) {
+                            //                     fimg = val.name; 
+                            //                 }
+                            //                 //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
+                            //                 //fileList.push("uploads/fileupload/"+fimg);
+                            //                 var fimgUrl = "uploads/fileupload/" + fimg;
+                            //                 if (fileUrlExists(fimgUrl)) {
+                            //                     fileUrls.push({
+                            //                         'parent_id': val.parent_id,
+                            //                         'full_url': fimgUrl,
+                            //                         'file_name': fimg,
+                            //                         'folderurl_dir': val.folderurl,
+                            //                     });
+                            //                 }
+                            //             }
+                            //             var fmid = 0;
+                            //             if (val.ext == '') {
+                            //                 var foldername = val.name;
+                            //                 var fmid = val.fmanager_id;
+                            //                 //zipdwnld.folder(foldername);
+                            //                 folderArr.push({
+                            //                     'fmanager_id': val.fmanager_id,
+                            //                     'folder_name': val.name,
+                            //                     'folderurl_dir': val.folderurl,
+                            //                 });
+                            //             }
+
+                            //             /*if(val.childfile){
+                            //                 angular.forEach(val.childfile,function(val2,i2){
+                            //                     var prntId = 1;
+                            //                     if(val2.ext!=''){
+                            //                         var fimg2 = val2.name;
+                            //                         //fileList.push("uploads/fileupload/"+fimg2);
+                            //                         var fimgUrl2 = "uploads/fileupload/"+fimg2;
+                            //                         if(fileUrlExists(fimgUrl2)){
+                            //                             fileUrls.push(
+                            //                                 {
+                            //                                 'parent_id':val2.parent_id,
+                            //                                 'full_url':fimgUrl2,
+                            //                                 'file_name':val2.name
+                            //                                 });
+                            //                         }
+                            //                     }
+                            //                     if(fimg2){
+                            //                         //zipdwnld.file(fimg2, "uploads/fileupload/"+fimg2);
+                            //                     }
+                            //                     if(val2.ext==''){
+                            //                         var foldername2 = val2.name;
+                            //                         //zipdwnld.folder(foldername2);
+                            //                         folderArr.push({
+                            //                             'fmanager_id':val2.fmanager_id,
+                            //                             'folder_name':val2.name,
+                            //                         });
+                            //                     }
+                            //                 });
+                            //                 //$scope.childData = val2;
+                            //             }*/
+                            //         })
+                            //         // files download
+                            //         var file_count = 0;
+                            //         fileUrls.forEach(function (url) {
+                            //             JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
+                            //                 if (err) {
+                            //                     throw err;
+                            //                 }
+                            //                 var folderName = '';
+                            //                 folderArr.forEach(function (folders) {
+                            //                     /*if(folders.fmanager_id == url.parent_id){
+                            //                         folderName = folders.folder_name+'/';
+                            //                     }else{
+                            //                         zipdwnld.folder(folders.folder_name);
+                            //                     }*/
+                            //                     zipdwnld.folder(folders.folderurl_dir);
+                            //                 });
+                                            
+                            //                 file_count++;
+                            //                 if (data != null) {
+                            //                     //zipdwnld.file(folderName+url.file_name, data,  {binary:true});
+                            //                     zipdwnld.file(url.folderurl_dir + url.file_name, data, { binary: true });
+
+                            //                     if (file_count == fileUrls.length) {
+                            //                         zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
+                            //                             saveAs(content, tmsfolder + ".zip");
+                            //                         }).then(function () {
+                            //                             $scope.showLoder = false;
+                            //                             $route.reload();
+                            //                         });
+                            //                         $timeout(function () {
+                            //                             $scope.showLoder = false;
+                            //                             //$route.reload();
+                            //                         }, 10000);
+                            //                     }
+                            //                 }
+
+                            //             });
+                            //         });
+
+                            //         $timeout(function () {
+                            //             if (fileUrls.length == 0 && folderArr.length > 0) {
+                            //                 folderArr.forEach(function (folders) {
+                            //                     zipdwnld.folder(folders.folder_name);
+                            //                     zipdwnld.folder(folders.folderurl_dir);
+                            //                 });
+                            //                 zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
+                            //                     saveAs(content, tmsfolder + ".zip");
+                            //                 }).then(function () {
+                            //                     $scope.showLoder = false;
+                            //                     $route.reload();
+                            //                 });
+                            //             }
+                            //         }, 1000);
+
+                            //     })
+                            //     $timeout(function () {
+                            //         $scope.showLoder = false;
+                            //     }, 10000);
+
+                            // }
 
                         }],
 
@@ -7295,7 +7399,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     
 
-}).controller('filemanagerCtrl', function ($scope, $sce, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval) {
+}).controller('filemanagerCtrl', function ($scope, $sce, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval, $q ) {
     $scope.clientId = $window.localStorage.getItem("contactclientId");
     $scope.userId = $window.localStorage.getItem("contactUserId");
     console.log('$scope.userId', $scope.userId)
@@ -7965,6 +8069,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.GetRootFolderName();
 
+
         //var setintrvl = setInterval(function() {
         if ($window.localStorage.getItem("parentId") != " " && $window.localStorage.getItem("parentId") != undefined) {
             var id = $window.localStorage.getItem("parentId");
@@ -8110,26 +8215,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if (!tmsfolder) {
                                 tmsfolder = 'TMS_';
                             }
-                            if (folderId != undefined) {
+
+                            if (folderId !== undefined) {
                                 $scope.showLoder = true;
                                 rest.path = 'filemanagerfolderDownload/' + folderId;
-                                rest.get().success(function (data) {
-                                    $scope.downloadAllfile = data;
+                                rest.get().then(function(response) {
+                                    $scope.downloadAllfile = response.data;
                                     var zipdwnld = new JSZip();
                                     var fileUrls = [];
                                     var folderArr = [];
-                                    var parentFolderArr = [];
-                                    var fileIndex = 0;
-                                    angular.forEach($scope.downloadAllfile, function (val, i) {
-                                        if (val.ext != '') {
+                            
+                                    angular.forEach($scope.downloadAllfile, function(val) {
+                                        if (val.ext !== '') {
                                             var fimg = val.name;
-                                            //var fimg = val.original_filename;
-                                            const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
+                                            const sameNameExist = $scope.downloadAllfile.filter(itm => itm.original_filename === val.original_filename);
                                             if (sameNameExist.length > 1) {
-                                                fimg = val.name; 
+                                                fimg = val.name;
                                             }
-                                            //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
-                                            //fileList.push("uploads/fileupload/"+fimg);
                                             var fimgUrl = "uploads/fileupload/" + fimg;
                                             if (fileUrlExists(fimgUrl)) {
                                                 fileUrls.push({
@@ -8139,115 +8241,170 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                     'folderurl_dir': val.folderurl,
                                                 });
                                             }
-                                        }
-                                        var fmid = 0;
-                                        if (val.ext == '') {
-                                            var foldername = val.name;
-                                            var fmid = val.fmanager_id;
+                                        } else if (val.ext === '') {
                                             folderArr.push({
                                                 'fmanager_id': val.fmanager_id,
                                                 'folder_name': val.name,
                                                 'folderurl_dir': val.folderurl,
                                             });
-
-                                            //zipdwnld.folder(foldername);
                                         }
-
-                                        /*if(val.childfile){
-                                            angular.forEach(val.childfile,function(val2,i2){
-                                                var prntId = 1;
-                                                if(fmid == val2.fmanager_id){
-                                                }
-                                                if(val2.ext!=''){
-                                                    var fimg2 = val2.name;
-                                                    //fileList.push("uploads/fileupload/"+fimg2);
-                                                    var fimgUrl2 = "uploads/fileupload/"+fimg2;
-                                                    if(fileUrlExists(fimgUrl2)){
-                                                        fileUrls.push(
-                                                            {
-                                                                'parent_id':val2.parent_id,
-                                                                'full_url':fimgUrl2,
-                                                                'file_name':val2.name,
-                                                                'folderurl_dir':val2.folderurl
-                                                            });
-                                                    }
-                                                }
-                                                if(fimg2){
-                                                    //zipdwnld.file(fimg2, "uploads/fileupload/"+fimg2);
-                                                }
-                                                if(val2.ext==''){
-                                                    var foldername2 = val2.name;
-                                                    //zipdwnld.folder(foldername2);
-                                                    folderArr.push({
-                                                        'fmanager_id':val2.fmanager_id,
-                                                        'folder_name':val2.name,
-                                                        'folderurl_dir':val2.folderurl
-                                                    });
-                                                }
-                                            });
-                                            //$scope.childData = val2;
-                                        }*/
-
-                                    })
-
-                                    // files download
-                                    var file_count = 0;
-                                    fileUrls.forEach(function (url) {
-                                        JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
-                                            if (err) {
-                                                throw err;
-                                                $scope.showLoder = false;
-                                            }
-
-                                            var folderName = '';
-                                            folderArr.forEach(function (folders) {
-                                                /*if(folders.fmanager_id == url.parent_id){
-                                                    folderName = folders.folder_name+'/';
-                                                }else{
-                                                    zipdwnld.folder(folders.folder_name);
-                                                }*/
-                                                zipdwnld.folder(folders.folderurl_dir);
-                                            });
-                                            file_count++;
-                                            if (data != null) {
-                                                zipdwnld.file(url.folderurl_dir + url.file_name, data, { binary: true });
-
-                                                if (file_count == fileUrls.length) {
-                                                    zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
-                                                        saveAs(content, tmsfolder + ".zip");
-                                                    }).then(function () {
-                                                        $scope.showLoder = false;
-                                                        $route.reload();
-                                                    });
-                                                    $timeout(function () {
-                                                        $scope.showLoder = false;
-                                                        //$route.reload();
-                                                    }, 10000);
-                                                }
-                                            }
-
-                                        });
                                     });
-
-                                    $timeout(function () {
-                                        if (fileUrls.length == 0 && folderArr.length > 0) {
-                                            folderArr.forEach(function (folders) {
-                                                zipdwnld.folder(folders.folderurl_dir);
+                            
+                                    if (fileUrls.length === 0 && folderArr.length > 0) {
+                                        folderArr.forEach(function(folder) {
+                                            zipdwnld.folder(folder.folderurl_dir);
+                                        });
+                                        zipdwnld.generateAsync({ type: 'blob' }).then(function(content) {
+                                            saveAs(content, tmsfolder + ".zip");
+                                            $scope.showLoder = false;
+                                            $route.reload();
+                                        });
+                                    } else {
+                                        var filePromises = fileUrls.map(function(url) {
+                                            return $q(function(resolve, reject) {
+                                                JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
+                                                    if (err) {
+                                                        $scope.showLoder = false;
+                                                        return reject(err);
+                                                    }
+                                                    resolve({
+                                                        url: url,
+                                                        data: data
+                                                    });
+                                                });
                                             });
-                                            zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
-                                                saveAs(content, tmsfolder + ".zip");
-                                            }).then(function () {
-                                                $scope.showLoder = false;
-                                                $route.reload();
+                                        });
+                            
+                                        return $q.all(filePromises).then(function(files) {
+                                            files.forEach(function(file) {
+                                                folderArr.forEach(function(folder) {
+                                                    zipdwnld.folder(folder.folderurl_dir);
+                                                });
+                                                if (file.data !== null) {
+                                                    zipdwnld.file(file.url.folderurl_dir + file.url.file_name, file.data, { binary: true });
+                                                }
                                             });
-                                            //$scope.showLoder = false;
-                                        }
-                                    }, 1000);
-                                })
-                                $timeout(function () {
+                            
+                                            return zipdwnld.generateAsync({ type: 'blob' });
+                                        }).then(function(content) {
+                                            saveAs(content, tmsfolder + ".zip");
+                                            $scope.showLoder = false;
+                                            $route.reload();
+                                        });
+                                    }
+                                }).catch(function(error) {
+                                    console.error('Error:', error);
                                     $scope.showLoder = false;
-                                }, 10000);
+                                });
+                            
+                                // $timeout(function() {
+                                //     $scope.showLoder = false;
+                                // }, 10000);
                             }
+
+                            // if (folderId != undefined) {
+                            //     $scope.showLoder = true;
+                            //     rest.path = 'filemanagerfolderDownload/' + folderId;
+                            //     rest.get().success(function (data) {
+                            //         $scope.downloadAllfile = data;
+                            //         var zipdwnld = new JSZip();
+                            //         var fileUrls = [];
+                            //         var folderArr = [];
+                            //         var parentFolderArr = [];
+                            //         var fileIndex = 0;
+                            //         angular.forEach($scope.downloadAllfile, function (val, i) {
+                            //             if (val.ext != '') {
+                            //                 var fimg = val.name;
+                            //                 //var fimg = val.original_filename;
+                            //                 const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
+                            //                 if (sameNameExist.length > 1) {
+                            //                     fimg = val.name; 
+                            //                 }
+                            //                 //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
+                            //                 //fileList.push("uploads/fileupload/"+fimg);
+                            //                 var fimgUrl = "uploads/fileupload/" + fimg;
+                            //                 if (fileUrlExists(fimgUrl)) {
+                            //                     fileUrls.push({
+                            //                         'parent_id': val.parent_id,
+                            //                         'full_url': fimgUrl,
+                            //                         'file_name': fimg,
+                            //                         'folderurl_dir': val.folderurl,
+                            //                     });
+                            //                 }
+                            //             }
+                            //             var fmid = 0;
+                            //             if (val.ext == '') {
+                            //                 var foldername = val.name;
+                            //                 var fmid = val.fmanager_id;
+                            //                 folderArr.push({
+                            //                     'fmanager_id': val.fmanager_id,
+                            //                     'folder_name': val.name,
+                            //                     'folderurl_dir': val.folderurl,
+                            //                 });
+
+                            //                 //zipdwnld.folder(foldername);
+                            //             }
+
+                            //         })
+
+                            //         // files download
+                            //         var file_count = 0;
+                            //         fileUrls.forEach(function (url) {
+                            //             JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
+                            //                 if (err) {
+                            //                     throw err;
+                            //                     $scope.showLoder = false;
+                            //                 }
+
+                            //                 var folderName = '';
+                            //                 folderArr.forEach(function (folders) {
+                            //                     /*if(folders.fmanager_id == url.parent_id){
+                            //                         folderName = folders.folder_name+'/';
+                            //                     }else{
+                            //                         zipdwnld.folder(folders.folder_name);
+                            //                     }*/
+                            //                     zipdwnld.folder(folders.folderurl_dir);
+                            //                 });
+                            //                 file_count++;
+                            //                 if (data != null) {
+                            //                     zipdwnld.file(url.folderurl_dir + url.file_name, data, { binary: true });
+
+                            //                     if (file_count == fileUrls.length) {
+                            //                         zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
+                            //                             saveAs(content, tmsfolder + ".zip");
+                            //                         }).then(function () {
+                            //                             $scope.showLoder = false;
+                            //                             $route.reload();
+                            //                         });
+                            //                         $timeout(function () {
+                            //                             $scope.showLoder = false;
+                            //                             //$route.reload();
+                            //                         }, 10000);
+                            //                     }
+                            //                 }
+
+                            //             });
+                            //         });
+
+                            //         $timeout(function () {
+                            //             if (fileUrls.length == 0 && folderArr.length > 0) {
+                            //                 folderArr.forEach(function (folders) {
+                            //                     zipdwnld.folder(folders.folderurl_dir);
+                            //                 });
+                            //                 zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
+                            //                     saveAs(content, tmsfolder + ".zip");
+                            //                 }).then(function () {
+                            //                     $scope.showLoder = false;
+                            //                     $route.reload();
+                            //                 });
+                            //                 //$scope.showLoder = false;
+                            //             }
+                            //         }, 1000);
+                            //     })
+                            //     $timeout(function () {
+                            //         $scope.showLoder = false;
+                            //     }, 10000);
+                            // }
 
                         }],
 
