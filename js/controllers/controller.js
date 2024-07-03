@@ -17858,6 +17858,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.overdueInvc.push(val);
                 }
                 //Due date counts for Invoice
+
+                val.linguist_account_holder = '';
+                val.linguist_iban = '';
+                val.linguist_bic_swift = '';
+                if (val.linguist_bankinfo) {
+                    try {
+                        const linguistBankInfo = JSON.parse(val.linguist_bankinfo);
+                        val.linguist_account_holder = linguistBankInfo?.holder_name || '';
+                        val.linguist_iban = linguistBankInfo?.iban || '';
+                        val.linguist_bic_swift = linguistBankInfo?.bic || '';
+                    } catch (error) {
+                        console.error('Error parsing linguist_bankinfo:', error);
+                    }
+                }
+
+                 
             });
 
             // $scope.approvedInvc.sort((a, b) => new Date(a.inv_due_date) - new Date(b.inv_due_date));

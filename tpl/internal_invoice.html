@@ -314,6 +314,9 @@
                   <th id="crExdate">Creation Date</th>
                   <th id="dueExdate">Due Date</th>
                   <th id="paymentExdate">Payment Date</th>
+                  <th >IBAN</th>
+                  <th >Account Holder</th>
+                  <th >SWIFT</th>
                   <th>Invoice Status</th>
                 </thead>
                 <tbody>
@@ -329,6 +332,9 @@
                     <td>{{ invoiceL.invoice_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.inv_due_date | globalDtFormat }}</td>
                     <td>{{ invoiceL.paid_date | globalDtFormat }}</td>
+                    <td>{{ invoiceL.linguist_iban }}</td>
+                    <td>{{ invoiceL.linguist_account_holder }}</td>
+                    <td>{{ invoiceL.linguist_bic_swift }}</td>
                     <td ng-show="invoiceStatus[{{$index}}]">
                       <span ng-bind="invoiceL.invoice_status"></span>
                     </td>
