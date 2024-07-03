@@ -18266,36 +18266,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceListSelected = [];
         if($scope.checkedIds.length > 0){
             $scope.getAllInvoice = $scope.getAllInvoice.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
-            //$scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
+            $scope.invoiceListAll = $scope.invoiceListAll.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
             const invoiceListClone = [...$scope.invoiceListAll];
             $scope.invoiceListSelected = invoiceListClone.filter(function (getAllInvoice) { return $scope.checkedIds.includes(getAllInvoice.invoice_id.toString()) });
         }
+        
         switch (type) {
             //case "Allexcel":
             case "excel":    
 
-                setTimeout(() => {
-                    // var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                    //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                    // });
-                    // saveAs(blob, "Linguist Invoice Report.xls");
-
-                    exportTableToExcel('exportable2','Linguist Invoice Report', '',1)
-
-                    rest.path = 'freelanceInvoiceExcelStatus';
-                    rest.post($scope.checkedIds).success(function (data) {
-                        if (data.status == 200) {
-                            $route.reload();
-                            //notification('File downloaded successfully', 'success');
-                            $scope.checkedIds = [];
-                        }
-                    }).error(errorCallback);
-                    $scope.getAllInvoice = allInvoiceListArr
-                    // Remove selected
-                    $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
-                    $('input[id^=checkAll]:checkbox').removeAttr('checked');
-
-                }, 500);
+                try {
+                    setTimeout(() => {
+                        // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                        //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                        // });
+                        // saveAs(blob, "Linguist Invoice Report.xls");
+    
+                        exportTableToExcel('exportable2','Linguist Invoice Report', '',1)
+    
+                        rest.path = 'freelanceInvoiceExcelStatus';
+                        rest.post($scope.checkedIds).success(function (data) {
+                            if (data.status == 200) {
+                                $route.reload();
+                                //notification('File downloaded successfully', 'success');
+                                $scope.checkedIds = [];
+                            }
+                        }).error(errorCallback);
+                        $scope.getAllInvoice = allInvoiceListArr
+                        // Remove selected
+                        $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+                        $('input[id^=checkAll]:checkbox').removeAttr('checked');
+    
+                    }, 500);
+                } catch (error) {
+                    console.log('error', error)
+                    $route.reload();
+                }
 
                 break;
             
@@ -19824,7 +19830,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.invoiceDetail = {};
                         pdfDataArr = {}
                     }, 50);
-                    
+
                 }
             }).error(errorCallback);
         }, 500);
@@ -33865,14 +33871,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     });
 
-    $scope.pdfInvoice = function (id, isMultiple=false, creditNote= false) {
+    $scope.pdfInvoice = function (id, isMultiple=false, creditNote= false, isDocx=false) {
         console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
         console.log('id', id)
         var deferred = $q.defer(); // Create a deferred object
         $scope.data = {
             id: id,
             isMultiple: isMultiple,
-            isCreditNote: creditNote
+            isCreditNote: creditNote,
+            isDocx: isDocx
         }
         if(creditNote){
          var pdfPage =   'tpl/invoicepdfCreditnotes.html'
@@ -33914,6 +33921,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             for (let val of $scope.checkedIds) {
                 try {
                     const pData = await $scope.pdfInvoice(val, true);
+                    pdfPromises.push(pData);
+                } catch (error) {
+                    console.error('Error generating PDF:', error);
+                }
+            }
+            // After all promises are resolved
+            Promise.all(pdfPromises).then(pdfDataArray => {
+                var pdfFile = pdfDataArray.map((pdfData, index) => ({
+                    name: pdfData.name,
+                    data: pdfData.data
+                }));
+                // Proceed with handling the generated PDF files
+                $scope.generateZipFn(pdfFile);
+                $scope.isDisabledExportpdf = false;
+                notification("Download successful.", "success");
+            }).catch(error => {
+                console.error('Error generating PDFs:', error);
+                $scope.isDisabledExportpdf = false;
+            });
+        }else{
+            notification("Pelase select record.", "warning");
+        }
+    }
+
+    $scope.exportDocx = async function() {
+        if($scope.checkedIds?.length>0){
+            $scope.isDisabledExportpdf = true;
+            var pdfPromises = []; // Array to store promises for PDF generation
+            for (let val of $scope.checkedIds) {
+                try {
+                    const pData = await $scope.pdfInvoice(val, true, false, true);
                     pdfPromises.push(pData);
                 } catch (error) {
                     console.error('Error generating PDF:', error);
