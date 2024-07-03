@@ -229,14 +229,22 @@ class dashboard {
             $scoopName = "OR its.item_name  LIKE '%$search%' " ; 
             $scoopEmailSubject = "OR its.item_email_subject LIKE '%$search%' ";
             $find_project_m = "OR CONCAT(tu.vFirstName, ' ', tu.vLastName) LIKE '%$search%'";
+            // QA
             $find_qa_spc = "OR CONCAT(gen_Qa.vFirstName, ' ', gen_Qa.vLastName) LIKE '%$search%'";
+            $find_qa_sub = "OR CONCAT(sub_gen_Qa.vFirstName, ' ', sub_gen_Qa.vLastName) LIKE '%$search%'";
+            $find_qa_scoop = "OR CONCAT(scp_Qa.vFirstName, ' ', scp_Qa.vLastName) LIKE '%$search%'";
+            $find_qa_scoop_sub = "OR CONCAT(sub_scp_Qa.vFirstName, ' ', sub_scp_Qa.vLastName) LIKE '%$search%'";
+            // project cordinator
             $find_cordinator = "OR CONCAT(P_cordintr.vFirstName, ' ', P_cordintr.vLastName) LIKE '%$search%'";
-            $find_cordinator_sub = "OR CONCAT(scoop_cordintr_sub.vFirstName, ' ', scoop_cordintr_sub.vLastName) LIKE '%$search%'";
+            $find_cordinator_sub = "OR CONCAT(P_cordintr_sub.vFirstName, ' ', P_cordintr_sub.vLastName) LIKE '%$search%'";
+            $find_cordinator_scoop = "OR CONCAT(scoop_cordintr.vFirstName, ' ', scoop_cordintr.vLastName) LIKE '%$search%'";
+            $find_cordinator_scoop_sub = "OR CONCAT(scoop_cordintr_sub.vFirstName, ' ', scoop_cordintr_sub.vLastName) LIKE '%$search%'";
+            
             $find_job = "OR its.attached_workflow LIKE '%$search%' ";
             $find_linguist = "OR CONCAT( jsv.vFirstName, ' ', jsv.vLastName ) LIKE '%$search%'";
             $projectScoopName = "OR its.item_name LIKE '%$search%' ";
             
-            $whereCond .= " AND ( its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject $pOrderNo $find_project_m $find_qa_spc $find_cordinator $find_cordinator_sub $find_job $find_linguist $pOrderNo2 $projectScoopName) ";
+            $whereCond .= " AND ( its.po_number LIKE '%$search%' OR $sLang OR $tLang $clientName $attached_workflow $scoopName $scoopEmailSubject $pOrderNo $find_project_m $find_qa_spc $find_qa_sub $find_qa_scoop $find_qa_scoop_sub $find_cordinator $find_cordinator_sub $find_cordinator_scoop $find_cordinator_scoop_sub $find_job $find_linguist $pOrderNo2 $projectScoopName) ";
             $currentPage = 0;
         }
         

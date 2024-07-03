@@ -19115,7 +19115,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 if (( $scope.invoiceDetail.invoice_type != 'draft' && $scope.invoiceDetail.invoice_status != 'Complete')) {
                     if (newPaydueDate < dateFormat(new Date()).split(".").reverse().join("-")) {
-                        $scope.reminderBtnHideShow = isCreditNotePage ? false : true;
+                        $scope.reminderBtnHideShow = $scope.isCreditNotePage ? false : true;
                     }
                 }
             }, 500);
@@ -19536,6 +19536,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    $scope.downloadInvoiceWordFile = function(number) {
+        var pageName = "tpl/invoicepdfCommon.html";
+        // Fetch the HTML template
+        $http.get(pageName)
+        .then(function(response) {
+            // Get the HTML content from the response
+            var htmlContent = response.data;
+            // Compile the HTML content
+            var compiledHTML = $compile(htmlContent)($scope);
+            // Wait for AngularJS to apply changes and process the compiled HTML
+            setTimeout(() => {
+                $scope.$apply();
+                // Hide elements with class 'invpagenumber'
+                compiledHTML.find(".invpagenumber").css('display', 'none');
+                // Extract content by class from compiled HTML
+                var invoiceContent = compiledHTML.find(".invoiceContent").html();
+                var invoiceHeader = compiledHTML.find(".invoiceHeader").html();
+                var invoiceFooter = compiledHTML.find(".invoiceFooter").html();
+
+                // Concatenate the content
+                var fullContent = invoiceHeader + invoiceContent + invoiceFooter;
+
+                // Ensure content is UTF-8 encoded (optional, depending on your environment)
+                //fullContent = new Blob([fullContent], {type: 'text/html; charset=utf-8'});
+
+                // Convert the HTML to a DOCX file
+                var converted = htmlDocx.asBlob(fullContent);
+
+                // Save the DOCX file using FileSaver.js
+                saveAs(converted, number + '.docx');
+            }, 200);
+        })
+        //var content = document.getElementById('pdfExport').innerHTML;
+        // $scope.pdfDownloadFn('doctest', false,  false).then((pdfDownload) =>{
+        //     // console.log('pdfDownload', pdfDownload)
+        //     // var content = atob(pdfDownload);
+        //     // setTimeout(() => {
+        //     //     var converted = htmlDocx.asBlob(content);
+        //     //     saveAs(converted, 'document.docx');
+        //     // }, 500);
+    
+        // });
+    }
+
 
 }).controller('invoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -19732,7 +19776,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.printIt = function (invoiceNo) {
 
-        console.log('$scope.invoiceDetail', $scope.invoiceDetail)
         const invoicePdfData = {};
         let pdfName = invoiceNo ? invoiceNo : 'Client Invoice';
         
@@ -19781,6 +19824,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.invoiceDetail = {};
                         pdfDataArr = {}
                     }, 50);
+                    
                 }
             }).error(errorCallback);
         }, 500);

@@ -1,6 +1,7 @@
 <style>
-
-  .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+  .form-control[disabled],
+  .form-control[readonly],
+  fieldset[disabled] .form-control {
     background-color: #f8f8f8;
   }
 
@@ -20,10 +21,11 @@
   .invoice-footer p{
     margin-top: 10px;
   } */
-  .line{
+  .line {
     background: #f1ecec;
     margin-bottom: 25px;
   }
+
   /* .imgcenter{
     margin: 0 auto;
     width: max-content;
@@ -45,25 +47,31 @@
           <h1 class="m-n font-thin h3">Invoice</h1>
         </div>
         <div class="pull-right">
-          <a href="javascript:history.back()" class="btn btn-sm btn-info invcBtn"><span
-              class="fa fa-arrow-left"></span> Back</a>
-          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="!isCreditNotePage" ng-click="printIt(invoiceDetail.invoice_number)"
-            ng-disabled="is_disabled">Download</a>
-          <a href="" class="btn btn-sm btn-info invcBtn" ng-hide="editDisabled" ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i
-              class="fa fa-pencil"></i> Edit & Save</a>
+          <a href="javascript:history.back()" class="btn btn-sm btn-info invcBtn"><span class="fa fa-arrow-left"></span>
+            Back</a>
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="!isCreditNotePage"
+            ng-click="printIt(invoiceDetail.invoice_number)" ng-disabled="is_disabled">Download</a>
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="!isCreditNotePage"
+            ng-click="downloadInvoiceWordFile(invoiceDetail.invoice_number)" ng-disabled="is_disabled"><i class="fa fa-file-word-o" aria-hidden="true"></i> Invoice </a>
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-hide="editDisabled"
+            ng-click="editInvoiceClient(invoiceDetail.invoice_number)"><i class="fa fa-pencil"></i> Edit & Save</a>
           <a href="" class="btn btn-sm btn-info" ng-show="reminderBtnHideShow"
             ng-click="sendRemiderinvoice(invoiceDetail.invoice_number)" ng-disabled="is_disabled">Send Reminder</a>
-          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="! isCreditNotesExist" ng-click="createInvoiceCreditNote(invoiceDetail.invoice_id)" ng-disabled="isCreditNotesCreate">
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="! isCreditNotesExist"
+            ng-click="createInvoiceCreditNote(invoiceDetail.invoice_id)" ng-disabled="isCreditNotesCreate">
             <i class="fa fa-plus"></i> Credit Notes </a>
-          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="isCreditNotesExist" ng-click="downloadInvoiceCreditNote(invoiceCreditNotesNumber)" ng-disabled="isCreditNotesCreate">
-              <i class="fa fa-download"></i> Credit Notes </a>
-          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="isCreditNotesExist" ng-click="sendInvoiceEmail('credit_notes_email', invoiceCreditNotesNumber, true)" ng-disabled="isCreditNotesCreate">
-                <i class="fa fa-send-o"></i> Credit Notes </a>    
-            
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="isCreditNotesExist"
+            ng-click="downloadInvoiceCreditNote(invoiceCreditNotesNumber)" ng-disabled="isCreditNotesCreate">
+            <i class="fa fa-download"></i> Credit Notes </a>
+          <a href="" class="btn btn-sm btn-info invcBtn" ng-if="isCreditNotesExist"
+            ng-click="sendInvoiceEmail('credit_notes_email', invoiceCreditNotesNumber, true)"
+            ng-disabled="isCreditNotesCreate">
+            <i class="fa fa-send-o"></i> Credit Notes </a>
+
         </div>
       </div>
       <div class="wrapper-md ng-scope">
-        
+
         <!-- Invoice PDF content include -->
         <!-- <div data-ng-include="'tpl/invoice-pdf-content.html'"></div> -->
         <div data-ng-include="invoiceTemplateName"></div>
@@ -72,7 +80,7 @@
         </div> -->
         <!-- footer copy right -->
         <div data-ng-include="'tpl/copyRight.html'"></div>
-    </div>
+      </div>
 
+    </div>
   </div>
-</div>
