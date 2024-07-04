@@ -2835,7 +2835,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if($scope.tabName && $scope.tabName!=''){
             urlString += '&tabName=' + $scope.tabName
         }
+        console.log('$scope.tabName==============####>', $scope.tabName)
+
         console.log('$scope.searchText-apiiii', $scope.searchText)
+
+        console.log('"projectActiveTab")*******************>', $window.localStorage.getItem("projectActiveTab"))
             
         if($scope.searchText && $scope.searchText!=''){
             urlString += '&search=' + $scope.searchText
@@ -3020,6 +3024,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var tabIndex = findIndexByTabClassName('tab-due-today');
             console.log('tabIndex====>', tabIndex)
             $scope.tabName = 'tab-due-today';
+            $window.localStorage.setItem("projectActiveTab", $scope.tabName);
             $scope.dashboardScoopLoad(1,tabIndex);
         }
     }
@@ -19542,7 +19547,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
+    function b64toBlob_doc(b64Data, contentType = '', sliceSize = 512) {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+        }
+        return new Blob(byteArrays, { type: contentType });
+    }
+    
+    
+
     $scope.downloadInvoiceWordFile = function(number) {
+        var invoiceDocxData = {};
         var pageName = "tpl/invoicepdfCommon.html";
         // Fetch the HTML template
         $http.get(pageName)
@@ -19557,21 +19580,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Hide elements with class 'invpagenumber'
                 compiledHTML.find(".invpagenumber").css('display', 'none');
                 // Extract content by class from compiled HTML
-                var invoiceContent = compiledHTML.find(".invoiceContent").html();
+                // Extract HTML content from the compiled HTML object
                 var invoiceHeader = compiledHTML.find(".invoiceHeader").html();
+                var invoiceContent = compiledHTML.find(".invoiceContent").html();
                 var invoiceFooter = compiledHTML.find(".invoiceFooter").html();
 
-                // Concatenate the content
-                var fullContent = invoiceHeader + invoiceContent + invoiceFooter;
-
-                // Ensure content is UTF-8 encoded (optional, depending on your environment)
-                //fullContent = new Blob([fullContent], {type: 'text/html; charset=utf-8'});
+                // Combine the HTML content
+                var fullContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Invoice</title>
+                </head>
+                <body>
+                    ${invoiceHeader}
+                    ${invoiceContent}
+                    ${invoiceFooter}
+                </body>
+                </html>
+                `;
 
                 // Convert the HTML to a DOCX file
-                var converted = htmlDocx.asBlob(fullContent);
+                var converted = htmlDocx.asBlob(fullContent); // Pass the raw HTML string
 
                 // Save the DOCX file using FileSaver.js
                 saveAs(converted, number + '.docx');
+
             }, 200);
         })
         //var content = document.getElementById('pdfExport').innerHTML;
@@ -33871,15 +33907,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     });
 
-    $scope.pdfInvoice = function (id, isMultiple=false, creditNote= false, isDocx=false) {
-        console.log('$scope.invoiceSettingData', $scope.invoiceSettingData)
-        console.log('id', id)
+    $scope.pdfInvoice = function (id, isMultiple=false, creditNote= false) {
         var deferred = $q.defer(); // Create a deferred object
         $scope.data = {
             id: id,
             isMultiple: isMultiple,
-            isCreditNote: creditNote,
-            isDocx: isDocx
+            isCreditNote: creditNote
         }
         if(creditNote){
          var pdfPage =   'tpl/invoicepdfCreditnotes.html'
@@ -33944,38 +33977,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification("Pelase select record.", "warning");
         }
     }
-
-    $scope.exportDocx = async function() {
-        if($scope.checkedIds?.length>0){
-            $scope.isDisabledExportpdf = true;
-            var pdfPromises = []; // Array to store promises for PDF generation
-            for (let val of $scope.checkedIds) {
-                try {
-                    const pData = await $scope.pdfInvoice(val, true, false, true);
-                    pdfPromises.push(pData);
-                } catch (error) {
-                    console.error('Error generating PDF:', error);
-                }
-            }
-            // After all promises are resolved
-            Promise.all(pdfPromises).then(pdfDataArray => {
-                var pdfFile = pdfDataArray.map((pdfData, index) => ({
-                    name: pdfData.name,
-                    data: pdfData.data
-                }));
-                // Proceed with handling the generated PDF files
-                $scope.generateZipFn(pdfFile);
-                $scope.isDisabledExportpdf = false;
-                notification("Download successful.", "success");
-            }).catch(error => {
-                console.error('Error generating PDFs:', error);
-                $scope.isDisabledExportpdf = false;
-            });
-        }else{
-            notification("Pelase select record.", "warning");
-        }
-    }
-    
 
     $scope.generateZipFn = function(pdfFiles){
         const zip = new JSZip();
