@@ -392,13 +392,16 @@ class dashboard {
         }
         // echo $this->_db->getLastQuery();
         // die();
+        $gropedData = [];
+        //$gropedData = self::groupByDueDate($results, 'due-date');
         
         // Prepare response
         $results = array(
             'totalItems' => $totalCount,
             'totalPages' => $totalPages,
             'currentPage' => $currentPage,
-            'data' => $results
+            'data' => $results,
+            'groupedData' => $gropedData
         );
 
         return $results;
@@ -495,5 +498,36 @@ class dashboard {
     public function getCountry () {
         return $this->_db->get('tms_country');
     }
+    public function groupByDueDate($data, $type) {
+        $grouped = [];
+    
+        if($type == 'due-date'){
+            foreach ($data as $item) {
+                // Extract year and month from due date
+                $date = new DateTime($item['DueDate']);
+                $yearMonth = $date->format('Y-m-d'); // adjust format as needed
+        
+                if (!isset($grouped[$yearMonth])) {
+                    $grouped[$yearMonth] = [];
+                }
+                $grouped[$yearMonth][] = $item;
+            }
+        }
+        if($type == 'clietID'){
+            foreach ($data as $item) {
+                // Extract year and month from due date
+                $date = new DateTime($item['DueDate']);
+                $yearMonth = $date->format('Y-m-d'); // adjust format as needed
+        
+                if (!isset($grouped[$yearMonth])) {
+                    $grouped[$yearMonth] = [];
+                }
+                $grouped[$yearMonth][] = $item;
+            }
+        }
+    
+        return $grouped;
+    }
+    
 
 }

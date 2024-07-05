@@ -2732,7 +2732,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.branchRefresh = function () {
         $route.reload();
     }
-
+    
     // $scope.dashboardTabList = [ 
     //     { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 }, { "tabName":"missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0 } 
     // ];
@@ -2814,6 +2814,65 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         return -1; // Return -1 if no match found
     }
+
+    // temp code  ============
+    $scope.dataList = [
+        { clientId: 'A', dataColumn1: 'Data A1', dataColumn2: 'Data A2' },
+        { clientId: 'B', dataColumn1: 'Data B1', dataColumn2: 'Data B2' },
+        { clientId: 'A', dataColumn1: 'Data A3', dataColumn2: 'Data A4' },
+        { clientId: 'C', dataColumn1: 'Data C1', dataColumn2: 'Data C2' },
+        // Add more sample data as needed
+    ];
+
+    // Function to group data by Client ID
+    function groupByClientId(data) {
+        var grouped = {};
+        data.forEach(function(item) {
+            if (!grouped[item.contactName]) {
+                grouped[item.contactName] = [];
+            }
+            grouped[item.contactName].push(item);
+        });
+        return grouped;
+    }
+    function groupByDueDate(data) {
+        var grouped = {};
+        data.forEach(function(item) {
+            // Extract year and month from due date
+            var date = new Date(item.itemDuedate);
+            var yearMonth = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate() ));
+            
+            if (!grouped[yearMonth]) {
+                grouped[yearMonth] = [];
+            }
+            grouped[yearMonth].push(item);
+        });
+        return grouped;
+    }
+
+    $scope.filteNewFn = function(mynewData){
+        // Initialize groupedData based on default grouping criteria
+        $scope.groupedData = groupByClientId(mynewData);
+
+        // Watch for changes in grouping criteria
+        $scope.$watch('completedTabGrouped', function(newVal, oldVal) {
+            if (newVal === 'clientId') {
+                $scope.groupedData = groupByClientId(mynewData);
+            }
+            if (newVal === 'projectDuedate') {
+                $scope.groupedData = groupByDueDate(mynewData);
+                console.log('Grouped Data:======>*******', $scope.groupedData);
+            }
+            
+            // Add more cases for other grouping criteria if needed
+        });
+    }
+
+    
+
+    // Log the grouped data to console for debugging
+    
+    /// temp code ENDDDDDDDDDD
     
     $scope.pageDefaultArr = function(){
         $scope.currentPage = 1;
@@ -2822,11 +2881,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.orderList = [];
     }
     $scope.pageDefaultArr();
+    $scope.completedTabGrouped = '';
 
     $scope.dashboardScoopLoad  = function (page, tabIndex=0, newTabName) {
         $scope.showDataLoader = true;
         var projectScoopData = [];
-        console.log('newTabName', newTabName)
         var assignOrderData = [];
         var tabIndex = parseInt(tabIndex)
         $scope.currentPage = page ? page : $scope.currentPage
@@ -2835,11 +2894,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if($scope.tabName && $scope.tabName!=''){
             urlString += '&tabName=' + $scope.tabName
         }
-        console.log('$scope.tabName==============####>', $scope.tabName)
-
-        console.log('$scope.searchText-apiiii', $scope.searchText)
-
-        console.log('"projectActiveTab")*******************>', $window.localStorage.getItem("projectActiveTab"))
             
         if($scope.searchText && $scope.searchText!=''){
             urlString += '&search=' + $scope.searchText
@@ -2855,11 +2909,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             urlString += '&sortOrder=' + sortOrderBy
             //$scope.showDataLoader = false;
         }
+        if($scope.completedTabGrouped && $scope.completedTabGrouped !=''){
+            urlString += '&completedTabGrouped=' + $scope.completedTabGrouped
+        }
         
         rest.path = 'dashboardProjectsOrderScoopGet/' + $window.localStorage.getItem("session_iUserId") + '?' + urlString;
         rest.get().success(function (response) {
             console.log('response', response)
             projectScoopData = response?.data
+
+            if($scope.completedTabGrouped && $scope.completedTabGrouped !=''){
+                $scope.filteNewFn(projectScoopData)
+            }
             
             //$scope.dashboardTabList[1].projectScoopData = response?.data
             if(projectScoopData){
@@ -2945,7 +3006,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     //$scope.pageShowRec = $scope.totalItems ? ($scope.currentPage - 1) * ($scope.itemsPerPage + 1) : $scope.totalItems ; 
-
+    $scope.dashboardGroupbyChange = function (type) {
+        console.log('type', type)
+        if(type== 'clientId'){
+            $scope.groupName = 'Client';
+        }
+        if(type== 'projectDuedate'){
+            $scope.groupName = 'Due date';
+        }
+        
+        $scope.showDataLoader = true;
+        try {
+            $scope.completedTabGrouped = type;
+            //$('.tab-pane.active input').val()
+            $scope.tabName = $window.localStorage.getItem("projectActiveTab")
+            var tabIndex = findIndexByTabClassName($scope.tabName);
+            $scope.dashboardScoopLoad(1, tabIndex);
+        } catch (error) {
+            $scope.showDataLoader = false;
+            console.log('error', error)
+        }
+    }
     // Function to handle search input changes
     $scope.handleSearchInput = function (searchText) {
         $scope.showDataLoader = true;
@@ -3031,6 +3112,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.activeTabfn();
 
     $scope.changeProjectTabs2 = function(className, tabIndex){
+        $scope.completedTabGrouped = '';
         $scope.searchText = '';
         $('#scoopsearch_'+className).val('');
         $scope.tabName = className;
