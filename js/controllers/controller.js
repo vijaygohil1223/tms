@@ -2815,15 +2815,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return -1; // Return -1 if no match found
     }
 
-    // temp code  ============
-    $scope.dataList = [
-        { clientId: 'A', dataColumn1: 'Data A1', dataColumn2: 'Data A2' },
-        { clientId: 'B', dataColumn1: 'Data B1', dataColumn2: 'Data B2' },
-        { clientId: 'A', dataColumn1: 'Data A3', dataColumn2: 'Data A4' },
-        { clientId: 'C', dataColumn1: 'Data C1', dataColumn2: 'Data C2' },
-        // Add more sample data as needed
-    ];
-
+    // group by for completed tab
     // Function to group data by Client ID
     function groupByClientId(data) {
         var grouped = {};
@@ -2867,12 +2859,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // Add more cases for other grouping criteria if needed
         });
     }
-
+    // group by for completed tab
     
-
-    // Log the grouped data to console for debugging
-    
-    /// temp code ENDDDDDDDDDD
     
     $scope.pageDefaultArr = function(){
         $scope.currentPage = 1;
@@ -2922,7 +2910,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.filteNewFn(projectScoopData)
             }
             
-            //$scope.dashboardTabList[1].projectScoopData = response?.data
+            $scope.dashboardTabList[1].projectScoopData = response?.data
             if(projectScoopData){
                 angular.forEach(projectScoopData, function (val, i) {
                     val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name  : val.scoopPm_name ? val.scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
