@@ -10012,6 +10012,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 break;
+            case "pm_name_exclude":
+            if ($scope.orderReport != undefined) {
+                $scope.orderReport.pm_name_exclude = '';
+                angular.element('#pm_name_exclude').select2('val', '');
+                angular.forEach($scope.orderReport, function (value, key) {
+                    if (value === "" || value === null) {
+                        delete $scope.orderReport[key];
+                    }
+                });
+                if (jQuery.isEmptyObject($scope.orderReport)) {
+                    $scope.statusResult = '';
+                    $scope.orderReport = undefined;
+                    $scope.checkOrderItem = undefined;
+                }
+            }
+            break;
         }
     }
 
@@ -19603,7 +19619,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 `;
 
                 // Convert the HTML to a DOCX file
-                var converted = htmlDocx.asBlob(fullContent); // Pass the raw HTML string
+                //var converted = htmlDocx.asBlob(fullContent); // Pass the raw HTML string
+                var converted = htmlDocx.asBlob(fullContent, { orientation: 'portrait', margins: { top: 720, right: 720, bottom: 720, left: 720 } });
+     
 
                 // Save the DOCX file using FileSaver.js
                 saveAs(converted, number + '.docx');

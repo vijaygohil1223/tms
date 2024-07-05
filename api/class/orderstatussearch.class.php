@@ -42,6 +42,11 @@ class orderstatussearch {
 				//$this->_db->where('its.manager', $pmId);
 				$this->_db->where(" (cust.project_manager = $pmId OR cust.sub_pm = $pmId OR its.manager = $pmId OR its.subPm = $pmId ) ");
 			}
+			// exlude project maanger
+			if(isset($filterParams['pm_name_exclude'])){
+				$pmIdExclude = $filterParams['pm_name_exclude'];
+				$this->_db->where(" (cust.project_manager != $pmIdExclude AND cust.sub_pm != $pmIdExclude AND its.manager != $pmIdExclude AND its.subPm != $pmIdExclude ) ");
+			}
 			if(isset($filterParams['emailSubject'])){
 				$this->_db->where('its.item_email_subject', $filterParams['emailSubject']);
 			} 
@@ -102,6 +107,8 @@ class orderstatussearch {
 				$To = $filterParams['createDateTo'].' '.'00:00:00';
 				$this->_db->where('its.created_date', $To, '<');
 			}else{}
+
+			
 			// if(isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])){
 			// 	$Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
 			// 	$To = $filterParams['endItemDuedate'].' '.'00:00:00';
@@ -124,13 +131,12 @@ class orderstatussearch {
 			$this->_db->join('tms_item_status scs', 'scs.item_status_id = its.item_status','LEFT');
 			//$this->_db->join('tms_summmery_view tsv', 'tsv.order_id = its.order_id AND tsv.item_id = its.item_number','LEFT');
 			$subQuery = "(SELECT order_id, item_id, SUM(total_price) AS total_job_price FROM tms_summmery_view GROUP BY order_id, item_id) tsv";
-			// Build your main query
+
 			$this->_db->join($subQuery, 'tsv.order_id = its.order_id AND tsv.item_id = its.item_number', 'LEFT');
 			//$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, its.project_type AS projectType, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate, its.created_date AS scoopCreateDate, its.due_date as scoop_due_date, its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, tpt.project_name AS projectTypeName, its.q_date AS QuentityDate, its.total_amount AS totalAmount, its.item_name AS scoopName, concat(tu.vFirstName, " ", tu.vLastName) AS pm_name, inc.vUserName as indirectAccountName, c.client_currency, scs.item_status_name as scoop_status_name, c.accounting_tripletex, IFNULL(SUM(tsv.total_price), 0) AS total_job_price, its.itemId AS scoopId, its.po_number');
 			$data = $this->_db->get('tms_items its', null,' gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, cust.created_date AS orderDate, cust.client AS customer, gen.project_name AS projectName, c.vUserName AS contactName, c.iClientId, stus.status_name AS clientStatus, gen.company_code AS companyCode, cust.contact AS contactPerson, cust.indirect_customer,its.item_number, its.item_status AS itemStatus, its.po_number AS itemPonumber,its.item_email_subject as emailSubject, its.project_type AS projectType, DATE_FORMAT(its.due_date, "%d.%m.%Y") AS itemDuedate,DATE_FORMAT(its.start_date, "%d.%m.%Y") AS itemCreatedDate, its.created_date AS scoopCreateDate, its.due_date as scoop_due_date, its.source_lang AS sourceLanguage, its.target_lang AS targetLanguage, gen.project_status AS projectStatus, tpt.project_name AS projectTypeName, its.q_date AS QuentityDate, its.total_amount AS totalAmount, its.item_name AS scoopName, concat(tu.vFirstName, " ", tu.vLastName) AS pm_name, inc.vUserName as indirectAccountName, c.client_currency, scs.item_status_name as scoop_status_name, c.accounting_tripletex, COALESCE(tsv.total_job_price, 0) AS total_job_price, its.itemId AS scoopId, its.po_number');
 			
 			// echo $this->_db->getLastQuery();
-			// print_r($data);
 			// exit;
 			//echo $this->_db->getLastQuery();
 			

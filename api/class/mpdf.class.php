@@ -45,13 +45,13 @@ class mpdf
 
             $this->_mpdf->WriteHTML($pdfContent);
 
-            if($base64Content === true){
+            if ($base64Content === true) {
                 // save and download at frontend
                 $pdfContent = $this->_mpdf->Output('', 'S');
                 // Convert PDF binary data to base64-encoded string
                 $pdfBase64 = base64_encode($pdfContent);
                 $return = $pdfBase64;
-            }else{
+            } else {
                 $filePath = UPLOADS_ROOT . 'tempfile/' . $pdfFileName;
                 // save file in folder
                 $this->_mpdf->Output($filePath, 'F');

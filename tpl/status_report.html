@@ -73,6 +73,23 @@
                                        <div class="row">
                                           <div class="col-sm-11">
                                              <label>
+                                                Project Manager <span title="Exclude project manager">(Exclude)</span>
+                                             </label>
+                                             <input type="text" select2-manager id="pm_name_exclude" class="form-control"
+                                                name="pm_name_exclude" ng-model="orderReport.pm_name_exclude" />
+                                          </div>
+                                          <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                             <a href="javascript:void(0)"
+                                                ng-click="clearCode('order-status-report','pm_name_exclude')"
+                                                ng-if="orderReport.pm_name_exclude"><i class="iconDelete glyph-icon fa-times"
+                                                   aria-hidden="true"></i></a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                       <div class="row">
+                                          <div class="col-sm-11">
+                                             <label>
                                                 Email Subject
                                              </label>
                                              <input type="text" id="emailSubject" class="form-control" name="emailSubject"
@@ -86,7 +103,7 @@
                                           </div>
                                        </div>
                                     </div>
-                                    <div class="col-sm-6 form-group">
+                                    <div class="col-sm-6 form-group mb-0">
                                        <div class="row">
                                           <div class="col-sm-11">
                                              <label>
@@ -140,7 +157,7 @@
                                           </div>
                                        </div>
                                     </div>
-                                    <div class="col-sm-6 form-group">
+                                    <!-- <div class="col-sm-6 form-group">
                                        <div class="row">
                                           <div class="col-sm-11">
                                              <label>Project Status</label>
@@ -155,7 +172,7 @@
                                                    aria-hidden="true"></i></a>
                                           </div>
                                        </div>
-                                    </div>
+                                    </div> -->
                                     <div class="col-sm-6 form-group">
                                        <div class="row">
                                           <div class="col-sm-11">
@@ -415,7 +432,7 @@
                                     <div class="col-sm-4">
                                        <select class="input-sm form-control w-sm inline v-middle" ng-model="action"
                                           ng-change="statucOrderAction(action)">
-                                          <option>Change project status</option>
+                                          <!-- <option>Change project status</option> -->
                                           <option>Change item status</option>
                                           <option>Export to excel</option>
                                           <option>Remove selection</option>
