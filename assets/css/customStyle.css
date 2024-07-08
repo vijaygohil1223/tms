@@ -1278,3 +1278,8 @@ Scroll Tabs css */
 .pageentry label{
   display: flex;
 }
+
+/* Loader  */
+.dashboardloader > .uil-ring-css>div {
+  top: 2%;
+}

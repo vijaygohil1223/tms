@@ -393,53 +393,60 @@ class dashboard {
         // echo $this->_db->getLastQuery();
         // die();
         
-        // If yoy want to remove frontend forloop 
-        // if ($results) {
-        //     foreach ($results as &$val) {
-        //         $val['pm_fullName'] = $val['scoop_subPm_id'] ? $val['sub_scoopPm_name'] : ($val['scoopPm_name'] ? $val['scoopPm_name'] : ($val['sub_pm_id'] ? $val['sub_pm_name'] : $val['pm_fullName']));
-        //         $val['qa_fullName'] = $val['scp_sub_Qa_fullName'] ? $val['scp_sub_Qa_fullName'] : ($val['scp_Qa_fullName'] ? $val['scp_Qa_fullName'] : ($val['gen_sub_Qa_fullName'] ? $val['gen_sub_Qa_fullName'] : $val['gen_Qa_fullName']));
-                
-        //         $val['attached_workflow'] = explode('-', $val['attached_workflow']);
-        //         $val['attached_workflow'] = end($val['attached_workflow']);
-                
-        //         $newLangData = ['sourceLang' => '', 'dataNgSrc' => '', 'alt' => ' '];
-        //         $val['itemsSourceLang'] = $val['itemsSourceLang'] ? json_decode($val['itemsSourceLang'], true) : $newLangData;
-        //         $val['itemsTargetLang'] = $val['itemsTargetLang'] ? json_decode($val['itemsTargetLang'], true) : $newLangData;
-                
-        //         // ----linguist List----- / 
-        //         $val['jobLinguist'] = [];
-        //         if ($val['linguistName']) {
-        //             $linguistIds = explode(',', $val['linguistId']);
-        //             $linguistNames = explode(',', $val['linguistName']);
-        //             foreach ($linguistNames as $i => $ele) {
-        //                 $val['jobLinguist'][] = ['resources' => $linguistIds[$i], 'vUserName' => $ele];
-        //             }
-        //         }
-                
-        //         if ($val['sub_pm_id'] !== 0 && $val['sub_pm_name'] !== null) {
-        //             $val['pm_name'] = $val['sub_pm_name'];
-        //         }
-                
-        //         $currenciesClnt = isset($val['client_currency']) ? explode(',', $val['client_currency'])[0] : null;
-        //         $val['price_currency'] = $currenciesClnt ? $currenciesClnt : 'EUR';
-                
-        //         // Comment read unRead
-        //         $cmtcolor = '#0190d8';
-        //         if ($val['comment_status'] > 0) {
-        //             $cmtcolor = '#d30c39';
-        //         } elseif ($val['comment_status'] == 0) {
-        //             $cmtcolor = '#67bb0a';
-        //         }
-        //         $val['comment'] = $cmtcolor;
-        
-        //         //$scope->projectsAllCount++;
-        //         $val['projectstatus_class'] = 'projectstatus_common';
-        //         $val['projectstatus_color'] = '#8d9296';
-        //     }
-        // }
+        //If yoy want to remove frontend forloop 
+        if ($results) {
+            try{
+                foreach ($results as &$val) {
+                    $val['pm_fullName'] = $val['scoop_subPm_id'] ? $val['sub_scoopPm_name'] : ($val['scoopPm_name'] ? $val['scoopPm_name'] : ($val['sub_pm_id'] ? $val['sub_pm_name'] : $val['pm_fullName']));
+                    $val['qa_fullName'] = $val['scp_sub_Qa_fullName'] ? $val['scp_sub_Qa_fullName'] : ($val['scp_Qa_fullName'] ? $val['scp_Qa_fullName'] : ($val['gen_sub_Qa_fullName'] ? $val['gen_sub_Qa_fullName'] : $val['gen_Qa_fullName']));
+                    
+                    $val['attached_workflow'] = explode('-', $val['attached_workflow']);
+                    $val['attached_workflow'] = end($val['attached_workflow']);
+                    
+                    $newLangData = ['sourceLang' => '', 'dataNgSrc' => '', 'alt' => ' '];
+                    $val['itemsSourceLang'] = $val['itemsSourceLang'] ? json_decode($val['itemsSourceLang'], true) : $newLangData;
+                    $val['itemsTargetLang'] = $val['itemsTargetLang'] ? json_decode($val['itemsTargetLang'], true) : $newLangData;
+                    
+                    // ----linguist List----- / 
+                    $val['jobLinguist'] = [];
+                    if ($val['linguistName']) {
+                        $linguistIds = explode(',', $val['linguistId']);
+                        $linguistNames = explode(',', $val['linguistName']);
+                        foreach ($linguistNames as $i => $ele) {
+                            $val['jobLinguist'][] = ['resources' => $linguistIds[$i], 'vUserName' => $ele];
+                        }
+                    }
+                    
+                    if ($val['sub_pm_id'] !== 0 && $val['sub_pm_name'] !== null) {
+                        $val['pm_name'] = $val['sub_pm_name'];
+                    }
+                    
+                    $currenciesClnt = isset($val['client_currency']) ? explode(',', $val['client_currency'])[0] : null;
+                    $val['price_currency'] = $currenciesClnt ? $currenciesClnt : 'EUR';
+                    
+                    // Comment read unRead
+                    $cmtcolor = '#0190d8';
+                    if ($val['comment_status'] > 0) {
+                        $cmtcolor = '#d30c39';
+                    } elseif ($val['comment_status'] == 0) {
+                        $cmtcolor = '#67bb0a';
+                    }
+                    $val['comment'] = $cmtcolor;
+            
+                    //$scope->projectsAllCount++;
+                    $val['projectstatus_class'] = 'projectstatus_common';
+                    $val['projectstatus_color'] = '#8d9296';
+                }
+            }catch (Exception $e) {
+            
+            }
+        }
         
         $gropedData = [];
-        //$gropedData = self::groupByDueDate($results, 'due-date');
+        if(isset($_GET['completedTabGrouped']) && $_GET['completedTabGrouped'] != ''){
+            $gropedData = self::groupByClientAndDueDate($results, $_GET['completedTabGrouped'], $sortOrder = '');
+            //$results = $gropedData;
+        }
         
         // Prepare response
         $results = array(
@@ -544,33 +551,58 @@ class dashboard {
     public function getCountry () {
         return $this->_db->get('tms_country');
     }
-    public function groupByDueDate($data, $type) {
+    public function groupByClientAndDueDate($data, $type, $orderByAscDes) {
         $grouped = [];
     
-        if($type == 'due-date'){
-            foreach ($data as $item) {
-                // Extract year and month from due date
-                $date = new DateTime($item['itemDuedate']);
-                $yearMonth = $date->format('Y-m-d'); // adjust format as needed
-        
-                if (!isset($grouped[$yearMonth])) {
-                    $grouped[$yearMonth] = [];
+        try {
+            if($type == 'clientId'){
+                foreach ($data as $item) {
+                    $clientId = $item['contactName'];
+            
+                    if (!isset($grouped[$clientId])) {
+                        $grouped[$clientId] = [];
+                    }
+                    $grouped[$clientId][] = $item;
                 }
-                $grouped[$yearMonth][] = $item;
-            }
-        }
-        if($type == 'clietID'){
-            foreach ($data as $item) {
-                // Extract year and month from due date
-                $date = new DateTime($item['DueDate']);
-                $yearMonth = $date->format('Y-m-d'); // adjust format as needed
-        
-                if (!isset($grouped[$yearMonth])) {
-                    $grouped[$yearMonth] = [];
+    
+                // Sorting each group by datetime
+                foreach ($grouped as &$group) {
+                    usort($group, function ($a, $b) use ($orderByAscDes) {
+                        // Function to convert date to timestamp, handling null and invalid dates
+                        $getTimestamp = function ($date) {
+                            // Handle special cases
+                            if (empty($date) || $date === '0000-00-00' || $date === null) {
+                                return 0; // Treat invalid or null dates as the lowest
+                            }
+                            // Convert valid date to timestamp
+                            return strtotime($date);
+                        };
+    
+                        $datetimeA = $getTimestamp($a['itemDuedate']);
+                        $datetimeB = $getTimestamp($b['itemDuedate']);
+    
+                        if ($orderByAscDes == 'ASC') {
+                            return $datetimeA - $datetimeB; // Ascending order
+                        } else {
+                            return $datetimeB - $datetimeA; // Descending order
+                        }
+                    });
                 }
-                $grouped[$yearMonth][] = $item;
+    
             }
-        }
+            if($type == 'projectDuedate'){
+                foreach ($data as $item) {
+                    // Extract year and month from due date
+                    $date = new DateTime($item['itemDuedate']);
+                    $yearMonth = $date->format('Y-m-d'); // adjust format as needed
+            
+                    if (!isset($grouped[$yearMonth])) {
+                        $grouped[$yearMonth] = [];
+                    }
+                    $grouped[$yearMonth][] = $item;
+                }
+            }
+        } catch (Exception $e) { }
     
         return $grouped;
     }

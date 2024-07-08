@@ -567,7 +567,7 @@ td { font-size: 11px; } */
                         ng-change="dashboardGroupbyChange(completedTabGrouped)">
                         <option value="">select group by</option>
                         <option value="clientId">Client</option>
-                        <option value="projectDuedate">Due date</option>
+                        <!-- <option value="projectDuedate">Due date</option> -->
                       </select>
                     </div>
                     <div class="statusbtn" ng-if="(tabPermission | json) != '{}'">
@@ -1061,7 +1061,7 @@ td { font-size: 11px; } */
 
                   </tabset>
                   <!-- DataLoader -->
-                  <div loading-widget ng-show="showDataLoader">
+                  <div loading-widget ng-show="showDataLoader" class="dashboardloader">
                   </div>
 
                 </div>

@@ -2817,48 +2817,48 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // group by for completed tab
     // Function to group data by Client ID
-    function groupByClientId(data) {
-        var grouped = {};
-        data.forEach(function(item) {
-            if (!grouped[item.contactName]) {
-                grouped[item.contactName] = [];
-            }
-            grouped[item.contactName].push(item);
-        });
-        return grouped;
-    }
-    function groupByDueDate(data) {
-        var grouped = {};
-        data.forEach(function(item) {
-            // Extract year and month from due date
-            var date = new Date(item.itemDuedate);
-            var yearMonth = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate() ));
+    // function groupByClientId(data) {
+    //     var grouped = {};
+    //     data.forEach(function(item) {
+    //         if (!grouped[item.contactName]) {
+    //             grouped[item.contactName] = [];
+    //         }
+    //         grouped[item.contactName].push(item);
+    //     });
+    //     return grouped;
+    // }
+    // function groupByDueDate(data) {
+    //     var grouped = {};
+    //     data.forEach(function(item) {
+    //         // Extract year and month from due date
+    //         var date = new Date(item.itemDuedate);
+    //         var yearMonth = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + (date.getDate() ));
             
-            if (!grouped[yearMonth]) {
-                grouped[yearMonth] = [];
-            }
-            grouped[yearMonth].push(item);
-        });
-        return grouped;
-    }
+    //         if (!grouped[yearMonth]) {
+    //             grouped[yearMonth] = [];
+    //         }
+    //         grouped[yearMonth].push(item);
+    //     });
+    //     return grouped;
+    // }
 
-    $scope.filteNewFn = function(mynewData){
-        // Initialize groupedData based on default grouping criteria
-        $scope.groupedData = groupByClientId(mynewData);
+    // $scope.filteNewFn = function(mynewData){
+    //     // Initialize groupedData based on default grouping criteria
+    //     $scope.groupedData = groupByClientId(mynewData);
 
-        // Watch for changes in grouping criteria
-        $scope.$watch('completedTabGrouped', function(newVal, oldVal) {
-            if (newVal === 'clientId') {
-                $scope.groupedData = groupByClientId(mynewData);
-            }
-            if (newVal === 'projectDuedate') {
-                $scope.groupedData = groupByDueDate(mynewData);
-                console.log('Grouped Data:======>*******', $scope.groupedData);
-            }
+    //     // Watch for changes in grouping criteria
+    //     $scope.$watch('completedTabGrouped', function(newVal, oldVal) {
+    //         if (newVal === 'clientId') {
+    //             $scope.groupedData = groupByClientId(mynewData);
+    //         }
+    //         if (newVal === 'projectDuedate') {
+    //             $scope.groupedData = groupByDueDate(mynewData);
+    //             console.log('Grouped Data:======>*******', $scope.groupedData);
+    //         }
             
-            // Add more cases for other grouping criteria if needed
-        });
-    }
+    //         // Add more cases for other grouping criteria if needed
+    //     });
+    // }
     // group by for completed tab
     
     
@@ -2875,6 +2875,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.showDataLoader = true;
         var projectScoopData = [];
         var assignOrderData = [];
+        $scope.groupedData = [];
         var tabIndex = parseInt(tabIndex)
         $scope.currentPage = page ? page : $scope.currentPage
         
@@ -2907,68 +2908,69 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             projectScoopData = response?.data
 
             if($scope.completedTabGrouped && $scope.completedTabGrouped !=''){
-                $scope.filteNewFn(projectScoopData)
+                //$scope.filteNewFn(projectScoopData)
+                $scope.groupedData = response?.groupedData
             }
             
             $scope.dashboardTabList[1].projectScoopData = response?.data
-            if(projectScoopData){
-                angular.forEach(projectScoopData, function (val, i) {
-                    val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name  : val.scoopPm_name ? val.scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
-                    val.qa_fullName = val.scp_sub_Qa_fullName ? val.scp_sub_Qa_fullName : val.scp_Qa_fullName ? val.scp_Qa_fullName : val.gen_sub_Qa_fullName ? val.gen_sub_Qa_fullName : val.gen_Qa_fullName 
-                    val.attached_workflow = val.attached_workflow.split('-').pop(); 
+            // if(projectScoopData){
+            //     angular.forEach(projectScoopData, function (val, i) {
+            //         val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name  : val.scoopPm_name ? val.scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
+            //         val.qa_fullName = val.scp_sub_Qa_fullName ? val.scp_sub_Qa_fullName : val.scp_Qa_fullName ? val.scp_Qa_fullName : val.gen_sub_Qa_fullName ? val.gen_sub_Qa_fullName : val.gen_Qa_fullName 
+            //         val.attached_workflow = val.attached_workflow.split('-').pop(); 
                     
-                    var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
-                    if (val.itemsSourceLang) {
-                        projectScoopData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
-                    } else {
-                        projectScoopData[i].itemsSourceLang = newLangData;
-                    }
-                    if (val.itemsTargetLang) {
-                        projectScoopData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
-                    } else {
-                        projectScoopData[i].itemsTargetLang = newLangData;
-                    }
+            //         var newLangData = { sourceLang: '', dataNgSrc: '', alt: ' ' };
+            //         if (val.itemsSourceLang) {
+            //             projectScoopData[i].itemsSourceLang = JSON.parse(val.itemsSourceLang);
+            //         } else {
+            //             projectScoopData[i].itemsSourceLang = newLangData;
+            //         }
+            //         if (val.itemsTargetLang) {
+            //             projectScoopData[i].itemsTargetLang = JSON.parse(val.itemsTargetLang);
+            //         } else {
+            //             projectScoopData[i].itemsTargetLang = newLangData;
+            //         }
                     
-                    //  ----linguist List----- / 
-                    val.jobLinguist = [];
-                    if(val.linguistName){
-                        let linguistId = (val.linguistId).toString().split(',');
-                        var lngstArr = [];
-                        (val.linguistName).split(',').forEach((ele,i) => {
-                            lngstArr.push( { resources: linguistId[i], vUserName: ele } )    
-                        });
-                        val.jobLinguist = lngstArr;
-                    }   
+            //         //  ----linguist List----- / 
+            //         val.jobLinguist = [];
+            //         if(val.linguistName){
+            //             let linguistId = (val.linguistId).toString().split(',');
+            //             var lngstArr = [];
+            //             (val.linguistName).split(',').forEach((ele,i) => {
+            //                 lngstArr.push( { resources: linguistId[i], vUserName: ele } )    
+            //             });
+            //             val.jobLinguist = lngstArr;
+            //         }   
                     
-                    if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
-                        val.pm_name = val.sub_pm_name
-                    }
+            //         if(val.sub_pm_id !== 0 && val.sub_pm_name != null){
+            //             val.pm_name = val.sub_pm_name
+            //         }
                     
-                    var currenciesClnt = val.client_currency?.split(',')[0];
-                    val.price_currency = currenciesClnt ? currenciesClnt : 'EUR';
+            //         var currenciesClnt = val.client_currency?.split(',')[0];
+            //         val.price_currency = currenciesClnt ? currenciesClnt : 'EUR';
                 
-                    // Comment read unRead
-                    var cmtcolor = '#0190d8';
-                    var is_comment = 0;
-                    var comment_id = 0;
-                    // if (val.comment.length > 0) {
-                    //     var is_comment = scoopData[i].comment[0].comment_status;
-                    // }
+            //         // Comment read unRead
+            //         var cmtcolor = '#0190d8';
+            //         var is_comment = 0;
+            //         var comment_id = 0;
+            //         // if (val.comment.length > 0) {
+            //         //     var is_comment = scoopData[i].comment[0].comment_status;
+            //         // }
 
-                    if (val.comment_status > 0) {
-                        cmtcolor = '#d30c39';
-                    }
-                    if (val.comment_status == 0) {
-                        cmtcolor = '#67bb0a';
-                    }
-                    val.comment = cmtcolor;
+            //         if (val.comment_status > 0) {
+            //             cmtcolor = '#d30c39';
+            //         }
+            //         if (val.comment_status == 0) {
+            //             cmtcolor = '#67bb0a';
+            //         }
+            //         val.comment = cmtcolor;
 
-                    //$scope.projectsAllCount++;
-                    val.projectstatus_class = 'projectstatus_common';
-                    val.projectstatus_color = '#8d9296';
+            //         //$scope.projectsAllCount++;
+            //         val.projectstatus_class = 'projectstatus_common';
+            //         val.projectstatus_color = '#8d9296';
 
-                })
-            }
+            //     })
+            // }
 
             //$scope.fillDashboardTabFn(parseInt(tabIndex), projectScoopData, response?.totalItems)    
             angular.forEach($scope.dashboardTabList, function (itm, indx) {
@@ -3079,7 +3081,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             // if($window.localStorage.getItem("sortFieldOrder"))
             //     $scope.sortOrder = $window.localStorage.getItem("sortFieldOrder");
-            console.log('$scope.tabName========>', $scope.tabName)
             var tabIndex = findIndexByTabClassName($scope.tabName);
             $scope.dashboardScoopLoad(1, tabIndex);
             setTimeout(() => {
@@ -3091,7 +3092,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
         }else{
             var tabIndex = findIndexByTabClassName('tab-due-today');
-            console.log('tabIndex====>', tabIndex)
             $scope.tabName = 'tab-due-today';
             $window.localStorage.setItem("projectActiveTab", $scope.tabName);
             $scope.dashboardScoopLoad(1,tabIndex);
