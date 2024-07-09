@@ -488,11 +488,11 @@ if (isSafari) {
   console.log("Safari is in use.", isSafari);
 }
 
-function numberFormatComma(input) {
+function numberFormatComma(input, decNo=2) {
     if (input == undefined || input == 0 || input == '') {
         return '';
     } else {
-        var decNo = 2;
+        //var decNo = 2;
         var n1 = n2 = '';
         var inputString = input.toString().split('.');
         var part1 = inputString[0] ;
@@ -2873,6 +2873,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.pageDefaultArr();
     $scope.completedTabGrouped = '';
+    var debounceTimeout;
 
     $scope.dashboardScoopLoad  = function (page, tabIndex=0, newTabName) {
         $scope.showDataLoader = true;
@@ -3028,8 +3029,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.searchText = searchText;
             //$('.tab-pane.active input').val()
             $scope.tabName = $window.localStorage.getItem("projectActiveTab")
-            var tabIndex = findIndexByTabClassName($scope.tabName);
-            $scope.dashboardScoopLoad(1, tabIndex);
+            // var tabIndex = findIndexByTabClassName($scope.tabName);
+            // $scope.dashboardScoopLoad(1, tabIndex);
+            
+            if (debounceTimeout) {
+                $timeout.cancel(debounceTimeout);
+            }
+            debounceTimeout = $timeout(function() {
+                var tabIndex = findIndexByTabClassName($scope.tabName);
+                $scope.dashboardScoopLoad(1, tabIndex);
+            }, 500); // Debounce time of 500ms
+
         } catch (error) {
             $scope.showDataLoader = false;
             console.log('error', error)
@@ -5123,52 +5133,62 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }    
 
     // Linguist Price list fetching
-
     $scope.changeLinguistPrice = function(resourceId, specializationArr, langPair){
-        if(resourceId > 0){
-            let clientPricelist = $scope.customerpriceAll.filter((e) => e.resource_id == resourceId )
-            if (clientPricelist.length) {
-                
-                angular.forEach($scope.exChildPriceArr, function (val, i) {
-                    $scope.exChildPriceArr[i].rate = 0;
-                    angular.forEach(clientPricelist, function (val2, i2) {
+        return new Promise((resolve, reject) => {
+            if(resourceId > 0){
+                let clientPricelist = $scope.customerpriceAll.filter((e) => e.resource_id == resourceId )
+                if (clientPricelist.length) {
+                    
+                    angular.forEach($scope.exChildPriceArr, function (val, i) {
+                        $scope.exChildPriceArr[i].rate = 0;
+                        angular.forEach(clientPricelist, function (val2, i2) {
 
-                        val2.price_basis.find(x => {
-                                if(val.child_price_id == x.childPriceId){
-                                    // do not remove - specialization is not compulsary
-                                    //var spclFound = specializationArr && specializationArr.length>0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
-                                    const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
-                                    if(val.child_price_id == x.childPriceId && lngPairFound){
-                                    //if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
-                                        $scope.exChildPriceArr[i].rate = x.basePrice;  
+                            val2.price_basis.find(x => {
+                                    if(val.child_price_id == x.childPriceId){
+                                        // do not remove - specialization is not compulsary
+                                        //var spclFound = specializationArr && specializationArr.length>0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
+                                        const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
+                                        if(val.child_price_id == x.childPriceId && lngPairFound){
+                                        //if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
+                                            $scope.exChildPriceArr[i].rate = x.basePrice;  
+                                        }
+                                        return x;
                                     }
-                                    return x;
-                                }
-                            });    
-                    });    
+                                });    
+                        });    
+                    });
+                }
+                $timeout(function() {
+                    resolve();
+                }, 1000);
+            }else{
+                angular.forEach($scope.exChildPriceArr, function(val, i) {
+                    $scope.exChildPriceArr[i].rate = 0;
+                    // angular.forEach($scope.clientpriceList, function (val2, i2) {
+                    //     val2.price_basis.find(x => {
+                    //         if(val.child_price_id == x.childPriceId){
+                    //             if(specializationArr)
+                    //                 var spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
+                    //             else
+                    //                 var spclFound = false; 
+                    //             const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
+                    //             if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
+                    //                 $scope.exChildPriceArr[i].rate = x.basePrice;  
+                    //             }
+                    //             return x;
+                    //         }
+                    //     });    
+                    // });    
+                    
                 });
+
+                $timeout(function() {
+                    resolve();
+                }, 1000);
+
             }
-        }else{
-            angular.forEach($scope.exChildPriceArr, function(val, i) {
-                $scope.exChildPriceArr[i].rate = 0;
-                // angular.forEach($scope.clientpriceList, function (val2, i2) {
-                //     val2.price_basis.find(x => {
-                //         if(val.child_price_id == x.childPriceId){
-                //             if(specializationArr)
-                //                 var spclFound = specializationArr.some(r => (val2.specialization).indexOf(r) >= 0)
-                //             else
-                //                 var spclFound = false; 
-                //             const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
-                //             if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
-                //                 $scope.exChildPriceArr[i].rate = x.basePrice;  
-                //             }
-                //             return x;
-                //         }
-                //     });    
-                // });    
-                
-            });
-        }
+        });    
+
     }
     // Resource detail API function
     $scope.purchaseDetail = [];
@@ -5300,7 +5320,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
                     var projSpecialization = $scope.jobdetail.proj_specialization.toString().split(',');
                     
-                    $scope.changeLinguistPrice(res_id, projSpecialization, $scope.jobdetail.ItemLanguage);
+                    //$scope.changeLinguistPrice(res_id, projSpecialization, $scope.jobdetail.ItemLanguage);
+
+                    $scope.changeLinguistPrice(res_id, projSpecialization, $scope.jobdetail.ItemLanguage).then(function() {
+                        if($scope.jobdetail?.job_summmeryId && $scope.itemPriceUni[$scope.jobdetail.job_summmeryId]){
+                            $scope.applyPriceList()
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('changeLinguistPrice encountered an error:', error);
+                        // Handle error scenario
+                    });
+                    
                     //var newPriceList = priceList.filter(function (priceList) { const isSpclzExist = projSpecialization.indexOf(priceList.specialization.toString()); return priceList.resource_id == resource_id_csv && isSpclzExist != -1; });
                     var newPriceList = priceList.filter(function (priceList) { 
                         if(!priceList.specialization)
@@ -5769,6 +5800,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.jobdetail.total_price = Math.round(grandTotal * decimalPoint)/decimalPoint;
         });
     }
+
     // Delete job price row
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
         $scope.itemPriceUni[id].splice(index, 1);
@@ -6057,6 +6089,53 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.element('#po_number').show();
         }).error(errorCallback);
     }
+
+    function findObjectInArray2ByName(name) {
+        
+        return $scope.exChildPriceArr.find(obj => obj.name === name);
+    }
+    function countDecimalPlaces(num) {
+        let str = num.toString();
+        // Check if the number has a decimal point
+        if (str.indexOf('.') !== -1) {
+            let match = str.match(/\.(\d+)/);
+            return match ? match[1].length : 0;
+        }
+        return 0;
+    }
+
+    // Function to apply price list adjustments
+    $scope.applyPriceList = function() {
+        $scope.itemPriceUni[$scope.jobdetail.job_summmeryId].forEach((obj, i) => {
+            let foundObject = findObjectInArray2ByName(obj.pricelist);
+            
+            if (foundObject && foundObject.rate !== undefined) {
+                let decimalPoint = decimalNumberCount(foundObject.rate);
+                let priceNew = parseFloat(foundObject.rate) * parseFloat(obj.quantity);
+                let itemPriceCnt = countDecimalPlaces(foundObject.rate)
+                $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][i].itemPrice = numberFormatComma(foundObject.rate, itemPriceCnt) || 0;
+                priceNew = isNaN(priceNew) ? 0 : Math.round(priceNew * decimalPoint) / decimalPoint;
+                $scope.itemPriceUni[$scope.jobdetail.job_summmeryId][i].itemTotal = numberFormatComma(priceNew) || 0;
+            }
+        });
+        // Calculate and update total of all items
+        $scope.calculateTotal();
+    };
+
+    // Function to calculate and update total of all items
+    $scope.calculateTotal = function() {
+        let totalNew = $scope.itemPriceUni[$scope.jobdetail.job_summmeryId].reduce((accumulator, currentValue) => {
+            let itemTotal = currentValue.itemTotal ? parseFloat(currentValue.itemTotal.replace(/,/g, '.')) : 0;
+            console.log('itemTotal', itemTotal)
+            //let itemTotal = parseFloat(currentValue.itemTotal.replace(/,([^,]*)$/, '.$1')) || 0;
+            return accumulator + itemTotal;
+        }, 0);
+
+        var decimalPoint = decimalNumberCount(totalNew);    
+            $scope.jobdetail.total_price = Math.round(totalNew * decimalPoint)/decimalPoint;
+        //$scope.jobdetail.total_price = totalNew;
+    };
+
 
 }).controller('filemanagerController', function ($interval, $scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $q ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -19180,6 +19259,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.invoiceDetail.companyPhone = '(' + countryCode1.split(':')[1].trim() + ')' + ' ' + mobileNo1;
             }
 
+            const tempScoopIds = JSON.parse($scope.invoiceDetail.scoop_id);
+            console.log('tempScoopIds', tempScoopIds)
+            const tempIDS = [];
+
             //$scope.vat = $scope.invoiceDetail.vat ? $scope.invoiceDetail.vat : 0;
             //$scope.invoiceTotal = $scope.invoiceDetail.item_total ? $scope.invoiceDetail.item_total : 0;
             $scope.invoiceTotal = 0;
@@ -19196,10 +19279,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(itemTotal);
                 }
                 
+                $scope.invoiceList[i].item = $scope.invoiceList[i].item || {};
                 $scope.invoiceTotal += parseFloat(val.scoop_value);
                 $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
                 $scope.invoiceList[i].item.priceWithTax = parseFloat(val.scoop_value);
+
             })
+
             //$scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vat);
             $scope.vatAmount = taxRateAmountCalc(parseFloat($scope.invoiceTotal), $scope.vatTax);
             $scope.grandTotal = parseFloat($scope.invoiceTotal) + parseFloat($scope.vatAmount);
@@ -19866,6 +19952,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(itemTotal);
                 }
                 
+                $scope.invoiceList[i].item = $scope.invoiceList[i].item || {};
                 $scope.invoiceTotal += parseFloat(val.scoop_value);
                 $scope.invoiceList[i].item.itemTotalVal = $filter('customNumber')(val.scoop_value);
                 $scope.invoiceList[i].item.priceWithTax = parseFloat(val.scoop_value);
