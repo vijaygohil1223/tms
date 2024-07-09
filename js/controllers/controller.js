@@ -2213,6 +2213,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
     }
+
     $scope.childPrice = [];
     $scope.langsListAll = [];
     var allLanguages = [];
@@ -2220,7 +2221,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'languagesGet';
         rest.get().success(function (data) {
             $scope.langsListAll = data;
-            console.log('$scope.langsListAll', $scope.langsListAll)
             allLanguages = data
         }).error(errorCallback);
 
@@ -2736,75 +2736,78 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // $scope.dashboardTabList = [ 
     //     { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 }, { "tabName":"missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0 } 
     // ];
-    rest.path = "dashboardProjectsOrderCount/" + $window.localStorage.getItem("session_iUserId");
-    rest.get().success(function (response) {
-        console.log('data-dashboar-project count=>', response)
-        
-        if(response){
-            angular.forEach($scope.dashboardTabList, function (itm, i) {
-                if(itm.tabClassName == 'tab-due-today'){
-                    console.log('response.dueToday', response.dueToday)
-                    itm.projectScoopCount = response.dueToday || 0
-                }
-                if(itm.tabClassName == 'tab-due-tomorrow'){
-                    itm.projectScoopCount = response.dueTomorrow || 0
-                }
-                if(itm.tabClassName == 'tab-all'){
-                    itm.projectScoopCount = response.tabAll || 0
-                }
-                if(itm.tabClassName == 'tab-assigned'){
-                    var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
-                    itm.projectScoopCount = asigncount?.totalItems || 0
-                }
-                if(itm.tabClassName == 'tab-ongoing'){
-                    //2
-                    itm.projectScoopCount = response.ongoing || 0
-                }
-                if(itm.tabClassName == 'tab-qa-ready'){
-                    var tQa = response.tabStatus.find( (val) => val.item_status == 10 );
-                    itm.projectScoopCount = tQa?.totalItems || 0
-                }
-                if(itm.tabClassName == 'tab-qa-issue'){
-                    var tQaissue = response.tabStatus.find( (val) => val.item_status == 13 );
-                    itm.projectScoopCount = tQaissue?.totalItems || 0
-                }
-                if(itm.tabClassName == 'tab-pm-ready'){
-                    var tPmready = response.tabStatus.find( (val) => val.item_status == 12 );
-                    itm.projectScoopCount = tPmready?.totalItems || 0
-                }
-                if(itm.tabClassName == 'tab-to-be-delivered'){
-                    var tTobDel = response.tabStatus.find( (val) => val.item_status == 3 );
-                    itm.projectScoopCount = tTobDel?.totalItems || 0
-                }
-                if(itm.tabClassName == 'tab-completed'){
-                    var tComp = response.tabStatus.find( (val) => val.item_status == 4 );
-                    itm.projectScoopCount = tComp?.totalItems || 0
-                }
-                if(itm.tabClassName == 'tab-approved'){
-                    var tApprvd = response.tabStatus.find( (val) => val.item_status == 5 );
-                    itm.projectScoopCount = tApprvd?.totalItems || 0
-                }
-                if(itm.tabClassName == 'tab-overdue'){
-                    // 11
-                    //var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
-                    itm.projectScoopCount = response?.overDue || 0
-                }
-                if(itm.tabClassName == 'tab-my-projects'){
-                    itm.projectScoopCount = response?.myProject || 0
-                }
-                if(itm.tabClassName == 'tab-my-upcoming'){
-                    itm.projectScoopCount = response?.upcomming || 0
-                }
-                if(itm.tabClassName == 'tab-poMissing'){
-                    itm.projectScoopCount = response?.poMissing || 0
-                }
-                // if(itm.tabClassName == 'tab-approved'){
-                //     itm.projectScoopCount = response?.approved || 0
-                // }
-            })
-        }
 
-    });
+    if($scope.userRight == 1){
+        rest.path = "dashboardProjectsOrderCount/" + $window.localStorage.getItem("session_iUserId");
+        rest.get().success(function (response) {
+            console.log('data-dashboar-project count=>', response)
+            
+            if(response){
+                angular.forEach($scope.dashboardTabList, function (itm, i) {
+                    if(itm.tabClassName == 'tab-due-today'){
+                        console.log('response.dueToday', response.dueToday)
+                        itm.projectScoopCount = response.dueToday || 0
+                    }
+                    if(itm.tabClassName == 'tab-due-tomorrow'){
+                        itm.projectScoopCount = response.dueTomorrow || 0
+                    }
+                    if(itm.tabClassName == 'tab-all'){
+                        itm.projectScoopCount = response.tabAll || 0
+                    }
+                    if(itm.tabClassName == 'tab-assigned'){
+                        var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
+                        itm.projectScoopCount = asigncount?.totalItems || 0
+                    }
+                    if(itm.tabClassName == 'tab-ongoing'){
+                        //2
+                        itm.projectScoopCount = response.ongoing || 0
+                    }
+                    if(itm.tabClassName == 'tab-qa-ready'){
+                        var tQa = response.tabStatus.find( (val) => val.item_status == 10 );
+                        itm.projectScoopCount = tQa?.totalItems || 0
+                    }
+                    if(itm.tabClassName == 'tab-qa-issue'){
+                        var tQaissue = response.tabStatus.find( (val) => val.item_status == 13 );
+                        itm.projectScoopCount = tQaissue?.totalItems || 0
+                    }
+                    if(itm.tabClassName == 'tab-pm-ready'){
+                        var tPmready = response.tabStatus.find( (val) => val.item_status == 12 );
+                        itm.projectScoopCount = tPmready?.totalItems || 0
+                    }
+                    if(itm.tabClassName == 'tab-to-be-delivered'){
+                        var tTobDel = response.tabStatus.find( (val) => val.item_status == 3 );
+                        itm.projectScoopCount = tTobDel?.totalItems || 0
+                    }
+                    if(itm.tabClassName == 'tab-completed'){
+                        var tComp = response.tabStatus.find( (val) => val.item_status == 4 );
+                        itm.projectScoopCount = tComp?.totalItems || 0
+                    }
+                    if(itm.tabClassName == 'tab-approved'){
+                        var tApprvd = response.tabStatus.find( (val) => val.item_status == 5 );
+                        itm.projectScoopCount = tApprvd?.totalItems || 0
+                    }
+                    if(itm.tabClassName == 'tab-overdue'){
+                        // 11
+                        //var tTobDel = response.tabStatus.find( (val) => val.item_status == 11 );
+                        itm.projectScoopCount = response?.overDue || 0
+                    }
+                    if(itm.tabClassName == 'tab-my-projects'){
+                        itm.projectScoopCount = response?.myProject || 0
+                    }
+                    if(itm.tabClassName == 'tab-my-upcoming'){
+                        itm.projectScoopCount = response?.upcomming || 0
+                    }
+                    if(itm.tabClassName == 'tab-poMissing'){
+                        itm.projectScoopCount = response?.poMissing || 0
+                    }
+                    // if(itm.tabClassName == 'tab-approved'){
+                    //     itm.projectScoopCount = response?.approved || 0
+                    // }
+                })
+            }
+
+        });
+    }
 
     function findIndexByTabClassName(tabClassName) {
         for (var i = 0; i < $scope.dashboardTabList.length; i++) {
@@ -3097,7 +3100,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.dashboardScoopLoad(1,tabIndex);
         }
     }
-    $scope.activeTabfn();
+    if($scope.userRight == 1){
+        $scope.activeTabfn();
+    }
 
     $scope.changeProjectTabs2 = function(className, tabIndex){
         $scope.completedTabGrouped = '';
@@ -3886,7 +3891,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'freelanceJob/' + $window.localStorage.session_iUserId;
         rest.get().success(function (data) {
             $scope.jobList = data;
-            console.log('$scope.jobList=>', $scope.jobList)
             $scope.freelanceEmpty = jQuery.isEmptyObject(data);
             var allStatus = [];
             var Requested = [];
@@ -3949,6 +3953,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //job action like all, request etc
     $scope.highlightSearch = "All";
     $scope.sortJob = function (action, eID) {
+        console.log('action', action)
         //pagination controls
         // $scope.currentPage = 1;
         // $scope.totalItems = $scope.jobList.length;
@@ -6060,7 +6065,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statussource = $routeParams.id;
     var FilesLength;
 
-    console.log('$rootScope.jobId', $routeParams.jobId)
+    console.log('$rootScope.jobId********', $routeParams.jobId)
     // check file extesion
     //$scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
     $scope.fileExtensionList = ['pdf','JPEG','jpeg','jpg','png','bmp','gif','jfif','svg','webp','zip','gz','rar','tar','doc','docx','msg','xlsx','xlsm','xls','csv','ppt','pptx','mp3','wav','wma','wmv','avi','3gp','mov','vob','exe'];
@@ -6948,22 +6953,45 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // context-menu for files
                     $scope.menuOptionsFiles = [
                         ['Download', function ($itemScope) {
+                            //debugger
                             if($scope.copyfile && $scope.copyfile.length > 0){
                                 const fileInputs = document.querySelectorAll('file.activeselect p');
                                 const fileUrls = Array.from(fileInputs).map(itm => itm.innerText);
+                                console.log('fileUrls', fileUrls)
                                 //const fileInputs2 = document.querySelectorAll('file.activeselect');
-                                //const fileUrls2 = Array.from(fileInputs2).map(itm => itm.id);    
-                                const downloadLink = document.createElement('a');
-                                downloadLink.style.display = 'none';
-                                document.body.appendChild(downloadLink);
-                                // Loop through selected files and trigger downloads
-                                fileUrls.forEach(url => {
-                                    downloadLink.setAttribute('href', 'uploads/fileupload/'+url);
-                                    downloadLink.setAttribute('download', url.split('/').pop());
-                                    downloadLink.click();
-                                });
+                                //const fileUrls2 = Array.from(fileInputs2).map(itm => itm.id);  
+                                // New logic for download
+                                const fileElements = document.querySelectorAll('file.activeselect');
+                                const files = Array.from(fileElements).map(item => ({
+                                    id: item.getAttribute('id'),
+                                    name: item.innerText
+                                }));  
+                                const downloadFiles = () => {
+                                    files.forEach(file => {
+                                        // Create a temporary <a> element
+                                        var a = document.createElement('a');
+                                        a.download = file.name;
+                                        a.href = $("#download" + file.id).attr('href');
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
+                                    });
+                                };
+                                // Call the function to download files
+                                downloadFiles();
 
-                                document.body.removeChild(downloadLink);
+                                // const downloadLink = document.createElement('a');
+                                // downloadLink.style.display = 'none';
+                                // document.body.appendChild(downloadLink);
+                                // // Loop through selected files and trigger downloads
+                                // fileUrls.forEach(url => {
+                                //     downloadLink.setAttribute('href', 'uploads/fileupload/'+url);
+                                //     downloadLink.setAttribute('download', url.split('/').pop());
+                                //     downloadLink.click();
+                                // });
+
+                                // document.body.removeChild(downloadLink);
+                            
                             }else{
                                 var a = document.createElement('a');
                                 document.body.appendChild(a);
