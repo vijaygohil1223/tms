@@ -6144,7 +6144,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.statussource = $routeParams.id;
     var FilesLength;
 
-    console.log('$rootScope.jobId********', $routeParams.jobId)
     // check file extesion
     //$scope.fileExtensionList = ['txt','html','htm','js', 'css', 'sql', 'tiff', 'xlz','xliff','mqxlz','mqxliff','sdlxliff','sdlrpx','wsxz','txlf','txml','xlf','tbulic','xml'];
     $scope.fileExtensionList = ['pdf','JPEG','jpeg','jpg','png','bmp','gif','jfif','svg','webp','zip','gz','rar','tar','doc','docx','msg','xlsx','xlsm','xls','csv','ppt','pptx','mp3','wav','wma','wmv','avi','3gp','mov','vob','exe'];
@@ -6655,7 +6654,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             $(this).data('clicked', true);
             // Create a hidden anchor element
-            var fileName = $(this).find("p").text();
+            var fileName = $(this).find("p").text().trim();
             var idValue = $(this).attr('id');
             var a = document.createElement('a');
             document.body.appendChild(a);
@@ -6767,11 +6766,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                         fimg = val.name; 
                                                     }
                                                     var fimgUrl = "uploads/fileupload/" + fimg;
+                                                    let originalFileName = val.original_filename; 
+                                                    
                                                     if (fileUrlExists(fimgUrl)) {
                                                         fileUrls.push({
                                                             'parent_id': val.parent_id,
                                                             'full_url': fimgUrl,
-                                                            'file_name': fimg,
+                                                            'file_name': originalFileName,
                                                             'folderurl_dir': val.folderurl,
                                                         });
                                                     }
@@ -7074,7 +7075,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }else{
                                 var a = document.createElement('a');
                                 document.body.appendChild(a);
-                                a.download = $itemScope.display.name;
+                                //a.download = $itemScope.display.name;
+                                a.download = $itemScope.display.original_filename;
                                 a.href = $("#download" + $itemScope.display.fmanager_id).attr('href');
                                 a.click();    
                             }    
@@ -7635,8 +7637,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.urlParams = $location.absUrl().split('/').pop();
     $scope.fullPathUrl = function(scoopId, parentId){
-        console.log('parentId', parentId)
-        console.log('scoopId', scoopId)
         $scope.folderPathData = [];
         rest.path = 'filemanagerScoopPath/'+scoopId+'/'+parentId;
         rest.get().success(function (data) {
@@ -7645,8 +7645,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if(itm.name && itm.ext == '' ){
                     $scope.folderPathData.push(itm)
                 }
-             } )
-            console.log('$scope.folderPathData', $scope.folderPathData)
+            } )
+             
         })
     }
 
@@ -7962,24 +7962,58 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $('.ajax-upload-dragdrop:eq(1)').hide();
     }, 500);
 
-    function downloadFileByAtag(filename, fileOriginalName){
+    function downloadFileByAtag(fname, fOriginalName){
         const a = document.createElement('a');
-        const fileName = fileOriginalName ? fileOriginalName : filename;
-        const fileURL = 'uploads/fileupload/' + filename; 
+        const fileName = fOriginalName ? fOriginalName : fname; 
+        const fileURL = 'uploads/fileupload/' + fname; 
+        
         a.setAttribute('download', fileName);
         a.setAttribute('href', fileURL);
-        a.click();
+        a.style.display = 'none'; // Hide the element
+        document.body.appendChild(a);
+        
+        // Initiate download after a short delay (e.g., 100ms)
+        setTimeout(function() {
+            a.click(); // Simulate click on the element to initiate download
+            document.body.removeChild(a); // Clean up: remove the element from the DOM
+            // Reset clicked state after a short delay (e.g., 500ms)
+            setTimeout(function() {
+                $scope.$apply(function() {
+                    angular.element(a).data('clicked', false);
+                    $route.reload();
+                });
+            }, 500);
+        }, 50);
+        
     }
 
     $timeout(function () {
         $scope.addToDownload = function (fname, fOriginalName ) {
+            console.log('fname====>', fname)
             downloadFileByAtag(fname, fOriginalName)
-            // const a = document.createElement('a');
-            // a.download = 'testt';
-            // a.href = 'uploads/fileupload/' + fname;
-            // a.click();
         }
     }, 500);
+    setTimeout(() => {
+        $('file').on('dblclick', function() {
+            // // To solve two time file download issue
+            // if ($(this).data('clicked')) {
+            //     return;
+            // }
+            // $(this).data('clicked', true);
+            // // Create a hidden anchor element
+            // var fileName = $(this).find("p").text().trim();
+            // var idValue = $(this).attr('id');
+            // var a = document.createElement('a');
+            // document.body.appendChild(a);
+            // a.download = fileName;
+            // a.href = $("#download" + idValue).attr('href');
+            // a.click();    
+            // setTimeout(() => {
+            //     // To solve two time file download issue
+            //     $(this).data('clicked', false);
+            // }, 500);
+        });
+    }, 2000);
 
 
     $scope.addToCopy = function (fid) {
@@ -8414,12 +8448,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             if (sameNameExist.length > 1) {
                                                 fimg = val.name;
                                             }
+                                            let fOriginalName_ =  val.original_filename;
                                             var fimgUrl = "uploads/fileupload/" + fimg;
                                             if (fileUrlExists(fimgUrl)) {
                                                 fileUrls.push({
                                                     'parent_id': val.parent_id,
                                                     'full_url': fimgUrl,
-                                                    'file_name': fimg,
+                                                    'file_name': fOriginalName_,
                                                     'folderurl_dir': val.folderurl,
                                                 });
                                             }
@@ -8483,110 +8518,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //     $scope.showLoder = false;
                                 // }, 10000);
                             }
-
-                            // if (folderId != undefined) {
-                            //     $scope.showLoder = true;
-                            //     rest.path = 'filemanagerfolderDownload/' + folderId;
-                            //     rest.get().success(function (data) {
-                            //         $scope.downloadAllfile = data;
-                            //         var zipdwnld = new JSZip();
-                            //         var fileUrls = [];
-                            //         var folderArr = [];
-                            //         var parentFolderArr = [];
-                            //         var fileIndex = 0;
-                            //         angular.forEach($scope.downloadAllfile, function (val, i) {
-                            //             if (val.ext != '') {
-                            //                 var fimg = val.name;
-                            //                 //var fimg = val.original_filename;
-                            //                 const sameNameExist = $scope.downloadAllfile.filter((itm) => itm.original_filename === val.original_filename);
-                            //                 if (sameNameExist.length > 1) {
-                            //                     fimg = val.name; 
-                            //                 }
-                            //                 //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
-                            //                 //fileList.push("uploads/fileupload/"+fimg);
-                            //                 var fimgUrl = "uploads/fileupload/" + fimg;
-                            //                 if (fileUrlExists(fimgUrl)) {
-                            //                     fileUrls.push({
-                            //                         'parent_id': val.parent_id,
-                            //                         'full_url': fimgUrl,
-                            //                         'file_name': fimg,
-                            //                         'folderurl_dir': val.folderurl,
-                            //                     });
-                            //                 }
-                            //             }
-                            //             var fmid = 0;
-                            //             if (val.ext == '') {
-                            //                 var foldername = val.name;
-                            //                 var fmid = val.fmanager_id;
-                            //                 folderArr.push({
-                            //                     'fmanager_id': val.fmanager_id,
-                            //                     'folder_name': val.name,
-                            //                     'folderurl_dir': val.folderurl,
-                            //                 });
-
-                            //                 //zipdwnld.folder(foldername);
-                            //             }
-
-                            //         })
-
-                            //         // files download
-                            //         var file_count = 0;
-                            //         fileUrls.forEach(function (url) {
-                            //             JSZipUtils.getBinaryContent(url.full_url, function (err, data) {
-                            //                 if (err) {
-                            //                     throw err;
-                            //                     $scope.showLoder = false;
-                            //                 }
-
-                            //                 var folderName = '';
-                            //                 folderArr.forEach(function (folders) {
-                            //                     /*if(folders.fmanager_id == url.parent_id){
-                            //                         folderName = folders.folder_name+'/';
-                            //                     }else{
-                            //                         zipdwnld.folder(folders.folder_name);
-                            //                     }*/
-                            //                     zipdwnld.folder(folders.folderurl_dir);
-                            //                 });
-                            //                 file_count++;
-                            //                 if (data != null) {
-                            //                     zipdwnld.file(url.folderurl_dir + url.file_name, data, { binary: true });
-
-                            //                     if (file_count == fileUrls.length) {
-                            //                         zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
-                            //                             saveAs(content, tmsfolder + ".zip");
-                            //                         }).then(function () {
-                            //                             $scope.showLoder = false;
-                            //                             $route.reload();
-                            //                         });
-                            //                         $timeout(function () {
-                            //                             $scope.showLoder = false;
-                            //                             //$route.reload();
-                            //                         }, 10000);
-                            //                     }
-                            //                 }
-
-                            //             });
-                            //         });
-
-                            //         $timeout(function () {
-                            //             if (fileUrls.length == 0 && folderArr.length > 0) {
-                            //                 folderArr.forEach(function (folders) {
-                            //                     zipdwnld.folder(folders.folderurl_dir);
-                            //                 });
-                            //                 zipdwnld.generateAsync({ type: 'blob' }).then(function (content) {
-                            //                     saveAs(content, tmsfolder + ".zip");
-                            //                 }).then(function () {
-                            //                     $scope.showLoder = false;
-                            //                     $route.reload();
-                            //                 });
-                            //                 //$scope.showLoder = false;
-                            //             }
-                            //         }, 1000);
-                            //     })
-                            //     $timeout(function () {
-                            //         $scope.showLoder = false;
-                            //     }, 10000);
-                            // }
 
                         }],
 
@@ -8661,25 +8592,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.menuOptionsFiles = [
                         ['Download', function ($itemScope) {
                             if ($scope.menuRclkID) {
+                                console.log('$scope.menuRclkID', $scope.menuRclkID)
                                 var fileID = $scope.menuRclkID;
                                 var fileName = $scope.menuRclkName;
-                                var fOriginalName = $scope.menuRclkName;
+                                //var fOriginalName = $scope.menuRclkName;
+                                //var fOriginalName = $('#'+$scope.menuRclkID+'p').text().trim();
+                                var fOriginalName = $('#' + $scope.menuRclkID + ' p').text().trim();
+                            
                             } else {
                                 var fileID = $itemScope.display.fmanager_id;
                                 var fileName = $itemScope.display.name;
                                 //var fOriginalName = fileName;
                                 var fOriginalName = $itemScope.display.original_filename;
-                            }
-                            /*var a = document.createElement('a');
-                            document.body.appendChild(a);
                             
-                            a.download = fileName;
-                            a.href = $("#download" + fileID).attr('href');
-                            a.click();*/
-                            // const a = document.createElement('a');
-                            // a.download = fileName;
-                            // a.href = 'uploads/fileupload/' + fileName;
-                            // a.click();
+                            }
+
                             downloadFileByAtag(fileName, fOriginalName)
                             
                             $timeout(function () {

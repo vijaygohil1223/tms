@@ -56,19 +56,54 @@
     background-origin: content-box;
   }
 
-  .video { background-image: url(assets/img/file_icon/video.png); }
-  .png { background-image: url(assets/img/file_icon/png.png); }
-  folder { background-image: url(assets/img/file_icon/folder1.png); }
-  .doc { background-image: url(assets/img/file_icon/doc.png); }
-  .pdf { background-image: url(assets/img/file_icon/pdf.png); }
-  .zip { background-image: url(assets/img/file_icon/zip.png); }
-  .xls { background-image: url(assets/img/file_icon/xls.png); }
-  .ppt { background-image: url(assets/img/file_icon/ppt.png); }
+  .video {
+    background-image: url(assets/img/file_icon/video.png);
+  }
+
+  .png {
+    background-image: url(assets/img/file_icon/png.png);
+  }
+
+  folder {
+    background-image: url(assets/img/file_icon/folder1.png);
+  }
+
+  .doc {
+    background-image: url(assets/img/file_icon/doc.png);
+  }
+
+  .pdf {
+    background-image: url(assets/img/file_icon/pdf.png);
+  }
+
+  .zip {
+    background-image: url(assets/img/file_icon/zip.png);
+  }
+
+  .xls {
+    background-image: url(assets/img/file_icon/xls.png);
+  }
+
+  .ppt {
+    background-image: url(assets/img/file_icon/ppt.png);
+  }
+
   /* .txt { background-image: url(assets/img/file_icon/txt.png); } */
-  .txt { background-image: url(assets/img/file_icon/fileicon.png); }
-  .exe { background-image: url(assets/img/file_icon/exe.png); }
-  .mp3 { background-image: url(assets/img/file_icon/mp3.png); }
-  .fileicon{ background-image: url(assets/img/file_icon/fileicon.png); }
+  .txt {
+    background-image: url(assets/img/file_icon/fileicon.png);
+  }
+
+  .exe {
+    background-image: url(assets/img/file_icon/exe.png);
+  }
+
+  .mp3 {
+    background-image: url(assets/img/file_icon/mp3.png);
+  }
+
+  .fileicon {
+    background-image: url(assets/img/file_icon/fileicon.png);
+  }
 
   .breadcrumb {
     padding: 8px 15px;
@@ -353,10 +388,12 @@
     <div class="bg-light lter b-b wrapper-md">
       <a href="javascript:void(0)" class="summeryColor pull-right" ng-click="popupCloseFile()">Close <i
           class="fa fa-times" aria-hidden="true"></i></a>
-      <h1 class="m-n font-thin h3">File Manager :  
-        <span id="pathFolderWithurl" ></span>
+      <h1 class="m-n font-thin h3">File Manager :
+        <span id="pathFolderWithurl"></span>
         <span ng-repeat="urlName in folderPathData">
-          <a href="javascript:void(0);" ng-click="findfileOneClk(urlName.fmanager_id,urlName.name)" ng-style="($index != folderPathData.length-1 || folderPathData.length==1 ) ? {'color':'blue'} : {'color':'gray'} "> {{urlName.name}}</a> <span ng-if="$index != folderPathData.length-1"> > </span>
+          <a href="javascript:void(0);" ng-click="findfileOneClk(urlName.fmanager_id,urlName.name)"
+            ng-style="($index != folderPathData.length-1 || folderPathData.length==1 ) ? {'color':'blue'} : {'color':'gray'} ">
+            {{urlName.name}}</a> <span ng-if="$index != folderPathData.length-1"> > </span>
         </span>
 
         <!-- {{ folderPath }}  -->
@@ -380,7 +417,7 @@
 
             <div class="form-group pull-right" style="padding-top:6px;margin-bottom:0px;">
               <div class="selectCount">
-                Selected Files : <p id="files_count" >{{copyfile.length}}</p>
+                Selected Files : <p id="files_count">{{copyfile.length}}</p>
                 <a href="javascript:void(0)" style="font-size:12px;color:#0086be" ng-click="clearCopy()">Clear</a>
               </div>
               <input class="form-control nav-inp fileSearchox" id="fileSearchBox" ng-focus="searchBox()"
@@ -445,10 +482,10 @@
                         <p>{{category.name}}</p></folder>
 
                         <!-- Pdf  -->
-                       <file extension="pdf" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name, category.original_filename)" ng-if="category.ext == 'pdf' || category.ext == 'PDF'"  context-menu="menuOptionsFiles" class="pdf" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
+                       <file extension="pdf" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}" ng-if="category.ext == 'pdf' || category.ext == 'PDF'" context-menu="menuOptionsFiles" class="pdf" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
                        
                        <!-- Png -->
-                       <file extension="png" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name, category.original_filename)" 
+                       <file extension="png" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}" 
                                 ng-if="category.ext == 'jpg' ||
                                        display.ext == 'JPEG' || 
                                        category.ext == 'png' || 
@@ -456,13 +493,11 @@
                                        category.ext == 'gif' ||  
                                        category.ext == 'bmp' ||  
                                        category.ext == 'jfif' ||  
-                                       category.ext == 'webp'  
-                                       ||  
-                                       category.ext == 'svg'  
-                                      "  
-                       style="background-image:url('uploads/fileupload/{{category.name}}') !important;" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
+                                       category.ext == 'webp' ||  
+                                       category.ext == 'svg' " 
+                                       style="background-image:url('uploads/fileupload/{{category.name}}') !important;" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
                        <!-- Zip -->
-                       <file extension="zip" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)" ng-dblclick="addToDownload(category.name, category.original_filename)"  
+                       <file extension="zip" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)" file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}"  
                           ng-if="category.ext == 'zip' ||
                                  category.ext == 'gz' ||
                                  category.ext == 'rar'
@@ -470,13 +505,13 @@
                        {{category.original_filename}}</p></file>
 
                        <!-- doc&docx -->
-                       <file extension="doc" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name, category.original_filename)" ng-if="category.ext == 'doc' || category.ext =='docx'" class="doc" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
+                       <file extension="doc" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}" ng-if="category.ext == 'doc' || category.ext =='docx'" class="doc" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
 
                        <!-- Unknown extension Extra-->
-                        <file extension="msg" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name, category.original_filename)" ng-if="category.ext == 'msg' " class="fileicon" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
+                        <file extension="msg" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}" ng-if="category.ext == 'msg' " class="fileicon" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
 
                        <!-- Xls -->
-                       <file extension="xls" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name, category.original_filename)" 
+                       <file extension="xls" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)" file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}" file-double-click
                           ng-if="category.ext == 'xlsx' ||
                                  category.ext == 'xlsm' ||
                                  category.ext == 'xls' ||
@@ -486,17 +521,17 @@
                        </file>
 
                        <!-- PPT -->
-                       <file extension="ppt" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name, category.original_filename)" ng-if="category.ext == 'ppt' || category.ext =='pptx'" class="ppt" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
+                       <file extension="ppt" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}" ng-if="category.ext == 'ppt' || category.ext =='pptx'" class="ppt" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
 
                        <!-- MP3 -->
-                       <file extension="mp3" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)" context-menu="menuOptionsFiles" ng-dblclick="addToDownload(category.name, category.original_filename)" ng-if="category.ext == 'mp3' ||
+                       <file extension="mp3" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)" context-menu="menuOptionsFiles" file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}" ng-if="category.ext == 'mp3' ||
                                     category.ext =='wav' ||
                                     category.ext =='wma'
                                    " class="mp3" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>
                        {{category.original_filename}}</p></file>
 
                        <!-- VIDEO -->
-                       <file extension="mp4" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"   ng-dblclick="addToDownload(category.name, category.original_filename)"  
+                       <file extension="mp4" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)" file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}"  
                              ng-if="category.ext == 'mp4' ||
                                     category.ext =='wmv' ||
                                     category.ext =='avi' ||
@@ -507,15 +542,16 @@
                        {{category.original_filename}}</p></file>
                        
                        <!-- EXE -->
-                       <file extension="exe" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  ng-dblclick="addToDownload(category.name, category.original_filename)"  
+                       <file extension="exe" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)"  file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}"  
                              ng-if="category.ext == 'exe'
                                    " class="exe" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>
                        {{category.original_filename}}</p></file>
 
                        <!-- TEXT and other extension -->
-                       <file extension="txt" id="{{category.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" ng-dblclick="addToDownload(display.name, display.original_filename)" 
-                             ng-if="! fileExtensionExist(category.ext) && category.f_id=='1' " class="txt" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>
-                       {{category.original_filename }}</p></file>
+                       <file extension="txt" id="{{category.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)" 
+                             ng-if="! fileExtensionExist(category.ext) && category.f_id=='1' " class="txt {{}}" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}" file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}">
+                             <p>{{category.original_filename }}</p>
+                        </file>
 
                         <ul class="folderul f1 ftr{{display.fmanager_id}} nch{{category.parent_id}}{{category.fmanager_id}}" style="display:none;">
                             <li ng-repeat="category in category.categories" ng-include="'categoryTree'" >           
@@ -530,8 +566,9 @@
           </div>
           <!-- Pdf  -->
           <file extension="pdf" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'pdf' || display.ext == 'PDF'" context-menu="menuOptionsFiles"
-            class="pdf" menuoptionIdName="0">
+            ng-dblclick="addToDownload(display.name, display.original_filename)"
+            ng-if="display.ext == 'pdf' || display.ext == 'PDF'" context-menu="menuOptionsFiles" class="pdf"
+            menuoptionIdName="0">
             <p>{{display.original_filename}}</p>
           </file>
 
@@ -563,15 +600,16 @@
 
           <!-- doc&docx -->
           <file extension="doc" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'doc' || display.ext =='docx'" class="doc"
-            context-menu="menuOptionsFiles" menuoptionIdName="0">
+            ng-dblclick="addToDownload(display.name, display.original_filename)"
+            ng-if="display.ext == 'doc' || display.ext =='docx'" class="doc" context-menu="menuOptionsFiles"
+            menuoptionIdName="0">
             <p>{{display.original_filename}}</p>
           </file>
 
           <!-- Unknown extension Extra-->
           <file extension="msg" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'msg'" class="fileicon"
-            context-menu="menuOptionsFiles" menuoptionIdName="0">
+            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'msg'"
+            class="fileicon" context-menu="menuOptionsFiles" menuoptionIdName="0">
             <span
               style="text-shadow: 1px 5px #352f2f; color:transparent;font-size:12px; font-weight: 900;text-transform: capitalize;">
               {{display.ext}}</span>
@@ -592,8 +630,9 @@
 
           <!-- PPT -->
           <file extension="ppt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'ppt' || display.ext =='pptx'" class="ppt"
-            context-menu="menuOptionsFiles" menuoptionIdName="0">
+            ng-dblclick="addToDownload(display.name, display.original_filename)"
+            ng-if="display.ext == 'ppt' || display.ext =='pptx'" class="ppt" context-menu="menuOptionsFiles"
+            menuoptionIdName="0">
             <p>{{display.original_filename}}</p>
           </file>
 
@@ -629,7 +668,9 @@
 
           <!-- TEXT and other File extension -->
           <file extension="txt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="! fileExtensionExist(display.ext) && display.f_id=='1' " class="txt" context-menu="menuOptionsFiles" menuoptionIdName="0">
+            ng-dblclick="addToDownload(display.name, display.original_filename)"
+            ng-if="! fileExtensionExist(display.ext) && display.f_id=='1' " class="txt" context-menu="menuOptionsFiles"
+            menuoptionIdName="0">
             <p>
               {{display.original_filename}}</p>
           </file>

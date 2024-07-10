@@ -6986,3 +6986,30 @@ app.directive('dScrollHorizontally', function () {
         }
       };
 });
+
+app.directive('fileDoubleClick', function () {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.on('dblclick', function() {
+                // Double-click logic here
+                scope.$apply(function() {
+                    scope.addToDownload(attrs.categoryName, attrs.originalFilename);
+                });
+                // var fileName = element.find("p").text().trim();
+                // console.log('fileName', fileName)
+                // var idValue = attrs.id;
+                // var downloadUrl = $("#download" + idValue).attr('href');
+                
+                // // Create a hidden anchor element to trigger the download
+                // var a = document.createElement('a');
+                // document.body.appendChild(a);
+                // a.download = fileName;
+                // a.href = downloadUrl;
+                // a.click();
+                // document.body.removeChild(a);
+            });
+        }
+    };
+});
+

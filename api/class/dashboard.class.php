@@ -141,7 +141,8 @@ class dashboard {
         $offset = ($currentPage - 1) * $perPage;
         $whereCond = '';
         
-        $tabName = isset($_GET['tabName']) ? $_GET['tabName'] : '';
+        //$tabName = isset($_GET['tabName']) ? $_GET['tabName'] : '';
+        $tabName = $_GET['tabName'] ?? '';
         if($tabName != ''){
             //$statusId = 1;
             if($tabName == 'tab-assigned'){
@@ -163,7 +164,6 @@ class dashboard {
             if($tabName == 'tab-completed'){
                 $statusId = 4;
             }
-            
             if($tabName == 'tab-approved'){
                 $statusId = 5;
             }
@@ -449,13 +449,13 @@ class dashboard {
         }
         
         // Prepare response
-        $results = array(
+        $results = [
             'totalItems' => $totalCount,
             'totalPages' => $totalPages,
             'currentPage' => $currentPage,
             'data' => $results,
             'groupedData' => $gropedData
-        );
+        ];
 
         return $results;
     }
