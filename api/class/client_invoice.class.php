@@ -1125,7 +1125,13 @@ class Client_invoice
     {
         $qry = 'SELECT * FROM tms_invoice_client WHERE JSON_CONTAINS(scoop_id, \'{"id": ' . $id . '}\', "$")';
         $data = $this->_db->rawQuery($qry);
-
+        if ($data) {
+            $data['status'] = 200;
+            $data['msg'] = "success";
+        } else {
+            $data['status'] = 422;
+            $data['msg'] = "No record";
+        }
         return $data;
     }
 
