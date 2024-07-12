@@ -3,7 +3,7 @@ require_once 'users.class.php';
 require_once 'client.class.php';
 require_once 'functions.class.php';
 require_once 'mpdf.class.php';
-require_once 'phpWordDoc.class.php';
+//require_once 'phpWordDoc.class.php';
 
 class Client_invoice
 {
@@ -1282,17 +1282,18 @@ class Client_invoice
 //$htmlContent = $doc->saveHTML();
 $htmlContent =  $data['invoiceContent'];
         // Create instance of PhpWordDoc class
-        $phpWordDoc = new PhpWordDoc();
-
-        // Generate Word document
-        $outputWordFile = $phpWordDoc->generateWordDocument($headerHtml, $htmlContent);
-
         echo "Anillll=======>";
-        print_r($outputWordFile);
+        //print_r($outputWordFile);
         exit;
 
-        // Download PDF version
-        $phpWordDoc->downloadPDF($htmlContent, 'output_document.pdf');
+        // $phpWordDoc = new PhpWordDoc();
+
+        // // Generate Word document
+        // $outputWordFile = $phpWordDoc->generateWordDocument($headerHtml, $htmlContent);
+
+       
+        // // Download PDF version
+        // $phpWordDoc->downloadPDF($htmlContent, 'output_document.pdf');
         
         
 
