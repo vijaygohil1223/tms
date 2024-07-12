@@ -240,7 +240,7 @@ td.table-data-text {
                             </dl>
                       </div>
                       <div>
-                        <a href="javascript:void(0);" class="btnDelete" ng-hide="editDisabled" ng-click="newScoopPopupCreate(newClientId, availItemsId, isCreateNewScoop)"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                        <a href="javascript:void(0);" ng-hide="editDisabled" ng-click="newScoopPopupCreate(newClientId, availItemsId, isCreateNewScoop)" style="float:right;"><i class="fa fa-plus" aria-hidden="true"></i></a>
                       </div>
                       <table class="table table-bordered table-condensed">
                           <thead>
@@ -261,7 +261,7 @@ td.table-data-text {
                               <td class="table-data-txt"> 
                                 <div class="d-flex">
                                   <span ng-if="isCreditNotePage">-</span> <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled" />
-                                <a href="javascript:void(0);" class="btnDelete" ng-hide="editDisabled" ng-click="itemScoopDelete(invL.itemId,$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
+                                  <a href="javascript:void(0);" class="btnDelete" ng-show="delteBtn" ng-click="itemScoopDelete(invL.itemId,$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
                                 </div>
                               </td>
                             </tr>

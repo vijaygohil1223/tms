@@ -555,29 +555,31 @@ app.filter('filterCurrencyComma', function() {
     };
 });
 app.filter('NumbersCommaformat', function($filter) {
-    return function(input) {
+    return function(input, decimalPlaces) {
         if (input == undefined || input == '') {
             return 0;
         } else {
-            //var str1 = input.toFixed(2);
             var decNo = 2;
-            // Remove characters except numbers or decimal numbers
-            // var inputNo = input.toString().replace(/[^0-9.]/g, '');
+            //decimalPlaces = decimalPlaces || 2;
+            // Remove characters except numbers or decimal numbers and negetive (-)
             var inputNo = input.toString().replace(/[^0-9.-]/g, '');
             var numarray = inputNo.toString().split('.');
-            var a1 = numarray[0];
+            var integerPart = numarray[0];
             var a2 = ',00';
             if(inputNo.toString().includes('.')){
                 var decml = numarray.pop()
                 decNo = (decml.length > 3) ? 4 : (decml.length == 3) ? 3 : 2 
+                if(decimalPlaces){
+                    decNo = decimalPlaces
+                }
                 var a2 = ','+decml.slice(0, decNo); 
             }
             // for safari we need to changes in pattern
             var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             if (isSafari) {
-                var n1 = a1.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                var n1 = integerPart.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }else{
-                var n1 = a1.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
+                var n1 = integerPart.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".");
             }
             return n1 + a2;
         }

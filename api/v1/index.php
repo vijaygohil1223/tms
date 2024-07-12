@@ -3645,6 +3645,12 @@ $app->post('/downloadinvoice','authenticate', function () use($app) {
     $result = $invoice->downloadInvoicePDF($data);
     echoResponse(200, $result);
 });
+$app->post('/downloadInvoiceWord','authenticate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->downloadInvoiceWord($data);
+    echoResponse(200, $result);
+});
 $app->delete('/deleteInvoice/:id','authenticate', function ($id) {
     $invoice = new Client_invoice ();
     $result = $invoice->deleteInvoice($id);

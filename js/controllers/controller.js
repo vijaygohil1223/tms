@@ -7974,46 +7974,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         // Initiate download after a short delay (e.g., 100ms)
         setTimeout(function() {
-            a.click(); // Simulate click on the element to initiate download
-            document.body.removeChild(a); // Clean up: remove the element from the DOM
-            // Reset clicked state after a short delay (e.g., 500ms)
+            a.click(); 
+            document.body.removeChild(a); 
             setTimeout(function() {
+                document.body.removeChild(a);
                 $scope.$apply(function() {
                     angular.element(a).data('clicked', false);
-                    $route.reload();
+                    //$route.reload();
                 });
-            }, 500);
-        }, 50);
-        
+            }, 200);
+        }, 100);
     }
 
     $timeout(function () {
         $scope.addToDownload = function (fname, fOriginalName ) {
-            console.log('fname====>', fname)
             downloadFileByAtag(fname, fOriginalName)
         }
     }, 500);
-    setTimeout(() => {
-        $('file').on('dblclick', function() {
-            // // To solve two time file download issue
-            // if ($(this).data('clicked')) {
-            //     return;
-            // }
-            // $(this).data('clicked', true);
-            // // Create a hidden anchor element
-            // var fileName = $(this).find("p").text().trim();
-            // var idValue = $(this).attr('id');
-            // var a = document.createElement('a');
-            // document.body.appendChild(a);
-            // a.download = fileName;
-            // a.href = $("#download" + idValue).attr('href');
-            // a.click();    
-            // setTimeout(() => {
-            //     // To solve two time file download issue
-            //     $(this).data('clicked', false);
-            // }, 500);
-        });
-    }, 2000);
 
 
     $scope.addToCopy = function (fid) {
@@ -19232,9 +19209,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 angular.element('#irrecoverable').removeClass('btn-info');
                 $scope.is_disabled = true;
             }
-            if ( ['Complete','Completed','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status)) {
+            if ( ['Complete','Completed','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status) || $scope.invoiceDetail.is_invoice_sent) {
                 $scope.editDisabled = true;
             }
+            // if ( ['Complete','Completed','Paid','Partly Paid','Cancel','Irrecoverable'].includes($scope.invoiceDetail.invoice_status) || $scope.invoiceDetail.is_invoice_sent) {
+            //     $scope.editDisabled = true;
+            // }
 
             var scoop_additional_price = $scope.invoiceDetail?.scoop_additional_price || 0
             $scope.invoiceDetail.scoop_additional_price = $filter('customNumber')(scoop_additional_price);
@@ -19737,6 +19717,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Save the DOCX file using FileSaver.js
                 saveAs(converted, number + '.docx');
 
+                // alternateway
+                // const tblcnt = `<div>testing<div>`
+                // const invoiceWordData = {
+                //     invoiceContent: `<h1>Main Body Content</h1><p>This is a paragraph in the main body.</p>`
+                // }
+                // rest.path = 'downloadInvoiceWord';
+                // rest.post(invoiceWordData).success(function (data) {
+                // }).error(errorCallback);
+
+                
+
             }, 200);
         })
         //var content = document.getElementById('pdfExport').innerHTML;
@@ -19751,6 +19742,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // });
     }
 
+    
 
 }).controller('invoicePdfController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $uibModalInstance, $filter, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -35988,7 +35980,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.hideElemnt = true;
     $scope.invoiceCreatePage = true
     $scope.invoiceNoPrefix = '';
-
+    
     const TmpltDesign = $window.localStorage.getItem("invoiceDesignType");
     $scope.invoiceDesignType = TmpltDesign && TmpltDesign == 2 ? '2' : '';
     $scope.invoiceTemplateName = 'tpl/linguist-invoice-pdf-content'+$scope.invoiceDesignType+'.html' ;
@@ -36459,6 +36451,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.currencyRate = 1;
     $scope.isCreateNewScoop = 1;
     $scope.showHideAdditionalScoop = false;
+    $scope.delteBtn = true;
 
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
