@@ -3,7 +3,7 @@ require_once 'users.class.php';
 require_once 'client.class.php';
 require_once 'functions.class.php';
 require_once 'mpdf.class.php';
-//require_once 'phpWordDoc.class.php';
+require_once 'phpWordDoc.class.php';
 
 class Client_invoice
 {
@@ -1098,8 +1098,7 @@ class Client_invoice
                         $scpstsId = $this->_db->update('tms_items', $scpData);
                     }
                 }
-            } catch (ExceptionType $e) {
-
+            }catch (Exception $e) {
             }
 
             $res['status'] = 200;
@@ -1256,44 +1255,43 @@ class Client_invoice
 
         //$htmlContent = $data['invoiceContent'];
         //echo $data['invoiceContent'];
-//         $doc = new DOMDocument();
-// $doc->loadHTML($data['invoiceContent']);
-// libxml_use_internal_errors(true); // Enable internal error handling
+        //         $doc = new DOMDocument();
+        // $doc->loadHTML($data['invoiceContent']);
+        // libxml_use_internal_errors(true); // Enable internal error handling
 
-// $doc = new DOMDocument();
-// $doc->validateOnParse = true; // Validate while parsing
-// $doc->preserveWhiteSpace = false;
-// $doc->strictErrorChecking = false;
-// $doc->formatOutput = true; // Format the output for better readability
+        // $doc = new DOMDocument();
+        // $doc->validateOnParse = true; // Validate while parsing
+        // $doc->preserveWhiteSpace = false;
+        // $doc->strictErrorChecking = false;
+        // $doc->formatOutput = true; // Format the output for better readability
 
-// if ($doc->loadHTML($data['invoiceContent'])) {
-//     echo "HTML loaded successfully!";
-// } else {
-//     echo "Failed to load HTML.";
-//     foreach (libxml_get_errors() as $error) {
-//         echo "<br>", $error->message;
-//     }
-// }
+        // if ($doc->loadHTML($data['invoiceContent'])) {
+        //     echo "HTML loaded successfully!";
+        // } else {
+        //     echo "Failed to load HTML.";
+        //     foreach (libxml_get_errors() as $error) {
+        //         echo "<br>", $error->message;
+        //     }
+        // }
 
-// libxml_clear_errors(); // Clear any previous errors
+        // libxml_clear_errors(); // Clear any previous errors
 
-// Save the HTML back
-//$doc->loadHTML($data['invoiceContent']);
-//$htmlContent = $doc->saveHTML();
-$htmlContent =  $data['invoiceContent'];
+        // Save the HTML back
+        //$doc->loadHTML($data['invoiceContent']);
+        //$htmlContent = $doc->saveHTML();
+        $htmlContent =  $data['invoiceContent'];
         // Create instance of PhpWordDoc class
+        $phpWordDoc = new PhpWordDoc();
+
+        // Generate Word document
+        $outputWordFile = $phpWordDoc->generateWordDocument($headerHtml, $htmlContent);
+
         echo "Anillll=======>";
-        //print_r($outputWordFile);
+        print_r($outputWordFile);
         exit;
 
-        // $phpWordDoc = new PhpWordDoc();
-
-        // // Generate Word document
-        // $outputWordFile = $phpWordDoc->generateWordDocument($headerHtml, $htmlContent);
-
-       
-        // // Download PDF version
-        // $phpWordDoc->downloadPDF($htmlContent, 'output_document.pdf');
+        // Download PDF version
+        $phpWordDoc->downloadPDF($htmlContent, 'output_document.pdf');
         
         
 

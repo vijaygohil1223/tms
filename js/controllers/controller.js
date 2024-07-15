@@ -1353,11 +1353,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if( ($scope.selectedOrder).split('-').pop().length == 3){
                     if( ($scope.selectedOrder).split(/-(.*)/s)[0].toString().length > 4){
                         
+                        var scoopItemNumber = ($scope.selectedOrder).split('-').pop();
+                        scoopItemNumber = parseInt(scoopItemNumber, 10);
+                        console.log('scoopItemNumber', scoopItemNumber)
                         angular.forEach($scope.projectScoop, function (scoopData) {
                             if (isMatchScoop) {
-                                if (scoopData.orderNumber === ($scope.selectedOrder).split(/-(.*)/s)[0].toString() ) {
-                                    $scope.goToScoop = scoopData.orderId;
-                                    $scope.scoopId = scoopData.itemId;
+                                if (scoopData.orderNumber === ($scope.selectedOrder).split(/-(.*)/s)[0].toString() && scoopData.item_number == scoopItemNumber ) {
+                                    $scope.goToScoop = scoopData?.orderId;
+                                    $scope.scoopId = scoopData?.itemId;
+                                    //$scope.scoopId = scoopData?.item_number;
                                     isMatchScoop = false;
                                 }
                             }
@@ -1374,7 +1378,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     size: '',
                                     resolve: {
                                         items: function () {
-                                            return {scoop_id: viewType, order_id:$scope.goToScoop };
+                                            return { scoop_id: viewType, order_id:$scope.goToScoop };
                                         }
                                     }
                                 });
@@ -19673,7 +19677,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.downloadInvoiceWordFile = function(number) {
         var invoiceDocxData = {};
-        var pageName = "tpl/invoicepdfCommon.html";
+        //var pageName = "tpl/invoicepdfCommon.html";
+        var pageName = "tpl/invoicewordCommon.html";
         // Fetch the HTML template
         $http.get(pageName)
         .then(function(response) {
@@ -19717,14 +19722,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // Save the DOCX file using FileSaver.js
                 saveAs(converted, number + '.docx');
 
+
                 // alternateway
-                // const tblcnt = `<div>testing<div>`
+                // var invoiceContent = compiledHTML.find(".invoiceContent").html();
+                // console.log('newhtml', invoiceContent)
+                // const tblcnt = `<div> ${invoiceContent} </div>`;
                 // const invoiceWordData = {
-                //     invoiceContent: `<h1>Main Body Content</h1><p>This is a paragraph in the main body.</p>`
+                //     invoiceContent: tblcnt
                 // }
                 // rest.path = 'downloadInvoiceWord';
                 // rest.post(invoiceWordData).success(function (data) {
                 // }).error(errorCallback);
+                // return false;
+
+
+                
 
                 
 
@@ -23808,7 +23820,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
         // check PoNumber Exist call fun
         $scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
-
+        
         if (angular.element('#item-form' + formId).valid()) {
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
@@ -24213,6 +24225,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.isAllScoopCopy = false;
                     });
                 } else {
+                    notification('Something wrong with scoop Id', 'warning');
+                    $route.reload();
+                    return false;
                     //if source and target language not selected
                     var source = angular.element('#source_lang').text();
                     var target = angular.element('#target_lang').text();
@@ -38240,7 +38255,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var popitemList = [];
         rest.path = 'itemsGet/' + $scope.order_id;
         rest.get().success(function (response) {
+            console.log('response==response======> Data', response)
             var data = response.filter(itemData => itemData.itemId == $scope.scoop_id);
+            console.log('data============>filtereddata', data)
+            console.log('$scope.scoop_id', $scope.scoop_id)
             $scope.itemList = data;
             console.log('$scope.itemList', $scope.itemList)
             $scope.TblItemList = data;  

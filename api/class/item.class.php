@@ -55,6 +55,43 @@ class item {
         }
         $id = $this->_db->insert('tms_items', $data);
         if ($id) {
+            
+            try{
+                if(isset($data['order_id'])){
+                    $orderId = $data['order_id'];
+                    $itemData = $this->_db->rawQuery("SELECT COUNT(`itemId`) as totalItems FROM `tms_items` WHERE order_id = $orderId  ");
+                    $nextItem = $this->_db->count + 1;
+
+                    $this->_db->where('order_id',$data['order_id']);
+                    $this->_db->where('is_project_folder',1);
+                    $fmanager = $this->_db->getOne('tms_filemanager');
+
+                    if($fmanager){
+                        $fdata['name'] = 'Scoop'.str_pad($nextItem ,3, "0", STR_PAD_LEFT);
+                        $fdata['order_id'] = $data['order_id'];
+                        $fdata['item_id'] = $id;
+                        $fdata['parent_id'] = $fmanager['fmanager_id'];
+                        $fdata['created_date'] = date('Y-m-d H:i:s');
+                        $fdata['updated_date'] = date('Y-m-d H:i:s');
+                        $fmid = $this->_db->insert('tms_filemanager',$fdata);
+
+                        if($fmid){
+                            $folderArr = ['Original Files','PO','QA Delivery','PM Delivery'];
+                            foreach ($folderArr as $key => $value) {
+                                $fdata['order_id'] = '';
+                                $fdata['item_id'] = 0;
+                                $fdata['name'] = $value;
+                                $fdata['parent_id'] = $fmid;
+                                $this->_db->insert('tms_filemanager',$fdata);
+                            }
+                        }
+                    }
+
+                }
+            }catch (Exception $e) {
+            
+            }
+
             $return['status'] = 200;
             $return['msg'] = 'Successfully Inserted.';
         } else {
@@ -100,9 +137,12 @@ class item {
         $this->_db->where("itemId", $id);
         $idd = $this->_db->update('tms_items', $data);
         if ($idd) {
-            $info['user_id'] = 0;
-            $this->_db->where('item_id',$id);
-            $this->_db->update('tms_filemanager',$info);
+            try {
+                $info['user_id'] = 0;
+                $this->_db->where('item_id',$id);
+                $this->_db->update('tms_filemanager',$info);
+            }catch (Exception $e) {
+            }
 
             // if scoop status Cancelled (status id = 9) all jobs will be cancel for that scoop
             // scoop status Approved = 5 , jobs will get Invoice ready status 
@@ -390,7 +430,7 @@ class item {
                     $fmid = $this->_db->insert('tms_filemanager',$fdata);
 
                     if($fmid){
-                        $folderArr = array('Original Files','PO','QA Delivery','PM Delivery');
+                        $folderArr = ['Original Files','PO','QA Delivery','PM Delivery'];
                         foreach ($folderArr as $key => $value) {
                             $fdata['order_id'] = '';
                             $fdata['item_id'] = 0;
