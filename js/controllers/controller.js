@@ -9811,7 +9811,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $("#Export_" + i).remove();
                     }
                 }
-                exportTableToExcel('client_scoop_report','Order-status-report',[9,10,11,12])
+                exportTableToExcel('client_scoop_report','Order-status-report',[9,10,11,12], 1)
                 // var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                 // });
@@ -22412,11 +22412,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         else
                             $scope.customer.sub_pm = 0;
 
-                        const subPc = angular.element('#subProjectCoordinator').val();
-                        if(subPc)
-                            $scope.customer.sub_pc = subPc.includes(',') ? subPc.split(',')[1] : subPc; 
-                        else
-                            $scope.customer.sub_pc = 0;    
+                        // const subPc = angular.element('#subProjectCoordinator').val();
+                        // if(subPc)
+                        //     $scope.customer.sub_pc = subPc.includes(',') ? subPc.split(',')[1] : subPc; 
+                        // else
+                        //     $scope.customer.sub_pc = 0;    
+                        const subPc = angular.element('#subProjectCoordinator').val() || '';
+                        $scope.customer.sub_pc = subPc ? subPc.split(',').pop().trim() : 0;
                         
                         const subQA = angular.element('#subQA').val();
                         if(subQA)
