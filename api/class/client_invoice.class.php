@@ -835,7 +835,8 @@ class Client_invoice
         $invoiceAlreadyAdded = false;
         if ($data['scoop_id']) {
             try{
-                $this->_db->where('is_deleted != 1 ');
+                //$this->_db->where('is_deleted != 1 ');
+                $this->_db->where('is_deleted', 1, '!=');
                 $invoiceRecords = $this->_db->get('tms_invoice_client');
                 foreach ($invoiceRecords as $k => $v) {
                     $decodedScoopId = json_decode($v['scoop_id'], true);
@@ -983,9 +984,14 @@ class Client_invoice
     // Get all invoice list
     public function getClientInvoicelistAll()
     {
-        $this->_db->where('is_deleted != 1 ');
+        
+        //$this->_db->where('is_deleted != 1 ');
         //$this->_db->where('is_deleted', ' != 1');
+        $this->_db->where('is_deleted', 1, '!=');
         $data = $this->_db->get('tms_invoice_client');
+        //echo $this->_db->getLastQuery();
+        //print_r($data);
+        //exit;
         return $data;
     }
     // Invoice Design template
