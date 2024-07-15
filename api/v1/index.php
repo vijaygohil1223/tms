@@ -3629,7 +3629,7 @@ $app->get('/getInvoiceNumberClient','authenticate', function () use($app) {
     $result = $invoice->getInvoiceNumberClient();
     echoResponse(200, $result);
 });
-$app->get('/clientInvoiceDesignType','authenticate', function () use($app) {
+$app->get('/clientInvoiceDesignType', function () use($app) {
     $invoice = new Client_invoice ();
     $result = $invoice->clientInvoiceDesignType();
     echoResponse(200, $result);

@@ -991,9 +991,14 @@ class Client_invoice
     public function clientInvoiceDesignType()
     {
         $data = $this->_db->getOne('tms_invoice_setting');
-        if ($data['postcode'] && preg_match('/^0/', $data['postcode'])) {
-            // if number start with zero it remove zero from string i.e 0123=123
-            $data['postcode'] = $data["postcode"] . " ";
+        // if ($data['postcode'] && preg_match('/^0/', $data['postcode'])) {
+        //     // if number start with zero it remove zero from string i.e 0123=123
+        //     $data['postcode'] = $data["postcode"] . " ";
+        // }
+        if (!empty($data) && isset($data['postcode']) && preg_match('/^0/', $data['postcode'])) {
+            // Check if postcode starts with zero and add a space at the end
+            //$postcode = $data['postcode'];
+            $data['postcode'] .= ' ';
         }
         return $data;
     }
