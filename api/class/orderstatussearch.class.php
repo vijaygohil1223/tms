@@ -48,7 +48,8 @@ class orderstatussearch {
 				$this->_db->where(" (cust.project_manager != $pmIdExclude AND cust.sub_pm != $pmIdExclude AND its.manager != $pmIdExclude AND its.subPm != $pmIdExclude ) ");
 			}
 			if(isset($filterParams['emailSubject'])){
-				$this->_db->where('its.item_email_subject', $filterParams['emailSubject']);
+				//$this->_db->where('its.item_email_subject', $filterParams['emailSubject']);
+				$this->_db->where('its.item_email_subject','%'.$filterParams['emailSubject'].'%', 'like');
 			} 
 			if(isset($filterParams['itemPonumber'])){
 				$this->_db->where('its.po_number', $filterParams['itemPonumber']);

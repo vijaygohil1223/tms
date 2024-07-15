@@ -5105,7 +5105,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //$route.reload();
                             }
                             $scope.dataNew = updatedData; // Receive updated data from modal
-                            console.log('$scope.dataNew', $scope.dataNew)
                             $scope.savejobDetail('jobDetails-form')
                         }, function () {
                             // Modal dismissed
