@@ -3,7 +3,7 @@ require_once 'users.class.php';
 require_once 'client.class.php';
 require_once 'functions.class.php';
 require_once 'mpdf.class.php';
-require_once 'phpWordDoc.class.php';
+//require_once 'phpWordDoc.class.php';
 
 class Client_invoice
 {
@@ -997,6 +997,7 @@ class Client_invoice
     // Invoice Design template
     public function clientInvoiceDesignType()
     {
+        
         $data = $this->_db->getOne('tms_invoice_setting');
         // if ($data['postcode'] && preg_match('/^0/', $data['postcode'])) {
         //     // if number start with zero it remove zero from string i.e 0123=123
