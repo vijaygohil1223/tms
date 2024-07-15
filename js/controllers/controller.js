@@ -5096,7 +5096,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         });
 
                         modalInstance.result.then(function (updatedData) {
-                            console.log('updatedData', updatedData)
                             if(updatedData && updatedData.purchaseOrderSent){
                                 $scope.purchaseOrderSent = true;
                                 $scope.jobdetail.isPoSent = 1;
@@ -5107,6 +5106,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                             $scope.dataNew = updatedData; // Receive updated data from modal
                             console.log('$scope.dataNew', $scope.dataNew)
+                            $scope.savejobDetail('jobDetails-form')
                         }, function () {
                             // Modal dismissed
                         });
