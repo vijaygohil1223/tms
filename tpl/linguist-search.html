@@ -234,8 +234,22 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                        </div>
+                                            <div class="col-md-6" style="margin-top:15px;">
+                                                <div class="col-sm-11">
+                                                    <label>Resource Status</label>
+                                                    <input select2-userstatus id="eUserStatus" type="text"
+                                                        name="eUserStatus" ng-model="jobReport.eUserStatus"
+                                                        class="form-control" />
+                                                </div>
+                                                <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                    <a href="javascript:void(0)"
+                                                        ng-click="clearCode('job-status-report','eUserStatus')"
+                                                        ng-if="jobReport.eUserStatus"><i
+                                                            class="iconDelete glyph-icon fa-times"
+                                                            aria-hidden="true"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6"></div>
 
                                         <!-- Internal resource Field -->
                                         <div class="internalResource" ng-if="jobReport.resourceType == 'internal'">
@@ -326,10 +340,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div style="margin-left:34px;padding:10px;">
-                                        <a class="btn btn-info btn-leftside"
-                                            ng-click="jobstatusReportsearch('job-status-report','middle',job)">Search</a>
-                                        <!-- <button class="btn btn-info btn-leftside" ng-click="reseteSearch('job-status-report')">Delete Search</button> -->
+                                    <div class="col-md-12">
+                                        <div style="margin-top:20px;">
+                                            <a class="btn btn-info btn-leftside"
+                                                ng-click="jobstatusReportsearch('job-status-report','middle',job)">Search</a>
+                                            <!-- <button class="btn btn-info btn-leftside" ng-click="reseteSearch('job-status-report')">Delete Search</button> -->
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>

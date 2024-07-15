@@ -834,20 +834,24 @@ class Client_invoice
     {
         $invoiceAlreadyAdded = false;
         if ($data['scoop_id']) {
-            $invoiceRecords = $this->_db->get('tms_invoice_client');
-            foreach ($invoiceRecords as $k => $v) {
-                $decodedScoopId = json_decode($v['scoop_id'], true);
-                if ($decodedScoopId !== null) {
-                    foreach (json_decode($v['scoop_id'], true) as $ke => $val) {
-                        $existedJobId = $val['id'];
-                        foreach (json_decode($data['scoop_id'], true) as $k1 => $v1) {
-                            $postedJobId = $v1['id'];
-                            if ($postedJobId == $existedJobId) {
-                                $invoiceAlreadyAdded = true;
+            try{
+                $this->_db->where('is_deleted != 1 ');
+                $invoiceRecords = $this->_db->get('tms_invoice_client');
+                foreach ($invoiceRecords as $k => $v) {
+                    $decodedScoopId = json_decode($v['scoop_id'], true);
+                    if ($decodedScoopId !== null) {
+                        foreach (json_decode($v['scoop_id'], true) as $ke => $val) {
+                            $existedJobId = $val['id'];
+                            foreach (json_decode($data['scoop_id'], true) as $k1 => $v1) {
+                                $postedJobId = $v1['id'];
+                                if ($postedJobId == $existedJobId) {
+                                    $invoiceAlreadyAdded = true;
+                                }
                             }
                         }
                     }
                 }
+            }catch (Exception $e) {
             }
         }
         $scoopData = array();
