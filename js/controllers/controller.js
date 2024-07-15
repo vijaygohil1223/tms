@@ -5044,9 +5044,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         paperSize: "A4",
                     });
                     kendo.drawing.pdf.saveAs(group, poFilenamePdf);
+
                 });
                 setTimeout(() => {
                    // $scope.poTempate = false;  
+                   $scope.savejobDetail('jobDetails-form')
+                   
                 }, 3000); 
             }, 500);
             
