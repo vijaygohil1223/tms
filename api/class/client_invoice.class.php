@@ -983,7 +983,8 @@ class Client_invoice
     // Get all invoice list
     public function getClientInvoicelistAll()
     {
-        $this->_db->where('is_deleted', ' != 1');
+        $this->_db->where('is_deleted != 1 ');
+        //$this->_db->where('is_deleted', ' != 1');
         $data = $this->_db->get('tms_invoice_client');
         return $data;
     }
