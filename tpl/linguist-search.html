@@ -391,6 +391,7 @@
                                         <th>Hardware</th>
                                         <th>Type</th>
                                         <th>Country</th>
+                                        <th>Status</th>
                                     </thead>
                                     <tbody>
                                         <tr ng-repeat="result in statusResult">
@@ -420,6 +421,7 @@
                                             <td> {{result.hardware}} </td>
                                             <td> {{result.freelancerType}} </td>
                                             <td> {{result.userCountry}} </td>
+                                            <td> {{result.userStatus}} </td>
                                         </tr>
                                         <tr ng-show="!statusResult.length">
                                             <td colspan="8" ng-bind="dataNotFound"></td>

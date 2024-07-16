@@ -39495,13 +39495,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         return obj;
                                 }    
                             }
-                            // if (obj.price_currency) {
-                            //     if(obj.price_currency.includes(',')){
-                            //         obj.currency = obj.price_currency.split(',')[0];
-                            //         if($scope.jobReport.currency == obj.currency)
-                            //             return obj;
-                            //     }    
-                            // }
                         });
                     }
                     if($scope.jobReport.userCountry){
@@ -39516,6 +39509,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         return obj;
                                 }    
                             }
+                        });
+                    }
+                    if($scope.jobReport.eUserStatus){
+                        temp_data = temp_data.filter((obj) => {
+                            if( $scope.jobReport.eUserStatus == obj.eUserStatus )
+                                return obj;
                         });
                     }
                     if($scope.jobReport.priceUnit){
