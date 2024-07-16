@@ -128,11 +128,19 @@ class item {
 
         $data['updated_date'] = date('Y-m-d H:i:s');
         if(isset($data['due_date'])) {
-            $yesterday = strtotime($data['due_date']);
-            $dueDate = date("d-m-Y", $yesterday);
-            $date = explode("-",$dueDate);
-            $data['q_date'] = $date[1].'-'.$date[2];
+            $datetimeString = $data['due_date'];
+            //$dateTimeObj = DateTime::createFromFormat('Y-m-d H:i', $datetimeString);
+            //if ($dateTimeObj && $dateTimeObj->format('Y-m-d H:i') === $datetimeString) {
+            if (strtotime($datetimeString) !== false) {
+                $yesterday = strtotime($data['due_date']);
+                $dueDate = date("d-m-Y", $yesterday);
+                $date = explode("-",$dueDate);
+                $data['q_date'] = $date[1].'-'.$date[2];
+            } else {
+                unset($data['due_date']);
+            }
         }
+
         unset($data['currency'],$data['currencyRate']);
         $this->_db->where("itemId", $id);
         $idd = $this->_db->update('tms_items', $data);

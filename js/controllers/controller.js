@@ -1610,7 +1610,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
-}).controller('dashboardController', function ($scope, $window, $location, $compile, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter) {
+}).controller('dashboardController', function ($scope, $window, $location, $compile, $log, $interval, rest, $rootScope, $cookieStore, $timeout, $filter, fileReader, $uibModal, $route, $routeParams, DTOptionsBuilder, $q, filterFilter, $http) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userLoginID = $window.localStorage.getItem("session_iUserId");
     $window.localStorage.jobfolderId = " ";
@@ -2736,6 +2736,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.branchRefresh = function () {
         $route.reload();
     }
+
+    // $http.get('http://localhost:3000/api/projectsOrderScoopGet/1')
+    //     .then(function(response) {
+    //             console.log('response=************===========>', response)
+    // })
     
     // $scope.dashboardTabList = [ 
     //     { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 }, { "tabName":"missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0 } 
@@ -23900,9 +23905,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     var up_total_price = $scope.itemList[formIndex].total_price
                     $scope.itemList[formIndex].total_amount = up_total_price;
-                    console.log('up_total_price', up_total_price)
-                    console.log('$scope.itemList[formIndex].total_amount', $scope.itemList[formIndex].total_amount)
-                    console.log('$scope.itemList[formIndex].total_price', $scope.itemList[formIndex].total_price)
                     
                     /*if(!$scope.itemList[formIndex].total_amount || $scope.itemList[formIndex].price ==undefined){
                         $scope.itemList[formIndex].total_amount = 0
@@ -24187,49 +24189,52 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.itemList[formIndex].attached_workflow = $scope.itemList[0].attached_workflow; 
                         }
                     }    
-                    console.log('$scope.itemList[formIndex]', $scope.itemList[formIndex])
-                    
+                        
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     rest.path = 'ItemUpdate';
                     rest.put($scope.itemList[formIndex]).success(function () {
-                        $('#jobchainName' + formId).val('select');
                         //Updating current updated row data(item)
-                        $scope.getItems();
-
-                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
-                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
-                    
-                        $scope.workflowChange = false;
-                        //log file start
-                        $scope.logMaster = {};
-                        //$scope.logMaster.log_title = $scope.projectOrderName;
-                        $scope.logMaster.log_title = $scope.projectOrderName +'-'+ $scope.itemList[formIndex].item_number.toString().padStart(3, '0');
-                        $scope.logMaster.log_type_id = $scope.itemList[formIndex].order_id;
-                        $scope.logMaster.task_id = $scope.itemList[formIndex].itemId;
-                        $scope.logMaster.log_type = "update";
-                        $scope.logMaster.log_status = "project_scoop";
-                        $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
-                        rest.path = "saveLog";
-                        rest.post($scope.logMaster).success(function (data) { });
-                        //log file end
-                        //$route.reload();
-                                
-                        if(!$scope.isAllScoopCopy && !$scope.isAllScoopUpdate){
-                            notification('Scoop successfully updated.', 'success');
-                            $scope.newCopyScoopBtn = false;
-                            $route.reload();
-                        }else{
-                            if( $scope.itemList[$scope.itemList.length-1].itemId == $scope.itemList[formIndex].itemId ){
-                                notification('All Scoop successfully updated.', 'success');
-                                $scope.isAllScoopCopy = false;
+                        try {
+                            $('#jobchainName' + formId).val('select');
+                            //$scope.getItems();
+                        
+                            $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
+                            $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
+                        
+                            $scope.workflowChange = false;
+                            //log file start
+                            $scope.logMaster = {};
+                            //$scope.logMaster.log_title = $scope.projectOrderName;
+                            $scope.logMaster.log_title = $scope.projectOrderName +'-'+ $scope.itemList[formIndex].item_number.toString().padStart(3, '0');
+                            $scope.logMaster.log_type_id = $scope.itemList[formIndex].order_id;
+                            $scope.logMaster.task_id = $scope.itemList[formIndex].itemId;
+                            $scope.logMaster.log_type = "update";
+                            $scope.logMaster.log_status = "project_scoop";
+                            $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                            rest.path = "saveLog";
+                            rest.post($scope.logMaster).success(function (data) { });
+                            //log file end
+                            //$route.reload();
+                                    
+                            if(!$scope.isAllScoopCopy && !$scope.isAllScoopUpdate){
+                                notification('Scoop successfully updated.', 'success');
+                                $scope.newCopyScoopBtn = false;
                                 $route.reload();
+                            }else{
+                                if( $scope.itemList[$scope.itemList.length-1].itemId == $scope.itemList[formIndex].itemId ){
+                                    notification('All Scoop successfully updated.', 'success');
+                                    $scope.isAllScoopCopy = false;
+                                    $route.reload();
+                                }
                             }
+                        } catch (error) {
+                            $route.reload();
                         }
                     }).error(function (data, error, status) { 
                         $scope.isAllScoopCopy = false;
                     });
                 } else {
-                    notification('Something wrong with scoop Id', 'warning');
+                    notification('Something wrong with scoop', 'warning');
                     $route.reload();
                     return false;
                     //if source and target language not selected
@@ -38214,29 +38219,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.put($scope.itemList[formIndex]).success(function () {
                         $('#jobchainName' + formId).val('select');
                         //Updating current updated row data(item)
-                        $scope.getItems();
+                        //$scope.getItems();
 
                         //After update change to global date format dates
-                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
-                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
-
-                        //log file start
-                        $scope.logMaster = {};
-                        //$scope.logMaster.log_title = $scope.projectOrderName;
-                        $scope.logMaster.log_title = $scope.projectOrderName +'-'+ $scope.itemList[formIndex].item_number.toString().padStart(3, '0');
-                        $scope.logMaster.log_type_id = $scope.itemList[formIndex].order_id;
-                        $scope.logMaster.task_id = $scope.itemList[formIndex].itemId;
-                        $scope.logMaster.log_type = "update";
-                        $scope.logMaster.log_status = "project_scoop";
-                        $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
-                        rest.path = "saveLog";
-                        rest.post($scope.logMaster).success(function (data) { });
-                        //log file end
-                        //$route.reload();
-                        notification('Scoop successfully updated.', 'success');
-                        setTimeout(() => {
+                        try {
+                            $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
+                            $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
+    
+                            //log file start
+                            $scope.logMaster = {};
+                            //$scope.logMaster.log_title = $scope.projectOrderName;
+                            $scope.logMaster.log_title = $scope.projectOrderName +'-'+ $scope.itemList[formIndex].item_number.toString().padStart(3, '0');
+                            $scope.logMaster.log_type_id = $scope.itemList[formIndex].order_id;
+                            $scope.logMaster.task_id = $scope.itemList[formIndex].itemId;
+                            $scope.logMaster.log_type = "update";
+                            $scope.logMaster.log_status = "project_scoop";
+                            $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                            rest.path = "saveLog";
+                            rest.post($scope.logMaster).success(function (data) { });
+                            //log file end
+                            //$route.reload();
+                            notification('Scoop successfully updated.', 'success');
+                            setTimeout(() => {
+                                $route.reload();
+                            }, 200);
+                        } catch (error) {
+                            console.log('error', error)
                             $route.reload();
-                        }, 200);
+                        }
 
                     });
                 } else {
