@@ -1988,6 +1988,12 @@ $app->get('/itemsGet/:id','authenticate', function ($id) {
     $result = $item->itemsGet($id);
     echoResponse(200, $result);
 });
+$app->get('/itemsGetSingleScoop/:id','authenticate', function ($id) {
+    $item = new item ();
+    $result = $item->itemsGetSingleScoop($id);
+    echoResponse(200, $result);
+});
+
 $app->get('/itemsgetone/:id','authenticate', function ($id) {
     $item = new item ();
     $result = $item->itemsgetone($id);

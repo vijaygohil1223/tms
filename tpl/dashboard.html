@@ -641,7 +641,7 @@ td { font-size: 11px; } */
                             </th>
                           </thead>
                           <tbody ng-if="completedTabGrouped == '' " >
-                            <tr ng-if=" completedTabGrouped == '' " ng-repeat="order in myTabs.projectScoopData | orderBy:tab.sortColumn:tab.sortOrder" >
+                            <tr ng-if=" completedTabGrouped == '' " ng-repeat="order in myTabs.projectScoopData | orderBy:tab.sortColumn:tab.sortOrder track by order.itemId " >
                             
                             <td>
                               <input type="checkbox" id="scoopCheck{{$index}}" ng-click="checkScoopIds(order.itemId)"
@@ -831,7 +831,7 @@ td { font-size: 11px; } */
                                 <strong>{{groupName}} : <span ng-if="completedTabGrouped == 'clientId' ">{{ groupNameKey }}</span> <span ng-if="completedTabGrouped == 'projectDuedate' ">{{ groupNameKey | globalDtFormat }}</span> </strong>
                               </td>
                             </tr>
-                            <tr ng-repeat-end ng-repeat="order in clientData | orderBy:tab.sortColumn:tab.sortOrder"
+                            <tr ng-repeat-end ng-repeat="order in clientData | orderBy:tab.sortColumn:tab.sortOrder track by order.itemId"
                               ng-if="completedTabGrouped !='' && tabName == 'tab-completed'">
   
                               <td>

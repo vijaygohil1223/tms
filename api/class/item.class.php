@@ -109,6 +109,12 @@ class item {
         return $data;
     }
 
+    public function itemsGetSingleScoop($id) {
+        // to solve in case order no duplicate
+        $data = $this->_db->rawQuery("SELECT ti.*,tg.project_name,tg.specialization, tis.item_status_name  FROM `tms_items` As ti INNER JOIN tms_general As tg ON ti.order_id = tg.order_id LEFT JOIN tms_item_status As tis ON ti.item_status = tis.item_status_id WHERE ti.itemId = $id GROUP BY ti.itemId ");
+        return $data;
+    }
+
     public function itemsgetone($id) {
         $this->_db->where("itemId", $id);
         $results = $this->_db->getOne('tms_items');
@@ -118,6 +124,7 @@ class item {
     public function ItemUpdate($id,$data) {
         unset($data['project_name']);
         unset($data['item_status_name']);
+        unset($data['specialization']);
         
         if(isset($data['currencyRate'])) {
             $cur['currency'] = $data['currencyRate'];

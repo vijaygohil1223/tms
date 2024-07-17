@@ -2737,10 +2737,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $route.reload();
     }
 
-    // $http.get('http://localhost:3000/api/projectsOrderScoopGet/1')
-    //     .then(function(response) {
-    //             console.log('response=************===========>', response)
-    // })
     
     // $scope.dashboardTabList = [ 
     //     { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 }, { "tabName":"missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0 } 
@@ -23072,7 +23068,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
     $scope.decimalNumber = $window.localStorage.getItem("DecimalNumber") ? $window.localStorage.getItem("DecimalNumber") : 2;
-    
+    $scope.btnDisabled = false;
     if($routeParams.id){
         $window.localStorage.orderID = $routeParams.id;
         $window.localStorage.setItem("isNewProject", "false");
@@ -23815,6 +23811,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.poNumberExist = false;
         }
     }
+
+    // It is just function for job detail to just make code redable
+    function scoopJobDatasaveFn(formIdAllSave) {
+        
+    }
+
     $scope.workflowChange = false;
     $scope.workflowChangeArr = [];
     $scope.changeWorkflow = function (id) {
@@ -23834,362 +23836,373 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (angular.element('#item-form' + formId).valid()) {
             if ($window.localStorage.orderID) {
                 if ($scope.itemList[formIndex].itemId) {
-                    // single item save (same Po Number exist) 
-                    //if(!$scope.isAllScoopCopy){
-                        //angular.element(document.getElementById('po_number'+$scope.itemList[formIndex].itemId)).triggerHandler('change');
-                        //$scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
-                        if($scope.poNumberExist){
-                            notification('PO number has been used before.','warning')
-                            //return false;
-                        }    
-                    //}
-                    var formIdAllSave = $scope.isAllScoopCopy ? $scope.itemList[0].itemId : formId;
-                    var formIndexNew = $scope.isAllScoopCopy ? 0 : formIndex;
+                    $scope.btnDisabled = true;
                     
-                    if($scope.newCopyScoopBtn){
-                        var srcLang = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
-                        var trgLang = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
-                    }else{
-                        var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
-                        var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
-                    }
-                    if(!$scope.isAllScoopUpdate && (!srcLang || !trgLang) ){
-                        notification('Please select source-target language','warning')
-                        return false;
-                    }
-
-                    var itemPriceUnit = [];
-                    itemPriceUnit = $scope.itemPriceUni[formId];
-                    if (itemPriceUnit) {
-                        for (var j = 0; j < itemPriceUnit.length; j++) {
-                            //itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
-                            itemPriceUnit[j].itemTotal = CommaToPoint4Digit(itemPriceUnit[j].itemTotal);
+                    try {
+                        // single item save (same Po Number exist) 
+                        //if(!$scope.isAllScoopCopy){
+                            //angular.element(document.getElementById('po_number'+$scope.itemList[formIndex].itemId)).triggerHandler('change');
+                            //$scope.checkPoNumberExist($scope.itemList[formIndex].itemId, $scope.itemList[formIndex].po_number);
+                            if($scope.poNumberExist){
+                                notification('PO number has been used before.','warning')
+                                //return false;
+                            }    
+                        //}
+                        var formIdAllSave = $scope.isAllScoopCopy ? $scope.itemList[0].itemId : formId;
+                        var formIndexNew = $scope.isAllScoopCopy ? 0 : formIndex;
+                        
+                        if($scope.newCopyScoopBtn){
+                            var srcLang = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
+                            var trgLang = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale").text().trim();
+                        }else{
+                            var srcLang = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
+                            var trgLang = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale").text().trim();
                         }
-                    }
-                    $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
-                    delete $scope.itemList[formIndex]['itemPrice'];
-                    delete $scope.itemList[formIndex]['quantity'];
-
-                    if ($scope.itemList[formIndex].item_number != undefined) {
-                        $scope.itemList[formIndex].item_number;
-                    } else {
-                        $scope.itemList[formIndex].item_number = angular.element('#item_number').text();
-                        $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
-                    }
-
-                    $scope.itemList[formIndex].contact_person = $scope.itemList[formIndex].contact_person ? ($scope.itemList[formIndex].contact_person.toString()).split(',').pop() : '';
-
-                    $scope.itemList[formIndex].order_id = $scope.routeOrderID;
-                    //$scope.itemList[formIndex].total_amount = $scope.total_amount;
-
-                    if($scope.newCopyScoopBtn){
-                        var sourceField = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
-                        var targetField = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
-                    }else{
-                        var sourceField = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale");
-                        var targetField = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale");
-                    }
-
-                    var sourceObj = {
-                        sourceLang: srcLang,
-                        dataNgSrc: sourceField.children().attr('data-ng-src'),
-                        alt: sourceField.children().attr('alt')
-                    }
-                    var targetObj = {
-                        sourceLang: trgLang,
-                        dataNgSrc: targetField.children().attr('data-ng-src'),
-                        alt: targetField.children().attr('alt')
-                    }
-
-                    $scope.itemList[formIndex].source_lang = JSON.stringify(sourceObj);
-                    $scope.itemList[formIndex].target_lang = JSON.stringify(targetObj);
-
-                    var up_total_price = $scope.itemList[formIndex].total_price
-                    $scope.itemList[formIndex].total_amount = up_total_price;
-                    
-                    /*if(!$scope.itemList[formIndex].total_amount || $scope.itemList[formIndex].price ==undefined){
-                        $scope.itemList[formIndex].total_amount = 0
-                        $scope.itemList[formIndex].total_price = 0
-                        //$scope.itemList[formIndex].price = ''
-                    }*/
-
-                    // if ($scope.itemList[formIndex].attached_workflow) {
-                    //     if ($('#jobchainName' + formId).val() !== 'select') {
-                    //         var jobchainval = $('#jobchainName' + formId).val();
-                    //         var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
-                    //         var scoopitemData = $scope.TblItemList;
-                    //         var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
-                    //         if (chainworkflow.length == 0) {
-                    //             notification('workflow already attached', 'warning');
-                    //         }
-                    //     }
-                    // } else {
-                        if ($('#jobchainName' + formIdAllSave).val() == 'select' || $('#jobDropDown' + formIdAllSave).val() == 'select') {
-                            //notification('Please select workflow.', 'warning');
-                            //setting total amount to 0 in table listing
-                            $scope.TblItemList[formIndex].total_amount = $scope.itemList[formIndex].total_amount ? $scope.itemList[formIndex].total_amount : 0;
-                            //$scope.TblItemList[formIndex].total_amount = 0;
-                            //return false;
+                        if(!$scope.isAllScoopUpdate && (!srcLang || !trgLang) ){
+                            notification('Please select source-target language','warning')
+                            return false;
+                        }
+    
+                        var itemPriceUnit = [];
+                        itemPriceUnit = $scope.itemPriceUni[formId];
+                        if (itemPriceUnit) {
+                            for (var j = 0; j < itemPriceUnit.length; j++) {
+                                //itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                                itemPriceUnit[j].itemTotal = CommaToPoint4Digit(itemPriceUnit[j].itemTotal);
+                            }
+                        }
+                        $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
+                        delete $scope.itemList[formIndex]['itemPrice'];
+                        delete $scope.itemList[formIndex]['quantity'];
+    
+                        if ($scope.itemList[formIndex].item_number != undefined) {
+                            $scope.itemList[formIndex].item_number;
                         } else {
-                            if ($scope.jobi[formId].jobSummery && $scope.workflowChange || ($scope.isAllScoopCopy && $scope.workflowChange) || ($scope.newCopyScoopBtn && $scope.workflowChange)) {
-                                
-                                // gettingName of selected workflow job chain
-                                
-                                $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formIdAllSave).find(':selected').text();
-                                let workflowSel = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();        
-                                
-                                $scope.jobitem = {};
-                                if($scope.newCopyScoopBtn){
-                                    var dd = workflowSel;
-                                }else{
-                                    var dd = $scope.isAllScoopCopy ? workflowSel : $scope.jobi[formId].jobSummery;
-                                }
-                                //$scope.jobi.jobSummery = dd.substr(1);
-                                $scope.jobi[formId].jobSummery = dd.substr(1);
-                                $scope.matchjob = dd.slice(0, 1);
-                                if ($scope.matchjob == 'j') {
-                                    rest.path = 'jobpertjobGet/' + $scope.jobi[formId].jobSummery + '/' + $scope.routeOrderID;
-                                    rest.get().success(function (data) {
-                                        $scope.itemdata = data;
-                                        $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
-                                        
-                                        if ($scope.jobitem.item_id) {
-                                            rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.routeOrderID;
-                                            rest.get().success(function (data) {
-                                                $scope.iData = data;
-                                                
-                                                var contact_person = [];
-                                                var job_id = [];
-                                                var order_id = [];
-                                                var job_no = [];
-                                                var due_date = [];
-                                                var item_status = [];
-                                                $scope.job_id = $scope.jobi[formId].jobSummery;
-                                                $scope.job_code = $scope.itemdata.job_code;
-                                                $scope.order_id = $scope.routeOrderID;
-                                                $scope.job_no = $scope.itemdata.job_no;
-                                                $scope.master_job_id = $scope.itemdata.job_id;
+                            $scope.itemList[formIndex].item_number = angular.element('#item_number').text();
+                            $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
+                        }
+    
+                        $scope.itemList[formIndex].contact_person = $scope.itemList[formIndex].contact_person ? ($scope.itemList[formIndex].contact_person.toString()).split(',').pop() : '';
+    
+                        $scope.itemList[formIndex].order_id = $scope.routeOrderID;
+                        //$scope.itemList[formIndex].total_amount = $scope.total_amount;
+    
+                        if($scope.newCopyScoopBtn){
+                            var sourceField = angular.element("div#plsSourceLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
+                            var targetField = angular.element("div#plsTargetLang" + $scope.itemList[0].itemId).children("a.pls-selected-locale");
+                        }else{
+                            var sourceField = angular.element("div#plsSourceLang" + formIdAllSave).children("a.pls-selected-locale");
+                            var targetField = angular.element("div#plsTargetLang" + formIdAllSave).children("a.pls-selected-locale");
+                        }
+    
+                        var sourceObj = {
+                            sourceLang: srcLang,
+                            dataNgSrc: sourceField.children().attr('data-ng-src'),
+                            alt: sourceField.children().attr('alt')
+                        }
+                        var targetObj = {
+                            sourceLang: trgLang,
+                            dataNgSrc: targetField.children().attr('data-ng-src'),
+                            alt: targetField.children().attr('alt')
+                        }
+    
+                        $scope.itemList[formIndex].source_lang = JSON.stringify(sourceObj);
+                        $scope.itemList[formIndex].target_lang = JSON.stringify(targetObj);
+    
+                        var up_total_price = $scope.itemList[formIndex].total_price
+                        $scope.itemList[formIndex].total_amount = up_total_price;
+                        
+                        // job date save - seperate function to make code redable
+                        //scoopJobDatasaveFn(formIdAllSave, formIndex)
+                        /*if(!$scope.itemList[formIndex].total_amount || $scope.itemList[formIndex].price ==undefined){
+                            $scope.itemList[formIndex].total_amount = 0
+                            $scope.itemList[formIndex].total_price = 0
+                            //$scope.itemList[formIndex].price = ''
+                        }*/
 
-                                                if ($scope.iData != null) {
-                                                    //$scope.contact_person = $scope.iData.contact_person;
-                                                    $scope.contact_person = $scope.iData.manager;
-                                                    //$scope.due_date = $scope.iData.due_date;
-                                                    $scope.due_date = '';
-                                                    $scope.item_status = $scope.iData.item_status;
-                                                } else {
-                                                    $scope.contact_person = "";
-                                                    $scope.due_date = "";
-                                                    $scope.item_status = "";
-                                                }
-
-                                                $scope.jobitem.job_no = $scope.job_no;
-                                                $scope.jobitem.job_id = $scope.job_id;
-                                                $scope.jobitem.job_code = $scope.job_code;
-                                                //$scope.jobitem.contact_person = $scope.contact_person;
-                                                $scope.jobitem.contact_person = $scope.contact_person;
-                                                $scope.jobitem.order_id = $scope.routeOrderID;
-                                                $scope.jobitem.due_date = $scope.due_date;
-                                                $scope.jobitem.master_job_id = $scope.master_job_id;
-                                                if ($scope.job_no == undefined) {
-                                                    $scope.job_no = 1;
-                                                }
-                                                if ($scope.iData) {
-                                                    $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
-                                                    $scope.jobitem.tmp_po_number = $scope.po_number;
-                                                }
-
-                                                /* Job Status To New When Creating New Job*/
-                                                $scope.jobitem.item_status = 'In preparation';
-
-                                                // Remove if Display Assign PO Link
-                                                //$scope.jobitem.po_number = '';
-                                                $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
-                                                $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
-                                                $scope.jobitem.price = '';
-                                                $scope.jobitem.total_price = parseFloat(0.00);
-                                                $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
-                                                
-                                                rest.path = 'jobSummarySave';
-                                                rest.post($scope.jobitem).success(function (data) {
-                                                    if (data) {
-                                                        var obj = [];
-                                                        if ($cookieStore.get('jobRecentAdd') != undefined) {
-                                                            angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
-                                                                obj.push(val);
-                                                            });
-                                                        }
-                                                        obj.push(data['order_id']);
-                                                        $cookieStore.put('jobRecentAdd', obj);
-                                                        //$route.reload();
-                                                    } else {
-                                                        notification('Job already exists in this scoop.', 'error');
-                                                    }
-                                                })
-                                            })
-                                        }
-                                    }).error(errorCallback);
-                                } else {
-                                    var chainId = $scope.itemList[formIndex].item_number;
+                        // if ($scope.itemList[formIndex].attached_workflow) {
+                        //     if ($('#jobchainName' + formId).val() !== 'select') {
+                        //         var jobchainval = $('#jobchainName' + formId).val();
+                        //         var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
+                        //         var scoopitemData = $scope.TblItemList;
+                        //         var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
+                        //         if (chainworkflow.length == 0) {
+                        //             notification('workflow already attached', 'warning');
+                        //         }
+                        //     }
+                        // } else {
+                            if ($('#jobchainName' + formIdAllSave).val() == 'select' || $('#jobDropDown' + formIdAllSave).val() == 'select') {
+                                //notification('Please select workflow.', 'warning');
+                                //setting total amount to 0 in table listing
+                                $scope.TblItemList[formIndex].total_amount = $scope.itemList[formIndex].total_amount ? $scope.itemList[formIndex].total_amount : 0;
+                                //$scope.TblItemList[formIndex].total_amount = 0;
+                                //return false;
+                            } else {
+                                if ($scope.jobi[formId].jobSummery && $scope.workflowChange || ($scope.isAllScoopCopy && $scope.workflowChange) || ($scope.newCopyScoopBtn && $scope.workflowChange)) {
                                     
                                     // gettingName of selected workflow job chain
-                                    $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName'+formIdAllSave).find(':selected').text();
-                                    if (chainId != undefined  && $scope.workflowChange) {
-                                        rest.path = 'jobpertjobChainGet/' + $scope.jobi[formId].jobSummery + '/' + $scope.routeOrderID + '/' + chainId;
+                                    
+                                    $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formIdAllSave).find(':selected').text();
+                                    let workflowSel = $('#jobchainName' + $scope.itemList[0].itemId).find(':selected').val();        
+                                    
+                                    $scope.jobitem = {};
+                                    if($scope.newCopyScoopBtn){
+                                        var dd = workflowSel;
+                                    }else{
+                                        var dd = $scope.isAllScoopCopy ? workflowSel : $scope.jobi[formId].jobSummery;
+                                    }
+                                    //$scope.jobi.jobSummery = dd.substr(1);
+                                    $scope.jobi[formId].jobSummery = dd.substr(1);
+                                    $scope.matchjob = dd.slice(0, 1);
+                                    if ($scope.matchjob == 'j') {
+                                        rest.path = 'jobpertjobGet/' + $scope.jobi[formId].jobSummery + '/' + $scope.routeOrderID;
                                         rest.get().success(function (data) {
-                                            $scope.jobnumchain = data.job_no += 1;
-                                            $scope.ijNum = 1;
-                                            if (data.newJob == "") {
-                                               // notification('No job in jobchain', 'warning');
-                                            } else {
-                                                angular.forEach(data.newJob, function (val, i) {
-                                                    if (chainId) {
-                                                        rest.path = 'jobitemsidget/' + chainId + '/' + $scope.routeOrderID;
-                                                        rest.get().success(function (data) {
-                                                            $scope.iData = data;
-                                                            var contact_person = [];
-                                                            var job_id = [];
-                                                            var order_id = [];
-                                                            var job_no = [];
-                                                            var due_date = [];
-                                                            var item_status = [];
-                                                            $scope.job_id = $scope.jobi[formId].jobSummery;
-                                                            $scope.job_code = val.job_code;
-                                                            $scope.order_id = $scope.routeOrderID;
-                                                            $scope.master_job_id = val.job_id;
-                                                            $scope.job_no = $scope.jobnumchain++;
-                                                            if (!$scope.job_no) {
-                                                                $scope.job_no = $scope.ijNum++;
-                                                            }
+                                            $scope.itemdata = data;
+                                            $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+                                            
+                                            if ($scope.jobitem.item_id) {
+                                                rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.routeOrderID;
+                                                rest.get().success(function (data) {
+                                                    $scope.iData = data;
+                                                    
+                                                    var contact_person = [];
+                                                    var job_id = [];
+                                                    var order_id = [];
+                                                    var job_no = [];
+                                                    var due_date = [];
+                                                    var item_status = [];
+                                                    $scope.job_id = $scope.jobi[formId].jobSummery;
+                                                    $scope.job_code = $scope.itemdata.job_code;
+                                                    $scope.order_id = $scope.routeOrderID;
+                                                    $scope.job_no = $scope.itemdata.job_no;
+                                                    $scope.master_job_id = $scope.itemdata.job_id;
 
-                                                            if ($scope.iData != null) {
-                                                                $scope.contact_person = $scope.iData.manager;
-                                                                $scope.due_date = '';
-                                                                $scope.item_status = $scope.iData.item_status;
-                                                            } else {
-                                                                $scope.contact_person = "";
-                                                                $scope.due_date = "";
-                                                                $scope.item_status = "";
-                                                            }
-                                                            if ($scope.jobitem == undefined || $scope.jobitem == "" || $scope.jobitem == null) {
-                                                                $scope.jobitem = {};
-                                                            }
-
-                                                            $scope.jobitem.job_no = $scope.job_no;
-                                                            $scope.jobitem.master_job_id = $scope.master_job_id;
-                                                            $scope.jobitem.job_id = $scope.master_job_id;
-                                                            // $scope.jobitem.job_id = $scope.job_id;
-                                                            $scope.jobitem.job_code = $scope.job_code;
-                                                            $scope.jobitem.contact_person = $scope.contact_person;
-                                                            $scope.jobitem.order_id = $scope.routeOrderID;
-                                                            $scope.jobitem.due_date = $scope.due_date;
-                                                            if ($scope.job_no == undefined) {
-                                                                $scope.job_no = 1;
-                                                            }
-                                                            if ($scope.iData) {
-                                                                $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
-                                                                $scope.jobitem.tmp_po_number = $scope.po_number;
-                                                            }
-
-                                                            $scope.jobitem.item_status = 'In preparation';
-                                                            $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
-                                                            $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
-
-                                                            $scope.jobitem.job_chain_id = $scope.jobi[formId].jobSummery;
-                                                            $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
-
-                                                            rest.path = 'jobSummarySave';
-                                                            rest.post($scope.jobitem).success(function (data) {
-                                                                var obj = [];
-                                                                if ($cookieStore.get('jobRecentAdd') != undefined) {
-                                                                    angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
-                                                                        obj.push(val);
-                                                                    });
-                                                                }
-                                                                obj.push(data['order_id']);
-                                                                $cookieStore.put('jobRecentAdd', obj);
-                                                                //$route.reload();
-                                                            })
-                                                        })
+                                                    if ($scope.iData != null) {
+                                                        //$scope.contact_person = $scope.iData.contact_person;
+                                                        $scope.contact_person = $scope.iData.manager;
+                                                        //$scope.due_date = $scope.iData.due_date;
+                                                        $scope.due_date = '';
+                                                        $scope.item_status = $scope.iData.item_status;
+                                                    } else {
+                                                        $scope.contact_person = "";
+                                                        $scope.due_date = "";
+                                                        $scope.item_status = "";
                                                     }
+
+                                                    $scope.jobitem.job_no = $scope.job_no;
+                                                    $scope.jobitem.job_id = $scope.job_id;
+                                                    $scope.jobitem.job_code = $scope.job_code;
+                                                    //$scope.jobitem.contact_person = $scope.contact_person;
+                                                    $scope.jobitem.contact_person = $scope.contact_person;
+                                                    $scope.jobitem.order_id = $scope.routeOrderID;
+                                                    $scope.jobitem.due_date = $scope.due_date;
+                                                    $scope.jobitem.master_job_id = $scope.master_job_id;
+                                                    if ($scope.job_no == undefined) {
+                                                        $scope.job_no = 1;
+                                                    }
+                                                    if ($scope.iData) {
+                                                        $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
+                                                        $scope.jobitem.tmp_po_number = $scope.po_number;
+                                                    }
+
+                                                    /* Job Status To New When Creating New Job*/
+                                                    $scope.jobitem.item_status = 'In preparation';
+
+                                                    // Remove if Display Assign PO Link
+                                                    //$scope.jobitem.po_number = '';
+                                                    $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
+                                                    $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
+                                                    $scope.jobitem.price = '';
+                                                    $scope.jobitem.total_price = parseFloat(0.00);
+                                                    $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+                                                    
+                                                    rest.path = 'jobSummarySave';
+                                                    rest.post($scope.jobitem).success(function (data) {
+                                                        if (data) {
+                                                            var obj = [];
+                                                            if ($cookieStore.get('jobRecentAdd') != undefined) {
+                                                                angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
+                                                                    obj.push(val);
+                                                                });
+                                                            }
+                                                            obj.push(data['order_id']);
+                                                            $cookieStore.put('jobRecentAdd', obj);
+                                                            //$route.reload();
+                                                        } else {
+                                                            notification('Job already exists in this scoop.', 'error');
+                                                        }
+                                                    })
                                                 })
                                             }
-                                        });
+                                        }).error(errorCallback);
                                     } else {
-                                        notification('Please select item', 'warning');
+                                        var chainId = $scope.itemList[formIndex].item_number;
+                                        
+                                        // gettingName of selected workflow job chain
+                                        $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName'+formIdAllSave).find(':selected').text();
+                                        if (chainId != undefined  && $scope.workflowChange) {
+                                            rest.path = 'jobpertjobChainGet/' + $scope.jobi[formId].jobSummery + '/' + $scope.routeOrderID + '/' + chainId;
+                                            rest.get().success(function (data) {
+                                                $scope.jobnumchain = data.job_no += 1;
+                                                $scope.ijNum = 1;
+                                                if (data.newJob == "") {
+                                                    // notification('No job in jobchain', 'warning');
+                                                } else {
+                                                    angular.forEach(data.newJob, function (val, i) {
+                                                        if (chainId) {
+                                                            rest.path = 'jobitemsidget/' + chainId + '/' + $scope.routeOrderID;
+                                                            rest.get().success(function (data) {
+                                                                $scope.iData = data;
+                                                                var contact_person = [];
+                                                                var job_id = [];
+                                                                var order_id = [];
+                                                                var job_no = [];
+                                                                var due_date = [];
+                                                                var item_status = [];
+                                                                $scope.job_id = $scope.jobi[formId].jobSummery;
+                                                                $scope.job_code = val.job_code;
+                                                                $scope.order_id = $scope.routeOrderID;
+                                                                $scope.master_job_id = val.job_id;
+                                                                $scope.job_no = $scope.jobnumchain++;
+                                                                if (!$scope.job_no) {
+                                                                    $scope.job_no = $scope.ijNum++;
+                                                                }
+
+                                                                if ($scope.iData != null) {
+                                                                    $scope.contact_person = $scope.iData.manager;
+                                                                    $scope.due_date = '';
+                                                                    $scope.item_status = $scope.iData.item_status;
+                                                                } else {
+                                                                    $scope.contact_person = "";
+                                                                    $scope.due_date = "";
+                                                                    $scope.item_status = "";
+                                                                }
+                                                                if ($scope.jobitem == undefined || $scope.jobitem == "" || $scope.jobitem == null) {
+                                                                    $scope.jobitem = {};
+                                                                }
+
+                                                                $scope.jobitem.job_no = $scope.job_no;
+                                                                $scope.jobitem.master_job_id = $scope.master_job_id;
+                                                                $scope.jobitem.job_id = $scope.master_job_id;
+                                                                // $scope.jobitem.job_id = $scope.job_id;
+                                                                $scope.jobitem.job_code = $scope.job_code;
+                                                                $scope.jobitem.contact_person = $scope.contact_person;
+                                                                $scope.jobitem.order_id = $scope.routeOrderID;
+                                                                $scope.jobitem.due_date = $scope.due_date;
+                                                                if ($scope.job_no == undefined) {
+                                                                    $scope.job_no = 1;
+                                                                }
+                                                                if ($scope.iData) {
+                                                                    $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
+                                                                    $scope.jobitem.tmp_po_number = $scope.po_number;
+                                                                }
+
+                                                                $scope.jobitem.item_status = 'In preparation';
+                                                                $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
+                                                                $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
+
+                                                                $scope.jobitem.job_chain_id = $scope.jobi[formId].jobSummery;
+                                                                $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+
+                                                                rest.path = 'jobSummarySave';
+                                                                rest.post($scope.jobitem).success(function (data) {
+                                                                    var obj = [];
+                                                                    if ($cookieStore.get('jobRecentAdd') != undefined) {
+                                                                        angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
+                                                                            obj.push(val);
+                                                                        });
+                                                                    }
+                                                                    obj.push(data['order_id']);
+                                                                    $cookieStore.put('jobRecentAdd', obj);
+                                                                    //$route.reload();
+                                                                })
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            });
+                                        } else {
+                                            notification('Please select item', 'warning');
+                                        }
                                     }
                                 }
                             }
+                        //}
+                        
+                        const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
+                        if(hasKeySpclz)    
+                            delete $scope.itemList[formIndex].specialization;
+                        
+                        
+                        $scope.itemList[formIndexNew].itemId ,$scope.itemList[formIndexNew].due_date;
+                        
+                        if($scope.isAllScoopCopy && formIndex != 0 ){    
+                            $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndexNew].due_date).format("YYYY-MM-DD HH:mm");
+                        
+                        }else{
+                            $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
+                            $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
+                            var due_timevl1 = angular.element('#due_time' + formIndex).val();
+                            $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
+                        }   
+                            
+                        //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
+                        //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
+                        $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
+                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
+                        
+                        if($scope.itemList[formIndex].upcomingDate){
+                            $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
+                            $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
+                            if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
+                                $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
+                            }
+                        }else{
+                            $scope.itemList[formIndex].upcomingDate = '0000-00-00';
                         }
-                    //}
+                        if($scope.isAllScoopCopy && formIndex != 0 && $scope.itemList[formIndexNew].heads_up == 1){    
+                            $scope.itemList[formIndex].upcomingDate = $scope.itemList[formIndexNew].upcomingDate;
+                            
+                            if(! isNaN(Date.parse($scope.itemList[formIndexNew].upcomingDate))){
+                                $scope.itemList[formIndex].start_date = $scope.itemList[formIndexNew].upcomingDate;
+                            }
+                        }
+    
+                        
+                        console.log('checksubPm',$scope.checksubPm[formIndex] )
+                        $scope.itemList[formIndex].subPm = $scope.checksubPm[formIndex] ? ($scope.itemList[formIndex].subPm).toString().split(',').pop() : ''; 
+                        $scope.itemList[formIndex].subPc = $scope.checksubPc[formIndex] ? ($scope.itemList[formIndex].subPc).toString().split(',').pop() : ''; 
+                        $scope.itemList[formIndex].subQa = $scope.checksubQa[formIndex] ? ($scope.itemList[formIndex].subQa).toString().split(',').pop() : ''; 
+                        
+                        $scope.itemList[formIndex].manager = ($scope.itemList[formIndex].manager).toString().split(',').pop();     
+                        $scope.itemList[formIndex].coordinator = ($scope.itemList[formIndex].coordinator).toString().split(',').pop();
+                        $scope.itemList[formIndex].qaSpecialist = ($scope.itemList[formIndex].qaSpecialist).toString().split(',').pop();     
                     
-                    const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
-                    if(hasKeySpclz)    
-                        delete $scope.itemList[formIndex].specialization;
-                    
-                    
-                    $scope.itemList[formIndexNew].itemId ,$scope.itemList[formIndexNew].due_date;
-                    
-                    if($scope.isAllScoopCopy && formIndex != 0 ){    
-                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndexNew].due_date).format("YYYY-MM-DD HH:mm");
-                    
-                    }else{
-                        $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
-                        $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
-                        var due_timevl1 = angular.element('#due_time' + formIndex).val();
-                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
+                        // const hasKeyStsName = 'item_status_name' in $scope.itemList;
+                        // if(hasKeyStsName)    
+                        //  delete $scope.itemList.item_status_name;
+                        if($scope.isAllScoopCopy || $scope.isSaveScoopPaste){
+                            $scope.itemList[formIndex].project_type = $scope.itemList[0].project_type; 
+                            //$scope.itemList[formIndex].po_number = $scope.itemList[0].po_number; 
+                            $scope.itemList[formIndex].item_status = $scope.itemList[0].item_status; 
+                            $scope.itemList[formIndex].project_pricelist = $scope.itemList[0].project_pricelist; 
+                            $scope.itemList[formIndex].place_of_delivery = $scope.itemList[0].place_of_delivery; 
+                            // $scope.itemList[formIndex].item_email_subject = $scope.itemList[0].item_email_subject;
+                            $scope.itemList[formIndex].item_name = $scope.itemList[0].item_name;
+                            // new code for the due date & due time issue at scoop copy time
+                            let dueDateTimeNew = angular.element('.due_date_class0').val() + ' ' + angular.element('#due_time0').val();
+                            $scope.itemList[formIndex].due_date = moment(dueDateTimeNew, "DD.MM.YYYY HH:mm").format("YYYY-MM-DD HH:mm");
+                            // new code for job
+                            if($scope.isSaveScoopPaste){
+                                $scope.itemList[formIndex].attached_workflow = $scope.itemList[0].attached_workflow; 
+                            }
+                        } 
+                    } catch (error) {
+                        notification('Please refresh the page.', 'warning');
+                        $scope.btnDisabled = false;
+                        //$route.reload();
+                        //return false;
                     }   
-                        
-                    //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
-                    //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
-                    $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
-                    $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
-                    
-                    if($scope.itemList[formIndex].upcomingDate){
-                        $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
-                        $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
-                        if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
-                            $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
-                        }
-                    }else{
-                        $scope.itemList[formIndex].upcomingDate = '0000-00-00';
-                    }
-                    if($scope.isAllScoopCopy && formIndex != 0 && $scope.itemList[formIndexNew].heads_up == 1){    
-                        $scope.itemList[formIndex].upcomingDate = $scope.itemList[formIndexNew].upcomingDate;
-                        
-                        if(! isNaN(Date.parse($scope.itemList[formIndexNew].upcomingDate))){
-                            $scope.itemList[formIndex].start_date = $scope.itemList[formIndexNew].upcomingDate;
-                        }
-                    }
-
-                    
-                    console.log('checksubPm',$scope.checksubPm[formIndex] )
-                    $scope.itemList[formIndex].subPm = $scope.checksubPm[formIndex] ? ($scope.itemList[formIndex].subPm).toString().split(',').pop() : ''; 
-                    $scope.itemList[formIndex].subPc = $scope.checksubPc[formIndex] ? ($scope.itemList[formIndex].subPc).toString().split(',').pop() : ''; 
-                    $scope.itemList[formIndex].subQa = $scope.checksubQa[formIndex] ? ($scope.itemList[formIndex].subQa).toString().split(',').pop() : ''; 
-                    
-                    $scope.itemList[formIndex].manager = ($scope.itemList[formIndex].manager).toString().split(',').pop();     
-                    $scope.itemList[formIndex].coordinator = ($scope.itemList[formIndex].coordinator).toString().split(',').pop();
-                    $scope.itemList[formIndex].qaSpecialist = ($scope.itemList[formIndex].qaSpecialist).toString().split(',').pop();     
-                
-                    // const hasKeyStsName = 'item_status_name' in $scope.itemList;
-                    // if(hasKeyStsName)    
-                    //  delete $scope.itemList.item_status_name;
-                    if($scope.isAllScoopCopy || $scope.isSaveScoopPaste){
-                        $scope.itemList[formIndex].project_type = $scope.itemList[0].project_type; 
-                        //$scope.itemList[formIndex].po_number = $scope.itemList[0].po_number; 
-                        $scope.itemList[formIndex].item_status = $scope.itemList[0].item_status; 
-                        $scope.itemList[formIndex].project_pricelist = $scope.itemList[0].project_pricelist; 
-                        $scope.itemList[formIndex].place_of_delivery = $scope.itemList[0].place_of_delivery; 
-                        // $scope.itemList[formIndex].item_email_subject = $scope.itemList[0].item_email_subject;
-                        $scope.itemList[formIndex].item_name = $scope.itemList[0].item_name;
-                        // new code for the due date & due time issue at scoop copy time
-                        let dueDateTimeNew = angular.element('.due_date_class0').val() + ' ' + angular.element('#due_time0').val();
-                        $scope.itemList[formIndex].due_date = moment(dueDateTimeNew, "DD.MM.YYYY HH:mm").format("YYYY-MM-DD HH:mm");
-                        // new code for job
-                        if($scope.isSaveScoopPaste){
-                            $scope.itemList[formIndex].attached_workflow = $scope.itemList[0].attached_workflow; 
-                        }
-                    }    
                         
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     rest.path = 'ItemUpdate';
@@ -24228,11 +24241,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $route.reload();
                                 }
                             }
+
                         } catch (error) {
                             $route.reload();
                         }
                     }).error(function (data, error, status) { 
                         $scope.isAllScoopCopy = false;
+                        $scope.btnDisabled = false;
+                        notification('Something wrong with scoop' + error, 'error');
                     });
                 } else {
                     notification('Something wrong with scoop', 'warning');
@@ -37415,6 +37431,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $routeParams.id = items ? items.order_id : 0;
     $scope.order_id = items ? items.order_id : 0;
     $scope.scoop_id = items ? items.scoop_id : 0;
+    console.log('$scope.scoop_id=========>', $scope.scoop_id)
     $scope.scoopItemNumber = items?.scoopItemNumber || 0;
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
     $scope.newchildPriceArr = [];
@@ -37925,294 +37942,302 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if (angular.element('#item-form' + formId).valid()) {
             if ($scope.order_id) {
                 if ($scope.itemList[formIndex].itemId) {
-                    
-                    if($scope.poNumberExist){
-                        notification('PO number has been used before.','warning')
-                        //return false;
-                    }
-                    // if empty language pair
-                    var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
-                    var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
-                    if(!srcLang || !trgLang){
-                        notification('Please select source-target language','warning')
-                        return false;
-                    }
-                    var itemPriceUnit = [];
-                    itemPriceUnit = $scope.itemPriceUni[formId];
-                    if (itemPriceUnit) {
-                        for (var j = 0; j < itemPriceUnit.length; j++) {
-                            itemPriceUnit[j].itemTotal = CommaToPoint4Digit(itemPriceUnit[j].itemTotal);
-                            //itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
-                        }
-                    }
-                    $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
-                    delete $scope.itemList[formIndex]['itemPrice'];
-                    delete $scope.itemList[formIndex]['quantity'];
+                    $scope.btnDisabled = true;
 
-                    if ($scope.itemList[formIndex].item_number != undefined) {
-                        $scope.itemList[formIndex].item_number;
-
-                    } else {
-                        $scope.itemList[formIndex].item_number = angular.element('#item_number').text();
-                        $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
-                    }
-
-                    $scope.itemList[formIndex].order_id = $scope.order_id;
-                    $scope.itemList[formIndex].total_amount = $scope.total_amount;
-
-                    var sourceField = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale");
-                    var targetField = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale");
-
-                    var sourceObj = {
-                        sourceLang: srcLang,
-                        dataNgSrc: sourceField.children().attr('data-ng-src'),
-                        alt: sourceField.children().attr('alt')
-                    }
-
-                    var targetObj = {
-                        sourceLang: trgLang,
-                        dataNgSrc: targetField.children().attr('data-ng-src'),
-                        alt: targetField.children().attr('alt')
-                    }
-
-                    $scope.itemList[formIndex].source_lang = JSON.stringify(sourceObj);
-                    $scope.itemList[formIndex].target_lang = JSON.stringify(targetObj);
-
-                    $scope.itemList[formIndex].total_amount = $scope.itemList[formIndex].total_price;
-
-                    /*if(!$scope.itemList[formIndex].total_amount || $scope.itemList[formIndex].price ==undefined){
-                        $scope.itemList[formIndex].total_amount = 0
-                        $scope.itemList[formIndex].total_price = 0
-                        //$scope.itemList[formIndex].price = ''
-                    }*/
-
-                    // if ($scope.itemList[formIndex].attached_workflow) {
-                    //     if ($('#jobchainName' + formId).val() !== 'select') {
-                    //         var jobchainval = $('#jobchainName' + formId).val();
-                    //         var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
-                    //         var scoopitemData = $scope.TblItemList;
-                    //         var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
-                    //         if (chainworkflow.length == 0) {
-                    //             notification('workflow already attached', 'warning');
-                    //         }
-                    //         // notification('workflow already attached', 'warning');
-                    //     }
-                    // } else {
-                        if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
-                            //notification('Please select workflow.', 'warning');
-                            //setting total amount to 0 in table listing
-                            $scope.TblItemList[formIndex].total_amount = $scope.itemList[formIndex].total_amount ? $scope.itemList[formIndex].total_amount : 0;
-                            //$scope.TblItemList[formIndex].total_amount = 0;
+                    try {
+                        if($scope.poNumberExist){
+                            notification('PO number has been used before.','warning')
                             //return false;
+                        }
+                        // if empty language pair
+                        var srcLang = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale").text().trim();
+                        var trgLang = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale").text().trim();
+                        if(!srcLang || !trgLang){
+                            notification('Please select source-target language','warning')
+                            return false;
+                        }
+                        var itemPriceUnit = [];
+                        itemPriceUnit = $scope.itemPriceUni[formId];
+                        if (itemPriceUnit) {
+                            for (var j = 0; j < itemPriceUnit.length; j++) {
+                                itemPriceUnit[j].itemTotal = CommaToPoint4Digit(itemPriceUnit[j].itemTotal);
+                                //itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
+                            }
+                        }
+                        $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
+                        delete $scope.itemList[formIndex]['itemPrice'];
+                        delete $scope.itemList[formIndex]['quantity'];
+    
+                        if ($scope.itemList[formIndex].item_number != undefined) {
+                            $scope.itemList[formIndex].item_number;
+    
                         } else {
-                            if ($scope.jobi.jobSummery && $scope.workflowChange) {
-                                // gettingName of selected workflow job chain
-                                $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formId).find(':selected').text();
-
-                                $scope.jobitem = {};
-                                var dd = $scope.jobi.jobSummery;
-                                $scope.jobi.jobSummery = dd.substr(1);
-                                $scope.matchjob = dd.slice(0, 1);
-                                if ($scope.matchjob == 'j') {
-                                    rest.path = 'jobpertjobGet/' + $scope.jobi.jobSummery + '/' + $scope.order_id;
-                                    rest.get().success(function (data) {
-                                        $scope.itemdata = data;
-                                        $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
-                                        if ($scope.jobitem.item_id) {
-                                            rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.order_id;
-                                            rest.get().success(function (data) {
-                                                $scope.iData = data;
-                                                var contact_person = [];
-                                                var job_id = [];
-                                                var order_id = [];
-                                                var job_no = [];
-                                                var due_date = [];
-                                                var item_status = [];
-                                                $scope.job_id = $scope.jobi.jobSummery;
-                                                $scope.job_code = $scope.itemdata.job_code;
-                                                $scope.order_id = $scope.order_id;
-                                                $scope.job_no = $scope.itemdata.job_no;
-                                                $scope.master_job_id = $scope.itemdata.job_id;
-
-                                                if ($scope.iData != null) {
-                                                    //$scope.contact_person = $scope.iData.contact_person;
-                                                    $scope.contact_person = $scope.iData.manager;
-                                                    $scope.due_date = $scope.iData.due_date;
-                                                    $scope.item_status = $scope.iData.item_status;
-                                                } else {
-                                                    $scope.contact_person = "";
-                                                    $scope.due_date = "";
-                                                    $scope.item_status = "";
-                                                }
-
-                                                $scope.jobitem.job_no = $scope.job_no;
-                                                $scope.jobitem.job_id = $scope.job_id;
-                                                $scope.jobitem.job_code = $scope.job_code;
-                                                $scope.jobitem.contact_person = $scope.contact_person;
-                                                $scope.jobitem.order_id = $scope.order_id;
-                                                $scope.jobitem.due_date = $scope.due_date;
-                                                $scope.jobitem.master_job_id = $scope.master_job_id;
-                                                if ($scope.job_no == undefined) {
-                                                    $scope.job_no = 1;
-                                                }
-                                                if ($scope.iData) {
-                                                    $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
-                                                    $scope.jobitem.tmp_po_number = $scope.po_number;
-                                                }
-
-                                                /* Job Status To New When Creating New Job*/
-                                                $scope.jobitem.item_status = 'In preparation';
-
-                                                // Remove if Display Assign PO Link
-                                                //$scope.jobitem.po_number = '';
-                                                $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
-                                                $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
-                                                $scope.jobitem.price = '';
-                                                $scope.jobitem.total_price = parseFloat(0.00);
-                                                rest.path = 'jobSummarySave';
-                                                rest.post($scope.jobitem).success(function (data) {
-                                                    if (data) {
-                                                        var obj = [];
-                                                        if ($cookieStore.get('jobRecentAdd') != undefined) {
-                                                            angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
-                                                                obj.push(val);
-                                                            });
-                                                        }
-                                                        obj.push(data['order_id']);
-                                                        $cookieStore.put('jobRecentAdd', obj);
-                                                        //$route.reload();
-                                                    } else {
-                                                        notification('Job already exists in this scoop.', 'error');
-                                                    }
-                                                })
-                                            })
-                                        }
-                                    }).error(errorCallback);
-                                } else {
-                                    var chainId = $scope.itemList[formIndex].item_number;
-
+                            $scope.itemList[formIndex].item_number = angular.element('#item_number').text();
+                            $scope.itemList[formIndex].item_number = $scope.itemList[formIndex].item_number.replace(/^0+/, '');
+                        }
+    
+                        $scope.itemList[formIndex].order_id = $scope.order_id;
+                        $scope.itemList[formIndex].total_amount = $scope.total_amount;
+    
+                        var sourceField = angular.element("div#plsSourceLang" + formId).children("a.pls-selected-locale");
+                        var targetField = angular.element("div#plsTargetLang" + formId).children("a.pls-selected-locale");
+    
+                        var sourceObj = {
+                            sourceLang: srcLang,
+                            dataNgSrc: sourceField.children().attr('data-ng-src'),
+                            alt: sourceField.children().attr('alt')
+                        }
+    
+                        var targetObj = {
+                            sourceLang: trgLang,
+                            dataNgSrc: targetField.children().attr('data-ng-src'),
+                            alt: targetField.children().attr('alt')
+                        }
+    
+                        $scope.itemList[formIndex].source_lang = JSON.stringify(sourceObj);
+                        $scope.itemList[formIndex].target_lang = JSON.stringify(targetObj);
+    
+                        $scope.itemList[formIndex].total_amount = $scope.itemList[formIndex].total_price;
+    
+                        /*if(!$scope.itemList[formIndex].total_amount || $scope.itemList[formIndex].price ==undefined){
+                            $scope.itemList[formIndex].total_amount = 0
+                            $scope.itemList[formIndex].total_price = 0
+                            //$scope.itemList[formIndex].price = ''
+                        }*/
+    
+                        // if ($scope.itemList[formIndex].attached_workflow) {
+                        //     if ($('#jobchainName' + formId).val() !== 'select') {
+                        //         var jobchainval = $('#jobchainName' + formId).val();
+                        //         var jobchainName = $("#jobchainName" + formId + " option[value=" + jobchainval + "]").text();
+                        //         var scoopitemData = $scope.TblItemList;
+                        //         var chainworkflow = scoopitemData.filter(x => x.itemId == formId && x.attached_workflow == 'SingleJob -' + jobchainName).map(x => x.attached_workflow);
+                        //         if (chainworkflow.length == 0) {
+                        //             notification('workflow already attached', 'warning');
+                        //         }
+                        //         // notification('workflow already attached', 'warning');
+                        //     }
+                        // } else {
+                            if ($('#jobchainName' + formId).val() == 'select' || $('#jobDropDown' + formId).val() == 'select') {
+                                //notification('Please select workflow.', 'warning');
+                                //setting total amount to 0 in table listing
+                                $scope.TblItemList[formIndex].total_amount = $scope.itemList[formIndex].total_amount ? $scope.itemList[formIndex].total_amount : 0;
+                                //$scope.TblItemList[formIndex].total_amount = 0;
+                                //return false;
+                            } else {
+                                if ($scope.jobi.jobSummery && $scope.workflowChange) {
                                     // gettingName of selected workflow job chain
-                                    //$scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
-                                    $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName' + formId).find(':selected').text();
-                                    if (chainId != undefined  && $scope.workflowChange) {
-                                        rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.order_id + '/' + chainId;
+                                    $scope.itemList[formIndex].attached_workflow = 'SingleJob -' + $('#jobchainName' + formId).find(':selected').text();
+    
+                                    $scope.jobitem = {};
+                                    var dd = $scope.jobi.jobSummery;
+                                    $scope.jobi.jobSummery = dd.substr(1);
+                                    $scope.matchjob = dd.slice(0, 1);
+                                    if ($scope.matchjob == 'j') {
+                                        rest.path = 'jobpertjobGet/' + $scope.jobi.jobSummery + '/' + $scope.order_id;
                                         rest.get().success(function (data) {
-                                            $scope.jobnumchain = data.job_no += 1;
-                                            $scope.ijNum = 1;
-                                            if (data.newJob == "") {
-                                                //notification('No job in jobchain', 'warning');
-                                            } else {
-                                                angular.forEach(data.newJob, function (val, i) {
-                                                    if (chainId) {
-                                                        rest.path = 'jobitemsidget/' + chainId + '/' + $scope.order_id;
-                                                        rest.get().success(function (data) {
-                                                            $scope.iData = data;
-                                                            var contact_person = [];
-                                                            var job_id = [];
-                                                            var order_id = [];
-                                                            var job_no = [];
-                                                            var due_date = [];
-                                                            var item_status = [];
-                                                            $scope.job_id = $scope.jobi.jobSummery;
-                                                            $scope.job_code = val.job_code;
-                                                            $scope.order_id = $scope.order_id;
-                                                            $scope.master_job_id = val.job_id;
-                                                            $scope.job_no = $scope.jobnumchain++;
-                                                            if (!$scope.job_no) {
-                                                                $scope.job_no = $scope.ijNum++;
-                                                            }
-
-                                                            if ($scope.iData != null) {
-                                                                $scope.contact_person = $scope.iData.contact_person;
-                                                                $scope.due_date = $scope.iData.due_date;
-                                                                $scope.item_status = $scope.iData.item_status;
-                                                            } else {
-                                                                $scope.contact_person = "";
-                                                                $scope.due_date = "";
-                                                                $scope.item_status = "";
-                                                            }
-                                                            if ($scope.jobitem == undefined || $scope.jobitem == "" || $scope.jobitem == null) {
-                                                                $scope.jobitem = {};
-                                                            }
-
-                                                            $scope.jobitem.job_no = $scope.job_no;
-                                                            $scope.jobitem.master_job_id = $scope.master_job_id;
-                                                            $scope.jobitem.job_id = $scope.master_job_id;
-                                                            // $scope.jobitem.job_id = $scope.job_id;
-                                                            $scope.jobitem.job_code = $scope.job_code;
-                                                            $scope.jobitem.contact_person = $scope.contact_person;
-                                                            $scope.jobitem.order_id = $scope.order_id;
-                                                            $scope.jobitem.due_date = $scope.due_date;
-                                                            if ($scope.job_no == undefined) {
-                                                                $scope.job_no = 1;
-                                                            }
-                                                            if ($scope.iData) {
-                                                                $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
-                                                                $scope.jobitem.tmp_po_number = $scope.po_number;
-                                                            }
-
-                                                            $scope.jobitem.item_status = 'In preparation';
-                                                            $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
-                                                            $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
-
-                                                            $scope.jobitem.job_chain_id = $scope.jobi.jobSummery;
-                                                            $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
-
-                                                            rest.path = 'jobSummarySave';
-                                                            rest.post($scope.jobitem).success(function (data) {
-                                                                var obj = [];
-                                                                if ($cookieStore.get('jobRecentAdd') != undefined) {
-                                                                    angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
-                                                                        obj.push(val);
-                                                                    });
-                                                                }
-                                                                obj.push(data['order_id']);
-                                                                $cookieStore.put('jobRecentAdd', obj);
-                                                                //$route.reload();
-                                                            })
-                                                        })
+                                            $scope.itemdata = data;
+                                            $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+                                            if ($scope.jobitem.item_id) {
+                                                rest.path = 'jobitemsidget/' + $scope.jobitem.item_id + '/' + $scope.order_id;
+                                                rest.get().success(function (data) {
+                                                    $scope.iData = data;
+                                                    var contact_person = [];
+                                                    var job_id = [];
+                                                    var order_id = [];
+                                                    var job_no = [];
+                                                    var due_date = [];
+                                                    var item_status = [];
+                                                    $scope.job_id = $scope.jobi.jobSummery;
+                                                    $scope.job_code = $scope.itemdata.job_code;
+                                                    $scope.order_id = $scope.order_id;
+                                                    $scope.job_no = $scope.itemdata.job_no;
+                                                    $scope.master_job_id = $scope.itemdata.job_id;
+    
+                                                    if ($scope.iData != null) {
+                                                        //$scope.contact_person = $scope.iData.contact_person;
+                                                        $scope.contact_person = $scope.iData.manager;
+                                                        $scope.due_date = $scope.iData.due_date;
+                                                        $scope.item_status = $scope.iData.item_status;
+                                                    } else {
+                                                        $scope.contact_person = "";
+                                                        $scope.due_date = "";
+                                                        $scope.item_status = "";
                                                     }
+    
+                                                    $scope.jobitem.job_no = $scope.job_no;
+                                                    $scope.jobitem.job_id = $scope.job_id;
+                                                    $scope.jobitem.job_code = $scope.job_code;
+                                                    $scope.jobitem.contact_person = $scope.contact_person;
+                                                    $scope.jobitem.order_id = $scope.order_id;
+                                                    $scope.jobitem.due_date = $scope.due_date;
+                                                    $scope.jobitem.master_job_id = $scope.master_job_id;
+                                                    if ($scope.job_no == undefined) {
+                                                        $scope.job_no = 1;
+                                                    }
+                                                    if ($scope.iData) {
+                                                        $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
+                                                        $scope.jobitem.tmp_po_number = $scope.po_number;
+                                                    }
+    
+                                                    /* Job Status To New When Creating New Job*/
+                                                    $scope.jobitem.item_status = 'In preparation';
+    
+                                                    // Remove if Display Assign PO Link
+                                                    //$scope.jobitem.po_number = '';
+                                                    $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
+                                                    $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
+                                                    $scope.jobitem.price = '';
+                                                    $scope.jobitem.total_price = parseFloat(0.00);
+                                                    rest.path = 'jobSummarySave';
+                                                    rest.post($scope.jobitem).success(function (data) {
+                                                        if (data) {
+                                                            var obj = [];
+                                                            if ($cookieStore.get('jobRecentAdd') != undefined) {
+                                                                angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
+                                                                    obj.push(val);
+                                                                });
+                                                            }
+                                                            obj.push(data['order_id']);
+                                                            $cookieStore.put('jobRecentAdd', obj);
+                                                            //$route.reload();
+                                                        } else {
+                                                            notification('Job already exists in this scoop.', 'error');
+                                                        }
+                                                    })
                                                 })
                                             }
-                                        });
+                                        }).error(errorCallback);
                                     } else {
-                                        notification('Please select item', 'warning');
+                                        var chainId = $scope.itemList[formIndex].item_number;
+    
+                                        // gettingName of selected workflow job chain
+                                        //$scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName').find(':selected').text();
+                                        $scope.itemList[formIndex].attached_workflow = 'jobChain -' + $('#jobchainName' + formId).find(':selected').text();
+                                        if (chainId != undefined  && $scope.workflowChange) {
+                                            rest.path = 'jobpertjobChainGet/' + $scope.jobi.jobSummery + '/' + $scope.order_id + '/' + chainId;
+                                            rest.get().success(function (data) {
+                                                $scope.jobnumchain = data.job_no += 1;
+                                                $scope.ijNum = 1;
+                                                if (data.newJob == "") {
+                                                    //notification('No job in jobchain', 'warning');
+                                                } else {
+                                                    angular.forEach(data.newJob, function (val, i) {
+                                                        if (chainId) {
+                                                            rest.path = 'jobitemsidget/' + chainId + '/' + $scope.order_id;
+                                                            rest.get().success(function (data) {
+                                                                $scope.iData = data;
+                                                                var contact_person = [];
+                                                                var job_id = [];
+                                                                var order_id = [];
+                                                                var job_no = [];
+                                                                var due_date = [];
+                                                                var item_status = [];
+                                                                $scope.job_id = $scope.jobi.jobSummery;
+                                                                $scope.job_code = val.job_code;
+                                                                $scope.order_id = $scope.order_id;
+                                                                $scope.master_job_id = val.job_id;
+                                                                $scope.job_no = $scope.jobnumchain++;
+                                                                if (!$scope.job_no) {
+                                                                    $scope.job_no = $scope.ijNum++;
+                                                                }
+    
+                                                                if ($scope.iData != null) {
+                                                                    $scope.contact_person = $scope.iData.contact_person;
+                                                                    $scope.due_date = $scope.iData.due_date;
+                                                                    $scope.item_status = $scope.iData.item_status;
+                                                                } else {
+                                                                    $scope.contact_person = "";
+                                                                    $scope.due_date = "";
+                                                                    $scope.item_status = "";
+                                                                }
+                                                                if ($scope.jobitem == undefined || $scope.jobitem == "" || $scope.jobitem == null) {
+                                                                    $scope.jobitem = {};
+                                                                }
+    
+                                                                $scope.jobitem.job_no = $scope.job_no;
+                                                                $scope.jobitem.master_job_id = $scope.master_job_id;
+                                                                $scope.jobitem.job_id = $scope.master_job_id;
+                                                                // $scope.jobitem.job_id = $scope.job_id;
+                                                                $scope.jobitem.job_code = $scope.job_code;
+                                                                $scope.jobitem.contact_person = $scope.contact_person;
+                                                                $scope.jobitem.order_id = $scope.order_id;
+                                                                $scope.jobitem.due_date = $scope.due_date;
+                                                                if ($scope.job_no == undefined) {
+                                                                    $scope.job_no = 1;
+                                                                }
+                                                                if ($scope.iData) {
+                                                                    $scope.po_number = $scope.iData.abbrivation + pad($scope.iData.order_number, 4) + '_' + $scope.job_code + pad($scope.job_no, 3);
+                                                                    $scope.jobitem.tmp_po_number = $scope.po_number;
+                                                                }
+    
+                                                                $scope.jobitem.item_status = 'In preparation';
+                                                                $scope.jobitem.po_number = $scope.jobitem.tmp_po_number;
+                                                                $scope.jobitem.ItemLanguage = srcLang + ' > ' + trgLang;
+    
+                                                                $scope.jobitem.job_chain_id = $scope.jobi.jobSummery;
+                                                                $scope.jobitem.item_id = $scope.itemList[formIndex].item_number;
+    
+                                                                rest.path = 'jobSummarySave';
+                                                                rest.post($scope.jobitem).success(function (data) {
+                                                                    var obj = [];
+                                                                    if ($cookieStore.get('jobRecentAdd') != undefined) {
+                                                                        angular.forEach($cookieStore.get('jobRecentAdd'), function (val, i) {
+                                                                            obj.push(val);
+                                                                        });
+                                                                    }
+                                                                    obj.push(data['order_id']);
+                                                                    $cookieStore.put('jobRecentAdd', obj);
+                                                                    //$route.reload();
+                                                                })
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            });
+                                        } else {
+                                            notification('Please select item', 'warning');
+                                        }
                                     }
                                 }
                             }
+                        //}
+    
+                        // substitute pc,pm,qa
+                        $scope.itemList[formIndex].subPm = $scope.checksubPm[formIndex] ? ($scope.itemList[formIndex].subPm).toString().split(',').pop() : ''; 
+                        $scope.itemList[formIndex].subPc = $scope.checksubPc[formIndex] ? ($scope.itemList[formIndex].subPc).toString().split(',').pop() : ''; 
+                        $scope.itemList[formIndex].subQa = $scope.checksubQa[formIndex] ? ($scope.itemList[formIndex].subQa).toString().split(',').pop() : ''; 
+                        
+                        $scope.itemList[formIndex].manager = ($scope.itemList[formIndex].manager).toString().split(',').pop();     
+                        $scope.itemList[formIndex].coordinator = ($scope.itemList[formIndex].coordinator).toString().split(',').pop();
+                        $scope.itemList[formIndex].qaSpecialist = ($scope.itemList[formIndex].qaSpecialist).toString().split(',').pop();
+    
+                        const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
+                        if(hasKeySpclz)    
+                            delete $scope.itemList[formIndex].specialization;
+    
+                        $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
+                        $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
+                        var due_timevl1 = angular.element('#due_time' + formIndex).val();
+                        $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
+                        //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
+                        //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
+                        $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
+                        $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
+                        // Upcoming scoop Project
+                        if($scope.itemList[formIndex].upcomingDate){
+                            $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
+                            $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
+                            if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
+                                $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
+                            }
+                        }else{
+                            $scope.itemList[formIndex].upcomingDate = '0000-00-00';
                         }
-                    //}
-
-                    // substitute pc,pm,qa
-                    $scope.itemList[formIndex].subPm = $scope.checksubPm[formIndex] ? ($scope.itemList[formIndex].subPm).toString().split(',').pop() : ''; 
-                    $scope.itemList[formIndex].subPc = $scope.checksubPc[formIndex] ? ($scope.itemList[formIndex].subPc).toString().split(',').pop() : ''; 
-                    $scope.itemList[formIndex].subQa = $scope.checksubQa[formIndex] ? ($scope.itemList[formIndex].subQa).toString().split(',').pop() : ''; 
-                    
-                    $scope.itemList[formIndex].manager = ($scope.itemList[formIndex].manager).toString().split(',').pop();     
-                    $scope.itemList[formIndex].coordinator = ($scope.itemList[formIndex].coordinator).toString().split(',').pop();
-                    $scope.itemList[formIndex].qaSpecialist = ($scope.itemList[formIndex].qaSpecialist).toString().split(',').pop();
-
-                    const hasKeySpclz = 'specialization' in $scope.itemList[formIndex];
-                    if(hasKeySpclz)    
-                        delete $scope.itemList[formIndex].specialization;
-
-                    $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date.split(' ')[0].split('.').reverse().join('-');
-                    $scope.itemList[formIndex].due_date = $scope.itemList[formIndex].due_date;
-                    var due_timevl1 = angular.element('#due_time' + formIndex).val();
-                    $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date + ' ' + due_timevl1).format("YYYY-MM-DD HH:mm");
-                    //$scope.itemList[formIndex].due_date = originalDateFormatNew($scope.itemList[formIndex].due_date);
-                    //$scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format('YYYY-MM-DD HH:mm:ss');
-                    $scope.itemList[formIndex].start_date = originalDateFormatNew($scope.itemList[formIndex].start_date);
-                    $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format('YYYY-MM-DD HH:mm:ss');
-                    // Upcoming scoop Project
-                    if($scope.itemList[formIndex].upcomingDate){
-                        $scope.itemList[formIndex].upcomingDate = originalDateFormatNew($scope.itemList[formIndex].upcomingDate);
-                        $scope.itemList[formIndex].upcomingDate = moment($scope.itemList[formIndex].upcomingDate).format('YYYY-MM-DD HH:mm:ss');
-                        if(! isNaN(Date.parse($scope.itemList[formIndex].upcomingDate))){
-                            $scope.itemList[formIndex].start_date = $scope.itemList[formIndex].upcomingDate;
-                        }
-                    }else{
-                        $scope.itemList[formIndex].upcomingDate = '0000-00-00';
+                        
+                    } catch (error) {
+                        console.log('error', error)
+                        $scope.btnDisabled = false;
+                        
                     }    
                     
                     $routeParams.id = $scope.itemList[formIndex].itemId
@@ -38250,12 +38275,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $route.reload();
                         }
 
+                    }).error(function (data, error, status) { 
+                        notification('Something went wrong. ' + error, 'success');
+                        $route.reload();
                     });
                 } else {
                     // nothing in popup
+                    $scope.btnDisabled = false;
                 }
             } else {
                 //notification('Please Create project First', 'information');
+                $scope.btnDisabled = false;
             }
         }
     }
@@ -38269,7 +38299,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.getItems = function () {
         var popitemList = [];
-        rest.path = 'itemsGet/' + $scope.order_id;
+        //rest.path = 'itemsGet/' + $scope.order_id;
+        rest.path = 'itemsGetSingleScoop/' + $scope.scoop_id;
         rest.get().success(function (response) {
             console.log('response==response======> Data', response)
             var data = response.filter(itemData => itemData.itemId == $scope.scoop_id);
