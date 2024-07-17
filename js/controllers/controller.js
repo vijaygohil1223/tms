@@ -23319,6 +23319,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //var ItemClient = angular.element('.itemClient'+id).text();
         $window.localStorage.ItemcodeNumber = ItemcodeNumber;
         var itemPopup = $window.open('#/filemanage/item', "popup", "width=1000,height=650");
+        
         itemPopup.addEventListener("beforeunload", function () {
             localStorage['parentId'] = ' ';
             var id1 = $window.localStorage.getItem("scoopFolderRoot");
@@ -38219,10 +38220,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     rest.put($scope.itemList[formIndex]).success(function () {
                         $('#jobchainName' + formId).val('select');
                         //Updating current updated row data(item)
-                        //$scope.getItems();
-
+                        
                         //After update change to global date format dates
                         try {
+                            //$scope.getItems();
+
                             $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
                             $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
     
