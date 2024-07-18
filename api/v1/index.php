@@ -3397,6 +3397,7 @@ $app->delete('/deleteInvoicePeriod/:id','authenticate', function ($id) {
     $result = $invoice->deleteInvoicePeriod($id);
     echoResponse(200, $result);
 });
+
 //-------------------Freelancer Invoice manage----------------//
 $app->post('/invoiceCreate','authenticate', function()  use($app) {
     $invoice = new Freelance_invoice ();
@@ -3709,6 +3710,13 @@ $app->get('/getInvoiceCreditnotes/:id', 'authenticate',function($id) {
     $result = $invoice->getInvoiceCreditnotes($id);
     echoResponse(200, $result);
 });
+$app->post('/clientInvoiceDueDate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->clientInvoiceDueDate($data);
+    echoResponse(200, $result);
+});
+
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {
     $userposition = new userposition ();
