@@ -47,10 +47,10 @@
                             <button class="btn btn-info btn-rightside" ng-click="viewInvoice('draft')">
                               <i class="fa fa-eye"></i> Draft Invoice
                             </button>
-                            <button class="btn btn-info btn-rightside" ng-click="viewInvoice('save')"
+                            <!-- <button class="btn btn-info btn-rightside" ng-click="viewInvoice('save')"
                               style="margin-right: 10px">
                               <i class="fa fa-eye"></i> Save Invoice
-                            </button>
+                            </button> -->
                             <button class="btn btn-info" ng-click="exportPdf()" ng-disabled="isDisabledExportpdf">
                               Pdf &nbsp;<i class="glyphicon glyphicon-download-alt" aria-hidden="true"></i>
                             </button>
@@ -200,7 +200,13 @@
                         <span ng-if="invoiceL.credit_note_id"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span>
                       </td>
                       <td>
-                        <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.invoice_duedate | globalDtFormat }} </span> </td>
+                        <span > {{ invoiceL.invoice_due_date | globalDtFormat }} </span> 
+                        <a href="javascript:void(0)" 
+                        title="edit duedate" class="trActionIcon"
+                        ng-click="editDueDate(invoiceL.invoice_id, invoiceL.invoice_due_date | globalDtFormat , invoiceL.invoice_date)"><i
+                          class="fa fa-pencil"></i></a>
+                        
+                      </td>
                       <td> <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.paid_date | globalDtFormat }} </span> </td> 
                       <td>
                         <span ng-if="! invoiceL.credit_note_id"> {{invoiceL.invoice_status}} </span>

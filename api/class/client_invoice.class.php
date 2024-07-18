@@ -943,7 +943,7 @@ class Client_invoice
         $this->_db->where('tmInvoice.invoice_type', $type);
         $this->_db->where('tmInvoice.is_deleted ', ' != 1');
         //$this->_db->where('tmInvoice.freelance_id',$userId);
-        $data = $this->_db->get('tms_invoice_client tmInvoice', null, 'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date, tmInvoice.is_credit_note, tmInvoice.is_credit_notes_email_sent, tcn.credit_note_no, tcn.created_date as credit_note_create_date, tu.vSignUpload, tc.accounting_tripletex');
+        $data = $this->_db->get('tms_invoice_client tmInvoice', null, 'ti.itemId AS jobId, ti.order_id AS orderId, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_id, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date, tmInvoice.is_credit_note, tmInvoice.is_credit_notes_email_sent, tmInvoice.invoice_due_date, tcn.credit_note_no, tcn.created_date as credit_note_create_date, tu.vSignUpload, tc.accounting_tripletex');
         //echo $this->_db->getLastQuery();
         foreach ($data as $key => $value) {
             $data[$key]['companyName'] = '';
@@ -1263,6 +1263,26 @@ class Client_invoice
             return $result;
         }
 
+    }
+
+    public function clientInvoiceDueDate($data)
+    {   
+        if (isset($data['post_inv_due_date']) && strtotime($data['post_inv_due_date']) !== false) {
+            $updataData['invoice_due_date'] = $data['post_inv_due_date'];
+            $this->_db->where('invoice_id', $data['invoice_id']);
+            $dueDateUpdate = $this->_db->update('tms_invoice_client', $updataData);
+            if ($dueDateUpdate) {
+                $result['status'] = 200;
+                $result['msg'] = "Successfully Updated";
+            } else {
+                $result['status'] = 422;
+                $result['msg'] = "Not updated";
+            }
+        } else {
+            $result['status'] = 422;
+            $result['msg'] = "Date format is not proper";
+        }    
+        return $result;
     }
 
     public function downloadInvoiceWord($data)

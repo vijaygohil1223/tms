@@ -19152,7 +19152,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invoiceList = data;
             
             $scope.invoiceNumOfdays = data[0].number_of_days;
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].invoice_date, $scope.invoiceNumOfdays);
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].invoice_date, $scope.invoiceNumOfdays);
+            $scope.invoiceDetail.paymentDueDate = data[0].invoice_due_date;
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(TodayAfterNumberOfDays($scope.invoiceDetail.invoice_date, 0));
             
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
@@ -19680,8 +19681,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.downloadInvoiceWordFile = function(number) {
         var invoiceDocxData = {};
-        //var pageName = "tpl/invoicepdfCommon.html";
-        var pageName = "tpl/invoicewordCommon.html";
+        var pageName = "tpl/invoicepdfCommon.html";
+        //var pageName = "tpl/invoicewordCommon.html";
         // Fetch the HTML template
         $http.get(pageName)
         .then(function(response) {
@@ -19852,7 +19853,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             $scope.invoiceList = data;
             
-            $scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].invoice_date, data[0].number_of_days);
+            //$scope.invoiceDetail.paymentDueDate = TodayAfterNumberOfDays(data[0].invoice_date, data[0].number_of_days);
+            $scope.invoiceDetail.paymentDueDate = data[0].invoice_due_date;
             $scope.invoiceDetail.invoice_date = $filter('globalDtFormat')(data[0].invoice_date)
 
             //$scope.invoiceDetail.paymentDueDate = $scope.invoiceDetail.paymentDueDate.split('.').reverse().join('-');
@@ -33420,41 +33422,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('clientInvoiceController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $q, $filter, DTOptionsBuilder) {
+}).controller('clientInvoiceController', function ($scope, $routeParams, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $q, $filter, DTOptionsBuilder, $compile ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
-
-    $scope.search = function (search) {
-        if (search) {
-            rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
-            rest.get().success(function (data) {
-                //$scope.InvoiceResult = data;
-                $scope.InvoiceResult = data.filter(function (el) {
-                    return el.itemStatus == 'Approved';
-                });
-                
-                $scope.searchOrderNumber = search;
-                var obj = [];
-                obj.push({
-                    'InvoiceList': $scope.InvoiceResult,
-                    'searchOrderNumber': $scope.searchOrderNumber
-                });
-                var modalInstance = $uibModal.open({
-                    animation: $scope.animationsEnabled,
-                    templateUrl: 'tpl/clientInvoiceCreatePopup.html',
-                    controller: 'clientInvoiceCreatePopupCtrl',
-                    size: '',
-                    resolve: {
-                        items: function () {
-                            return obj;
-                        }
-                    }
-                });
-            }).error(errorCallback);
-        } else {
-            notification('Please enter Project / Scoop number.', 'warning');
-        }
-        $scope.jobId = "";
-    }
 
     $scope.invoiceChange = function (data, companyCode) {
         // $log.log(data+ ' ' +companyCode);
@@ -33462,37 +33431,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.invoicebuttonShow = function (id) {
         $scope.jobId = id;
-    }
-
-    $scope.addInvoice = function (data) {
-        var client = "";
-        var flag = 0;
-        var array = [];
-
-        angular.forEach(data, function (val, i) {
-            if (val.SELECTED == 1) {
-                if (!client) {
-                    client = val.contactName;
-                }
-                if (val.contactName != client) {
-                    flag = 1;
-                } else {
-                    array.push(val.itemId);
-                }
-            }
-        });
-
-        if (flag != 1 && array.length) {
-            $cookieStore.put('invoiceScoopId', array);
-            $location.path('/client-invoice-create');
-        } else {
-            if ($scope.InvoiceResult != undefined && flag != 1) {
-                notification("Pelase select Project Scoop", "warning");
-            } else {
-                notification("You cannot add two different client invoice", "warning");
-            }
-        }
-
     }
 
     //Display invoice 
@@ -33602,7 +33540,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : $scope.invoicePeriod
                 var invoice_duedate = TodayAfterNumberOfDays(val.invoice_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
-                var InDuedate = new Date(invoice_duedate); 
+                //var InDuedate = new Date(invoice_duedate); 
+                var InDuedate = new Date(val.invoice_due_date); 
                 
                 val.client_currency = val.client_currency ? val.client_currency.split(',')[0] : 'EUR'; 
                 // status 'Open' as 'Approved'
@@ -34176,6 +34115,58 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('scrollX', 'true').
         withOption('responsive', true).
         withOption('pageLength', 100);
+
+    $scope.editDueDate = function(id, inv_due_date, invoice_date){
+    
+        var html = angular.element(
+            ' <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;">' +
+            '<div class="col-sm-6">'+
+            '<lable><strong> Select due date </strong> <lable>'+
+            '<input class="form-control" type="text" required ng-model="inv_due_date" id="inv_due_date" ng-datepicker-minmaxdate name="inv_due_date" ng-disabled="editDisabled" style="margin-top: 20px;" />'+
+            '</div></div>' );
+        setTimeout(() => {
+            $('#inv_due_date').val(inv_due_date);
+            $scope.dtInvoiceDueDate = invoice_date;
+        }, 500);
+        $compile(html)($scope);
+        var dialog = bootbox.dialog({
+            title: "Change due date",
+            message: html,
+            buttons: {
+                success: {
+                    label: "Save",
+                    onEscape: true,
+                    className: "btn-info",
+                    callback: function () {
+                        var get_inv_due_date = $('#inv_due_date').val();
+                        if(get_inv_due_date !== ''){
+                            var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
+                            var post_date = moment(get_inv_due_date, customDateFormat);
+                            post_date = post_date.isValid() ? post_date.format('YYYY-MM-DD') : '0000-00-00';
+                            let objStatus = {
+                                'invoice_id':id,
+                                'post_inv_due_date':post_date
+                            }
+                            rest.path = "clientInvoiceDueDate";
+                            rest.post(objStatus).success(function (data) {
+                                if(data){
+                                    notification('Date successfully updated', 'success');
+                                    $route.reload();
+                                }
+                            }).error(errorCallback);  
+                        }else{
+                            notification("Please select date", 'warning');
+                            return false;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    $scope.isValidDate = function(date) {
+        return date && date !== '0000-00-00';
+    };
 
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
