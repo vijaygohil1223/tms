@@ -214,7 +214,8 @@ td.table-data-text {
                                 </div>
                                 <div class="col-sm-3">
                                   <p class="mb-d"><strong>Date</strong></p> 
-                                  <input class="form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" ng-disabled="editDisabled" style="margin-top: -3px;" />
+                                  <span ng-hide="editingInvc"> {{ invoiceDetail.invoice_date }}</span>
+                                  <input class="form-control" type="text" ng-model="invoiceDetail.invoice_date" id="createDate" ng-datepicker2 ng-change="changeCreateDate(invoiceDetail.invoice_date)" name="invoice_date" ng-disabled="editDisabled" style="margin-top: -3px;" ng-show="editingInvc" />
                                 </div>
                                 
                           </div>
@@ -233,14 +234,18 @@ td.table-data-text {
                                   </div>
                                   <div ng-if="! isCreditNotePage">
                                     <strong>Invoice</strong> 
-                                    <input class="form-control" type="text" ng-model="invoiceDetail.custom_invoice_number" id="custom_invoice_number" name="custom_invoice_number" ng-disabled="editDisabled"  style="width: 150px; font-weight:bold;margin-left: 5px;margin-top: -3px;" />
+                                    <span ng-hide="editingInvc"> {{ invoiceDetail.custom_invoice_number }}</span>
+                                    <input class="form-control" ng-show="editingInvc" ng-model="invoiceDetail.custom_invoice_number" type="text" id="custom_invoice_number" name="custom_invoice_number" ng-disabled="editDisabled"  style="width: 150px; font-weight:bold;margin-left: 5px;margin-top: -3px;" />
                                   </div>
                                 </div>
                               </dd>
                             </dl>
                       </div>
-                      <div>
-                        <a href="javascript:void(0);" ng-hide="editDisabled" ng-click="newScoopPopupCreate(newClientId, availItemsId, isCreateNewScoop)" style="float:right;"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                      <div style="float: right;">
+                        <div class="d-flex">
+                          <a href="javascript:void(0);" ng-hide="editDisabled" ng-click="newScoopPopupCreate(newClientId, availItemsId, isCreateNewScoop)" ><i class="fa fa-plus" aria-hidden="true"></i></a>
+                          <a href="javascript:void(0);" ng-hide="hideBtn" ng-click="toggleEdit()" style="margin-left: 15px;"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                        </div>
                       </div>
                       <table class="table table-bordered table-condensed">
                           <thead>
@@ -260,8 +265,10 @@ td.table-data-text {
                               <td class="table-data-txt"> {{invL.po_number}}</td>
                               <td class="table-data-txt"> 
                                 <div class="d-flex">
-                                  <span ng-if="isCreditNotePage">-</span> <input class="invoiceCal form-control" type="text" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" ng-disabled="editDisabled" />
-                                  <a href="javascript:void(0);" class="btnDelete" ng-show="delteBtn" ng-click="itemScoopDelete(invL.itemId,$index)"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
+                                  <span ng-if="isCreditNotePage">-</span> 
+                                  <span ng-hide="editingInvc"> {{invL.item.itemTotalVal}} </span>
+                                  <input class="invoiceCal form-control" type="text" ng-show="editingInvc" ng-model="invL.item.itemTotalVal" id="invSubTotal{{$index}}" ng-change="changeInvoiceField($index,$parent.$index,invL.item.subTotal,'itemPrice')" name="itemVal_{{invL.itemId}}" />
+                                  <a href="javascript:void(0);" class="btnDelete" ng-show="editingInvc" ng-click="itemScoopDelete(invL.itemId,$index)" style="margin-top: 5px;"><i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
                                 </div>
                               </td>
                             </tr>
@@ -272,12 +279,14 @@ td.table-data-text {
                           <tr>
                             <td>
                               <span style="pointer-events: all;" ng-click="toggleAdditionalScoop()" title="Additional scoop">  <i class="fa fa-tag"></i> </span> <br>
-                              <input class="form-control" type="text" ng-model="invoiceDetail.scoop_additional_detail" placeholder="description" id="scoop_additional_detail"  name="scoop_additional_detail" ng-disabled="editDisabled" ng-show="showHideAdditionalScoop" />
+                              <span ng-hide="editingInvc"> {{invoiceDetail.scoop_additional_detail}} </span>
+                              <input class="form-control" type="text" ng-model="invoiceDetail.scoop_additional_detail" placeholder="description" id="scoop_additional_detail"  name="scoop_additional_detail" ng-disabled="editDisabled" ng-show="showHideAdditionalScoop && editingInvc" />
                             </td>
                             <td></td>
                             <td>
                               <div class="d-flex" style="margin-top: 20px;float:right;">
-                                <input class="invoiceCal form-control" type="text" ng-model="invoiceDetail.scoop_additional_price" ng-change="changeInvoiceField($index,$parent.$index,0,'itemPrice')" placeholder="Adjust price" id="scoop_additional_price"  name="scoop_additional_price" ng-disabled="editDisabled" ng-show="showHideAdditionalScoop" style="width: 100px;" />
+                                <span ng-hide="editingInvc"> {{invoiceDetail.scoop_additional_price}} </span>
+                                <input class="invoiceCal form-control" type="text" ng-model="invoiceDetail.scoop_additional_price" ng-change="changeInvoiceField($index,$parent.$index,0,'itemPrice')" placeholder="Adjust price" id="scoop_additional_price"  name="scoop_additional_price" ng-disabled="editDisabled" ng-show="showHideAdditionalScoop && editingInvc" style="width: 100px;" />
                               </div>
                             </td>
                           </tr> 
@@ -314,7 +323,8 @@ td.table-data-text {
                                         <dl class="dl-horizontal">
                                           <dd class="invoice-heading" style="margin-bottom: 10px;">
                                             <div class="d-flex"> <strong>Notes</strong>
-                                                <textarea class="form-control" name="inv_notes" ng-model="invoiceDetail.inv_notes" style="resize: none;margin-left: 20px;width: 300px;" rows="3" ng-disabled="editDisabled"></textarea>
+                                              <span ng-hide="editingInvc" style="margin-left: 20px; white-space: pre-line;"> {{invoiceDetail.inv_notes}} </span>
+                                              <textarea class="form-control" name="inv_notes" ng-show="editingInvc" ng-model="invoiceDetail.inv_notes" style="resize: none;margin-left: 20px;width: 300px;" rows="3"></textarea>
                                             </div>
                                           </dd>
                                           <dd>{{ invoiceSettingData.description }} </dd>

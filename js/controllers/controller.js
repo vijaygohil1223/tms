@@ -18908,6 +18908,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var customDateFormat = ($window.localStorage.getItem("global_dateFormat")) ? $window.localStorage.getItem("global_dateFormat") : "DD.MM.YYYY";
     //$scope.noneCls = "none"
     $scope.isCreditNotePage = $routeParams.creditNoteId;
+    $scope.editingInvc = false;
     
     // invoice setting Data
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
@@ -19757,6 +19758,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
         // });
     }
+
+    $scope.toggleEdit = function() {
+        $scope.editingInvc = !$scope.editingInvc;
+    };
 
     
 
@@ -36484,6 +36489,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isCreateNewScoop = 1;
     $scope.showHideAdditionalScoop = false;
     $scope.delteBtn = true;
+    $scope.editingInvc = true;
+    $scope.hideBtn = true;
 
     $scope.invoiceDesignType = $window.localStorage.getItem("invoiceDesignType") ? $window.localStorage.getItem("invoiceDesignType") : 1;
     $scope.invoiceTemplateName = 'tpl/invoice-pdf-content-temp'+$scope.invoiceDesignType+'.html' ;
@@ -36803,6 +36810,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.invoiceData.Invoice_cost = $scope.grandTotal;
 
         $scope.invoiceData.invoice_date = originalDateFormatNew($scope.invoiceDetail.invoice_date);
+        $scope.invoiceData.invoice_due_date = $scope.invoiceDetail.paymentDueDate;
 
         $scope.invoiceData.scoop_additional_detail = $scope.invoiceDetail?.scoop_additional_detail || '';
         let scoopNewPrice =  $scope.invoiceDetail?.scoop_additional_price || 0
@@ -36832,7 +36840,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
         });
         //
-
+        console.log('$scope.invoiceData==========**', $scope.invoiceData)
+        
         if ($scope.invoiceDetail.payment) {
             rest.path = "clientinvoiceSave";
             rest.post($scope.invoiceData).success(function (data) {
