@@ -332,13 +332,13 @@ class functions {
     }
 
     // SMTP send mail (Using mailjet library)
-    public function send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '', $inlinedAttachments ='' ) {
-        
+    public function send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $content, $attachments = '', $inlinedAttachments ='', $sendFromInvoiceEmail = 0 ) {
+        $smtpFromEmail = $sendFromInvoiceEmail == 1 ? SMTP_FROM_EMAIL_INVOICE : SMTP_FROM_EMAIL;         
         $mailParams = [
             'Messages' => [
                 [
                     'From' => [
-                            'Email' => SMTP_FROM_EMAIL,
+                            'Email' => $smtpFromEmail,
                             'Name' => SMTP_FROM_NAME
                         ],
                     'To' => [[

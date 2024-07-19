@@ -385,7 +385,8 @@ class contactPerMsg {
             $emailImageData = " ";
             $sign_picture = " ";
         }
-
+        
+        $sendFromInvoiceEmail = isset($data['sentInvoiceClientListing']) ? 1 : 0;
         
         $encoded_content = " ";
         if(isset($data['file'])) {
@@ -487,7 +488,7 @@ class contactPerMsg {
             
         // mailjet function
         $send_fn = new functions();
-        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $body, $attachments, $inlineImageAttachement);
+        $response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $body, $attachments, $inlineImageAttachement, $sendFromInvoiceEmail);
         //$response = $send_fn->send_email_smtp($to, $to_name = '', $cc, $bcc, $subject, $message, $attachments);
         
         if ($response && $response['status']==200) { //output success or failure messages

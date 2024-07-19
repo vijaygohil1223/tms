@@ -19518,71 +19518,62 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             let companycontactEmail = $scope.invoiceDetail.companyInvoiceEmail ? $scope.invoiceDetail.companyInvoiceEmail : $scope.invoiceDetail.companycontactEmail;
             $window.localStorage.generalMsg = companycontactEmail;
             setTimeout( ()=> {
-                // kendo.drawing.drawDOM($("#pdfExport"))
-                //     .then(function (group) {
-                //         // Render the result as a PDF file
-                //         return kendo.drawing.exportPDF(group, {
-                //             //paperSize: "auto",
-                //         });
-                //     })
-                //     .done(function (data) {
-                        $scope.pdfDownloadFn(number, false, sendNotesPage ).then((pdfBase64Data) =>{
-                            //console.log('pdfBase64Data', pdfBase64Data)
-                            if(pdfBase64Data){
-                                let clientInvoiceNumber = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
-                                if(sendNotesPage && sendNotesPage == true){
-                                    clientInvoiceNumber = number
-                                }
-                                let userSignInfo = $scope.invoiceDetail.userSignInfo ? $scope.invoiceDetail.userSignInfo : "";
-                                let clientSenderContact = $scope.invoiceDetail?.sender_contact ? $scope.invoiceDetail?.sender_contact : "";
-                                let clientSenderEmail = $scope.invoiceDetail?.sender_email ? $scope.invoiceDetail?.sender_email : "";
-                                var invoicemailDetail = {
-                                    'pdfData': 'data:application/pdf;base64,'+ pdfBase64Data,
-                                    'invoice_id': $scope.invoiceDetail.invoice_id,
-                                    'invoiceno': clientInvoiceNumber,
-                                    'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
-                                    'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
-                                    'freelanceName': $scope.invoiceDetail.freelanceName,
-                                    'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
-                                    'companycontactEmail': companycontactEmail,
-                                    'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
-                                    'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
-                                    'credit_notes_email': type == 'credit_notes_email' ? 1 : 0,
-                                    'isClientInvoice' : 1,
-                                    'userSignInfo' : userSignInfo,
-                                    'clientSenderContact': clientSenderContact,
-                                    'clientSenderEmail': clientSenderEmail,
-                                };
-                                
-                                var modalInstance = $uibModal.open({
-                                    animation: $scope.animationsEnabled,
-                                    templateUrl: 'tpl/generalmsg.html',
-                                    controller: 'generalmsgController',
-                                    size: '',
-                                    resolve: {
-                                        items: function () {
-                                            angular.element('#btnPaid').show();
-                                            angular.element('#btnMarkAsCancel').show();
-                                            angular.element('#btnDraft').show();
-                                            angular.element('#btnCancel').show();
-                                            angular.element('#irrecoverable').show();
-                                            angular.element('#editInvoiceSave').show();
-                                            angular.element('.invoiceInput input').addClass('invoiceInputborder');
-                                            
-                                            if(type == 'invoice_reminder' ==1 )
-                                                angular.element('#btnSave').show();
-                                            
-                                            return invoicemailDetail;
-                                        }
-                                    }
-                                });
-                            }
 
-                        });
+                $scope.pdfDownloadFn(number, false, sendNotesPage ).then((pdfBase64Data) =>{
+                    //console.log('pdfBase64Data', pdfBase64Data)
+                    if(pdfBase64Data){
+                        let clientInvoiceNumber = $scope.invoiceDetail.custom_invoice_number ? $scope.invoiceDetail.custom_invoice_number : $scope.invoiceDetail.invoice_number;
+                        if(sendNotesPage && sendNotesPage == true){
+                            clientInvoiceNumber = number
+                        }
+                        let userSignInfo = $scope.invoiceDetail.userSignInfo ? $scope.invoiceDetail.userSignInfo : "";
+                        let clientSenderContact = $scope.invoiceDetail?.sender_contact ? $scope.invoiceDetail?.sender_contact : "";
+                        let clientSenderEmail = $scope.invoiceDetail?.sender_email ? $scope.invoiceDetail?.sender_email : "";
+                        var invoicemailDetail = {
+                            'pdfData': 'data:application/pdf;base64,'+ pdfBase64Data,
+                            'invoice_id': $scope.invoiceDetail.invoice_id,
+                            'invoiceno': clientInvoiceNumber,
+                            'invoiceDue': $filter('globalDtFormat')($scope.invoiceDetail.paymentDueDate),
+                            'freelanceEmail': $scope.invoiceDetail.freelanceEmail,
+                            'freelanceName': $scope.invoiceDetail.freelanceName,
+                            'clientCompanyName': $scope.invoiceDetail.clientCompanyName,
+                            'companycontactEmail': companycontactEmail,
+                            'outstanding_reminder': type == 'invoice_reminder' ? 1 : 0,
+                            'invoice_to_be_sent': type == 'invoice_to_be_sent' ? 1 : 0,
+                            'credit_notes_email': type == 'credit_notes_email' ? 1 : 0,
+                            'isClientInvoice' : 1,
+                            'userSignInfo' : userSignInfo,
+                            'clientSenderContact': clientSenderContact,
+                            'clientSenderEmail': clientSenderEmail,
+                        };
                         
-                    //});
+                        var modalInstance = $uibModal.open({
+                            animation: $scope.animationsEnabled,
+                            templateUrl: 'tpl/generalmsg.html',
+                            controller: 'generalmsgController',
+                            size: '',
+                            resolve: {
+                                items: function () {
+                                    angular.element('#btnPaid').show();
+                                    angular.element('#btnMarkAsCancel').show();
+                                    angular.element('#btnDraft').show();
+                                    angular.element('#btnCancel').show();
+                                    angular.element('#irrecoverable').show();
+                                    angular.element('#editInvoiceSave').show();
+                                    angular.element('.invoiceInput input').addClass('invoiceInputborder');
+                                    
+                                    if(type == 'invoice_reminder' ==1 )
+                                        angular.element('#btnSave').show();
+                                    
+                                    return invoicemailDetail;
+                                }
+                            }
+                        });
+                    }
 
-                }, 200)
+                });
+
+            }, 200)
         } else {
             notification('Please Add Email', 'warning');
         }
@@ -23014,6 +23005,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 }).controller('generalmsgController', function ($scope, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.generalMsg;
+
+    console.log('we are sendnng messsage from hererere' )
 
     $scope.bccShow = function () {
         $scope.bccshow = true;
@@ -31594,7 +31587,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // new for the invoice list direct
     if(items && (items.sentInvoiceClientListing == 1) ){
+
     }
+
     // new for the invoice list direct
             
     $scope.bccShow = function () {
@@ -31624,6 +31619,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         $scope.fileAttatchName = file.name;
     };
+
+    console.log('$scope.msgEmailSubject=======>', $scope.msgEmailSubject)
+
     rest.path = 'generalMsg';
     rest.get().success(function (data) {
         $scope.cPersonMsg = [];
@@ -33718,26 +33716,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     'senderEmail': ($scope.invoiceSenderEmail) ? $scope.invoiceSenderEmail : "",
                     'clinetposition': ($scope.invoiceClinetposition) ? $scope.invoiceClinetposition : ""
                 };
+
+                if (id != undefined && id != " " && id != null) {
+
+                    console.log('arrObj', arrObj)
+                    $window.localStorage.generalMsg = invoiceEmail;
+                    var modalInstance = $uibModal.open({
+                        animation: $scope.animationsEnabled,
+                        templateUrl: 'tpl/generalmsg.html',
+                        controller: 'generalmsgController',
+                        size: '',
+                        scope: $scope,
+                        resolve: {
+                            items: function () {
+                                return arrObj;
+                            }
+                        }
+                    });
+                } else {
+                    notification('Please Add Email', 'warning');
+                }
+
             }).error(errorCallback);
             // new code to get user details
 
-            if (id != undefined && id != " " && id != null) {
-                $window.localStorage.generalMsg = invoiceEmail;
-                var modalInstance = $uibModal.open({
-                    animation: $scope.animationsEnabled,
-                    templateUrl: 'tpl/generalmsg.html',
-                    controller: 'generalmsgController',
-                    size: '',
-                    scope: $scope,
-                    resolve: {
-                        items: function () {
-                            return arrObj;
-                        }
-                    }
-                });
-            } else {
-                notification('Please Add Email', 'warning');
-            }
+            // if (id != undefined && id != " " && id != null) {
+
+            //     console.log('arrObj', arrObj)
+            //     $window.localStorage.generalMsg = invoiceEmail;
+            //     var modalInstance = $uibModal.open({
+            //         animation: $scope.animationsEnabled,
+            //         templateUrl: 'tpl/generalmsg.html',
+            //         controller: 'generalmsgController',
+            //         size: '',
+            //         scope: $scope,
+            //         resolve: {
+            //             items: function () {
+            //                 return arrObj;
+            //             }
+            //         }
+            //     });
+            // } else {
+            //     notification('Please Add Email', 'warning');
+            // }
+
         }).error(errorCallback);
 
     };
@@ -38269,6 +38291,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             rest.post($scope.logMaster).success(function (data) { });
                             //log file end
                             //$route.reload();
+                            $scope.btnDisabled = false;
                             notification('Scoop successfully updated.', 'success');
                             setTimeout(() => {
                                 $route.reload();
@@ -38276,11 +38299,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         } catch (error) {
                             console.log('error', error)
                             $route.reload();
+                            $scope.btnDisabled = false;
                         }
 
                     }).error(function (data, error, status) { 
                         notification('Something went wrong. ' + error, 'success');
                         $route.reload();
+                        $scope.btnDisabled = false;
                     });
                 } else {
                     // nothing in popup
