@@ -19225,12 +19225,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     $scope.editDisabled = true;
             // }
 
-            var scoop_additional_price = $scope.invoiceDetail?.scoop_additional_price || 0
+            var scoop_additional_price = $scope.invoiceDetail?.scoop_additional_price || ''
+            console.log('scoop_additional_price', scoop_additional_price)
             $scope.invoiceDetail.scoop_additional_price = $filter('customNumber')(scoop_additional_price);
             var scoop_additional_detail = $scope.invoiceDetail?.scoop_additional_detail || ''
             if(scoop_additional_detail !='' || (scoop_additional_price !='' && scoop_additional_price != 0) ){
                 //$scope.showHideAdditionalScoop = true;
+                console.log('scoop_additional_price===========>',scoop_additional_price )
                 setTimeout(() => {
+
                     $scope.toggleAdditionalScoop()
                 }, 200);
             }
