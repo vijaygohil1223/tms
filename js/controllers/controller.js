@@ -18842,7 +18842,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // end export pdf
 
 
-    $scope.editDueDate = function(id, inv_due_date, invoice_date){
+    $scope.editDueDate = function(id, inv_due_date, invoice_date, isMultiple){
         
         var html = angular.element(
             ' <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;">' +
@@ -18871,7 +18871,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             post_date = post_date.isValid() ? post_date.format('YYYY-MM-DD') : '0000-00-00';
                             let objStatus = {
                                 'invoice_id':id,
-                                'post_inv_due_date':post_date
+                                'post_inv_due_date':post_date,
+                                'isMultiple': isMultiple,
+                                'invoiceIds' : $scope.checkedIds
                             }
                             rest.path = "freelanceInvoiceDueDate";
                             rest.post(objStatus).success(function (data) {
@@ -18892,6 +18894,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.isValidDate = function(date) {
         return date && date !== '0000-00-00';
+    };
+
+    $scope.checkAllInvoiceDateIds = function(id, invDuedate) {
+        $scope.checkedIds = [];
+        console.log('invDuedate', $scope.checkedIds)
+        var invoiceClientSelc = $('#checkAllDate' + invDuedate).is(':checked') ? 'true' : 'false';
+    
+        console.log('$scope.InvoiceResult', $scope.approvedInvc )
+        angular.forEach($scope.approvedInvc, function(item) {
+            if(item.inv_due_date == invDuedate && invoiceClientSelc === 'true') {
+                item.SELECTED = 1;
+                $scope.checkedIds.push(item.invoice_id.toString());
+                console.log('$scope.checkedIds', $scope.checkedIds)
+            } else {
+                item.SELECTED = 0;
+            }
+        });
+        angular.element('[id^=checkAllDate]').each(function() {
+            if (this.id !== 'checkAllDate' + invDuedate) {
+                angular.element(this).attr('checked', false);
+            }
+        });
+    
+        // Ensure AngularJS detects the changes to the scope
+        $scope.$applyAsync();
     };
 
 

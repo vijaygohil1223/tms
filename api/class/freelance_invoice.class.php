@@ -700,11 +700,24 @@ class Freelance_invoice
 
     public function freelanceInvoiceDueDate($data)
     {
+        $result = [];
         if (isset($data['post_inv_due_date']) && strtotime($data['post_inv_due_date']) !== false) {
             //$updataData['inv_due_date'] = (isset($data['post_inv_due_date'])) ? $data['post_inv_due_date'] : date('Y-m-d');
             $updataData['inv_due_date'] = $data['post_inv_due_date'];
-            $this->_db->where('invoice_id', $data['invoice_id']);
-            $dueDateUpdate = $this->_db->update('tms_invoice', $updataData);
+            
+            // Determine which invoices to update
+            if (isset($data['invoiceIds']) && is_array($data['invoiceIds']) && count($data['invoiceIds']) > 0) {
+                $invoiceIds = $data['invoiceIds'];
+            } else {
+                $invoiceIds = [$data['invoice_id']];
+            }
+
+            // Update each invoice
+            foreach ($invoiceIds as $invoiceId) {
+                $this->_db->where('invoice_id', $invoiceId);
+                $dueDateUpdate = $this->_db->update('tms_invoice', $updataData);
+            }
+            // Set result based on update status
             if ($dueDateUpdate) {
                 $result['status'] = 200;
                 $result['msg'] = "Successfully Updated";
@@ -712,9 +725,10 @@ class Freelance_invoice
                 $result['status'] = 422;
                 $result['msg'] = "Not updated";
             }
+
         }else {
             $result['status'] = 422;
-            $result['msg'] = "Date formate is not proper";
+            $result['msg'] = "Date format is not proper";
         }
         return $result;
     }
