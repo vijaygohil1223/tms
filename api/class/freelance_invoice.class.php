@@ -700,6 +700,7 @@ class Freelance_invoice
 
     public function freelanceInvoiceDueDate($data)
     {
+       
         $result = [];
         if (isset($data['post_inv_due_date']) && strtotime($data['post_inv_due_date']) !== false) {
             //$updataData['inv_due_date'] = (isset($data['post_inv_due_date'])) ? $data['post_inv_due_date'] : date('Y-m-d');
@@ -711,14 +712,26 @@ class Freelance_invoice
             } else {
                 $invoiceIds = [$data['invoice_id']];
             }
-
+            
+            $dueDateUpdate = 0;
+            $result['is_dueDateSmall'] = 0;    
             // Update each invoice
             foreach ($invoiceIds as $invoiceId) {
+                // $this->_db->where('invoice_id',$invoiceId);
+                // $invoiceData = $this->_db->getOne('tms_invoice');
+                // $invoiceDate = strtotime($invoiceData['invoice_date']);
+                // $dueDate = strtotime($data['post_inv_due_date']);
+                // if ($dueDate < $invoiceDate) {
+                //     echo  "Due date is earlier than invaoice date";
+                //     $result['is_dueDateSmall'] = 1;
+                // }else{
+                //     echo  "large";
+                // }
                 $this->_db->where('invoice_id', $invoiceId);
                 $dueDateUpdate = $this->_db->update('tms_invoice', $updataData);
             }
             // Set result based on update status
-            if ($dueDateUpdate) {
+            if ($dueDateUpdate > 0) {
                 $result['status'] = 200;
                 $result['msg'] = "Successfully Updated";
             } else {

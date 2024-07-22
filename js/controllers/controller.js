@@ -11509,6 +11509,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('#bccHideShow').toggleClass('none');
     }
 
+    console.log('another controlllerrrr===>' )
+
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
@@ -18843,7 +18845,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     $scope.editDueDate = function(id, inv_due_date, invoice_date, isMultiple){
-        
         var html = angular.element(
             ' <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;">' +
             '<div class="col-sm-6">'+
