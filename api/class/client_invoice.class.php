@@ -182,6 +182,9 @@ class Client_invoice
         $this->_db->join('tms_client tmc', 'tmc.client_currency=tb.currency_code', 'LEFT');
         $matchBankInfo = $this->_db->getOne('tms_banking_info tb', 'tb.*');
 
+        //$this->_db->where('tis.invc_Id', $id);
+        //$scoopData = $this->_db->get('tms_invoice_scoops tis', null, 'tis.invc_Id, tis.invc_scoop_id, tis.scoop_price, tis.scoop_order_number, tis.scoop_item_number, tis.scoop_name, tis.scoop_po_number ');
+
         foreach (json_decode($invc['scoop_id']) as $k => $v) {
             $this->_db->where('ti.itemId', $v->id);
             $this->_db->join('tms_users tu', 'tu.iUserId=ti.contact_person', 'LEFT');
@@ -233,6 +236,7 @@ class Client_invoice
             $data['paymentInfoClient'] = (isset($paymentInfo) && !empty($paymentInfo)) ? $paymentInfo['vPaymentInfo'] : "";
             $data['userSignInfo'] = (isset($userSignInfo) && !empty($userSignInfo)) ? $userSignInfo : "";
             $data['matchBankInfo'] = (isset($matchBankInfo) && !empty($matchBankInfo)) ? $matchBankInfo : "";
+            //$data['scoopData'] = (isset($scoopData) && !empty($scoopData)) ? $scoopData : "";
             $infoD[$k] = array_merge($data, $invc);
         }
         return $infoD;
@@ -283,11 +287,23 @@ class Client_invoice
                     $scpData['total_price'] = $item['value'];
                     $this->_db->where('itemId', $item['id']);
                     $scpstsId = $this->_db->update('tms_items', $scpData);
+
+                    
+                    // $invScpData['modified_date'] = date('Y-m-d H:i:s');
+                    // $invScpData['scoop_price'] = $item['value'];
+                    // $this->_db->where('invc_Id', $id );
+                    // $this->_db->where('invc_scoop_id', $item['id'] );
+                    // $updateInvoiceScoopID = $this->_db->update('tms_invoice_scoops', $invScpData);
                 }
                 if (isset($data['deleted_scoopId']) && $data['deleted_scoopId'] != 0) {
                     $scpStatusData['item_status'] = 5;
                     $this->_db->where('itemId', $data['deleted_scoopId']);
                     $scpstsId = $this->_db->update('tms_items', $scpStatusData);
+                    
+                    // record delete from invoice scooop table
+                    // $this->_db->where('invc_Id', $id );
+                    // $this->_db->where('invc_scoop_id', $data['deleted_scoopId'] );
+                    // $delete = $this->_db->delete('tms_invoice_scoops');
                 }
             }
         }
@@ -838,6 +854,7 @@ class Client_invoice
                 //$this->_db->where('is_deleted != 1 ');
                 $this->_db->where('is_deleted', 1, '!=');
                 $invoiceRecords = $this->_db->get('tms_invoice_client');
+                
                 foreach ($invoiceRecords as $k => $v) {
                     $decodedScoopId = json_decode($v['scoop_id'], true);
                     if ($decodedScoopId !== null) {
@@ -882,11 +899,27 @@ class Client_invoice
             if ($id && $scoopData) {
                 foreach ($scoopData as $item) {
                     $scpData['updated_date'] = date('Y-m-d H:i:s');
-                    $scpData['total_amount'] = $item['value'];
-                    $scpData['total_price'] = $item['value'];
+                    //$scpData['total_amount'] = $item['value'];
+                    //$scpData['total_price'] = $item['value'];
                     $scpData['item_status'] = '6'; // status id Invoiced = 6
                     $this->_db->where('itemId', $item['id']);
                     $scpstsId = $this->_db->update('tms_items', $scpData);
+
+                    // $this->_db->where('itemId', $item['id']);
+                    // $this->_db->join('tms_general tgn', 'tgn.order_id=its.order_id', 'LEFT');
+                    // $scoopOneData = $this->_db->getOne('tms_items its','its.order_id, its.item_number, its.item_name, its.total_price, its.po_number, tgn.order_no');
+
+                    // $insertData['invc_Id'] = $id;
+                    // $insertData['invc_scoop_id'] = $item['id'];
+                    // $insertData['scoop_price'] = $scoopOneData['total_price'];
+                    // $insertData['scoop_order_number'] = $scoopOneData['order_no'];
+                    // $insertData['scoop_item_number'] = $scoopOneData['item_number'];
+                    // $insertData['scoop_name'] = $scoopOneData['item_name'];
+                    // $insertData['scoop_po_number'] = $scoopOneData['po_number'];
+                    // $insertData['created_date'] = date('Y-m-d H:i:s');
+                    // $insertData['modified_date'] = date('Y-m-d H:i:s');
+                    // $insertedInScpID = $this->_db->insert('tms_invoice_scoops', $insertData);
+
                 }
             }
             if ($id) {
@@ -1053,7 +1086,7 @@ class Client_invoice
                     $updateItemData['item_status'] = 5;
                     $this->_db->where('itemId', $itemId->id);
                     $this->_db->update('tms_items', $updateItemData);
-                } catch (ExceptionType $e) {
+                } catch (Exception $e) {
                 }
             }
 
@@ -1113,6 +1146,27 @@ class Client_invoice
                         $scpData['item_status'] = 6;
                         $this->_db->where('itemId', $item['id']);
                         $scpstsId = $this->_db->update('tms_items', $scpData);
+
+                        // $this->_db->where('invc_scoop_id', $item['id']);
+                        // $scoopExist = $this->_db->getOne('tms_invoice_scoops iscp','iscp.id');
+
+                        // if(! $scoopExist){
+                        //     $this->_db->where('itemId', $item['id']);
+                        //     $this->_db->join('tms_general tgn', 'tgn.order_id=its.order_id', 'LEFT');
+                        //     $scoopOneData = $this->_db->getOne('tms_items its','its.order_id, its.item_number, its.item_name, its.total_price, its.po_number, tgn.order_no');
+
+                        //     $insertData['invc_Id'] = $id;
+                        //     $insertData['invc_scoop_id'] = $item['id'];
+                        //     $insertData['scoop_price'] = $scoopOneData['total_price'];
+                        //     $insertData['scoop_order_number'] = $scoopOneData['order_no'];
+                        //     $insertData['scoop_item_number'] = $scoopOneData['item_number'];
+                        //     $insertData['scoop_name'] = $scoopOneData['item_name'];
+                        //     $insertData['scoop_po_number'] = $scoopOneData['po_number'];
+                        //     $insertData['created_date'] = date('Y-m-d H:i:s');
+                        //     $insertData['modified_date'] = date('Y-m-d H:i:s');
+                        //     $insertedInScpID = $this->_db->insert('tms_invoice_scoops', $insertData);
+                        // }
+
                     }
                 }
             }catch (Exception $e) {
@@ -1166,21 +1220,30 @@ class Client_invoice
                 $scoop_id = $scoop['id'];
 
                 // Fetch price from tms_items table based on scoop_id
-                $price_data = $this->_db->rawQuery("SELECT total_price FROM tms_items WHERE itemId = $scoop_id");
+                //$scoopOneData = $this->_db->rawQuery("SELECT total_price FROM tms_items WHERE itemId = $scoop_id");
+                $this->_db->where('itemId', $scoop_id );
+                $this->_db->join('tms_general tgn', 'tgn.order_id=its.order_id', 'LEFT');
+                $scoopOneData = $this->_db->getOne('tms_items its','its.order_id, its.item_number, its.item_name, its.total_price, its.po_number, tgn.order_no');
 
-                if (count($price_data) > 0) {
-                    $price = $price_data[0]['total_price'];
+                if ($scoopOneData) {
+                    // $price = $price_data[0]['total_price'];
 
-                    // Insert each invoice_id, scoop_id, and price into new_table
-                    //$insert_query = "INSERT INTO tms_invoice_scoops (invc_Id, invc_scoop_id, scoop_price) VALUES ($invoice_id, $scoop_id, $price)";
+                    // $insertData['invc_Id'] = $invoice_id;
+                    // $insertData['invc_scoop_id'] = $scoop_id;
+                    
                     $insertData['invc_Id'] = $invoice_id;
                     $insertData['invc_scoop_id'] = $scoop_id;
-                    $insertData['scoop_price'] = $price;
+                    $insertData['scoop_price'] = $scoopOneData['total_price'];
+                    $insertData['scoop_order_number'] = $scoopOneData['order_no'];
+                    $insertData['scoop_item_number'] = $scoopOneData['item_number'];
+                    $insertData['scoop_name'] = $scoopOneData['item_name'];
+                    $insertData['scoop_po_number'] = $scoopOneData['po_number'];
                     $insertData['created_date'] = date('Y-m-d H:i:s');
                     $insertData['modified_date'] = date('Y-m-d H:i:s');
                     $inserted = $this->_db->insert('tms_invoice_scoops', $insertData);
+
                     if ($inserted) {
-                        $res['msg'] = "New record created successfully for invoice_id: $invoice_id, scoop_id: $scoop_id, price: $price\n";
+                        $res['msg'] = "New record created successfully for invoice_id: $invoice_id, scoop_id: $scoop_id, \n";
                     } else {
                         $res['msg'] = "Error: " . $inserted . "\n";
                     }

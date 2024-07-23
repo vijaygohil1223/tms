@@ -3512,6 +3512,12 @@ $app->get('/invoiceListingFilter', 'authenticate',function () use($app) {
     $result = $invoice->invoiceListingFilter();
     echoResponse(200, $result);
 });
+
+$app->delete('/deleteFreelancerInvoice/:id','authenticate', function ($id) {
+    $invoice = new Freelance_invoice ();
+    $result = $invoice->deleteFreelancerInvoice($id);
+    echoResponse($result ['status'], $result);
+});
 //-------------------END Freelancer Invoice manage----------------//
 
 function echoResponse($status_code, $response) {

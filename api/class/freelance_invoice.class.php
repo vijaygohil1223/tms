@@ -746,6 +746,44 @@ class Freelance_invoice
         return $result;
     }
 
+    public function deleteFreelancerInvoice($id)
+    {
+        $this->_db->where('invoice_id', $id);
+        $getInvoiceData = $this->_db->getOne('tms_invoice', 'job_id');
+        if (isset($getInvoiceData) && !empty($getInvoiceData)) {
+            foreach (json_decode($getInvoiceData['job_id']) as $k => $itemId) {
+                try {
+                    $jbupData['updated_date'] = date('Y-m-d H:i:s');
+                    $jbupData['item_status'] = 'Invoice Ready';
+                    $this->_db->where('job_summmeryId', $itemId->id );
+                    $scpstsId = $this->_db->update('tms_summmery_view', $jbupData);
+                } catch (Exception $e) {
+                }
+            }
+
+            // delete invoice
+            $this->_db->where('invoice_id', $id);
+            $delete = $this->_db->delete('tms_invoice');
+
+            // delete invoice payment data
+            $this->_db->where('invoice_id', $id);
+            $paymentdelete = $this->_db->delete('tms_invoice_payments');
+
+            if ($delete) {
+                $return['status'] = 200;
+                $return['msg'] = 'Successfully deleted.';
+            } else {
+                $return['status'] = 422;
+                $return['msg'] = 'Not deleted.';
+            }
+        } else {
+            $return['status'] = 422;
+            $return['msg'] = 'Details not found.';
+        }
+
+        return $return;
+    }
+
     public function invoiceListingFilter()
     {
 

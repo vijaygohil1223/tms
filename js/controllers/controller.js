@@ -18922,6 +18922,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.$applyAsync();
     };
 
+    $scope.deleteInvoice = function (id) {
+        bootbox.confirm("Are you sure you want to delete this invoice ?", function (result) {
+            if (result == true) {
+                rest.path = 'deleteFreelancerInvoice/' + id;
+                rest.delete().success(function () {
+                    notification('Invoice deleted successfully.', 'success');
+                    $route.reload();
+                }).error(errorCallback);
+            }
+        });
+    };
+
 
 }).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $compile, $q) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
