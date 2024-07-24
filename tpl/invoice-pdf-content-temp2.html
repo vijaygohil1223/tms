@@ -260,7 +260,8 @@ td.table-data-text {
                             <tr class="thfont">
                               <td class="table-data-txt"> 
                                   <span>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }} | {{ invL.item_name }} </span><br>
-                                  <span style="white-space: pre-line;">{{invoiceDetail.accounting_inv_comment}}</span>
+                                  <!-- <span style="white-space: pre-line;">{{invoiceDetail.accounting_inv_comment}}</span> -->
+                                  <span style="white-space: pre-line;">{{invL.accounting_inv_comment}}</span>
                               </td>
                               <td class="table-data-txt"> {{invL.po_number}}</td>
                               <td class="table-data-txt"> 
