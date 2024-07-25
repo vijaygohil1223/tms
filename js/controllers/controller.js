@@ -24736,16 +24736,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.scoopInvoice[val.itemId] = $scope.scoopInvoice[val.itemId] || {};
                     try {
                         rest.path = 'getClientInvoiceByScoopId/' + val.itemId;
-                        rest.get().success(function (data) {
-                            console.log('data========>', data)
-                            if(data && data.length > 0){
-                                $scope.scoopInvoice[val.itemId].invoiceId = data[0].invoice_id || '';
-                                $scope.scoopInvoice[val.itemId].invoiceNumber = data[0].invoice_number || ''; 
-                                $scope.scoopInvoice[val.itemId].invoice_date = data[0].invoice_date || ''; 
+                        rest.get().then(function(response) {
+                            var invoiceRec = response.data;
+                            if (invoiceRec && invoiceRec.data && invoiceRec.data.length > 0) {
+                                $scope.scoopInvoice[val.itemId] = {
+                                    invoiceId: invoiceRec.data[0].invoice_id || '',
+                                    invoiceNumber: invoiceRec.data[0].invoice_number || '',
+                                    invoice_date: invoiceRec.data[0].invoice_date || ''
+                                };
                             }
-                        }).error(errorCallback);
+                        })
                     } catch (error) {
-                        console.log('error', error)
+                        console.error('Exception occurred:', error);
                     }
 
                 }
@@ -38649,16 +38651,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.scoopInvoice[val.itemId] = $scope.scoopInvoice[val.itemId] || {};
                     try {
                         rest.path = 'getClientInvoiceByScoopId/' + val.itemId;
-                        rest.get().success(function (data) {
-                            console.log('data========>', data)
-                            if(data && data.length > 0){
-                                $scope.scoopInvoice[val.itemId].invoiceId = data[0].invoice_id || '';
-                                $scope.scoopInvoice[val.itemId].invoiceNumber = data[0].invoice_number || ''; 
-                                $scope.scoopInvoice[val.itemId].invoice_date = data[0].invoice_date || ''; 
+                        rest.get().then(function(response) {
+                            var invoiceRec = response.data;
+                            if (invoiceRec && invoiceRec.data && invoiceRec.data.length > 0) {
+                                $scope.scoopInvoice[val.itemId] = {
+                                    invoiceId: invoiceRec.data[0].invoice_id || '',
+                                    invoiceNumber: invoiceRec.data[0].invoice_number || '',
+                                    invoice_date: invoiceRec.data[0].invoice_date || ''
+                                };
                             }
-                        }).error(errorCallback);
+                        })
                     } catch (error) {
-                        console.log('error', error)
+                        console.error('Exception occurred:', error);
                     }
 
                 }

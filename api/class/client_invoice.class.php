@@ -1226,21 +1226,24 @@ class Client_invoice
     {
         $qry = 'SELECT * FROM tms_invoice_client WHERE JSON_CONTAINS(scoop_id, \'{"id": ' . $id . '}\', "$")';
         $data = $this->_db->rawQuery($qry);
-        if ($data) {
-            $data['status'] = 200;
-            $data['msg'] = "success";
+        $response = []; 
+        if ($data !== false && !empty($data)) {
+        //if ($data) {
+            $response['status'] = 200;
+            $response['msg'] = "success";
+            $response['data'] = $data;
         } else {
-            $data['status'] = 422;
-            $data['msg'] = "No record";
+            $response['status'] = 422;
+            $response['msg'] = "No record";
         }
-        return $data;
+        return $response;
     }
 
     public function insertTempInvoiceData($id)
     {
         $res = [];
         // Fetch rows from tms_invoice_client table
-        $invoices = $this->_db->rawQuery("SELECT invoice_id, scoop_id FROM tms_invoice_client ");
+        $invoices = $this->_db->rawQuery("SELECT invoice_id, scoop_id FROM tms_invoice_client WHERE is_deleted != 1 ");
         //$invoices = $this->_db->rawQuery("SELECT invoice_id, scoop_id FROM tms_invoice_client where  invoice_id = $id");
         //$invoices = $this->_db->rawQuery("SELECT invoice_id, scoop_id FROM tms_invoice_client");
 

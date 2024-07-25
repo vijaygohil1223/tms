@@ -82,7 +82,7 @@
                <div class="d-flex align-center">
                   <input select2-create-scoop type="text" class="form-control scooopid"
                      ng-change="createItems(numOfScoopItems)" name="scoopItem" ng-model="numOfScoopItems"
-                     id="numOfScoopItems" ng-init="numOfScoopItems = '0'" placeholder="Create Scoop">
+                     id="numOfScoopItems" ng-init="numOfScoopItems = '0'" placeholder="Create Scoop" ng-disabled="scoopInvoice[it.itemId].invoiceId">
                   <!-- <div class="scoop_selectbox btn btn-info" style="display: none;">
                   <select id="numOfScoopItems" ng-change="createItems()"  name="scoopItem" ng-model="numOfScoopItems" ng-init="numOfScoopItems = '0'" > 
                      <option value="0"> Create Scoop </option>
@@ -134,7 +134,6 @@
                         <div ng-repeat="it in itemList" class="alternateGrayColor">
                            <form id="item-form{{it.itemId}}">
                               <!--   TAB1 -->
-                              <fieldset>
                                  <div class="row">
                                     <div class="col-sm-12">
                                        <div class="panel panel-default">
@@ -150,7 +149,7 @@
                                                       style="border-left: none; padding-left: 0;">-{{it.item_number |
                                                       numberFixedLen:3}}</span>
                                                    <input type="text" class="form-control" name="item_name"
-                                                      ng-model="it.item_name" id="item_name{{it.itemId}}" style="width: ;">
+                                                      ng-model="it.item_name" id="item_name{{it.itemId}}" ng-disabled="scoopInvoice[it.itemId].invoiceId">
                                                 </div>
                                              </div>
                                              <div class="d-flex">
@@ -158,7 +157,7 @@
                                                 <input ng-datetimepicker1 id="start_date{{it.itemId}}" type="text"
                                                    class="form-control start-date" name="start_date{{it.itemId}}"
                                                    ng-model="it.start_date" required onkeydown="return false"
-                                                   readonly="" style="width: auto;"/>
+                                                   readonly="" style="width: auto;" />
                                              </div>
                                              <!-- <a href="javascript:void(0)" ng-if="$index==0" ng-click="scoopAllSave('copy')"
                                                 ng-if="itemList.length >0" class="btn btn-info"
@@ -200,6 +199,7 @@
                                                          <td id="item_number{{it.itemId}}" style="width: 12%;">
                                                             {{it.item_number | numberFixedLen:3}}</td>
                                                          <td colspan="2" style="border-right: 1px solid #eaeff0;">
+                                                            <fieldset ng-disabled="scoopInvoice[it.itemId].invoiceId">
                                                             <div style="max-height: 502px; overflow-y: auto;">
                                                                <div class="col-sm-12">
                                                                   <div class="col-sm-8">
@@ -319,9 +319,11 @@
                                                             </div> -->
                                                                </div>
                                                             </div>
+                                                            </fieldset>
                                                          </td>
                                                          <!-- <td style="border-right: 1px solid #eaeff0;"></td> -->
                                                          <td style="width: 30%;">
+                                                            <fieldset ng-disabled="scoopInvoice[it.itemId].invoiceId">
                                                             <div class="col-sm-5">
                                                                <div class="form-group">
                                                                   <label>Source language</label>
@@ -332,7 +334,7 @@
                                                                      grid-columns="3" show-flag="true"
                                                                      selected-lang="" items="plsModel.languages40"
                                                                      language-changed-callback="onLanguageChanged(lang,$index)"
-                                                                     class="allsourcelang"></pls>
+                                                                     class="allsourcelang" ></pls>
 
                                                                   <div id="indexItemSource{{it.itemId}}"
                                                                      style="display: none;">{{$index}}</div>
@@ -368,7 +370,7 @@
                                                                   <label class="control-label">Project Type:</label>
                                                                   <input select2-proj-type type="text" class="form-control"
                                                                      name="project_type" ng-model="it.project_type"
-                                                                     id="project_type{{it.itemId}}" required>
+                                                                     id="project_type{{it.itemId}}" required ng-disabled="scoopInvoice[it.itemId].invoiceId">
                                                                </div>
                                                             </div>
                                                             <div class="col-sm-12">
@@ -378,7 +380,7 @@
                                                                      class="form-control" name="project_pricelist"
                                                                      ng-model="it.project_pricelist"
                                                                      id="project_pricelist{{it.itemId}}"
-                                                                     ng-change="changeClientPrice(it.project_pricelist, it.itemId)">
+                                                                     ng-change="changeClientPrice(it.project_pricelist, it.itemId)" ng-disabled="scoopInvoice[it.itemId].invoiceId">
                                                                </div>
                                                             </div>
                                                             <div class="col-sm-12">
@@ -437,7 +439,7 @@
                                                                      class="form-control contactperson"
                                                                      id="contactPerson{{it.itemId}}"
                                                                      name="contact_person{{it.itemId}}"
-                                                                     ng-model="it.contact_person" required />
+                                                                     ng-model="it.contact_person" required ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                                </div>
                                                             </div>
                                                             <div class="col-sm-12">
@@ -505,10 +507,10 @@
                                                                      ng-model="it.item_status" disabled required /> -->
                                                                   <input type="text" select2-scoop-detailitm-status
                                                                      class="form-control" id="itemstatus{{it.itemId}}"
-                                                                     name="status" ng-model="it.item_status" required ng-disabled="it.item_status=='6' || it.item_status=='7' "/>
+                                                                     name="status" ng-model="it.item_status" required ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                                </div>
                                                             </div>
-
+                                                            </fieldset>
                                                          </td>
                                                       </tr>
                                                       <tr>
@@ -525,10 +527,10 @@
                                                                               <input type="checkbox" name="checksubPc" ng-true-value="1" ng-false-value="0" ng-model="checksubPc[$index]" ng-checked="it.subPc && it.subPc != 0" class="ng-pristine ng-untouched ng-valid">
                                                                               <i></i>
                                                                            </label><label class="no-wrap m-0 checksub">Substitute</label>   
-                                                                           <input type="text" class="form-control ProCoordinator" name="Coordinator" id="coordinator{{it.itemId}}" select2-coordinator ng-model="it.coordinator" />
+                                                                           <input type="text" class="form-control ProCoordinator" name="Coordinator" id="coordinator{{it.itemId}}" select2-coordinator ng-model="it.coordinator" ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
 
                                                                            <div ng-if="checksubPc[$index]" class="mt-15">
-                                                                              <input type="text" id="subPc{{it.itemId}}" class="form-control" name="subPc{{it.itemId}}" select2-coordinator ng-model="it.subPc" required />
+                                                                              <input type="text" id="subPc{{it.itemId}}" class="form-control" name="subPc{{it.itemId}}" select2-coordinator ng-model="it.subPc" required ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
                                                                            </div>   
                                                                         </div>
                                                                      </td>
@@ -544,10 +546,10 @@
                                                                            <input type="text" id="manager{{it.itemId}}"
                                                                               class="form-control ProManager"
                                                                               name="vProjectManager" select2-manager
-                                                                              ng-model="it.manager" />
+                                                                              ng-model="it.manager" ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                                            
                                                                            <div ng-if="checksubPm[$index]" class="mt-15">
-                                                                              <input type="text" id="subPm{{it.itemId}}" class="form-control" name="subPm{{it.itemId}}" select2-manager ng-model="it.subPm" required />
+                                                                              <input type="text" id="subPm{{it.itemId}}" class="form-control" name="subPm{{it.itemId}}" select2-manager ng-model="it.subPm" required ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
                                                                            </div>
                                                                         </div>
                                                                      </td>
@@ -560,10 +562,10 @@
                                                                            </label>
                                                                            <!-- <label class="no-wrap m-0 checksub" ng-hide="subqahide">Substitute</label> -->
                                                                            <label class="no-wrap m-0 checksub">Substitute</label>
-                                                                           <input type="text" class="form-control QA_specialist" name="Coordinator" select2-qaspa id="QA_specialist{{it.itemId}}" ng-model="it.qaSpecialist" />
+                                                                           <input type="text" class="form-control QA_specialist" name="Coordinator" select2-qaspa id="QA_specialist{{it.itemId}}" ng-model="it.qaSpecialist" ng-disabled="scoopInvoice[it.itemId].invoiceId"/>
                                                                            
                                                                            <div ng-if="checksubQa[$index]" class="mt-15">
-                                                                              <input type="text" id="subQa{{it.itemId}}" class="form-control" name="subQa{{it.itemId}}" select2-qaspa ng-model="it.subQa" required />
+                                                                              <input type="text" id="subQa{{it.itemId}}" class="form-control" name="subQa{{it.itemId}}" select2-qaspa ng-model="it.subQa" required ng-disabled="scoopInvoice[it.itemId].invoiceId" />
                                                                            </div>   
                                                                         </div>
                                                                      </td>
@@ -572,7 +574,7 @@
                                                                      <td class="pl-0">
                                                                         <div class="form-group">
                                                                            <label class="control-label">Accounting Comment</label>
-                                                                           <textarea name="accounting_inv_comment" ng-model="it.accounting_inv_comment" class="form-control" rows="3" style="resize: none;" aria-invalid="false"></textarea>
+                                                                           <textarea name="accounting_inv_comment" ng-model="it.accounting_inv_comment" class="form-control" rows="3" style="resize: none;" aria-invalid="false" ng-disabled="scoopInvoice[it.itemId].invoiceId"></textarea>
                                                                         </div>
                                                                      </td>
                                                                      <td colspan="4"></td>
@@ -584,7 +586,7 @@
                                                       <tr>
                                                          <td colspan="4">
                                                             <button class="btn btn-info"
-                                                               ng-click="saveitems(it.itemId,$index);" id="saveitem{{it.itemId}}" ng-disabled="btnDisabled"><i
+                                                               ng-click="saveitems(it.itemId,$index);" id="saveitem{{it.itemId}}" ng-disabled="btnDisabled || scoopInvoice[it.itemId].invoiceId"><i
                                                                   class="fa fa-floppy-o" aria-hidden="true"></i>
                                                                Save</button>
 
@@ -604,7 +606,6 @@
                                        </div>
                                     </div>
                                  </div>
-                              </fieldset>
                            </form>
                         </div>
                      </div>
