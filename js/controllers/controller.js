@@ -19800,6 +19800,61 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // });
     }
 
+    $scope.downloadInvoiceWordFile__ = function(number) {
+        var invoiceDocxData = {};
+        //var pageName = "tpl/invoicepdfCommon.html";
+        var pageName = "tpl/invoicewordCommon.html";
+        // Fetch the HTML template
+        $http.get(pageName)
+        .then(function(response) {
+            // Get the HTML content from the response
+            var htmlContent = response.data;
+            // Compile the HTML content
+            var compiledHTML = $compile(htmlContent)($scope);
+            // Wait for AngularJS to apply changes and process the compiled HTML
+            setTimeout(() => {
+                $scope.$apply();
+                // Hide elements with class 'invpagenumber'
+                compiledHTML.find(".invpagenumber").css('display', 'none');
+                // Extract content by class from compiled HTML
+                // Extract HTML content from the compiled HTML object
+                var invoiceHeader = compiledHTML.find(".invoiceHeader").html();
+                var invoiceContent = compiledHTML.find(".invoiceContent").html();
+                var invoiceFooter = compiledHTML.find(".invoiceFooter").html();
+
+                // Combine the HTML content
+                var fullContent = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Invoice</title>
+                </head>
+                <body>
+                    ${invoiceHeader}
+                    ${invoiceContent}
+                    ${invoiceFooter}
+                </body>
+                </html>
+                `;
+
+                //alternateway
+                var invoiceContent = compiledHTML.find(".invoiceContent").html();
+                console.log('newhtml', invoiceContent)
+                const tblcnt = `<div> ${invoiceContent} </div>`;
+                const invoiceWordData = {
+                    invoiceContent: tblcnt
+                }
+                rest.path = 'downloadInvoiceWord';
+                rest.post(invoiceWordData).success(function (data) {
+                }).error(errorCallback);
+                return false;
+
+            }, 200);
+        })
+    }
+
     $scope.toggleEdit = function() {
         $scope.editingInvc = !$scope.editingInvc;
     };
