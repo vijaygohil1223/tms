@@ -19721,7 +19721,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     
 
-    $scope.downloadInvoiceWordFile = function(number) {
+    $scope.downloadInvoiceWordFile__ = function(number) {
         var invoiceDocxData = {};
         var pageName = "tpl/invoicepdfCommon.html";
         //var pageName = "tpl/invoicewordCommon.html";
@@ -19800,7 +19800,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // });
     }
 
-    $scope.downloadInvoiceWordFile__ = function(number) {
+    $scope.downloadInvoiceWordFile = function(number) {
         var invoiceDocxData = {};
         //var pageName = "tpl/invoicepdfCommon.html";
         var pageName = "tpl/invoicewordCommon.html";
@@ -19841,10 +19841,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 //alternateway
                 var invoiceContent = compiledHTML.find(".invoiceContent").html();
-                console.log('newhtml', invoiceContent)
+                var invoiceFooter = compiledHTML.find(".footerContent").html();
+                console.log('invoiceFooter', invoiceFooter)
+                //console.log('newhtml', invoiceContent)
                 const tblcnt = `<div> ${invoiceContent} </div>`;
+                const tblFtr = `<div> ${invoiceFooter} </div>`;
                 const invoiceWordData = {
-                    invoiceContent: tblcnt
+                    invoiceContent: tblcnt,
+                    invoiceFooter: tblFtr
                 }
                 rest.path = 'downloadInvoiceWord';
                 rest.post(invoiceWordData).success(function (data) {

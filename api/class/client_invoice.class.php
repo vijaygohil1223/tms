@@ -1419,11 +1419,12 @@ class Client_invoice
         //$doc->loadHTML($data['invoiceContent']);
         //$htmlContent = $doc->saveHTML();
         $htmlContent =  $data['invoiceContent'];
+        $htmlFooter =  $data['invoiceFooter'];
         // Create instance of PhpWordDoc class
         $phpWordDoc = new PhpWordDoc();
 
         // Generate Word document
-        $outputWordFile = $phpWordDoc->generateWordDocument($headerHtml, $htmlContent);
+        $outputWordFile = $phpWordDoc->generateWordDocument($headerHtml, $htmlContent, $htmlFooter);
 
         echo "Anillll=======>";
         print_r($outputWordFile);

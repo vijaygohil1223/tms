@@ -15,201 +15,189 @@
           <!-- <img src="https://tms.beconnected.no/assets/img/invoice_logo.png" alt="Logo"> -->
         </div>
         <div>
-          <p style="font-family: Arial, Helvetica, sans-serif;color: #919191;">BeConnected AS | Sandakerveien 138, 0484 Oslo, Norway</p>
+          <p style="font-family: Arial, Helvetica, sans-serif;color: #919191; margin-bottom:20px;">
+            <span>{{invoiceSettingData.company_name}} | </span> <span>{{invoiceSettingData.address1}}, </span>
+            <span>{{invoiceSettingData.postcode}}</span> <span>{{invoiceSettingData.city}}, </span>
+            <span>{{invoiceSettingData.country}}</span> </p>
         </div>
         <div>
-          <p style="margin: 20px 0 15px 0;font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: 700;"> Welocalize, Inc. NY</p>
+          <p
+            style="margin: 20px 0 15px 0;font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: 700;">
+            {{invoiceDetail.clientCompanyName}} </p>
         </div>
         <div class="address">
-          <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;">136 Madison Avenue, 6th Floor</p>
-          <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;">10016 New York</p>
-          <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;">United States</p>
-          <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;">52-2212421</p>
+          <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;"> {{invoiceDetail.companyAddress}} </p>
+          <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;"> {{clientZipcode}} <span
+              ng-if="clientCity">{{clientCity}}</span> </p>
+          <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;"> {{clientCountry}}</p>
+          <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;margin-bottom: 20pt;"
+            ng-if="invoiceDetail.clientVatinfo"> {{invoiceDetail.clientVatinfo}}</p>
         </div>
-        <div>
-          <table style="width: 100%; margin-top: 30px;">
-            <tr>
-              <th style="text-align: left;font-family: Arial, Helvetica, sans-serif;">Contact</th>
-              <th style="text-align: left;font-family: Arial, Helvetica, sans-serif;">Telephone</th>
-              <th style="text-align: left;font-family: Arial, Helvetica, sans-serif;">Email</th>
-              <th style="text-align: left;font-family: Arial, Helvetica, sans-serif;">Date</th>
-            </tr>
-            <tr>
-              <td style="font-family: Arial, Helvetica, sans-serif;">Aleksandra Dimitrova</td>
-              <td style="font-family: Arial, Helvetica, sans-serif;"></td>
-              <td style="font-family: Arial, Helvetica, sans-serif;">
-                <a href="mailto:adimitrova@beconnected.no"
-                  style="color: #000; text-decoration: none;">adimitrova@beconnected.no</a>
-              </td>
-              <td style="font-family: Arial, Helvetica, sans-serif;">08.07.2024</td>
-            </tr>
-          </table>
-        </div>
-
-        <div>
-          <p style="font-family: Arial, Helvetica, sans-serif; font-size: 20px;"><strong>Invoice</strong> N-1705382</p>
-        </div>
-
-        <div>
-          <table style="width: 100%; margin-top: 10px;">
-            <tr>
-              <th
-                style="width:55%; font-family: Arial, Helvetica, sans-serif; padding: 10px 0; background-color: #ccc;">
-                Project</th>
-              <th style="font-family: Arial, Helvetica, sans-serif; padding: 10px 0; background-color: #ccc;">PO Number
-              </th>
-              <th style="font-family: Arial, Helvetica, sans-serif; padding: 10px 0; background-color: #ccc;">Price in
-                USD
-              </th>
-            </tr>
-            <tr>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">B2075-004 | GOOGLE_2406_P45219 TEP EN-FI</td>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">PO-0905133</td>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">91,13</td>
-            </tr>
-            <tr>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">B2371-001 | GOOGLE_2407_P48588 10.8wwc </td>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">PO-0905133</td>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">1,84</td>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;"></td>
-            </tr>
-            <tr>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">B2350-006 | Google GOOGLE_2407_P48543 TEP EN-NO</td>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">PO-0905133</td>
-              <td style="font-family: Arial, Helvetica, sans-serif; padding: 7px 0;">125,96</td>
-            </tr>
-            <tr>
-              <td colspan="4">
-                <table style="width: 100%;border: 1px solid #ccc;border-collapse: collapse;">
-                  <tr style="background-color:#ccc;">
-                    <td colspan="2" style="padding: 10px 0;font-family: Arial, Helvetica, sans-serif; width: 77%;">
-                      Subtotal excl. TAX
-                    </td>
-                    <td style="padding: 10px 0;font-family: Arial, Helvetica, sans-serif;">4.323,04</td>
-                  </tr>
-                  <tr style="background-color:#ccc;">
-                    <td colspan="2" style="padding: 10px 0;font-family: Arial, Helvetica, sans-serif;width: 77%;">0,00 %
-                      TAX</td>
-                    <td style="padding: 10px 0;font-family: Arial, Helvetica, sans-serif;">0,00</td>
-                  </tr>
-                  <tr style="background-color:#ccc;">
-                    <td colspan="2"
-                      style="padding: 10px 0; font-weight: 700;font-family: Arial, Helvetica, sans-serif;width: 77%;">
-                      Total Price</td>
-                    <td style="padding: 10px 0;font-weight: 700;font-family: Arial, Helvetica, sans-serif; border-top: 1px solid #000;border-bottom: 1px solid #000;"> 4.323,04</td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-
-          <!-- temp table demo -->
-          <table align="center" style="width: 100%; border: 6px #0000FF double;">
+        <div style="margin-top: 20pt;">
+          <table align="center" style="width: 100mm; border-collapse: collapse; margin-top: 20pt;">
             <thead>
-                <tr style="background-color: #FF0000; text-align: center; color: #FFFFFF; font-weight: bold; ">
-                    <th style="width: 50pt">header a</th>
-                    <th style="width: 50">header b</th>
-                    <th style="background-color: #FFFF00; border-width: 12px"><span style="background-color: #00FF00;">header c</span></th>
+              <tr>
+                <td ng-if="isCreditNotePage">Invoice</th>
+                <td ng-if="invoiceSettingData.server_no===2 ">Contact</th>
+                <td ng-if="invoiceSettingData.server_no===2 && ! isCreditNotePage "> Telephone</th>
+                <td ng-if="invoiceSettingData.server_no===2">Email </th>
+                <td>Date </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td ng-if="isCreditNotePage"> {{invoiceDetail.custom_invoice_number}}</td>
+                <td ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceName}} </td>
+                <td ng-if="invoiceSettingData.server_no===2 && !isCreditNotePage "> {{invoiceDetail.freelancePhone}}
+                </td>
+                <td ng-if="invoiceSettingData.server_no===2"> {{invoiceDetail.freelanceEmail}}</td>
+                <td> {{invoiceDetail.invoice_date}} </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+        <div>
+          <p style="font-family: Arial, Helvetica, sans-serif; font-size: 20px;" ng-if="isCreditNotePage">
+            <strong>Credit Note</strong> <span> {{invoiceCreditNotesNumber}} </span>
+          </p>
+          <p style="font-family: Arial, Helvetica, sans-serif; font-size: 20px;" ng-if="! isCreditNotePage">
+            <strong>Invoice</strong> <span> {{invoiceDetail.custom_invoice_number}}</span>
+          </p>
+        </div>
+
+        <div>
+          <!-- temp table demo -->
+          <div style="margin: 30pt 20pt;">
+            <table align="center" style="width: 100mm; border-collapse: collapse; ">
+              <thead>
+                <tr style="background-color: #bebebe; text-align: center; font-weight: bold;">
+                  <th style="width: 100pt;">Project</th>
+                  <th style="width: 50pt;">PO Number</th>
+                  <th style="width: 50pt;">Price in EUR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="invL in invoiceList track by $index">
+                  <td style="text-align:left;">
+                    <p>{{invL.orderNumber}}-{{ invL.item_number | numberFixedLen:3 }} | {{invL.item_name }}</p>
+                    <p> {{invL.accounting_inv_comment}} </p>
+                  </td>
+                  <td>{{invL.po_number}}</td>
+                  <td> {{invL.item.itemTotalVal}} </td>
+                </tr>
+                <tr ng-if="$index == invoiceLength && (invoiceDetail.scoop_additional_detail != '' )">
+                  <td colspan="2" style="text-align:left;">
+                    {{invoiceDetail.scoop_additional_detail}}
+                  </td>
+                  <td> {{invoiceDetail.scoop_additional_price}} </td>
                 </tr>
 
-            </thead>
-
-            <tbody>
-                <tr><td style="border-style: dotted; border-color: #FF0000">1</td><td colspan="2">2</td></tr>
-                <tr><td>This is <b>bold</b> text</td><td></td><td>6</td></tr>
-
-            </tbody>
-
-        </table>
-        <!-- temp table demo -->
-
+                <tr>
+                  <td colspan="2" style="background-color: #bebebe;">Subtotal excl. TAX</td>
+                  <td style="background-color: #bebebe;">{{invoiceTotal}} </td>
+                </tr>
+                <tr>
+                  <td style="background-color: #bebebe;" colspan="2"> {{vatTax | customNumber}} % TAX </td>
+                  <td style="background-color: #bebebe;"> {{vatAmount | customNumber}} </td>
+                </tr>
+                <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
+                  <td style="background-color: #bebebe;" colspan="2"> Paid </td>
+                  <td style="background-color: #bebebe;"> {{invL.paid_amount | customNumber}}</td>
+                </tr>
+                <tr ng-if="$index == invoiceLength && invL.paid_amount > 0">
+                  <td style="background-color: #bebebe;" colspan="2"> Total Due Amount</td>
+                  <td style="background-color: #bebebe;"> {{totalDue | customNumber}} </td>
+                </tr>
+                <tr style="border-top: 6px solid #bebebe;">
+                  <td style="background-color: #bebebe;" colspan="2"> <strong>Total Price</strong> </td>
+                  <td style="background-color: #bebebe;"
+                    style="border-top:1px solid #000; border-bottom:1px solid #000;"> <strong>
+                      <span ng-if="isCreditNotePage">-</span> {{grandTotal | customNumber}} </strong> </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- temp table demo -->
         </div>
 
         <div>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:15px 0 30px 0;">Payment for this invoice is due by
-            22.08.2024</p>
+          <p style="font-size: 20px;"> &nbsp;&nbsp; </p>
         </div>
 
-        <div>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0; font-weight: 700;">Payment details:</p>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Bank Name: Danske Bank</p>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Bank Address: Søndre Gate 15, 7466
-            Trondheim, Norway</p>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Account holder: BeConnected AS</p>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">IBAN: NO1186017516282</p>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">SWIFT: DABANO22</p>
+        <div style="margin-bottom: 20pt;">
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:15px 0 30px 0; margin-bottom: 20pt;">{{
+            invoiceSettingData.description }} </p>
         </div>
 
-        <div class="footer" style="margin: 100px 0 0 0;">
-          <table style="width: 100%; margin-top: 50px;">
-            <tr>
-              <td>
-                <table style="width: 100%;">
-                  <tr>
-                    <td style="font-family: Arial, Helvetica, sans-serif; font-weight: 600;color: #919191; padding-bottom: 5px;"> BeConnected AS</td>
-                  </tr>
-                  <tr>
-                    <td style="font-family: Arial, Helvetica, sans-serif;color: #919191; padding-bottom: 5px;">
-                      Sandakerveien
-                      138</td>
-                  </tr>
-                  <tr>
-                    <td style="font-family: Arial, Helvetica, sans-serif;color: #919191; padding-bottom: 5px;">0484 Oslo </td>
-                  </tr>
-                  <tr>
-                    <td style="font-family: Arial, Helvetica, sans-serif;color: #919191; padding-bottom: 5px;">Norway </td>
-                  </tr>
-                </table>
-              </td>
-              <td>
-                <table style="width: 100%;">
-                  <tr>
-                    <td style="font-family: Arial, Helvetica, sans-serif;text-align: center;"></td>
-                  </tr>
-                  <tr>
-                    <td
-                      style="font-family: Arial, Helvetica, sans-serif; text-align: center;color: #919191; padding-bottom: 5px;"> Email: <a href="mailto:info@beconnected.no">info@beconnected.no</a></td>
-                  </tr>
-                  <tr>
-                    <td
-                      style="font-family: Arial, Helvetica, sans-serif;text-align: center; color: #919191; padding-bottom: 5px;"> Web: www.beconnected.no</td>
-                  </tr>
-                  <tr>
-                    <td
-                      style="font-family: Arial, Helvetica, sans-serif;text-align: center;color: #919191; padding-bottom: 5px;">
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              <td>
-                <table style="width: 100%;">
-                  <tr>
-                    <td style="font-family: Arial, Helvetica, sans-serif; font-weight: 600;text-align: right;color: #919191; padding-bottom: 5px;"> VAT NUMBER:</td>
-                  </tr>
-                  <tr>
-                    <td
-                      style="font-family: Arial, Helvetica, sans-serif;text-align: right;color: #919191; padding-bottom: 5px;"> Foretaksregisteret:</td>
-                  </tr>
-                  <tr>
-                    <td
-                      style="font-family: Arial, Helvetica, sans-serif;text-align: right;color: #919191; padding-bottom: 5px;"> NO918883010 MVA</td>
-                  </tr>
-                  <tr>
-                    <td
-                      style="font-family: Arial, Helvetica, sans-serif;text-align: right;color: #919191; padding-bottom: 5px;">
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="3" style="font-family: Arial, Helvetica, sans-serif;text-align:center;color: #919191;"> © BeConnected 2011 - 2023. All rights reserved</td>
-            </tr>
-          </table>
+        <div style="margin-bottom: 20pt;">
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:15px 0 30px 0; margin-bottom: 20pt;">Payment for
+            this invoice is due by
+            {{invoiceDetail.paymentDueDate | globalDtFormat}}.</p>
         </div>
+
+        <div style="margin-bottom: 20pt;margin-top: 20pt;">
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0; font-weight: 700; margin-bottom: 5pt;">
+            Payment details:</p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Bank Name: {{vBankInfo.bank_name}}</p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Bank Address: {{vBankInfo.address}}
+          </p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Account holder:
+            {{vBankInfo.holder_name}}</p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">IBAN: {{vBankInfo.iban}}</p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0; margin-bottom: 20pt;">SWIFT:
+            {{vBankInfo.swift_bic}} </p>
+        </div>
+
+
+      </div>
+    </div>
+
+    <div class="footerContent" style="margin: 100px 0 0 0;">
+      <!-- <div style="margin-left: -50px;margin-right: -50px;">
+        <div style="width: 100%;">
+          <div style="width: 100%;">
+            <div style="float:left; width:25%; border-top: 1px solid #ea7227;"> </div>
+            <div style="float:left; width:25%; border-top: 1px solid #e63132;"> </div>
+            <div style="float:left; width:25%; border-top: 1px solid #4c9acc;"> </div>
+            <div style="float:right; width:25%; border-top: 1px solid #5fc752;margin-top:-1px;"> </div>
+          </div>
+        </div>
+      </div> -->
+      <div>
+
+        <table align="center"  style="width:100mm; font-family: Arial, Helvetica, sans-serif; color: #919191;">
+          <thead>
+            <tr>
+              <th >BeConnected AS</th>
+              <th > </th>
+              <th style="text-align: right;">VAT NUMBER:</th>
+            </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <td style="text-align:left !important;"> Munthes gate 42</td>
+              <td style="text-align: center;">Email: info@beconnected.no</td>
+              <td style="text-align: right;"> Foretaksregisteret: </td>
+          </tr>
+          <tr>
+              <td style="text-align: left;"> 0260 Oslo Norway </td>
+              <td style="text-align: center !important; ">Web: www.beconnected.no </td>
+              <td style="text-align:right;">NO922694788 </td>
+          </tr>
+
+        </tbody>
+      </table>
+      </div>
+      <div style="margin-top:20px;">
+        <p class="copytext smlFont textcenter" style="text-align: center; margin-top: 20px; color: #808080;">
+          <span style="font-family:Arial;"> &copy; </span> {{ invoiceSettingData.copyright_text }}
+        </p>
       </div>
 
     </div>
+
   </div>
 </body>
 
