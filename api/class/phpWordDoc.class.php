@@ -50,28 +50,30 @@ class phpWordDoc
             //$header->addHtml('<p class="address-title"> <span class="ng-binding">Dosina Translations AS | </span> <span class="ng-binding">Munthes gate 42, </span> <span class="ng-binding">0260 </span> <span class="ng-binding">Oslo, </span>  <span class="ng-binding">Norway</span> </p>');
             // Add header with HTML content
             //$logourl = DOCUMENT_ROOT . 'assets/img/invoice_logo.png'; // Adjust the URL as per your actual path
-            $logourl = SITE_URL.'/assets/img/invoice_logo.png'; 
-            
-            // Define header HTML with logo aligned to the right
-            $headerHtml     = '<div style="text-align:right;margin-bottom:10px;margin-left:200px;float:right;position:absolute;">';
-            //$headerHtml .= '<img src="' . $logourl . '" style="height: 50px; width: 200px;" />';
-            $headerHtml .= '</div>';
+            $logourl = SITE_URL . '/assets/img/invoice_logo.png';
 
-            
 
             $header = $section->addHeader();
             $header->addImage(
                 $logourl,
                 [
                     'width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5),
-                    'height' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(2),
+                    'height' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(1.3),
+                    'top' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(10),
                     'positioning' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE,
                     'posHorizontal' => \PhpOffice\PhpWord\Style\Image::POSITION_HORIZONTAL_RIGHT,
                     'posHorizontalRel' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE_TO_PAGE,
                     'posVertical' => \PhpOffice\PhpWord\Style\Image::POSITION_VERTICAL_TOP,
                     'posVerticalRel' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE_TO_PAGE,
+                    'marginTop' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(10), 
+                    'marginRight' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(10), 
                 ]
             );
+            // Define header HTML with logo aligned to the right
+            $headerHtml = '<div style="text-align:right;margin-bottom:10px;margin-top:10px;">';
+            //$headerHtml .= '<img src="' . $logourl . '" style="height: 50px; width: 200px;" />';
+            $headerHtml .= '</div>';
+            
             \PhpOffice\PhpWord\Shared\Html::addHtml($header, $headerHtml, false, false);
 
             //$footerHtml = '<p class="address-title"> <span class="ng-binding">Dosina Translations AS | </span> <span class="ng-binding">Munthes gate 42, </span> <span class="ng-binding">0260 </span> <span class="ng-binding">Oslo, </span>  <span class="ng-binding">Norway</span> </p>';
@@ -96,7 +98,7 @@ class phpWordDoc
             // $table->addCell(2000)->addText('Row 2, Cell 2');
             // $table->addCell(2000)->addText('Row 2, Cell 3');
             $footer = $section->addFooter();
-            $footer->addPreserveText(' {PAGE} / {NUMPAGES}.', null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+            $footer->addPreserveText(' {PAGE} / {NUMPAGES} ', null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
             //$footer->addLink('https://github.com/PHPOffice/PHPWord', 'PHPWord on GitHub');
             \PhpOffice\PhpWord\Shared\Html::addHtml($footer, $footerHtml, false, false);
 
@@ -114,7 +116,7 @@ class phpWordDoc
                 return false; // Return false if the file does not exist (unlikely scenario if no exceptions were thrown)
             }
         } catch (Exception $e) {
-            return false; 
+            return false;
         }
 
     }
