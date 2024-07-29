@@ -21,9 +21,7 @@
             <span>{{invoiceSettingData.country}}</span> </p>
         </div>
         <div>
-          <p
-            style="margin: 20px 0 15px 0;font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: 700;">
-            {{invoiceDetail.clientCompanyName}} </p>
+          <p style="margin: 20px 0 15px 0;font-family: Arial, Helvetica, sans-serif; font-size: 20px; font-weight: 700;"> {{invoiceDetail.clientCompanyName}} </p>
         </div>
         <div class="address">
           <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;"> {{invoiceDetail.companyAddress}} </p>
@@ -132,24 +130,17 @@
         </div>
 
         <div style="margin-bottom: 20pt;">
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:15px 0 30px 0; margin-bottom: 20pt;">Payment for
-            this invoice is due by
-            {{invoiceDetail.paymentDueDate | globalDtFormat}}.</p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:15px 0 30px 0; margin-bottom: 20pt;">Payment for this invoice is due by {{invoiceDetail.paymentDueDate | globalDtFormat}}.</p>
         </div>
 
         <div style="margin-bottom: 20pt;margin-top: 20pt;">
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0; font-weight: 700; margin-bottom: 5pt;">
-            Payment details:</p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0; font-weight: 700; margin-bottom: 5pt;"> Payment details:</p>
           <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Bank Name: {{vBankInfo.bank_name}}</p>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Bank Address: {{vBankInfo.address}}
-          </p>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Account holder:
-            {{vBankInfo.holder_name}}</p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Bank Address: {{vBankInfo.address}} </p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">Account holder: {{vBankInfo.holder_name}}</p>
           <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0;">IBAN: {{vBankInfo.iban}}</p>
-          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0; margin-bottom: 20pt;">SWIFT:
-            {{vBankInfo.swift_bic}} </p>
+          <p style="font-family: Arial, Helvetica, sans-serif; margin:0 0 8px 0; margin-bottom: 20pt;">SWIFT: {{vBankInfo.swift_bic}} </p>
         </div>
-
 
       </div>
     </div>
@@ -170,21 +161,21 @@
         <table align="center"  style="width:100mm; font-family: Arial, Helvetica, sans-serif; color: #919191;">
           <thead>
             <tr>
-              <th >BeConnected AS</th>
+              <th > {{ invoiceSettingData.company_name }} </th>
               <th > </th>
-              <th style="text-align: right;">VAT NUMBER:</th>
+              <th style="text-align: right;"> VAT NUMBER:</th>
             </tr>
           </thead>
           <tbody>
           <tr>
-              <td style="text-align:left !important;"> Munthes gate 42</td>
-              <td style="text-align: center;">Email: info@beconnected.no</td>
+              <td style="text-align:left !important;"> {{ invoiceSettingData.address1 }} </td>
+              <td style="text-align: center !important;"> Email: {{invoiceSettingData.work_email}}</td>
               <td style="text-align: right;"> Foretaksregisteret: </td>
           </tr>
           <tr>
-              <td style="text-align: left;"> 0260 Oslo Norway </td>
-              <td style="text-align: center !important; ">Web: www.beconnected.no </td>
-              <td style="text-align:right;">NO922694788 </td>
+              <td style="text-align: left;"> {{ invoiceSettingData.postcode }} {{ invoiceSettingData.city }} {{ invoiceSettingData.country }} </td>
+              <td style="text-align: center !important; ">Web: {{ invoiceSettingData.web_address }} </td>
+              <td style="text-align:right;"> {{ invoiceSettingData.vat_number }} </td>
           </tr>
 
         </tbody>

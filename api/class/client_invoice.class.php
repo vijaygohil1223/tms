@@ -4,7 +4,7 @@ require_once 'client.class.php';
 require_once 'functions.class.php';
 require_once 'mpdf.class.php';
 
-//require_once 'phpWordDoc.class.php';
+require_once 'phpWordDoc.class.php';
 
 class Client_invoice
 {
@@ -1389,63 +1389,43 @@ class Client_invoice
 
     public function downloadInvoiceWord($data)
     {
-        $htmlContent = '<h1>Main Body Content</h1><p>This is a paragraph in the main body.</p>';
-        $headerHtml = '<div style="text-align: center; font-weight: bold;">This is the header with HTML content</div>';
-
-        //$htmlContent = $data['invoiceContent'];
-        //echo $data['invoiceContent'];
-        //         $doc = new DOMDocument();
-        // $doc->loadHTML($data['invoiceContent']);
-        // libxml_use_internal_errors(true); // Enable internal error handling
-
-        // $doc = new DOMDocument();
-        // $doc->validateOnParse = true; // Validate while parsing
-        // $doc->preserveWhiteSpace = false;
-        // $doc->strictErrorChecking = false;
-        // $doc->formatOutput = true; // Format the output for better readability
-
-        // if ($doc->loadHTML($data['invoiceContent'])) {
-        //     echo "HTML loaded successfully!";
-        // } else {
-        //     echo "Failed to load HTML.";
-        //     foreach (libxml_get_errors() as $error) {
-        //         echo "<br>", $error->message;
-        //     }
-        // }
-
-        // libxml_clear_errors(); // Clear any previous errors
-
-        // Save the HTML back
-        //$doc->loadHTML($data['invoiceContent']);
-        //$htmlContent = $doc->saveHTML();
+        $headerHtml = '';
         $htmlContent =  $data['invoiceContent'];
         $htmlFooter =  $data['invoiceFooter'];
         // Create instance of PhpWordDoc class
         $phpWordDoc = new PhpWordDoc();
 
+        $fiileName = 'invoiceword-'.time(). '-file'.'.docx';
+        $fileFolder = 'invoice/client/'.$fiileName;
+        $filePath = UPLOADS_ROOT . $fileFolder ;
+
+        $flPath = UPLOADS_ROOT .'invoice/client/';
+        
         // Generate Word document
-        $outputWordFile = $phpWordDoc->generateWordDocument($headerHtml, $htmlContent, $htmlFooter);
+        $outputWordFile = $phpWordDoc->generateWordDocument($headerHtml, $htmlContent, $htmlFooter, $filePath);
 
-        echo "Anillll=======>";
-        print_r($outputWordFile);
-        exit;
-
-        // Download PDF version
-        $phpWordDoc->downloadPDF($htmlContent, 'output_document.pdf');
-        
-        
-
-        //print_r($data);
-        //exit;
-        $htmlConent = $data && isset($data['pdfContent']) ? $data : '';
-        $mpdf = new mpdf();
-        $isPdfDownload = $mpdf->downloadPDF($htmlConent);
-        if ($isPdfDownload) {
-            $result['pdfFile'] = $isPdfDownload;
+        if ($outputWordFile) {
+            $result['worFile'] = $fiileName;
+            $result['filePath'] = $fileFolder;
             $result['status'] = 200;
-            $result['msg'] = "Download";
+            $result['msg'] = "File geenrated successflly";            
+
+            try{
+                if (substr($flPath, -1) != '/') {
+                    $flPath .= '/';
+                }
+                $files = glob($flPath . '*');
+                foreach ($files as $file) {
+                    if (is_file($file) && $file !== $filePath) {
+                        unlink($file); // Delete file
+                    }
+                }
+            }catch( Exception $e ){
+
+            } 
+
         } else {
-            $result['pdfFile'] = $isPdfDownload;
+            $result['pdfFile'] = $fileFolder;
             $result['status'] = 422;
             $result['msg'] = "Not downloaded";
         }

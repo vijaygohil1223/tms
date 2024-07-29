@@ -19852,6 +19852,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 rest.path = 'downloadInvoiceWord';
                 rest.post(invoiceWordData).success(function (data) {
+                    console.log('data', data)
+                    setTimeout(() => {
+                        //var fileUrl = 'http://localhost/tms/uploads/invoice/client/'.data?.worFile;
+                        var fileUrl = 'uploads/invoice/client/'+data?.worFile;
+                    
+                        // Create an <a> element
+                        var downloadLink = document.createElement('a');
+                        downloadLink.href = fileUrl;
+                        downloadLink.download = 'file-'+number; // Specify the file name here
+                        // Append the <a> element to the document body
+                        document.body.appendChild(downloadLink);
+                        // Click the link programmatically
+                        downloadLink.click();
+                        // Clean up: Remove the <a> element after download
+                        document.body.removeChild(downloadLink);
+                    }, 500);
+
                 }).error(errorCallback);
                 return false;
 
