@@ -51,7 +51,10 @@ class phpWordDoc
             // Add header with HTML content
             //$logourl = DOCUMENT_ROOT . 'assets/img/invoice_logo.png'; // Adjust the URL as per your actual path
             $logourl = SITE_URL . '/assets/img/invoice_logo.png';
-
+            // Define header HTML with logo aligned to the right
+            $headerHtml = '<div style="text-align:right;margin-bottom:10px;margin-top:10px;">';
+            //$headerHtml .= '<img src="' . $logourl . '" style="height: 50px; width: 200px;" />';
+            $headerHtml .= '</div>';
 
             $header = $section->addHeader();
             $header->addImage(
@@ -59,20 +62,18 @@ class phpWordDoc
                 [
                     'width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5),
                     'height' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(1.3),
-                    'top' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(10),
+                    'top' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(3),
+                    'right' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(3),
                     'positioning' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE,
                     'posHorizontal' => \PhpOffice\PhpWord\Style\Image::POSITION_HORIZONTAL_RIGHT,
                     'posHorizontalRel' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE_TO_PAGE,
                     'posVertical' => \PhpOffice\PhpWord\Style\Image::POSITION_VERTICAL_TOP,
                     'posVerticalRel' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE_TO_PAGE,
-                    'marginTop' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(10), 
-                    'marginRight' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(10), 
+                    'marginTop' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5), 
+                    //'wrapDistanceRight' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(15),
+                    'marginRight' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5), 
                 ]
             );
-            // Define header HTML with logo aligned to the right
-            $headerHtml = '<div style="text-align:right;margin-bottom:10px;margin-top:10px;">';
-            //$headerHtml .= '<img src="' . $logourl . '" style="height: 50px; width: 200px;" />';
-            $headerHtml .= '</div>';
             
             \PhpOffice\PhpWord\Shared\Html::addHtml($header, $headerHtml, false, false);
 
