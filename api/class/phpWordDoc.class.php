@@ -53,11 +53,25 @@ class phpWordDoc
             $logourl = SITE_URL.'/assets/img/invoice_logo.png'; 
             
             // Define header HTML with logo aligned to the right
-            $headerHtml = '<div style="text-align: right;">';
-            $headerHtml .= '<img src="' . $logourl . '" style="height: 50px; width: 200px;" />';
+            $headerHtml     = '<div style="text-align:right;margin-bottom:10px;margin-left:200px;float:right;position:absolute;">';
+            //$headerHtml .= '<img src="' . $logourl . '" style="height: 50px; width: 200px;" />';
             $headerHtml .= '</div>';
 
+            
+
             $header = $section->addHeader();
+            $header->addImage(
+                $logourl,
+                [
+                    'width' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(5),
+                    'height' => \PhpOffice\PhpWord\Shared\Converter::cmToPixel(2),
+                    'positioning' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE,
+                    'posHorizontal' => \PhpOffice\PhpWord\Style\Image::POSITION_HORIZONTAL_RIGHT,
+                    'posHorizontalRel' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE_TO_PAGE,
+                    'posVertical' => \PhpOffice\PhpWord\Style\Image::POSITION_VERTICAL_TOP,
+                    'posVerticalRel' => \PhpOffice\PhpWord\Style\Image::POSITION_RELATIVE_TO_PAGE,
+                ]
+            );
             \PhpOffice\PhpWord\Shared\Html::addHtml($header, $headerHtml, false, false);
 
             //$footerHtml = '<p class="address-title"> <span class="ng-binding">Dosina Translations AS | </span> <span class="ng-binding">Munthes gate 42, </span> <span class="ng-binding">0260 </span> <span class="ng-binding">Oslo, </span>  <span class="ng-binding">Norway</span> </p>';

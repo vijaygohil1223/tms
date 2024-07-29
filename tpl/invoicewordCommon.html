@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>table</title>
+  <title>Invoice</title>
 </head>
 
 <body>
@@ -31,7 +31,7 @@
           <p style="margin: 0 0 5px 0;font-family: Arial, Helvetica, sans-serif;margin-bottom: 20pt;"
             ng-if="invoiceDetail.clientVatinfo"> {{invoiceDetail.clientVatinfo}}</p>
         </div>
-        <div style="margin-top: 20pt;">
+        <div style="margin-top: 20px;">
           <table align="center" style="width: 100mm; border-collapse: collapse; margin-top: 20pt;">
             <thead>
               <tr>
@@ -56,17 +56,16 @@
 
         </div>
 
-        <div>
+        <div style="margin-top: 20px;">
           <p style="font-family: Arial, Helvetica, sans-serif; font-size: 20px;" ng-if="isCreditNotePage">
             <strong>Credit Note</strong> <span> {{invoiceCreditNotesNumber}} </span>
           </p>
-          <p style="font-family: Arial, Helvetica, sans-serif; font-size: 20px;" ng-if="! isCreditNotePage">
+          <p style="font-family: Arial, Helvetica, sans-serif; font-size: 20px;margin-top: 15px;margin-bottom: 15px;" ng-if="! isCreditNotePage">
             <strong>Invoice</strong> <span> {{invoiceDetail.custom_invoice_number}}</span>
           </p>
         </div>
 
         <div>
-          <!-- temp table demo -->
           <div style="margin: 30pt 20pt;">
             <table align="center" style="width: 100mm; border-collapse: collapse; ">
               <thead>
@@ -157,24 +156,53 @@
         </div>
       </div> -->
       <div>
+        
+        <div style="text-align: center; margin-top: 10px;">
+          <p style="border: 0; border-top: 1px solid lightblue; width: 100%;" > </p>
+        </div>
+        <!-- <div style="text-align: center; margin-top: 10px; display: inline-flex; width: 100%; justify-content: center;">
+          <p style="border: 0; border-top: 1px solid burlywood; width: 25%; margin: 0;"></p>
+          <p style="border: 0; border-top: 1px solid blue; width: 25%; margin: 0;"></p>
+          <p style="border: 0; border-top: 1px solid black; width: 25%; margin: 0;"></p>
+          <p style="border: 0; border-top: 1px solid blue; width: 25%; margin: 0;"></p>
+        </div> -->
+        <!-- <table align="center" style="width:100mm;">
+            <thead>
+              <tr>
+                <th style="background-color: #ea7227; height:1px;"> <span style="border-top: 1px solid #ea7227;"></span> </th>
+                <th style=""> <span style="border-top: 1px solid #ea7227;"></span> </th>
+                <th style="border-top: 1px solid #ea7227;"> <span style="background-color:blue;width:100px;" ></span> </th>
+                <th >  </th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td></td>
+              <td colspan="3" style="background-color: #5fc752; height:1px !important; "></td>
+              
+            </tr>
+          </tbody>
+        </table> -->
+      </div>
+      <div>
 
         <table align="center"  style="width:100mm; font-family: Arial, Helvetica, sans-serif; color: #919191;">
           <thead>
             <tr>
               <th > {{ invoiceSettingData.company_name }} </th>
-              <th > </th>
+              <th style="text-align: center;"> </th>
               <th style="text-align: right;"> VAT NUMBER:</th>
             </tr>
           </thead>
           <tbody>
           <tr>
               <td style="text-align:left !important;"> {{ invoiceSettingData.address1 }} </td>
-              <td style="text-align: center !important;"> Email: {{invoiceSettingData.work_email}}</td>
+              <td style="text-align: center;"> Email: {{invoiceSettingData.work_email}}</td>
               <td style="text-align: right;"> Foretaksregisteret: </td>
           </tr>
           <tr>
               <td style="text-align: left;"> {{ invoiceSettingData.postcode }} {{ invoiceSettingData.city }} {{ invoiceSettingData.country }} </td>
-              <td style="text-align: center !important; ">Web: {{ invoiceSettingData.web_address }} </td>
+              <td style="text-align: center; ">Web: {{ invoiceSettingData.web_address }} </td>
               <td style="text-align:right;"> {{ invoiceSettingData.vat_number }} </td>
           </tr>
 
