@@ -19853,21 +19853,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'downloadInvoiceWord';
                 rest.post(invoiceWordData).success(function (data) {
                     console.log('data', data)
-                    setTimeout(() => {
-                        //var fileUrl = 'http://localhost/tms/uploads/invoice/client/'.data?.worFile;
-                        var fileUrl = 'uploads/invoice/client/'+data?.worFile;
-                    
-                        // Create an <a> element
-                        var downloadLink = document.createElement('a');
-                        downloadLink.href = fileUrl;
-                        downloadLink.download = 'file-'+number; // Specify the file name here
-                        // Append the <a> element to the document body
-                        document.body.appendChild(downloadLink);
-                        // Click the link programmatically
-                        downloadLink.click();
-                        // Clean up: Remove the <a> element after download
-                        document.body.removeChild(downloadLink);
-                    }, 500);
+                    if(data && data.status == 200 && data?.worFile){
+                        setTimeout(() => {
+                            //var fileUrl = 'http://localhost/tms/uploads/invoice/client/'.data?.worFile;
+                            var fileUrl = 'uploads/invoice/client/'+data?.worFile;
+                        
+                            // Create an <a> element
+                            var downloadLink = document.createElement('a');
+                            downloadLink.href = fileUrl;
+                            downloadLink.download = number ? number : 'Invoice'; // Specify the file name here
+                            // Append the <a> element to the document body
+                            document.body.appendChild(downloadLink);
+                            // Click the link programmatically
+                            downloadLink.click();
+                            // Clean up: Remove the <a> element after download
+                            document.body.removeChild(downloadLink);
+                            notification('Invoice has been successfully downloaded.', 'success');
+                        }, 500);
+                    }else{
+                        notification('Downloading issue.', 'warning');
+                    }
 
                 }).error(errorCallback);
                 return false;

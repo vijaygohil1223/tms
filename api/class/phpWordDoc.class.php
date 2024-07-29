@@ -82,7 +82,7 @@ class phpWordDoc
             // $table->addCell(2000)->addText('Row 2, Cell 2');
             // $table->addCell(2000)->addText('Row 2, Cell 3');
             $footer = $section->addFooter();
-            $footer->addPreserveText('Page {PAGE} of {NUMPAGES}.', null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
+            $footer->addPreserveText(' {PAGE} / {NUMPAGES}.', null, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER]);
             //$footer->addLink('https://github.com/PHPOffice/PHPWord', 'PHPWord on GitHub');
             \PhpOffice\PhpWord\Shared\Html::addHtml($footer, $footerHtml, false, false);
 

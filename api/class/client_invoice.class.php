@@ -5,7 +5,6 @@ require_once 'functions.class.php';
 require_once 'mpdf.class.php';
 
 require_once 'phpWordDoc.class.php';
-
 class Client_invoice
 {
 
@@ -1425,7 +1424,7 @@ class Client_invoice
             } 
 
         } else {
-            $result['pdfFile'] = $fileFolder;
+            $result['worFile'] = $fileFolder;
             $result['status'] = 422;
             $result['msg'] = "Not downloaded";
         }
