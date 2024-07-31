@@ -7754,7 +7754,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var uploadObj;
     $timeout(function () {
         uploadObj = $("#multipleupload").uploadFile({
-            url: rest.baseUrl+'fileManagerFileupload',
+            url: rest.baseUrl+'fileManagerFileuploadAWS',
+            //url: rest.baseUrl+'fileManagerFileupload',
             //url: 'filemanager-upload.php',
             multiple: true,
             dragDrop: true,
@@ -7848,7 +7849,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         f_id: 1,
                         parent_id: $scope.filedata.parent_id,
                         ext: alldata["ext"],
-                        size: alldata["size"]
+                        size: alldata["size"],
+                        is_s3bucket: 1
                     };
                     $scope.allFilesArr.push(allFiles);
 
@@ -7969,27 +7971,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $('.ajax-upload-dragdrop:eq(1)').hide();
     }, 500);
 
-    function downloadFileByAtag(fname, fOriginalName){
-        const a = document.createElement('a');
-        const fileName = fOriginalName ? fOriginalName : fname; 
-        const fileURL = 'uploads/fileupload/' + fname; 
+    function downloadFileByAtag(fname, fOriginalName) {
+        const aTag = document.createElement('a');
+        const fileName = fOriginalName ? fOriginalName : fname; // Use the original name if provided
+    
+        // Determine if the URL is an AWS URL or a local path
+        const isAwsUrl = fname.startsWith('https://');
+        const fileURL = isAwsUrl ? fname : 'uploads/fileupload/' + fname;
+    
+        aTag.setAttribute('download', fileName);
+        aTag.setAttribute('href', fileURL);
+        aTag.style.display = 'none'; 
+        document.body.appendChild(aTag);
         
-        a.setAttribute('download', fileName);
-        a.setAttribute('href', fileURL);
-        a.style.display = 'none'; // Hide the element
-        document.body.appendChild(a);
-        
-        // Initiate download after a short delay (e.g., 100ms)
+        // rest.path = 'downloadSignleFile';
+        // rest.put(newObj).success(function (data) {
+        //     console.log('data', data)
+        //     //$route.reload();
+        // }).error(errorCallback);
         setTimeout(function() {
-            a.click(); 
-            document.body.removeChild(a); 
-            setTimeout(function() {
-                document.body.removeChild(a);
-                $scope.$apply(function() {
-                    angular.element(a).data('clicked', false);
-                    //$route.reload();
-                });
-            }, 200);
+            aTag.click(); 
+            document.body.removeChild(aTag); 
+            // Optionally update Angular scope if needed
+            $scope.$apply(function() {
+                angular.element(aTag).data('clicked', false);
+                //$route.reload(); // Uncomment if you need to reload the route
+            });
         }, 100);
     }
 
@@ -8433,14 +8440,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 fimg = val.name;
                                             }
                                             let fOriginalName_ =  val.original_filename;
-                                            var fimgUrl = "uploads/fileupload/" + fimg;
-                                            if (fileUrlExists(fimgUrl)) {
+                                            var fimgUrl = val.is_s3bucket ? fimg : "uploads/fileupload/" + fimg;
+                                            if (val.is_s3bucket == 1) {
+                                                console.log('val=======>', val)
                                                 fileUrls.push({
                                                     'parent_id': val.parent_id,
                                                     'full_url': fimgUrl,
                                                     'file_name': fOriginalName_,
                                                     'folderurl_dir': val.folderurl,
                                                 });
+                                            }else{
+                                                if(fileUrlExists(fimgUrl)){
+                                                    console.log('fimgUrl=============>elseeeee', fimgUrl)
+                                                    fileUrls.push({
+                                                        'parent_id': val.parent_id,
+                                                        'full_url': fimgUrl,
+                                                        'file_name': fOriginalName_,
+                                                        'folderurl_dir': val.folderurl,
+                                                    });
+                                                }
                                             }
                                         } else if (val.ext === '') {
                                             folderArr.push({
@@ -8477,6 +8495,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         });
                             
                                         return $q.all(filePromises).then(function(files) {
+                                            console.log('filesDAta =====>', files)
+                                            false;
                                             files.forEach(function(file) {
                                                 folderArr.forEach(function(folder) {
                                                     zipdwnld.folder(folder.folderurl_dir);
@@ -8588,9 +8608,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 var fileName = $itemScope.display.name;
                                 //var fOriginalName = fileName;
                                 var fOriginalName = $itemScope.display.original_filename;
-                            
                             }
-
                             downloadFileByAtag(fileName, fOriginalName)
                             
                             $timeout(function () {
@@ -8600,6 +8618,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }],
 
                         ['Delete', function ($itemScope) {
+                            console.log('$itemScope', $itemScope)
+                            //return false;
                             bootbox.confirm("Are you sure you want to delete?", function (result) {
                                 if (result == true) {
                                     $scope.copyfile = [];
@@ -8632,6 +8652,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         if (folderId != undefined) {
                                             $scope.showLoder = false;
                                             if (result == true) {
+                                                if($itemScope.display.is_s3bucket == 1){
+                                                    image = 's3bucketFile'
+                                                }
                                                 rest.path = 'filemanagerfolderDelete/' + folderId + '/' + image;
                                                 rest.delete().success(function (data) {
                                                     $scope.copyfile = [];

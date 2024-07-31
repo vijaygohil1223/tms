@@ -4,6 +4,8 @@ require_once 'functions.class.php';
 require_once 'mail_format.class.php';
 require_once 'userstatus.class.php';
 
+require_once 'awsFileupload.class.php';
+
 class filemanager {
 
     protected $_db;
@@ -522,24 +524,40 @@ class filemanager {
     }
 
     public function filemanagerfolderDelete($id,$image){
+        $awsFile = new awsFileupload();
+        if($image){
+            $info = self::filegetByfmanagerId($id);
+            if(isset($info['name']) || isset($info['ext'])) {
+                if(isset($info['is_s3bucket'] ) && $info['is_s3bucket'] ==1 ){
+                    $deleteFromaws = $awsFile->awsFileDelete($info['name']); 
+                }
+            }
+        }
         $path = "../../uploads/fileupload/";
         $images = glob($path.$image);
         if($images){
-            if(isset($images[0])) {
-                unlink($path.$image);
-            }
+            try {
+                if(isset($images[0])) {
+                    unlink($path.$image);
+                }
+            } catch (Exception $e) {}
         }
+        
         $this->_db->where('fmanager_id',$id);
         $data = $this->_db->delete('tms_filemanager');
         if($data) {
             $info = self::filegetByparentId($id);
             foreach($info AS $key => $value) {
                 if(isset($value['name']) || isset($value['ext'])) {
-                    $path = "../../uploads/fileupload/";
-                    $images = glob($path.$value['name']);
-                    if($images){
-                        if(isset($images)) {
-                            unlink($path.$value['name']);
+                    if(isset($value['is_s3bucket'] ) && $value['is_s3bucket'] ==1 ){
+                        $deleteFromaws = $awsFile->awsFileDelete($value['name']); 
+                    }else{
+                        $path = "../../uploads/fileupload/";
+                        $images = glob($path.$value['name']);
+                        if($images){
+                            if(isset($images)) {
+                                unlink($path.$value['name']);
+                            }
                         }
                     }
                 }
@@ -552,13 +570,19 @@ class filemanager {
     }
     public function filemanagerfolderDeleteMultiple($id,$data){
         $path = "../../uploads/fileupload/";
+
+        $awsFile = new awsFileupload();
         foreach ($data as $value) {
             $this->_db->where('fmanager_id',$value['id']);
             $info = $this->_db->getOne('tms_filemanager');
             if($info && count($info)>0){
-                $images = glob($path.$info['name']);
-                if(isset($images)) {
-                    unlink($path.$info['name']);
+                $filename = glob($path.$info['name']);
+                if(isset($filename)) {
+                    if(isset($info['is_s3bucket'] ) && $info['is_s3bucket'] ==1 ){
+                        $deleteFromaws = $awsFile->awsFileDelete($info['name']); 
+                    }else{
+                        unlink($path.$info['name']);
+                    }
                 }
             }
 
@@ -1146,6 +1170,154 @@ array(
         return $return;
         
     }
+
+    public function saveFileuploadAWS($data) {
+        $output_dir = UPLOADS_ROOT."fileupload/";
+        $currentDate = date('Y-m-d');
+        $awsFile = new awsFileupload();
+                    
+        if (isset($_FILES["myfile"])) {
+            $ret = [];
+            $error = $_FILES["myfile"]["error"]; {
+                if (!is_array($_FILES["myfile"]['name'])) //single file
+                {
+                    $originalFilename = $_FILES['myfile']['name'];
+                    $defaultFileName = self::sanitizeFileName($_FILES['myfile']['name']);
+                    $extensionName = pathinfo($originalFilename, PATHINFO_EXTENSION);
+                    $filename = $defaultFileName;
+                    $filenameWithoutExtension = pathinfo($defaultFileName, PATHINFO_FILENAME);
+                    //move_uploaded_file($_FILES["myfile"]["tmp_name"][$i], $output_dir . $filename);
+                    $timestamp = time();
+                    $filename = $filenameWithoutExtension.'_'.$timestamp.'.' .$extensionName;
+                    
+                    $fileTempName = $_FILES["myfile"]["tmp_name"];
+                    //$originalFileName = basename( $_FILES['myfile']['name'] );
+                    //$extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+                    //$keyNameTimestamp = $currentDate . '/' . $filename . '.' . $extension;
+                    // current date folder
+                    $keyNameTimestamp = $currentDate . '/' . $filename ;
+                    $keyName = $keyNameTimestamp;
+                    
+                    $awsResult = $awsFile->awsFileUpload($fileTempName, $keyName );
+
+                    $checkext = explode('.', $filename);
+                    //$ret['ext'] = strtolower(end($checkext));
+                    $ret['ext'] = strtolower($extensionName);
+                    $size = $_FILES['myfile']['size'];
+                    $ret['size'] = self::formatSizeUnits($size);
+                    $ret['name'] = $awsResult['file_url'];
+                    //$ret['name'] = $filename;
+                    $ret['original_filename'] = $originalFilename;
+                    $ret['is_s3bucket'] = 1;
+                } else {
+                    $fileCount = count($_FILES["myfile"]['name']);
+                    for ($i = 0; $i < $fileCount; $i++) {
+                        //$fileName = $_FILES["myfile"]["name"][$i];
+                        //$ret[$fileName]= $output_dir.$fileName;
+                        $defaultFileName = $_FILES['myfile']['name'][$i];
+                        $extensionName = pathinfo($defaultFileName, PATHINFO_EXTENSION);
+                        $filenameWithoutExtension = pathinfo($defaultFileName, PATHINFO_FILENAME);
+                        
+                        //move_uploaded_file($_FILES["myfile"]["tmp_name"][$i], $output_dir . $filename);
+                        $timestamp = time();
+                        $filename = $filenameWithoutExtension.'_'.$timestamp.'.'.$extensionName;
+                        $fileTempName = $_FILES["myfile"]["tmp_name"][$i];
+                        //$originalFileName = basename( $_FILES['myfile']['name'][$i] );
+                        $originalFileName = $defaultFileName;
+                        //$extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+                        //$keyNameTimestamp = $currentDate . '/' . $filename . '.' . $extension;
+                        // current date folder
+                        $keyNameTimestamp = $currentDate . '/' . $filename ;
+                        $keyName = $keyNameTimestamp;
+                        
+                        $awsResult = $awsFile->awsFileUpload($fileTempName, $keyName );
+        
+                        $checkext = explode('.', $filename);
+        
+                        //$ret['ext'][$i] = strtolower(end($checkext));
+                        $ret['ext'] = strtolower($extensionName);
+                        $size = $_FILES['myfile']['size'][$i];
+                        $ret['size'][$i] = self::formatSizeUnits($size);
+                        //$ret['name'][$i] = $filename;
+                        $ret['name'] = $awsResult['file_url'];
+                        $ret['original_filename'] = $originalFileName;
+                        $ret['is_s3bucket'] = 1;
+                    }
+                }
+            }
+            //echo json_encode($ret);
+            $return = json_encode($ret);
+        }else{
+            $return = json_encode([]);
+        }
+
+        return $return;
+        
+    }
+
+    public function downloadSingleFile($fileData) {
+        // Clear the output buffer
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
     
+        // Enable error reporting for debugging
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+    
+        // Extract the file extension
+        $fileUrl = $fileData['fileURL'];
+    
+        // Validate the URL
+        if (!filter_var($fileUrl, FILTER_VALIDATE_URL)) {
+            die('Error: Invalid URL.');
+        }
+    
+        $filename = !empty($fileData['fOriginalName']) ? $fileData['fOriginalName'] : basename($fileUrl);
+        $desiredFileName = $filename;
+    
+        // Initialize cURL session
+        $ch = curl_init($fileUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $fileContent = curl_exec($ch);
+    
+        // Check for cURL errors
+        if (curl_errno($ch)) {
+            $curlError = curl_error($ch);
+            curl_close($ch);
+            die('Error: ' . $curlError);
+        }
+    
+        // Close cURL session
+        curl_close($ch);
+    
+        // Check if file content was fetched successfully
+        if ($fileContent === false) {
+            die('Error: Unable to fetch file.');
+        }
+    
+        // Check if the content is not empty
+        if (empty($fileContent)) {
+            die('Error: File content is empty.');
+        }
+    
+        // Optional: Log or debug file content length
+        error_log("File content length: " . strlen($fileContent));
+    
+        // Set appropriate headers to force download
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($desiredFileName) . '"');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . strlen($fileContent));
+    
+        // Output the file content
+        echo $fileContent;
+        exit;
+    }
 
 }

@@ -573,7 +573,7 @@
           </file>
 
           <!-- Png -->
-          <file extension="png" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          <!-- <file extension="png" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
             ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'jpg' ||
                                display.ext == 'JPEG' ||
                                display.ext == 'png' || 
@@ -584,7 +584,18 @@
                                display.ext == 'svg' || 
                                display.ext == 'webp' "
             style="background-image:url('uploads/fileupload/{{display.name}}') !important;"
-            context-menu="menuOptionsFiles" menuoptionIdName="0">
+            context-menu="menuOptionsFiles" menuoptionIdName="0"> -->
+            <file extension="png" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'jpg' ||
+                               display.ext == 'JPEG' ||
+                               display.ext == 'png' || 
+                               display.ext == 'jpeg'||  
+                               display.ext == 'gif'||  
+                               display.ext == 'bmp' || 
+                               display.ext == 'jfif' || 
+                               display.ext == 'svg' || 
+                               display.ext == 'webp' "
+                               ng-style="{ 'background-image': display.is_s3bucket == 1 ? 'url(' + display.name + ')' : 'url(uploads/fileupload/' + display.name + ')' }" context-menu="menuOptionsFiles" menuoptionIdName="0">
             <p>{{display.original_filename}}</p>
           </file>
 
@@ -676,7 +687,9 @@
           </file>
 
           <a id="download{{display.fmanager_id}}" style="display:none;"
-            href="uploads/fileupload/{{display.name}}">Download</a>
+            href="{{display.name}}" ng-if="display.is_s3bucket">Download</a>
+          <a id="download{{display.fmanager_id}}" style="display:none;"
+            href="uploads/fileupload/{{display.name}}" ng-if="!display.is_s3bucket">Download</a>
 
         </div>
 

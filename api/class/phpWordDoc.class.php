@@ -1,9 +1,5 @@
 <?php
 
-//require_once __DIR__ . '/mpdf/vendor/autoload.php';
-//require_once __DIR__ . '/PHPWord/bootstrap.php';
-
-//require_once 'mpdf/vendor/autoload.php';
 require_once 'PHPWord/bootstrap.php';
 use PhpOffice\PhpWord\Settings;
 
