@@ -6279,7 +6279,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var allFilesArr = [];
     $timeout(function () {
         uploadObj = $("#multipleupload").uploadFile({
-            url: rest.baseUrl+'fileManagerFileupload',
+            url: rest.baseUrl+'fileManagerFileuploadAWS',
+            //url: rest.baseUrl+'fileManagerFileupload',
             //url: 'filemanager-upload.php',
             multiple: true,
             dragDrop: true,
@@ -6353,7 +6354,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         f_id: 1,
                         parent_id: $scope.filedata.parent_id,
                         ext: alldata["ext"],
-                        size: alldata["size"]
+                        size: alldata["size"],
+                        is_s3bucket: 1 // For AWS s3 bucket
                     };
                     $scope.allFilesArr.push(allFiles);
                     rest.path = 'fileAdd';
@@ -6772,17 +6774,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                     if (sameNameExist.length > 1) {
                                                         fimg = val.name; 
                                                     }
-                                                    var fimgUrl = "uploads/fileupload/" + fimg;
+                                                    //var fimgUrl = "uploads/fileupload/" + fimg;
+                                                    var fimgUrl = val.is_s3bucket ? fimg : "uploads/fileupload/" + fimg;
+                                            
                                                     let originalFileName = val.original_filename; 
                                                     
-                                                    if (fileUrlExists(fimgUrl)) {
+                                                    if (val.is_s3bucket == 1) {
                                                         fileUrls.push({
                                                             'parent_id': val.parent_id,
                                                             'full_url': fimgUrl,
                                                             'file_name': originalFileName,
                                                             'folderurl_dir': val.folderurl,
                                                         });
+                                                    }else{
+                                                        if(fileUrlExists(fimgUrl)){
+                                                            fileUrls.push({
+                                                                'parent_id': val.parent_id,
+                                                                'full_url': fimgUrl,
+                                                                'file_name': originalFileName,
+                                                                'folderurl_dir': val.folderurl,
+                                                            });
+                                                        }
                                                     }
+                                                    // if (fileUrlExists(fimgUrl)) {
+                                                    //     fileUrls.push({
+                                                    //         'parent_id': val.parent_id,
+                                                    //         'full_url': fimgUrl,
+                                                    //         'file_name': originalFileName,
+                                                    //         'folderurl_dir': val.folderurl,
+                                                    //     });
+                                                    // }
                                                 } else if (val.ext == '') {
                                                     var foldername = val.name;
                                                     var fmid = val.fmanager_id;
@@ -7850,7 +7871,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         parent_id: $scope.filedata.parent_id,
                         ext: alldata["ext"],
                         size: alldata["size"],
-                        is_s3bucket: 1
+                        is_s3bucket: 1 // For AWS s3 bucket
                     };
                     $scope.allFilesArr.push(allFiles);
 
@@ -8442,7 +8463,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             let fOriginalName_ =  val.original_filename;
                                             var fimgUrl = val.is_s3bucket ? fimg : "uploads/fileupload/" + fimg;
                                             if (val.is_s3bucket == 1) {
-                                                console.log('val=======>', val)
                                                 fileUrls.push({
                                                     'parent_id': val.parent_id,
                                                     'full_url': fimgUrl,
@@ -8451,7 +8471,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 });
                                             }else{
                                                 if(fileUrlExists(fimgUrl)){
-                                                    console.log('fimgUrl=============>elseeeee', fimgUrl)
                                                     fileUrls.push({
                                                         'parent_id': val.parent_id,
                                                         'full_url': fimgUrl,

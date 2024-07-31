@@ -495,7 +495,7 @@
                                        category.ext == 'jfif' ||  
                                        category.ext == 'webp' ||  
                                        category.ext == 'svg' " 
-                                       style="background-image:url('uploads/fileupload/{{category.name}}') !important;" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
+                                       ng-style="{ 'background-image': category.is_s3bucket == 1 ? 'url(' + category.name + ')' : 'url(uploads/fileupload/' + category.name + ')' }" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}"><p>{{category.original_filename}}</p></file>
                        <!-- Zip -->
                        <file extension="zip" id="{{category.fmanager_id}}" ng-click="addToCopy(category.fmanager_id)" file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}"  
                           ng-if="category.ext == 'zip' ||
@@ -573,18 +573,6 @@
           </file>
 
           <!-- Png -->
-          <!-- <file extension="png" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'jpg' ||
-                               display.ext == 'JPEG' ||
-                               display.ext == 'png' || 
-                               display.ext == 'jpeg'||  
-                               display.ext == 'gif'||  
-                               display.ext == 'bmp' || 
-                               display.ext == 'jfif' || 
-                               display.ext == 'svg' || 
-                               display.ext == 'webp' "
-            style="background-image:url('uploads/fileupload/{{display.name}}') !important;"
-            context-menu="menuOptionsFiles" menuoptionIdName="0"> -->
             <file extension="png" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
             ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'jpg' ||
                                display.ext == 'JPEG' ||

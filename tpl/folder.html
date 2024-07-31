@@ -392,7 +392,9 @@ table {
                      ng-if="! fileExtensionExist(display.ext) && display.f_id == '1' " class="txt" context-menu="menuOptionsFiles"><p>
                       {{display.original_filename}}</p></file>
 
-               <a id="download{{display.fmanager_id}}" style="display:none;" href="uploads/fileupload/{{display.name}}">Download</a>
+                <a id="download{{display.fmanager_id}}" style="display:none;" href="{{display.name}}" ng-if="display.is_s3bucket">Download</a>      
+                <a id="download{{display.fmanager_id}}" style="display:none;" href="uploads/fileupload/{{display.name}}" ng-if="!display.is_s3bucket">Download</a>
+
             </div>
          </div>   
       </form>

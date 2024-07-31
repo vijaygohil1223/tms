@@ -43,6 +43,7 @@ class awsFileupload
                 'Bucket' => AWS_S3_BUCKET_NAME,
                 'Key'    => $keyName, //file url
                 'SourceFile' => $file,
+                //'ContentType' => $contentType,
                 // 'ACL'    => 'public-read', // Optional: Set permissions here if needed
             ]);
             // Return success response
