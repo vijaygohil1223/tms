@@ -6657,6 +6657,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Double click on file it will download direct
     setTimeout(() => {
         $('file').on('dblclick', function() {
+
             // To solve two time file download issue
             if ($(this).data('clicked')) {
                 return;
@@ -6676,6 +6677,35 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 500);
         });
     }, 2000);
+
+    function downloadFileByAtag(fname, fOriginalName) {
+        const aTag = document.createElement('a');
+        const fileName = fOriginalName ? fOriginalName : fname; // Use the original name if provided
+    
+        // Determine if the URL is an AWS URL or a local path
+        const isAwsUrl = fname.startsWith('https://');
+        const fileURL = isAwsUrl ? fname : 'uploads/fileupload/' + fname;
+    
+        aTag.setAttribute('download', fileName);
+        aTag.setAttribute('href', fileURL);
+        aTag.style.display = 'none'; 
+        document.body.appendChild(aTag);
+        setTimeout(function() {
+            aTag.click(); 
+            document.body.removeChild(aTag); 
+            // Optionally update Angular scope if needed
+            $scope.$apply(function() {
+                angular.element(aTag).data('clicked', false);
+                //$route.reload(); // Uncomment if you need to reload the route
+            });
+        }, 100);
+    }
+
+    $timeout(function () {
+        $scope.addToDownload = function (fname, fOriginalName ) {
+            downloadFileByAtag(fname, fOriginalName)
+        }
+    }, 500);
 
     $scope.paramsID = $routeParams.id ? $routeParams.id : '';
 
