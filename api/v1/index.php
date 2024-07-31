@@ -2932,6 +2932,18 @@ $app->post('/fileManagerFileupload', function () use($app) {
     $result = $filemanager->saveFileupload($data);
     echoResponse(200, $result);
 });
+$app->post('/fileManagerFileuploadAWS', function () use($app) {
+    $filemanager = new filemanager ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $filemanager->saveFileuploadAWS($data);
+    echoResponse(200, $result);
+});
+$app->post('/downloadSignleFile', function () use($app) {
+    $filemanager = new filemanager ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $filemanager->downloadSingleFile($data);
+    echoResponse(200, $result);
+});
 
 //----------------order status search---------------------//
 $app->get('/statusorderReportFind', 'authenticate',function () use($app) {
