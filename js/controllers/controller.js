@@ -11929,7 +11929,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.overAllshow = true;
     $scope.dateFormatGlobal = $window.localStorage.getItem('global_dateFormat');
 
-
     if($scope.userRight == 2){
         $routeParams.id = $scope.loginUserId;
     }
@@ -12263,7 +12262,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             address.push($scope.viewExternalCommunicational.vAddress1);
             
             angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
-                angular.element('#' + val.id).html(val.value);
+                //angular.element('#' + val.id).html(val.value);
+                try {
+                    switch (val.id) {
+                        case 'address1_locality':
+                            $scope.externalResCity = val?.value;
+                            break;
+                        case 'address1_administrative_area_level_1':
+                            $scope.externalResState = val?.value;
+                            break;    
+                        case 'address1_country':
+                            $scope.externalResCountry = (val?.value).split(',').pop();
+                            break;
+                        case 'address1_postal_code':
+                            $scope.externalResPostalcode = val?.value;
+                            break;    
+                    }
+                } catch (error) {
+                    console.log('error', error)
+                }
                 address.push(val.value);
             });
             angular.element('#address1').text($.grep(address, Boolean).join(', '));
@@ -33568,40 +33585,44 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     
     $scope.resourceDefault = $window.localStorage.getItem("session_iUserId");
+    console.log('$scope.resourceDefault==========', $scope.resourceDefault)
     $scope.resourceId = '0';
     $scope.isDisabledExportpdf = false;
     
     $scope.changeResource = function(resourceId){
-        
-        $scope.resourceId = $scope.userRight == 2 ? $scope.resourceDefault : resourceId.split(',').pop();
-        
         $scope.InvoiceResult = [];
         $scope.jobInvoiceIds = [];
-        rest.path = 'freelanceJob/' + $scope.resourceId;
-        rest.get().success(function (data) {
-            $scope.InvoiceResult = data;
+            
+        if(resourceId != 0 || $scope.userRight == 2){
+            $scope.resourceId = $scope.userRight == 2 ? $scope.resourceDefault : resourceId.split(',').pop();
+            
+            rest.path = 'freelanceJob/' + $scope.resourceId;
+            rest.get().success(function (data) {
+                $scope.InvoiceResult = data;
+                console.log('$scope.InvoiceResult====>', $scope.InvoiceResult)
 
-            rest.path = "viewAllInvoice1/save";
-            rest.get().success(function (data2) {
-                console.log('all-invoice-data2', data2)
-                data2.filter( (item) => {
-                    if(item.freelanceId == $scope.resourceId){
-                        var jbarr = JSON.parse(item.jobInvoiceIds)
-                        const idArray = jbarr.map(obj => $scope.jobInvoiceIds.push(obj.id));
-                        return true; 
-                    }
+                rest.path = "viewAllInvoice1/save";
+                rest.get().success(function (data2) {
+                    console.log('all-invoice-data2', data2)
+                    data2.filter( (item) => {
+                        if(item.freelanceId == $scope.resourceId){
+                            var jbarr = JSON.parse(item.jobInvoiceIds)
+                            const idArray = jbarr.map(obj => $scope.jobInvoiceIds.push(obj.id));
+                            return true; 
+                        }
+                    })
+                    console.log('$scope.jobInvoiceIds', $scope.jobInvoiceIds)
+                    $scope.InvoiceResult = data.filter(function (el) {
+                        el.freelance_currency = el.freelance_currency ? el.freelance_currency.split(',')[0] : 'EUR';
+                        let jbStatus = el.item_status.toLowerCase();
+                        // check status and jobids not exist in invoice list
+                        if(['approved','invoice ready','invoice Ready','overdue'].includes(jbStatus) && !$scope.jobInvoiceIds.includes(el.job_summmeryId))
+                            return true;
+
+                    });
                 })
-                console.log('$scope.jobInvoiceIds', $scope.jobInvoiceIds)
-                $scope.InvoiceResult = data.filter(function (el) {
-                    el.freelance_currency = el.freelance_currency ? el.freelance_currency.split(',')[0] : 'EUR';
-                    let jbStatus = el.item_status.toLowerCase();
-                    // check status and jobids not exist in invoice list
-                    if(['approved','invoice ready','invoice Ready','overdue'].includes(jbStatus) && !$scope.jobInvoiceIds.includes(el.job_summmeryId))
-                        return true;
-
-                });
-            })
-        });        
+            }); 
+        }       
     }
     $scope.changeResource('0');
     

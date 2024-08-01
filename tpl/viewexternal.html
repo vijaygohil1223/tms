@@ -226,20 +226,24 @@
                                         </tr>
                                         <tr>
                                             <td><span class="TblSpan">City</span></td>
-                                            <td><span id="address1_locality" ng-bind="vCity1"></span></td>
+                                            <!-- <td><span id="address1_locality" ng-bind="vCity1"></span></td> -->
+                                            <td><span ng-bind="externalResCity"></span></td>
                                         </tr>
                                         <tr>
                                             <td><span class="TblSpan">State</span></td>
-                                            <td><span id="address1_administrative_area_level_1" ng-bind="add1.state"></span>
-                                            </td>
+                                            <!-- <td><span id="address1_administrative_area_level_1" ng-bind="add1.state"></span>
+                                            </td> -->
+                                            <td><span ng-bind="externalResState"></span></td>
                                         </tr>
                                         <tr>
                                             <td><span class="TblSpan">Country</span></td>
-                                            <td><span id="address1_country" ng-bind="add1.zipcode"></span></td>
+                                            <!-- <td><span id="address1_country" ng-bind="add1.zipcode"></span></td> -->
+                                            <td><span ng-bind="externalResCountry"></span></td>
                                         </tr>
                                         <tr>
                                             <td><span class="TblSpan">Zip Code</span></td>
-                                            <td><span id="address1_postal_code"></span></td>
+                                            <!-- <td><span id="address1_postal_code"></span></td> -->
+                                            <td><span ng-bind="externalResPostalcode"></span></td>
                                         </tr>
                                     </tbody>
                                 </table>
