@@ -5012,12 +5012,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             INSTRUCTIONS: $scope.jobdetail.jobDesc,
             DEADLINE: poDueDateTime,
             WORDCOUNT: '',
-            TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
-            TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price) + freelanceCurrency,
+            TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price, 2),
+            TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price, 2) + freelanceCurrency,
         };
         
         Object.assign($scope.dataReplaceArr, dataReplaceArr);
-        console.log('$scope.dataReplaceArr', $scope.dataReplaceArr)
+        console.log('$scope.dataReplaceArr=====>popup', dataReplaceArr)
 
         if(emailTemplate){
             $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
@@ -26544,12 +26544,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             INSTRUCTIONS: $scope.jobdetail.jobDesc,
             DEADLINE: poDueDateTime,
             WORDCOUNT: '',
-            TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
-            TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price),
+            TOTALPRICE: $filter('NumbersCommaformat')($scope.jobdetail.total_price, 2),
+            TOTALAMOUNT: $filter('NumbersCommaformat')($scope.jobdetail.total_price, 2),
         };
         
         Object.assign($scope.dataReplaceArr, dataReplaceArr);
-        console.log('$scope.dataReplaceArr', $scope.dataReplaceArr)
+        console.log('$scope.dataReplaceArr======>', $scope.dataReplaceArr)
 
         if(emailTemplate){
             $scope.emailTemplate = replaceVariables(emailTemplate.template_content, $scope.dataReplaceArr)
@@ -32208,7 +32208,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     DelivDeadline: items.deadline,
                     CompanyCodeShort: items.companyCodeShort,
                     //Fee: '', // Word count
-                    Total: $filter('NumbersCommaformat')(items.jobdetail.total_price) + freelanceCurrency,
+                    Total: $filter('NumbersCommaformat')(items.jobdetail.total_price, 2) + freelanceCurrency,
                     QuickJobLink : '<a href="'+jobDetailUrl+'" >'+jobDetailUrl +' </a>',
                     DownloadURL: '<a href="'+downloadUrl+'" >'+downloadUrl +' </a>',
                 };
