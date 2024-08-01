@@ -12281,7 +12281,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 } catch (error) {
                     console.log('error', error)
                 }
-                address.push(val.value);
+                if(val.id !== 'address1_street_number'){
+                    address.push(val.value);
+                }
             });
             angular.element('#address1').text($.grep(address, Boolean).join(', '));
         }).error(errorCallback);
