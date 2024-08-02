@@ -62,7 +62,7 @@ class discussion {
                         }
                         $jobid = $data['job_id'];
                         $resourceId = $userData['iUserId'];
-                        $baseurl = SITE_URL."/#/dashboard1?";
+                        $baseurl = SITE_URL."#/dashboard1?";
                         $queryParams = [
                             'chatpage' => 1,
                             'jobid' => $jobid,

@@ -3962,6 +3962,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //$scope.displayItems = $scope.totalItems.slice(startPos, startPos + 3);
             };
 
+            function parseQueryString(queryString) {
+                var params = {};
+                var queryParts = queryString.split('&');
+                queryParts.forEach(function(part) {
+                    var pair = part.split('=');
+                    if (pair.length === 2) {
+                        params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+                    }
+                });
+                return params;
+            }
+            
+            if($scope.userRight == 2){
+                try {
+                    var queryParams = $location.search();
+                    if (Object.keys(queryParams).length > 0) {
+                        setTimeout(() => {
+                            let queryParamsEncode = atob( Object.keys(queryParams)[0] );
+                            let queryParamsB64 = parseQueryString(queryParamsEncode);
+                            console.log('queryParamsB64', queryParamsB64)
+                            if(queryParamsB64 && queryParamsB64.chatpage == 1 && queryParamsB64.jobid > 0 ){
+                                $scope.projectJobdetail(queryParamsB64.jobid, true);
+                            }
+                            //$location.search({});
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.log('error', error)
+                    
+                }
+            }
+
         }).error(errorCallback);
     }
 
@@ -4630,40 +4662,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     
     }
-
-    
-    function parseQueryString(queryString) {
-        var params = {};
-        var queryParts = queryString.split('&');
-        queryParts.forEach(function(part) {
-            var pair = part.split('=');
-            if (pair.length === 2) {
-                params[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-            }
-        });
-        return params;
-    }
-    
-    if($scope.userRight == 2){
-        try {
-            var queryParams = $location.search();
-            if (Object.keys(queryParams).length > 0) {
-                setTimeout(() => {
-                    let queryParamsEncode = atob( Object.keys(queryParams)[0] );
-                    let queryParamsB64 = parseQueryString(queryParamsEncode);
-                    console.log('queryParamsB64', queryParamsB64)
-                    if(queryParamsB64 && queryParamsB64.chatpage == 1 && queryParamsB64.jobid > 0 ){
-                        $scope.projectJobdetail(queryParamsB64.jobid, true);
-                    }
-                    //$location.search({});
-                }, 1000);
-            }
-        } catch (error) {
-            console.log('error', error)
-            
-        }
-    }
-
 
     
     // on - edit/update project scoop stay on same tabs
