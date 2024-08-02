@@ -60,10 +60,25 @@ class discussion {
                             $attachment .= "Attachment: \n ";
                             $attachment .= " <a target='_blank' href=\"$fileURL\" target=\"_blank\">$filename</a>";
                         }
-                        
+                        $jobid = $data['job_id'];
+                        $resourceId = $userData['iUserId'];
+                        $baseurl = SITE_URL."/#/dashboard1?";
+                        $queryParams = [
+                            'chatpage' => 1,
+                            'jobid' => $jobid,
+                            'resourceId' => $resourceId,
+                        ];
+                        $encodedQueryParams = base64_encode(http_build_query($queryParams));
+                        $redirectUrl = $baseurl . $encodedQueryParams;
+                        $atag = sprintf(
+                            '<br><div><p><a href="%s" target="_blank" style="color: #f3eded; background: #4e2fc4; padding: 8px; border-radius: 7px; border-color: #4e2fc4;" > View messages </a></p></div><br>',
+                            htmlspecialchars($redirectUrl)
+                        );
+
                         $html = nl2br(htmlspecialchars(" \n "));
                         $html .= isset($data['content']) ? nl2br(htmlspecialchars($data['content'])) : '';
                         $html .= $attachment; // Attach the file name wrapped in <a> tag to the email content
+                        $html .= $atag;
                         $userEmail = $userData['vEmailAddress']; 
                         $to_name = '';
                         $subject = 'Job comment: '.$jobData['po_number'];
