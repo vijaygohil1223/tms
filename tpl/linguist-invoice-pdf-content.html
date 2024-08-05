@@ -65,7 +65,7 @@
             <thead>
                 <tr>
                     <th style="width:50px">#</th>
-                    <th style="width:100px">PO Number</th>
+                    <!-- <th style="width:100px">PO Number</th> -->
                     <!-- <th>QUANTITY</th> -->
                     <th style="width:150px">Job Description</th>
                     <th style="width:100px">Amount</th>
@@ -74,7 +74,7 @@
             <tbody>
                 <tr ng-repeat="invL in invoiceList track by $index">
                     <td style="width:50px">{{$index + 1}}</td>
-                    <td style="width:100px">{{invL.scoop_poNumber}}</td>
+                    <!-- <td style="width:100px">{{invL.scoop_poNumber}}</td> -->
                     <td style="width:150px">
                         {{invL.poNumber}} | {{invL.item_name}}
                     </td>
@@ -88,7 +88,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
+                    <td colspan="2" class="text-right"><strong>Subtotal</strong></td>
                     <td style="width:10%;" class="nowrap">
                         {{invoiceTotal}}
                         <!-- <input class="form-control" ng-show="editInvoiceField" type="text"
@@ -98,7 +98,7 @@
                     </td>
                 </tr>
                 <tr class="tdborder" ng-if="taxValue > 0">
-                    <td colspan="3" class="text-right no-border nowrap"><strong>Tax ({{taxPercentage}}%)</strong></td>
+                    <td colspan="2" class="text-right no-border nowrap"><strong>Tax ({{taxPercentage}}%)</strong></td>
                     <td class="nowrap">
                         <span>{{ taxValue | customNumber }} </span>
                         <!-- <input class="form-control" ng-show="editInvoiceField"
@@ -107,7 +107,7 @@
                     </td>
                 </tr>
                 <tr class="tdborder" ng-show="showSecondCUrrency && taxValue > 0">
-                    <td colspan="3" class="text-right"><strong>Tax in NOK</strong></td>
+                    <td colspan="2" class="text-right"><strong>Tax in NOK</strong></td>
                     <td>
                         <span ng-hide="hideElemnt">{{ taxValue2 }}</span>
                         <input class="form-control" ng-show="hideElemnt" type="text" ng-model="taxValue2"
@@ -115,23 +115,23 @@
                     </td>
                 </tr>
                 <!-- <tr>
-                        <td colspan="3" class="text-right no-border"><strong>VAT Included in Total</strong></td>
+                        <td colspan="2" class="text-right no-border"><strong>VAT Included in Total</strong></td>
                         <td> 0.00</td>
                     </tr> -->
                 <!-- <tr class="tdborder">
-                        <td colspan="3" class="text-right no-border"><strong>Total </strong></td>
+                        <td colspan="2" class="text-right no-border"><strong>Total </strong></td>
                         <td style="white-space: nowrap;">
                             {{grandJobTotal | customNumber}}
                         </td>
                     </tr> -->
                 <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder">
-                    <td colspan="3" class="text-right no-border"><strong>Paid
+                    <td colspan="2" class="text-right no-border"><strong>Paid
                         </strong></td>
                     <td style="width:10%;" class="nowrap">{{invoiceDetail.paid_amount |
                         customNumber}} </td>
                 </tr>
                 <tr ng-if="invoiceDetail.paid_amount > 0" class="tdborder nowrap">
-                    <td colspan="3" class="text-right no-border"><strong>Total Due
+                    <td colspan="2" class="text-right no-border"><strong>Total Due
                             Amount</strong>
                     </td>
                     <td style="white-space: nowrap;">{{grandJobTotal -

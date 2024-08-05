@@ -331,29 +331,29 @@
               <table class="table table-bordered table-condensed">
                 <thead>
                   <tr class="header-tr-border">
-                    <th style="width:35%;">PO Number</th>
-                    <th style="width:45%;"> Job Description</th>
+                    <!-- <th style="width:35%;">PO Number</th> -->
+                    <th> Job Description</th>
                     <th style="width:20%;">Amount in {{currencyType}} </th>
                   </tr>
                 </thead>
                 <tbody ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}" s
                   class="table table-striped bg-white b-a" ng-repeat="invL in invoiceList track by $index">
                   <tr class="thfont">
-                    <td class="table-data-txt"> {{invL.scoop_poNumber}}</td>
+                    <!-- <td class="table-data-txt"> {{invL.scoop_poNumber}}</td> -->
                     <td class="table-data-txt"> {{invL.poNumber}} | {{invL.item_name}} </td>
                     <td class="table-data-txt">
                       {{invL.price_per_job}}
                     </td>
                   </tr>
                   <!-- <tr ng-if="$index == invoiceLength">
-                              <td colspan="2">
+                              <td >
                                 <strong>Sub Total</strong>
                               </td>
                               <td class="nowrap">
                                 {{invoiceTotal}} </td>
                             </tr>
                             <tr ng-if="$index == invoiceLength && vatTax>0">
-                              <td colspan="2"><strong>{{vatTax | customNumber}}% Tax</strong></td>
+                              <td ><strong>{{vatTax | customNumber}}% Tax</strong></td>
                               <td class="nowrap"> 
                                 <span ng-if="vatAmount">{{vatAmount | customNumber}}</span>
                                 <span ng-if="!vatAmount">0</span>
@@ -366,15 +366,15 @@
                 ng-init="invoiceLength = invoiceList.length - 1" ng-init="invL.item.subTotal = {}">
                 <tbody>
                   <tr>
-                    <td class="table-data-txt" colspan="2"> Subtotal excl. Tax </td>
+                    <td class="table-data-txt" > Subtotal excl. Tax </td>
                     <td class="table-data-txt" style="width:20%;"> {{invoiceTotal}} </td>
                   </tr>
                   <tr>
-                    <td class="table-data-txt" colspan="2"> {{taxPercentage }} % Tax </td>
+                    <td class="table-data-txt" > {{taxPercentage }} % Tax </td>
                     <td class="table-data-txt"> {{taxValue | customNumber }}</td>
                   </tr>
                   <tr class="linguistcurrency">
-                    <td class="table-data-txt" colspan="2"> {{taxPercentage }} % Tax (In NOK) </td>
+                    <td class="table-data-txt" > {{taxPercentage }} % Tax (In NOK) </td>
                     <td class="table-data-txt">
                       <span ng-hide="hideElemnt">{{ taxValue2 }}</span>
                       <input class="form-control" ng-show="hideElemnt" type="text" ng-model="taxValue2" id="vatnok"
@@ -382,22 +382,22 @@
                     </td>
                   </tr>
                   <tr ng-if="invoiceDetail.paid_amount > 0">
-                    <td class="table-data-txt" colspan="2"> Paid </td>
+                    <td class="table-data-txt" > Paid </td>
                     <td class="table-data-txt"> {{invoiceDetail.paid_amount |
                       customNumber}} </td>
                   </tr>
                   <tr ng-if="invoiceDetail.paid_amount > 0">
-                    <td class="table-data-txt" colspan="2"> Total Due Amount</td>
+                    <td class="table-data-txt" > Total Due Amount</td>
                     <td class="table-data-txt"> {{grandJobTotal - invoiceDetail.paid_amount | customNumber}} </td>
                   </tr>
                   <tr>
-                    <td class="table-data-txt" colspan="2"> <strong>Total Price</strong> </td>
+                    <td class="table-data-txt" > <strong>Total Price</strong> </td>
                     <td class="table-data-txt" style="border-top:1px solid #000; border-bottom:1px solid #000;">
                       <strong> {{grandJobTotal | customNumber}} </strong>
                     </td>
                   </tr>
                   <tr class="linguistcurrency">
-                    <td class="table-data-txt" colspan="2"> <strong>Total Price (In NOK)</strong> </td>
+                    <td class="table-data-txt" > <strong>Total Price (In NOK)</strong> </td>
                     <td class="table-data-txt" style="border-top:1px solid #000; border-bottom:1px solid #000;">
                       <span ng-hide="hideElemnt"> <strong> {{ grandTotalNok }} </strong></span>
                       <input class="form-control" type="text" ng-show="hideElemnt" ng-model="grandTotalNok" id="grandTotalNok"
