@@ -22585,316 +22585,341 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }).error(errorCallback);
         }
     }
-
+    $scope.isDisabledOnSave= false;
     $scope.tmpOrderId = 0;
     $scope.saveGeneral = function (formId) {
         if ($window.localStorage.orderID) {
             if (angular.element("#" + formId).valid()) {
                 //general
                 if ($scope.general.general_id) {
-                    var property = [];
-                    var order_no = [];
-                    $scope.general.order_no = angular.element("[id^=order_number_id]").val();
-                    $scope.general.company_code = angular.element("[id^=companyCode]").val();
-
-                    $scope.general.order_date = angular.element("[id^=order_date]").val();
-                    $scope.general.order_date = originalDateFormatDash($scope.general.order_date);
-                    $scope.general.order_date = moment($scope.general.order_date).format('YYYY-MM-DD HH:mm:ss');
-
-                    $window.localStorage.orderNumber = $scope.general.order_no;
-                    $scope.general.properties = JSON.stringify($scope.properties);
-                    $routeParams.id = $scope.general.general_id;
-                    var due_timeval1 = angular.element('#due_time').val();
-                    $scope.general.due_date = angular.element('#due_date').val();
-                    if ($scope.general.due_date) {
-                        $scope.general.due_date = originalDateFormatDash($scope.general.due_date + ' - ' + due_timeval1);
-                        $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
-                    }
-
-                    $scope.general.expected_start_date = angular.element('#expected_start_date').val();
-                    if ($scope.general.expected_start_date) {
-                        //$scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
-                        $scope.general.expected_start_date = originalDateFormatDash($scope.general.expected_start_date);
-                        $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
-                    }
-                    //$scope.general.due_date = angular.element('#due_date').val();
-                    $scope.general.project_price = parseFloat(angular.element('#project_price').val());
-                    //$scope.general.project_name = angular.element('#project_name').val();
-
-                    //Project start recent activity store in cookie
-                    if ($scope.general && $cookieStore.get('generalEdit')) {
-                        var arr1 = $.map($scope.general, function (el) {
-                            return el;
-                        });
-                        var arr2 = $.map($cookieStore.get('generalEdit'), function (el) {
-                            return el;
-                        });
-
-                        if (array_diff(arr1, arr2) != "") {
-                            var obj = [];
-                            if ($cookieStore.get('projectRecentEdit') != undefined) {
-                                angular.forEach($cookieStore.get('projectRecentEdit'), function (val, i) {
-                                    obj.push(val);
+                    try {
+                        $scope.isDisabledOnSave = true;
+                        try {
+                            var property = [];
+                            var order_no = [];
+                            $scope.general.order_no = angular.element("[id^=order_number_id]").val();
+                            $scope.general.company_code = angular.element("[id^=companyCode]").val();
+        
+                            $scope.general.order_date = angular.element("[id^=order_date]").val();
+                            $scope.general.order_date = originalDateFormatDash($scope.general.order_date);
+                            $scope.general.order_date = moment($scope.general.order_date).format('YYYY-MM-DD HH:mm:ss');
+        
+                            $window.localStorage.orderNumber = $scope.general.order_no;
+                            $scope.general.properties = JSON.stringify($scope.properties);
+                            $routeParams.id = $scope.general.general_id;
+                            var due_timeval1 = angular.element('#due_time').val();
+                            $scope.general.due_date = angular.element('#due_date').val();
+                            if ($scope.general.due_date) {
+                                $scope.general.due_date = originalDateFormatDash($scope.general.due_date + ' - ' + due_timeval1);
+                                $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
+                            }
+        
+                            $scope.general.expected_start_date = angular.element('#expected_start_date').val();
+                            if ($scope.general.expected_start_date) {
+                                //$scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
+                                $scope.general.expected_start_date = originalDateFormatDash($scope.general.expected_start_date);
+                                $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
+                            }
+                            //$scope.general.due_date = angular.element('#due_date').val();
+                            $scope.general.project_price = parseFloat(angular.element('#project_price').val());
+                            //$scope.general.project_name = angular.element('#project_name').val();
+        
+                            //Project start recent activity store in cookie
+                            if ($scope.general && $cookieStore.get('generalEdit')) {
+                                var arr1 = $.map($scope.general, function (el) {
+                                    return el;
                                 });
+                                var arr2 = $.map($cookieStore.get('generalEdit'), function (el) {
+                                    return el;
+                                });
+        
+                                if (array_diff(arr1, arr2) != "") {
+                                    var obj = [];
+                                    if ($cookieStore.get('projectRecentEdit') != undefined) {
+                                        angular.forEach($cookieStore.get('projectRecentEdit'), function (val, i) {
+                                            obj.push(val);
+                                        });
+                                    }
+                                    obj.push($scope.routeOrderID);
+                                    $cookieStore.put('projectRecentEdit', obj);
+                                    $cookieStore.remove('generalEdit');
+                                }
                             }
-                            obj.push($scope.routeOrderID);
-                            $cookieStore.put('projectRecentEdit', obj);
-                            $cookieStore.remove('generalEdit');
+        
+                            $scope.general.specialization = $scope.general.specialization.toString().includes(',') ? ($scope.general.specialization).split(',').pop() : $scope.general.specialization; 
+                            
+                            delete $scope.general['vProjectCoordinator'];
+                            delete $scope.general['vProjectManager'];
+                            delete $scope.general['vQASpecialist'];
+                        } catch (error) {
+                            console.log('error', error)
+                            notification('Error:'+ error, 'warning')
+                            $scope.isDisabledOnSave = false;
                         }
-                    }
-
-                    $scope.general.specialization = $scope.general.specialization.toString().includes(',') ? ($scope.general.specialization).split(',').pop() : $scope.general.specialization; 
-                    
-                    delete $scope.general['vProjectCoordinator'];
-                    delete $scope.general['vProjectManager'];
-                    delete $scope.general['vQASpecialist'];
-                    //Project end  recent activity store in cookie
-                    rest.path = 'general';
-                    rest.put($scope.general).success(function (data) {
-
-                        //log file start 
-                        $scope.logMaster = {};
-                        $scope.logMaster.log_type_id = $scope.general.order_id;
-                        $scope.logMaster.log_title = $scope.general.order_no;
-                        $scope.logMaster.log_type = "update";
-                        $scope.logMaster.log_status = "project";
-                        $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
-                        rest.path = "saveLog";
-                        rest.post($scope.logMaster).success(function (data) { });
-                        //log file end
-
-                        //set isNewProject to false
-                        $window.localStorage.setItem("isNewProject", "false");
-
-                        const subPm = angular.element('#subProjectManager').val();
-                        if(subPm)
-                            $scope.customer.sub_pm = subPm.includes(',') ? subPm.split(',')[1] : subPm; 
-                        else
-                            $scope.customer.sub_pm = 0;
-
-                        // const subPc = angular.element('#subProjectCoordinator').val();
-                        // if(subPc)
-                        //     $scope.customer.sub_pc = subPc.includes(',') ? subPc.split(',')[1] : subPc; 
-                        // else
-                        //     $scope.customer.sub_pc = 0;    
-                        const subPc = angular.element('#subProjectCoordinator').val() || '';
-                        $scope.customer.sub_pc = subPc ? subPc.split(',').pop().trim() : 0;
-                        
-                        const subQA = angular.element('#subQA').val();
-                        if(subQA)
-                            $scope.customer.sub_qa = subQA.includes(',') ? subQA.split(',')[1] : subQA; 
-                        else
-                            $scope.customer.sub_qa = 0;    
-                        
-                        //Update $scope.customer object data
-                        $routeParams.id = $scope.customer.c_id;
-                        rest.path = 'customer';
-                        rest.put($scope.customer).success(function (data) {
-                            
-                            if (data.indirectData) {
-                                $timeout(function () {
-                                    $window.localStorage.setItem('indirectCustomerName', data.indirectData.vUserName)
-                                    //$location.path('/items');
-                                    $location.path('/items/'+$scope.general.order_id);
-                                }, 500);
-                            }
-
-                        }).error(errorCallback);
-
-                        //$location.path('/items');
-                    }).error(errorCallback);
-                } else {
-                    var property = [];
-                    var order_no = [];
-                    angular.element("[id^=order_number_id]").each(function (i, val) {
-                        order_no.push({
-                            id: val.id,
-                            value: val.value
-                        });
-                    });
-
-                    $scope.general.company_code = angular.element("[id^=companyCode]").val();
-                    $scope.general.properties = JSON.stringify($scope.properties);
-                    $scope.general.order_no = angular.element("[id^=order_number_id]").val();
-
-                    $scope.general.order_date = angular.element("[id^=order_date]").val();
-                    //$scope.general.order_date = originalDateFormatNew($scope.general.order_date);
-                    $scope.general.order_date = originalDateFormatDash($scope.general.order_date);
-                    $scope.general.order_date = moment($scope.general.order_date).format('YYYY-MM-DD HH:mm:ss');
-
-                    $scope.general.expected_start_date = angular.element('#expected_start_date').val();
-                    if ($scope.general.expected_start_date) {
-                        //$scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
-                        $scope.general.expected_start_date = originalDateFormatDash($scope.general.expected_start_date);
-                        $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
-                    }
-                    /*$scope.general.due_date = angular.element('#due_date').val();
-                    if($scope.general.due_date){
-                        $scope.general.due_date = originalDateFormatNew($scope.general.due_date);
-                        $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm:ss');
-                    }*/
-                    var due_timeval1 = angular.element('#due_time').val();
-                    $scope.general.due_date = angular.element('#due_date').val();
-                    if ($scope.general.due_date) {
-                        $scope.general.due_date = originalDateFormatDash($scope.general.due_date + ' - ' + due_timeval1);
-                        $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
-                    }
-                    $scope.general.specialization = $scope.general.specialization && $scope.general.specialization.toString().includes(',') ? ($scope.general.specialization).split(',').pop() : $scope.general.specialization;
-                    console.log('$scope.general', $scope.general)
-
-                    $window.localStorage.orderNumber = $scope.general.order_no;
-                    $scope.routeOrderID = $scope.routeOrderID ? $scope.routeOrderID : $window.localStorage.orderID;
-                    
-                    $scope.general.order_id = $scope.routeOrderID;
-                    
-                    $scope.general.project_status = $scope.proStatusData.pr_status_id;
-                    $scope.general.project_createdBy = $window.localStorage.getItem('session_iUserId');
-                    $scope.general.orderPreCode = $scope.code
-                    
-                    rest.path = 'general';
-                    rest.post($scope.general).success(function (data) {
-                        
-                        $window.localStorage.setItem('tmpOrderId', data.order_data.order_id);
-                        $scope.tmpOrderId = data.order_data.order_id;
-                        angular.element(document.querySelector("[id^=order_number_id]")).val(data.order_data.order_no)
-                        
-                        // order update and insert in customer
-                        $window.localStorage.ContactPerson = $scope.customer.contact;
-                        $window.localStorage.clientproCustomerName = $scope.customer.client;
-                        $scope.project_coordinator = angular.element('#projectCoordinator').val();
-                        $scope.project_manager = angular.element('#projectManager').val();
-                        $scope.QA_specialist = angular.element('#qaSpecialist').val();
-                        $scope.customer.project_coordinator = $scope.project_coordinator;
-                        $scope.customer.project_manager = $scope.project_manager;
-                        $scope.customer.QA_specialist = $scope.QA_specialist;
-                        $scope.customer.order_id = $scope.routeOrderID;
-
-                        rest.path = 'customer';
-                        rest.post($scope.customer).success(function (data) {
-                        
-                        }).error(errorCallback);
-
-                        $scope.or = {};
-                        $scope.order_number = data.order_data.order_no;
-                        console.log('$scope.order_number', $scope.order_number)
-                        //$scope.order_number = angular.element("[id^=order_number_id]").val();
-                        //$scope.abbrivation = angular.element("[id^=companyCode]").val();
-                        $scope.or.order_number = $scope.order_number.toString().slice(-4) ;
-                        //$scope.or.abbrivation = $scope.abbrivation;
-                        $scope.or.abbrivation = $scope.CompanyCodeVal;
-                        $routeParams.id = $scope.routeOrderID;
-                        rest.path = 'order';
-                        rest.put($scope.or).success(function (data) {
-                            $window.localStorage.iUserId = data.order_id;
-                            $window.localStorage.userType = 3;
-                            //setTimeout(() => {
-                                if($scope.tmpOrderId)
-                                    $location.path('/items/'+$scope.tmpOrderId);
-                            //}, 100);
+                        //Project end  recent activity store in cookie
+                        rest.path = 'general';
+                        rest.put($scope.general).success(function (data) {
+                            $scope.isDisabledOnSave = false;
+                            //log file start 
+                            $scope.logMaster = {};
+                            $scope.logMaster.log_type_id = $scope.general.order_id;
+                            $scope.logMaster.log_title = $scope.general.order_no;
+                            $scope.logMaster.log_type = "update";
+                            $scope.logMaster.log_status = "project";
+                            $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                            rest.path = "saveLog";
+                            rest.post($scope.logMaster).success(function (data) { });
+                            //log file end
+    
+                            //set isNewProject to false
                             $window.localStorage.setItem("isNewProject", "false");
-                        }).error(errorCallback);
-                        
-                        //log file start 
-                        $scope.logMaster = {};
-                        $scope.logMaster.log_type_id = $scope.general.order_id;
-                        $scope.logMaster.log_title = $scope.general.order_no;
-                        $scope.logMaster.log_type = "add";
-                        $scope.logMaster.log_status = "project";
-                        $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
-                        rest.path = "saveLog";
-                        rest.post($scope.logMaster).success(function (data) { });
-                        //log file end
-
-                        $cookieStore.put('projectRecentEdit', $scope.routeOrderID);
-                        //$location.path('/items');
-                        // if($scope.tmpOrderId)
-                        //     $location.path('/items/'+$scope.tmpOrderId);
-                        $('#due_date').trigger('change') // temp soln
-                    }).error(errorCallback);
-                    
-                    //customer
-                    $timeout(function () {
-
-                        if ($scope.customer.c_id) {
+    
+                            const subPm = angular.element('#subProjectManager').val();
+                            if(subPm)
+                                $scope.customer.sub_pm = subPm.includes(',') ? subPm.split(',')[1] : subPm; 
+                            else
+                                $scope.customer.sub_pm = 0;
+    
+                            // const subPc = angular.element('#subProjectCoordinator').val();
+                            // if(subPc)
+                            //     $scope.customer.sub_pc = subPc.includes(',') ? subPc.split(',')[1] : subPc; 
+                            // else
+                            //     $scope.customer.sub_pc = 0;    
+                            const subPc = angular.element('#subProjectCoordinator').val() || '';
+                            $scope.customer.sub_pc = subPc ? subPc.split(',').pop().trim() : 0;
                             
-                            $window.localStorage.ContactPerson = $scope.customer.contact;
-                            $window.localStorage.clientproCustomerName = $scope.customer.client;
+                            const subQA = angular.element('#subQA').val();
+                            if(subQA)
+                                $scope.customer.sub_qa = subQA.includes(',') ? subQA.split(',')[1] : subQA; 
+                            else
+                                $scope.customer.sub_qa = 0;    
+                            
+                            //Update $scope.customer object data
                             $routeParams.id = $scope.customer.c_id;
                             rest.path = 'customer';
                             rest.put($scope.customer).success(function (data) {
-
-                            }).error(errorCallback);
-                        } else {
-                            console.log('upppdate statusss===>', angular.element(document.querySelector("[id^=order_number_id]")).val() )    
-                            // $window.localStorage.ContactPerson = $scope.customer.contact;
-                            // $window.localStorage.clientproCustomerName = $scope.customer.client;
-                            // $scope.project_coordinator = angular.element('#projectCoordinator').val();
-                            // $scope.project_manager = angular.element('#projectManager').val();
-                            // $scope.QA_specialist = angular.element('#qaSpecialist').val();
-                            // $scope.customer.project_coordinator = $scope.project_coordinator;
-                            // $scope.customer.project_manager = $scope.project_manager;
-                            // $scope.customer.QA_specialist = $scope.QA_specialist;
-                            // $scope.customer.order_id = $scope.routeOrderID;
-                            // rest.path = 'customer';
-                            // rest.post($scope.customer).success(function (data) {
-
-                            // }).error(errorCallback);
-
-                            // move this code to project POST insert api
-                            // $scope.or = {};
-                            // $scope.order_number = angular.element("[id^=order_number_id]").val();
-                            // //$scope.abbrivation = angular.element("[id^=companyCode]").val();
-                            // $scope.or.order_number = $scope.order_number.slice(-4);
-                            // //$scope.or.abbrivation = $scope.abbrivation;
-                            // $scope.or.abbrivation = $scope.CompanyCodeVal;
-                            // $routeParams.id = $scope.routeOrderID;
-                            // rest.path = 'order';
-                            // rest.put($scope.or).success(function (data) {
                                 
-                            //     $window.localStorage.iUserId = data.order_id;
-                            //     $window.localStorage.userType = 3;
-                            // }).error(errorCallback);
-                            // Move end
-
-                            // //filemanager add order id                
-                            // $scope.cu = {};
-                            // $scope.order_number = angular.element("#order_number_id").val();
-                            // $scope.cu.order_number = $scope.order_number;
-                            // $routeParams.id = $window.localStorage.orderID;
-                            // rest.path = 'orderfileSave';
-                            // rest.put($scope.cu).success(function(data) {
-
-                            // }).error(errorCallback);
-                        }
-                    }, 100);
-
-                    /*Add Number Of Items in item Section defined in general section START*/
-                    // var OId = $window.localStorage.getItem('tmpOrderId') 
-                    // if(OId != null || OId !=undefined || OId !=''){
-                    //     $timeout(function() {
-                    //         $scope.ItemData =  {} 
-                    //         $scope.ItemData.no_of_items = $scope.general.no_of_items;
-                    //         $scope.ItemData.order_id = $window.localStorage.getItem('tmpOrderId');
-                    //         rest.path = 'AddNumberOfItems';
-                    //         rest.post($scope.ItemData).success(function(data) {
-
-                    //         }).error(errorCallback);
-                    //     },550);
-                    // }else{
-                    //     notification('error','warning');
-                    // }
-
-                    $timeout(function () {
+                                if (data.indirectData) {
+                                    $timeout(function () {
+                                        $window.localStorage.setItem('indirectCustomerName', data.indirectData.vUserName)
+                                        //$location.path('/items');
+                                        $location.path('/items/'+$scope.general.order_id);
+                                    }, 500);
+                                }
+    
+                            }).error(errorCallback);
+    
+                            //$location.path('/items');
+                        }).error(errorCallback);
+                    } catch (error) {
+                        console.log('error', error)
+                        $scope.isDisabledOnSave = false;
                         
-                        // if($scope.tmpOrderId)
-                        //     $location.path('/items/'+$scope.tmpOrderId);
-                        // else
-                        //     $location.path('/items');
-                        //set isNewProject to false
-                        //$window.localStorage.setItem("isNewProject", "false");
-                    }, 1000);
-
-                    /*Add Number Of Items in item Section defined in general section END*/
+                    }
+                } else {
+                    
+                    try {
+                        $scope.isDisabledOnSave = true;
+                    
+                        var property = [];
+                        var order_no = [];
+                        angular.element("[id^=order_number_id]").each(function (i, val) {
+                            order_no.push({
+                                id: val.id,
+                                value: val.value
+                            });
+                        });
+    
+                        $scope.general.company_code = angular.element("[id^=companyCode]").val();
+                        $scope.general.properties = JSON.stringify($scope.properties);
+                        $scope.general.order_no = angular.element("[id^=order_number_id]").val();
+    
+                        $scope.general.order_date = angular.element("[id^=order_date]").val();
+                        //$scope.general.order_date = originalDateFormatNew($scope.general.order_date);
+                        $scope.general.order_date = originalDateFormatDash($scope.general.order_date);
+                        $scope.general.order_date = moment($scope.general.order_date).format('YYYY-MM-DD HH:mm:ss');
+    
+                        $scope.general.expected_start_date = angular.element('#expected_start_date').val();
+                        if ($scope.general.expected_start_date) {
+                            //$scope.general.expected_start_date = originalDateFormatNew($scope.general.expected_start_date);
+                            $scope.general.expected_start_date = originalDateFormatDash($scope.general.expected_start_date);
+                            $scope.general.expected_start_date = moment($scope.general.expected_start_date).format('YYYY-MM-DD HH:mm:ss');
+                        }
+                        /*$scope.general.due_date = angular.element('#due_date').val();
+                        if($scope.general.due_date){
+                            $scope.general.due_date = originalDateFormatNew($scope.general.due_date);
+                            $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm:ss');
+                        }*/
+                        var due_timeval1 = angular.element('#due_time').val();
+                        $scope.general.due_date = angular.element('#due_date').val();
+                        if ($scope.general.due_date) {
+                            $scope.general.due_date = originalDateFormatDash($scope.general.due_date + ' - ' + due_timeval1);
+                            $scope.general.due_date = moment($scope.general.due_date).format('YYYY-MM-DD HH:mm');
+                        }
+                        $scope.general.specialization = $scope.general.specialization && $scope.general.specialization.toString().includes(',') ? ($scope.general.specialization).split(',').pop() : $scope.general.specialization;
+                        console.log('$scope.general', $scope.general)
+    
+                        $window.localStorage.orderNumber = $scope.general.order_no;
+                        $scope.routeOrderID = $scope.routeOrderID ? $scope.routeOrderID : $window.localStorage.orderID;
+                        
+                        $scope.general.order_id = $scope.routeOrderID;
+                        
+                        $scope.general.project_status = $scope.proStatusData.pr_status_id;
+                        $scope.general.project_createdBy = $window.localStorage.getItem('session_iUserId');
+                        $scope.general.orderPreCode = $scope.code
+                        
+                        rest.path = 'general';
+                        rest.post($scope.general).success(function (data) {
+                            $scope.isDisabledOnSave = false;
+                    
+                            $window.localStorage.setItem('tmpOrderId', data.order_data.order_id);
+                            $scope.tmpOrderId = data.order_data.order_id;
+                            angular.element(document.querySelector("[id^=order_number_id]")).val(data.order_data.order_no)
+                            
+                            // order update and insert in customer
+                            $window.localStorage.ContactPerson = $scope.customer.contact;
+                            $window.localStorage.clientproCustomerName = $scope.customer.client;
+                            $scope.project_coordinator = angular.element('#projectCoordinator').val();
+                            $scope.project_manager = angular.element('#projectManager').val();
+                            $scope.QA_specialist = angular.element('#qaSpecialist').val();
+                            $scope.customer.project_coordinator = $scope.project_coordinator;
+                            $scope.customer.project_manager = $scope.project_manager;
+                            $scope.customer.QA_specialist = $scope.QA_specialist;
+                            $scope.customer.order_id = $scope.routeOrderID;
+    
+                            rest.path = 'customer';
+                            rest.post($scope.customer).success(function (data) {
+                            
+                            }).error(errorCallback);
+    
+                            $scope.or = {};
+                            $scope.order_number = data.order_data.order_no;
+                            console.log('$scope.order_number', $scope.order_number)
+                            //$scope.order_number = angular.element("[id^=order_number_id]").val();
+                            //$scope.abbrivation = angular.element("[id^=companyCode]").val();
+                            $scope.or.order_number = $scope.order_number.toString().slice(-4) ;
+                            //$scope.or.abbrivation = $scope.abbrivation;
+                            $scope.or.abbrivation = $scope.CompanyCodeVal;
+                            $routeParams.id = $scope.routeOrderID;
+                            rest.path = 'order';
+                            rest.put($scope.or).success(function (data) {
+                                $window.localStorage.iUserId = data.order_id;
+                                $window.localStorage.userType = 3;
+                                //setTimeout(() => {
+                                    if($scope.tmpOrderId)
+                                        $location.path('/items/'+$scope.tmpOrderId);
+                                //}, 100);
+                                $window.localStorage.setItem("isNewProject", "false");
+                            }).error(errorCallback);
+                            
+                            //log file start 
+                            $scope.logMaster = {};
+                            $scope.logMaster.log_type_id = $scope.general.order_id;
+                            $scope.logMaster.log_title = $scope.general.order_no;
+                            $scope.logMaster.log_type = "add";
+                            $scope.logMaster.log_status = "project";
+                            $scope.logMaster.created_by = $window.localStorage.getItem("session_iUserId");
+                            rest.path = "saveLog";
+                            rest.post($scope.logMaster).success(function (data) { });
+                            //log file end
+    
+                            $cookieStore.put('projectRecentEdit', $scope.routeOrderID);
+                            //$location.path('/items');
+                            // if($scope.tmpOrderId)
+                            //     $location.path('/items/'+$scope.tmpOrderId);
+                            $('#due_date').trigger('change') // temp soln
+                        }).error(function(error) {
+                            console.log('error', error)
+                            $scope.isDisabledOnSave = false;
+                            
+                        });
+                        
+                        //customer
+                        $timeout(function () {
+    
+                            if ($scope.customer.c_id) {
+                                
+                                $window.localStorage.ContactPerson = $scope.customer.contact;
+                                $window.localStorage.clientproCustomerName = $scope.customer.client;
+                                $routeParams.id = $scope.customer.c_id;
+                                rest.path = 'customer';
+                                rest.put($scope.customer).success(function (data) {
+    
+                                }).error(errorCallback);
+                            } else {
+                                console.log('upppdate statusss===>', angular.element(document.querySelector("[id^=order_number_id]")).val() )    
+                                // $window.localStorage.ContactPerson = $scope.customer.contact;
+                                // $window.localStorage.clientproCustomerName = $scope.customer.client;
+                                // $scope.project_coordinator = angular.element('#projectCoordinator').val();
+                                // $scope.project_manager = angular.element('#projectManager').val();
+                                // $scope.QA_specialist = angular.element('#qaSpecialist').val();
+                                // $scope.customer.project_coordinator = $scope.project_coordinator;
+                                // $scope.customer.project_manager = $scope.project_manager;
+                                // $scope.customer.QA_specialist = $scope.QA_specialist;
+                                // $scope.customer.order_id = $scope.routeOrderID;
+                                // rest.path = 'customer';
+                                // rest.post($scope.customer).success(function (data) {
+    
+                                // }).error(errorCallback);
+    
+                                // move this code to project POST insert api
+                                // $scope.or = {};
+                                // $scope.order_number = angular.element("[id^=order_number_id]").val();
+                                // //$scope.abbrivation = angular.element("[id^=companyCode]").val();
+                                // $scope.or.order_number = $scope.order_number.slice(-4);
+                                // //$scope.or.abbrivation = $scope.abbrivation;
+                                // $scope.or.abbrivation = $scope.CompanyCodeVal;
+                                // $routeParams.id = $scope.routeOrderID;
+                                // rest.path = 'order';
+                                // rest.put($scope.or).success(function (data) {
+                                    
+                                //     $window.localStorage.iUserId = data.order_id;
+                                //     $window.localStorage.userType = 3;
+                                // }).error(errorCallback);
+                                // Move end
+    
+                                // //filemanager add order id                
+                                // $scope.cu = {};
+                                // $scope.order_number = angular.element("#order_number_id").val();
+                                // $scope.cu.order_number = $scope.order_number;
+                                // $routeParams.id = $window.localStorage.orderID;
+                                // rest.path = 'orderfileSave';
+                                // rest.put($scope.cu).success(function(data) {
+    
+                                // }).error(errorCallback);
+                            }
+                        }, 100);
+    
+                        /*Add Number Of Items in item Section defined in general section START*/
+                        // var OId = $window.localStorage.getItem('tmpOrderId') 
+                        // if(OId != null || OId !=undefined || OId !=''){
+                        //     $timeout(function() {
+                        //         $scope.ItemData =  {} 
+                        //         $scope.ItemData.no_of_items = $scope.general.no_of_items;
+                        //         $scope.ItemData.order_id = $window.localStorage.getItem('tmpOrderId');
+                        //         rest.path = 'AddNumberOfItems';
+                        //         rest.post($scope.ItemData).success(function(data) {
+    
+                        //         }).error(errorCallback);
+                        //     },550);
+                        // }else{
+                        //     notification('error','warning');
+                        // }
+    
+                        $timeout(function () {
+                            
+                            // if($scope.tmpOrderId)
+                            //     $location.path('/items/'+$scope.tmpOrderId);
+                            // else
+                            //     $location.path('/items');
+                            //set isNewProject to false
+                            //$window.localStorage.setItem("isNewProject", "false");
+                        }, 1000);
+    
+                        /*Add Number Of Items in item Section defined in general section END*/
+                    } catch (error) {
+                        $scope.isDisabledOnSave = true;
+                    }
                 }
             }
         } else {
