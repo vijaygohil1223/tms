@@ -7203,6 +7203,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         if (folderId != undefined) {
                                             $scope.showLoder = false;
                                             if (result == true) {
+                                                
                                                 if($itemScope.display.is_s3bucket == 1){
                                                     image = 's3bucketFile'
                                                 }
