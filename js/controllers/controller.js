@@ -2160,7 +2160,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //set isNewProject to false
                     $window.localStorage.setItem("isNewProject", "false");
 
-                    $window.open($location.absUrl().split('#')[0]+'#/general/'+orderId, '_blank');
+                    $window.open($location.absUrl().split('#')[0]+'#/items/'+orderId, '_blank');
+                    //$window.open($location.absUrl().split('#')[0]+'#/general/'+orderId, '_blank');
                     $window.localStorage.orderBlock = 1;
                 } else {
                     notification('Information not available', 'warning');
