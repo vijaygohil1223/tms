@@ -39023,7 +39023,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $window.localStorage.setItem("isNewProject", "false");
 
                     //$location.path('/general');
-                    $location.path('/general/'+id);
+                    $location.path('/items/'+id);
+                    //$location.path('/general/'+id);
                     $window.localStorage.orderBlock = 1;
                     $timeout(function () {
                         $scope.cancel();
