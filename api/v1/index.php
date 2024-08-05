@@ -3530,6 +3530,11 @@ $app->delete('/deleteFreelancerInvoice/:id','authenticate', function ($id) {
     $result = $invoice->deleteFreelancerInvoice($id);
     echoResponse($result ['status'], $result);
 });
+$app->get('/freelanceJobForInvoice/:id','authenticate', function ($id) use($app) {
+    $freelanceJob = new freelanceJob ();
+    $result = $freelanceJob->freelanceJobForInvoice($id);
+    echoResponse(200, $result);
+});
 //-------------------END Freelancer Invoice manage----------------//
 
 function echoResponse($status_code, $response) {

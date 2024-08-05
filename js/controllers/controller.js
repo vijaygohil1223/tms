@@ -33631,7 +33631,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(resourceId != 0 || $scope.userRight == 2){
             $scope.resourceId = $scope.userRight == 2 ? $scope.resourceDefault : resourceId.split(',').pop();
             
-            rest.path = 'freelanceJob/' + $scope.resourceId;
+            //rest.path = 'freelanceJob/' + $scope.resourceId;
+            rest.path = 'freelanceJobForInvoice/' + $scope.resourceId;
             rest.get().success(function (data) {
                 $scope.InvoiceResult = data;
                 console.log('$scope.InvoiceResult====>', $scope.InvoiceResult)
@@ -33649,9 +33650,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     console.log('$scope.jobInvoiceIds', $scope.jobInvoiceIds)
                     $scope.InvoiceResult = data.filter(function (el) {
                         el.freelance_currency = el.freelance_currency ? el.freelance_currency.split(',')[0] : 'EUR';
-                        let jbStatus = el.item_status.toLowerCase();
+                        //let jbStatus = el.item_status.toLowerCase();
                         // check status and jobids not exist in invoice list
-                        if(['approved','invoice ready','invoice Ready','overdue'].includes(jbStatus) && !$scope.jobInvoiceIds.includes(el.job_summmeryId))
+                        //if(['approved','invoice ready','invoice Ready','overdue'].includes(jbStatus) && !$scope.jobInvoiceIds.includes(el.job_summmeryId))
+                        if(  !$scope.jobInvoiceIds.includes(el.job_summmeryId) )
                             return true;
 
                     });
