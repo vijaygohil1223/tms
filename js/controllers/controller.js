@@ -3981,12 +3981,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         setTimeout(() => {
                             let queryParamsEncode = atob( Object.keys(queryParams)[0] );
                             let queryParamsB64 = parseQueryString(queryParamsEncode);
-                            console.log('queryParamsB64', queryParamsB64)
                             if(queryParamsB64 && queryParamsB64.chatpage == 1 && queryParamsB64.jobid > 0 ){
                                 $scope.projectJobdetail(queryParamsB64.jobid, true);
                             }
                             //$location.search({});
-                        }, 1000);
+                        }, 2000);
                     }
                 } catch (error) {
                     console.log('error', error)
@@ -22768,9 +22767,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.customer.project_manager = $scope.project_manager;
                         $scope.customer.QA_specialist = $scope.QA_specialist;
                         $scope.customer.order_id = $scope.routeOrderID;
+
                         rest.path = 'customer';
                         rest.post($scope.customer).success(function (data) {
-
+                        
                         }).error(errorCallback);
 
                         $scope.or = {};

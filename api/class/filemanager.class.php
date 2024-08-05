@@ -626,6 +626,7 @@ class filemanager {
         $num=0;
         if(count($data)>0){
             foreach($data as $key => $val){
+                $data[$num]['is_s3bucket'] = 1;  
                 $data[$num]['updated_date'] = date('Y-m-d H:i:s');
                 $data[$num]['created_date'] = date('Y-m-d H:i:s');  
                 $info =  $this->_db->insert('tms_filemanager',$data[$num]);
@@ -647,6 +648,7 @@ class filemanager {
             foreach($data as $key => $val){
                 //$data['name'] = self::uploadimage($data);
                 //$newData = self::uploadimage_new2($data[$num]);
+                $data[$num]['is_s3bucket'] = 1;  
                 $data[$num]['updated_date'] = date('Y-m-d H:i:s');
                 $data[$num]['created_date'] = date('Y-m-d H:i:s');  
                 $fileUpld =  $this->_db->insert('tms_filemanager',$data[$num]);
@@ -1113,7 +1115,7 @@ array(
         
         return $sanitizedFileName;
     }
-    public function saveFileupload($data) {
+    public function saveFileupload_____($data) {
         $output_dir = UPLOADS_ROOT."fileupload/";
         if (isset($_FILES["myfile"])) {
             $ret = array();
@@ -1158,6 +1160,90 @@ array(
                         $size = $_FILES['myfile']['size'][$i];
                         $ret['size'][$i] = self::formatSizeUnits($size);
                         $ret['name'][$i] = $filename;
+                    }
+                }
+            }
+            //echo json_encode($ret);
+            $return = json_encode($ret);
+        }else{
+            $return = json_encode([]);
+        }
+
+        return $return;
+        
+    }
+
+    public function saveFileupload($data) {
+        $output_dir = UPLOADS_ROOT."fileupload/";
+        $currentDate = date('Y-m-d');
+        $awsFile = new awsFileupload();
+                    
+        if (isset($_FILES["myfile"])) {
+            $ret = [];
+            $error = $_FILES["myfile"]["error"]; {
+                if (!is_array($_FILES["myfile"]['name'])) //single file
+                {
+                    $originalFilename = $_FILES['myfile']['name'];
+                    $defaultFileName = self::sanitizeFileName($_FILES['myfile']['name']);
+                    $extensionName = pathinfo($originalFilename, PATHINFO_EXTENSION);
+                    $filename = $defaultFileName;
+                    $filenameWithoutExtension = pathinfo($defaultFileName, PATHINFO_FILENAME);
+                    //move_uploaded_file($_FILES["myfile"]["tmp_name"][$i], $output_dir . $filename);
+                    $timestamp = time();
+                    $filename = $filenameWithoutExtension.'_'.$timestamp.'.' .$extensionName;
+                    
+                    $fileTempName = $_FILES["myfile"]["tmp_name"];
+                    //$originalFileName = basename( $_FILES['myfile']['name'] );
+                    //$extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+                    //$keyNameTimestamp = $currentDate . '/' . $filename . '.' . $extension;
+                    // current date folder
+                    $keyNameTimestamp = $currentDate . '/' . $filename ;
+                    $keyName = $keyNameTimestamp;
+                    
+                    $awsResult = $awsFile->awsFileUpload($fileTempName, $keyName );
+
+                    $checkext = explode('.', $filename);
+                    //$ret['ext'] = strtolower(end($checkext));
+                    $ret['ext'] = strtolower($extensionName);
+                    $size = $_FILES['myfile']['size'];
+                    $ret['size'] = self::formatSizeUnits($size);
+                    $ret['name'] = $awsResult['file_url'];
+                    //$ret['name'] = $filename;
+                    $ret['original_filename'] = $originalFilename;
+                    $ret['is_s3bucket'] = 1;
+                } else {
+                    $fileCount = count($_FILES["myfile"]['name']);
+                    for ($i = 0; $i < $fileCount; $i++) {
+                        //$fileName = $_FILES["myfile"]["name"][$i];
+                        //$ret[$fileName]= $output_dir.$fileName;
+                        $defaultFileName = $_FILES['myfile']['name'][$i];
+                        $extensionName = pathinfo($defaultFileName, PATHINFO_EXTENSION);
+                        $filenameWithoutExtension = pathinfo($defaultFileName, PATHINFO_FILENAME);
+                        
+                        //move_uploaded_file($_FILES["myfile"]["tmp_name"][$i], $output_dir . $filename);
+                        $timestamp = time();
+                        $filename = $filenameWithoutExtension.'_'.$timestamp.'.'.$extensionName;
+                        $fileTempName = $_FILES["myfile"]["tmp_name"][$i];
+                        //$originalFileName = basename( $_FILES['myfile']['name'][$i] );
+                        $originalFileName = $defaultFileName;
+                        //$extension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+                        //$keyNameTimestamp = $currentDate . '/' . $filename . '.' . $extension;
+                        // current date folder
+                        $keyNameTimestamp = $currentDate . '/' . $filename ;
+                        $keyName = $keyNameTimestamp;
+                        
+                        $awsResult = $awsFile->awsFileUpload($fileTempName, $keyName );
+        
+                        $checkext = explode('.', $filename);
+        
+                        //$ret['ext'][$i] = strtolower(end($checkext));
+                        $ret['ext'] = strtolower($extensionName);
+                        $size = $_FILES['myfile']['size'][$i];
+                        $ret['size'][$i] = self::formatSizeUnits($size);
+                        //$ret['name'][$i] = $filename;
+                        $ret['name'] = $awsResult['file_url'];
+                        $ret['original_filename'] = $originalFileName;
+                        $ret['is_s3bucket'] = 1;
                     }
                 }
             }
