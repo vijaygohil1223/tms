@@ -18057,7 +18057,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var invoice_duedate = calculateDueDate(val.created_date, invoicePeriod);
                 //var invoice_duedate = TodayAfterNumberOfDays(val.created_date, invoicePeriod);
                 val.invoice_duedate = invoice_duedate;
-                var InDuedate = new Date(invoice_duedate); 
+                //var InDuedate = new Date(invoice_duedate); 
+                var InDuedate = new Date(val.inv_due_date); 
+                console.log('val.inv_due_date', val.inv_due_date)
                 
                 val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
                 //val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
@@ -18091,7 +18093,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.notExportedInvcCount++;
                     $scope.notExportedInvc.push(val);
                 }
-                if(new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed'].includes(val.invoice_status) ){
+                if(val.inv_due_date !== null && new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed'].includes(val.invoice_status) ){
                     $scope.overdueInvcCount++ 
                     $scope.overdueInvc.push(val);
                 }
