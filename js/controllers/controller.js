@@ -4125,7 +4125,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var fimg = val.name;
                             //zipdwnld.file(fimg, "uploads/fileupload/"+fimg);
                             //fileList.push("uploads/fileupload/"+fimg);
-                            var fimgUrl = "uploads/fileupload/" + fimg;
+                            var fimgUrl = val.is_s3bucket == 1 ? fimg : "uploads/fileupload/" + fimg;
                             if (fileUrlExists(fimgUrl)) {
                                 fileUrls.push({
                                     'parent_id': val.parent_id,
@@ -6177,7 +6177,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
 
-}).controller('filemanagerController', function ($interval, $scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $q ) {
+}).controller('filemanagerController', function ($interval, $scope, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $q, $http ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.breadcrums = [''];
     $scope.statusName = $window.localStorage.jobstatusName;
@@ -6305,6 +6305,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.imageSrc = result;
             });
     };
+
+    function fileDownloadByDynamicUrl(dynamicUrl, fileName){
+        fetch(dynamicUrl)
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.blob();
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName ;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
 
     //file insert data
     var uploadObj;
@@ -6695,15 +6716,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($(this).data('clicked')) {
                 return;
             }
+            // $(this).data('clicked', true);
+            // // Create a hidden anchor element
+            // var fileName = $(this).find("p").text().trim();
+            // var idValue = $(this).attr('id');
+            // var a = document.createElement('a');
+            // document.body.appendChild(a);
+            // a.download = fileName;
+            // a.href = $("#download" + idValue).attr('href');
+            // a.click(); 
+
             $(this).data('clicked', true);
-            // Create a hidden anchor element
+        
+            // Extract the file name and URL
             var fileName = $(this).find("p").text().trim();
             var idValue = $(this).attr('id');
-            var a = document.createElement('a');
-            document.body.appendChild(a);
-            a.download = fileName;
-            a.href = $("#download" + idValue).attr('href');
-            a.click();    
+            var fileUrl = $("#download" + idValue).attr('href');
+            fileDownloadByDynamicUrl(fileUrl, fileName)
             setTimeout(() => {
                 // To solve two time file download issue
                 $(this).data('clicked', false);
@@ -6718,14 +6747,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // Determine if the URL is an AWS URL or a local path
         const isAwsUrl = fname.startsWith('https://');
         const fileURL = isAwsUrl ? fname : 'uploads/fileupload/' + fname;
-    
-        aTag.setAttribute('download', fileName);
-        aTag.setAttribute('href', fileURL);
-        aTag.style.display = 'none'; 
-        document.body.appendChild(aTag);
+        
+        fileDownloadByDynamicUrl(fileURL, fileName)
+        // aTag.setAttribute('download', fileName);
+        // aTag.setAttribute('href', fileURL);
+        // aTag.style.display = 'none'; 
+        // document.body.appendChild(aTag);
         setTimeout(function() {
-            aTag.click(); 
-            document.body.removeChild(aTag); 
+            //aTag.click(); 
+            //document.body.removeChild(aTag); 
             // Optionally update Angular scope if needed
             $scope.$apply(function() {
                 angular.element(aTag).data('clicked', false);
@@ -6737,6 +6767,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $timeout(function () {
         $scope.addToDownload = function (fname, fOriginalName ) {
             downloadFileByAtag(fname, fOriginalName)
+            
         }
     }, 500);
 
@@ -7128,29 +7159,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             if($scope.copyfile && $scope.copyfile.length > 0){
                                 const fileInputs = document.querySelectorAll('file.activeselect p');
                                 const fileUrls = Array.from(fileInputs).map(itm => itm.innerText);
-                                console.log('fileUrls', fileUrls)
+                                
                                 //const fileInputs2 = document.querySelectorAll('file.activeselect');
                                 //const fileUrls2 = Array.from(fileInputs2).map(itm => itm.id);  
                                 // New logic for download
                                 const fileElements = document.querySelectorAll('file.activeselect');
+                                // const files = Array.from(fileElements).map(item => ({
+                                //     id: item.getAttribute('id'),
+                                //     name: item.innerText
+                                // }));
                                 const files = Array.from(fileElements).map(item => ({
                                     id: item.getAttribute('id'),
-                                    name: item.innerText
-                                }));  
-                                const downloadFiles = () => {
-                                    files.forEach(file => {
-                                        // Create a temporary <a> element
-                                        var a = document.createElement('a');
-                                        a.download = file.name;
-                                        a.href = $("#download" + file.id).attr('href');
-                                        document.body.appendChild(a);
-                                        a.click();
-                                        document.body.removeChild(a);
-                                    });
-                                };
-                                // Call the function to download files
-                                downloadFiles();
-
+                                    name: item.innerText,
+                                    url: document.querySelector("#download" + item.getAttribute('id')).getAttribute('href')
+                                }));
+                                
+                                files.forEach(file => {
+                                    fileDownloadByDynamicUrl(file.url , file.name)
+                                    // Create a temporary <a> element
+                                    // var a = document.createElement('a');
+                                    // a.download = file.name;
+                                    // a.href = $("#download" + file.id).attr('href');
+                                    // document.body.appendChild(a);
+                                    // a.click();
+                                    // document.body.removeChild(a);
+                                });
+                            
                                 // const downloadLink = document.createElement('a');
                                 // downloadLink.style.display = 'none';
                                 // document.body.appendChild(downloadLink);
@@ -7164,12 +7198,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 // document.body.removeChild(downloadLink);
                             
                             }else{
-                                var a = document.createElement('a');
-                                document.body.appendChild(a);
-                                //a.download = $itemScope.display.name;
-                                a.download = $itemScope.display.original_filename;
-                                a.href = $("#download" + $itemScope.display.fmanager_id).attr('href');
-                                a.click();    
+                                
+                                fileDownloadByDynamicUrl($itemScope.display.name , $itemScope.display.original_filename)
+                            
+                                // var a = document.createElement('a');
+                                // document.body.appendChild(a);
+                                // //a.download = $itemScope.display.name;
+                                // a.download = $itemScope.display.original_filename;
+                                // a.href = $("#download" + $itemScope.display.fmanager_id).attr('href');
+                                // a.click();    
                             }    
                                 
                             
@@ -8058,6 +8095,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $('.ajax-upload-dragdrop:eq(1)').hide();
     }, 500);
 
+    function fileDownloadByDynamicUrl(dynamicUrl, fileName){
+        fetch(dynamicUrl)
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.blob();
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName ;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
     function downloadFileByAtag(fname, fOriginalName) {
         const aTag = document.createElement('a');
         const fileName = fOriginalName ? fOriginalName : fname; // Use the original name if provided
@@ -8066,10 +8124,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         const isAwsUrl = fname.startsWith('https://');
         const fileURL = isAwsUrl ? fname : 'uploads/fileupload/' + fname;
     
-        aTag.setAttribute('download', fileName);
-        aTag.setAttribute('href', fileURL);
-        aTag.style.display = 'none'; 
-        document.body.appendChild(aTag);
+        // aTag.setAttribute('download', fileName);
+        // aTag.setAttribute('href', fileURL);
+        // aTag.style.display = 'none'; 
+        // document.body.appendChild(aTag);
+
+        fileDownloadByDynamicUrl(fileURL, fileName)
         
         // rest.path = 'downloadSignleFile';
         // rest.put(newObj).success(function (data) {

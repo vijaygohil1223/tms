@@ -1176,6 +1176,11 @@ array(
     public function saveFileupload($data) {
         $output_dir = UPLOADS_ROOT."fileupload/";
         $currentDate = date('Y-m-d');
+        $year = date('Y');        // Format: YYYY
+        $month = date('m');       // Format: MM
+        $fullDate = date('Y-m-d'); // Format: YYYY-MM-DD
+        $path______ = $year . '/' . $month . '/' . $fullDate . '/';
+        $randomString = bin2hex(random_bytes(4));
         $awsFile = new awsFileupload();
                     
         if (isset($_FILES["myfile"])) {
@@ -1342,65 +1347,34 @@ array(
     }
 
     public function downloadSingleFile($fileData) {
-        // Clear the output buffer
-        if (ob_get_level()) {
-            ob_end_clean();
+        $fileUrl = 'https://dosina.s3.amazonaws.com/2024-08-06/local-tms-file_1722941281.pdf';
+        // Desired new name for the file
+        $newName = 'local-tms-file.pdf';
+
+        // Use `file_get_contents` to fetch the file content from the S3 URL
+        $fileContent = file_get_contents($fileUrl);
+
+        
+        // Check if file content was successfully fetched
+        if ($fileContent === FALSE) {
+            // Output an error if the file could not be fetched
+            http_response_code(500);
+            echo "Error: Unable to fetch the file.";
+            exit;
         }
-    
-        // Enable error reporting for debugging
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
-    
-        // Extract the file extension
-        $fileUrl = $fileData['fileURL'];
-    
-        // Validate the URL
-        if (!filter_var($fileUrl, FILTER_VALIDATE_URL)) {
-            die('Error: Invalid URL.');
-        }
-    
-        $filename = !empty($fileData['fOriginalName']) ? $fileData['fOriginalName'] : basename($fileUrl);
-        $desiredFileName = $filename;
-    
-        // Initialize cURL session
-        $ch = curl_init($fileUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        $fileContent = curl_exec($ch);
-    
-        // Check for cURL errors
-        if (curl_errno($ch)) {
-            $curlError = curl_error($ch);
-            curl_close($ch);
-            die('Error: ' . $curlError);
-        }
-    
-        // Close cURL session
-        curl_close($ch);
-    
-        // Check if file content was fetched successfully
-        if ($fileContent === false) {
-            die('Error: Unable to fetch file.');
-        }
-    
-        // Check if the content is not empty
-        if (empty($fileContent)) {
-            die('Error: File content is empty.');
-        }
-    
-        // Optional: Log or debug file content length
-        error_log("File content length: " . strlen($fileContent));
-    
-        // Set appropriate headers to force download
+        // Get the content type of the file from the headers
+        $headers = get_headers($fileUrl, 1);
+        $contentType = isset($headers['Content-Type']) ? $headers['Content-Type'] : 'application/octet-stream';
+        
+        // Set headers to force the browser to download the file with the new name
         header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($desiredFileName) . '"');
+        header('Content-Type: ' . $contentType);
+        header('Content-Disposition: attachment; filename="' . basename($newName) . '"');
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
         header('Content-Length: ' . strlen($fileContent));
-    
+
         // Output the file content
         echo $fileContent;
         exit;
