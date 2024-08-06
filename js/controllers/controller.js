@@ -34441,6 +34441,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('responsive', true).
         withOption('pageLength', 100);
 
+
     $scope.editDueDate = function(id, inv_due_date, invoice_date){
     
         var html = angular.element(

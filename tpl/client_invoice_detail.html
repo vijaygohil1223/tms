@@ -145,7 +145,7 @@
             </ul>
             <div class="overview-list projecttable">
               <div class="table-responsive">
-                <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsClInvc">
+                <table class="table table-striped b-b" datatable="ng" id="jobAllTbl" dt-options="dtOptionsClInvc" dt-columns="dtColumns">
                   <thead>
                     <th>
                       #
@@ -196,10 +196,15 @@
                       </td>
                       <td>{{ invoiceL.client_currency }} </td>
                       <td>
-                        <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.invoice_date | globalDtFormat }} </span>
-                        <span ng-if="invoiceL.credit_note_id"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span>
+                        <span style="display: none;"> {{ invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date }} </span> 
+                        <!-- <span ng-if="! invoiceL.credit_note_id"> {{ invoiceL.invoice_date | globalDtFormat }} </span>
+                        <span ng-if="invoiceL.credit_note_id"> {{ invoiceL.credit_note_create_date | globalDtFormat }} </span> -->
+                        <span>
+                          {{ (invoiceL.credit_note_id ? invoiceL.credit_note_create_date : invoiceL.invoice_date) | globalDtFormat }}
+                      </span>
                       </td>
                       <td>
+                        <span style="display: none;"> {{ invoiceL.invoice_due_date }} </span> 
                         <span > {{ invoiceL.invoice_due_date | globalDtFormat }} </span> 
                         <a href="javascript:void(0)" 
                         title="edit duedate" class="trActionIcon"
