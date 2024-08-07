@@ -23456,28 +23456,64 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.clientpriceList = {};
     $scope.customer = {};
     $scope.price_ClientID = 0;
-    rest.path = 'customer/' + $scope.routeOrderID;
-    rest.get().success(function (res) {
-        $scope.customer = res;
-        $scope.price_ClientID = $scope.customer.client;
-        
-    })
-
-    if ($window.localStorage.clientproCustomerName) {
-        var clinet_id;
-        clinet_id = $window.localStorage.clientproCustomerName;
-        rest.path = 'client/' + clinet_id;
-        rest.get().success(function (data) {
-            $scope.clientData = data;
-            $timeout(function () {
-                if ( $scope.clientData && $scope.clientData.client_currency) {
-                    $scope.ClientCurrency = $scope.clientData.client_currency.split(',').pop();
-                    console.log('$scope.ClientCurrency', $scope.ClientCurrency)
-                    $scope.ClientCurrencyName = $scope.clientData.client_currency.split(',')[0] ? $scope.clientData.client_currency.split(',')[0] : 'EUR' ;
+    $scope.getCustomerData = function(){
+        if($scope.routeOrderID){
+            rest.path = 'customer/' + $scope.routeOrderID;
+            rest.get().success(function (res) {
+                $scope.customer = res;
+                $scope.price_ClientID = $scope.customer?.client;
+                console.log('$scope.customer', $scope.customer)
+                if ($scope.customer) {
+                    rest.path = 'client/' + $scope.customer.client;
+                    rest.get().success(function (cData) {
+                        $scope.directClientData = cData
+                        $scope.directClientName = cData?.vUserName
+                        $window.localStorage.ItemClient = $scope.directClientData.vUserName;
+                    }).error(function (data, error, status) { });
                 }
-                angular.element('#crnt1Cur').text($scope.ClientCurrency);
-                //angular.element('#currency').text($scope.ClientCurrencyName);
-            }, 100);
+            })
+        }
+    }
+    $scope.getCustomerData();
+
+    // if ($window.localStorage.clientproCustomerName) {
+    //     var clinet_id;
+    //     clinet_id = $window.localStorage.clientproCustomerName;
+    //     rest.path = 'client/' + clinet_id;
+    //     rest.get().success(function (data) {
+    //         $scope.clientData = data;
+    //         $timeout(function () {
+    //             if ( $scope.clientData && $scope.clientData.client_currency) {
+    //                 $scope.ClientCurrency = $scope.clientData.client_currency.split(',').pop();
+    //                 console.log('$scope.ClientCurrency', $scope.ClientCurrency)
+    //                 $scope.ClientCurrencyName = $scope.clientData.client_currency.split(',')[0] ? $scope.clientData.client_currency.split(',')[0] : 'EUR' ;
+    //             }
+    //             angular.element('#crnt1Cur').text($scope.ClientCurrency);
+    //             //angular.element('#currency').text($scope.ClientCurrencyName);
+    //         }, 100);
+    //     }).error(errorCallback);
+    // }
+
+    // Project Detail ---  ---   
+    if ($routeParams.id) {
+        $routeParams.id;
+        rest.path = 'viewProjectCustomerDetail';
+        rest.model().success(function (data) {
+            $scope.customer = data;
+            console.log('$scope.customer****===>', $scope.customer)
+            $scope.ClientCurrencyName = $scope.customer.client_currency ? $scope.customer.client_currency.split(',')[0] : 'EUR' ;
+            $scope.ClientCurrency = $scope.customer?.client_currency.split(',').pop();
+            $window.localStorage.clientproCustomerName = $scope.customer.client;
+            // $window.localStorage.ContactPerson = $scope.customer.contact;
+            // $routeParams.ClientIdd = data['client'];
+            // $window.localStorage.ClientName = $routeParams.ClientIdd;
+            // $scope.clientName = $routeParams.ClientIdd
+            if ($scope.customer.memo) {
+                $scope.warn = true;
+                $timeout(function () {
+                    $scope.warn = false;
+                }, 10000);
+            }
         }).error(errorCallback);
     }
 
@@ -23621,25 +23657,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
-    $scope.getCustomerData = function(){
-        if($scope.routeOrderID){
-            rest.path = 'customer/' + $scope.routeOrderID;
-            rest.get().success(function (res) {
-                $scope.customer = res;
-                console.log('$scope.customer', $scope.customer)
-                if ($scope.customer) {
-                    rest.path = 'client/' + $scope.customer.client;
-                    rest.get().success(function (cData) {
-                        $scope.directClientData = cData
-                        $scope.directClientName = cData?.vUserName
-                        $window.localStorage.ItemClient = $scope.directClientData.vUserName;
-                    }).error(function (data, error, status) { });
-                }
-            })
-        }
-    }
-    $scope.getCustomerData();
-
     $scope.itemfolderOpen = function (id) {
         closeWindows();
         localStorage['scoopfolderId'] = id;
@@ -23649,17 +23666,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.ItemFolderid = id;
         // start to get downloaded folder name with client name
         $scope.getCustomerData();
-        // rest.path = 'customer/' + $scope.routeOrderID;
-        // rest.get().success(function (res) {
-        //     $scope.customer = res;
-        //     if ($scope.customer) {
-        //         rest.path = 'client/' + $scope.customer.client;
-        //         rest.get().success(function (cData) {
-        //             $scope.directClientData = cData
-        //             $window.localStorage.ItemClient = $scope.directClientData.vUserName;
-        //         }).error(function (data, error, status) { });
-        //     }
-        // })
         // end
         var ItemcodeNumber = angular.element('.itemCode' + id).text();
         //var ItemClient = angular.element('.itemClient'+id).text();
@@ -24110,36 +24116,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.order_id = $scope.routeOrderID;
-    if ($scope.order_id != " ") {
-        $routeParams.id = $scope.order_id;
-        rest.path = 'contactPerson';
-        rest.model().success(function (data) {
-            console.log('contactPerson-data=>', data)
-            
-            var cor = [];
-            var man = [];
-            angular.forEach(data, function (val, i) {
-                // shortway
-                (val && val.vResourceType) && ( val.vResourceType === 1 ? cor.push(val.iUserId) : val.vResourceType === 2 && man.push(val.iUserId) );
-                // if(val && val.vResourceType){
-                //     if (val.vResourceType == 1) {
-                //         cor.push(val.iUserId);
-                //     }
-                //     if (val.vResourceType == 2) {
-                //         man.push(val.iUserId);
-                //     }
-                // }
-            })
+    // if ($scope.order_id != " ") {
+    //     $routeParams.id = $scope.order_id;
+    //     rest.path = 'contactPerson';
+    //     rest.model().success(function (data) {
+    //         console.log('contactPerson-data=>', data)
+    //         var cor = [];
+    //         var man = [];
+    //         angular.forEach(data, function (val, i) {
+    //             // shortway
+    //             (val && val.vResourceType) && ( val.vResourceType === 1 ? cor.push(val.iUserId) : val.vResourceType === 2 && man.push(val.iUserId) );
+    //             // if(val && val.vResourceType){
+    //             //     if (val.vResourceType == 1) {
+    //             //         cor.push(val.iUserId);
+    //             //     }
+    //             //     if (val.vResourceType == 2) {
+    //             //         man.push(val.iUserId);
+    //             //     }
+    //             // }
+    //         })
 
-            $timeout(function () {
-                angular.element('#manager').select2('val', man);
-                console.log('man', man)
-                angular.element('#coordinator').select2('val', cor);
-                console.log('cor', cor)
-            }, 1000);
-        }).error(errorCallback);
+    //         $timeout(function () {
+    //             //angular.element('#manager').select2('val', man);
+    //             //angular.element('#coordinator').select2('val', cor);
+    //         }, 1000);
+    //     }).error(errorCallback);
 
-    }
+    // }
 
     $scope.ItemNext = function (formId, id) {
 
@@ -25241,24 +25244,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         scrollToId(eID);
     }
 
-    $scope.itemJobs = [];
-    if($scope.routeOrderID){
-        rest.path = 'select2Jobdata';
-        rest.get().success(function (data) {
-            const itemJobs = data.filter( el => {
-                if (el.order_id == $scope.routeOrderID)
-                    return el;
-            })
-            $scope.itemJobs = itemJobs;
-        });    
-    }
+    // $scope.itemJobs = [];
+    // if($scope.routeOrderID){
+    //     rest.path = 'select2Jobdata';
+    //     rest.get().success(function (data) {
+    //         const itemJobs = data.filter( el => {
+    //             if (el.order_id == $scope.routeOrderID)
+    //                 return el;
+    //         })
+    //         $scope.itemJobs = itemJobs;
+    //     });    
+    // }
 
     $scope.deleteItemsId = function (itemId, itemNnumber) {
         itemId = itemId + '-' + itemNnumber;
-        const itemJobsExist = $scope.itemJobs.filter( el => {
-            if (el.item_id == itemNnumber)
-                return el;
-        })
+        // const itemJobsExist = $scope.itemJobs.filter( el => {
+        //     if (el.item_id == itemNnumber)
+        //         return el;
+        // })
         //var deleteMessage = "Are you sure you want to <b>DELETE</b> this scoop?";
         //if(itemJobsExist.length){
             let deleteInput = `<div class="checkbox" style="margin-top:20px"> <label class="i-checks i-checks-sm"> <input type='checkbox' name='scoopdelete${itemId}' id='scoopdelete${itemId}' value='1'> <i></i> Yes, I want to delete the scoop </label> </div>`;
