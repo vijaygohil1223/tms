@@ -182,6 +182,34 @@ app.factory('allLanguages', function($http, $location,$q, $routeParams,rest, $co
     
     return allLanguages;
 });
+app.factory('LanguageService', function($http, $q, rest) {
+    return {
+        getAllLanguages: function() {
+            var deferred = $q.defer();
+
+            rest.path = 'allLanguages';
+            rest.get().then(function(response) {
+                var allLanguages = [];
+                angular.forEach(response.data, function(val) {
+                    allLanguages.push({
+                        'id': val.id,
+                        'title': val.title,
+                        'name': val.title,
+                        'flagImg': 'assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/' + val.flagImg,
+                        'flagTitle': val.flagTitle,
+                        'is_favourite': val.is_favourite,
+                    });
+                });
+                deferred.resolve(allLanguages);
+            }).catch(function(error) {
+                deferred.reject('Error fetching languages: ' + error.statusText);
+            });
+
+            return deferred.promise;
+        }
+    };
+});
+
 // 
 app.factory('invoiceDuePeriodDays', function($http, $location, $routeParams,rest) {
     var duePeriodDays = 30;

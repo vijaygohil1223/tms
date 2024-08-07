@@ -19,6 +19,7 @@ angular.module('polyglotLanguageSwitcher', [])
                 selectedLang: '@'
             },
             controller: ['$scope', function ($scope) {
+
                 var selectedLang = $scope.selectedLang;
                 var columns = Math.round($scope.items.length / parseInt($scope.gridColumns));
                 var hoverTimeout = $scope.hoverTimeout;
@@ -37,8 +38,11 @@ angular.module('polyglotLanguageSwitcher', [])
                         $scope.$apply();
                     }
                 };
-
+                
+                //var columns = parseInt(30, 10); // to devide column
                 var prepareModel = function () {
+                    var columns = Math.round($scope.items.length / parseInt($scope.gridColumns));
+                
                     $scope.model = {
                         opened: false,
                         selectedLang: null,
@@ -66,8 +70,11 @@ angular.module('polyglotLanguageSwitcher', [])
                         column = null;
                     }
                     if (!$scope.model.selectedLang) {
-                        $scope.model.selectedLang = $scope.items[0];
-                        $scope.items[0].selected = true;
+                        $scope.model.selectedLang = $scope.items[0] || [];
+                        //$scope.items[0].selected = true;
+                        if ($scope.items[0]) {
+                            $scope.items[0].selected = true;
+                        }
                     }
                 };
 
@@ -135,7 +142,19 @@ angular.module('polyglotLanguageSwitcher', [])
                     return false;
                 };
 
-                prepareModel();
+                $scope.$watch('items', function(newItems) {
+                    if (newItems) {
+                        $scope.items = newItems
+                        prepareModel()
+                    }
+                }, true);
+                //prepareModel();
+                $timeout(function() {
+                    if ($scope.items && $scope.items.length) {
+                        prepareModel();
+                    }
+                }, 0);
+                
             }],
             template: function (context, $scope) {
                 var template = '<div class="polyglot-language-switcher ng-polyglot-language-switcher">';

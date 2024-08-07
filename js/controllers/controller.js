@@ -23413,7 +23413,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
-}).controller('itemsController', function (allLanguages, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q) {
+}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q) {
     //$window.localStorage.scoopfolderId = $routeParams.id;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
@@ -23836,19 +23836,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.changeClientPrice(0, eleId, $scope.scoopSpecializationArr, $scope.stLangPair)
     });
 
+
+    // $scope.plsModel = {
+    //     languages40: allLanguages,
+    // };
     $scope.plsModel = {
-        languages40: allLanguages,
+        languages40: [], 
     };
-    $timeout(function () {
-        if ($scope.plsModel) {
-            angular.forEach($scope.plsModel.languages40, function (val, i) {
-                
-                if (val.is_favourite == 1) {
-                    $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
-                    $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
+    LanguageService.getAllLanguages().then(function(data) {
+        $scope.plsModel.languages40 = data;
+        if(data){
+            setTimeout(() => {
+                try {
+                    angular.forEach(data, function (val, i) {
+                        if (val.is_favourite == 1) {
+                            $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
+                            $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
+                        }
+                    });
+                } catch (error) {
+                    
                 }
-            });
+            }, 2000);
         }
+    }).catch(function(error) {
+        console.error('Error loading languages:', error);
+    });
+    $timeout(function () {
+        // if ($scope.plsModel) {
+        //     angular.forEach($scope.plsModel.languages40, function (val, i) {
+        //         if (val.is_favourite == 1) {
+        //             $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
+        //             $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
+        //         }
+        //     });
+        // }
     }, 2000);
 
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
@@ -37807,7 +37829,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     };
 
-}).controller('viewScoopPopupController', function (allLanguages, $scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance, $cookieStore, $interval, DTOptionsBuilder, $filter, $q) {
+}).controller('viewScoopPopupController', function (allLanguages, LanguageService, $scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, items, $uibModalInstance, $cookieStore, $interval, DTOptionsBuilder, $filter, $q) {
     //debugger
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $routeParams.id = items ? items.order_id : 0;
@@ -38151,19 +38173,40 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.changeClientPrice(0, eleId, $scope.scoopSpecializationArr, $scope.stLangPair)
     });
 
+    // $scope.plsModel = {
+    //     languages40: allLanguages,
+    // };
     $scope.plsModel = {
-        languages40: allLanguages,
+        languages40: [], 
     };
-    //console.log('$scope.plsModel',$scope.plsModel.languages40);
-    $timeout(function () {
-        if ($scope.plsModel) {
-            angular.forEach($scope.plsModel.languages40, function (val, i) {
-                if (val.is_favourite == 1) {
-                    $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
-                    $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
+    LanguageService.getAllLanguages().then(function(data) {
+        $scope.plsModel.languages40 = data;
+        if(data){
+            setTimeout(() => {
+                try {
+                    angular.forEach(data, function (val, i) {
+                        if (val.is_favourite == 1) {
+                            $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
+                            $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
+                        }
+                    });
+                } catch (error) {
+                    
                 }
-            });
+            }, 2000);
         }
+    }).catch(function(error) {
+        console.error('Error loading languages:', error);
+    });
+    $timeout(function () {
+        // if ($scope.plsModel) {
+        //     angular.forEach($scope.plsModel.languages40, function (val, i) {
+        //         if (val.is_favourite == 1) {
+        //             $('.allsourcelang').find('a[title="' + val.title + '"]').addClass('favlang');
+        //             $('.alltargetlang').find('a[title="' + val.title + '"]').addClass('favlang');
+        //         }
+        //     });
+        // }
     }, 2000);
     
     $scope.itemQuentityDelete = function (id, index, parentIndex) {
