@@ -1826,6 +1826,11 @@ $app->delete('/deleteExtrnlorClntPricelist/:type/:id','authenticate', function (
     $result = $cusPrice->deleteExtrnlorClntPricelist($type, $id);
     echoResponse($result ['status'], $result);
 });
+$app->get('/customerpriceByClient/:id','authenticate', function($id) {
+    $cusPrice = new Customerpricelist ();
+    $result = $cusPrice->customerpriceByClient($id);
+    echoResponse(200, $result);
+});
 // -------------------sevices status --------------------------//
 
 $app->post('/serviceSave','authenticate', function () use($app) {

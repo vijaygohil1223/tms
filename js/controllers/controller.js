@@ -23462,6 +23462,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.get().success(function (res) {
                 $scope.customer = res;
                 $scope.price_ClientID = $scope.customer?.client;
+                
+                rest.path = 'customerpriceByClient/' + $scope.price_ClientID;
+                rest.get().success(function (data) {
+                    $scope.clientpriceList = data;
+                })
+
                 console.log('$scope.customer', $scope.customer)
                 if ($scope.customer) {
                     rest.path = 'client/' + $scope.customer.client;
@@ -23499,16 +23505,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id;
         rest.path = 'viewProjectCustomerDetail';
         rest.model().success(function (data) {
-            $scope.customer = data;
-            console.log('$scope.customer****===>', $scope.customer)
-            $scope.ClientCurrencyName = $scope.customer.client_currency ? $scope.customer.client_currency.split(',')[0] : 'EUR' ;
-            $scope.ClientCurrency = $scope.customer?.client_currency.split(',').pop();
-            $window.localStorage.clientproCustomerName = $scope.customer.client;
-            // $window.localStorage.ContactPerson = $scope.customer.contact;
+            $scope.customerPrj = data;
+            console.log('$scope.customerPrj****===>', $scope.customerPrj)
+            $scope.ClientCurrencyName = $scope.customerPrj.client_currency ? $scope.customerPrj.client_currency.split(',')[0] : 'EUR' ;
+            $scope.ClientCurrency = $scope.customerPrj?.client_currency.split(',').pop();
+            $window.localStorage.clientproCustomerName = $scope.customerPrj.client;
+            // $window.localStorage.ContactPerson = $scope.customerPrj.contact;
             // $routeParams.ClientIdd = data['client'];
             // $window.localStorage.ClientName = $routeParams.ClientIdd;
             // $scope.clientName = $routeParams.ClientIdd
-            if ($scope.customer.memo) {
+            if ($scope.customerPrj.memo) {
                 $scope.warn = true;
                 $timeout(function () {
                     $scope.warn = false;
@@ -23557,6 +23563,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.scoopSpecializationArr = '';
         $scope.customerpriceAll = [];
         $scope.custPriceAll = function (data) {
+            console.log('$scope.customer===============>', $scope.customer)
+            var deferred = $q.defer();
+            try {
+                var custmoterPriceList = [];
+                var custmoterPriceList = $scope.clientpriceList;
+                console.log('custmoterPriceList=======>', custmoterPriceList)
+                var newdata = $scope.clientpriceList;
+                //$scope.customerpriceAll = data;
+                $scope.clientpriceList = custmoterPriceList.filter( function (data) {
+                    console.log('data-------------------------price_basis', data)
+                    if (typeof data.price_basis === 'string') {
+                        try {
+                            data.price_basis = JSON.parse(data.price_basis);
+                        } catch (error) {
+                            console.error('Error parsing price_basis:', error);
+                        }
+                    }
+                    if (typeof data.price_language === 'string') {
+                        try {
+                            data.price_language = JSON.parse(data.price_language);
+                        } catch (error) {
+                            console.error('Error parsing price_language:', error);
+                        }
+                    }
+                    if (typeof data.specialization === 'string') {
+                        try {
+                            data.specialization = (data.specialization.toString()).split(',');
+                        } catch (error) {
+                            console.error('Error parsing specialization:', error);
+                        }
+                    }
+                    return data.resource_id == $scope.customer.client;  
+                });
+                deferred.resolve(newdata);
+            } catch (error) {
+                console.log('error', error)
+                deferred.reject();
+            }
+
+            return deferred.promise;
+        };
+
+        $scope.custPriceAll_____ = function (data) {
+            console.log('$scope.customer===============>', $scope.customer)
             var deferred = $q.defer();
             rest.path = 'customerpriceAll/' + 1;
             rest.get().success(function (data) {

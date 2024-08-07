@@ -460,6 +460,7 @@ app.directive('select2Manager', function($http, rest, $timeout) {
         }
     }
 });
+
 app.directive('select2Coordinator', function($http, rest, $timeout) {
     return {
         restrict: 'EA',

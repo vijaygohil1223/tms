@@ -90,4 +90,11 @@ class Customerpricelist {
 		return $return;
 	}
 
+    public function customerpriceByClient($id) {
+        $this->_db->where('price_id', 1);
+        $this->_db->where('resource_id', $id);
+        $data = $this->_db->get('tms_customer_price_list');
+        return $data;
+    }
+
 }
