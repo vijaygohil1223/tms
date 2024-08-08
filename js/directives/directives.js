@@ -419,44 +419,69 @@ app.directive('select2User', function($http, rest, $timeout) {
     }
 });
 
-app.directive('select2Manager', function($http, rest, $timeout) {
+app.directive('select2Manager', function($http, rest, $timeout, maangerListService) {
     return {
         restrict: 'EA',
         priority: 1,
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'userManager/2';
-            rest.get().success(function(data) {
-                var users = [];
-                $.each(data.data, function(key, value) {
-                    var obj = {
-                        'id': value.iUserId,
-                        'text': value.vFirstName + ' ' + value.vLastName
-                    };
-                    users.push(obj);
-                });
-                $timeout(function() {
-                    element.select2({
-                        allowClear: true,
-                        data: users,
-                        multiple:true,
-                        closeOnSelect:true,
-                    }).on("change", function (e) {
-                        const inputIdS2 = '#s2id_'+$(this).attr('id');
-                        if(e.added){
-                            $(inputIdS2+' li').each(function() {
-                                const childDiv = $(this).children();
-                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
-                                if(eleText){
-                                    if(eleText !== e.added.text){
-                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
-                                    }    
-                                }
-                            });
-                        }    
+
+            //rest.path = 'userManager/2';
+            //rest.get().success(function(data) {
+                // var users = [];
+                // $.each(data.data, function(key, value) {
+                //     var obj = {
+                //         'id': value.iUserId,
+                //         'text': value.vFirstName + ' ' + value.vLastName
+                //     };
+                //     users.push(obj);
+                // });
+                function initializeSelect2Manager(managerData) {
+                    $timeout(function() {
+                        element.select2({
+                            allowClear: true,
+                            data: managerData,
+                            multiple:true,
+                            closeOnSelect:true,
+                        }).on("change", function (e) {
+                            const inputIdS2 = '#s2id_'+$(this).attr('id');
+                            if(e.added){
+                                $(inputIdS2+' li').each(function() {
+                                    const childDiv = $(this).children();
+                                    let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                    if(eleText){
+                                        if(eleText !== e.added.text){
+                                            $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                        }    
+                                    }
+                                });
+                            }    
+                        });
+                    }, 200);
+                }
+            //}).error(function(data, error, status) {});
+
+            // To solve issue in scoop edit page - if there are multiple page api calls multiple time
+            if (scope.maangerListData) {
+                // Use existing data
+                initializeSelect2Manager(scope.maangerListData);
+            } else {
+                // Fetch data from API and then initialize select2
+                rest.path = 'userManager/2';
+                rest.get().success(function(data) {
+                    scope.maangerListData = data.data.map(function(value) {
+                        return {
+                            id: value.iUserId,
+                            text: value.vFirstName + ' ' + value.vLastName
+                        };
                     });
-                }, 200);
-            }).error(function(data, error, status) {});
+                    initializeSelect2Manager(scope.maangerListData);
+                }).error(function(error) {
+                    console.error('API call failed:', error);
+                });
+            }
+
+
         }
     }
 });
@@ -1085,7 +1110,7 @@ app.directive('select2ClientPrice', function($http, rest, $timeout) {
             rest.get().success(function(data) {
                 console.log('price_ClientID', scope.price_ClientID)
                 var custPriceData = data.filter( (e) => e.resource_id == scope.price_ClientID )
-                console.log('custPriceData', custPriceData)
+                console.log('custPriceData*********', custPriceData)
                 //let custPrice = []; 
                 var custPrice = [{
                     id: '0',

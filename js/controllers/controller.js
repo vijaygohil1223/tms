@@ -23413,7 +23413,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
-}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q) {
+}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q, maangerListService) {
     //$window.localStorage.scoopfolderId = $routeParams.id;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
@@ -23523,6 +23523,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
+    // service for select2 maanger
+    $scope.maangerListData = [];
+    maangerListService.getAllData().then(function(response) {
+        $scope.maangerListData = response
+    })
+
     if ($window.localStorage.orderID) {
         //getting ProjectOrderName and indirect clint name
         rest.path = 'getClientIndirectClient/' + $scope.routeOrderID;
@@ -23563,16 +23569,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.scoopSpecializationArr = '';
         $scope.customerpriceAll = [];
         $scope.custPriceAll = function (data) {
-            console.log('$scope.customer===============>', $scope.customer)
             var deferred = $q.defer();
             try {
                 var custmoterPriceList = [];
                 var custmoterPriceList = $scope.clientpriceList;
-                console.log('custmoterPriceList=======>', custmoterPriceList)
                 var newdata = $scope.clientpriceList;
                 //$scope.customerpriceAll = data;
                 $scope.clientpriceList = custmoterPriceList.filter( function (data) {
-                    console.log('data-------------------------price_basis', data)
                     if (typeof data.price_basis === 'string') {
                         try {
                             data.price_basis = JSON.parse(data.price_basis);
@@ -23605,8 +23608,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return deferred.promise;
         };
 
-        $scope.custPriceAll_____ = function (data) {
-            console.log('$scope.customer===============>', $scope.customer)
+        $scope.custPriceAll_____2 = function (data) {
+            console.log('$scope.customer=====******************==========>', $scope.customer)
             var deferred = $q.defer();
             rest.path = 'customerpriceAll/' + 1;
             rest.get().success(function (data) {

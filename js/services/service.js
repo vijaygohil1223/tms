@@ -219,3 +219,28 @@ app.factory('invoiceDuePeriodDays', function($http, $location, $routeParams,rest
     }).error(function(data, error, status) {});
     return duePeriodDays;
 });
+
+app.factory('maangerListService', function($http, $q, rest) {
+    return {
+        getAllData: function() {
+            var deferred = $q.defer();
+            var allManagerList = [];
+            rest.path = 'userManager/2';
+            rest.get().then(function(response) {
+                //var allManagerList = response?.data || [];
+                angular.forEach(response.data.data, function(value) {
+                    var obj = {
+                        'id': value.iUserId,
+                        'text': value.vFirstName + ' ' + value.vLastName
+                    };
+                    allManagerList.push(obj);
+                })
+                deferred.resolve(allManagerList);
+            }).catch(function(error) {
+                deferred.reject('Error fetching daa: ' + error );
+            });
+
+            return deferred.promise;
+        }
+    };
+});
