@@ -23413,7 +23413,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
 
-}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q, maangerListService) {
+}).controller('itemsController', function (allLanguages, LanguageService, $filter, $scope, $log, $window, $compile, $timeout, $uibModal, rest, $route, $rootScope, $routeParams, $location, $cookieStore, $interval, $q, select2userListService, select2scoopStatusService) {
     //$window.localStorage.scoopfolderId = $routeParams.id;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.isNewProject = $window.localStorage.getItem("isNewProject");
@@ -23525,10 +23525,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // service for select2 maanger
     $scope.maangerListData = [];
-    maangerListService.getAllData().then(function(response) {
-        $scope.maangerListData = response
-    })
-
+    // maangerListService.getAllData().then(function(response) {
+    //     $scope.maangerListData = response
+    // })
+    select2userListService.getManagers().then(function(data) {
+        $scope.maangerListData = data;
+    }).catch(function(error) {
+        console.error('Error fetching :', error);
+    });
+    select2userListService.getCoordinators().then(function(data) {
+        $scope.cordinatorS2Data = data;
+    }).catch(function(error) {
+        console.error('Error fetching :', error);
+    });
+    select2userListService.getQaSpecialist().then(function(data) {
+        $scope.qaS2Data = data;
+    }).catch(function(error) {
+        console.error('Error fetching :', error);
+    });
+    select2scoopStatusService.getScoopstatus().then(function(data) {
+        $scope.scoopStatusS2Data = data;
+    }).catch(function(error) {
+        console.error('Error fetching :', error);
+    });
+    
+    
     if ($window.localStorage.orderID) {
         //getting ProjectOrderName and indirect clint name
         rest.path = 'getClientIndirectClient/' + $scope.routeOrderID;
@@ -37928,6 +37949,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.customer = res;
             $scope.customerData = res;
             $scope.price_ClientID = $scope.customer.client;
+
+            //-- customer drop-down --//
+            rest.path = 'customerpriceByClient/' + $scope.price_ClientID;
+            rest.get().success(function (data) {
+                $scope.clientpriceList = data;
+            })
+            //-- customer drop-down --// 
         })
 
         rest.path = 'masterPriceitemget/' + $scope.order_id;

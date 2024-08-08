@@ -486,27 +486,52 @@ app.directive('select2Manager', function($http, rest, $timeout, maangerListServi
     }
 });
 
-app.directive('select2Coordinator', function($http, rest, $timeout) {
+app.directive('select2Coordinator', function($http, rest, $timeout, coordinatorListService) {
     return {
         restrict: 'EA',
         priority: 2,
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'userCoordinator/3';
-            rest.get().success(function(data) {
+            // rest.path = 'userCoordinator/3';
+            // rest.get().success(function(data) {
 
-                var users = [];
-                $.each(data.data, function(key, value) {
-                    var obj = {
-                        'id': value.iUserId,
-                        'text': value.vFirstName + ' ' + value.vLastName
-                    };
-                    users.push(obj);
-                });
+                // var users = [];
+                // $.each(data.data, function(key, value) {
+                //     var obj = {
+                //         'id': value.iUserId,
+                //         'text': value.vFirstName + ' ' + value.vLastName
+                //     };
+                //     users.push(obj);
+                // });
+                // $timeout(function() {
+                //     element.select2({
+                //         allowClear: true,
+                //         data: users,
+                //         multiple:true,
+                //         closeOnSelect:true,
+                //     }).on("change", function (e) {
+                //         const inputIdS2 = '#s2id_'+$(this).attr('id');
+                //         if(e.added){
+                //             $(inputIdS2+' li').each(function() {
+                //                 const childDiv = $(this).children();
+                //                 let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                //                 if(eleText){
+                //                     if(eleText !== e.added.text){
+                //                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                //                     }    
+                //                 }
+                //             });
+                //         }    
+                //     });
+                // }, 200);
+
+            // }).error(function(data, error, status) {});
+
+            var initializeselect2Coordinator = function(newData) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: users,
+                        data: newData,
                         multiple:true,
                         closeOnSelect:true,
                     }).on("change", function (e) {
@@ -524,8 +549,27 @@ app.directive('select2Coordinator', function($http, rest, $timeout) {
                         }    
                     });
                 }, 200);
+            };
+            
+            if (scope.cordinatorS2Data) {
+                // Use existing data
+                initializeselect2Coordinator(scope.cordinatorS2Data);
+            } else {
+                // Fetch data from API and then initialize select2
+                rest.path = 'userCoordinator/3';
+                rest.get().success(function(data) {
+                    scope.cordinatorS2Data = data.data.map(function(value) {
+                        return {
+                            id: value.iUserId,
+                            text: value.vFirstName + ' ' + value.vLastName
+                        };
+                    });
+                    initializeselect2Coordinator(scope.cordinatorS2Data);
+                }).error(function(error) {
+                    console.error('API call failed:', error);
+                });
+            }
 
-            }).error(function(data, error, status) {});
         }
     }
 });
@@ -759,40 +803,82 @@ app.directive('select2Qaspa', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'userQaSpecialist/4';
-            rest.get().success(function(data) {
-                var users = [];
-                $.each(data.data, function(key, value) {
-                    var obj = {
-                        'id': value.iUserId,
-                        'text': value.vFirstName + ' ' + value.vLastName
-                    };
-                    users.push(obj);
-                });
-
-                $timeout(function() {
-                    element.select2({
-                        allowClear: true,
-                        data: users,
-                        multiple:true,
-                        closeOnSelect:true,
-                    }).on("change", function (e) {
-                        const inputIdS2 = '#s2id_'+$(this).attr('id');
-                        if(e.added){
-                            $(inputIdS2+' li').each(function() {
-                                const childDiv = $(this).children();
-                                let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
-                                if(eleText){
-                                    if(eleText !== e.added.text){
-                                        $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
-                                    }    
-                                }
-                            });
-                        }    
+            // rest.path = 'userQaSpecialist/4';
+            // rest.get().success(function(data) {
+                var initializeSelect2Qaspa = function(newData) {
+                    $timeout(function() {
+                        element.select2({
+                            allowClear: true,
+                            data: newData,
+                            multiple:true,
+                            closeOnSelect:true,
+                        }).on("change", function (e) {
+                            const inputIdS2 = '#s2id_'+$(this).attr('id');
+                            if(e.added){
+                                $(inputIdS2+' li').each(function() {
+                                    const childDiv = $(this).children();
+                                    let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                                    if(eleText){
+                                        if(eleText !== e.added.text){
+                                            $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                                        }    
+                                    }
+                                });
+                            }    
+                        });
+                    }, 200);
+                };
+                
+                if (scope.qaS2Data) {
+                    // Use existing data
+                    initializeSelect2Qaspa(scope.qaS2Data);
+                } else {
+                    // Fetch data from API and then initialize select2
+                    rest.path = 'userCoordinator/3';
+                    rest.get().success(function(data) {
+                        scope.qaS2Data = data.data.map(function(value) {
+                            return {
+                                id: value.iUserId,
+                                text: value.vFirstName + ' ' + value.vLastName
+                            };
+                        });
+                        initializeSelect2Qaspa(scope.qaS2Data);
+                    }).error(function(error) {
+                        console.error('API call failed:', error);
                     });
-                }, 200);
+                }
+                // var users = [];
+                // $.each(data.data, function(key, value) {
+                //     var obj = {
+                //         'id': value.iUserId,
+                //         'text': value.vFirstName + ' ' + value.vLastName
+                //     };
+                //     users.push(obj);
+                // });
 
-            }).error(function(data, error, status) {});
+                // $timeout(function() {
+                //     element.select2({
+                //         allowClear: true,
+                //         data: users,
+                //         multiple:true,
+                //         closeOnSelect:true,
+                //     }).on("change", function (e) {
+                //         const inputIdS2 = '#s2id_'+$(this).attr('id');
+                //         if(e.added){
+                //             $(inputIdS2+' li').each(function() {
+                //                 const childDiv = $(this).children();
+                //                 let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                //                 if(eleText){
+                //                     if(eleText !== e.added.text){
+                //                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                //                     }    
+                //                 }
+                //             });
+                //         }    
+                //     });
+                // }, 200);
+
+            // }).error(function(data, error, status) {});
         }
     }
 });
@@ -1105,53 +1191,81 @@ app.directive('select2ClientPrice', function($http, rest, $timeout) {
     return {
         restrict: 'EA',
         require: 'ngModel',
+        // scope: {
+        //     clientpriceList: '=' 
+        // },
         link: function(scope, element) {
-            rest.path = 'customerpriceAll/1';
-            rest.get().success(function(data) {
-                console.log('price_ClientID', scope.price_ClientID)
-                var custPriceData = data.filter( (e) => e.resource_id == scope.price_ClientID )
-                console.log('custPriceData*********', custPriceData)
-                //let custPrice = []; 
-                var custPrice = [{
-                    id: '0',
-                    text: '--Please Select--'
-                }];
-                $.each(custPriceData, function(key, value) {
-                    var obj = {
-                        id: value.price_list_id,
-                        text: value.price_name
-                    };
-                    custPrice.push(obj);
-                });
+
+            function initializeselect2ClientPrice(custPrice) {
                 $timeout(function() {
-                    // element.select2({
-                    //     allowClear: true,
-                    //     data: prType,
-                    //     multiple:true,
-                    //     maximumSelectionSize:1
-                    // });
                     element.select2({
                         allowClear: true,
                         data: custPrice,
-                        multiple: false,
-                    }).on("change", function (e) {
-                        // const inputIdS2 = '#s2id_'+$(this).attr('id');
-                        // if(e.added){
-                        //     $(inputIdS2+' li').each(function() {
-                        //         const childDiv = $(this).children();
-                        //         let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
-                        //         if(eleText){
-                        //             if(eleText !== e.added.text){
-                        //                 $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
-                        //             }    
-                        //         }
-                        //     });
-                        // }    
+                        multiple: false
+                    }).on("change", function(e) {
+                        // Handle change event if needed
+                    });
+                }, 200);
+            }
+
+            scope.$watch('clientpriceList', function(newVal) {
+                if (newVal) {
+                    var custPrice = [{
+                        id: '0',
+                        text: '--Please Select--'
+                    }];
+                    angular.forEach(newVal, function(value) {
+                        custPrice.push({
+                            id: value.price_list_id,
+                            text: value.price_name
+                        });
                     });
 
-                }, 200);
+                    // Initialize select2 with the updated data
+                    initializeselect2ClientPrice(custPrice);
+                }
+            });
 
-            }).error(function(data, error, status) {});
+            // rest.path = 'customerpriceAll/1';
+            // rest.get().success(function(data) {
+                //var custPriceData = data.filter( (e) => e.resource_id == scope.price_ClientID )
+                // var custPriceData = scope.clientpriceList
+                // //let custPrice = []; 
+                // var custPrice = [{
+                //     id: '0',
+                //     text: '--Please Select--'
+                // }];
+                // $.each(custPriceData, function(key, value) {
+                //     var obj = {
+                //         id: value.price_list_id,
+                //         text: value.price_name
+                //     };
+                //     custPrice.push(obj);
+                // });
+                // $timeout(function() {
+                //     element.select2({
+                //         allowClear: true,
+                //         data: custPrice,
+                //         multiple: false,
+                //     }).on("change", function (e) {
+                //         // const inputIdS2 = '#s2id_'+$(this).attr('id');
+                //         // if(e.added){
+                //         //     $(inputIdS2+' li').each(function() {
+                //         //         const childDiv = $(this).children();
+                //         //         let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                //         //         if(eleText){
+                //         //             if(eleText !== e.added.text){
+                //         //                 $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                //         //             }    
+                //         //         }
+                //         //     });
+                //         // }    
+                //     });
+
+                // }, 200);
+
+            //}).error(function(data, error, status) {});
+            
         }
     }
 });
@@ -3552,27 +3666,14 @@ app.directive('select2ScoopDetailitmStatus', function($http, rest, $timeout) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs, ngModelCtrl) {
-            rest.path = 'scoopdetailItemStatusGet';
-            rest.get().success(function(data) {
-                var indirect = [];
-                var dataArr = [...data].sort((a, b) => a.displayOrder - b.displayOrder);
-                console.log('dataArr', dataArr)
-                $.each(dataArr, function(key, value) {
-                    var obj = {
-                        'id': value.item_status_id,
-                        //'id': value.item_status_name,
-                        'text': value.item_status_name
-                    };
-                    indirect.push(obj);
-                });
+
+            function initializeSelect2(managerData) {
                 $timeout(function() {
                     element.select2({
                         allowClear: true,
-                        data: indirect,
+                        data: managerData,
                         multiple:true,
-                        //maximumSelectionSize:1,
                         closeOnSelect:true,
-                        //closeOnSelect:false
                     }).on("change", function (e) {
                         const inputIdS2 = '#s2id_'+$(this).attr('id');
                         if(e.added){
@@ -3588,7 +3689,64 @@ app.directive('select2ScoopDetailitmStatus', function($http, rest, $timeout) {
                         }    
                     });
                 }, 200);
-            }).error(function(data, error, status) {});
+            }
+
+            if (scope.scoopStatusS2Data) {
+                // Use existing data
+                initializeSelect2(scope.scoopStatusS2Data);
+            } else {
+                // Fetch data from API and then initialize select2
+                rest.path = 'scoopdetailItemStatusGet';
+                rest.get().success(function(data) {
+                    scope.scoopStatusS2Data = data.map(function(value) {
+                        return {
+                            'id': value.item_status_id,
+                            'text': value.item_status_name
+                        };
+                    });
+                    initializeSelect2(scope.scoopStatusS2Data);
+                }).error(function(error) {
+                    console.error('API call failed:', error);
+                });
+            }
+            // rest.path = 'scoopdetailItemStatusGet';
+            // rest.get().success(function(data) {
+
+                // var indirect = [];
+                // var dataArr = [...data].sort((a, b) => a.displayOrder - b.displayOrder);
+                // console.log('dataArr', dataArr)
+                // $.each(dataArr, function(key, value) {
+                //     var obj = {
+                //         'id': value.item_status_id,
+                //         //'id': value.item_status_name,
+                //         'text': value.item_status_name
+                //     };
+                //     indirect.push(obj);
+                // });
+                // $timeout(function() {
+                //     element.select2({
+                //         allowClear: true,
+                //         data: indirect,
+                //         multiple:true,
+                //         //maximumSelectionSize:1,
+                //         closeOnSelect:true,
+                //         //closeOnSelect:false
+                //     }).on("change", function (e) {
+                //         const inputIdS2 = '#s2id_'+$(this).attr('id');
+                //         if(e.added){
+                //             $(inputIdS2+' li').each(function() {
+                //                 const childDiv = $(this).children();
+                //                 let eleText = (childDiv[0]) ? childDiv[0].innerText : '';
+                //                 if(eleText){
+                //                     if(eleText !== e.added.text){
+                //                         $(inputIdS2+' li').find( "div:contains("+ eleText +")").next().click();
+                //                     }    
+                //                 }
+                //             });
+                //         }    
+                //     });
+                // }, 200);
+            // }).error(function(data, error, status) {});
         }
     }
 });

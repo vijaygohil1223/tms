@@ -244,3 +244,110 @@ app.factory('maangerListService', function($http, $q, rest) {
         }
     };
 });
+app.factory('coordinatorListService', function($http, $q, rest) {
+    return {
+        getAllData: function() {
+            var deferred = $q.defer();
+            var allManagerList = [];
+            rest.path = 'userCoordinator/3';
+            rest.get().then(function(response) {
+                //var allManagerList = response?.data || [];
+                angular.forEach(response.data.data, function(value) {
+                    var obj = {
+                        'id': value.iUserId,
+                        'text': value.vFirstName + ' ' + value.vLastName
+                    };
+                    allManagerList.push(obj);
+                })
+                deferred.resolve(allManagerList);
+            }).catch(function(error) {
+                deferred.reject('Error fetching daa: ' + error );
+            });
+
+            return deferred.promise;
+        }
+    };
+});
+
+app.factory('select2userListService', function($http, $q, rest) {
+    var cache = {
+        managers: null,
+        qaSpecialist: null,
+        coordinators: null,
+        scoopStatus: null,
+    };
+
+    function fetchData(path, cacheKey) {
+        var deferred = $q.defer();
+        if (cache[cacheKey]) {
+            // Return cached data if available
+            deferred.resolve(cache[cacheKey]);
+        } else {
+            rest.path = path;
+            rest.get().then(function(response) {
+                var allData = response.data.data.map(function(value) {
+                    return {
+                        id: value.iUserId,
+                        text: value.vFirstName + ' ' + value.vLastName
+                    };
+                });
+                cache[cacheKey] = allData;
+                deferred.resolve(allData);
+            }).catch(function(error) {
+                deferred.reject('Error fetching data: ' + error);
+            });
+        }
+        return deferred.promise;
+    }
+
+    return {
+        getManagers: function() {
+            return fetchData('userManager/2', 'managers');
+        },
+        getQaSpecialist: function() {
+            return fetchData('userQaSpecialist/4', 'qaSpecialist');
+        },
+        getCoordinators: function() {
+            return fetchData('userCoordinator/3', 'coordinators');
+        },
+        getScoopstatus: function() {
+            return fetchData('scoopdetailItemStatusGet', 'scoopStatus');
+        }
+    };
+});
+
+app.factory('select2scoopStatusService', function($http, $q, rest) {
+    var cache = {
+        scoopStatus: null,
+    };
+
+    function fetchData(path, cacheKey) {
+        var deferred = $q.defer();
+        if (cache[cacheKey]) {
+            // Return cached data if available
+            deferred.resolve(cache[cacheKey]);
+        } else {
+            rest.path = path;
+            rest.get().then(function(response) {
+                console.log('response====================================>', response)
+                var allData = response.data.map(function(value) {
+                    return {
+                        'id': value.item_status_id,
+                        'text': value.item_status_name
+                    };
+                });
+                cache[cacheKey] = allData;
+                deferred.resolve(allData);
+            }).catch(function(error) {
+                deferred.reject('Error fetching data: ' + error);
+            });
+        }
+        return deferred.promise;
+    }
+
+    return {
+        getScoopstatus: function() {
+            return fetchData('scoopdetailItemStatusGet', 'scoopStatus');
+        }
+    };
+});
