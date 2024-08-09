@@ -329,7 +329,6 @@ app.factory('select2scoopStatusService', function($http, $q, rest) {
         } else {
             rest.path = path;
             rest.get().then(function(response) {
-                console.log('response====================================>', response)
                 var allData = response.data.map(function(value) {
                     return {
                         'id': value.item_status_id,

@@ -2252,7 +2252,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     ];
     // Tabs permission array
     //$scope.tabPermission = { "due_today": true, "to_be_assigned": true, "in_progress": true, "qa_ready": true, "to_be_delivered": true, "due_tomorrow": true, "delivered": true, "my_projects": true };
-    var tabPermission = { "due_today": true, "assigned": true, "ongoing": true, "qa_ready": true, "qa_issue": true, "pm_ready": true, "delivery": true, "completed": true, "overdue": true, "due_tomorrow": true, "my_project": true, "upcoming": true, "approved": true, "PO_missing": true, "all": true };
+    //var tabPermission = { "due_today": true, "assigned": true, "ongoing": true, "qa_ready": true, "qa_issue": true, "pm_ready": true, "delivery": true, "completed": true, "overdue": true, "due_tomorrow": true, "my_project": true, "upcoming": true, "approved": true, "PO_missing": true, "all": true };
+    
     $scope.tabPermission = {};
     if($window.localStorage.getItem("session_iUserId") == 1){
         $scope.dashboardTabList.map( (item) =>  { 
@@ -2816,13 +2817,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     function findIndexByTabClassName(tabClassName) {
-        for (var i = 0; i < $scope.dashboardTabList.length; i++) {
-            if ($scope.dashboardTabList[i].tabClassName === tabClassName) {
-                return i; // Return the index if match found
-            }
-        }
-        return -1; // Return -1 if no match found
+        return $scope.dashboardTabList.findIndex(tab => tab.tabClassName === tabClassName);
     }
+    // function findIndexByTabClassName(tabClassName) {
+    //     for (var i = 0; i < $scope.dashboardTabList.length; i++) {
+    //         if ($scope.dashboardTabList[i].tabClassName === tabClassName) {
+    //             return i; // Return the index if match found
+    //         }
+    //     }
+    //     return -1; // Return -1 if no match found
+    // }
 
     // group by for completed tab
     // Function to group data by Client ID
@@ -2982,13 +2986,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     })
             // }
 
-            //$scope.fillDashboardTabFn(parseInt(tabIndex), projectScoopData, response?.totalItems)    
-            angular.forEach($scope.dashboardTabList, function (itm, indx) {
-                if(itm.tabClassName == $scope.tabName){
-                    //itm.projectScoopData = projectScoopData;
-                    $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems)    
+            //$scope.fillDashboardTabFn(parseInt(tabIndex), projectScoopData, response?.totalItems)  
+            $scope.dashboardTabList.forEach((itm, indx) => {
+                if (itm.tabClassName === $scope.tabName) {
+                    console.log('$scope.tabName=======---------'+Math.floor(Date.now() / 1000)+'=='+indx, $scope.tabName)
+                    $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems);
                 }
-            })
+            });  
+            // angular.forEach($scope.dashboardTabList, function (itm, indx) {
+            //     if(itm.tabClassName == $scope.tabName){
+            //         //itm.projectScoopData = projectScoopData;
+            //         $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems)    
+            //     }
+            // })
             //$scope.dashboardTabList[1].projectScoopData = projectScoopData
             $scope.totalItems = response.totalItems;
             $scope.totalPages = response.totalPages;
@@ -3120,7 +3130,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.activeTabfn();
     }
 
-    $scope.changeProjectTabs2 = function(className, tabIndex){
+    $scope.changeProjectTabs2 = (function() {
+        let timer;
+        const delay = 300; // milliseconds
+    
+        return function(className, tabIndex) {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+                $scope.completedTabGrouped = '';
+                $scope.searchText = '';
+                $('#scoopsearch_' + className).val('');
+                $scope.tabName = className;
+                $window.localStorage.setItem("projectActiveTab", className);
+                $scope.dashboardScoopLoad(1, tabIndex, className);
+            }, delay);
+        };
+    })();
+    $scope.changeProjectTabs2__ = function(className, tabIndex){
         $scope.completedTabGrouped = '';
         $scope.searchText = '';
         $('#scoopsearch_'+className).val('');

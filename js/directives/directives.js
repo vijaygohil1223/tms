@@ -834,7 +834,7 @@ app.directive('select2Qaspa', function($http, rest, $timeout) {
                     initializeSelect2Qaspa(scope.qaS2Data);
                 } else {
                     // Fetch data from API and then initialize select2
-                    rest.path = 'userCoordinator/3';
+                    rest.path = 'userQaSpecialist/4';
                     rest.get().success(function(data) {
                         scope.qaS2Data = data.data.map(function(value) {
                             return {
