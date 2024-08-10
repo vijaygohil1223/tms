@@ -34058,6 +34058,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = "getAllInvoiceClient/save/" + 1;
         rest.get().success(function (data) {
             $scope.clientInvoiceListData = data;
+            console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
                 val.invoice_number = val.custom_invoice_number ? val.custom_invoice_number : val.invoice_number; 
@@ -34163,6 +34164,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         break;
                     case "Overdue":
                         $scope.invoiceListAll = $scope.overdueInvc;
+                        $scope.calculateTotal($scope.overdueInvc)
                         break;    
                     case "Cancelled":
                         $scope.invoiceListAll = $scope.cancelledInvc;
@@ -34662,7 +34664,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.dtOptionsClInvc = DTOptionsBuilder.newOptions().
         withOption('scrollX', 'true').
         withOption('responsive', true).
-        withOption('pageLength', 100);
+        withOption('pageLength', 100).
+        withOption('drawCallback', function(settings) {
+            $timeout(function() {
+              var table = $('#jobAllTbl').DataTable();
+              var filteredData = table.rows({ filter: 'applied' }).data().toArray();
+          
+              $scope.totalPrice = 0;
+              
+              angular.forEach(filteredData, function(item) {
+                // Assuming the 4th column contains the price data
+                var htmlContent = item[4]; // Adjust the column index as needed
+          
+                // Directly extract text from HTML content
+                var extractedText = $('<div>').html(htmlContent).text().trim();
+          
+                // Parse and accumulate the value
+                var value = parseFloat(extractedText.replace(/\./g, '').replace(',', '.'));
+                if (!isNaN(value)) {
+                  $scope.totalPrice += value;
+                }
+              });
+          
+              // Update the scope with the new total
+              $scope.$apply(); // Apply scope changes
+            });
+          });
+          
+        
 
 
     $scope.editDueDate = function(id, inv_due_date, invoice_date){
@@ -34716,6 +34745,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isValidDate = function(date) {
         return date && date !== '0000-00-00';
     };
+      
+    //   $scope.calculateTotal = function(invoiceData) {
+    //     console.log('invoiceData', invoiceData)
+    //     var total = 0;
+    //     if(invoiceData){
+    //         angular.forEach(invoiceData, function(invoice) {
+    //                 // Ensure invoice totalAmount is a valid number
+    //                 if (!isNaN(parseFloat(invoice.Invoice_cost))) {
+    //                     total += parseFloat(invoice.Invoice_cost);
+    //                 }
+    //         });
+    //     }
+    //     return total;
+    // };
+
+    // $scope.totalPrice = $scope.calculateTotal($scope.invoiceListAll);
+
+    // $scope.$watch('invoiceListAll', function(newVal) {
+    //     $scope.totalPrice = $scope.calculateTotal(newVal);
+    //   }, true);
+
 
 }).controller('clientInvoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");

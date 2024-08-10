@@ -1385,7 +1385,8 @@ array(
         $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id=1 limit 1");
         $awsFile = new awsFileupload();
         foreach ($getNoramalImages as $file) {
-            $filePath = 'http://tms.kanhasoftdev.com/uploads/fileupload/' . $file['name'];
+            //$filePath = 'http://tms.kanhasoftdev.com/uploads/fileupload/' . $file['name'];
+            $filePath = SITE_URL . $file['name'];
             $currentDate = date('Y-m-d');
             $filenameWithoutExtension = pathinfo($file['name'], PATHINFO_FILENAME);
             $timestamp = time();
