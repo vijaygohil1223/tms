@@ -121,6 +121,46 @@ class awsFileupload
         }
     }
 
+    public function awsFileUploadAnother($file, $keyName, $filename){
+        if (empty($file)) {
+            return [
+                'is_upload' => false,
+                'error' => [
+                    'message' => 'No file provided.'
+                ]
+            ];
+        }
+
+        try {
+            $filePath = "/var/www/html/tms/uploads/fileupload/". $filename;
+            // Upload the file to S3
+            $result = $this->_s3Client->putObject([
+                'Bucket' => AWS_S3_BUCKET_NAME,
+                'Key'    => $keyName, //file url
+                'SourceFile' => $filePath,
+            ]);
+            // Return success response
+            return [
+                'message'     => 'File uploaded successfully.',
+                'file_url'    => $result['ObjectURL'],
+                'file_key'    => $keyName,
+                'bucket_name' => AWS_S3_BUCKET_NAME,
+                'is_upload'   => true
+            ];
+        } catch (AwsException $e) {
+            // Return error response
+            return [
+                'is_upload' => false,
+                'error'     => [
+                    'message'    => $e->getMessage(),
+                    'code'       => $e->getAwsErrorCode(),
+                    'type'       => $e->getAwsErrorType(),
+                    'request_id' => $e->getAwsRequestId()
+                ]
+            ];
+        }
+    }
+
 
 
 

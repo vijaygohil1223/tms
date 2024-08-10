@@ -2949,6 +2949,11 @@ $app->post('/downloadSignleFile', function () use($app) {
     $result = $filemanager->downloadSingleFile($data);
     echoResponse(200, $result);
 });
+$app->get('/awsimagemigrate', function () use($app) {
+    $filemanager = new filemanager ();
+    $response = $filemanager->getAWSImageMigrate();
+    echoResponse(200, $response);
+});
 
 //----------------order status search---------------------//
 $app->get('/statusorderReportFind', 'authenticate',function () use($app) {

@@ -2248,7 +2248,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // }         
     
     $scope.dashboardTabList = [ 
-        { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0 }, { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0 }, { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0 }, { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0 }, { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0 }, { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0 }, { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0 }, { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0 }, { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0 }, { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0 }, { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0 }, { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0 }, { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0 }, { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0 }, { "tabName":"Missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0 } 
+        { "tabName":"Due Today", "tabClassName":"tab-due-today", "tabPermissionValue":"due_today", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":0  }, 
+        { "tabName":"Assign", "tabClassName":"tab-assigned", "tabPermissionValue":"assigned", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":1  },
+        { "tabName":"Ongoing", "tabClassName":"tab-ongoing", "tabPermissionValue":"ongoing", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":2 }, 
+        { "tabName":"QA Ready", "tabClassName":"tab-qa-ready", "tabPermissionValue":"qa_ready", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":3  }, 
+        { "tabName":"QA Issues", "tabClassName":"tab-qa-issue", "tabPermissionValue":"qa_issue", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":4  }, 
+        { "tabName":"PM Ready", "tabClassName":"tab-pm-ready", "tabPermissionValue":"pm_ready", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":5 }, 
+        { "tabName":"Delivery", "tabClassName":"tab-to-be-delivered", "tabPermissionValue":"delivery", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":6}, 
+        { "tabName":"Completed", "tabClassName":"tab-completed", "tabPermissionValue":"completed", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":7 },
+        { "tabName":"Overdue", "tabClassName":"tab-overdue", "tabPermissionValue":"Overdue", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":8 },
+        { "tabName":"Due Tomorrow", "tabClassName":"tab-due-tomorrow", "tabPermissionValue":"due_tomorrow", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":9 }, 
+        { "tabName":"My Projects", "tabClassName":"tab-my-projects", "tabPermissionValue":"my_project", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":10 }, 
+        { "tabName":"Upcoming", "tabClassName":"tab-my-upcoming", "tabPermissionValue":"upcoming", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0  , "tabIndexId":11 }, 
+        { "tabName":"Approved", "tabClassName":"tab-approved", "tabPermissionValue":"approved", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId":12  }, 
+        { "tabName":"All", "tabClassName":"tab-all", "tabPermissionValue":"all", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0, "tabIndexId":13  }, 
+        { "tabName":"Missing PO", "tabClassName":"tab-poMissing", "tabPermissionValue":"poMissing", "projectScoopCount":0, "totalItems":0, "totalPages":1, "pageShowRec":0 , "tabIndexId": 14 } 
     ];
     // Tabs permission array
     //$scope.tabPermission = { "due_today": true, "to_be_assigned": true, "in_progress": true, "qa_ready": true, "to_be_delivered": true, "due_tomorrow": true, "delivered": true, "my_projects": true };
@@ -2886,6 +2900,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var debounceTimeout;
 
     $scope.dashboardScoopLoad  = function (page, tabIndex=0, newTabName) {
+        console.log('tabIndex==================PageChange', tabIndex)
         $scope.showDataLoader = true;
         var projectScoopData = [];
         var assignOrderData = [];
@@ -2926,7 +2941,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.groupedData = response?.groupedData
             }
             
-            $scope.dashboardTabList[1].projectScoopData = response?.data
+            //$scope.dashboardTabList[1].projectScoopData = response?.data
+            console.log('$scope.dashboardTabList=======>', $scope.dashboardTabList)
             // if(projectScoopData){
             //     angular.forEach(projectScoopData, function (val, i) {
             //         val.pm_fullName = val.scoop_subPm_id ? val.sub_scoopPm_name  : val.scoopPm_name ? val.scoopPm_name : val.sub_pm_id ? val.sub_pm_name : val.pm_fullName
@@ -2987,12 +3003,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // }
 
             //$scope.fillDashboardTabFn(parseInt(tabIndex), projectScoopData, response?.totalItems)  
-            $scope.dashboardTabList.forEach((itm, indx) => {
-                if (itm.tabClassName === $scope.tabName) {
-                    console.log('$scope.tabName=======---------'+Math.floor(Date.now() / 1000)+'=='+indx, $scope.tabName)
-                    $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems);
-                }
-            });  
+            
+            // new code
+            $scope.dashboardTabList[tabIndex].projectScoopData = projectScoopData
+            $scope.dashboardTabList[tabIndex].projectScoopCount = response?.totalItems ? response?.totalItems : 0
+            $scope.dashboardTabList[tabIndex].totalItems = response?.totalItems ? response?.totalItems : 0
+            $scope.dashboardTabList[tabIndex].totalPages = response?.totalPages ? response?.totalPages : 0
+            $scope.dashboardTabList[tabIndex].pageShowRec = $scope.dashboardTabList[tabIndex].totalItems > 0 ? ($scope.currentPage - 1) * $scope.itemsPerPage + 1 : $scope.dashboardTabList[tabIndex].totalItems ; 
+
+            console.log('tabIndex*********************------------', tabIndex)
+
+            
+            // $scope.dashboardTabList.forEach((itm, indx) => {
+            //     if (itm.tabClassName === $scope.tabName) {
+            //         console.log('$scope.tabName=======---------'+Math.floor(Date.now() / 1000)+'=='+indx, $scope.tabName)
+            //         $scope.fillDashboardTabFn(indx, projectScoopData, response?.totalItems);
+            //     }
+            // });  
+            
             // angular.forEach($scope.dashboardTabList, function (itm, indx) {
             //     if(itm.tabClassName == $scope.tabName){
             //         //itm.projectScoopData = projectScoopData;
@@ -3096,7 +3124,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.activeTabfn = function(){
+
         if($window.localStorage.getItem("projectActiveTab") ){
+            console.log('iffffffffffffffffffff', )
+
             $scope.tabName = $window.localStorage.getItem("projectActiveTab")
 
             if($window.localStorage.getItem("sortFieldName") && $scope.hitByuser == false ){
@@ -3111,6 +3142,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // if($window.localStorage.getItem("sortFieldOrder"))
             //     $scope.sortOrder = $window.localStorage.getItem("sortFieldOrder");
             var tabIndex = findIndexByTabClassName($scope.tabName);
+            console.log('tabIndex============>', tabIndex)
             $scope.dashboardScoopLoad(1, tabIndex);
             setTimeout(() => {
                 angular.element('.'+$window.localStorage.getItem("projectActiveTab")+' > a ').triggerHandler('click');    
@@ -3120,6 +3152,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, 1000);
             
         }else{
+            console.log('Elllleseeeeeeeeee', )
+
             var tabIndex = findIndexByTabClassName('tab-due-today');
             $scope.tabName = 'tab-due-today';
             $window.localStorage.setItem("projectActiveTab", $scope.tabName);
@@ -3130,10 +3164,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.activeTabfn();
     }
 
-    $scope.changeProjectTabs2 = (function() {
+    $scope.changeProjectTabs2__ = (function() {
+        $scope.totalItems = 0;
         let timer;
         const delay = 300; // milliseconds
-    
+        
         return function(className, tabIndex) {
             if (timer) clearTimeout(timer);
             timer = setTimeout(() => {
@@ -3146,7 +3181,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }, delay);
         };
     })();
-    $scope.changeProjectTabs2__ = function(className, tabIndex){
+    $scope.changeProjectTabs2 = function(className, tabIndex){
+        console.log('tabIndex=========>', tabIndex)
+        //$scope.dashboardTabList[tabIndex].projectScoopData = []
         $scope.completedTabGrouped = '';
         $scope.searchText = '';
         $('#scoopsearch_'+className).val('');
@@ -3182,6 +3219,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // }
     $scope.selectedOptionPage = 100;
     $scope.selectChangePage = function(selectedPage) {
+        console.log('selectedPage========================================', selectedPage)
         $scope.itemsPerPage = selectedPage;
         $scope.activeTabfn()
         console.log('proejectPageselectedOption', selectedPage)

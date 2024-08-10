@@ -593,11 +593,16 @@ td { font-size: 11px; } */
                       <i class="fa fa-angle-left navarrow" aria-hidden="true"></i>
                     </div>
 
-                    <tab ng-repeat="myTabs in dashboardTabList" class="{{myTabs.tabClassName}}"
+                    <!-- <tab ng-repeat="myTabs in dashboardTabList" class="{{myTabs.tabClassName}}"
+                      ng-if="myTabs.tabPermission"
+                      ng-click="changeProjectTabs2(myTabs.tabClassName, $index); $event.stopPropagation();"
+                      ng-init="myTabs.sortColumn = ''; myTabs.sortOrder = false"> -->
+                      <tab ng-repeat="myTabs in dashboardTabList" class="{{myTabs.tabClassName}}"
                       ng-if="myTabs.tabPermission"
                       ng-click="changeProjectTabs2(myTabs.tabClassName, $index); $event.stopPropagation();"
                       ng-init="myTabs.sortColumn = ''; myTabs.sortOrder = false">
-                      <tab-heading>
+                      
+                      <tab-heading >
                         <i class="glyphicon glyphicon-triangle-bottom"></i> {{myTabs.tabName}}
                         <span class="badge bg-info">{{myTabs.projectScoopCount}}</span>
                       </tab-heading>
@@ -1019,9 +1024,12 @@ td { font-size: 11px; } */
                             <tr>
                               <td colspan="3">
                                 <div class="pagination pull-left">
-                                  <span>Showing {{pageShowRec}} to {{ (currentPage *
+                                  <!-- <span>Showing {{pageShowRec}} to {{ (currentPage *
                                     itemsPerPage < totalItems) ? (currentPage * itemsPerPage) : totalItems }} of
-                                      {{totalItems}} entries </span>
+                                      {{totalItems}} entries </span> -->
+                                      <span>Showing {{myTabs.pageShowRec}} to {{ (currentPage *
+                                        itemsPerPage < myTabs.totalItems) ? (currentPage * itemsPerPage) : myTabs.totalItems }} of
+                                          {{myTabs.totalItems}} entries </span>
                                 </div>
                               </td>
                               <td colspan="3">
@@ -1042,8 +1050,8 @@ td { font-size: 11px; } */
                               <td colspan="5">
                                 <div class="pagination pull-right">
                                   <uib-pagination id="scoopPagination" class="pagination-sm pagination"
-                                    total-items="totalItems" ng-model="currentPage"
-                                    ng-change="dashboardScoopLoad(currentPage)" previous-text="&lsaquo;"
+                                    total-items="myTabs.totalItems" ng-model="currentPage"
+                                    ng-change="dashboardScoopLoad(currentPage,myTabs.tabIndexId)" previous-text="&lsaquo;"
                                     next-text="&rsaquo;" items-per-page="itemsPerPage" max-size="10">
                                   </uib-pagination>
                                 </div>
