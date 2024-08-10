@@ -1386,7 +1386,7 @@ array(
         $awsFile = new awsFileupload();
         foreach ($getNoramalImages as $file) {
             //$filePath = 'http://tms.kanhasoftdev.com/uploads/fileupload/' . $file['name'];
-            $filePath = SITE_URL . $file['name'];
+            $filePath = SITE_URL .'uploads/fileupload/' . $file['name'];
             $currentDate = date('Y-m-d');
             $filenameWithoutExtension = pathinfo($file['name'], PATHINFO_FILENAME);
             $timestamp = time();
