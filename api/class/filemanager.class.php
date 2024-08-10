@@ -1383,32 +1383,39 @@ array(
     public function getAWSImageMigrate() {
         // Fetch records without AWS path
         $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id=1 limit 1");
+        //$getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id=1 and fmanager_id= 167 ");
         $awsFile = new awsFileupload();
         foreach ($getNoramalImages as $file) {
             //$filePath = 'http://tms.kanhasoftdev.com/uploads/fileupload/' . $file['name'];
-            $filePath = SITE_URL .'uploads/fileupload/' . $file['name'];
-            $currentDate = date('Y-m-d');
-            $filenameWithoutExtension = pathinfo($file['name'], PATHINFO_FILENAME);
-            $timestamp = time();
-            $extensionName = pathinfo($file['name'], PATHINFO_EXTENSION);
-            $filename = $filenameWithoutExtension.'_'.$timestamp.'.' .$extensionName;
-            $keyNameTimestamp = '2024/07/2024-07-10/' . $filename ;
-            $keyName = $keyNameTimestamp;
-            $awsResult = $awsFile->awsFileUploadAnother($filePath, $keyName , $file['name']);
+            $filePath = UPLOADS_ROOT. 'fileupload/' . $file['name'];
             
-            if(isset($awsResult) && !empty($awsResult)){
-                // Prepare the SQL statement with placeholders
-                $query = "UPDATE tms_filemanager SET name = ?, is_s3bucket = 1 WHERE fmanager_id = ?";
-                $params = [
-                    $awsResult['file_url'],
-                    $file['fmanager_id']
-                ];
-                $upodateCode = $this->_db->rawQuery($query, $params);
-                if($upodateCode){
-                    // Insert record to another table
-                    $this->_db->insert('tms_temp_filemanager',$file);
+            //$filePath = SITE_URL .'uploads/fileupload/' . $file['name'];
+            //echo $filePath;
+            //exit;
+            //if (file_exists($filePath)) {
+                $currentDate = date('Y-m-d');
+                $filenameWithoutExtension = pathinfo($file['name'], PATHINFO_FILENAME);
+                $timestamp = time();
+                $extensionName = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $filename = $filenameWithoutExtension.'_'.$timestamp.'.' .$extensionName;
+                $keyNameTimestamp = '2024/04/2024-04-15/' . $filename ;
+                $keyName = $keyNameTimestamp;
+                $awsResult = $awsFile->awsFileUploadAnother($filePath, $keyName , $file['name']);
+                
+                if(isset($awsResult) && !empty($awsResult)){
+                    // Prepare the SQL statement with placeholders
+                    $query = "UPDATE tms_filemanager SET name = ?, is_s3bucket = 1 WHERE fmanager_id = ?";
+                    $params = [
+                        $awsResult['file_url'],
+                        $file['fmanager_id']
+                    ];
+                    $upodateCode = $this->_db->rawQuery($query, $params);
+                    if($upodateCode){
+                        // Insert record to another table
+                        $this->_db->insert('tms_temp_filemanager',$file);
+                    }
                 }
-            }
+            //}
         }
     }
 
