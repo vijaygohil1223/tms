@@ -2820,6 +2820,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     if(itm.tabClassName == 'tab-poMissing'){
                         itm.projectScoopCount = response?.poMissing || 0
+                        console.log('response===================>', response)
                     }
                     // if(itm.tabClassName == 'tab-approved'){
                     //     itm.projectScoopCount = response?.approved || 0
