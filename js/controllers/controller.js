@@ -23519,6 +23519,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.indirectCustomerName = $window.localStorage.getItem('indirectCustomerName');
     }, 1000);
     $scope.clientpriceList = {};
+    $scope.customerpriceAll = [];
     $scope.customer = {};
     $scope.price_ClientID = 0;
     $scope.getCustomerData = function(){
@@ -23531,6 +23532,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = 'customerpriceByClient/' + $scope.price_ClientID;
                 rest.get().success(function (data) {
                     $scope.clientpriceList = data;
+                    $scope.customerpriceAll = data;
+                    console.log('$scope.clientpriceList', $scope.clientpriceList)
                 })
 
                 console.log('$scope.customer', $scope.customer)
@@ -23653,8 +23656,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         // Get PriceList for client
         $scope.scoopSpecializationArr = '';
-        $scope.customerpriceAll = [];
+        //$scope.customerpriceAll = [];
         $scope.custPriceAll = function (data) {
+            console.log('prcice-----------------data========>', data)
             var deferred = $q.defer();
             try {
                 var custmoterPriceList = [];
@@ -23739,7 +23743,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if(priceId > 0){
 
                 console.log('$scope.customerpriceAll========>',$scope.customerpriceAll )
+                console.log('$scope.clientpriceList======>', $scope.clientpriceList)
                 let clientPricelist = $scope.customerpriceAll.filter((e) => e.price_list_id == priceId )
+                //let clientPricelist = $scope.clientpriceList.filter((e) => e.price_list_id == priceId )
                 console.log('clientPricelist===========>', clientPricelist)
                 if(clientPricelist){
                     angular.forEach($scope.newchildPriceArr[item_id], function (val, newi) {
@@ -23764,11 +23770,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.forEach($scope.clientpriceList, function (val2, i2) {
                         val2.price_basis.find(x => {
                             if(val.child_price_id == x.childPriceId){
+                                //const spclFound = specializationArr && specializationArr.length > 0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
                                 const spclFound = specializationArr && specializationArr.length > 0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
                                 const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
                                 
-                                if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
-                                    $scope.newchildPriceArr[item_id][i].rate = x.basePrice;  
+                                if(val.child_price_id == x.childPriceId && lngPairFound){
+                                //if(val.child_price_id == x.childPriceId && spclFound && lngPairFound){
+                                        $scope.newchildPriceArr[item_id][i].rate = x.basePrice;  
                                 }
                                 return x;
                             }
