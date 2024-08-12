@@ -2991,7 +2991,14 @@ $app->post('/projectStatisticsLinguist', function () use($app) {
     $result = $statusOrder->projectStatisticsLinguist($data);
     echoResponse(200, $result);
 });
-
+// --------- invoice report -------//
+$app->post('/statusinvoiceReportFilter', function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->statusinvoiceReportFilter($data);
+    echoResponse(200, $result);
+});
+//end invoice report ---//
 //----------------Job status search---------------------//
 $app->get('/statusJobReportFind','authenticate', function () use($app) {
     $statusJob = new jobstatussearch ();
