@@ -23771,7 +23771,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         val2.price_basis.find(x => {
                             if(val.child_price_id == x.childPriceId){
                                 //const spclFound = specializationArr && specializationArr.length > 0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
-                                const spclFound = specializationArr && specializationArr.length > 0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
+                                //const spclFound = specializationArr && specializationArr.length > 0 ? specializationArr.some(r => (val2.specialization).indexOf(r) >= 0) : false;
                                 const lngPairFound = (val2.price_language).some(r => r.languagePrice == langPair)
                                 
                                 if(val.child_price_id == x.childPriceId && lngPairFound){
