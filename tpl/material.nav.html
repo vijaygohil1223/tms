@@ -209,6 +209,15 @@
         <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
           ng-click="addToFavouriteMenu($event);" id="srjMenu" title="Add to Favourite"></i>
       </li>
+      <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
+        <a href="#/Invoice-status-report" md-ink-ripple>
+          <span class="font-bol">Invoice Report</span>
+        </a>
+
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="srjMenu" title="Add to Favourite"></i>
+      </li>
+      
     </ul>
   </li>
 

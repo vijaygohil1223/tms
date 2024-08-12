@@ -23734,9 +23734,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         // Client Price list fetching
         $scope.changeClientPrice = function(priceId, item_id, specializationArr, langPair){
+            console.log('priceId=====>', priceId)
             
             if(priceId > 0){
+
+                console.log('$scope.customerpriceAll========>',$scope.customerpriceAll )
                 let clientPricelist = $scope.customerpriceAll.filter((e) => e.price_list_id == priceId )
+                console.log('clientPricelist===========>', clientPricelist)
                 if(clientPricelist){
                     angular.forEach($scope.newchildPriceArr[item_id], function (val, newi) {
                         angular.forEach(clientPricelist, function (val2, i2) {
@@ -35723,11 +35727,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var linguistObj = [];
         if ($routeParams.id) {
             rest.path = 'jobsummeryGet/' + $scope.jobDiscussionRedirect;
+            console.log('$scope.jobDiscussionRedirect====>chat', $scope.jobDiscussionRedirect)
             rest.get().success(function (data) {
                 //$scope.jobLinguist = data;
                 const sessionUserId = $window.localStorage.getItem("session_iUserId");
-                $scope.jobLinguist = data.filter( (val)=> {
-                    if (val.resource) {
+                //$scope.jobLinguist = data.filter( (val)=> {
+                var jobLinguistData = data.filter( (val)=> {
+                        if (val.resource) {
                         if ($scope.userRight == 2 && val.resource == sessionUserId) {
                             return true;
                         }
@@ -35737,7 +35743,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                     return false
                 })
-                $scope.jobLinguist = UniqueArraybyId($scope.jobLinguist, 'resource');
+                $scope.jobLinguist = UniqueArraybyId(jobLinguistData , 'resource');
+                console.log('$scope.jobLinguist========>chat', $scope.jobLinguist)
                 
                 $location.search({});
             });
@@ -35885,6 +35892,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.msgIDArr = [];
             $scope.commentsArrayAll = async function () {
                 var deferred = $q.defer();
+                //rest.path = "discussionOrderJob/" + $scope.jobDiscussionRedirect; // to do need to update
                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                 rest.get().success(function (data2) {
                     let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
@@ -43880,4 +43888,383 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
+}).controller('invoicestatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.clientnamec = "";
+
+    //export to excel
+    $scope.exportData = function () {
+        var count = 0;
+        for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+            if ($("#orderCheck" + i).prop('checked') == true) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            notification('Please select record to export', 'information');
+        }
+        if (count > 0) {
+            for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                if ($("#orderCheck" + i).prop('checked') == true) {
+                    $("#Export_" + i).show()
+                } else {
+                    $("#Export_" + i).hide()
+                }
+            }
+            exportTableToExcel('job_report_table','Jobs-status-report')
+            $scope.invoicestatusReportsearch();
+        }
+
+    };
+
+    //current year get
+    $scope.date = new Date();
+    var year = $scope.date.getFullYear();
+    $scope.Currentyear = year.toString().substr(2, 2);
+    
+    //Job report search start
+    $scope.statusResult = [];
+    $scope.invoicestatusReportsearch = function (frmId, eID) {
+
+        if ($scope.invoiceReport == undefined || $scope.invoiceReport == null || $scope.invoiceReport == "") {
+            notification('Please Select option', 'information');
+        } else if (jQuery.isEmptyObject($scope.invoiceReport) == true) {
+            notification('Please Select option', 'information');
+            $route.reload();
+        } else {
+            //$window.localStorage.invoiceReport = JSON.stringify($scope.invoiceReport);
+            $rootScope.invoiceReport = $scope.invoiceReport
+            if ($scope.invoiceReport.startCreateDate) {
+                $scope.invoiceReport.createDateFrom = originalDateFormatNew($scope.invoiceReport.startCreateDate);
+            }
+            if ($scope.invoiceReport.endCreateDate) {
+                $scope.invoiceReport.createDateTo = originalDateFormatNew($scope.invoiceReport.endCreateDate);
+            }
+            if ($scope.invoiceReport.itemDuedate) {
+                $scope.invoiceReport.itemDuedateStart = originalDateFormatNew($scope.invoiceReport.itemDuedate);
+            }
+            if ($scope.invoiceReport.endItemDuedate) {
+                $scope.invoiceReport.itemDuedateEnd = originalDateFormatNew($scope.invoiceReport.endItemDuedate);
+            }
+          
+            rest.path = 'statusinvoiceReportFilter';
+            rest.post($scope.invoiceReport).success(function (data) {
+                angular.forEach(data, function (val, i) {
+                    val.invoice_status = val.invoice_status == 'Open' ? 'Outstanding' : val.invoice_status
+                    if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
+                        val.invoice_status = 'Paid';
+                    }
+                });
+                $scope.statusResult = data;
+            })
+            var scrollID = (eID) ? eID : 'middle';
+            scrollToId(scrollID);
+        }
+    }
+
+    $scope.reseteSearch = function (frmId) {
+        $scope.statusResult = [];
+        location.reload()
+    }
+
+    // call fn when back to page
+    if($rootScope.invoiceReport){
+        $scope.invoicestatusReportsearch('invoice-status-report','middle')
+    }
+
+    //serch data action
+    $scope.statucOrderAction = function (action) {
+        switch (action) {
+            case "Change status to":
+                $scope.jobStatus = true;
+                break;
+            case "Remove selection":
+                $scope.jobStatus = false;
+                break;
+            case "Export to excel":
+                $scope.jobStatus = false;
+                break;
+            case "Select all":
+                $scope.jobStatus = false;
+                break;
+        }
+    }
+    //search data action
+    $scope.statusAction = function (action) {
+        
+        switch (action) {
+            case "Change status to":
+                var jobStatus = angular.element(document.querySelector('#jobStatusdata')).val().split(',').pop();
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (jobselect == 'true') {
+                        var jobId = angular.element('#orderCheckData' + i).val();
+                        $routeParams.id = jobId;
+                        rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
+                        rest.get().success(function (data) {
+                            notification('Status updated successfully', 'success');
+                            $route.reload();
+                        }).error(errorCallback);
+                    }
+                }
+                break;
+            case "Remove selection":
+                $scope.checkdata = false;
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var itemselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (itemselect == 'true') {
+                        var jobId = angular.element('#orderCheckData' + i).val();
+                        $("#orderCheck" + i).prop("checked", false);
+                    }
+                }
+                break;
+            case "Export to excel":
+                var count = 0;
+                for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                    if ($("#orderCheck" + i).prop('checked') == true) {
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    notification('Please select record to export', 'information');
+                }
+
+                if (count > 0) {
+                    for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                        if ($("#orderCheck" + i).prop('checked') == true) {
+                            $("#Export_" + i).show()
+                        } else {
+                            $("#Export_" + i).hide();
+                            $("#Export_" + i).remove();
+                        }
+                    }
+                    exportTableToExcel('job_report_table','Jobs-report')
+                    $scope.invoicestatusReportsearch();
+                }
+                break;
+            case "Select all":
+                $scope.checkdata = "ordercheck";
+                break;
+        }
+    }
+
+    //mail contactpreson and resources
+    $scope.jobsumResource = function (resourceName, jobSummeryId, jobNumber) {
+        console.log('jobNumber', jobNumber)
+        $scope.data = {
+            jobSummeryId : jobSummeryId,
+            jobNumber:  jobNumber,
+            type: 'job',
+        }
+        $window.localStorage.ResourceMsg = resourceName;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/jobresourcemsg.html',
+            controller: 'jobResourceMsgController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            }
+        });
+    }
+
+    // job popup
+    $scope.jobNoDetails = function (id) {
+        $routeParams.id = id;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/jobEditPopup.html',
+            controller: 'jobSummeryDetailsController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            }
+        });
+    }
+
+    //remove job search 
+    $scope.clearCode = function (frmId, action) {
+        $rootScope.invoiceReport = '';
+        switch (action) {
+            case "currency":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.currency = '';
+                    angular.element('#currency').select2('val', '');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "invoiceNumber":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.invoiceNumber = '';
+                    angular.element('#invoiceNumber').text;
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                    }
+                }
+                break;
+            case "InvoicePrice":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.InvoicePrice = '';
+                    angular.element('#InvoicePrice').text;
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                    }
+                }
+                break;
+            case "customer":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.customer = '';
+                    angular.element('#customer1').select2('val', '');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "invoiceStatus":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.invoiceStatus = '';
+                    angular.element('#invoiceStatus').select2('val', '');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "itemDuedate":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.itemDuedate = '';
+                    angular.element('#itemDuedate').text;
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "endItemDuedate":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.endItemDuedate = '';
+                    angular.element('#endItemDuedate').text;
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "startCreateDate":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.startCreateDate = '';
+                    angular.element('#startCreateDate').text;
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "endCreateDate":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.endCreateDate = '';
+                    angular.element('#endCreateDate').text;
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "currency":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.currency = '';
+                    angular.element('#currency').select2('val', '');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+
+        }
+    }
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100).
+        withOption('columnDefs',  [
+            {
+                targets: 8,
+                render: function (data, type, row) {
+                    if (type === 'sort') {
+                        let tempSort = data.replace('.', '');
+                        return parseFloat(tempSort.replace(',', '.'));
+                    }
+                    return data;
+                }
+            }
+        ]);
+
+    $scope.calculateTotal = function() {
+        var total = 0;
+        angular.forEach($scope.statusResult, function(result) {
+            total += parseFloat(result.jobPrice);
+        });
+        return total;
+    };
+    
 });

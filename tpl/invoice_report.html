@@ -1,0 +1,336 @@
+<div ng-init="app.settings.container = false;" class="md-navbar navbar blue md-whiteframe-z1"
+    data-ng-include=" 'tpl/material.header.html' ">
+</div>
+<div layout="row">
+    <div flex class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs"
+        data-ng-include=" 'tpl/material.aside.html' ">
+    </div>
+    <div flex layout="column">
+        <div ui-butterbar></div>
+        <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
+        <div class="md-content page_content_wrapper" id="top">
+
+            <div class="content_head bg-light wrapper-md ng-scope">
+                <a href="javascript:history.back()" class="btn m-b-xs btn-info pull-right"><span
+                        class="fa fa-arrow-left"></span> Back</a>
+            </div>
+            <div class="wrapper-md ng-scope">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form id="invoice-status-report">
+                            <!--   TAB1 -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading font-bold">Select</div>
+                                        <div class="panel-body">
+
+                                            <div class=" form-group">
+                                            </div>
+                                                <div class="col-sm-6 form-group">
+                                                    <div class="row">
+                                                        <div class="col-sm-11">
+                                                            <label>Client</label>
+                                                            <input type="text" select2-client id="customer1"
+                                                                class="form-control" name="customer"
+                                                                ng-model="invoiceReport.customer" />
+                                                        </div>
+                                                        <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                            <a href="javascript:void(0)"
+                                                                ng-click="clearCode('invoice-status-report','customer')"
+                                                                ng-if="invoiceReport.customer"><i
+                                                                    class="iconDelete glyph-icon fa-times"
+                                                                    aria-hidden="true"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 form-group">
+                                                    <div class="row">
+                                                        <div class="col-sm-11">
+                                                            <label>Status</label>
+                                                            <input type="text" select2-client-invoice-status id="invoiceStatus"
+                                                                class="form-control" ng-model="invoiceReport.invoiceStatus" ng-change="onInputChange(invoiceStatus)"
+                                                                name="invoiceStatus"/>
+                                                        </div>
+                                                        <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                            <a href="javascript:void(0)"
+                                                                ng-click="clearCode('invoice-status-report','invoiceStatus')"
+                                                                ng-if="invoiceReport.invoiceStatus"><i
+                                                                    class="iconDelete glyph-icon fa-times"
+                                                                    aria-hidden="true"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 form-group">
+                                                    <div class="row">
+                                                       <div class="col-sm-11">
+                                                          <label>
+                                                            Invoice Number
+                                                          </label>
+                                                          <input type="text" id="invoiceNumber" class="form-control" name="invoiceNumber"
+                                                             ng-model="invoiceReport.invoiceNumber" />
+                                                       </div>
+                                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                          <a href="javascript:void(0)"
+                                                             ng-click="clearCode('invoice-status-report','invoiceNumber')"
+                                                             ng-if="invoiceReport.invoiceNumber"><i class="iconDelete glyph-icon fa-times"
+                                                                aria-hidden="true"></i></a>
+                                                       </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 form-group">
+                                                    <div class="row">
+                                                       <div class="col-sm-11">
+                                                          <label>
+                                                            Price
+                                                          </label>
+                                                          <input type="text" id="InvoicePrice" class="form-control" name="InvoicePrice"
+                                                             ng-model="invoiceReport.InvoicePrice" />
+                                                       </div>
+                                                       <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                          <a href="javascript:void(0)"
+                                                             ng-click="clearCode('invoice-status-report','InvoicePrice')"
+                                                             ng-if="invoiceReport.InvoicePrice"><i class="iconDelete glyph-icon fa-times"
+                                                                aria-hidden="true"></i></a>
+                                                       </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 form-group">
+                                                    <div class="row">
+                                                        <div class="col-sm-11">
+                                                            <label>Currency</label>
+                                                            <input type="text" select2-currency id="currency"
+                                                                class="form-control" name="currency"
+                                                                ng-model="invoiceReport.currency" />
+                                                        </div>
+                                                        <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                            <a href="javascript:void(0)"
+                                                                ng-click="clearCode('invoice-status-report','currency')"
+                                                                ng-if="invoiceReport.currency"><i
+                                                                    class="iconDelete glyph-icon fa-times"
+                                                                    aria-hidden="true"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 form-group pl-0">
+                                                    <div class="col-sm-6 form-group">
+                                                        <div class="row">
+                                                            <div class="col-sm-11">
+                                                                <label>Create Date Start</label>
+                                                                <input type="text" ng-datepicker2 id="startCreateDate"
+                                                                    class="form-control" name="startCreateDate"
+                                                                    ng-model="invoiceReport.startCreateDate" />
+                                                            </div>
+                                                            <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                                <a href="javascript:void(0)"
+                                                                    ng-click="clearCode('invoice-status-report','startCreateDate')"
+                                                                    ng-if="invoiceReport.startCreateDate"><i
+                                                                        class="iconDelete glyph-icon fa-times"
+                                                                        aria-hidden="true"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 form-group">
+                                                        <div class="row">
+                                                            <div class="col-sm-11">
+                                                                <label>Create Date End</label>
+                                                                <input type="text" ng-datepicker2 id="endCreateDate"
+                                                                    class="form-control" name="endCreateDate"
+                                                                    ng-model="invoiceReport.endCreateDate" />
+                                                            </div>
+                                                            <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                                <a href="javascript:void(0)"
+                                                                    ng-click="clearCode('invoice-status-report','endCreateDate')"
+                                                                    ng-if="invoiceReport.endCreateDate"><i
+                                                                        class="iconDelete glyph-icon fa-times"
+                                                                        aria-hidden="true"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 form-group pl-0">
+                                                    <div class="col-sm-6 form-group">
+                                                        <div class="row">
+                                                            <div class="col-sm-11">
+                                                                <label>Due Date Start</label>
+                                                                <input type="text" ng-datepicker2 id="itemDuedate"
+                                                                    class="form-control" name="itemDuedate"
+                                                                    ng-model="invoiceReport.itemDuedate" />
+                                                            </div>
+                                                            <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                                <a href="javascript:void(0)"
+                                                                    ng-click="clearCode('invoice-status-report','itemDuedate')"
+                                                                    ng-if="invoiceReport.itemDuedate"><i
+                                                                        class="iconDelete glyph-icon fa-times"
+                                                                        aria-hidden="true"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 form-group">
+                                                        <div class="row">
+                                                            <div class="col-sm-11">
+                                                                <label>Due Date End</label>
+                                                                <input type="text" ng-datepicker2 id="enditemDuedate"
+                                                                    class="form-control" name="endItemDuedate"
+                                                                    ng-model="invoiceReport.endItemDuedate" />
+                                                            </div>
+                                                            <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                                                                <a href="javascript:void(0)"
+                                                                    ng-click="clearCode('invoice-status-report','endItemDuedate')"
+                                                                    ng-if="invoiceReport.endItemDuedate"><i
+                                                                        class="iconDelete glyph-icon fa-times"
+                                                                        aria-hidden="true"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--   TAB1 -->
+                            <div class="panel-footer pl-0 pr-0">
+                                <a class="btn btn-info btn-leftside"
+                                    ng-click="invoicestatusReportsearch('invoice-status-report','middle')">Update search</a>
+                                <button class="btn btn-info btn-leftside"
+                                    ng-click="reseteSearch('invoice-status-report',invoiceReport)">Delete Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="" id="middle">
+                            <div class="panel panel-default">
+                                <div class="panel-heading font-bold">Result</div>
+                                <div class="">
+                                    <div class="">
+                                        <div class="row wrapper" ng-show="statusRes.length">
+                                            <div class="col-sm-6 m-b-xs">
+                                                <div class="col-sm-4">
+                                                    <select class="input-sm form-control w-sm inline v-middle"
+                                                        ng-model="action" ng-change="statucOrderAction(action)">
+                                                        <option>Change status to</option>
+                                                        <option>Export to excel</option>
+                                                        <option>Remove selection</option>
+                                                        <option>Select all</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-5" ng-show="jobStatus">
+                                                    <input type="text" select2-job-detailitm-status data-typeid="2"
+                                                        id="jobStatusdata" class="input-sm form-control w-sm  v-middle"
+                                                        ng-model="jobStatus" />
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <button class="btn btn-sm btn-info"
+                                                        ng-click="statusAction(action,projectStatus)"><i
+                                                            class="glyphicon glyphicon-ok"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 m-b-xs">
+                                                <div class="d-flex justify-space-between">
+                                                   <div>
+                                                        <strong>Total:</strong> {{ calculateTotal() | customNumber }}
+                                                   </div>
+                                                   <button ng-show="staturRes.length" class="btn m-b-xs btn-info"
+                                                      ng-click="exportData('result')">Excel</button>
+                                                </div>
+                                             </div>
+                                            <div>
+                                                <button ng-show="statusRes.length" class="btn btn-info pull-right"
+                                                    ng-click="exportData()">Excel</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table m-b-none default footable-loaded footable" id="job_report_table" datatable="ng" dt-options="dtOptions">
+                                                <thead>
+                                                    <th>Sr.no</th>
+                                                    <!-- <th>#</th> -->
+                                                    <th>Invoice number</th>
+                                                    <th>Company name</th>
+                                                    <th>Tripletex ID</th>
+                                                    <th>Price</th>
+                                                    <th>Currency</th>
+                                                    <th>Creation Date</th>
+                                                    <th>Due Date</th>
+                                                    <th>Payment Date</th>
+                                                    <th>Invoice status</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="result in statusResult track by $index">
+                                                        <td ng-bind="$index + 1"></td>
+                                                        <!-- <td>
+                                                            <input type="checkbox" id="orderCheck{{$index}}"
+                                                                name="orderCheck{{$index}}" ng-model="checkor"
+                                                                ng-checked="checkdata=='ordercheck'">
+                                                            <input type="text" id="orderCheckData{{$index}}"
+                                                                name="orderCheckData{{$index}}" style="display: none;"
+                                                                ng-model="result.jobId">
+                                                        </td> -->
+                                                        <td class="nowrap">
+                                                            <a href="#/client-invoice-show/{{result.invoice_id}}" title="View"> 
+                                                                {{ result.invoice_number ? result.invoice_number : 'invoice' }}
+                                                            </a>
+                                                        </td>
+                                                        <td style="font-weight: initial; font-size: initial;">{{result.clientCompanyName}}</td>
+                                                        <td>{{result.accounting_tripletex}}</td>
+                                                        <td>{{result.Invoice_cost | customNumber }}</td>
+                                                        <td>{{ (result.client_currency).split(',')[0] }} </td>
+                                                        <td>{{ result.invoice_date | globalDtFormat }}</td>
+                                                        <td>{{ result.invoice_duedate | globalDtFormat }}</td>
+                                                        <td>{{ result.paid_date | globalDtFormat }}</td>
+                                                        <td>
+                                                            <span ng-bind="result.invoice_status"></span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <!-- use for export to excel -->
+                                        <div class="table-responsive" id="exportable" style="display:none">
+                                            <table class="table m-b-none default footable-loaded footable">
+                                                <thead>
+                                                    <th>#</th>
+                                                    <th>Invoice number</th>
+                                                    <th>Company name</th>
+                                                    <th>Tripletex ID</th>
+                                                    <th>Price</th>
+                                                    <th>Currency</th>
+                                                    <th>Creation Date</th>
+                                                    <th>Due Date</th>
+                                                    <th>Payment Date</th>
+                                                    <th>Invoice status</th>
+                                                </thead>
+                                                <tbody>
+                                                    <tr id="Export_{{$index}}"
+                                                        ng-repeat="result in statusResult track by $index">
+                                                        <td ng-bind="$index + 1"></td>
+                                                        <td ng-bind="result.invoice_number"></td>
+                                                        <td>{{result.clientCompanyName}}</td>
+                                                        <td>{{result.accounting_tripletex}}</td>
+                                                        <td>{{ result.Invoice_cost }}</td>
+                                                        <td>{{result.client_currency}} </td>
+                                                        <td>{{ result.created_date | globalDtFormat }}</td>
+                                                        <td>{{ result.invoice_duedate | globalDtFormat }}</td>
+                                                        <td>{{ result.paid_date | globalDtFormat }}</td>
+                                                        <td>
+                                                            <span ng-bind="result.invoice_status"></span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- footer copy right -->
+                <div data-ng-include="'tpl/copyRight.html'"></div>
+
+            </div>
+        </div>
+    </div>

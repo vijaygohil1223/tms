@@ -484,6 +484,12 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'projectStatisticsController',
             activetab: 'overview-report',
             role: '1'
+
+        }).when('/Invoice-status-report', {
+            templateUrl: modulesPath + 'invoice_report.html',
+            controller: 'invoicestatusReportController',
+            activetab: 'Invoice-status-report',
+            role: '1'
         }).when('/project-job-detail/:id', {
             templateUrl: modulesPath + 'project_job_detail.html',
             controller: 'projectjobDetailController',
@@ -693,6 +699,7 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'activitydetailController',
             activetab: 'activity',
             role: '1'
+
         }).when('/file-upload-test', {
             templateUrl: modulesPath + 'file-upload-test.html',
             controller: 'userActivationController',
