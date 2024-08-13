@@ -1445,10 +1445,10 @@ class Client_invoice
             }
         }
         if(isset($filterParams['invoiceNumber'])){
-            $this->_db->where('tmInvoice.invoice_number','%'.$filterParams['invoiceNumber'].'%', 'like');
+            $this->_db->where('tmInvoice.invoice_number',"\"%" .$filterParams['invoiceNumber']. "%\"", "like");
         }
         if(isset($filterParams['InvoicePrice'])){
-            $this->_db->where('tmInvoice.Invoice_cost','%'.$filterParams['InvoicePrice'].'%', 'like');
+            $this->_db->where('tmInvoice.Invoice_cost',"\"%" .$filterParams['InvoicePrice']. "%\"", "like");
         }
         if(isset($filterParams['currency'])){
             $this->_db->where("tc.client_currency", "\"%" . $filterParams['currency'] . "%\"", "like");
