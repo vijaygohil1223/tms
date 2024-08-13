@@ -1454,26 +1454,34 @@ class Client_invoice
             $this->_db->where("tc.client_currency", "\"%" . $filterParams['currency'] . "%\"", "like");
         }
         if(isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])){
-            $Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
-            $To = $filterParams['itemDuedateEnd'].' '.'00:00:00';
+            // $Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
+            // $To = $filterParams['itemDuedateEnd'].' '.'00:00:00';
+            $Frm = '"' . $filterParams['itemDuedateStart'] . ' 00:00:00"';
+            $To = '"' . $filterParams['itemDuedateEnd'] . ' 00:00:00"';
             $this->_db->where('tmInvoice.invoice_due_date', Array ($Frm,$To),'BETWEEN');
         }else if(isset($filterParams['itemDuedateStart'])){
-            $Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
+            // $Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
+            $Frm = '"' . $filterParams['itemDuedateStart'] . ' 00:00:00"';
             $this->_db->where('tmInvoice.invoice_due_date', $Frm, '>');
         }else if(isset($filterParams['itemDuedateEnd'])){
-            $To = $filterParams['itemDuedateEnd'].' '.'00:00:00';
+            // $To = $filterParams['itemDuedateEnd'].' '.'00:00:00';
+            $To = '"' . $filterParams['itemDuedateEnd'] . ' 00:00:00"';
             $this->_db->where('tmInvoice.invoice_due_date', $To, '<');
         }else{}
 
         if(isset($filterParams['createDateFrom']) && isset($filterParams['createDateTo'])){
-            $Frm = $filterParams['createDateFrom'].' '.'00:00:00';
-            $To = $filterParams['createDateTo'].' '.'00:00:00';
+            //$Frm = $filterParams['createDateFrom'].' '.'00:00:00';
+            //$To = $filterParams['createDateTo'].' '.'00:00:00';
+            $Frm = '"' . $filterParams['createDateFrom'] . ' 00:00:00"';
+            $To = '"' . $filterParams['createDateTo'] . ' 00:00:00"';
             $this->_db->where('tmInvoice.invoice_date', Array ($Frm,$To),'BETWEEN');
         }else if(isset($filterParams['createDateFrom'])){
-            $Frm = $filterParams['createDateFrom'].' '.'00:00:00';
+            // $Frm = $filterParams['createDateFrom'].' '.'00:00:00';
+            $Frm = '"' . $filterParams['createDateFrom'] . ' 00:00:00"';
             $this->_db->where('tmInvoice.invoice_date', $Frm, '>');
         }else if(isset($filterParams['createDateTo'])){
-            $To = $filterParams['createDateTo'].' '.'00:00:00';
+           // $To = $filterParams['createDateTo'].' '.'00:00:00';
+            $To = '"' . $filterParams['createDateTo'] . ' 00:00:00"';
             $this->_db->where('tmInvoice.invoice_date', $Frm, '<');
         }else {}
 

@@ -38892,13 +38892,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //After update change to global date format dates
                         try {
                             //$scope.getItems();
-
                             $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
                             $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
 
                             //
-
-                            
                             if ($scope.itemList[formIndex]?.price) {
                                 const tempItemsId = $scope.itemList[formIndex].itemId;
                                 $scope.itemPriceUni[tempItemsId] = JSON.parse($scope.itemList[formIndex].price);
