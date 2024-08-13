@@ -38604,6 +38604,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //itemPriceUnit[j].itemTotal = numberFormatCommaToPoint(itemPriceUnit[j].itemTotal);
                             }
                         }
+                        console.log('itemPriceUnit=========>',itemPriceUnit)
                         $scope.itemList[formIndex].price = JSON.stringify(itemPriceUnit);
                         delete $scope.itemList[formIndex]['itemPrice'];
                         delete $scope.itemList[formIndex]['quantity'];
@@ -38879,6 +38880,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.btnDisabled = false;
                         
                     }    
+
+                    console.log('$scope.itemList==========>', $scope.itemList[formIndex])
                     
                     $routeParams.id = $scope.itemList[formIndex].itemId
                     rest.path = 'ItemUpdate';
@@ -38892,6 +38895,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                             $scope.itemList[formIndex].due_date = moment($scope.itemList[formIndex].due_date).format($scope.dateFormatGlobal);
                             $scope.itemList[formIndex].start_date = moment($scope.itemList[formIndex].start_date).format($scope.dateFormatGlobal);
+
+                            //
+
+                            
+                            if ($scope.itemList[formIndex]?.price) {
+                                const tempItemsId = $scope.itemList[formIndex].itemId;
+                                $scope.itemPriceUni[tempItemsId] = JSON.parse($scope.itemList[formIndex].price);
+                                $scope.itemPriceUni[tempItemsId].forEach(item => {
+                                    item.itemTotal = numberFormatComma(item.itemTotal);
+                                });
+                            }
     
                             //log file start
                             $scope.logMaster = {};
@@ -38941,6 +38955,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.scoopInvoice = $scope.scoopInvoice || {};
 
     $scope.getItems = function () {
+        
         var popitemList = [];
         //rest.path = 'itemsGet/' + $scope.order_id;
         rest.path = 'itemsGetSingleScoop/' + $scope.scoop_id;
@@ -39062,7 +39077,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
 
                     if (val.price) {
-
                         $scope.itemPriceUni[val.itemId] = JSON.parse(val.price);
                         for (var j = 0; j < $scope.itemPriceUni[val.itemId].length; j++) {
                             $scope.itemPriceUni[val.itemId][j].itemTotal = numberFormatComma($scope.itemPriceUni[val.itemId][j].itemTotal);
