@@ -4373,7 +4373,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isHolidayApiCall = false
 
     $scope.overviewsesctionTab = function(){
+        // new API to get upcoming deliveries + jobs
+        $scope.upProjDeliveries = []
+        rest.path = 'getUpcomingDeliveries';
+        rest.get().success(function (data) {
+            if(data){
+                $scope.upProjDeliveries = data;
+            }
+        });
 
+        $scope.upJobsDue = []
+        rest.path = 'getOverDueJobs';
+        rest.get().success(function (data) {
+            if(data){
+                $scope.upJobsDue = data;
+            }
+        });
+        // new API to get upcoming deliveries + jobs
         $scope.isoverviewsection = !$scope.isoverviewsection;
 
         angular.element('#holidaysLoading').css('dispaly', 'block');
@@ -4501,7 +4517,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     $scope.absentLinguistlist();
-
+    
     $scope.absentPopup = function(id){
         const absentRec = $scope.absentLngstlist.filter(x => {
             if(x.iUserId == id){
@@ -4533,7 +4549,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //const currentDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-0'+today.getDate();
             const currentDatestr = new Date();
             const currentDate = currentDatestr.toISOString().split('T')[0];
-    
+        
             if ($scope.vResourcePosition == 2) {
                 $scope.upProjDeliveries = $scope.projectsAll.filter(upProj => upProj.itemDuedate_new > currentDate && upProj.project_manager_id == $window.localStorage.getItem("session_iUserId"));
                 //$scope.upJobsDue = $scope.alljobsWidget.filter(upJobs => upJobs.due_date > currentDate && upJobs.job_manager_id == $window.localStorage.getItem("session_iUserId") );
