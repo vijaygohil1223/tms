@@ -43956,6 +43956,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'statusinvoiceReportFilter';
             rest.post($scope.invoiceReport).success(function (data) {
                 angular.forEach(data, function (val, i) {
+                    val.Invoice_cost = numberFormatCommaToPoint(val.Invoice_cost);
                     val.invoice_status = val.invoice_status == 'Open' ? 'Outstanding' : val.invoice_status
                     if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
                         val.invoice_status = 'Paid';
