@@ -1437,13 +1437,12 @@ class Client_invoice
         }
         if(isset($filterParams['invoiceStatus'])){
             if($filterParams['invoiceStatus'] === "Outstanding"){
-                $staus_filter = "Open";
+                $this->_db->where('tmInvoice.invoice_status', "Open");
             }else if($filterParams['invoiceStatus'] === "Complete" || $filterParams['invoiceStatus'] === "Completed" || $filterParams['invoiceStatus'] === "Paid"){
-                $staus_filter = "Paid";
+                $this->_db->where('tmInvoice.invoice_status IN ("Paid", "Complete", "Completed")');
             }else{
-                $staus_filter = $filterParams['invoiceStatus'];
+                $this->_db->where('tmInvoice.invoice_status', "'" . $filterParams['invoiceStatus'] . "'");
             }
-            $this->_db->where('tmInvoice.invoice_status', $staus_filter);
         }
         if(isset($filterParams['invoiceNumber'])){
             $this->_db->where('tmInvoice.invoice_number','%'.$filterParams['invoiceNumber'].'%', 'like');
@@ -1452,7 +1451,7 @@ class Client_invoice
             $this->_db->where('tmInvoice.Invoice_cost','%'.$filterParams['InvoicePrice'].'%', 'like');
         }
         if(isset($filterParams['currency'])){
-            $this->_db->where('tmInvoice.customer_id', $filterParams['currency']);
+            $this->_db->where("tc.client_currency", "\"%" . $filterParams['currency'] . "%\"", "like");
         }
         if(isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])){
             $Frm = $filterParams['itemDuedateStart'].' '.'00:00:00';
@@ -1482,14 +1481,16 @@ class Client_invoice
         $this->_db->join('tms_client tc', 'tc.iClientId=tmInvoice.customer_id', 'LEFT');
         // $this->_db->join('tms_invoice_credit_notes tcn', 'tcn.invoice_id=tmInvoice.invoice_id', 'LEFT');
         // $this->_db->orderBy('tmInvoice.invoice_id', 'asc');
-        $this->_db->where('tmInvoice.is_deleted ', ' != 1');
+        $this->_db->where('tmInvoice.is_deleted ', '1', '!=');
         if(isset($filterParams['invoiceStatus']) && $filterParams['invoiceStatus'] === "Overdue"){
             $this->_db->where('tmInvoice.invoice_due_date IS NOT NULL');
             $this->_db->where('tmInvoice.invoice_status NOT IN ("Paid", "Complete", "Completed")');
-            $this->_db->where('tmInvoice.invoice_due_date', date('Y-m-d H:i:s'), '<');
+            // $this->_db->where('tmInvoice.invoice_due_date', date('Y-m-d H:i:s'), '<');
+            $this->_db->where('tmInvoice.invoice_due_date', "'" . date('Y-m-d H:i:s') . "'", '<');
         }
-        $data = $this->_db->get('tms_invoice_client tmInvoice', null, 'tmInvoice.invoice_id, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date, tmInvoice.is_credit_note, tmInvoice.is_credit_notes_email_sent, tmInvoice.invoice_due_date, tu.vSignUpload, tc.accounting_tripletex');
-        
+        $this->_db->get('tms_invoice_client tmInvoice', null, 'tmInvoice.invoice_id, tc.iClientId AS clientId, tc.vUserName as clientCompanyName, tc.vAddress1 AS companyAddress, tc.vEmailAddress  AS companyEmail, tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tc.client_currency, tc.invoice_no_of_days, tu.iUserId AS freelanceId, concat(tu.vFirstName, " ", tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, tmInvoice.invoice_number, tmInvoice.custom_invoice_number, tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.scoop_id, tmInvoice.is_excel_download, tmInvoice.paid_date,  tmInvoice.invoice_date, tmInvoice.created_date, tmInvoice.is_credit_note, tmInvoice.is_credit_notes_email_sent, tmInvoice.invoice_due_date, tu.vSignUpload, tc.accounting_tripletex');
+        $rawQuery = $this->_db->getLastQuery();
+        $data = $this->_db->rawQuery("$rawQuery");
         return $data;
     }
 

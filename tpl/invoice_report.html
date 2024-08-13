@@ -49,7 +49,7 @@
                                                         <div class="col-sm-11">
                                                             <label>Status</label>
                                                             <input type="text" select2-client-invoice-status id="invoiceStatus"
-                                                                class="form-control" ng-model="invoiceReport.invoiceStatus" ng-change="onInputChange(invoiceStatus)"
+                                                                class="form-control" ng-model="invoiceReport.invoiceStatus"
                                                                 name="invoiceStatus"/>
                                                         </div>
                                                         <div class="col-sm-1" style="margin:33px 0 0 -14px;">
@@ -228,22 +228,13 @@
                                                             class="glyphicon glyphicon-ok"></i></button>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4 m-b-xs">
-                                                <div class="d-flex justify-space-between">
-                                                   <div>
-                                                        <strong>Total:</strong> {{ calculateTotal() | customNumber }}
-                                                   </div>
-                                                   <button ng-show="staturRes.length" class="btn m-b-xs btn-info"
-                                                      ng-click="exportData('result')">Excel</button>
-                                                </div>
-                                             </div>
                                             <div>
                                                 <button ng-show="statusRes.length" class="btn btn-info pull-right"
                                                     ng-click="exportData()">Excel</button>
                                             </div>
                                         </div>
                                         <div class="table-responsive">
-                                            <table class="table m-b-none default footable-loaded footable" id="job_report_table" datatable="ng" dt-options="dtOptions">
+                                            <table class="table m-b-none default footable-loaded footable" id="invoice_report_table" datatable="ng" dt-options="dtOptionsClInvc">
                                                 <thead>
                                                     <th>Sr.no</th>
                                                     <!-- <th>#</th> -->
@@ -285,6 +276,12 @@
                                                         </td>
                                                     </tr>
                                                 </tbody>
+                                                <tfoot ng-if="statusResult.length > 0">
+                                                    <tr>
+                                                      <td colspan="5" style="text-align: right;"> Total Price: <strong>{{ totalPrice | customNumber }} </strong> </td>
+                                                      <td colspan="5"></td>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
 

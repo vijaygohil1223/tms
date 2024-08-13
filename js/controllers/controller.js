@@ -43896,7 +43896,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-}).controller('invoicestatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder) {
+}).controller('invoicestatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.clientnamec = "";
 
@@ -43930,10 +43930,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var year = $scope.date.getFullYear();
     $scope.Currentyear = year.toString().substr(2, 2);
     
-    //Job report search start
-    $scope.statusResult = [];
+    //Invoice report search start
+    // $scope.statusResult = [];
     $scope.invoicestatusReportsearch = function (frmId, eID) {
-
         if ($scope.invoiceReport == undefined || $scope.invoiceReport == null || $scope.invoiceReport == "") {
             notification('Please Select option', 'information');
         } else if (jQuery.isEmptyObject($scope.invoiceReport) == true) {
@@ -43954,7 +43953,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.invoiceReport.endItemDuedate) {
                 $scope.invoiceReport.itemDuedateEnd = originalDateFormatNew($scope.invoiceReport.endItemDuedate);
             }
-          
             rest.path = 'statusinvoiceReportFilter';
             rest.post($scope.invoiceReport).success(function (data) {
                 angular.forEach(data, function (val, i) {
@@ -43971,7 +43969,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.reseteSearch = function (frmId) {
-        $scope.statusResult = [];
+        // $scope.statusResult = [];
         location.reload()
     }
 
@@ -44251,28 +44249,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }
     }
-    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    $scope.dtOptionsClInvc = DTOptionsBuilder.newOptions().
+        withOption('scrollX', 'true').
         withOption('responsive', true).
         withOption('pageLength', 100).
-        withOption('columnDefs',  [
-            {
-                targets: 8,
-                render: function (data, type, row) {
-                    if (type === 'sort') {
-                        let tempSort = data.replace('.', '');
-                        return parseFloat(tempSort.replace(',', '.'));
-                    }
-                    return data;
+        withOption('drawCallback', function(settings) {
+            $timeout(function() {
+              var table = $('#invoice_report_table').DataTable();
+              var filteredData = table.rows({ filter: 'applied' }).data().toArray();
+          
+              $scope.totalPrice = 0;
+              
+              angular.forEach(filteredData, function(item) {
+                var htmlContent = item[4];
+                var value = parseFloat(htmlContent.replace(/\./g, '').replace(',', '.'));
+                if (!isNaN(value)) {
+                  $scope.totalPrice += value;
                 }
-            }
-        ]);
-
-    $scope.calculateTotal = function() {
-        var total = 0;
-        angular.forEach($scope.statusResult, function(result) {
-            total += parseFloat(result.jobPrice);
+              });
+              $scope.$apply();
+            });
         });
-        return total;
-    };
-    
 });
