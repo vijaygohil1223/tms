@@ -324,7 +324,7 @@
                                                          <!-- <td style="border-right: 1px solid #eaeff0;"></td> -->
                                                          <td style="width: 30%;">
                                                             <fieldset ng-disabled="scoopInvoice[it.itemId].invoiceId">
-                                                            <div class="col-sm-5">
+                                                            <div class="col-sm-6">
                                                                <div class="form-group">
                                                                   <label>Source language</label>
                                                                   <!-- <input select2-languages-data id="source_lang" type="text" name="sourcelang" ng-model="item.source_lang" class="form-control sourcelanguages" ng-change="itemsNamechange()" required /> -->
@@ -340,7 +340,7 @@
                                                                      style="display: none;">{{$index}}</div>
                                                                </div>
                                                             </div>
-                                                            <div class="col-sm-5">
+                                                            <div class="col-sm-6">
                                                                <div class="form-group">
                                                                   <label>Target language</label>
                                                                   <!-- <input type="text" select2-languages-data class="form-control targetlanguages" id="target_lang" name="targetlang" ng-model="item.target_lang" ng-change="itemsNamechange()" required/> -->
@@ -356,7 +356,7 @@
                                                                      style="display: none;">{{$index}}</div>
                                                                </div>
                                                             </div>
-                                                            <div class="col-sm-2" style="margin-top: 20px;">
+                                                            <!-- <div class="col-sm-2" style="margin-top: 20px;">
                                                                <a href="javascript:void(0);"
                                                                   ng-click="itemfolderOpen(it.itemId)"
                                                                   style="float: left;"><i class="itemFolder"
@@ -364,6 +364,17 @@
                                                                <p id="filescount{{it.itemId}}"
                                                                   style="background-color: #3615a0; border: 2px solid #fff; float: right;    position:absolute;margin: -5px 0 0 -11px"
                                                                   class="badge"></p>
+                                                            </div> -->
+                                                            <div class="col-sm-12 mt-15" style="margin-bottom: 15px;">
+                                                               <div class="form-group">
+                                                                  <a href="javascript:void(0);"
+                                                                     ng-click="itemfolderOpen(it.itemId)"
+                                                                     style="float: left;"><i class="itemFolder"
+                                                                        title="Item file folder"></i></a>
+                                                                  <p id="filescount{{it.itemId}}"
+                                                                     style="background-color: #3615a0; border: 2px solid #fff; float: right;    position:absolute;margin: -5px 0 0 -11px"
+                                                                     class="badge"></p>
+                                                               </div>
                                                             </div>
                                                             <div class="col-sm-12">
                                                                <div class="form-group">

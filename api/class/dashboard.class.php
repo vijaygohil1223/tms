@@ -618,5 +618,14 @@ class dashboard {
         return $grouped;
     }
     
+    public function getDashboardWidgetData(){
+        $qry = "SELECT gen.order_no AS orderNumber, its.itemId, its.order_id as orderId, its.item_number, its.po_number as ponumber from tms_items its LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id WHERE DATE(its.due_date) > CURDATE() or DATE(its.due_date) = ( case when DAYOFWEEK(CURDATE() + interval 1 day) = 7 then CURDATE() + interval 3 day when DAYOFWEEK(CURDATE() + interval 1 day) = 1 then CURDATE() + interval 2 day else CURDATE() + interval 1 day end ) and its.item_status not in (4, 5, 6, 8, 9)";
+        return $this->_db->rawQuery($qry);
+    }
+
+    public function getDashboardOverdueWidgetData(){
+        $qry = "SELECT tsv.job_summmeryId,tsv.order_id, tcus.client AS Client, tsv.po_number from tms_summmery_view as tsv left join tms_customer as tcus on tsv.order_id = tcus.order_id where DATE(tsv.due_date) > CURDATE() and tsv.item_status not in ('Delivered', 'Completed', 'Paid', 'Invoice Ready', 'Invoice Accepted', 'Invoiced', 'Cancelled')";
+        return $this->_db->rawQuery($qry);
+    }
 
 }

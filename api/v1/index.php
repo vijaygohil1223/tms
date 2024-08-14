@@ -3109,7 +3109,16 @@ $app->get('/searchProjectHeader/:id', function ($id) use ($app) {
     $result = $dashboard->searchProjectHeader($id);
     echoResponse(200, $result);
 });
-
+$app->get('/getUpcomingDeliveries','authenticate', function () {
+    $dashboard = new dashboard ();
+    $result = $dashboard->getDashboardWidgetData();
+    echoResponse(200, $result);
+});
+$app->get('/getOverDueJobs','authenticate', function () {
+    $dashboard = new dashboard ();
+    $result = $dashboard->getDashboardOverdueWidgetData();
+    echoResponse(200, $result);
+});
 //---------------Resource asserts------------------//
 $app->post('/resourceAssets', 'authenticate',function () use($app) {
     $assets = new asserts ();
