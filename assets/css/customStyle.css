@@ -1283,3 +1283,6 @@ Scroll Tabs css */
 .dashboardloader > .uil-ring-css>div {
   top: 2%;
 }
+.polyglot-language-switcher img {
+  width: 16px !important;
+}
