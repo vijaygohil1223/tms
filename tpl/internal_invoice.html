@@ -143,7 +143,13 @@
                             <a href="#/invoice-show/{{invoiceL.invoice_id}}"
                               title="View"><span>{{invoiceL.org_invoice_number}}</span></a>
                           </td>
-                          <td ng-bind="invoiceL.freelanceName"></td>
+                          <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
+                          <td>
+                            <a  style="color:#4ba0c3" 
+                                href="#/viewExternal/{{invoiceL.freelanceId}}" 
+                                title="View" class="trActionIcon">{{invoiceL.freelanceName}}
+                            </a>
+                          </td>
                           <td ng-bind="invoiceL.Invoice_cost | customNumber"></td>
                           <td ng-bind="invoiceL.freelance_currency"></td>
                           <td>
@@ -237,7 +243,13 @@
                               <a href="#/invoice-show/{{invoiceL.invoice_id}}"
                                 title="View"><span>{{invoiceL.org_invoice_number}}</span></a>
                             </td>
-                            <td ng-bind="invoiceL.freelanceName"></td>
+                            <!-- <td ng-bind="invoiceL.freelanceName"></td> -->
+                            <td>
+                              <a  style="color:#4ba0c3" 
+                                  href="#/viewExternal/{{invoiceL.freelanceId}}" 
+                                  title="View" class="trActionIcon">{{invoiceL.freelanceName}}
+                              </a>
+                            </td>
                             <td ng-bind="invoiceL.Invoice_cost | customNumber"></td>
                             <td ng-bind="invoiceL.freelance_currency"></td>
                             <td>
