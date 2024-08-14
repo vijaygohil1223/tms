@@ -44197,9 +44197,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "itemDuedate":
-                if ($scope.invoiceReport != undefined) {
+                if ($scope.invoiceReport !== undefined) {
                     $scope.invoiceReport.itemDuedate = '';
-                    angular.element('#itemDuedate').text;
+                    $scope.invoiceReport.itemDuedateStart = '';
+                    angular.element('#itemDuedate').text('');
                     angular.forEach($scope.invoiceReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.invoiceReport[key];
@@ -44213,9 +44214,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "endItemDuedate":
-                if ($scope.invoiceReport != undefined) {
+                if ($scope.invoiceReport !== undefined) {
                     $scope.invoiceReport.endItemDuedate = '';
-                    angular.element('#endItemDuedate').text;
+                    $scope.invoiceReport.itemDuedateEnd = '';
+                    angular.element('#endItemDuedate').text('');
                     angular.forEach($scope.invoiceReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.invoiceReport[key];
@@ -44229,9 +44231,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "startCreateDate":
-                if ($scope.invoiceReport != undefined) {
+                if ($scope.invoiceReport !== undefined) {
                     $scope.invoiceReport.startCreateDate = '';
-                    angular.element('#startCreateDate').text;
+                    $scope.invoiceReport.createDateFrom = '';
+                    angular.element('#startCreateDate').text('');
                     angular.forEach($scope.invoiceReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.invoiceReport[key];
@@ -44245,9 +44248,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "endCreateDate":
-                if ($scope.invoiceReport != undefined) {
+                if ($scope.invoiceReport !== undefined) {
                     $scope.invoiceReport.endCreateDate = '';
-                    angular.element('#endCreateDate').text;
+                    $scope.invoiceReport.createDateTo = '';
+                    angular.element('#endCreateDate').text('');
                     angular.forEach($scope.invoiceReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.invoiceReport[key];
