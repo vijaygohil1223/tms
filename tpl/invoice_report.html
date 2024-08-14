@@ -269,7 +269,7 @@
                                                         <td>{{result.Invoice_cost | customNumber }}</td>
                                                         <td>{{ (result.client_currency).split(',')[0] }} </td>
                                                         <td>{{ result.invoice_date | globalDtFormat }}</td>
-                                                        <td>{{ result.invoice_duedate | globalDtFormat }}</td>
+                                                        <td>{{ result.invoice_due_date | globalDtFormat }}</td>
                                                         <td>{{ result.paid_date | globalDtFormat }}</td>
                                                         <td>
                                                             <span ng-bind="result.invoice_status"></span>
@@ -310,7 +310,7 @@
                                                         <td>{{ result.Invoice_cost }}</td>
                                                         <td>{{result.client_currency}} </td>
                                                         <td>{{ result.created_date | globalDtFormat }}</td>
-                                                        <td>{{ result.invoice_duedate | globalDtFormat }}</td>
+                                                        <td>{{ result.invoice_due_date | globalDtFormat }}</td>
                                                         <td>{{ result.paid_date | globalDtFormat }}</td>
                                                         <td>
                                                             <span ng-bind="result.invoice_status"></span>

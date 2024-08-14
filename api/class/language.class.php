@@ -140,6 +140,23 @@ class language {
                 //$return['msg'] = 'Language  already exists.';
                 $return['msg'] = 'Not inserted';
         } else {
+            if (isset($data['image'])) {
+                if(isset($id) && isset($match)){
+                    $image = $match['flagImg'];
+                    if(isset($match['flagImg']) && $match['flagImg'] ){
+                        $path = "../../assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/";
+                        $images = glob($path.$image);
+                        if(file_exists($path.$image)){
+                            unlink($path.$image);
+                        }else{
+                            $image = $match['flagImg'];  
+                        }        
+                    }
+                }    
+                $data['flagImg'] = $this->uploadimage($data);
+                unset($data['image']);
+                unset($data['vflagImg']);
+            }
             $data['modified_date'] = date('Y-m-d H:i:s');
             $this->_db->where('lang_id', $id);
             $id = $this->_db->update('tms_languages', $data);
@@ -175,6 +192,18 @@ class language {
                 $return['status'] = 422;
                 $return['msg'] = 'Language  already exists.';
         }else{
+            if (isset($data['image'])) {
+                $data['flagImg'] = $this->uploadimage($data);
+                unset($data['image']);
+            }
+            $uniqueID = $this->generateUniqueIdentifier($data['title'], $data['name']);
+            $this->_db->where('id',$uniqueID);
+            $matchId = $this->_db->getOne('tms_languages');
+            if($matchId) {
+                $uniqueID = $this->generateUniqueIdentifier($data['title']."Z", $data['name']);
+            }
+            $data['id'] = $uniqueID;
+            $data['flagTitle'] = $data['title'];
             $data['created_date'] = date('Y-m-d H:i:s');
             $data['modified_date'] = date('Y-m-d H:i:s');
             $id = $this->_db->insert('tms_languages', $data);
@@ -222,8 +251,70 @@ class language {
         return $results;
     }
     
+    public static function getBytesFromHexString($hexdata) {
+        for ($count = 0; $count < strlen($hexdata); $count+=2)
+            $bytes[] = chr(hexdec(substr($hexdata, $count, 2)));
+            return implode($bytes); 
+    }
+
+    public static function getImageMimeType($imagedata,$FileType) {
+        $imagemimetypes =
+            array(  
+                array('jpeg',   'FFD8',                 'image/jpeg',                                                                   ),
+                array('png',    '89504E470D0A1A0A',     'image/png',                                                                    ),
+                array('gif',    '474946',               'image/gif',                                                                 ),
+                array('bmp',    '424D',                 'image/bmp',                                                                             ),
+                array('tiff',   '4949',                 'image/tiff',                                                                             ),
+                array('zip',    '504B0304',             'application/zip',                                                                             ),
+                array('pdf',    '255044462D312E',       'application/pdf',                                                                             ),
+                array('text',   'EFBBBF',               'text/plain',                                                                   ),
+                array('rar',    '526172211A0700',       '',                                                                             ),
+                array('xlsx',   '504B030414000600',     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',            ),
+                array('docx',   '504B0506',     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',      ),
+                array('pptx',   '504B030414000600',     'application/vnd.openxmlformats-officedocument.presentationml.presentation',    ),
+            );
+        foreach ($imagemimetypes as $row) {
+            $mime=$row[0];
+            $hexbytes=$row[1];
+            $bytes = self::getBytesFromHexString($hexbytes);
+            if (substr($imagedata, 0, strlen($bytes)) == $bytes){
+                if(empty($FileType)){
+                    return $mime;
+                }
+                elseif($FileType == $row[2]){
+                    return $mime;
+                }
+            }
+        }
+
+        return NULL;
+    }
+
+    public function uploadimage($data) {
+        $result = explode(',', $data['image']);
+        $getFileType = explode(';',explode(':',$result[0])[1]);
+        $finalstring = base64_decode($result[1]);
+
+        $mimetype = self::getImageMimeType($finalstring,$getFileType[0]);
+        if($mimetype == 'jpeg'){
+            $mimetype = 'jpg';
+        }
+        $filename = $data['title']. "." . $mimetype;
+        $output_file = DOCUMENT_ROOT . "assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/" . $filename;
+        $ifp = fopen($output_file, "wb");
+        fwrite($ifp, $finalstring);
+        fclose($ifp);
+        return $filename;
+    }
+
+    public function generateUniqueIdentifier($title, $name) {
+        $formattedTitle = strtolower(trim($title));
+        $formattedName = strtolower(trim($name));
+        $titlePart = substr($formattedTitle, 0, 3);
+        $namePart = substr($formattedName, 0, 3);
+        $namePart = strtoupper($namePart);
+        $uniqueIdentifier = $titlePart . '_' . $namePart;
     
-
-
-
+        return $uniqueIdentifier;
+    }
 }

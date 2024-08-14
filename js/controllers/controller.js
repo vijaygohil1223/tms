@@ -41740,15 +41740,36 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
     };
-}).controller('languagesController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, $filter) {
+}).controller('languagesController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, $filter, fileReader) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.CurrentDate = new Date();
     $scope.editOn = 0;
+    $scope.langs = {};
+    $scope.flagimgshow = true;
+
+    $scope.getFile = function (file, type) {
+        fileReader.readAsDataUrl(file, $scope)
+            .then(function (result) {
+                if (file.type == 'image/jpeg' || file.type == 'image/jpg' || file.type == 'image/png' || file.type == 'image/gif') {
+                    if (type && type === 'flag') {
+                        $scope.flagimgshow = false;
+                        $scope.imgshow = true;
+                        $scope.imageSrc = result;
+                    }else{
+                        $scope.imgshow = true;
+                        $scope.flagimgshow = false;
+                        $scope.imageSrc = result;
+                    }
+                } else {
+                    notification("Please select image", "error");
+                }
+            });
+    };
 
     $scope.save = function (formId) {
         if (angular.element('#' + formId).valid()) {
-            if ($scope.langs.lang_id) {
-
+            if ($scope.langs && $scope.langs.lang_id) {
+                $scope.langs.image = $scope.imageSrc;
                 $routeParams.id = $scope.langs.lang_id;
                 rest.path = 'langsupdate';
                 rest.put($scope.langs).success(function (data) {
@@ -41759,6 +41780,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }, 100);
                 }).error(errorCallback);
             } else {
+                $scope.langs.image = $scope.imageSrc;
                 if ($scope.langs.is_active == undefined) {
                     $scope.langs.is_active = '0';
                 }
@@ -44197,9 +44219,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "itemDuedate":
-                if ($scope.invoiceReport != undefined) {
+                if ($scope.invoiceReport !== undefined) {
                     $scope.invoiceReport.itemDuedate = '';
-                    angular.element('#itemDuedate').text;
+                    $scope.invoiceReport.itemDuedateStart = '';
+                    angular.element('#itemDuedate').text('');
                     angular.forEach($scope.invoiceReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.invoiceReport[key];
@@ -44213,9 +44236,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "endItemDuedate":
-                if ($scope.invoiceReport != undefined) {
+                if ($scope.invoiceReport !== undefined) {
                     $scope.invoiceReport.endItemDuedate = '';
-                    angular.element('#endItemDuedate').text;
+                    $scope.invoiceReport.itemDuedateEnd = '';
+                    angular.element('#endItemDuedate').text('');
                     angular.forEach($scope.invoiceReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.invoiceReport[key];
@@ -44229,9 +44253,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "startCreateDate":
-                if ($scope.invoiceReport != undefined) {
+                if ($scope.invoiceReport !== undefined) {
                     $scope.invoiceReport.startCreateDate = '';
-                    angular.element('#startCreateDate').text;
+                    $scope.invoiceReport.createDateFrom = '';
+                    angular.element('#startCreateDate').text('');
                     angular.forEach($scope.invoiceReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.invoiceReport[key];
@@ -44245,9 +44270,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "endCreateDate":
-                if ($scope.invoiceReport != undefined) {
+                if ($scope.invoiceReport !== undefined) {
                     $scope.invoiceReport.endCreateDate = '';
-                    angular.element('#endCreateDate').text;
+                    $scope.invoiceReport.createDateTo = '';
+                    angular.element('#endCreateDate').text('');
                     angular.forEach($scope.invoiceReport, function (value, key) {
                         if (value === "" || value === null) {
                             delete $scope.invoiceReport[key];
