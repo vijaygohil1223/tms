@@ -14799,6 +14799,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // } else {
         //     notification('Delete from last record', 'warning');
         // }
+        getNewPriceName()
     }
 
     $scope.sendPriceLanguage = function (id) {
@@ -15611,6 +15612,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
+    function getNewPriceName(){
+        var customerPriceName = angular.element('#customerPriceName').val();
+        var languageArr = $scope.priceLanguageList;
+        if(customerPriceName && languageArr){
+            // Filter to get unique languagePrice values
+            var FinalLanguageArray = languageArr.filter((item, index, self) =>
+                index === self.findIndex(t => t.languagePrice === item.languagePrice)
+            );
+            // Process and concatenate all unique languagePrice values
+            let newTextBoxValues = FinalLanguageArray.map(item => {
+                return item.languagePrice.replace(/\s*>\s*/g, '>');
+            }).join(' | ');
+
+            // Create a Set to ensure the final concatenation has unique entries
+            let uniqueValuesSet = new Set([...customerPriceName.split(' | '), ...newTextBoxValues.split(' | ')]);
+            let finalUniqueValues = Array.from(uniqueValuesSet).join(' | ');
+
+            // Function to update the text box value
+            function updateTextBox() {
+                $('#customerPriceName').val(finalUniqueValues);
+            }
+
+            // Clear any existing timeout before setting a new one to avoid multiple updates
+            if (window.updateTimeout) {
+                clearTimeout(window.updateTimeout);
+            }
+            window.updateTimeout = setTimeout(updateTextBox, 100);
+        }
+    }
+    $('.addPriceLanguage').click(function() {
+        getNewPriceName()
+    });
 
 }).controller('paymentController', function ($scope, $log, $location, $route, fileReader, rest, $window, $routeParams, $timeout, $interval) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -27328,7 +27361,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         angular.forEach(data, function (val, i) {
                             if (val.id) {
                                 
-                                
                                 var setItem_Status = angular.element("#setItemStatus").val();
                                 $scope.item_status = setItem_Status;
                                 $scope.it.item_status = $scope.item_status;
@@ -27338,7 +27370,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $routeParams.id = val.id;
                                 rest.path = 'jobselectContactNameupdate';
                                 rest.put($scope.it).success(function (data) {
-                                    console.log('data=======>responsedate', data)
                                     $scope.setItemStatus = false;
                                     if(setItem_Status == 'Completed' && allitCheked.length == 1 &&  data && data.sendPurchaseOrder){
                                         $scope.sendPurchaseOrderFn(data.job_summmeryId);
