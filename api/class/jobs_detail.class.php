@@ -582,7 +582,6 @@ class jobs_detail
 
     public function jobselectContactNameupdate($id, $data)
     {
-
         if (isset($data['jobSummuryIds'])) {
             unset($data['jobSummuryIds']);
         }
@@ -612,7 +611,6 @@ class jobs_detail
         if (isset($data['item_status'])) {
             $this->_db->where('job_summmeryId', $id);
             $jobsData = $this->_db->getone('tms_summmery_view');
-
             $data['updated_date'] = date('Y-m-d H:i:s');
             $this->_db->where('job_summmeryId', $id);
 
@@ -620,6 +618,12 @@ class jobs_detail
 
 
             if ($id) {
+                // New code tp update scoop status to 'Ongoing'
+                if (isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Ongoing') {
+                    $qry_on = "UPDATE `tms_items` SET `item_status` = '2' WHERE order_id = '" . $jobsData['order_id'] . "' AND item_number = '" . $jobsData['item_id'] . "' AND (item_status = '1'  OR item_status = '2' OR item_status = '14')";
+                    $this->_db->rawQuery($qry_on);
+                }
+
                 // Update scoop status to QA Ready
                 if (isset($jobsData['order_id']) && isset($jobsData['item_id']) && $data['item_status'] == 'Completed') {
 
