@@ -46,7 +46,7 @@
                         <div class="thumb-info mb-md">
                           <img ng-if="langs.image != undefined" ng-show="flagimgshow" height="50px" width="50px" ng-src="assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/{{langs.image}}" class="img-thumbnail" alt="Flag Image">
                           <img ng-show="flagimgshow" ng-if="langs.image == undefined" ng-src="assets/img/blank.png" class="img-thumbnail" alt="Flag Image">
-                          <img ng-show="!flagimgshow" ng-src="{{image ? image : 'assets/img/blank.png'}}" class="img-thumbnail" alt="Flag Image">
+                          <img ng-show="!flagimgshow" ng-src="{{imageSrc ? imageSrc : 'assets/img/blank.png'}}" class="img-thumbnail" alt="Flag Image">
                         </div>    
                       </div>
                   </div>
@@ -113,9 +113,8 @@
                       </div>
                       <div class="col-md-6">
                         <div class="thumb-info mb-md">
-                          <img  ng-if="langs.image != undefined" ng-show="flagimgshow" height="50px" width="50px" ng-src="assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/{{langs.image}}" class="img-thumbnail" alt="Flag Image">
-                          <img ng-show="flagimgshow" ng-if="langs.image == undefined" ng-src="assets/img/blank.png" class="img-thumbnail" alt="Flag Image">
-                          <img ng-show="!flagimgshow" ng-src="{{image ? image : 'assets/img/blank.png'}}" class="img-thumbnail" alt="Flag Image">
+                          <img ng-if="langs.flagImg != undefined" ng-show="flagimgshow" ng-src="assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/{{langs.flagImg}}" class="img-thumbnail" alt="Flag Image">
+                          <img ng-show="!flagimgshow" ng-src="{{imageSrc ? imageSrc : 'assets/img/blank.png'}}" class="img-thumbnail" alt="Flag Image">
                         </div>    
                       </div>
                   </div>
