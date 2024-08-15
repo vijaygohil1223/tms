@@ -155,7 +155,6 @@ class language {
                 }    
                 $data['flagImg'] = $this->uploadimage($data);
                 unset($data['image']);
-                unset($data['vflagImg']);
             }
             $data['modified_date'] = date('Y-m-d H:i:s');
             $this->_db->where('lang_id', $id);
@@ -200,7 +199,7 @@ class language {
             $this->_db->where('id',$uniqueID);
             $matchId = $this->_db->getOne('tms_languages');
             if($matchId) {
-                $uniqueID = $this->generateUniqueIdentifier($data['title']."Z", $data['name']);
+                $uniqueID = $this->generateUniqueIdentifier($this->getLletter().$data['title'], $this->getCLetter().$data['name']);
             }
             $data['id'] = $uniqueID;
             $data['flagTitle'] = $data['title'];
@@ -316,5 +315,17 @@ class language {
         $uniqueIdentifier = $titlePart . '_' . $namePart;
     
         return $uniqueIdentifier;
+    }
+
+    public function getLletter() {
+        $lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+        $randomIndex = rand(0, strlen($lowercaseLetters) - 1);
+        return $lowercaseLetters[$randomIndex];
+    }
+
+    public function getCLetter() {
+        $uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomIndex = rand(0, strlen($uppercaseLetters) - 1);
+        return $uppercaseLetters[$randomIndex];
     }
 }

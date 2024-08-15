@@ -41777,7 +41777,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$route.reload();
                     $timeout(function () {
                         $window.location.reload();
-                    }, 100);
+                    }, 200);
                 }).error(errorCallback);
             } else {
                 $scope.langs.image = $scope.imageSrc;
