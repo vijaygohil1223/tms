@@ -1507,6 +1507,11 @@ $app->get('/languagesGet','authenticate', function () {
     $result = $language->languagesGetAll();
     echoResponse(200, $result);
 });
+$app->get('/languagesGetWithStatus','authenticate', function () {
+    $language = new language ();
+    $result = $language->languagesGetAllWithStatus();
+    echoResponse(200, $result);
+});
 $app->get('/languagesGetPaginate','authenticate', function () {
     $language = new language();
     // Fetch paginated results directly from the database

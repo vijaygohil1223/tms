@@ -41828,7 +41828,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     if ($window.localStorage.getItem("session_iUserId")) {
-        rest.path = 'languagesGet';
+        rest.path = 'languagesGetWithStatus';
         rest.get().success(function (data) {
             $scope.langsList = data;
         }).error(errorCallback);
