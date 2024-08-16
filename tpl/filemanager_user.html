@@ -45,7 +45,7 @@
     font-weight: bold;
     display: inline-block;
     cursor: default;
-    width: 100%;
+    /* width: 100%; */
     padding: 7px 10px;
     margin: 5px 15px;
     /* vertical-align: top; */
@@ -382,6 +382,31 @@
 
   /* vendor-prefixes.less:76
 * */
+.parent-folder {
+    position: relative;
+    margin: 0 0 -30px 0;
+}
+
+  file{  
+      margin: 0;
+      padding: 0;
+  }
+
+  file p{    
+    margin: 0 10px 0 40px;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .parent-folder .download-fl {
+    position: absolute;
+    top: 18px;
+    left: 230px;
+  }
+  #filesContainer{
+    margin: 0 15px;
+  }
+
 </style>
 <div id="content" role="main">
   <div class="app-content-body ">
@@ -457,7 +482,7 @@
         <div ng-if="showLoder" id="loader"></div>
 
 
-        <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" style="" class="fileshow">
+        <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" class="fileshow parent-folder">
           <!-- Folder display -->
           <!-- icon condion ng-if="rootfolder==display.parent_id" -->
           <folder ng-if="display.f_id=='0' && display.item_id =='0'" context-menu="menuOptionsFolder"
@@ -552,8 +577,19 @@
                              ng-if="! fileExtensionExist(category.ext) && category.f_id=='1' " class="txt {{}}" context-menu="menuOptionsFiles" menuoptionIdName="{{category.fmanager_id}},[{{category.ext}},{{category.created_date}},{{category.size}}],{{category.name}}" file-double-click category-name="{{category.name}}" original-filename="{{category.original_filename}}">
                              <p>{{category.original_filename }}</p>
                         </file>
-
-                        <ul class="folderul f1 ftr{{display.fmanager_id}} nch{{category.parent_id}}{{category.fmanager_id}}" style="display:none;">
+                        <span ng-if="category.f_id == '0' && category.item_id == '0'" class="download-fl">
+                          <a id="customdownload{{category.fmanager_id}}" 
+                            href="javascript:void(0)" ng-click="customDownloadSingleFolder(category.fmanager_id, category.parent_id, category.name )"> <i class="fa fa-download"></i> </a>
+                          <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
+                        </span>
+                        <span ng-if="category.f_id == 1 ">
+                          <a id="customdownload{{category.fmanager_id}}" 
+                            href="javascript:void(0)" ng-if="category.is_s3bucket" ng-click="customFileDownload(category.name, category.original_filename)"> <i class="fa fa-download"></i> </a>
+                          <a id="customdownload{{category.fmanager_id}}" 
+                            href="uploads/fileupload/{{category.name}}" ng-if="!category.is_s3bucket" > <i class="fa fa-download"></i> </a>
+                            <span style="margin-left:20px;">{{category.created_date | dateFormatDisplayFront }}</span>
+                        </span>
+                        <ul class="folderul f1 ftr{{category.fmanager_id}} nch{{category.parent_id}}{{category.fmanager_id}}" style="category:none;">
                             <li ng-repeat="category in category.categories" ng-include="'categoryTree'" >           
                             </li>
                         </ul>
@@ -564,120 +600,139 @@
                 style="display:none;"></li>
             </ul>
           </div>
-          <!-- Pdf  -->
-          <file extension="pdf" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          
+          <div style="display: inline-block;vertical-align: top;margin-bottom: 15px;margin-left:25px;margin-top:5px;">
+            <!-- Pdf  -->
+            <file extension="pdf" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
             ng-dblclick="addToDownload(display.name, display.original_filename)"
             ng-if="display.ext == 'pdf' || display.ext == 'PDF'" context-menu="menuOptionsFiles" class="pdf"
-            menuoptionIdName="0">
+            menuoptionIdName="0" >
             <p>{{display.original_filename}}</p>
           </file>
 
-          <!-- Png -->
-            <file extension="png" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'jpg' ||
-                               display.ext == 'JPEG' ||
-                               display.ext == 'png' || 
-                               display.ext == 'jpeg'||  
-                               display.ext == 'gif'||  
-                               display.ext == 'bmp' || 
-                               display.ext == 'jfif' || 
-                               display.ext == 'svg' || 
-                               display.ext == 'webp' "
-                               ng-style="{ 'background-image': display.is_s3bucket == 1 ? 'url(' + display.name + ')' : 'url(uploads/fileupload/' + display.name + ')' }" context-menu="menuOptionsFiles" menuoptionIdName="0">
-            <p>{{display.original_filename}}</p>
-          </file>
+        <!-- Png -->
+          <file extension="png" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'jpg' ||
+                             display.ext == 'JPEG' ||
+                             display.ext == 'png' || 
+                             display.ext == 'jpeg'||  
+                             display.ext == 'gif'||  
+                             display.ext == 'bmp' || 
+                             display.ext == 'jfif' || 
+                             display.ext == 'svg' || 
+                             display.ext == 'webp' "
+                             ng-style="{ 'background-image': display.is_s3bucket == 1 ? 'url(' + display.name + ')' : 'url(uploads/fileupload/' + display.name + ')' }" context-menu="menuOptionsFiles" menuoptionIdName="0">
+          <p>{{display.original_filename}}</p>
+        </file>
 
-          <!-- Zip -->
-          <file extension="zip" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'zip' ||
-                         display.ext == 'gz' ||
-                         display.ext == 'rar'
-                        " class="zip" context-menu="menuOptionsFiles" menuoptionIdName="0">
-            <p>
-              {{display.original_filename}}</p>
-          </file>
+        <!-- Zip -->
+        <file extension="zip" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'zip' ||
+                       display.ext == 'gz' ||
+                       display.ext == 'rar'
+                      " class="zip" context-menu="menuOptionsFiles" menuoptionIdName="0">
+          <p>
+            {{display.original_filename}}</p>
+        </file>
 
-          <!-- doc&docx -->
-          <file extension="doc" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)"
-            ng-if="display.ext == 'doc' || display.ext =='docx'" class="doc" context-menu="menuOptionsFiles"
-            menuoptionIdName="0">
-            <p>{{display.original_filename}}</p>
-          </file>
+        <!-- doc&docx -->
+        <file extension="doc" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)"
+          ng-if="display.ext == 'doc' || display.ext =='docx'" class="doc" context-menu="menuOptionsFiles"
+          menuoptionIdName="0">
+          <p>{{display.original_filename}}</p>
+        </file>
 
-          <!-- Unknown extension Extra-->
-          <file extension="msg" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'msg'"
-            class="fileicon" context-menu="menuOptionsFiles" menuoptionIdName="0">
-            <span
-              style="text-shadow: 1px 5px #352f2f; color:transparent;font-size:12px; font-weight: 900;text-transform: capitalize;">
-              {{display.ext}}</span>
-            <p style="margin-top: -10px;">{{display.original_filename}}</p>
-          </file>
+        <!-- Unknown extension Extra-->
+        <file extension="msg" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'msg'"
+          class="fileicon" context-menu="menuOptionsFiles" menuoptionIdName="0">
+          <span
+            style="text-shadow: 1px 5px #352f2f; color:transparent;font-size:12px; font-weight: 900;text-transform: capitalize;">
+            {{display.ext}}</span>
+          <p >{{display.original_filename}}</p>
+        </file>
 
 
-          <!-- Xls -->
-          <file extension="xls" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'xlsx' ||
-                         display.ext == 'xlsm' ||
-                         display.ext == 'xls' ||
-                         display.ext == 'csv'
-                        " class="xls" context-menu="menuOptionsFiles" menuoptionIdName="0">
-            <p>
-              {{display.original_filename}}</p>
-          </file>
+        <!-- Xls -->
+        <file extension="xls" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'xlsx' ||
+                       display.ext == 'xlsm' ||
+                       display.ext == 'xls' ||
+                       display.ext == 'csv'
+                      " class="xls" context-menu="menuOptionsFiles" menuoptionIdName="0">
+          <p>
+            {{display.original_filename}}</p>
+        </file>
 
-          <!-- PPT -->
-          <file extension="ppt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)"
-            ng-if="display.ext == 'ppt' || display.ext =='pptx'" class="ppt" context-menu="menuOptionsFiles"
-            menuoptionIdName="0">
-            <p>{{display.original_filename}}</p>
-          </file>
+        <!-- PPT -->
+        <file extension="ppt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)"
+          ng-if="display.ext == 'ppt' || display.ext =='pptx'" class="ppt" context-menu="menuOptionsFiles"
+          menuoptionIdName="0">
+          <p>{{display.original_filename}}</p>
+        </file>
 
-          <!-- MP3 -->
-          <file extension="mp3" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            context-menu="menuOptionsFiles" ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'mp3' ||
-                            display.ext =='wav' ||
-                            display.ext =='wma'
-                           " class="mp3" menuoptionIdName="0">
-            <p> {{display.original_filename}}</p>
-          </file>
+        <!-- MP3 -->
+        <file extension="mp3" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          context-menu="menuOptionsFiles" ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'mp3' ||
+                          display.ext =='wav' ||
+                          display.ext =='wma'
+                         " class="mp3" menuoptionIdName="0">
+          <p> {{display.original_filename}}</p>
+        </file>
 
-          <!-- VIDEO -->
-          <file extension="mp4" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'mp4' ||
-                            display.ext =='wmv' ||
-                            display.ext =='avi' ||
-                            display.ext =='3gp' ||
-                            display.ext =='mov' ||
-                            display.ext =='vob'
-                           " class="video" context-menu="menuOptionsFiles" menuoptionIdName="0">
-            <p>
-              {{display.original_filename}}</p>
-          </file>
+        <!-- VIDEO -->
+        <file extension="mp4" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'mp4' ||
+                          display.ext =='wmv' ||
+                          display.ext =='avi' ||
+                          display.ext =='3gp' ||
+                          display.ext =='mov' ||
+                          display.ext =='vob'
+                         " class="video" context-menu="menuOptionsFiles" menuoptionIdName="0">
+          <p>
+            {{display.original_filename}}</p>
+        </file>
 
-          <!-- EXE -->
-          <file extension="exe" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'exe'
-                           " class="exe" context-menu="menuOptionsFiles" menuoptionIdName="0">
-            <p>
-              {{display.original_filename}}</p>
-          </file>
+        <!-- EXE -->
+        <file extension="exe" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)" ng-if="display.ext == 'exe'
+                         " class="exe" context-menu="menuOptionsFiles" menuoptionIdName="0">
+          <p>
+            {{display.original_filename}}</p>
+        </file>
 
-          <!-- TEXT and other File extension -->
-          <file extension="txt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
-            ng-dblclick="addToDownload(display.name, display.original_filename)"
-            ng-if="! fileExtensionExist(display.ext) && display.f_id=='1' " class="txt" context-menu="menuOptionsFiles"
-            menuoptionIdName="0">
-            <p>
-              {{display.original_filename}}</p>
-          </file>
+        <!-- TEXT and other File extension -->
+        <file extension="txt" id="{{display.fmanager_id}}" ng-click="addToCopy(display.fmanager_id)"
+          ng-dblclick="addToDownload(display.name, display.original_filename)"
+          ng-if="! fileExtensionExist(display.ext) && display.f_id=='1' " class="txt" context-menu="menuOptionsFiles"
+          menuoptionIdName="0">
+          <p>
+            {{display.original_filename}}</p>
+        </file>
+
+        <span ng-if="display.f_id == '0' && display.item_id == '0'" class="download-fl">
+          <a id="customdownload{{display.fmanager_id}}" 
+            href="javascript:void(0)" ng-click="customDownloadSingleFolder(display.fmanager_id, display.parent_id, display.name )"> <i class="fa fa-download"></i> </a>
+          <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
+        </span>
+        <span ng-if="display.f_id == 1 ">
+          <a id="customdownload{{display.fmanager_id}}" 
+            href="javascript:void(0)" ng-if="display.is_s3bucket" ng-click="customFileDownload(display.name, display.original_filename)"> <i class="fa fa-download"></i> </a>
+          <a id="customdownload{{display.fmanager_id}}" 
+            href="uploads/fileupload/{{display.name}}" ng-if="!display.is_s3bucket" > <i class="fa fa-download"></i> </a>
+            <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
+        </span>
+      
+          
 
           <a id="download{{display.fmanager_id}}" style="display:none;"
             href="{{display.name}}" ng-if="display.is_s3bucket">Download</a>
           <a id="download{{display.fmanager_id}}" style="display:none;"
             href="uploads/fileupload/{{display.name}}" ng-if="!display.is_s3bucket">Download</a>
+
+          </div>
 
         </div>
 
