@@ -299,7 +299,7 @@ class language {
             $mimetype = 'jpg';
         }
         $filename = $data['title']. "." . $mimetype;
-        $output_file = DOCUMENT_ROOT . "assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/" . $filename;
+        $output_file = $_SERVER['DOCUMENT_ROOT'] . "assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/" . $filename;
         $ifp = fopen($output_file, "wb");
         fwrite($ifp, $finalstring);
         fclose($ifp);
