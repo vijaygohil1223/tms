@@ -515,7 +515,7 @@ class item {
     public function languagesGet() {
         // $data = $this->_db->rawQuery("SELECT * FROM `tms_languages` WHERE is_active=1 ORDER BY `is_favourite`=1 DESC");
         // $data = $this->_db->rawQuery("SELECT *, ROW_NUMBER() OVER (ORDER BY display_order IS NULL, display_order ASC) AS sequential_display_order FROM tms_languages WHERE is_active = 1 ORDER BY sequential_display_order ASC");
-        $data = $this->_db->rawQuery("SELECT * FROM tms_languages ORDER BY COALESCE(display_order, 999999999) ASC");
+        $data = $this->_db->rawQuery("SELECT * FROM tms_languages WHERE is_active=1 ORDER BY COALESCE(display_order, 999999999) ASC");
 
         return $data;
     }

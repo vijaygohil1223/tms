@@ -328,4 +328,9 @@ class language {
         $randomIndex = rand(0, strlen($uppercaseLetters) - 1);
         return $uppercaseLetters[$randomIndex];
     }
+
+    public function languagesGetAllWithStatus() {
+        $results = $this->_db->get('tms_languages');
+        return $results;
+    }
 }
