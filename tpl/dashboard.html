@@ -736,8 +736,8 @@ td { font-size: 11px; } */
                             </td>
                             <td>
                               <span style="display: none;">{{ order.itemDuedate_new }}</span>
-                              <span ng-if="order.itemDuedate" class="labeltitle mytooltip">
-                                {{ order.itemDuedate | dateFormatDisplayFront }}
+                              <span ng-if="order.itemDuedate" class="labeltitle mytooltip" ng-style="(order.itemDuedate < dateToday && [4, 5, 6, 8, 9].indexOf(order.itemStatusId) === -1) ? {'color':'red'} : {'color':'initial'} ">
+                                  {{ order.itemDuedate | dateFormatDisplayFront }}
                                 <div class="mytooltip_div">
                                   <ul class="timeline">
                                     <li class="tl-item">
