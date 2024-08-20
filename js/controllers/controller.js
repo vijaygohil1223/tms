@@ -8385,17 +8385,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             
             $http.post('file-download-single.php', tempPostData, { responseType: 'blob' })
                 .then(function(response) {
-                    // Create a link element
                     var link = document.createElement('a');
-                    // Set the URL using a Blob URL
                     var url = window.URL.createObjectURL(response.data);
                     link.href = url;
                     link.download = fileName; // Use the file name from the server
-                    // Append link to the body
                     document.body.appendChild(link);
-                    // Trigger a click event on the link
                     link.click();
-                    // Clean up
                     window.URL.revokeObjectURL(url);
                     document.body.removeChild(link);
                 })
@@ -44291,7 +44286,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = 'statusinvoiceReportFilter';
             rest.post($scope.invoiceReport).success(function (data) {
                 angular.forEach(data, function (val, i) {
-                    val.Invoice_cost = numberFormatCommaToPoint(val.Invoice_cost);
+                    //val.Invoice_cost = numberFormatCommaToPoint(val.Invoice_cost);
                     val.invoice_status = val.invoice_status == 'Open' ? 'Outstanding' : val.invoice_status
                     if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
                         val.invoice_status = 'Paid';

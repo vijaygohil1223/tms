@@ -718,6 +718,9 @@
           <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
         </span> -->
         <span ng-if="display.f_id == 1 ">
+          <!-- <a id="customdownload{{display.fmanager_id}}" 
+            href="http://localhost/tms/file-download-api.php?filename={{display.name}}&&filename={{display.original_filename}}" > <i class="fa fa-download"></i> </a> -->
+
           <a id="customdownload{{display.fmanager_id}}" 
             href="javascript:void(0)" ng-click="customFileDownload(display.name, display.original_filename)"> <i class="fa fa-download"></i> </a>
           <!-- <a id="customdownload{{display.fmanager_id}}" 
