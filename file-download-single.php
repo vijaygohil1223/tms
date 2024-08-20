@@ -17,6 +17,7 @@ require_once('api/includes/config.php');
 //     die('Invalid file path.');
 // }
 
+
 //$basePath = DOCUMENT_ROOT.'uploads/fileupload/';
 
 //$basePath = realpath(DOCUMENT_ROOT . 'uploads/fileupload') . '/' ;
@@ -36,33 +37,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Construct the full path to the file
         $filePath = $basePath . $file;
 
-        // Print file path for debugging
-        //echo 'File Path: ' . $filePath . '<br>';
-        
-        // Check if the file exists and is within the base directory
+        // Ensure the file exists and is within the base directory
         $realFilePath = realpath($filePath);
         if ($realFilePath && strpos($realFilePath, $basePath) === 0 && file_exists($filePath)) {
-            //echo 'File exists and path is valid.<br>';
-
-            // Check file size
-            $fileSize = filesize($filePath);
-            //echo 'File Size: ' . $fileSize . '<br>';
-
-            // Clear output buffer
-            ob_end_clean();
+            // Get the file's MIME type
+            $fileMimeType = mime_content_type($filePath);
+            if ($fileMimeType === false) {
+                $fileMimeType = 'application/octet-stream'; // Fallback MIME type
+            }
 
             // Set headers to force download
             header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
+            header('Content-Type: ' . $fileMimeType);
             header('Content-Disposition: attachment; filename="' . $fileDownloadName . '"');
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . $fileSize);
+            header('Content-Length: ' . filesize($filePath));
 
-            // Read the file and output its content
+            // Clear output buffer
+            ob_clean();
             flush();
-            readfile($filePath);
+
+            // Open the file and output in chunks
+            $chunkSize = 8192; // 8 KB chunks
+            $handle = fopen($filePath, 'rb');
+            if ($handle !== false) {
+                while (!feof($handle)) {
+                    echo fread($handle, $chunkSize);
+                    flush(); // Make sure the data is sent to the client
+                }
+                fclose($handle);
+            } else {
+                // Handle error if file cannot be opened
+                http_response_code(500);
+                echo 'Unable to open file.';
+            }
 
             exit;
         } else {

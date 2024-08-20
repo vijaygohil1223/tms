@@ -7796,7 +7796,34 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.customFileDownload = function(fileURL, fileName){
         console.log('fileURL', fileURL)
-        fileDownloadByDynamicUrl(fileURL, fileName)
+        const isAwsUrl = fileURL.startsWith('https://');
+
+        if (!isAwsUrl) {
+            const tempPostData = { filename: fileURL, fileDownloadName: fileName };
+            
+            $http.post('file-download-single.php', tempPostData, { responseType: 'blob' })
+                .then(function(response) {
+                    // Create a link element
+                    var link = document.createElement('a');
+                    // Set the URL using a Blob URL
+                    var url = window.URL.createObjectURL(response.data);
+                    link.href = url;
+                    link.download = fileName; // Use the file name from the server
+                    // Append link to the body
+                    document.body.appendChild(link);
+                    // Trigger a click event on the link
+                    link.click();
+                    // Clean up
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(link);
+                })
+                .catch(function(error) {
+                    console.error('Download failed:', error);
+                });
+        } else {
+            // Handle AWS URL download or any other URL-based download mechanism
+            fileDownloadByDynamicUrl(fileURL, fileName);
+        }
     }
 
     $scope.customDownloadSingleFolder = function(id, parentId, folderName){
@@ -8352,9 +8379,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }, 500);
 
     $scope.customFileDownload = function(fileURL, fileName){
-        console.log('fileURL', fileURL)
         const isAwsUrl = fileURL.startsWith('https://');
-
         if (!isAwsUrl) {
             const tempPostData = { filename: fileURL, fileDownloadName: fileName };
             
