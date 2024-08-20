@@ -8357,8 +8357,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         if (!isAwsUrl) {
             const tempPostData = { filename: fileURL, fileDownloadName: fileName };
-
-            // Make a POST request to download the file
+            
             $http.post('file-download-single.php', tempPostData, { responseType: 'blob' })
                 .then(function(response) {
                     // Create a link element
@@ -8366,7 +8365,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // Set the URL using a Blob URL
                     var url = window.URL.createObjectURL(response.data);
                     link.href = url;
-                    link.download = fileName; // Use the provided download name
+                    link.download = fileName; // Use the file name from the server
                     // Append link to the body
                     document.body.appendChild(link);
                     // Trigger a click event on the link
@@ -8378,8 +8377,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 .catch(function(error) {
                     console.error('Download failed:', error);
                 });
-
         } else {
+            // Handle AWS URL download or any other URL-based download mechanism
             fileDownloadByDynamicUrl(fileURL, fileName);
         }
 
