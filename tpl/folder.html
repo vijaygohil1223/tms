@@ -340,7 +340,7 @@ table {
             <div ng-if="showLoder" id="loader"></div>
 
             <!-- <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" class="fileshow" > -->
-              <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" class="fileshow" style="display: inline-block;vertical-align: top;margin-bottom: 15px;margin-left:5px;margin-top:5px;">
+              <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" class="fileshow" style="display: inline-block;vertical-align: top;margin-bottom: 15px; margin-left:5px; margin-top:5px; width:100%;">
                 
                 <!-- Folder display -->
                <folder ng-if="display.f_id=='0' && display.item_id =='0'" context-menu="menuOptionsFolder" ng-dblclick="findfile(display.fmanager_id,display.name)"><p>{{display.name}}</p></folder>
