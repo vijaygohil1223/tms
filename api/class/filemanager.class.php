@@ -1382,18 +1382,19 @@ array(
 
     public function getAWSImageMigrate() {
         // Fetch records without AWS path
-        $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id=1 limit 5");
+        $folderName = 'aug_'.time().'/';
+        $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id = 1  AND size LIKE "%MB%" limit 50 ");
         $awsFile = new awsFileupload();
         foreach ($getNoramalImages as $file) {
             //$filePath = 'http://tms.kanhasoftdev.com/uploads/fileupload/' . $file['name'];
             $filePath = UPLOADS_ROOT_NEW. 'fileupload/' . $file['name'];
             if (file_exists($filePath)) {
-                $currentDate = date('Y-m-d');
+                //$currentDate = date('Y-m-d');
                 $filenameWithoutExtension = pathinfo($file['name'], PATHINFO_FILENAME);
-                $timestamp = time();
+                $timestamp = time().mt_rand();
                 $extensionName = pathinfo($file['name'], PATHINFO_EXTENSION);
                 $filename = $filenameWithoutExtension.'_'.$timestamp.'.' .$extensionName;
-                $keyNameTimestamp = '2024/04/2024-04-15/' . $filename ;
+                $keyNameTimestamp = '2024/06/'.$folderName . $filename ;
                 $keyName = $keyNameTimestamp;
                 $awsResult = $awsFile->awsFileUploadAnother($filePath, $keyName , $file['name']);
                 
