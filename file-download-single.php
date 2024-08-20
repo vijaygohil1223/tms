@@ -17,15 +17,10 @@ require_once('api/includes/config.php');
 //     die('Invalid file path.');
 // }
 
-
 //$basePath = DOCUMENT_ROOT.'uploads/fileupload/';
 
 //$basePath = realpath(DOCUMENT_ROOT . 'uploads/fileupload') . '/' ;
 $basePath = realpath(DOCUMENT_ROOT . 'uploads/fileupload') . DIRECTORY_SEPARATOR;
-
-// Print for debugging
-echo 'DOCUMENT_ROOT: ' . DOCUMENT_ROOT . '<br>';
-echo 'Base Path: ' . $basePath . '<br>';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the raw POST data
