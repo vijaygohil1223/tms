@@ -719,10 +719,10 @@
         </span> -->
         <span ng-if="display.f_id == 1 ">
           <a id="customdownload{{display.fmanager_id}}" 
-            href="javascript:void(0)" ng-if="display.is_s3bucket" ng-click="customFileDownload(display.name, display.original_filename)"> <i class="fa fa-download"></i> </a>
-          <a id="customdownload{{display.fmanager_id}}" 
+            href="javascript:void(0)" ng-click="customFileDownload(display.name, display.original_filename)"> <i class="fa fa-download"></i> </a>
+          <!-- <a id="customdownload{{display.fmanager_id}}" 
             href="uploads/fileupload/{{display.name}}" ng-if="!display.is_s3bucket" > <i class="fa fa-download"></i> </a>
-            <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
+            <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span> -->
         </span>
       
           
