@@ -7911,7 +7911,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     
 
-}).controller('filemanagerCtrl', function ($scope, $sce, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval, $q ) {
+}).controller('filemanagerCtrl', function ($scope, $sce, $log, $location, fileReader, rest, $uibModal, $window, $rootScope, $timeout, $route, $routeParams, $interval, $q, $http ) {
     $scope.clientId = $window.localStorage.getItem("contactclientId");
     $scope.userId = $window.localStorage.getItem("contactUserId");
     console.log('$scope.userId', $scope.userId)
@@ -8353,7 +8353,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.customFileDownload = function(fileURL, fileName){
         console.log('fileURL', fileURL)
-        fileDownloadByDynamicUrl(fileURL, fileName)
+        const isAwsUrl = fileURL.startsWith('https://');
+
+        if (!isAwsUrl) {
+            const tempPostData = { filename: fileURL, fileDownloadName: fileName };
+
+            // Make a POST request to download the file
+            $http.post('file-download-single.php', tempPostData, { responseType: 'blob' })
+                .then(function(response) {
+                    // Create a link element
+                    var link = document.createElement('a');
+                    // Set the URL using a Blob URL
+                    var url = window.URL.createObjectURL(response.data);
+                    link.href = url;
+                    link.download = fileName; // Use the provided download name
+                    // Append link to the body
+                    document.body.appendChild(link);
+                    // Trigger a click event on the link
+                    link.click();
+                    // Clean up
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(link);
+                })
+                .catch(function(error) {
+                    console.error('Download failed:', error);
+                });
+
+        } else {
+            fileDownloadByDynamicUrl(fileURL, fileName);
+        }
+
+
     }
 
 
