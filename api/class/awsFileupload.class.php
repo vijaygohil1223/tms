@@ -121,6 +121,54 @@ class awsFileupload
         }
     }
 
+    public function awsFileDownload($keyName, $fileDownloadName) {
+        if (empty($keyName)) {
+            header('Content-Type: application/json');
+            http_response_code(400);
+            echo json_encode([
+                'is_upload' => false,
+                'error' => ['message' => 'No file provided.']
+            ]);
+            exit;
+        }
+    
+        try {
+            $result = $this->_s3Client->getObject([
+                'Bucket' => AWS_S3_BUCKET_NAME,
+                'Key'    => $keyName,
+            ]);
+    
+            // Ensure headers and content are properly set
+            header('Content-Description: File Transfer');
+            header('Content-Type: ' . $result['ContentType']);
+            header('Content-Disposition: attachment; filename="' . $fileDownloadName . '"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . $result['ContentLength']);
+            
+            // Output the file content
+            echo $result['Body'];
+            exit;
+    
+        } catch (AwsException $e) {
+            // Return error response
+            header('Content-Type: application/json');
+            http_response_code(500);
+            echo json_encode([
+                'is_upload' => false,
+                'error' => [
+                    'message'    => $e->getMessage(),
+                    'code'       => $e->getAwsErrorCode(),
+                    'type'       => $e->getAwsErrorType(),
+                    'request_id' => $e->getAwsRequestId()
+                ]
+            ]);
+            exit;
+        }
+    }
+    
+
     public function awsFileUploadAnother($file, $keyName, $filename){
         if (empty($file)) {
             return [
@@ -132,7 +180,10 @@ class awsFileupload
         }
 
         try {
-            $filePath = "/var/www/html/tms/uploads/fileupload/". $filename;
+            //$filePath = "/var/www/html/tms/uploads/fileupload/". $filename;
+            //$filePath = "/home/dosinxdu/tms.dosina.no/uploads/fileupload/". $filename;
+            $filePath = "/home/beconmxb/tms.beconnected.no/uploads/fileupload/". $filename;
+            
             // Upload the file to S3
             $result = $this->_s3Client->putObject([
                 'Bucket' => AWS_S3_BUCKET_NAME,

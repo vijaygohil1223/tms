@@ -7797,7 +7797,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.customFileDownload = function(fileURL, fileName){
         console.log('fileURL', fileURL)
         const isAwsUrl = fileURL.startsWith('https://');
-
+        notification('Downloading started, please wait...', 'information');
+        
         if (!isAwsUrl) {
             const tempPostData = { filename: fileURL, fileDownloadName: fileName };
             
@@ -7825,6 +7826,27 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             fileDownloadByDynamicUrl(fileURL, fileName);
         }
     }
+    $scope.downloadNewFn = function(filename, originalFilename, is_s3bucketUrl) {
+        const baseUrl = "api/v1/downloadSignleFile";
+        const downloadUrl = `${baseUrl}?filename=${encodeURIComponent(filename)}&fileDownloadName=${encodeURIComponent(originalFilename)}&is_s3bucketUrl=${encodeURIComponent(is_s3bucketUrl)}`;
+        
+        // Optional: Perform a logging or pre-download request
+        $http.get(downloadUrl)
+            .catch(function(error) {
+                console.error('Error in pre-download request: ', error);
+                // Optional: notify user about the error
+            });
+    
+        // Trigger the download directly
+        setTimeout(() => {
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.target = '_blank';  // Open in a new tab or directly download
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }, 300);
+    };
 
     $scope.customDownloadSingleFolder = function(id, parentId, folderName){
         if(id){
@@ -8380,6 +8402,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.customFileDownload = function(fileURL, fileName){
         const isAwsUrl = fileURL.startsWith('https://');
+        notification('Downloading started, please wait...', 'information');
         if (!isAwsUrl) {
             const tempPostData = { filename: fileURL, fileDownloadName: fileName };
             
@@ -8404,6 +8427,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     }
+
+    $scope.downloadNewFn = function(filename, originalFilename, is_s3bucketUrl) {
+        const baseUrl = "api/v1/downloadSignleFile";
+        const downloadUrl = `${baseUrl}?filename=${encodeURIComponent(filename)}&fileDownloadName=${encodeURIComponent(originalFilename)}&is_s3bucketUrl=${encodeURIComponent(is_s3bucketUrl)}`;
+        
+        // Optional: Perform a logging or pre-download request
+        $http.get(downloadUrl)
+            .catch(function(error) {
+                console.error('Error in pre-download request: ', error);
+                // Optional: notify user about the error
+            });
+    
+        // Trigger the download directly
+        setTimeout(() => {
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.target = '_blank';  // Open in a new tab or directly download
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }, 300);
+    };
 
 
     $scope.addToCopy = function (fid) {

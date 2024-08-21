@@ -1347,43 +1347,90 @@ array(
     }
 
     public function downloadSingleFile($fileData) {
-        $fileUrl = 'https://dosina.s3.amazonaws.com/2024-08-06/local-tms-file_1722941281.pdf';
-        // Desired new name for the file
-        $newName = 'local-tms-file.pdf';
-
-        // Use `file_get_contents` to fetch the file content from the S3 URL
-        $fileContent = file_get_contents($fileUrl);
-
-        
-        // Check if file content was successfully fetched
-        if ($fileContent === FALSE) {
-            // Output an error if the file could not be fetched
-            http_response_code(500);
-            echo "Error: Unable to fetch the file.";
+        $basePath = realpath(DOCUMENT_ROOT . 'uploads/fileupload') . DIRECTORY_SEPARATOR;
+    
+        if (isset($_GET['filename'])) {
+            $file = basename($_GET['filename']);
+            $fileDownloadName = isset($_GET['fileDownloadName']) ? basename($_GET['fileDownloadName']) : $file;
+            $isS3bucketUrl = isset($_GET['is_s3bucketUrl']) && $_GET['is_s3bucketUrl'] == 1;
+            $fileBasePath = $isS3bucketUrl ? '' : $basePath;
+            $filePath = $fileBasePath . $file;
+    
+            if ($isS3bucketUrl) {
+                $awsFileName = $_GET['filename'];
+    
+                try {
+                    // Fetch file content
+                    $fileContent = file_get_contents($awsFileName);
+                    
+                    if ($fileContent === false) {
+                        throw new Exception('Failed to fetch file from URL.');
+                    }
+    
+                    // Get headers (consider using CURL for more robust handling)
+                    $headers = get_headers($awsFileName, 1);
+                    $contentType = isset($headers['Content-Type']) ? $headers['Content-Type'] : 'application/octet-stream';
+                    $contentLength = isset($headers['Content-Length']) ? $headers['Content-Length'] : strlen($fileContent);
+    
+                    // Set headers and output file content
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: ' . $contentType);
+                    header('Content-Disposition: attachment; filename="' . $fileDownloadName . '"');
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate');
+                    header('Pragma: public');
+                    header('Content-Length: ' . $contentLength);
+                    
+                    ob_end_clean();
+                    echo $fileContent;
+                    exit;
+                } catch (Exception $e) {
+                    // Handle exceptions and return a meaningful error
+                    header('Content-Type: application/json');
+                    http_response_code(500);
+                    echo json_encode(['error' => $e->getMessage()]);
+                    exit;
+                }
+            } else {
+                // Handle local file download
+                $realFilePath = realpath($filePath);
+    
+                if ($realFilePath && strpos($realFilePath, $basePath) === 0 && file_exists($realFilePath)) {
+                    $fileMimeType = mime_content_type($realFilePath) ?: 'application/octet-stream';
+    
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: ' . $fileMimeType);
+                    header('Content-Disposition: attachment; filename="' . $fileDownloadName . '"');
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate');
+                    header('Pragma: public');
+                    header('Content-Length: ' . filesize($realFilePath));
+    
+                    ob_end_clean();
+                    readfile($realFilePath);
+                    exit;
+                } else {
+                    // Return a 404 error if the file doesn't exist or access is denied
+                    header('Content-Type: application/json');
+                    http_response_code(404);
+                    echo json_encode(['error' => 'File not found or access denied.']);
+                    exit;
+                }
+            }
+        } else {
+            // Return a 400 error if no filename is provided
+            header('Content-Type: application/json');
+            http_response_code(400);
+            echo json_encode(['error' => 'Filename not provided.']);
             exit;
         }
-        // Get the content type of the file from the headers
-        $headers = get_headers($fileUrl, 1);
-        $contentType = isset($headers['Content-Type']) ? $headers['Content-Type'] : 'application/octet-stream';
-        
-        // Set headers to force the browser to download the file with the new name
-        header('Content-Description: File Transfer');
-        header('Content-Type: ' . $contentType);
-        header('Content-Disposition: attachment; filename="' . basename($newName) . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . strlen($fileContent));
-
-        // Output the file content
-        echo $fileContent;
-        exit;
     }
+    
 
     public function getAWSImageMigrate() {
         // Fetch records without AWS path
         $folderName = 'aug_'.time().'/';
-        $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id = 1  AND size LIKE "%MB%" limit 50 ");
+        $getNoramalImages = $this->_db->rawQuery("SELECT * FROM `tms_filemanager` WHERE `is_s3bucket` = 0 AND f_id = 1  limit 50 ");
         $awsFile = new awsFileupload();
         foreach ($getNoramalImages as $file) {
             //$filePath = 'http://tms.kanhasoftdev.com/uploads/fileupload/' . $file['name'];

@@ -583,8 +583,10 @@
                           <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
                         </span> -->
                         <span ng-if="category.f_id == 1 ">
-                          <a id="customdownload{{category.fmanager_id}}" 
-                            href="javascript:void(0)" ng-click="customFileDownload(category.name, category.original_filename)"> <i class="fa fa-download"></i> </a>
+                          <a id="customdownload{{display.fmanager_id}}" href="javascript:void(0)" ng-click="downloadNewFn(category.name, category.original_filename, category.is_s3bucket)"> <i class="fa fa-download"></i> </a>
+
+                          <!-- <a id="customdownload{{category.fmanager_id}}" 
+                            href="javascript:void(0)" ng-click="customFileDownload(category.name, category.original_filename)"> <i class="fa fa-download"></i> </a> -->
                           <!-- <a id="customdownload{{category.fmanager_id}}" 
                             href="uploads/fileupload/{{category.name}}" ng-if="!category.is_s3bucket" > <i class="fa fa-download"></i> </a> -->
                             <span style="margin-left:20px;">{{category.created_date | dateFormatDisplayFront }}</span>
@@ -718,17 +720,15 @@
           <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
         </span> -->
         <span ng-if="display.f_id == 1 ">
-          <!-- <a id="customdownload{{display.fmanager_id}}" 
-            href="http://localhost/tms/file-download-api.php?filename={{display.name}}&&filename={{display.original_filename}}" > <i class="fa fa-download"></i> </a> -->
-
           <a id="customdownload{{display.fmanager_id}}" 
-            href="javascript:void(0)" ng-click="customFileDownload(display.name, display.original_filename)"> <i class="fa fa-download"></i> </a>
+            href="javascript:void(0)" ng-click="downloadNewFn(display.name, display.original_filename, display.is_s3bucket)"> <i class="fa fa-download"></i> </a>  
+          
+          <!-- <a id="customdownload{{display.fmanager_id}}" 
+            href="javascript:void(0)" ng-click="customFileDownload(display.name, display.original_filename)"> <i class="fa fa-download"></i> </a> -->
           <!-- <a id="customdownload{{display.fmanager_id}}" 
             href="uploads/fileupload/{{display.name}}" ng-if="!display.is_s3bucket" > <i class="fa fa-download"></i> </a>
             <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span> -->
         </span>
-      
-          
 
           <a id="download{{display.fmanager_id}}" style="display:none;"
             href="{{display.name}}" ng-if="display.is_s3bucket">Download</a>

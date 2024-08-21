@@ -256,25 +256,25 @@
                             <div class="panel panel-default panel-labeled">
                                 <div class="panel-body">
                                     <h4 style="text-align: center;color: #636e7a;">Login Detail</h4>
-                                    <table class="table table-striped b-t b-b table-bordered">
+                                    <table class="table table-striped b-t b-b table-bordered" datatable="ng">
                                         <thead>
-                                            <th>#</th>
+                                            <th>Description</th>
                                             <th>User Name</th>
                                             <th>Password</th>
                                             <th>Website</th>
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="client in clientlist1">
-                                                <td ng-bind="{{$index + 1}}"></td>
+                                                <!-- <td ng-bind="{{$index + 1}}"></td> -->
+                                                <td >{{client.vDescription}}</td>
                                                 <td>{{client.vEmail}}
                                                     <!-- <a href="javascript:void(0)" ng-click="generalEmail(client.vEmail)"><i class="fa fa-envelope-o" aria-hidden="true"></i></a> -->
                                                 </td>
                                                 <td>
-                                                    <span id="passShow{{$index}}"
-                                                        class="hiddenField">{{client.vPassword}}
+                                                    <span id="passShow{{$index}}">{{client.vPassword}}
                                                     </span>
 
-                                                    <span id="passHide{{$index}}">
+                                                    <span id="passHide{{$index}}" class="hiddenField">
                                                         <span class="dotCircle"></span>
                                                         <span class="dotCircle"></span>
                                                         <span class="dotCircle"></span>
@@ -286,16 +286,21 @@
                                                 </td>
 
                                                 <td>
-                                                    <a href="{{client.vWebsite}}" style="color:#4ba0c3"
+                                                    <a href="{{client.vWebsite}}" style="color:#4ba0c3; word-break: break-all;"
                                                         target="_blank">{{client.vWebsite}}</a>
                                                     <!-- <a href="http://{{client.vWebsite}}" style="color:#4ba0c3"
                                                         target="_blank">{{client.vWebsite}}</a> -->
                                                 </td>
                                             </tr>
-                                            <tr ng-show="!clientlist1.length">
+                                            <!-- <tr ng-show="!clientlist1.length">
+                                                <td colspan="3" ng-bind="dataNotFound"></td>
+                                            </tr> -->
+                                        </tbody>
+                                        <tfoot>
+                                            <tr ng-if="!clientlist1.length">
                                                 <td colspan="3" ng-bind="dataNotFound"></td>
                                             </tr>
-                                        </tbody>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
