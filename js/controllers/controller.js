@@ -12071,6 +12071,83 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }    
         }
     }
+
+    //save absent internal data Ekt
+    $scope.abDate = "";
+    $scope.abscentList = function () {
+      setTimeout(() => {
+        $scope.abscentHolidayData = $scope.userprofiledata?.is_available ? JSON.parse($scope.userprofiledata.is_available) : [];
+      }, 1000);
+    };
+
+    $scope.dateFormatGlobal =
+      $window.localStorage.getItem("global_dateFormat");
+
+    $scope.abscentList();
+
+    $scope.absentPost = {};
+
+    $scope.saveAbsent = function () {
+      var abDate = $scope.absentPost.abDate;
+
+      if (!abDate) {
+        notification("Please enter from date", "warning");
+        return false;
+      }
+      if (abDate) {
+        var abDateTo = $scope.absentPost.abDateTo  ? $scope.absentPost.abDateTo : abDate;
+        let date1 = moment(abDate, $scope.dateFormatGlobal).format(
+          "YYYY-MM-DD"
+        );
+        let date2 = moment(abDateTo, $scope.dateFormatGlobal).format(
+          "YYYY-MM-DD"
+        );
+
+        let multiDay = Date.parse(date1) < Date.parse(date2) ? 1 : 0;
+        abDateTo =
+          Date.parse(date1) > Date.parse(date2)  ? abDate : $scope.absentPost.abDateTo;
+        var obj = {
+          dateFrom: date1,
+          dateTo: date2,
+          multiDay: multiDay,
+          remarks: $scope.absentPost.remarks ? $scope.absentPost.remarks : "",
+          isHoliday: $scope.absentPost.isHoliday ? 1 : 0,
+        };
+        $scope.postData = {};
+        //$scope.abscentHolidayData.push(obj);
+        $scope.pushObj = $scope.abscentHolidayData;
+        $scope.pushObj.push(obj);
+        $scope.postData.is_available = JSON.stringify($scope.pushObj);
+
+        rest.path = "updateAbscentDate";
+        rest.put($scope.postData).success(function (data) {
+            if (data && data.status == 200) {
+              $scope.absentPost = {};
+            }
+          }).error(errorCallback);
+      }
+    };
+
+      //remove absent date
+      $scope.removeRowDates = function (indexToRemove) {
+        if (
+          indexToRemove >= 0 &&
+          indexToRemove < $scope.abscentHolidayData.length
+        ) {
+          $scope.abscentHolidayData.splice(indexToRemove, 1); // Remove 1 element at the specified index
+
+          const postReminData = {};
+          postReminData.is_available = JSON.stringify(
+            $scope.abscentHolidayData
+          );
+          rest.path = "updateAbscentDate";
+          rest
+            .put(postReminData)
+            .success(function (data) {})
+            .error(errorCallback);
+        }
+      };
+
 }).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
     
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
