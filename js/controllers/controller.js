@@ -19722,7 +19722,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
             "paid_amount": $scope.invoiceList[0].paid_amount,
-            "statusId": $scope.invoiceList[0].invoice_id,
+            "statusId": $scope.invoiceList[0].invc_Id,
             "Currency": $scope.invoiceList[0].Currency
         };
         var modalInstance = $uibModal.open({
@@ -21067,7 +21067,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     
-
     $scope.ok = function (frmId) {
         // if any change in amount box and then select to completed replace value in box amount
         // to complete ampunt
@@ -21105,9 +21104,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var invPaidAmount = numberFormatCommaToPoint($scope.inv.paid_amount);
                 console.log('invPaidAmount', invPaidAmount)
                 $scope.inv.paid_amount = parseFloat(invPaidAmount);
-                console.log('$scope.inv.paid_amount', $scope.inv.paid_amount)
+               
                 $scope.inv.partPaid = $scope.inv.paid_amount;
                 $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
+                console.log('$scope.inv.paid_amount', items.paid_amount)
                 if ($scope.inv.paid_amount == items.Invoice_cost) {
                     $scope.inv.invoice_status = "Completed";
                 } else {
@@ -34598,8 +34598,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 
                 if(! val?.credit_note_id){
-                    if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding')  {
+                    if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding' || val.invoice_status == 'Partly Paid')  {
                         $scope.openInvcCount++;
+                        val.Invoice_cost = val.Invoice_cost - val.invoice_partial_paid_total
                         $scope.openInvc.push(val);
                     }
                     if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
