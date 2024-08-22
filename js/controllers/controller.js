@@ -12072,7 +12072,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-<<<<<<< HEAD
     //save absent internal data Ekt
     $scope.abDate = "";
     $scope.abscentList = function () {
@@ -12128,7 +12127,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
           }).error(errorCallback);
       }
     };
-=======
     
     if ($routeParams.id) {
         rest.path = "viewExternalget/" + $routeParams.id;
@@ -12271,7 +12269,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             .error(errorCallback);
         }
       };
->>>>>>> 7c3087e4f4167f1a371505e2975805594691b99e
 
       //remove absent date
       $scope.removeRowDates = function (indexToRemove) {
@@ -12292,10 +12289,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             .error(errorCallback);
         }
       };
-<<<<<<< HEAD
 
-=======
->>>>>>> 7c3087e4f4167f1a371505e2975805594691b99e
 }).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
     
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
