@@ -18226,12 +18226,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var jobId = angular.element('#orderCheckData' + i).val();
                         $routeParams.id = jobId;
                         rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
-                        rest.get().success(function (data) {
-                            notification('Status updated successfully', 'success');
-                            $route.reload();
-                        }).error(errorCallback);
+                        
                     }
                 }
+                rest.get().success(function () {
+                    notification('Status updated successfully', 'success');
+                    $route.reload();
+                }).error(errorCallback);
                 break;
             case "Remove selection":
                 // bootbox.confirm("Are you sure you want to delete?", function(result) {
