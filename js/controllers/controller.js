@@ -12072,6 +12072,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+<<<<<<< HEAD
     //save absent internal data Ekt
     $scope.abDate = "";
     $scope.abscentList = function () {
@@ -12127,6 +12128,150 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
           }).error(errorCallback);
       }
     };
+=======
+    
+    if ($routeParams.id) {
+        rest.path = "viewExternalget/" + $routeParams.id;
+        rest
+          .get()
+          .success(function (data) {
+            console.log("external-data", data);
+            $scope.viewExternalCommunicational = data;
+            //Display Mobile Number
+            var CountryCode = JSON.parse(data.iMobile).countryTitle;
+            var displayCode = "(+" + CountryCode.split("+")[1] + ")";
+            $scope.viewExternalCommunicational.iMobile =
+              displayCode + " " + JSON.parse(data.iMobile).mobileNumber;
+
+            //Count Age
+            $scope.Age = getAge(
+              $scope.viewExternalCommunicational.dtBirthDate.split("-")[0],
+              $scope.viewExternalCommunicational.dtBirthDate.split("-")[1],
+              $scope.viewExternalCommunicational.dtBirthDate.split("-")[2]
+            );
+
+            $scope.viewExternalCommunicational.dtCreatedDate = moment(
+              $scope.viewExternalCommunicational.dtCreatedDate
+            ).format($window.localStorage.getItem("global_dateFormat"));
+            $scope.viewExternalCommunicational.dtBirthDate = moment(
+              $scope.viewExternalCommunicational.dtBirthDate
+            ).format($window.localStorage.getItem("global_dateFormat"));
+
+            var address = [];
+
+            address.push($scope.viewExternalCommunicational.vAddress1);
+
+            angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
+              //angular.element('#' + val.id).html(val.value);
+              try {
+                switch (val.id) {
+                  case "address1_locality":
+                    $scope.externalResCity = val?.value;
+                    break;
+                  case "address1_administrative_area_level_1":
+                    $scope.externalResState = val?.value;
+                    break;
+                  case "address1_country":
+                    $scope.externalResCountry = (val?.value).split(",").pop();
+                    break;
+                  case "address1_postal_code":
+                    $scope.externalResPostalcode = val?.value;
+                    break;
+                }
+              } catch (error) {
+                console.log("error", error);
+              }
+              if (val.id !== "address1_street_number") {
+                address.push(val.value);
+              }
+            });
+            angular
+              .element("#address1")
+              .text($.grep(address, Boolean).join(", "));
+          })
+          .error(errorCallback);
+
+        rest.path = "PriceListExternalEditgetone/" + $routeParams.id;
+        rest.get().success(function (data) {
+          if (data) {
+            $scope.price = data;
+            var currency = data.currancy_id.split(",");
+            $scope.currencySymbol = currency[1];
+            $scope.currencyCode = currency[0];
+            $routeParams.Iuser_Id = $scope.price.iuserId;
+            $scope.translate = JSON.parse(data["translation"]);
+            $scope.proofreading = JSON.parse(data["proofreading"]);
+            $scope.tep = JSON.parse(data["tep"]);
+          }
+        });
+      }
+
+      //save absent internal data
+      $scope.abDate = "";
+      $scope.abscentList = function () {
+        setTimeout(() => {
+          $scope.abscentHolidayData = $scope.viewExternalCommunicational
+            .is_available
+            ? JSON.parse($scope.viewExternalCommunicational.is_available)
+            : [];
+        }, 1000);
+      };
+
+      $scope.dateFormatGlobal =
+        $window.localStorage.getItem("global_dateFormat");
+
+      $scope.abscentList();
+
+      $scope.absentPost = {};
+
+      $scope.saveAbsent = function () {
+        var abDate = $scope.absentPost.abDate;
+
+        if (!abDate) {
+          notification("Please enter from date", "warning");
+          return false;
+        }
+        if (abDate) {
+          var abDateTo = $scope.absentPost.abDateTo
+            ? $scope.absentPost.abDateTo
+            : abDate;
+          let date1 = moment(abDate, $scope.dateFormatGlobal).format(
+            "YYYY-MM-DD"
+          );
+          let date2 = moment(abDateTo, $scope.dateFormatGlobal).format(
+            "YYYY-MM-DD"
+          );
+
+          let multiDay = Date.parse(date1) < Date.parse(date2) ? 1 : 0;
+          abDateTo =
+            Date.parse(date1) > Date.parse(date2)
+              ? abDate
+              : $scope.absentPost.abDateTo;
+          var obj = {
+            dateFrom: date1,
+            dateTo: date2,
+            multiDay: multiDay,
+            remarks: $scope.absentPost.remarks ? $scope.absentPost.remarks : "",
+            isHoliday: $scope.absentPost.isHoliday ? 1 : 0,
+          };
+          $scope.postData = {};
+          //$scope.abscentHolidayData.push(obj);
+          $scope.pushObj = $scope.abscentHolidayData;
+          $scope.pushObj.push(obj);
+          $scope.postData.is_available = JSON.stringify($scope.pushObj);
+
+          rest.path = "updateAbscentDate";
+          rest
+            .put($scope.postData)
+            .success(function (data) {
+              if (data && data.status == 200) {
+                $scope.absentPost = {};
+              }
+            })
+            .error(errorCallback);
+        }
+      };
+>>>>>>> 7c3087e4f4167f1a371505e2975805594691b99e
 
       //remove absent date
       $scope.removeRowDates = function (indexToRemove) {
@@ -12147,7 +12292,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             .error(errorCallback);
         }
       };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7c3087e4f4167f1a371505e2975805594691b99e
 }).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
     
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
