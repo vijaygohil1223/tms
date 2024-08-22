@@ -183,6 +183,90 @@
                             </table>
                         </div>
                     </tab>
+                    <tab index="1">
+                        <tab-heading>
+                            <i class="fa fa-ban"></i>
+                            <span>Absent List</span>
+                        </tab-heading>
+                        <div class="col-sm-6">
+                            <div class="panel panel-default" id="scrollToNew">
+                                <div class="panel-heading font-bold">
+                                    <h4> Absent/Holiday List </h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped b-t b-b">
+                                        <thead>
+                                            <th>#</th>
+                                            <th>From Date</th>
+                                            <th>To Date</th>
+                                            <th>Holiday</th>
+                                            <th>Remark</th>
+                                            <th> </th>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="abs in abscentHolidayData track by $index">
+                                                <td ng-bind="$index + 1"></td>
+                                                <td> {{ abs.dateFrom | globalDtFormat }} </td>
+                                                <td> {{ abs.dateTo | globalDtFormat }} </td>
+                                                <td> 
+                                                    <span ng-if="abs.isHoliday"> <i class="fa fa-check"></i> </span>
+                                                </td>
+                                                <td> {{ abs.remarks }} </td>
+                                                <td>
+                                                    <a ng-click="removeRowDates($index)"> <i class="fa fa-remove"> </i> </a>
+                                                </td>
+                                            </tr>
+                                            <tr ng-show="!abscentHolidayData.length">
+                                                <td colspan="5" ng-bind="dataNotFound"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <form id="absent-form" >
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading font-bold">
+                                                <h4>Add Absent/Holiday</h4>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>From Date</label>
+                                                        <input type="text" class="form-control" ng-datepicker2 ng-model="absentPost.abDate" id="abDate" onkeydown="return false" placeholder="From Date" required />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label>To Date</label>
+                                                        <input type="text" class="form-control" ng-datepicker2 ng-model="absentPost.abDateTo" id="abDateTo" onkeydown="return false" placeholder="To Date (Optional)" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8">
+                                                    <div class="form-group">
+                                                        <label class="control-label" style="margin-right:20px;"> Remarks </label>
+                                                        <textarea class="form-control" name="remarks" ng-model="absentPost.remarks" style="resize: none;"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group" style="margin-top: 35px;">
+                                                        <label class="d-flex"> <input type="checkbox" class="form-control" ng-model="absentPost.isHoliday" style="height:25px;" /> <span>Holiday</span> </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12" style="margin-top:15px;">
+                                                    <a class="btn btn-info pull-right" ng-click="saveAbsent('absent-form')" > Save</a>
+                                                    <!-- <button type="submit">Submit Form</button> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </tab>
                 </tabset>
             </div>
             <!-- footer copy right -->

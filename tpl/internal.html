@@ -114,6 +114,31 @@
                                                                 name="vResourcePosition"
                                                                 ng-model="userprofiledata.vResourcePosition" required />
                                                         </div>
+
+                                                        <div class="form-group" style="display: inline-block;">
+                                                            <label>Absent <a ng-click="clearAbsentDate()"title="Clear Field" style="margin-left:5px;"> <i class="glyphicon glyphicon-refresh"></i> </a></label>
+                                                            <!-- <input type="text" class="form-control" class="hasDatepicker" id="multidatePick" ng-multidate name="multidatePick" ng-model="userprofiledata.is_available" onkeydown="return false" autocomplete="off"> -->
+                                                            <div class="d-flex">
+                                                                <div class="col-sm-5 pl-0">  
+                                                                    <input class="form-control" ng-datepicker2 ng-model="abDate" id="abDate" onkeydown="return false" placeholder="From Date"/> 
+                                                                </div>
+                                                                <div class="col-sm-5 pl-0">  
+                                                                    <input class="form-control" ng-datepicker2 ng-model="abDateTo" id="abDateTo" onkeydown="return false" placeholder="To Date (Optional)" /> 
+                                                                </div>
+                                                                <div class="col-sm-2" style="padding-left:initial;">  
+                                                                    <a class="btn btn-info" style="padding:7px 12px;" ng-click="addAbsDate(abDate, abDateTo)"> OK </a>
+                                                                </div>    
+                                                            </div>
+                                                            <div style="margin-top:10px;" >
+                                                                <ul style="list-style:none;margin-left:-40px;">
+                                                                    <li ng-repeat="dtlist in abscentDateArr track by $index" class="datebadge" style="float: left;"> 
+                                                                        <span class="badge " id="datespan{{$index}}"> 
+                                                                            {{dtlist.dateFrom}} <span ng-if="dtlist.multiDay==1"> To {{dtlist.dateTo}} </span> 
+                                                                        <i ng-click="removeAbscentDateArr($index,dtlist)" class="fa fa-close" style="padding:5px;cursor: pointer;"></i></span> 
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
                                                         <!-- <div class="form-group" ng-show="!userprofiledata.iUserId">
                                                         <label>Department</label>
                                                         <input type="text" ng-select2-usertype data-typeid="2" id="vResourceType" class="form-control" name="vResourceType" ng-model="userprofiledata.vResourceType"/>
@@ -122,29 +147,31 @@
                                                         <label>Department</label>
                                                         <input type="text" ng-select2-usertype data-typeid="2" id="vResourceType" class="form-control" name="vResourceType"  ng-model="userprofiledata.vResourceType"/>
                                                     </div> -->
-                                                        <div class="form-group">
-                                                            <div class="col-sm-8">
-                                                                <label>Profile Picture</label>
-                                                                <input type="file"
-                                                                    ng-model="userprofiledata.vProfilePic"
-                                                                    ng-file-select="onFileSelect($files)" />
-                                                                <!-- <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)"  ng-required='!imageSrc && !userprofiledata.vProfilePic'/> -->
-                                                            </div>
-                                                            <div class="col-sm-4">
-                                                                <div class="thumb-info mb-md">
-                                                                    <img id="new_profile_pic" ng-show="imgshow"
-                                                                        ng-if="userprofiledata.vProfilePic != undefined"
-                                                                        ng-src="uploads/profilePic/{{userprofiledata.vProfilePic}}"
-                                                                        class="img-thumbnail" alt="Add a Picture">
-                                                                    <img id="new_profile_pic" ng-show="imgshow"
-                                                                        ng-if="userprofiledata.vProfilePic == undefined"
-                                                                        ng-src="assets/img/blank.png"
-                                                                        class="img-thumbnail" alt="Add a Picture">
-                                                                    <img id="new_profile_pic" ng-show="!imgshow"
-                                                                        ng-src="{{imageSrc ? imageSrc : 'assets/img/blank.png'}}"
-                                                                        class="img-thumbnail" alt="Add a Picture">
+                                                        <div class="form-group" >
+                                                            <div class="row">
+                                                                <div class="col-sm-8" style="margin-top: 10px;">
+                                                                    <label>Profile Picture</label>
+                                                                    <input type="file"
+                                                                        ng-model="userprofiledata.vProfilePic"
+                                                                        ng-file-select="onFileSelect($files)" />
+                                                                    <!-- <input type="file"  ng-model="userprofiledata.vProfilePic" ng-file-select="onFileSelect($files)"  ng-required='!imageSrc && !userprofiledata.vProfilePic'/> -->
                                                                 </div>
-                                                            </div>
+                                                                <div class="col-sm-4" style="margin-top: 15px;">
+                                                                    <div class="thumb-info mb-md">
+                                                                        <img id="new_profile_pic" ng-show="imgshow"
+                                                                            ng-if="userprofiledata.vProfilePic != undefined"
+                                                                            ng-src="uploads/profilePic/{{userprofiledata.vProfilePic}}"
+                                                                            class="img-thumbnail" alt="Add a Picture">
+                                                                        <img id="new_profile_pic" ng-show="imgshow"
+                                                                            ng-if="userprofiledata.vProfilePic == undefined"
+                                                                            ng-src="assets/img/blank.png"
+                                                                            class="img-thumbnail" alt="Add a Picture">
+                                                                        <img id="new_profile_pic" ng-show="!imgshow"
+                                                                            ng-src="{{imageSrc ? imageSrc : 'assets/img/blank.png'}}"
+                                                                            class="img-thumbnail" alt="Add a Picture">
+                                                                    </div>
+                                                                </div>
+                                                            </div>  
                                                         </div>
                                                     </div>
                                                 </div>
