@@ -337,9 +337,9 @@ class item {
             $this->_db->where('fmanager_id',$data['fmanager_id']);
             $info = $this->_db->delete('tms_filemanager');
 
-            $this->_db->where('order_id',$id);
-            $this->_db->where('item_number',0);
-            $info = $this->_db->delete('tms_items');
+            // $this->_db->where('order_id',$id);
+            // $this->_db->where('item_number',0);
+            // $info = $this->_db->delete('tms_items');
         } else {
             $info = "No Item";
         }

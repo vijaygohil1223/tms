@@ -1358,21 +1358,25 @@ array(
     
             if ($isS3bucketUrl) {
                 $awsFileName = $_GET['filename'];
-    
+
                 try {
-                    // Fetch file content
-                    $fileContent = file_get_contents($awsFileName);
-                    
-                    if ($fileContent === false) {
-                        throw new Exception('Failed to fetch file from URL.');
+                    // Open the file for reading
+                    $handle = fopen($awsFileName, 'rb');
+                    if ($handle === false) {
+                        throw new Exception('Failed to open file for reading.');
                     }
-    
-                    // Get headers (consider using CURL for more robust handling)
+                
+                    // Get headers
                     $headers = get_headers($awsFileName, 1);
                     $contentType = isset($headers['Content-Type']) ? $headers['Content-Type'] : 'application/octet-stream';
-                    $contentLength = isset($headers['Content-Length']) ? $headers['Content-Length'] : strlen($fileContent);
-    
-                    // Set headers and output file content
+                    $contentLength = isset($headers['Content-Length']) ? $headers['Content-Length'] : filesize($awsFileName);
+                
+                    // Clear output buffering
+                    if (ob_get_level()) {
+                        ob_end_clean();
+                    }
+                
+                    // Set headers
                     header('Content-Description: File Transfer');
                     header('Content-Type: ' . $contentType);
                     header('Content-Disposition: attachment; filename="' . $fileDownloadName . '"');
@@ -1380,17 +1384,22 @@ array(
                     header('Cache-Control: must-revalidate');
                     header('Pragma: public');
                     header('Content-Length: ' . $contentLength);
-                    
-                    ob_end_clean();
-                    echo $fileContent;
+                
+                    // Output the file directly to the browser
+                    fpassthru($handle);
+                    fclose($handle);
                     exit;
+                
                 } catch (Exception $e) {
-                    // Handle exceptions and return a meaningful error
+                    if (ob_get_level()) {
+                        ob_end_clean();
+                    }
                     header('Content-Type: application/json');
                     http_response_code(500);
                     echo json_encode(['error' => $e->getMessage()]);
                     exit;
                 }
+
             } else {
                 // Handle local file download
                 $realFilePath = realpath($filePath);

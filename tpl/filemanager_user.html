@@ -407,6 +407,22 @@
     margin: 0 15px;
   }
 
+  /* temp */
+  .progress {
+    height: 20px;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: #4caf50;
+    text-align: center;
+    color: white;
+    height: 100%;
+}
+
+
 </style>
 <div id="content" role="main">
   <div class="app-content-body ">
@@ -481,7 +497,15 @@
         <!-- loader image -->
         <div ng-if="showLoder" id="loader"></div>
 
-
+        <!-- <div>
+          <div ng-show="showLoder">
+            <p>Downloading files... {{ downloadProgress }}%</p>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: {{ downloadProgress }}%;" aria-valuenow="{{ downloadProgress }}" aria-valuemin="0" aria-valuemax="100">{{ downloadProgress }}%</div>
+            </div>
+        </div> -->
+        
+        </div>
         <div ng-repeat="display in displayfolder | orderBy:'f_id' | filter:filters.search" class="fileshow parent-folder">
           <!-- Folder display -->
           <!-- icon condion ng-if="rootfolder==display.parent_id" -->

@@ -6847,8 +6847,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $timeout(function () {
         $scope.addToDownload = function (fname, fOriginalName ) {
-            downloadFileByAtag(fname, fOriginalName)
-            
+            //downloadFileByAtag(fname, fOriginalName)
+            const isAwsUrl = (fname).startsWith('https://');
+            const isAwsUrl2 = isAwsUrl ? 1 : 0;
+            $scope.downloadNewFn(fname, fOriginalName, isAwsUrl2)
         }
     }, 500);
 
@@ -7257,6 +7259,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 
                                 files.forEach(file => {
                                     fileDownloadByDynamicUrl(file.url , file.name)
+                                    // Need to solve download process for multiple files
+                                    // const isAwsUrl = (file.url).startsWith('https://');
+                                    // const isAwsUrl2 = isAwsUrl ? 1 : 0;
+                                    // $scope.downloadNewFn(file.url, file.name, isAwsUrl2)
+
                                     // Create a temporary <a> element
                                     // var a = document.createElement('a');
                                     // a.download = file.name;
@@ -7280,8 +7287,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             
                             }else{
                                 
-                                fileDownloadByDynamicUrl($itemScope.display.name , $itemScope.display.original_filename)
-                            
+                                //fileDownloadByDynamicUrl($itemScope.display.name , $itemScope.display.original_filename)
+                                const isAwsUrl = ($itemScope.display.name).startsWith('https://');
+                                const isAwsUrl2 = isAwsUrl ? 1 : 0;
+                                $scope.downloadNewFn($itemScope.display.name, $itemScope.display.original_filename, isAwsUrl2)
+
                                 // var a = document.createElement('a');
                                 // document.body.appendChild(a);
                                 // //a.download = $itemScope.display.name;
@@ -8396,7 +8406,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $timeout(function () {
         $scope.addToDownload = function (fname, fOriginalName ) {
-            downloadFileByAtag(fname, fOriginalName)
+            //downloadFileByAtag(fname, fOriginalName)
+            const isAwsUrl = (fname).startsWith('https://');
+            const isAwsUrl2 = isAwsUrl ? 1 : 0;
+            $scope.downloadNewFn(fname, fOriginalName, isAwsUrl2)
         }
     }, 500);
 
@@ -8868,9 +8881,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
 
                             if (folderId !== undefined) {
+                                $scope.downloadProgress = 0;
                                 $scope.showLoder = true;
                                 rest.path = 'filemanagerfolderDownload/' + folderId;
                                 rest.get().then(function(response) {
+                                    console.log('response=====>', response)
                                     $scope.downloadAllfile = response.data;
                                     var zipdwnld = new JSZip();
                                     var fileUrls = [];
@@ -8921,13 +8936,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             $route.reload();
                                         });
                                     } else {
-                                        var filePromises = fileUrls.map(function(url) {
+                                        var filePromises = fileUrls.map(function(url, index) {
                                             return $q(function(resolve, reject) {
                                                 JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
                                                     if (err) {
                                                         $scope.showLoder = false;
                                                         return reject(err);
                                                     }
+                                                    $scope.downloadProgress = Math.round((index + 1) / fileUrls.length * 100);
+                    
                                                     resolve({
                                                         url: url,
                                                         data: data
