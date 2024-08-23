@@ -21108,12 +21108,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     console.log('items-popup',items )
     
     if (items.paid_amount == 0) {
-        $scope.dueAmount = items.Invoice_cost;
-        $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
+        // $scope.dueAmount = items.Invoice_cost;
+        // $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
     } else {
-        $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
-        $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
-        $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
+        // $scope.dueAmount = parseFloat(items.Invoice_cost) - parseFloat(items.paid_amount);
+        // $scope.dueAmount = parseFloat($scope.dueAmount.toFixed(2));
+        // $scope.dueAmount = $filter('customNumber')($scope.dueAmount);
     }
 
     function compareDatesDescending(a, b) {
@@ -21123,13 +21123,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     //$scope.created_date = $filter('dateFormatDisplayFront')(moment().format('YYYY-MM-DD HH:mm:ss'));
     //console.log('CurrentDate', $scope.created_date)
+    $scope.inv = {};
+    $scope.inv.paid_amount = 0;
     $scope.getInvoicePartPayments = function () {
         rest.path = "getClientInvoicePartPayments/" + items.statusId;
         rest.get().success(function (partPayments) {
             partPayments.sort(compareDatesDescending)
+            
+            const pendingAmount = partPayments.reduce(function(total, payment) {
+                return total + payment.invoice_partial_paid_amount;
+            }, 0);
+    
+            $scope.dueAmount = $scope.totalAmount - pendingAmount;
+            $scope.dueAmount = $filter('customNumber')($scope.dueAmount); 
+            $scope.inv.paid_amount = $scope.dueAmount;   
             $scope.partPaymentList = partPayments;
         });
     }
+
+    $scope.getTotalPartialPaidAmount = function() {
+        return $scope.partPaymentList?.reduce(function(total, payment) {
+            return total + payment.invoice_partial_paid_amount;
+        }, 0);
+    };
+
+    var pendingAmountData = parseFloat($scope.totalAmount) + parseFloat($scope.getTotalPartialPaidAmount())
+
+
     $scope.getInvoicePartPayments();
 
     $scope.statusChange = function (status) {
@@ -21143,6 +21163,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     
     $scope.ok = function (frmId) {
+        console.log("ekta");
         // if any change in amount box and then select to completed replace value in box amount
         // to complete ampunt
         if ($scope.closeAmount) {
@@ -21154,7 +21175,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
         var checkHireamount = parseFloat($scope.inv.paid_amount) + parseFloat($scope.amountToPaid);
-
+        var amountData = parseFloat($scope.totalAmount) - parseFloat($scope.getTotalPartialPaidAmount());    
+        var pendingAmountData = parseFloat($scope.totalAmount) + parseFloat($scope.getTotalPartialPaidAmount())
         if (angular.element('#' + frmId).valid()) {
 
             if ($scope.inv.paid_amount == undefined) {
@@ -21168,7 +21190,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else if ($scope.inv.paid_amount == 0) {
                 notification("Zero amount not allowed", 'error');
                 return false;
-            } else {
+            } else if(parseFloat($scope.inv.paid_amount) > amountData){
+                notification("Pleas select amount less then Pending Amount", 'error');
+                return false;
+            }else {
                 
                 $scope.inv.created_date = originalDateFormatNew($scope.created_date);
                 $scope.inv.created_date = moment($scope.inv.created_date).format('YYYY-MM-DD HH:mm:ss');
@@ -21177,12 +21202,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.inv.paid_date = date;
                 
                 var invPaidAmount = numberFormatCommaToPoint($scope.inv.paid_amount);
-                console.log('invPaidAmount', invPaidAmount)
+                
                 $scope.inv.paid_amount = parseFloat(invPaidAmount);
-               
+                // $scope.inv.paid_amount = parseFloat(invPaidAmount) + parseFloat($scope.getTotalPartialPaidAmount());
+
+                $scope.getTotalPartialPaidAmount = function() {
+                    return $scope.partPaymentList.reduce(function(total, payment) {
+                        return total + payment.invoice_partial_paid_amount;
+                    }, 0);
+                };
+                
+                var totalPartialPaidAmount = $scope.getTotalPartialPaidAmount();
                 $scope.inv.partPaid = $scope.inv.paid_amount;
                 $scope.inv.paid_amount = $scope.inv.paid_amount + items.paid_amount;
-                console.log('$scope.inv.paid_amount', items.paid_amount)
                 if ($scope.inv.paid_amount == items.Invoice_cost) {
                     $scope.inv.invoice_status = "Completed";
                 } else {

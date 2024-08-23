@@ -388,7 +388,9 @@ td.table-data-text {
       <div class="row">
         <div id="toAddEleAfterDwonload" ng-show="viewBtn"></div>
         <div class="row" style="margin-top:20px;" ng-show="viewBtn">
-          <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft' && (invoiceDetail.invoice_status != 'Completed' || invoiceDetail.invoice_status != 'Paid') "
+          <!-- <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft' && (invoiceDetail.invoice_status != 'Completed' || invoiceDetail.invoice_status != 'Paid') "
+            class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button> -->
+            <button id="btnPaid" ng-show="userRight==1 && invoiceDetail.invoice_type!='draft' && (invoiceDetail.invoice_status != 'Completed') "
             class="btn btn-info btnSave" ng-click="invoicePaid('invoice-form');"> Paid</button>
           <button id="btnMarkAsCancel" ng-show="userRight==1 && invoiceDetail.invoice_status=='Open'"
             class="btn btn-info btnSave" ng-click="invoiceCancel('invoice-form');">Mark as cancel</button>
