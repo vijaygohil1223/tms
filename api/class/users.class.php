@@ -1645,5 +1645,105 @@ array(
     
     }
 
+    public function usercustompage($post)
+    {
+        //print_r($post);
+        
+        // Get search, order, pagination parameters from the request
+        $searchValue = $post['search']['value'] ?? ''; // Search value
+        $orderColumnIndex = $post['order'][0]['column'] ?? 1; // Index of the column to sort
+        $orderDir = $post['order'][0]['dir'] ?? 'asc'; // Order direction (asc or desc)
+        $start = $post['start'] ?? 0; // Starting point for pagination
+        $length = $post['length'] ?? 20; // Number of records to fetch
+
+        $searchValue = $post['search'] ?? ''; // Search value
+        // Define the columns array corresponding to DataTables columns
+        $columns = [
+            0 => 'name',
+            1 => 'age',
+            2 => 'create_date',
+        ];
+
+        // Determine the column to sort by based on DataTables order index
+        $orderColumn = $columns[$orderColumnIndex] ?? 'create_date';
+
+        // Base query
+        $qry_invc = "SELECT iUserId AS id, vUserName AS name, iFkUserTypeId AS age, DATE_FORMAT(dtCreatedDate, '%Y-%m-%d') AS create_date FROM tms_users";
+
+        // Add search functionality
+        if (!empty($searchValue)) {
+            $qry_invc .= " WHERE vUserName LIKE '%" . $this->_db->escape($searchValue) . "%' OR DATE_FORMAT(dtCreatedDate, '%Y-%m-%d') LIKE '%" . $this->_db->escape($searchValue) . "%'";
+        }
+
+        // Order the results
+        $qry_invc .= " ORDER BY $orderColumn $orderDir";
+
+        // Paginate the results
+        $qry_invc .= " LIMIT $start, $length";
+
+        // Execute the query
+        $data = $this->_db->rawQuery($qry_invc);
+
+        // Get the total number of records without pagination or filtering
+        $totalRecordsQuery = "SELECT COUNT(*) AS count FROM tms_users";
+        $totalRecordsResult = $this->_db->rawQuery($totalRecordsQuery);
+        $totalRecords = $totalRecordsResult[0]['count'] ?? 0;
+
+        // Get the total number of records after filtering
+        $totalFilteredRecords = $totalRecords;
+        if (!empty($searchValue)) {
+            $filteredRecordsQuery = "SELECT COUNT(*) AS count FROM tms_users WHERE vUserName LIKE '%" . $this->_db->escape($searchValue) . "%' OR DATE_FORMAT(dtCreatedDate, '%Y-%m-%d') LIKE '%" . $this->_db->escape($searchValue) . "%'";
+            $filteredRecordsResult = $this->_db->rawQuery($filteredRecordsQuery);
+            $totalFilteredRecords = $filteredRecordsResult[0]['count'] ?? 0;
+        }
+
+        // Construct the response array
+        $response = [
+            //"draw" => 1,
+            "draw" => intval($post['draw']),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFilteredRecords,
+            "data" => $data
+        ];
+
+        // Return the response
+        return $response;
+    }
+
+    public function usercustompage__($post)
+    {
+
+        $searchValue = $_GET['search']['value'] ?? '';
+        $orderColumn = $_GET['order'][0]['column'] ?? 1; // Adjust order index due to the checkbox column
+        $orderDir = $_GET['order'][0]['dir'] ?? 'asc';
+        $start = $_GET['start'] ?? 0;
+        $length = $_GET['length'] ?? 50;
+
+        $qry_invc = " select iUserId  as id, vUserName as name, iFkUserTypeId as age, DATE_FORMAT(dtCreatedDate, '%Y-%m-%d') as create_date from tms_users ";
+        $data = $this->_db->rawQuery($qry_invc);
+
+        $qry2 = " SELECT COUNT(*) AS count FROM tms_users ";
+        $res_count = $this->_db->rawQuery($qry2);
+        $totalRecords = 20;
+        $totalFilteredRecords = 20;
+        // Prepare the response
+        // $response = [
+        //     "draw" => intval($_GET['draw']),
+        //     "recordsTotal" => $totalRecords,
+        //     "recordsFiltered" => $totalFilteredRecords,
+        //     "data" => $data
+        // ];
+
+        // Construct the response array
+        $response = [
+            "draw" => 1,
+            "recordsTotal" => 20,
+            "recordsFiltered" => 20,
+            "data" => $data
+        ];
+
+        return $response;
+    }
+
     
 }

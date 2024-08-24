@@ -11876,7 +11876,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Resource position END
 
 
-}).controller('userController', function ($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams) {
+}).controller('userController', function ($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams, DTOptionsBuilder, DTColumnBuilder, $http) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.setItem("contactUserId", " ");
@@ -11972,6 +11972,61 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     };
+
+    $scope.dtColumnsInternal = [
+        DTColumnBuilder.newColumn('name').withTitle('Name'),
+        DTColumnBuilder.newColumn('age').withTitle('Age'),
+        DTColumnBuilder.newColumn('create_date').withTitle('Date'),
+
+    ];
+
+    // Initialize DataTables
+    $scope.dtInstance = {};
+
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    };
+
+    $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        .withOption('processing', true) 
+        .withOption('serverSide', true) 
+        .withOption('ajax', function(data, callback, settings) {
+
+            var params = {
+                draw: data.draw,
+                start: data.start,
+                length: data.length,
+                order: data.order,
+                search: data.search.value
+            };
+
+            // API call to fetch data
+            $http.post('api/v1/usercustompage', params)
+                .then(function(response) {
+                    var res = response.data;
+                    console.log('Server Response:', res);
+
+                    // Pass the data to DataTables
+                    callback({
+                        draw: res.draw,
+                        recordsTotal: res.recordsTotal,
+                        recordsFiltered: res.recordsFiltered,
+                        data: res.data
+                    });
+                })
+                .catch(function(error) {
+                    console.error('Error fetching data:', error);
+                });
+        })
+        .withDataProp('data') 
+        .withOption('paging', true) 
+        .withOption('pageLength', 25)
+        .withOption('searching', true) // Enable search
+        .withOption('order', [[0, 'asc']]) 
+   
+
+
 }).controller('viewInternaldetailController', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.loginUserId = $window.localStorage.getItem("session_iUserId");

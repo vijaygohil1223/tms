@@ -423,6 +423,14 @@ $app->post('/getMultipleReourses', 'authenticate',function () use($app) {
     $result = $users->getMultipleReourse($data);
     echoResponse($result ['status'], $result);
 });
+
+$app->post('/usercustompage', 'authenticate',function () use($app) {
+    $users = new users ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $users->usercustompage($data);
+    echoResponse(200, $result);
+});
+
 // ------------------user type section ---------------------//
 $app->get('/usertype','authenticate', function () {
     $usertype = new usertype ();
