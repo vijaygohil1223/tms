@@ -34740,8 +34740,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 
                 if(! val?.credit_note_id){
-                    if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding')  {
+                    if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding' || val.invoice_status == 'Partly Paid')  {
                         $scope.openInvcCount++;
+                        val.Invoice_cost = val.Invoice_cost - val.invoice_partial_paid_total
                         $scope.openInvc.push(val);
                     }
                     if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
