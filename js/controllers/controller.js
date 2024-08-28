@@ -2775,9 +2775,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(itm.tabClassName == 'tab-all'){
                         itm.projectScoopCount = response.tabAll || 0
                     }
+                    // if(itm.tabClassName == 'tab-assigned'){
+                    //     var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
+                    //     itm.projectScoopCount = asigncount?.totalItems || 0
+                    // }
                     if(itm.tabClassName == 'tab-assigned'){
-                        var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
-                        itm.projectScoopCount = asigncount?.totalItems || 0
+                        itm.projectScoopCount = response.assign || 0
                     }
                     if(itm.tabClassName == 'tab-ongoing'){
                         //2
@@ -3096,6 +3099,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.sortOrder = '';
     $scope.hitByuser = false;
     $scope.sortBy = function (fieldName, hitByuser=0) {
+        console.log('fieldName=======>', fieldName)
         if(fieldName){
             console.log('fieldName', fieldName)
             if ($scope.sortByField === fieldName) {

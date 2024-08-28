@@ -632,7 +632,7 @@ td { font-size: 11px; } */
                             <th>Comment</th>
                             <th
                               ng-if="['tab-all', 'tab-my-projects', 'tab-due-today', 'tab-due-tomorrow', 'tab-my-upcoming', 'tab-assigned', 'tab-ongoing', 'tab-to-be-delivered'].indexOf(myTabs.tabClassName) !== -1"
-                              ng-click="sortBy('scoopStatus')" ng-class="getClass('scoopStatus')">
+                              ng-click="sortBy('scoopStatus', 1)" ng-class="getClass('scoopStatus')">
                               Status</th>
                             <th ng-click="sortBy('attached_workflow', 1)" ng-class="getClass('attached_workflow')">Job
                               Type</th>
