@@ -19843,6 +19843,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
             "paid_amount": $scope.invoiceList[0].paid_amount,
+            // "statusId": $scope.invoiceList[0].invoice_id,
             "statusId": $scope.invoiceList[0].invc_Id,
             "Currency": $scope.invoiceList[0].Currency
         };
