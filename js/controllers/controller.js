@@ -9055,10 +9055,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //var fOriginalName = fileName;
                                 var fOriginalName = $itemScope.display.original_filename;
                             }
-                            //downloadFileByAtag(fileName, fOriginalName)
-                            const isAwsUrl = fileName.startsWith('https://');
-                            const isAwsUrl2 = isAwsUrl ? 1 : 0;
-                            $scope.downloadNewFn(fileName, fOriginalName, isAwsUrl2)
+                            downloadFileByAtag(fileName, fOriginalName)
+                            // const isAwsUrl = fileName.startsWith('https://');
+                            // const isAwsUrl2 = isAwsUrl ? 1 : 0;
+                            // $scope.downloadNewFn(fileName, fOriginalName, isAwsUrl2)
                             
                             $timeout(function () {
                                 $scope.menuRclkID = '';
