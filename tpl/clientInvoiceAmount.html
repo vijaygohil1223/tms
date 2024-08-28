@@ -18,7 +18,8 @@
         <div class="col-lg-6" ng-hide="closeAmount">
             <div class="form-group">
                 <label>Amount</label> 
-                <input type="text" ng-init="inv.paid_amount=dueAmount" class="form-control" name="paid_amount" ng-model="inv.paid_amount" allow-decimal-comma-number required>
+                <input type="text" class="form-control" name="paid_amount" ng-model="inv.paid_amount" allow-decimal-comma-number required>
+                <!-- <input type="text" ng-init="inv.paid_amount=dueAmount" class="form-control" name="paid_amount" ng-model="inv.paid_amount" allow-decimal-comma-number required> -->
                 <!-- <input type="number" ng-init="inv.paid_amount=dueAmount" class="form-control" name="paid_amount" ng-model="inv.paid_amount" min="0" allow-decimal-numbers required> -->
             </div>
         </div>
@@ -33,7 +34,8 @@
     <div class="panel-body">
         <div class="col-sm-12">
             <h4>Total Amount is: {{currencySymbol.split(',')[1]}} {{totalAmount | customNumber}}</h4>
-            <h4>Paid Amount : {{currencySymbol.split(',')[1]}} {{amountToPaid | customNumber}}</h4>
+            <h4>Pending Amount : {{currencySymbol.split(',')[1]}} {{totalAmount - getTotalPartialPaidAmount() | customNumber }}</h4>
+            <h4>Paid Amount : {{currencySymbol.split(',')[1]}} {{ getTotalPartialPaidAmount() | customNumber }}</h4>
             <span style="color:green;" ng-if="totalAmount==amountToPaid">Invoice amount Completed</span>
         </div>
         <div class="col-sm-12">
