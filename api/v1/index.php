@@ -2961,6 +2961,13 @@ $app->get('/downloadSignleFile', function () use($app) {
     $result = $filemanager->downloadSingleFile($data);
     echoResponse(200, $result);
 });
+$app->get('/downloadFilesZip', function () use($app) {
+    $filemanager = new filemanager ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $data = [];
+    $result = $filemanager->downloadFilesZip($data);
+    echoResponse(200, $result);
+});
 $app->get('/awsimagemigrate', function () use($app) {
     $filemanager = new filemanager ();
     $response = $filemanager->getAWSImageMigrate();

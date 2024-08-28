@@ -1434,6 +1434,13 @@ array(
             exit;
         }
     }
+
+
+    public function downloadFilesZip($fileData) {
+        $basePath = realpath(DOCUMENT_ROOT . 'uploads/fileupload') . DIRECTORY_SEPARATOR;
+    
+        
+    }
     
 
     public function getAWSImageMigrate() {

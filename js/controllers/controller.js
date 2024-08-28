@@ -6847,10 +6847,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $timeout(function () {
         $scope.addToDownload = function (fname, fOriginalName ) {
-            //downloadFileByAtag(fname, fOriginalName)
-            const isAwsUrl = (fname).startsWith('https://');
-            const isAwsUrl2 = isAwsUrl ? 1 : 0;
-            $scope.downloadNewFn(fname, fOriginalName, isAwsUrl2)
+            downloadFileByAtag(fname, fOriginalName)
+            
         }
     }, 500);
 
@@ -7259,11 +7257,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 
                                 files.forEach(file => {
                                     fileDownloadByDynamicUrl(file.url , file.name)
-                                    // Need to solve download process for multiple files
-                                    // const isAwsUrl = (file.url).startsWith('https://');
-                                    // const isAwsUrl2 = isAwsUrl ? 1 : 0;
-                                    // $scope.downloadNewFn(file.url, file.name, isAwsUrl2)
-
                                     // Create a temporary <a> element
                                     // var a = document.createElement('a');
                                     // a.download = file.name;
@@ -7287,11 +7280,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             
                             }else{
                                 
-                                //fileDownloadByDynamicUrl($itemScope.display.name , $itemScope.display.original_filename)
-                                const isAwsUrl = ($itemScope.display.name).startsWith('https://');
-                                const isAwsUrl2 = isAwsUrl ? 1 : 0;
-                                $scope.downloadNewFn($itemScope.display.name, $itemScope.display.original_filename, isAwsUrl2)
-
+                                fileDownloadByDynamicUrl($itemScope.display.name , $itemScope.display.original_filename)
+                            
                                 // var a = document.createElement('a');
                                 // document.body.appendChild(a);
                                 // //a.download = $itemScope.display.name;
@@ -8406,10 +8396,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $timeout(function () {
         $scope.addToDownload = function (fname, fOriginalName ) {
-            //downloadFileByAtag(fname, fOriginalName)
-            const isAwsUrl = (fname).startsWith('https://');
-            const isAwsUrl2 = isAwsUrl ? 1 : 0;
-            $scope.downloadNewFn(fname, fOriginalName, isAwsUrl2)
+            downloadFileByAtag(fname, fOriginalName)
         }
     }, 500);
 
@@ -8881,11 +8868,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
 
                             if (folderId !== undefined) {
-                                $scope.downloadProgress = 0;
                                 $scope.showLoder = true;
                                 rest.path = 'filemanagerfolderDownload/' + folderId;
                                 rest.get().then(function(response) {
-                                    console.log('response=====>', response)
                                     $scope.downloadAllfile = response.data;
                                     var zipdwnld = new JSZip();
                                     var fileUrls = [];
@@ -8936,15 +8921,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             $route.reload();
                                         });
                                     } else {
-                                        var filePromises = fileUrls.map(function(url, index) {
+                                        var filePromises = fileUrls.map(function(url) {
                                             return $q(function(resolve, reject) {
                                                 JSZipUtils.getBinaryContent(url.full_url, function(err, data) {
                                                     if (err) {
                                                         $scope.showLoder = false;
                                                         return reject(err);
                                                     }
-                                                    $scope.downloadProgress = Math.round((index + 1) / fileUrls.length * 100);
-                    
                                                     resolve({
                                                         url: url,
                                                         data: data
@@ -16180,7 +16163,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.ContactPersonName = $window.localStorage.getItem("contactPersonId");
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
-    $scope.uType = $window.localStorage.userType;
+    const userType = $routeParams.userPaymentid && $routeParams.userPaymentid > 0 ? 1 : $window.localStorage.userType
+    $scope.uType = userType;
+    //$scope.uType = $window.localStorage.userType;
     $scope.currentUserName = $window.localStorage.currentUserName;
     $scope.clientId = $window.localStorage.getItem("priceListClientId");
     $scope.user_Id = $window.localStorage.getItem("contactUserId");
@@ -16191,6 +16176,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     $scope.displaybankOption = false;
     $scope.displayPaypalOption = false;
+
+    console.log('$routeParams.id==================>', $routeParams.id)
+
     
     $scope.clientUrlName = 'client-profile';
     $timeout(function () {
@@ -16204,13 +16192,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.uType = 1;
     }
 
+    console.log('$window.localStorage.userType', $window.localStorage.userType)
+    
     $scope.displaybankOption = true;
     $scope.bank = { 'payment_method': 'Bank Transfer', 'currency_code':'EUR'}
     $scope.payment = {'tax_id': '', 'country_code':''}
-    if ($routeParams.id != ' ' && $routeParams.id != undefined) {
+    if ($routeParams.id != ' ' && $routeParams.id != undefined ) {
 
-        rest.path = 'getuserpayment/' + $routeParams.id + '/' + $window.localStorage.userType;
+        rest.path = 'getuserpayment/' + $routeParams.id + '/' + userType;
         rest.get().success(function (data) {
+            console.log('paymentdata', data)
             
             if (data == null) {
                 $scope.paymentData = {};
@@ -16259,8 +16250,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //$scope.getOne(data[0].invoice_due_id);
     }).error(errorCallback);
 
-    if ($scope.clientId != " " && $scope.userRight != 2) {
-        
+    if ( ($scope.clientId != " " && !$routeParams.userPaymentid)  && $scope.userRight != 2) {
+
         $routeParams.id = $scope.clientId;
         rest.path = 'getClientpayment/' + $routeParams.id;
         rest.get().success(function (data) {
@@ -16287,6 +16278,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $scope.paymentData.invoice_no_of_days = dataCl.invoice_no_of_days
                 });
             }
+
         }).error(errorCallback);
     }
 
@@ -18301,13 +18293,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var jobId = angular.element('#orderCheckData' + i).val();
                         $routeParams.id = jobId;
                         rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
-                        
+                        rest.get().success(function (data) {
+                            notification('Status updated successfully', 'success');
+                            $route.reload();
+                        }).error(errorCallback);
                     }
                 }
-                rest.get().success(function () {
-                    notification('Status updated successfully', 'success');
-                    $route.reload();
-                }).error(errorCallback);
                 break;
             case "Remove selection":
                 // bootbox.confirm("Are you sure you want to delete?", function(result) {
@@ -19797,7 +19788,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
             "paid_amount": $scope.invoiceList[0].paid_amount,
-            "statusId": $scope.invoiceList[0].invc_Id,
+            "statusId": $scope.invoiceList[0].invoice_id,
             "Currency": $scope.invoiceList[0].Currency
         };
         var modalInstance = $uibModal.open({
@@ -21162,6 +21153,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
     
+
     $scope.ok = function (frmId) {
         console.log("ekta");
         // if any change in amount box and then select to completed replace value in box amount
@@ -24354,12 +24346,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('priceId=====>', priceId)
             
             if(priceId > 0){
-
-                console.log('$scope.customerpriceAll========>',$scope.customerpriceAll )
-                console.log('$scope.clientpriceList======>', $scope.clientpriceList)
                 let clientPricelist = $scope.customerpriceAll.filter((e) => e.price_list_id == priceId )
                 //let clientPricelist = $scope.clientpriceList.filter((e) => e.price_list_id == priceId )
-                console.log('clientPricelist===========>', clientPricelist)
                 if(clientPricelist){
                     angular.forEach($scope.newchildPriceArr[item_id], function (val, newi) {
                         angular.forEach(clientPricelist, function (val2, i2) {
@@ -34705,9 +34693,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 
                 if(! val?.credit_note_id){
-                    if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding' || val.invoice_status == 'Partly Paid')  {
+                    if (val.invoice_status == 'Open' || val.invoice_status == 'Outstanding')  {
                         $scope.openInvcCount++;
-                        val.Invoice_cost = val.Invoice_cost - val.invoice_partial_paid_total
                         $scope.openInvc.push(val);
                     }
                     if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {

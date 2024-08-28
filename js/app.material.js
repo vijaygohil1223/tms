@@ -100,6 +100,11 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'paymentController',
             //activetab: 'dashboard',
             role: ['1', '2']
+        }).when('/payment/:userPaymentid', {
+            templateUrl: modulesPath + 'payment.html',
+            controller: 'paymentController',
+            //activetab: 'dashboard',
+            role: ['1', '2']
         }).when('/user-task', {
             templateUrl: modulesPath + 'userTask.html',
             controller: 'usertaskController',
