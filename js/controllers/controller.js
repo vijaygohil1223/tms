@@ -14394,7 +14394,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.selectedNodes = [];
         if (angular.element("#" + formId).valid()) {
         //if (angular.element("#" + formId).valid() && $scope.isValidMobileNumber) {
-                if ($scope.userprofiledata.iUserId) {
+        
+            if ($scope.userprofiledata.iUserId) {
                 
                 //$scope.userprofiledata.menu_access = JSON.stringify($scope.selectedNodes);
                 
@@ -14411,6 +14412,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $scope.userprofiledata.vSignUpload = $scope.signimageSrc;
                 var $oldUser_id = $window.localStorage.getItem("session_internalResourceUpdatedId");
                 var $recentUser_id = $window.localStorage.getItem("session_iUserId");
+                
+                var abscentArr = "";
+
+                if ($scope.abscentDateArr.length > 0) {
+                var abscentDateArr = $scope.abscentDateArr;
+
+                var abscentArr = abscentDateArr.map(function (item) {
+                    item.dateFrom = moment(
+                    item.dateFrom,
+                    $scope.dateFormatGlobal
+                    ).format("YYYY-MM-DD");
+                    item.dateTo = moment(
+                    item.dateTo,
+                    $scope.dateFormatGlobal
+                    ).format("YYYY-MM-DD");
+
+                    return item;
+                });
+                }
 
                 if ($recentUser_id != $oldUser_id) {
                     $scope.userprofiledata.iEditedBy = $window.localStorage.getItem("session_internalResourceUpdatedId");
@@ -14497,6 +14517,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
                     $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
                 }
+
+                $scope.userprofiledata.is_available = abscentArr
+              ? JSON.stringify(abscentArr)
+              : "";
                 
                 rest.path = 'saveuserprofileinternal';
                 rest.put($scope.userprofiledata).success(function (data) {
@@ -14561,6 +14585,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     "countryFlagClass": countryClass,
                     "mobileNumber": mobile
                 }
+                var abscentArr = "";
+
+                if ($scope.abscentDateArr.length > 0) {
+                var abscentDateArr = $scope.abscentDateArr;
+
+                var abscentArr = abscentDateArr.map(function (item) {
+                    item.dateFrom = moment(
+                    item.dateFrom,
+                    $scope.dateFormatGlobal
+                    ).format("YYYY-MM-DD");
+                    item.dateTo = moment(
+                    item.dateTo,
+                    $scope.dateFormatGlobal
+                    ).format("YYYY-MM-DD");
+
+                    return item;
+                });
+                }
+
 
                 $scope.userprofiledata.iMobile = JSON.stringify(countryObj);
                 $scope.userprofiledata.vPhoneNumber = phone;
@@ -14586,7 +14629,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if($scope.userprofiledata.dtBirthDate){
                     $scope.userprofiledata.dtBirthDate = originalDateFormatNew($scope.userprofiledata.dtBirthDate);
                     $scope.userprofiledata.dtBirthDate = moment($scope.userprofiledata.dtBirthDate).format('YYYY-MM-DD');
-                }    
+                }   
+                $scope.userprofiledata.is_available = abscentArr
+                ? JSON.stringify(abscentArr)
+                : ""; 
                 rest.path = 'saveuserprofileinternal';
                 rest.post($scope.userprofiledata).success(function (data) {
                     $window.localStorage.iUserId = data.iUserId;
@@ -19788,7 +19834,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var obj = {
             "Invoice_cost": $scope.invoiceList[0].Invoice_cost,
             "paid_amount": $scope.invoiceList[0].paid_amount,
-            "statusId": $scope.invoiceList[0].invoice_id,
+            // "statusId": $scope.invoiceList[0].invoice_id,
+            "statusId": $scope.invoiceList[0].invc_Id,
             "Currency": $scope.invoiceList[0].Currency
         };
         var modalInstance = $uibModal.open({
