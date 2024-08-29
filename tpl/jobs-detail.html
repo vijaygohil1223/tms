@@ -308,8 +308,9 @@
                                                     <!-- ui-sortable="sortableOptions" ng-model="itemList" 
                                                         ui-sortable="sortableOptions" ng-model="itemListFinal['number{{itemL.item_number}}']" 
                                                     -->
-                                                    <tbody ui-sortable="sortableOptions"
-                                                        ng-model="itemListFinal[$index]">
+                                                    <!-- <tbody ui-sortable="sortableOptions"
+                                                        ng-model="itemListFinal[$index]"> -->
+                                                    <tbody ng-model="itemListFinal[$index]">    
 
                                                         <tr ng-repeat="it in itemListFinal[$index]" class="tableRowId">
                                                             <td>

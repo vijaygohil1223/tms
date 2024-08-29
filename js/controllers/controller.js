@@ -2775,13 +2775,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(itm.tabClassName == 'tab-all'){
                         itm.projectScoopCount = response.tabAll || 0
                     }
-                    // if(itm.tabClassName == 'tab-assigned'){
-                    //     var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
-                    //     itm.projectScoopCount = asigncount?.totalItems || 0
-                    // }
                     if(itm.tabClassName == 'tab-assigned'){
-                        itm.projectScoopCount = response.assign || 0
+                        var asigncount = response.tabStatus.find( (val) => val.item_status ==1 );
+                        itm.projectScoopCount = asigncount?.totalItems || 0
                     }
+                    // if(itm.tabClassName == 'tab-assigned'){
+                    //     itm.projectScoopCount = response.assign || 0
+                    // }
                     if(itm.tabClassName == 'tab-ongoing'){
                         //2
                         itm.projectScoopCount = response.ongoing || 0
@@ -18333,10 +18333,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     //search data action
     $scope.statusAction = function (action) {
+        console.log('action=======>', action)
         
         switch (action) {
             case "Change status to":
                 var jobStatus = angular.element(document.querySelector('#jobStatusdata')).val().split(',').pop();
+                var successShown = false;
                 for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
                     var jobselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
                     if (jobselect == 'true') {
@@ -18344,7 +18346,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $routeParams.id = jobId;
                         rest.path = 'jobsearchStatusUpdate/' + $routeParams.id + '/' + jobStatus;
                         rest.get().success(function (data) {
-                            notification('Status updated successfully', 'success');
+                            if (!successShown) { 
+                                notification('Status updated successfully', 'success');
+                                successShown = true; 
+                            }
                             $route.reload();
                         }).error(errorCallback);
                     }
@@ -18716,6 +18721,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.invoiceDisables = false;
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
+    $window.localStorage.resourceType = 2;
+    $window.localStorage.userType = 1;
     var allInvoiceListArr = [];
     
     $scope.padNumber = function(number) {
