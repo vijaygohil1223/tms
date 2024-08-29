@@ -416,6 +416,7 @@ table {
                 <!-- <a id="customdownload{{display.fmanager_id}}" 
                   href="uploads/fileupload/{{display.name}}" ng-if="!display.is_s3bucket" > <i class="fa fa-download"></i> </a> -->
                   <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
+                  <span style="margin-left:20px;">({{display.size }})</span>
               </span>      
 
                 <a id="download{{display.fmanager_id}}" style="display:none;" href="{{display.name}}" ng-if="display.is_s3bucket">Download</a>      

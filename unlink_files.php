@@ -1,10 +1,12 @@
 <?php
+
+require_once('api/includes/config.php');
 function unlinkProcess() {
     // Database connection details
-    $host = 'localhost';
-    $dbname = 'kanhawhp_tms';
-    $user = 'root';
-    $pass = '';
+    $host = DB_SERVER;
+    $dbname = DB_DATABASE;
+    $user = DB_USERNAME;
+    $pass = DB_PASSWORD;
     $batchLimit = 2;
 
     try {
@@ -27,7 +29,9 @@ function unlinkProcess() {
     }
 
     // Define the temp folder and zip file path
-    $tempFolder = 'C:/xampp/htdocs/TMS/uploads/tempZipBkp/';
+    //$tempFolder = 'C:/xampp/htdocs/TMS/uploads/tempZipBkp/';
+    $tempFolder = UPLOADS_ROOT_NEW .'tempZipBkp/';
+    
     $zipFileName = 'backup_' . date('Ymd_His') . '.zip';
     $zipFilePath = $tempFolder . $zipFileName;
 
@@ -43,7 +47,8 @@ function unlinkProcess() {
     $zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
     foreach ($files as $file) {
-        $filePath = "C:/xampp/htdocs/TMS/uploads/fileupload/" . $file['name'];
+        //$filePath = "C:/xampp/htdocs/TMS/uploads/fileupload/" . $file['name'];
+        $filePath = UPLOADS_ROOT_NEW ."fileupload/" . $file['name'];
 
         if (file_exists($filePath)) {
             // Add file to the ZIP archive

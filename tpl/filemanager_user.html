@@ -615,6 +615,7 @@
                           <!-- <a id="customdownload{{category.fmanager_id}}" 
                             href="uploads/fileupload/{{category.name}}" ng-if="!category.is_s3bucket" > <i class="fa fa-download"></i> </a> -->
                             <span style="margin-left:20px;">{{category.created_date | dateFormatDisplayFront }}</span>
+                            <span style="margin-left:20px;">({{category.size }})</span>
                         </span>
                         <ul class="folderul f1 ftr{{category.fmanager_id}} nch{{category.parent_id}}{{category.fmanager_id}}" style="category:none;">
                             <li ng-repeat="category in category.categories" ng-include="'categoryTree'" >           
@@ -747,6 +748,8 @@
         <span ng-if="display.f_id == 1 ">
           <a id="customdownload{{display.fmanager_id}}" 
             href="javascript:void(0)" ng-click="downloadNewFn(display.name, display.original_filename, display.is_s3bucket)"> <i class="fa fa-download"></i> </a>  
+            <span style="margin-left:20px;">{{display.created_date | dateFormatDisplayFront }}</span>
+            <span style="margin-left:20px;">({{display.size }})</span>
           
           <!-- <a id="customdownload{{display.fmanager_id}}" 
             href="javascript:void(0)" ng-click="customFileDownload(display.name, display.original_filename)"> <i class="fa fa-download"></i> </a> -->
