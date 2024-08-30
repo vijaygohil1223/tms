@@ -7197,3 +7197,25 @@ app.directive('fileDoubleClick', function () {
     };
 });
 
+app.directive('typeaheadOnPaste', function($timeout) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.on('paste', function() {
+                $timeout(function() {
+                    var pastedValue = element.val();
+                    scope.$eval(attrs.ngModel + " = element.val()");
+                    setTimeout(() => {
+                        scope.$apply(function() {
+                            scope.$eval(attrs.ngModel + " = '" + pastedValue + "'");
+                        }); 
+                        element.triggerHandler('input');
+                        element.triggerHandler('change');
+                    
+                    }, 100);
+
+                }, 0);
+            });
+        }
+    };
+});
