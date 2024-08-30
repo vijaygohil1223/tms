@@ -3018,6 +3018,16 @@ $app->post('/statusinvoiceReportFilter', function () use($app) {
     echoResponse(200, $result);
 });
 //end invoice report ---//
+
+// --------- linguist invoice report -------//
+$app->post('/linguistInvoiceCustomPage', 'authenticate',function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->linguistInvoiceCustomPage($data);
+    echoResponse(200, $result);
+});
+//end invoice report ---//
+
 //----------------Job status search---------------------//
 $app->get('/statusJobReportFind','authenticate', function () use($app) {
     $statusJob = new jobstatussearch ();
