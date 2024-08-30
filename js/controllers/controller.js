@@ -45080,9 +45080,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             return ''; 
         }),
-        // .renderWith(function(data, type, full, meta) {
-        //     return data ? '#' + data : ''; // Prepend # and handle null/undefined data
-        // }),
         DTColumnBuilder.newColumn('invoice_date')
         .withTitle('Invoice Date')
             .renderWith(function(data, type, full, meta) {
@@ -45120,6 +45117,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.filterInvoiceFn = function(){
 
         $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        .withOption('footerCallback', function (tfoot, data, start, end, display) {
+            var api = this.api();
+            var total = api
+                .column(3, { search: 'applied' })
+                .data()
+                .reduce(function (a, b) {
+                    return parseFloat(a) + parseFloat(b);
+                }, 0);
+    
+            $(api.column(3).footer()).html(
+                '$' + total.toFixed(2) 
+            );
+        })
         .withOption('processing', true) 
         .withOption('serverSide', true) 
         .withOption('ajax', function(data, callback, settings) {
