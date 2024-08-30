@@ -1230,10 +1230,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isApiCalled = true;    
     $scope.searchScoopFilter = function(){
         if($scope.isApiCalled){
+            
             //rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
             rest.path = "searchProjectHeader/" + $window.localStorage.getItem("session_iUserId");
             rest.get().success(function (data) {
                 $scope.projectScoop = data.scoopData;
+                console.log('$scope.projectScoop---------------->', $scope.projectScoop)
                 $rootScope.SearchJobList = data.jobData;
                 angular.forEach($scope.projectScoop, function (scoopData) {
                     orders.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
@@ -1288,6 +1290,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
+    $scope.onPaste = function() {
+        $timeout(function() {
+            var pastedValue = angular.element('#selectedOrder').val();
+            console.log("Pasted Value:", pastedValue);
+            $scope.selectedOrder = pastedValue;
+            console.log("Triggering input and change events");
+            setTimeout(() => {
+                angular.element('#selectedOrder').triggerHandler('input');
+                angular.element('#selectedOrder').triggerHandler('change');
+            }, 100);
+    
+            //$scope.searchScoopFilter();
+        }, 0);
+    };
+    
 
     $scope.searchProject = function (selectedValue) {
         $scope.selectedOrder = selectedValue;
