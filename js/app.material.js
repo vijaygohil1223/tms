@@ -495,6 +495,11 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'invoicestatusReportController',
             activetab: 'Invoice-status-report',
             role: '1'
+        }).when('/Linguist-invoice-status-report', {
+            templateUrl: modulesPath + 'linguist_invoice_report.html',
+            controller: 'linguistInvoicestatusReportController',
+            activetab: 'Linguist-invoice-status-report',
+            role: '1'
         }).when('/project-job-detail/:id', {
             templateUrl: modulesPath + 'project_job_detail.html',
             controller: 'projectjobDetailController',

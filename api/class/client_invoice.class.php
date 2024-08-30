@@ -1503,5 +1503,169 @@ class Client_invoice
         return $data;
     }
 
+    public function linguistInvoiceCustomPage($post)
+    {
+        // Get search, order, pagination parameters from the request
+        $searchValue = $post['search'] ?? ''; // Search value
+        $orderColumnIndex = $post['order'][0]['column'] ?? 1; // Index of the column to sort
+        $orderDir = $post['order'][0]['dir'] ?? 'asc'; // Order direction (asc or desc)
+        $start = $post['start'] ?? 0; // Starting point for pagination
+        $length = $post['length'] ?? 20; // Number of records to fetch
+        $filterParams = $post['filterParams'] ?? '';
+        // Define the columns array corresponding to DataTables columns
+        $columns = [
+            0 => '',
+            1 => 'org_invoice_number',
+            2 => 'freelanceName',
+            3 => 'Invoice_cost',
+            4 => 'client_currency',
+            5 => 'custom_invoice_no',
+            6 => 'invoice_date',
+            7 => 'inv_due_date',
+            8 => 'paid_date',
+        ];
+
+        // Determine the column to sort by based on DataTables order index
+        $orderColumn = $columns[$orderColumnIndex] ?? 'create_date';
+
+        // Ensure the order direction is valid
+        $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
+
+        // Base query
+        $qry_invc = '';
+        function convertDateFormat($date) {
+            $dateParts = explode('.', $date);
+            if (count($dateParts) === 3) {
+                return $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
+            }
+            return $date; // Return the original date if format is incorrect
+        }
+        
+        // Assuming $searchValue can contain a date in dd.mm.yyyy format
+        $searchValueConverted = convertDateFormat($searchValue);
+
+        // Apply search functionality
+        if (!empty($searchValue)) {
+            $qry_invc .= " AND (concat(tu.vFirstName, ' ', tu.vLastName) LIKE '%" . $this->_db->escape($searchValue) . "%' 
+                        OR CAST(tmInvoice.invoice_number AS CHAR) LIKE '%" . $this->_db->escape($searchValue) . "%'
+                        OR tc.client_currency LIKE '%".$this->_db->escape($searchValue)."%'
+                        OR tmInvoice.Invoice_cost LIKE '%".$this->_db->escape($searchValue)."%'
+                        OR tmInvoice.invoice_number LIKE '%".$this->_db->escape($searchValue)."%'
+                        OR DATE(tmInvoice.inv_due_date) LIKE '%" . $this->_db->escape($searchValueConverted) . "%'
+                        OR DATE(tmInvoice.invoice_date) LIKE '%" . $this->_db->escape($searchValueConverted) . "%'
+                        )";
+        }
+
+        // Apply additional filters from $filterParams
+        if (isset($filterParams['invoiceStatus'])) {
+            if ($filterParams['invoiceStatus'] === "Open") {
+                $qry_invc .= " AND (tmInvoice.is_approved = 1 OR tmInvoice.invoice_status = 'Approved') 
+                            AND tmInvoice.invoice_status NOT IN ('Complete', 'Completed', 'Partly Paid', 'Paid')";
+            } elseif (in_array($filterParams['invoiceStatus'], ["Complete", "Completed", "Paid"])) {
+                $qry_invc .= " AND tmInvoice.invoice_status IN ('Paid', 'Complete', 'Completed')";
+            } elseif ($filterParams['invoiceStatus'] === "Overdue") {
+                $today = date('Y-m-d'); // Get today's date
+                $qry_invc .= " AND tmInvoice.inv_due_date IS NOT NULL 
+                               AND DATE(tmInvoice.inv_due_date) < '" . $this->_db->escape($today) . "' 
+                               AND tmInvoice.invoice_status NOT IN ('Paid', 'Complete', 'Completed')";
+            } elseif ($filterParams['invoiceStatus'] === "Approved") {
+                $qry_invc .= " AND (tmInvoice.is_approved = 1 OR tmInvoice.invoice_status = 'Approved') 
+                            AND tmInvoice.invoice_status NOT IN ('Complete', 'Completed', 'Partly Paid', 'Paid')";
+            } else {
+                $qry_invc .= " AND tmInvoice.invoice_status = '" . $this->_db->escape($filterParams['invoiceStatus']) . "'";
+            }
+        }
+
+        if (isset($filterParams['freelanceName'])) {
+            $qry_invc .= " AND tu.iUserid = '" . $this->_db->escape($filterParams['freelanceName']) . "'";
+        }
+
+        if (isset($filterParams['itemDuedateStart']) && isset($filterParams['itemDuedateEnd'])) {
+            $qry_invc .= " AND tmInvoice.inv_due_date BETWEEN '" . $this->_db->escape($filterParams['itemDuedateStart'] . ' 00:00:00') . "' 
+                        AND '" . $this->_db->escape($filterParams['itemDuedateEnd'] . ' 23:59:59') . "'";
+        } elseif (isset($filterParams['itemDuedateStart'])) {
+            $qry_invc .= " AND tmInvoice.inv_due_date >= '" . $this->_db->escape($filterParams['itemDuedateStart'] . ' 00:00:00') . "'";
+        } elseif (isset($filterParams['itemDuedateEnd'])) {
+            $qry_invc .= " AND tmInvoice.inv_due_date <= '" . $this->_db->escape($filterParams['itemDuedateEnd'] . ' 23:59:59') . "'";
+        }
+
+        if (isset($filterParams['createDateFrom']) && isset($filterParams['createDateTo'])) {
+            $qry_invc .= " AND tmInvoice.invoice_date BETWEEN '" . $this->_db->escape($filterParams['createDateFrom'] . ' 00:00:00') . "' 
+                        AND '" . $this->_db->escape($filterParams['createDateTo'] . ' 23:59:59') . "'";
+        } elseif (isset($filterParams['createDateFrom'])) {
+            $qry_invc .= " AND tmInvoice.invoice_date >= '" . $this->_db->escape($filterParams['createDateFrom'] . ' 00:00:00') . "'";
+        } elseif (isset($filterParams['createDateTo'])) {
+            $qry_invc .= " AND tmInvoice.invoice_date <= '" . $this->_db->escape($filterParams['createDateTo'] . ' 23:59:59') . "'";
+        }
+
+        if (isset($filterParams['paymentDateFrom']) && isset($filterParams['paymentDateTo'])) {
+            $qry_invc .= " AND tmInvoice.paid_date BETWEEN '" . $this->_db->escape($filterParams['paymentDateFrom'] . ' 00:00:00') . "' 
+                        AND '" . $this->_db->escape($filterParams['paymentDateTo'] . ' 23:59:59') . "'";
+        } elseif (isset($filterParams['paymentDateFrom'])) {
+            $qry_invc .= " AND tmInvoice.paid_date >= '" . $this->_db->escape($filterParams['paymentDateFrom'] . ' 00:00:00') . "'";
+        } elseif (isset($filterParams['paymentDateTo'])) {
+            $qry_invc .= " AND tmInvoice.paid_date <= '" . $this->_db->escape($filterParams['paymentDateTo'] . ' 23:59:59') . "'";
+        }
+
+        $qry_invc1 = "SELECT tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, 
+                    tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress AS companyEmail, 
+                    tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, 
+                    concat(tu.vFirstName, ' ', tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, 
+                    tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, 
+                    tu.freelance_currency, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, 
+                    tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.invoice_date, 
+                    tmInvoice.paid_date, tmInvoice.created_date, tmInvoice.is_approved, tmInvoice.reminder_sent, 
+                    tmInvoice.is_excel_download, tmInvoice.currency_rate, tmInvoice.job_id as jobInvoiceIds, 
+                    tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName, 
+                    CAST(tmInvoice.invoice_number AS CHAR) AS org_invoice_number, tmInvoice.inv_due_date, 
+                    tmInvoice.vat2 as taxInNok, tmInvoice.Invoice_cost2 as priceInNok, tpy.vBankInfo as linguist_bankinfo, 
+                    tc.client_currency 
+                    FROM tms_invoice tmInvoice
+                    LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+                    LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+                    LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
+                    LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1 
+                    WHERE tmInvoice.is_deleted != 1" . $qry_invc;
+
+
+        $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
+
+        $qry_invc1 .= " ORDER BY " . 'invoice_number' . " " . $orderDir;
+
+        $qry_invc1 .= " LIMIT $start, $length";
+
+        $data = $this->_db->rawQuery($qry_invc1);
+
+        $totalRecordsQuery = "SELECT COUNT(*) AS count FROM tms_invoice tmInvoice
+                            LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+                            LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+                            LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
+                            LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
+                            WHERE tmInvoice.is_deleted != 1 " . $qry_invc;
+        $totalRecordsResult = $this->_db->rawQuery($totalRecordsQuery);
+        $totalRecords = $totalRecordsResult[0]['count'] ?? 0;
+
+        $filteredRecordsQuery = "SELECT COUNT(*) AS count FROM tms_invoice tmInvoice
+                                LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+                                LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+                                LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
+                                LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
+                                WHERE tmInvoice.is_deleted != 1" . $qry_invc;
+
+
+        $filteredRecordsResult = $this->_db->rawQuery($filteredRecordsQuery);
+        $totalFilteredRecords = $filteredRecordsResult[0]['count'] ?? 0;
+
+        $response = [
+            "draw" => intval($post['draw']),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $totalFilteredRecords,
+            "data" => $data
+        ];
+
+        // Return the response
+        return $response;
+    }
+
 
 }

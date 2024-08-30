@@ -44626,6 +44626,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //Invoice report search start
     // $scope.statusResult = [];
     $scope.invoicestatusReportsearch = function (frmId, eID) {
+       
         if ($scope.invoiceReport == undefined || $scope.invoiceReport == null || $scope.invoiceReport == "") {
             notification('Please Select option', 'information');
         } else if (jQuery.isEmptyObject($scope.invoiceReport) == true) {
@@ -44944,6 +44945,334 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 break;
+
+        }
+    }
+    $scope.dtOptionsClInvc = DTOptionsBuilder.newOptions().
+        withOption('scrollX', 'true').
+        withOption('responsive', true).
+        withOption('pageLength', 100).
+        withOption('drawCallback', function(settings) {
+            $timeout(function() {
+              var table = $('#invoice_report_table').DataTable();
+              var filteredData = table.rows({ filter: 'applied' }).data().toArray();
+          
+              $scope.totalPrice = 0;
+              
+              angular.forEach(filteredData, function(item) {
+                var htmlContent = item[4];
+                var value = parseFloat(htmlContent.replace(/\./g, '').replace(',', '.'));
+                if (!isNaN(value)) {
+                  $scope.totalPrice += value;
+                }
+              });
+              $scope.$apply();
+            });
+        });
+}).controller('linguistInvoicestatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder, $timeout, DTColumnBuilder, $http, $filter) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.clientnamec = "";
+
+    //export to excel
+    $scope.exportData = function () {
+        var count = 0;
+        for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+            if ($("#orderCheck" + i).prop('checked') == true) {
+                count++;
+            }
+        }
+        if (count == 0) {
+            notification('Please select record to export', 'information');
+        }
+        if (count > 0) {
+            for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                if ($("#orderCheck" + i).prop('checked') == true) {
+                    $("#Export_" + i).show()
+                } else {
+                    $("#Export_" + i).hide()
+                }
+            }
+            exportTableToExcel('job_report_table','Jobs-status-report')
+            $scope.invoicestatusReportsearch();
+        }
+
+    };
+
+    //current year get
+    $scope.date = new Date();
+    var year = $scope.date.getFullYear();
+    $scope.Currentyear = year.toString().substr(2, 2);
+    
+    //Invoice report search start
+    // $scope.statusResult = [];
+    $scope.invoicestatusReportsearch = function (frmId, eID) {
+        if ($scope.invoiceReport == undefined || $scope.invoiceReport == null || $scope.invoiceReport == "") {
+            notification('Please Select option', 'information');
+        } else if (jQuery.isEmptyObject($scope.invoiceReport) == true) {
+            notification('Please Select option', 'information');
+            $route.reload();
+        } else {
+            //$window.localStorage.invoiceReport = JSON.stringify($scope.invoiceReport);
+            $rootScope.invoiceReport = $scope.invoiceReport
+            if ($scope.invoiceReport.startCreateDate) {
+                $scope.invoiceReport.createDateFrom = originalDateFormatNew($scope.invoiceReport.startCreateDate);
+            }
+            if ($scope.invoiceReport.endCreateDate) {
+                $scope.invoiceReport.createDateTo = originalDateFormatNew($scope.invoiceReport.endCreateDate);
+            }
+            if ($scope.invoiceReport.startPaymentDate) {
+                $scope.invoiceReport.paymentDateFrom = originalDateFormatNew($scope.invoiceReport.startPaymentDate);
+            }
+            if ($scope.invoiceReport.endPaymentDate) {
+                $scope.invoiceReport.paymentDateTo = originalDateFormatNew($scope.invoiceReport.endPaymentDate);
+            }
+            if ($scope.invoiceReport.itemDuedate) {
+                $scope.invoiceReport.itemDuedateStart = originalDateFormatNew($scope.invoiceReport.itemDuedate);
+            }
+            if ($scope.invoiceReport.endItemDuedate) {
+                $scope.invoiceReport.itemDuedateEnd = originalDateFormatNew($scope.invoiceReport.endItemDuedate);
+            }
+            $scope.dtInstance.reloadData();
+            var scrollID = (eID) ? eID : 'middle';
+            scrollToId(scrollID);
+        }
+    }
+
+    
+    $scope.dtColumnsInternal = [
+        DTColumnBuilder.newColumn(null).withTitle('Sr No.').renderWith(function(data, type, full, meta) {
+            return meta.row + 1; // Serial number starts from 1
+        }),
+        DTColumnBuilder.newColumn('org_invoice_number').withTitle('Invoice Number'),
+        DTColumnBuilder.newColumn('freelanceName').withTitle('Resource'),
+        DTColumnBuilder.newColumn('Invoice_cost').withTitle('Amount'),
+        DTColumnBuilder.newColumn('client_currency').withTitle('Currency'),
+        DTColumnBuilder.newColumn('custom_invoice_no')
+        .withTitle('Custom Invoice Number')
+        .renderWith(function(data, type, full, meta) {
+            return data ? '#' + data : ''; // Prepend # and handle null/undefined data
+        }),
+        DTColumnBuilder.newColumn('invoice_date')
+        .withTitle('Invoice Date')
+            .renderWith(function(data, type, full, meta) {
+                if (data) {
+                    return $filter('globalDtFormat')(data); 
+                }
+                return ''; 
+        }),
+        DTColumnBuilder.newColumn('inv_due_date')
+        .withTitle('Invoice Due Date')
+            .renderWith(function(data, type, full, meta) {
+                if (data) {
+                    return $filter('globalDtFormat')(data); 
+                }
+                return '';
+        }),
+        DTColumnBuilder.newColumn('paid_date')
+            .withTitle('Payment Paid Date')
+            .renderWith(function(data, type, full, meta) {
+                if (data) {
+                    return $filter('globalDtFormat')(data); 
+                }
+                return '';
+        })
+    ];
+
+    // Initialize DataTables
+    $scope.dtInstance = {};
+
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    };
+
+    $scope.filterInvoiceFn = function(){
+
+        $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        .withOption('processing', true) 
+        .withOption('serverSide', true) 
+        .withOption('ajax', function(data, callback, settings) {
+
+            var params = {
+                draw: data.draw,
+                start: data.start,
+                length: data.length,
+                order: data.order,
+                search: data.search.value,
+                filterParams: $scope.invoiceReport
+            };
+
+            // API call to fetch data
+            $http.post('api/v1/linguistInvoiceCustomPage', params)
+                .then(function(response) {
+                    var res = response.data;
+                    console.log('Server Response:', res);
+
+                    // Pass the data to DataTables
+                    callback({
+                        draw: res.draw,
+                        recordsTotal: res.recordsTotal,
+                        recordsFiltered: res.recordsFiltered,
+                        data: res.data
+                    });
+                })
+                .catch(function(error) {
+                    console.error('Error fetching data:', error);
+                });
+        })
+        .withDataProp('data') 
+        .withOption('paging', true) 
+        .withOption('pageLength', 100)
+        .withOption('searching', true) // Enable search
+        .withOption('order', [[0, 'asc']])
+    } 
+    $scope.filterInvoiceFn();
+
+    $scope.reseteSearch = function (frmId) {
+        // $scope.statusResult = [];
+        location.reload()
+    }
+
+    // call fn when back to page
+    if($rootScope.invoiceReport){
+        $scope.invoicestatusReportsearch('invoice-status-report','middle')
+    }
+
+
+    //remove job search 
+    $scope.clearCode = function (frmId, action) {
+        $rootScope.invoiceReport = '';
+        switch (action) {
+            case "freelanceName":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.freelanceName = '';
+                    angular.element('#freelanceName').select2('val', '');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "invoiceStatus":
+                if ($scope.invoiceReport != undefined) {
+                    $scope.invoiceReport.invoiceStatus = '';
+                    angular.element('#invoiceStatus').select2('val', '');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "itemDuedate":
+                if ($scope.invoiceReport !== undefined) {
+                    $scope.invoiceReport.itemDuedate = '';
+                    $scope.invoiceReport.itemDuedateStart = '';
+                    angular.element('#itemDuedate').text('');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "endItemDuedate":
+                if ($scope.invoiceReport !== undefined) {
+                    $scope.invoiceReport.endItemDuedate = '';
+                    $scope.invoiceReport.itemDuedateEnd = '';
+                    angular.element('#endItemDuedate').text('');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "startCreateDate":
+                if ($scope.invoiceReport !== undefined) {
+                    $scope.invoiceReport.startCreateDate = '';
+                    $scope.invoiceReport.createDateFrom = '';
+                    angular.element('#startCreateDate').text('');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "endCreateDate":
+                if ($scope.invoiceReport !== undefined) {
+                    $scope.invoiceReport.endCreateDate = '';
+                    $scope.invoiceReport.createDateTo = '';
+                    angular.element('#endCreateDate').text('');
+                    angular.forEach($scope.invoiceReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.invoiceReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                        $scope.statusResult = '';
+                        $scope.invoiceReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+                case "startPaymentDate":
+                    if ($scope.invoiceReport !== undefined) {
+                        $scope.invoiceReport.startPaymentDate = '';
+                        $scope.invoiceReport.paymentDateFrom = '';
+                        angular.element('#startPaymentDate').text('');
+                        angular.forEach($scope.invoiceReport, function (value, key) {
+                            if (value === "" || value === null) {
+                                delete $scope.invoiceReport[key];
+                            }
+                        });
+                        if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                            $scope.statusResult = '';
+                            $scope.invoiceReport = undefined;
+                            $scope.checkOrderItem = undefined;
+                        }
+                    }
+                    break;
+                case "endPaymentDate":
+                    if ($scope.invoiceReport !== undefined) {
+                        $scope.invoiceReport.endPaymentDate = '';
+                        $scope.invoiceReport.paymentDateTo = '';
+                        angular.element('#endPaymentDate').text('');
+                        angular.forEach($scope.invoiceReport, function (value, key) {
+                            if (value === "" || value === null) {
+                                delete $scope.invoiceReport[key];
+                            }
+                        });
+                        if (jQuery.isEmptyObject($scope.invoiceReport)) {
+                            $scope.statusResult = '';
+                            $scope.invoiceReport = undefined;
+                            $scope.checkOrderItem = undefined;
+                        }
+                    }
+                    break;
 
         }
     }
