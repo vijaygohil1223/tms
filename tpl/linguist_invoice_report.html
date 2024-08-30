@@ -222,6 +222,13 @@
                                         <div class="table-responsive">
                                              <!-- dynamic pagination it -->
                                                 <table datatable="" dt-options="dtOptionsInternal" id="invoice_report_table" dt-columns="dtColumnsInternal" dt-instance="dtInstance" class="table m-b-none default footable-loaded footable" >
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th colspan="3">Total Price:</th>
+                                                            <th id="total-amount"></th>
+                                                            <th colspan="4"></th>
+                                                        </tr>
+                                                    </tfoot>
                                                 </table>
                                                 <!-- <table datatable="" dt-options="dtOptionsInternal" dt-columns="dtColumnsInternal" dt-instance="dtInstance" class="table table-striped table-bordered" >
                                                     <tbody>
