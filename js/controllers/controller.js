@@ -44990,6 +44990,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.clientnamec = "";
 
+    $scope.padNumber = function(number) {
+        let numStr = number.toString();
+        while (numStr.length < 6) {
+          numStr = '0' + numStr;
+        }
+        return numStr.toString();
+    };
+
     //export to excel
     $scope.exportData = function () {
         var count = 0;
@@ -45058,17 +45066,40 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.dtColumnsInternal = [
         DTColumnBuilder.newColumn(null).withTitle('Sr No.').renderWith(function(data, type, full, meta) {
-            return meta.row + 1; // Serial number starts from 1
+            return meta.row + 1; 
         }),
-        DTColumnBuilder.newColumn('org_invoice_number').withTitle('Invoice Number'),
-        DTColumnBuilder.newColumn('freelanceName').withTitle('Resource'),
+        DTColumnBuilder.newColumn('org_invoice_number')
+        .withTitle('Invoice Number')
+        .renderWith(function(data, type, full, meta) {
+            if (data && full.invoice_id) { 
+                var url = '#/invoice-show/' + full.invoice_id; 
+                return '<a href="' + url + '">' + $scope.padNumber(data) + '</a>'; 
+            }
+            return ''; 
+        }),
+        DTColumnBuilder.newColumn('freelanceName')
+        .withTitle('Resource')
+        .renderWith(function(data, type, full, meta) {
+            if (data && full.invoice_id) { 
+                var url = '#/viewExternal/' + full.freelanceId; 
+                return '<a href="' + url + '">' + data + '</a>'; 
+            }
+            return ''; 
+        }),
         DTColumnBuilder.newColumn('Invoice_cost').withTitle('Amount'),
         DTColumnBuilder.newColumn('client_currency').withTitle('Currency'),
         DTColumnBuilder.newColumn('custom_invoice_no')
         .withTitle('Custom Invoice Number')
         .renderWith(function(data, type, full, meta) {
-            return data ? '#' + data : ''; // Prepend # and handle null/undefined data
+            if (data && full.invoice_id) { 
+                var url = '#/invoice-show/' + full.invoice_id; 
+                return '<a href="' + url + '">#' + data + '</a>'; 
+            }
+            return ''; 
         }),
+        // .renderWith(function(data, type, full, meta) {
+        //     return data ? '#' + data : ''; // Prepend # and handle null/undefined data
+        // }),
         DTColumnBuilder.newColumn('invoice_date')
         .withTitle('Invoice Date')
             .renderWith(function(data, type, full, meta) {
@@ -45293,6 +45324,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }
     }
+ 
     $scope.dtOptionsClInvc = DTOptionsBuilder.newOptions().
         withOption('scrollX', 'true').
         withOption('responsive', true).
