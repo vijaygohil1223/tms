@@ -1508,7 +1508,6 @@ class Client_invoice
         // Get search, order, pagination parameters from the request
         $searchValue = $post['search'] ?? ''; // Search value
         $orderColumnIndex = $post['order'][0]['column'] ?? 1; // Index of the column to sort
-
         $orderDir = $post['order'][0]['dir'] ?? 'asc'; // Order direction (asc or desc)
         $start = $post['start'] ?? 0; // Starting point for pagination
         $length = $post['length'] ?? 20; // Number of records to fetch
@@ -1528,8 +1527,6 @@ class Client_invoice
         ];
 
         // Determine the column to sort by based on DataTables order index
-       
-
         $orderColumn = $columns[$orderColumnIndex] ?? 'create_date';
 
         // Ensure the order direction is valid
@@ -1574,8 +1571,8 @@ class Client_invoice
             } elseif ($filterParams['invoiceStatus'] === "Overdue") {
                 $today = date('Y-m-d'); // Get today's date
                 $qry_invc .= " AND tmInvoice.inv_due_date IS NOT NULL 
-                               AND DATE(tmInvoice.inv_due_date) < '" . $this->_db->escape($today) . "' 
-                               AND tmInvoice.invoice_status NOT IN ('Paid', 'Complete', 'Completed')";
+                            AND DATE(tmInvoice.inv_due_date) < '" . $this->_db->escape($today) . "' 
+                            AND tmInvoice.invoice_status NOT IN ('Paid', 'Complete', 'Completed')";
             } elseif ($filterParams['invoiceStatus'] === "Approved") {
                 $qry_invc .= " AND (tmInvoice.is_approved = 1 OR tmInvoice.invoice_status = 'Approved') 
                             AND tmInvoice.invoice_status NOT IN ('Complete', 'Completed', 'Partly Paid', 'Paid')";
@@ -1615,63 +1612,57 @@ class Client_invoice
             $qry_invc .= " AND tmInvoice.paid_date <= '" . $this->_db->escape($filterParams['paymentDateTo'] . ' 23:59:59') . "'";
         }
 
-        $qry_invc1 = "SELECT tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, 
-                    tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress AS companyEmail, 
-                    tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, 
-                    concat(tu.vFirstName, ' ', tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, 
-                    tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, 
-                    tu.freelance_currency, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, 
-                    tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.invoice_date, 
-                    tmInvoice.paid_date, tmInvoice.created_date, tmInvoice.is_approved, tmInvoice.reminder_sent, 
-                    tmInvoice.is_excel_download, tmInvoice.currency_rate, tmInvoice.job_id as jobInvoiceIds, 
-                    tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName, 
-                    LPAD(tmInvoice.invoice_number, 6, '0') AS org_invoice_number, tmInvoice.inv_due_date, 
-                    tmInvoice.vat2 as taxInNok, tmInvoice.Invoice_cost2 as priceInNok, tpy.vBankInfo as linguist_bankinfo, 
-                    tc.client_currency 
-                    FROM tms_invoice tmInvoice
-                    LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
-                    LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
-                    LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
-                    LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1 
-                    WHERE tmInvoice.is_deleted != 1" . $qry_invc;
+        // Base query for data
+        $qry_invc1 = "SELECT DISTINCT tsv.job_summmeryId AS jobId, tsv.order_id AS orderId, tsv.po_number AS poNumber, 
+        tc.iClientId AS clientId, tc.vAddress1 AS companyAddress, tc.vEmailAddress AS companyEmail, 
+        tc.vPhone AS companyPhone, tc.vCodeRights AS company_code, tu.iUserId AS freelanceId, 
+        concat(tu.vFirstName, ' ', tu.vLastName) AS freelanceName, tu.vEmailAddress AS freelanceEmail, 
+        tu.vAddress1 AS freelanceAddress, tu.vProfilePic AS freelancePic, tu.iMobile AS freelancePhone, 
+        tu.freelance_currency, tsv.job_code AS jobCode, tmInvoice.invoice_number, tmInvoice.invoice_id, 
+        tmInvoice.invoice_status, tmInvoice.Invoice_cost, tmInvoice.paid_amount, tmInvoice.invoice_date, 
+        tmInvoice.paid_date, tmInvoice.created_date, tmInvoice.is_approved, tmInvoice.reminder_sent, 
+        tmInvoice.is_excel_download, tmInvoice.currency_rate, tmInvoice.job_id as jobInvoiceIds, 
+        tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName, 
+        LPAD(tmInvoice.invoice_number, 6, '0') AS org_invoice_number, tmInvoice.inv_due_date, 
+        tmInvoice.vat2 as taxInNok, tmInvoice.Invoice_cost2 as priceInNok, tpy.vBankInfo as linguist_bankinfo, 
+        tc.client_currency 
+        FROM tms_invoice tmInvoice
+        LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+        LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+        LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
+        LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1 
+        WHERE tmInvoice.is_deleted != 1" . $qry_invc;
 
+        // Execute query for data
+        $data = $this->_db->rawQuery($qry_invc1 . " ORDER BY " . $orderColumn . " " . $orderDir . " LIMIT $start, $length");
 
-        $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
-
-        $qry_invc1 .= " ORDER BY " . $orderColumn . " " . $orderDir;
-
-        $qry_invc1 .= " LIMIT $start, $length";
-
-        $data = $this->_db->rawQuery($qry_invc1);
-
-        // Query to get the total sum of Invoice_cost
-        $totalSumQuery = "SELECT SUM(tmInvoice.Invoice_cost) AS totalPrice 
-            FROM tms_invoice tmInvoice
-            LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
-            LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
-            LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
-            LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
-            WHERE tmInvoice.is_deleted != 1" . $qry_invc;
+        // Execute queries for totals
+        $totalSumQuery = "SELECT SUM(DISTINCT tmInvoice.Invoice_cost) AS totalPrice FROM tms_invoice tmInvoice
+        LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+        LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+        LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
+        LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
+        WHERE tmInvoice.is_deleted != 1" . $qry_invc;
 
         $totalSumResult = $this->_db->rawQuery($totalSumQuery);
         $totalPrice = $totalSumResult[0]['totalPrice'] ?? 0;
 
-        $totalRecordsQuery = "SELECT COUNT(*) AS count FROM tms_invoice tmInvoice
-                            LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
-                            LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
-                            LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
-                            LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
-                            WHERE tmInvoice.is_deleted != 1 " . $qry_invc;
+        $totalRecordsQuery = "SELECT COUNT(DISTINCT tmInvoice.invoice_id) AS count FROM tms_invoice tmInvoice
+        LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+        LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+        LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
+        LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
+        WHERE tmInvoice.is_deleted != 1" . $qry_invc;
+
         $totalRecordsResult = $this->_db->rawQuery($totalRecordsQuery);
         $totalRecords = $totalRecordsResult[0]['count'] ?? 0;
 
-        $filteredRecordsQuery = "SELECT COUNT(*) AS count FROM tms_invoice tmInvoice
-                                LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
-                                LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
-                                LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
-                                LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
-                                WHERE tmInvoice.is_deleted != 1" . $qry_invc;
-
+        $filteredRecordsQuery = "SELECT COUNT(DISTINCT tmInvoice.invoice_id) AS count FROM tms_invoice tmInvoice
+        LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+        LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+        LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
+        LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
+        WHERE tmInvoice.is_deleted != 1" . $qry_invc;
 
         $filteredRecordsResult = $this->_db->rawQuery($filteredRecordsQuery);
         $totalFilteredRecords = $filteredRecordsResult[0]['count'] ?? 0;
@@ -1693,8 +1684,6 @@ class Client_invoice
                 "totalPrice" => $totalPrice
             ];
         }
-
-
 
         // Return the response
         return $response;
