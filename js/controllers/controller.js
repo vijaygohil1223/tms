@@ -45048,7 +45048,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     
     $scope.dtColumnsInternal = [
-        DTColumnBuilder.newColumn(null).withTitle('Sr No.').renderWith(function(data, type, full, meta) {
+        DTColumnBuilder.newColumn(null).withTitle('#').renderWith(function(data, type, full, meta) {
             return meta.row + 1; 
         }),
         DTColumnBuilder.newColumn('org_invoice_number')
@@ -45069,8 +45069,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
             return ''; 
         }),
-        DTColumnBuilder.newColumn('Invoice_cost').withTitle('Amount'),
-        DTColumnBuilder.newColumn('client_currency').withTitle('Currency'),
+        DTColumnBuilder.newColumn('Invoice_cost')
+        .withTitle('Amount')
+            .renderWith(function(data, type, full, meta) {
+                if (data) {
+                    return $filter('customNumber')(data); 
+                }
+                return ''; 
+        }),
+        DTColumnBuilder.newColumn('client_currency')
+        .withTitle('Currency')
+        .renderWith(function(data, type, full, meta) {
+            if (data) {
+                // Remove everything after the first occurrence of the comma
+                let currencyCode = data.split(',')[0].trim();
+                return currencyCode;
+            }
+            return ''; // Return an empty string if data is not available
+        }),
         DTColumnBuilder.newColumn('custom_invoice_no')
         .withTitle('Custom Invoice Number')
         .renderWith(function(data, type, full, meta) {
@@ -45103,6 +45119,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     return $filter('globalDtFormat')(data); 
                 }
                 return '';
+        }),
+        DTColumnBuilder.newColumn('invoice_status')
+        .withTitle('Invoice status')
+        .renderWith(function(data, type, full, meta) {
+            if (data) {
+                // Apply custom logic to determine the invoice status
+                let status = data;
+                if (status === 'Open' && full.is_approved == 1) {
+                    status = 'Outstanding';
+                } 
+    
+                if (status === 'Open') {
+                    status = 'Waiting on approval';
+                }
+    
+                if (['Complete','Completed','Paid'].includes(status)) {
+                    status = 'Paid';
+                }
+    
+                return status;
+            }
+            return '';
         })
     ];
 
@@ -45127,7 +45165,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }, 0);
     
             $(api.column(3).footer()).html(
-                '$' + total.toFixed(2) 
+                total.toFixed(2) 
             );
         })
         .withOption('processing', true) 

@@ -1508,13 +1508,14 @@ class Client_invoice
         // Get search, order, pagination parameters from the request
         $searchValue = $post['search'] ?? ''; // Search value
         $orderColumnIndex = $post['order'][0]['column'] ?? 1; // Index of the column to sort
+
         $orderDir = $post['order'][0]['dir'] ?? 'asc'; // Order direction (asc or desc)
         $start = $post['start'] ?? 0; // Starting point for pagination
         $length = $post['length'] ?? 20; // Number of records to fetch
         $filterParams = $post['filterParams'] ?? '';
         // Define the columns array corresponding to DataTables columns
         $columns = [
-            0 => '',
+            0 => 'invoice_id',
             1 => 'org_invoice_number',
             2 => 'freelanceName',
             3 => 'Invoice_cost',
@@ -1523,9 +1524,12 @@ class Client_invoice
             6 => 'invoice_date',
             7 => 'inv_due_date',
             8 => 'paid_date',
+            9 => 'invoice_status'
         ];
 
         // Determine the column to sort by based on DataTables order index
+       
+
         $orderColumn = $columns[$orderColumnIndex] ?? 'create_date';
 
         // Ensure the order direction is valid
@@ -1533,26 +1537,30 @@ class Client_invoice
 
         // Base query
         $qry_invc = '';
-        function convertDateFormat($date) {
+        function convertDateFormat($date)
+        {
             $dateParts = explode('.', $date);
             if (count($dateParts) === 3) {
                 return $dateParts[2] . '-' . $dateParts[1] . '-' . $dateParts[0];
             }
             return $date; // Return the original date if format is incorrect
         }
-        
+
         // Assuming $searchValue can contain a date in dd.mm.yyyy format
         $searchValueConverted = convertDateFormat($searchValue);
 
         // Apply search functionality
         if (!empty($searchValue)) {
             $qry_invc .= " AND (concat(tu.vFirstName, ' ', tu.vLastName) LIKE '%" . $this->_db->escape($searchValue) . "%' 
+                        OR tu.vFirstName LIKE '%" . $this->_db->escape($searchValue) . "%',
+                        OR tu.vLastName LIKE '%" . $this->_db->escape($searchValue) . "%',
                         OR CAST(tmInvoice.invoice_number AS CHAR) LIKE '%" . $this->_db->escape($searchValue) . "%'
-                        OR tc.client_currency LIKE '%".$this->_db->escape($searchValue)."%'
-                        OR tmInvoice.Invoice_cost LIKE '%".$this->_db->escape($searchValue)."%'
-                        OR tmInvoice.invoice_number LIKE '%".$this->_db->escape($searchValue)."%'
+                        OR tc.client_currency LIKE '%" . $this->_db->escape($searchValue) . "%'
+                        OR tmInvoice.Invoice_cost LIKE '%" . $this->_db->escape($searchValue) . "%'
+                        OR tmInvoice.invoice_number LIKE '%" . $this->_db->escape($searchValue) . "%'
                         OR DATE(tmInvoice.inv_due_date) LIKE '%" . $this->_db->escape($searchValueConverted) . "%'
                         OR DATE(tmInvoice.invoice_date) LIKE '%" . $this->_db->escape($searchValueConverted) . "%'
+                        OR tmInvoice.invoice_status LIKE '%" . $this->_db->escape($searchValueConverted) . "%'
                         )";
         }
 
@@ -1617,7 +1625,7 @@ class Client_invoice
                     tmInvoice.paid_date, tmInvoice.created_date, tmInvoice.is_approved, tmInvoice.reminder_sent, 
                     tmInvoice.is_excel_download, tmInvoice.currency_rate, tmInvoice.job_id as jobInvoiceIds, 
                     tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName, 
-                    CAST(tmInvoice.invoice_number AS CHAR) AS org_invoice_number, tmInvoice.inv_due_date, 
+                    LPAD(tmInvoice.invoice_number, 6, '0') AS org_invoice_number, tmInvoice.inv_due_date, 
                     tmInvoice.vat2 as taxInNok, tmInvoice.Invoice_cost2 as priceInNok, tpy.vBankInfo as linguist_bankinfo, 
                     tc.client_currency 
                     FROM tms_invoice tmInvoice
@@ -1630,11 +1638,23 @@ class Client_invoice
 
         $orderDir = strtolower($orderDir) === 'desc' ? 'DESC' : 'ASC';
 
-        $qry_invc1 .= " ORDER BY " . 'invoice_number' . " " . $orderDir;
+        $qry_invc1 .= " ORDER BY " . $orderColumn . " " . $orderDir;
 
         $qry_invc1 .= " LIMIT $start, $length";
 
         $data = $this->_db->rawQuery($qry_invc1);
+
+        // Query to get the total sum of Invoice_cost
+        $totalSumQuery = "SELECT SUM(tmInvoice.Invoice_cost) AS totalPrice 
+            FROM tms_invoice tmInvoice
+            LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
+            LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id
+            LEFT JOIN tms_summmery_view tsv ON tsv.job_summmeryId = tmInvoice.job_id
+            LEFT JOIN tms_payment tpy ON tpy.iUserId = tu.iUserId AND tpy.iType = 1
+            WHERE tmInvoice.is_deleted != 1" . $qry_invc;
+
+        $totalSumResult = $this->_db->rawQuery($totalSumQuery);
+        $totalPrice = $totalSumResult[0]['totalPrice'] ?? 0;
 
         $totalRecordsQuery = "SELECT COUNT(*) AS count FROM tms_invoice tmInvoice
                             LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
@@ -1656,12 +1676,25 @@ class Client_invoice
         $filteredRecordsResult = $this->_db->rawQuery($filteredRecordsQuery);
         $totalFilteredRecords = $filteredRecordsResult[0]['count'] ?? 0;
 
-        $response = [
-            "draw" => intval($post['draw']),
-            "recordsTotal" => $totalRecords,
-            "recordsFiltered" => $totalFilteredRecords,
-            "data" => $data
-        ];
+        if (!isset($post['filterParams'])) {
+            $response = [
+                "draw" => intval($post['draw']),
+                "recordsTotal" => 0,
+                "recordsFiltered" => 0,
+                "data" => [],
+                "totalPrice" => 0
+            ];
+        } else {
+            $response = [
+                "draw" => intval($post['draw']),
+                "recordsTotal" => $totalRecords,
+                "recordsFiltered" => $totalFilteredRecords,
+                "data" => $data,
+                "totalPrice" => $totalPrice
+            ];
+        }
+
+
 
         // Return the response
         return $response;
