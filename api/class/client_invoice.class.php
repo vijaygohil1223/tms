@@ -1552,8 +1552,8 @@ class Client_invoice
         // Apply search functionality
         if (!empty($searchValue)) {
             $qry_invc .= " AND (concat(tu.vFirstName, ' ', tu.vLastName) LIKE '%" . $this->_db->escape($searchValue) . "%' 
-                        OR tu.vFirstName LIKE '%" . $this->_db->escape($searchValue) . "%',
-                        OR tu.vLastName LIKE '%" . $this->_db->escape($searchValue) . "%',
+                        OR tu.vFirstName LIKE '%" . $this->_db->escape($searchValue) . "%'
+                        OR tu.vLastName LIKE '%" . $this->_db->escape($searchValue) . "%'
                         OR CAST(tmInvoice.invoice_number AS CHAR) LIKE '%" . $this->_db->escape($searchValue) . "%'
                         OR tc.client_currency LIKE '%" . $this->_db->escape($searchValue) . "%'
                         OR tmInvoice.Invoice_cost LIKE '%" . $this->_db->escape($searchValue) . "%'
