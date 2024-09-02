@@ -45092,7 +45092,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (data) {
                     return $filter('customNumber')(data); 
                 }
-                return ''; 
+                return '0,00'; 
         }),
         DTColumnBuilder.newColumn('client_currency')
         .withTitle('Currency')
