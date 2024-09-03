@@ -44589,9 +44589,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-}).controller('invoicestatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder, $timeout) {
+}).controller('invoicestatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder, $timeout, DTColumnBuilder, $http, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.clientnamec = "";
+
+    $scope.padNumber = function(number) {
+        let numStr = number.toString();
+        while (numStr.length < 6) {
+          numStr = '0' + numStr;
+        }
+        return numStr.toString();
+    };
 
     //export to excel
     $scope.exportData = function () {
@@ -44625,6 +44633,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     //Invoice report search start
     // $scope.statusResult = [];
+
+    $scope.dtInstance = {};
+
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    }
     $scope.invoicestatusReportsearch = function (frmId, eID) {
        
         if ($scope.invoiceReport == undefined || $scope.invoiceReport == null || $scope.invoiceReport == "") {
@@ -44647,21 +44662,150 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.invoiceReport.endItemDuedate) {
                 $scope.invoiceReport.itemDuedateEnd = originalDateFormatNew($scope.invoiceReport.endItemDuedate);
             }
-            rest.path = 'statusinvoiceReportFilter';
-            rest.post($scope.invoiceReport).success(function (data) {
-                angular.forEach(data, function (val, i) {
-                    //val.Invoice_cost = numberFormatCommaToPoint(val.Invoice_cost);
-                    val.invoice_status = val.invoice_status == 'Open' ? 'Outstanding' : val.invoice_status
-                    if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
-                        val.invoice_status = 'Paid';
-                    }
-                });
-                $scope.statusResult = data;
-            })
+            // rest.path = 'statusinvoiceReportFilter';
+            // rest.post($scope.invoiceReport).success(function (data) {
+            //     angular.forEach(data, function (val, i) {
+            //         //val.Invoice_cost = numberFormatCommaToPoint(val.Invoice_cost);
+            //         val.invoice_status = val.invoice_status == 'Open' ? 'Outstanding' : val.invoice_status
+            //         if (val.invoice_status == 'Complete' || val.invoice_status == 'Completed'  || val.invoice_status == 'Paid' ) {
+            //             val.invoice_status = 'Paid';
+            //         }
+            //     });
+            //     $scope.statusResult = data;
+            // })
+            $scope.dtInstance.reloadData();
             var scrollID = (eID) ? eID : 'middle';
             scrollToId(scrollID);
         }
     }
+
+    $scope.dtColumnsInternal = [
+        DTColumnBuilder.newColumn(null).withTitle('#').renderWith(function(data, type, full, meta) {
+            return meta.row + 1; 
+        }),
+        DTColumnBuilder.newColumn('invoice_number')
+        .withTitle('Invoice Number')
+        .renderWith(function(data, type, full, meta) {
+            if (data && full.invoice_id) { 
+                var url = '#/client-invoice-show/' + full.invoice_id; 
+                return '<a href="' + url + '">' + $scope.padNumber(data) + '</a>'; 
+            }
+            return 'invoice'; 
+        }),
+        DTColumnBuilder.newColumn('clientCompanyName').withTitle('Company name'),
+        DTColumnBuilder.newColumn('accounting_tripletex')
+        .withTitle('Tripletex ID'),
+        DTColumnBuilder.newColumn('Invoice_cost')
+        .withTitle('Price')
+        .renderWith(function(data, type, full, meta) {
+            if (data) {
+                return $filter('customNumber')(data); 
+            }
+            return ''; // Return an empty string if data is not available
+        }),
+        DTColumnBuilder.newColumn('client_currency')
+        .withTitle('Currency')
+        .renderWith(function(data, type, full, meta) {
+            if (data) { 
+                let currencyCode = data.split(',')[0].trim();
+                return currencyCode;
+            }
+            return ''; 
+        }),
+        DTColumnBuilder.newColumn('invoice_date')
+        .withTitle('Creation Date')
+            .renderWith(function(data, type, full, meta) {
+                if (data) {
+                    return $filter('globalDtFormat')(data); 
+                }
+                return ''; 
+        }),
+        DTColumnBuilder.newColumn('inv_due_date')
+        .withTitle('Invoice Due Date')
+            .renderWith(function(data, type, full, meta) {
+                if (data) {
+                    return $filter('globalDtFormat')(data); 
+                }
+                return '';
+        }),
+        DTColumnBuilder.newColumn('paid_date')
+            .withTitle('Payment Paid Date')
+            .renderWith(function(data, type, full, meta) {
+                if (data) {
+                    return $filter('globalDtFormat')(data); 
+                }
+                return '';
+        }),
+        DTColumnBuilder.newColumn('invoice_status')
+        .withTitle('Invoice status')
+        .renderWith(function(data, type, full, meta) {
+            if (data) {
+                if (data) {
+                    data = data === 'Open' ? 'Outstanding' : data;
+                    if (data === 'Complete' || data === 'Completed' || data === 'Paid') {
+                        data = 'Paid';
+                    }
+                }
+                return data;
+            }
+            return '';
+        })
+    ];
+
+    $scope.filterInvoiceFn = function(){
+        
+        $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        .withOption('footerCallback', function (tfoot, data, start, end, display) {
+            var api = this.api();
+            var total = api
+                .column(4, { search: 'applied' })
+                .data()
+                .reduce(function (a, b) {
+                    return parseFloat(a) + parseFloat(b);
+                }, 0);
+    
+            $(api.column(3).footer()).html(
+                $filter('customNumber')(total.toFixed(2)) 
+            );
+        })
+        .withOption('processing', true) 
+        .withOption('serverSide', true) 
+        .withOption('ajax', function(data, callback, settings) {
+
+            var params = {
+                draw: data.draw,
+                start: data.start,
+                length: data.length,
+                order: data.order,
+                search: data.search.value,
+                filterParams: $scope.invoiceReport
+            };
+
+            // API call to fetch data
+            $http.post('api/statusinvoiceReportFilterCustomPage.php', params)
+                .then(function(response) {
+                    var res = response.data;
+
+                    // Pass the data to DataTables
+                    callback({
+                        draw: res.draw,
+                        recordsTotal: res.recordsTotal,
+                        recordsFiltered: res.recordsFiltered,
+                        data: res.data
+                    });
+                })
+                .catch(function(error) {
+                    console.error('Error fetching data:', error);
+                });
+        })
+        .withDataProp('data') 
+        .withOption('paging', true) 
+        .withOption('pageLength', 100)
+        .withOption('searching', true) // Enable search
+        .withOption('scrollX', true)
+        .withOption('order', [[0, 'asc']])
+    } 
+    $scope.filterInvoiceFn();
 
     $scope.reseteSearch = function (frmId) {
         // $scope.statusResult = [];
@@ -44948,12 +45092,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         }
     }
+   
     $scope.dtOptionsClInvc = DTOptionsBuilder.newOptions().
         withOption('scrollX', 'true').
         withOption('responsive', true).
         withOption('pageLength', 100).
         withOption('drawCallback', function(settings) {
             $timeout(function() {
+
               var table = $('#invoice_report_table').DataTable();
               var filteredData = table.rows({ filter: 'applied' }).data().toArray();
           
@@ -45071,7 +45217,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         DTColumnBuilder.newColumn('freelanceName')
         .withTitle('Resource')
         .renderWith(function(data, type, full, meta) {
-            if (data && full.invoice_id) { 
+            if (data && full.freelanceId) { 
                 var url = '#/viewExternal/' + full.freelanceId; 
                 return '<a href="' + url + '">' + data + '</a>'; 
             }
@@ -45168,7 +45314,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }, 0);
     
             $(api.column(3).footer()).html(
-                total.toFixed(2) 
+                $filter('customNumber')(total.toFixed(2))
             );
         })
         .withOption('processing', true) 
@@ -45186,8 +45332,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
             // API call to fetch data
             $http.post('api/linguistInvoiceCustomPage.php', params)
-
-            // $http.post('api/v1/linguistInvoiceCustomPage', params)
                 .then(function(response) {
                     var res = response.data;
                     console.log('Server Response:', res);
