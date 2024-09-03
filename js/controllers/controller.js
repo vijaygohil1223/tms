@@ -44720,7 +44720,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 return ''; 
         }),
-        DTColumnBuilder.newColumn('inv_due_date')
+        DTColumnBuilder.newColumn('invoice_due_date')
         .withTitle('Invoice Due Date')
             .renderWith(function(data, type, full, meta) {
                 if (data) {
