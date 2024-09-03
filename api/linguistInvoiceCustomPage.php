@@ -31,7 +31,7 @@ try {
             1 => 'org_invoice_number',
             2 => 'freelanceName',
             3 => 'Invoice_cost',
-            4 => 'client_currency',
+            4 => 'freelance_currency',
             5 => 'custom_invoice_no',
             6 => 'invoice_date',
             7 => 'inv_due_date',
@@ -65,7 +65,7 @@ try {
                     OR tu.vFirstName LIKE '%" . $searchValue . "%'
                     OR tu.vLastName LIKE '%" . $searchValue . "%'
                     OR CAST(tmInvoice.invoice_number AS CHAR) LIKE '%" . $searchValue . "%'
-                    OR tc.client_currency LIKE '%" . $searchValue . "%'
+                    OR tu.freelance_currency LIKE '%" . $searchValue . "%'
                     OR tmInvoice.Invoice_cost LIKE '%" . $searchValue . "%'
                     OR tmInvoice.invoice_number LIKE '%" . $searchValue . "%'
                     OR DATE(tmInvoice.inv_due_date) LIKE '%" . $searchValueConverted . "%'
@@ -139,7 +139,7 @@ try {
     tmInvoice.custom_invoice_no, tmInvoice.resourceInvoiceFileName, 
     LPAD(tmInvoice.invoice_number, 6, '0') AS org_invoice_number, tmInvoice.inv_due_date, 
     tmInvoice.vat2 as taxInNok, tmInvoice.Invoice_cost2 as priceInNok, tpy.vBankInfo as linguist_bankinfo, 
-    tc.client_currency 
+    tu.freelance_currency 
     FROM tms_invoice tmInvoice
     LEFT JOIN tms_users tu ON tu.iUserId = tmInvoice.freelance_id
     LEFT JOIN tms_client tc ON tc.iClientId = tmInvoice.customer_id

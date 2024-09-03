@@ -45231,7 +45231,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 return '0,00'; 
         }),
-        DTColumnBuilder.newColumn('client_currency')
+        DTColumnBuilder.newColumn('freelance_currency')
         .withTitle('Currency')
         .renderWith(function(data, type, full, meta) {
             if (data) {
@@ -45314,7 +45314,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }, 0);
     
             $(api.column(3).footer()).html(
-                $filter('customNumber')(total.toFixed(2))
+                $filter('customNumber')(total)
             );
         })
         .withOption('processing', true) 
