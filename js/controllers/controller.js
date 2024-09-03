@@ -45013,6 +45013,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     //Invoice report search start
     // $scope.statusResult = [];
+
+    // Initialize DataTables
+    $scope.dtInstance = {};
+
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    };
     $scope.invoicestatusReportsearch = function (frmId, eID) {
         if ($scope.invoiceReport == undefined || $scope.invoiceReport == null || $scope.invoiceReport == "") {
             notification('Please Select option', 'information');
@@ -45145,13 +45153,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         })
     ];
 
-    // Initialize DataTables
-    $scope.dtInstance = {};
-
-    // Callback function to handle DataTables initialization
-    $scope.dtInstanceCallback = function(instance) {
-        $scope.dtInstance = instance;
-    };
+    
 
     $scope.filterInvoiceFn = function(){
 
