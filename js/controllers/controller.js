@@ -45133,6 +45133,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 if (status === 'Open') {
                     status = 'Waiting on approval';
                 }
+                
     
                 if (['Complete','Completed','Paid'].includes(status)) {
                     status = 'Paid';
@@ -45182,7 +45183,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             };
 
             // API call to fetch data
-            $http.post('api/v1/linguistInvoiceCustomPage', params)
+            $http.post('api/linguistInvoiceCustomPage.php', params)
+
+            // $http.post('api/v1/linguistInvoiceCustomPage', params)
                 .then(function(response) {
                     var res = response.data;
                     console.log('Server Response:', res);
@@ -45203,6 +45206,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         .withOption('paging', true) 
         .withOption('pageLength', 100)
         .withOption('searching', true) // Enable search
+        .withOption('scrollX', true)
         .withOption('order', [[0, 'asc']])
     } 
     $scope.filterInvoiceFn();
