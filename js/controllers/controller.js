@@ -44690,7 +44690,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     });
             //     $scope.statusResult = data;
             // })
-            $scope.dtInstance.reloadData();
+            //$scope.dtInstance.reloadData();
+            if ($scope.dtInstance && $scope.dtInstance.reloadData) {
+                $scope.dtInstance.reloadData();
+            } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
+                $scope.dtInstance.DataTable.ajax.reload();
+            } else {
+                console.error('DataTable instance not correctly initialized.');
+            }
             var scrollID = (eID) ? eID : 'middle';
             scrollToId(scrollID);
         }
@@ -45211,7 +45218,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if ($scope.invoiceReport.endItemDuedate) {
                 $scope.invoiceReport.itemDuedateEnd = originalDateFormatNew($scope.invoiceReport.endItemDuedate);
             }
-            $scope.dtInstance.reloadData();
+            //$scope.dtInstance.reloadData();
+            if ($scope.dtInstance && $scope.dtInstance.reloadData) {
+                $scope.dtInstance.reloadData();
+            } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
+                $scope.dtInstance.DataTable.ajax.reload();
+            } else {
+                console.error('DataTable instance not correctly initialized.');
+            }
             var scrollID = (eID) ? eID : 'middle';
             scrollToId(scrollID);
         }
