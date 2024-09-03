@@ -2217,8 +2217,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
     
 
-    $scope.goTocommentChat = function (viewType) {
-        if (viewType) {
+    $scope.goTocommentChat = function (orderId, scoopId) {
+        if (orderId && scoopId) {
             $window.localStorage.setItem("isLinguistChat", false);
             $window.localStorage.setItem("jobIdLinguistChat", 0)
         
@@ -2229,7 +2229,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 size: '',
                 resolve: {
                     items: function () {
-                        return viewType;
+                        return { orderId: orderId, scoopId:scoopId };
                     }
                 }
             });
@@ -27040,6 +27040,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     } else {
                         $scope.itemList = data;
                     }
+                    console.log('$scope.itemList--------jobbbbbbbbbbbbbbbb', data)
 
                     angular.forEach($scope.itemLength, function (e, i) {
                         $scope.itemListFinal.push($scope.itemList.filter(function (e1, i1) {
@@ -42604,10 +42605,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.isLinguist = false
     $window.localStorage.setItem("isLinguistChat", $scope.isLinguist)
 
-    if (items) {
-        $routeParams.id = items;
+    $scope.scoopItemId = 0;
+    if (items && items.orderId) {
+        console.log('items', items)
+        $routeParams.id = items.orderId;
+        $scope.scoopItemId = items.scoopId;
+    }else{
+        if(items){
+            $routeParams.id = items;
+        }else{
+            notification('Record not available.', 'warning');
+            return false;
+        }
+    
     }
-
+    
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
     
     rest.path = 'viewProjectCustomerDetail';
@@ -42653,41 +42665,43 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.model().success(function (data) {
         
         angular.forEach(data, function (val, i) {
-            const resPosition = val.vResourcePosition.toString().split(',')
-            const fullName = val.vFirstName + ' ' + val.vLastName
-            // index based on api (project_coordinator,project_manager QA_specialist)
-            if (i===0 && resPosition.includes('3') ) {
-                angular.element('#coordinatorIcon').html(fullName);
-                var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
-                angular.element('.coordinatorIcon').html(coordpic);
-            } 
-            if (i===1 && resPosition.includes('2')) {
-                angular.element('#managerDesignation').html(fullName);
-                console.log('val', val)
-                var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
-                angular.element('.managerIcon').html(managerpic);
-            } 
-            if (i===2 && resPosition.includes('4')) {
-                angular.element('#QASpecialist').html(fullName);
-                var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
-                angular.element('.QAIcon').html(QApic);
+            if(val){
+                const resPosition = val.vResourcePosition.toString().split(',')
+                const fullName = val.vFirstName + ' ' + val.vLastName
+                // index based on api (project_coordinator,project_manager QA_specialist)
+                if (i===0 && resPosition.includes('3') ) {
+                    angular.element('#coordinatorIcon').html(fullName);
+                    var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
+                    angular.element('.coordinatorIcon').html(coordpic);
+                } 
+                if (i===1 && resPosition.includes('2')) {
+                    angular.element('#managerDesignation').html(fullName);
+                    console.log('val', val)
+                    var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
+                    angular.element('.managerIcon').html(managerpic);
+                } 
+                if (i===2 && resPosition.includes('4')) {
+                    angular.element('#QASpecialist').html(fullName);
+                    var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
+                    angular.element('.QAIcon').html(QApic);
+                }
+                // if (val.vResourcePosition == 3) {
+                //     angular.element('#coordinatorIcon').html(val.vUserName);
+                //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.coordinatorIcon').html(coordpic);
+
+                // } else if (val.vResourcePosition == 2) {
+                //     angular.element('#managerDesignation').html(val.vUserName);
+                //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.managerIcon').html(managerpic);
+
+                // } else if (val.vResourcePosition == 4) {
+                //     angular.element('#QASpecialist').html(val.vUserName);
+                //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.QAIcon').html(QApic);
+
+                // }
             }
-            // if (val.vResourcePosition == 3) {
-            //     angular.element('#coordinatorIcon').html(val.vUserName);
-            //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
-            //     angular.element('.coordinatorIcon').html(coordpic);
-
-            // } else if (val.vResourcePosition == 2) {
-            //     angular.element('#managerDesignation').html(val.vUserName);
-            //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
-            //     angular.element('.managerIcon').html(managerpic);
-
-            // } else if (val.vResourcePosition == 4) {
-            //     angular.element('#QASpecialist').html(val.vUserName);
-            //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
-            //     angular.element('.QAIcon').html(QApic);
-
-            // }
         })
     }).error(errorCallback);
 
@@ -42737,20 +42751,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
     }).error(errorCallback);
 
+    $scope.scoopSidebarDetail = []
     $scope.projectPriceChat = 0;
     $scope.projectScoopStatus = 'Assign'
+    rest.path = 'discussionScoopDetails/' + $scope.scoopItemId;
+    rest.get().success(function (data) {
+        $scope.scoopSidebarDetail = data;
+        console.log('scoopDetail', data)
+        $scope.projectScoopStatus = data?.item_status_name || '';
+        $scope.projectPriceChat = data?.total_price || 0;
+    })
+
     if ($routeParams.id) {
-        rest.path = 'itemsGet/' + $routeParams.id;
-        rest.get().success(function (data) {
-            angular.forEach(data, function (val, i) {
-                $scope.projectScoopStatus = val.item_status_name
-                if (val.total_price) {
-                    $scope.projectPriceChat += val.total_price;
-                }
-            });
+        // rest.path = 'itemsGet/' + $routeParams.id;
+        // rest.get().success(function (data) {
+        //     angular.forEach(data, function (val, i) {
+        //         $scope.projectScoopStatus = val.item_status_name
+        //         if (val.total_price) {
+        //             $scope.projectPriceChat += val.total_price;
+        //         }
+        //     });
             
 
-        });
+        // });
 
         //-- project Team Users --//
         $scope.teamArray = [];
@@ -42793,7 +42816,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.msgIDArr = [];
         $scope.commentsArrayAll = async function () {
             var deferred = $q.defer();
-            rest.path = "discussionOrder/" + $routeParams.id;
+            //rest.path = "discussionOrder/" + $routeParams.id;
+            rest.path = "discussionScoop/" + $scope.scoopItemId;
             rest.get().success(function (data2) {
                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
                 var data = data2.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
@@ -43140,7 +43164,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $timeout(function () {
                         if ($routeParams.id) {
                             $scope.stopTime = setInterval(() => {
-                                rest.path = "discussionOrder/" + $routeParams.id;
+                                //rest.path = "discussionOrder/" + $routeParams.id;
+                                rest.path = "discussionScoop/" + $scope.scoopItemId;
                                 rest.get().success(function (data) {
                                     //var NewcommentsArray = data;
                                     let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
@@ -43255,6 +43280,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // }, 500);
                     data.job_id = 0;
                     data.order_id = $routeParams.id;
+                    data.scoop_id = $scope.scoopItemId;
                     data.user_id = $window.localStorage.getItem("session_iUserId");
                     data.fullname = $window.localStorage.getItem("session_vUserName");
                     data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
@@ -43340,9 +43366,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 },
                 uploadAttachments: function (dataArray, success, error, data) {
                     /*"fileURL":dataArray[0].file_url,*/
+                    
                     $(dataArray).each(function (index, dataArrays) {
                         var obj = {
                             "order_id": $routeParams.id,
+                            "scoop_id": $scope.scoopItemId,
                             "user_id": $window.localStorage.getItem("session_iUserId"),
                             "fullname": $window.localStorage.getItem("session_vUserName"),
                             "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),

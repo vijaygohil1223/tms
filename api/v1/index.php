@@ -3194,6 +3194,17 @@ $app->put('/discussionOrder/:id','authenticate', function ($id) use($app) {
     $result = $discuss->discussionOrderUpdate($data, $id);
     echoResponse(200, $result);
 });
+
+$app->get('/discussionScoop/:id','authenticate', function($id) {
+    $discuss = new discussion ();
+    $result = $discuss->discussionScoop($id);
+    echoResponse(200, $result);
+});
+$app->get('/discussionScoopDetails/:id','authenticate', function($id) {
+    $discuss = new discussion ();
+    $result = $discuss->discussionScoopDetails($id);
+    echoResponse(200, $result);
+});
 //---------Comment Read Unread--------- //
 $app->put('/discussionCommentread/:orderId','authenticate', function ($orderId) use($app) {
     $discuss = new discussion ();
