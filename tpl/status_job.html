@@ -350,7 +350,7 @@
                                 <div class="panel-heading font-bold">Result</div>
                                 <div class="">
                                     <div class="">
-                                        <div class="row wrapper" ng-show="statusRes.length">
+                                        <div class="row wrapper" ng-show="statusResult.length">
                                             <div class="col-sm-6 m-b-xs">
                                                 <div class="col-sm-4">
                                                     <select class="input-sm form-control w-sm inline v-middle"
@@ -382,13 +382,14 @@
                                                 </div>
                                              </div>
                                             <div>
-                                                <button ng-show="statusRes.length" class="btn btn-info pull-right"
+                                                <button ng-show="statusResult.length" class="btn btn-info pull-right"
                                                     ng-click="exportData()">Excel</button>
                                             </div>
                                         </div>
                                         <div class="table-responsive">
-                                            <table class="table m-b-none default footable-loaded footable" id="job_report_table" datatable="ng" dt-options="dtOptions">
-                                                <thead>
+                                            <table datatable="" dt-options="dtOptionsInternal" dt-columns="dtColumnsInternal" id="job_report_table" style="width:100% !important" dt-instance="dtInstance" class="table m-b-none default footable-loaded footable" >
+                                            <!-- <table class="table m-b-none default footable-loaded footable" id="job_report_table" datatable="ng" dt-options="dtOptions"> -->
+                                                <!-- <thead>
                                                     <th>Sr.no</th>
                                                     <th>#</th>
                                                     <th>Job Number</th>
@@ -399,10 +400,10 @@
                                                     <th>Target language</th>
                                                     <th>Prices</th>
                                                     <th>Due date</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="result in statusRes=(statusResult)">
-                                                        <td ng-bind="$index + 1"></td>
+                                                </thead> -->
+                                                <!-- <tbody>
+                                                    <tr ng-repeat="result in data">
+                                                        <td ng-bind="$index + 1"></td> 
                                                         <td>
                                                             <input type="checkbox" id="orderCheck{{$index}}"
                                                                 name="orderCheck{{$index}}" ng-model="checkor"
@@ -436,10 +437,10 @@
                                                         <td>{{ result.jobPrice | customNumber}}</td>
                                                         <td style="white-space:nowrap;"><span style="display: none;">{{result.job_due_date}}</span>{{ result.job_due_date | dateFormatDisplayFront }}</td>
                                                     </tr>
-                                                    <!-- <tr ng-show="!statusRes.length">
+                                                    <tr ng-show="!statusRes.length">
                                                         <td colspan="10" ng-bind="dataNotFound"></td>
-                                                    </tr> -->
-                                                </tbody>
+                                                    </tr>
+                                                </tbody>-->
                                             </table>
                                         </div>
 

@@ -18226,7 +18226,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('jobstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder) {
+}).controller('jobstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder,  $timeout, DTColumnBuilder, $http, $filter, $compile) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.clientnamec = "";
 
@@ -18285,6 +18285,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // });
     
     //Job report search start
+
+    $scope.dtInstance = {};
+
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    };
     $scope.jobstatusReportsearch = function (frmId, eID) {
 
         if ($scope.jobReport == undefined || $scope.jobReport == null || $scope.jobReport == "") {
@@ -18312,42 +18319,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     $scope.statusResult = data;
             
             // })
-            rest.path = 'statusJobReportFilter';
-            rest.post($scope.jobReport).success(function (data) {
-                console.log('data', data)
-                $scope.statusResult = data;
-            })
+            // rest.path = 'statusJobReportFilter';
+            // rest.post($scope.jobReport).success(function (data) {
+            //     console.log('data', data)
+            //     $scope.statusResult = data;
+            // })
+            // $scope.filterInvoiceFn();
+            if ($scope.dtInstance && $scope.dtInstance.reloadData) {
+                $scope.dtInstance.reloadData();
+            } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
+                $scope.dtInstance.DataTable.ajax.reload();
+            } else {
+                console.error('DataTable instance not correctly initialized.');
+            }
             var scrollID = (eID) ? eID : 'middle';
             scrollToId(scrollID);
         }
     }
 
-    $scope.reseteSearch = function (frmId) {
-        $route.reload();
+    // job popup
+    $scope.jobNoDetails = function (id) {
+        //scrollBodyToTop();
+        //$location.path('job-summery-details/' + id);
+        $routeParams.id = id;
+        var modalInstance = $uibModal.open({
+            animation: $scope.animationsEnabled,
+            templateUrl: 'tpl/jobEditPopup.html',
+            controller: 'jobSummeryDetailsController',
+            size: '',
+            resolve: {
+                items: function () {
+                    return $scope.data;
+                }
+            }
+        });
     }
 
-    // call fn when back to page
-    if($rootScope.jobReport){
-        $scope.jobstatusReportsearch('job-status-report','middle')
-    }
-
-    //serch data action
-    $scope.statucOrderAction = function (action) {
-        switch (action) {
-            case "Change status to":
-                $scope.jobStatus = true;
-                break;
-            case "Remove selection":
-                $scope.jobStatus = false;
-                break;
-            case "Export to excel":
-                $scope.jobStatus = false;
-                break;
-            case "Select all":
-                $scope.jobStatus = false;
-                break;
-        }
-    }
     //search data action
     $scope.statusAction = function (action) {
         console.log('action=======>', action)
@@ -18427,13 +18434,162 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 break;
             case "Select all":
                 $scope.checkdata = "ordercheck";
+                console.log($scope.checkdata);
                 break;
         }
     }
 
+    //serch data action
+    $scope.statucOrderAction = function (action) {
+        switch (action) {
+            case "Change status to":
+                $scope.jobStatus = true;
+                break;
+            case "Remove selection":
+                $scope.jobStatus = false;
+                break;
+            case "Export to excel":
+                $scope.jobStatus = false;
+                break;
+            case "Select all":
+                $scope.jobStatus = false;
+                break;
+        }
+    }
+
+    $scope.dtColumnsInternal = [
+        DTColumnBuilder.newColumn(null).withTitle('Sr.no').renderWith(function(data, type, full, meta) {
+            var start = meta.settings._iDisplayStart; // Index of the first record on the current page
+            return start + meta.row + 1;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Actions').renderWith(function(data, type, full, meta) {
+            var html = '<div>' +
+               '<input type="checkbox" id="orderCheck' + meta.row + '" ' +
+               'name="orderCheck' + meta.row + '" ng-model="checkdata[' + meta.row + ']" ' +
+               'ng-checked="checkdata== \'ordercheck\'">' +
+               '<input type="text" id="orderCheckData' + meta.row + '" ' +
+               'name="orderCheckData' + meta.row + '" style="display: none;" ' +
+               'ng-model="jobData[' + meta.row + ']" ng-init="jobData[' + meta.row + '] = \'' + full.job_summmeryId + '\'">' +
+               '</div>';
+
+            // Use $timeout and $compile to ensure AngularJS processes the bindings
+            $timeout(function() {
+                var compiledHtml = $compile(html)($scope);
+                angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledHtml);
+            }, 0);
+            return ''; 
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Job Details').renderWith(function(data, type, full, meta) {
+            var jobDetailsLink = '<a href="javascript:void(0)" ' +
+                                 'ng-click="jobNoDetails(' + full.job_summmeryId + ')" ' +
+                                 'class="summeryColor">' +
+                                 full.orderNum + '_' + full.jobCode + full.jobNo.toString().padStart(3, '0') + '</a>';
+            
+            // Compile the HTML and link it to the scope
+            $timeout(function() {
+                var compiledLink = $compile('<div>' + jobDetailsLink + '</div>')($scope);
+                angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledLink);
+            }, 0);
+            
+            return ''; 
+        }),
+        DTColumnBuilder.newColumn('jobStatus').withTitle('Job Status'),
+        DTColumnBuilder.newColumn(null).withTitle('Contact Person').renderWith(function(data, type, full, meta) {
+            return '<a href="#/viewinternal/' + full.contactPerson + '" class="summeryColor">' +
+                   full.contactPersonName + '</a>';
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Resource').renderWith(function(data, type, full, meta) {
+            return '<a href="javascript:void(0)" ng-click="jobsumResource(' + full.resource + ',' + full.jobId + ',' + full.poNumber + ')">' +
+                   '<i class="fa fa-envelope summeryColor"></i></a>&nbsp;' +
+                   '<a href="javascript:void(0)" class="summeryColor" ng-click="resourceRedirect(' + full.resourceName + ')">' +
+                   full.resourceName + '</a>';
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Customer').renderWith(function(data, type, full, meta) {
+            if (full.customerName) {
+                return '<a href="#/viewdirect/' + full.customer + '" class="summeryColor">' +
+                       full.customerName + '</a>';
+            } else {
+                return '--';
+            }
+        }),
+        DTColumnBuilder.newColumn('ItemLanguage').withTitle('Item Language'),
+        DTColumnBuilder.newColumn('jobPrice').withTitle('Job Price').renderWith(function(data, type, full, meta) {
+            return $filter('customNumber')(data) ; // Adjust as per your customNumber filter
+        }),
+        DTColumnBuilder.newColumn('job_due_date').withTitle('Due Date').renderWith(function(data, type, full, meta) {
+            return '<span style="display: none;">' + full.job_due_date + '</span>' +
+            $filter('dateFormatDisplayFront')(moment(full.job_due_date).format('YYYY-MM-DD HH:mm:ss')); // Adjust date format as needed
+        })
+    ];
+    $scope.filterInvoiceFn = function(){
+        $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        .withOption('footerCallback', function (tfoot, data, start, end, display) {
+            var api = this.api();
+            var total = api
+                .column(3, { search: 'applied' })
+                .data()
+                .reduce(function (a, b) {
+                    return parseFloat(a) + parseFloat(b);
+                }, 0);
+    
+            $(api.column(3).footer()).html(
+                $filter('customNumber')(total.toFixed(2))
+            );
+        })
+        .withOption('processing', true) 
+        .withOption('serverSide', true) 
+        .withOption('ajax', function(data, callback, settings) {
+
+            var params = {
+                draw: data.draw,
+                start: data.start,
+                length: data.length,
+                order: data.order,
+                search: data.search.value,
+                filterParams: $scope.jobReport
+            };
+
+            // API call to fetch data
+            $http.post('api/statusJobReportFilterCustomPage.php', params)
+                .then(function(response) {
+                    var res = response.data;
+                    console.log('Server Response:', res);
+
+                    // Pass the data to DataTables
+                    callback({
+                        draw: res.draw,
+                        recordsTotal: res.recordsTotal,
+                        recordsFiltered: res.recordsFiltered,
+                        data: res.data
+                    });
+                    $scope.statusResult = res.data
+                })
+                .catch(function(error) {
+                    console.error('Error fetching data:', error);
+                });
+        })
+        .withDataProp('data') 
+        .withOption('paging', true) 
+        .withOption('pageLength', 100)
+        .withOption('searching', true) // Enable search
+        .withOption('scrollX', true)
+        .withOption('order', [[0, 'asc']])
+    } 
+    $scope.filterInvoiceFn();
+
+    
+    $scope.reseteSearch = function (frmId) {
+        $route.reload();
+    }
+
+    // call fn when back to page
+    if($rootScope.jobReport){
+        $scope.jobstatusReportsearch('job-status-report','middle')
+    }
+    
+
     //mail contactpreson and resources
     $scope.jobsumResource = function (resourceName, jobSummeryId, jobNumber) {
-        console.log('jobNumber', jobNumber)
         $scope.data = {
             jobSummeryId : jobSummeryId,
             jobNumber:  jobNumber,
@@ -18453,23 +18609,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-    // job popup
-    $scope.jobNoDetails = function (id) {
-        //scrollBodyToTop();
-        //$location.path('job-summery-details/' + id);
-        $routeParams.id = id;
-        var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
-            templateUrl: 'tpl/jobEditPopup.html',
-            controller: 'jobSummeryDetailsController',
-            size: '',
-            resolve: {
-                items: function () {
-                    return $scope.data;
-                }
-            }
-        });
-    }
+    
 
     //remove job search 
     $scope.clearCode = function (frmId, action) {
@@ -44705,7 +44845,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.dtColumnsInternal = [
         DTColumnBuilder.newColumn(null).withTitle('#').renderWith(function(data, type, full, meta) {
-            return meta.row + 1; 
+            var start = meta.settings._iDisplayStart; // Index of the first record on the current page
+            return start + meta.row + 1;
         }),
         DTColumnBuilder.newColumn('invoice_number')
         .withTitle('Invoice Number')
@@ -45235,7 +45376,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     
     $scope.dtColumnsInternal = [
         DTColumnBuilder.newColumn(null).withTitle('#').renderWith(function(data, type, full, meta) {
-            return meta.row + 1; 
+            var start = meta.settings._iDisplayStart; // Index of the first record on the current page
+            return start + meta.row + 1;
         }),
         DTColumnBuilder.newColumn('org_invoice_number')
         .withTitle('Invoice Number')
