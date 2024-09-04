@@ -44710,11 +44710,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         DTColumnBuilder.newColumn('invoice_number')
         .withTitle('Invoice Number')
         .renderWith(function(data, type, full, meta) {
-            if (data && full.invoice_id) { 
+            if (data && full.invoice_number) { 
                 var url = '#/client-invoice-show/' + full.invoice_id; 
                 return '<a href="' + url + '">' + $scope.padNumber(data) + '</a>'; 
             }
-            return 'invoice'; 
+            var url = '#/client-invoice-show/' + full.invoice_id; 
+            return '<a href="' + url + '">' + 'invoice' + '</a>'; 
         }),
         DTColumnBuilder.newColumn('clientCompanyName').withTitle('Company name'),
         DTColumnBuilder.newColumn('accounting_tripletex')
