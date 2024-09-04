@@ -85,7 +85,12 @@ function statusinvoiceReportFilter($post, $dbConn){
            
         } else if (in_array($filterParams['invoiceStatus'], ["Complete", "Completed", "Paid"])) {
             $qry_invc .= " AND tmInvoice.invoice_status IN ('Paid', 'Complete', 'Completed')";
-        } else {
+        } else if($filterParams['invoiceStatus'] === "Overdue"){
+            $today = date('Y-m-d'); // Get today's date
+                $qry_invc .= " AND tmInvoice.invoice_due_date IS NOT NULL 
+                        AND DATE(tmInvoice.invoice_due_date) < '" . $today . "' 
+                        AND tmInvoice.invoice_status NOT IN ('Paid','Complete','Completed','Cancel','Irrecoverable')";
+        }else {
             $qry_invc .= " AND tmInvoice.invoice_status = '" . $filterParams['invoiceStatus'] . "'";
         }
     }
