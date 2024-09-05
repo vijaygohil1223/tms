@@ -18515,10 +18515,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                    full.contactPersonName + '</a>';
         }),
         DTColumnBuilder.newColumn(null).withTitle('Resource').renderWith(function(data, type, full, meta) {
-            return '<a href="javascript:void(0)" ng-click="jobsumResource(' + full.resource + ',' + full.jobId + ',' + full.poNumber + ')">' +
-                   '<i class="fa fa-envelope summeryColor"></i></a>&nbsp;' +
-                   '<a href="javascript:void(0)" class="summeryColor" ng-click="resourceRedirect(' + full.resourceName + ')">' +
-                   full.resourceName + '</a>';
+            // return '<a href="javascript:void(0)" ng-click="jobsumResource(' + full.resource + ',' + full.jobId + ',' + full.poNumber + ')">' +
+            //        '<i class="fa fa-envelope summeryColor"></i></a>&nbsp;' +
+            //        '<a href="javascript:void(0)" class="summeryColor" ng-click="resourceRedirect(' + full.resourceName + ')">' +
+            //        full.resourceName + '</a>';
+            return full.resourceName;
         }),
         DTColumnBuilder.newColumn(null).withTitle('Customer').renderWith(function(data, type, full, meta) {
             if (full.customerName) {
@@ -18986,7 +18987,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 val.invoice_duedate = invoice_duedate;
                 //var InDuedate = new Date(invoice_duedate); 
                 var InDuedate = new Date(val.inv_due_date); 
-                console.log('val.inv_due_date', val.inv_due_date)
+                InDuedate.setHours(0, 0, 0, 0);
+                $scope.dateToday.setHours(0, 0, 0, 0);
                 
                 val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
                 //val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
@@ -19020,7 +19022,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.notExportedInvcCount++;
                     $scope.notExportedInvc.push(val);
                 }
-                if(val.inv_due_date !== null && new Date(InDuedate) < $scope.dateToday && !['Paid','Complete','Completed'].includes(val.invoice_status) ){
+                
+                if(val.inv_due_date !== null && InDuedate < $scope.dateToday && !['Paid','Complete','Completed'].includes(val.invoice_status) ){
                     $scope.overdueInvcCount++ 
                     $scope.overdueInvc.push(val);
                 }
