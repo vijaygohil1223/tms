@@ -90,6 +90,8 @@ function statusinvoiceReportFilter($post, $dbConn){
                 $qry_invc .= " AND tmInvoice.invoice_due_date IS NOT NULL 
                         AND DATE(tmInvoice.invoice_due_date) < '" . $today . "' 
                         AND tmInvoice.invoice_status NOT IN ('Paid','Complete','Completed','Cancel','Irrecoverable')";
+        }else if($filterParams['invoiceStatus'] === "Cancel"){
+            $qry_invc .= " AND tmInvoice.invoice_status IN ('Cancel', 'Irrecoverable')";
         }else {
             $qry_invc .= " AND tmInvoice.invoice_status = '" . $filterParams['invoiceStatus'] . "'";
         }

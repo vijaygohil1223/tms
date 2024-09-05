@@ -18499,10 +18499,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                    full.contactPersonName + '</a>';
         }),
         DTColumnBuilder.newColumn(null).withTitle('Resource').renderWith(function(data, type, full, meta) {
-            return '<a href="javascript:void(0)" ng-click="jobsumResource(' + full.resource + ',' + full.jobId + ',' + full.poNumber + ')">' +
-                   '<i class="fa fa-envelope summeryColor"></i></a>&nbsp;' +
-                   '<a href="javascript:void(0)" class="summeryColor" ng-click="resourceRedirect(' + full.resourceName + ')">' +
-                   full.resourceName + '</a>';
+            // return '<a href="javascript:void(0)" ng-click="jobsumResource(' + full.resource + ',' + full.jobId + ',' + full.poNumber + ')">' +
+            //        '<i class="fa fa-envelope summeryColor"></i></a>&nbsp;' +
+            //        '<a href="javascript:void(0)" class="summeryColor" ng-click="resourceRedirect(' + full.resourceName + ')">' +
+            //        full.resourceName + '</a>';
+            return full.resourceName;
         }),
         DTColumnBuilder.newColumn(null).withTitle('Customer').renderWith(function(data, type, full, meta) {
             if (full.customerName) {
