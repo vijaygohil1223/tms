@@ -30,6 +30,7 @@
             </div>
             <div class="wrapper-md ng-scope">
 
+                <!-- <nav-wizard current-step="currentStep"></nav-wizard> -->
                 <ul class="nav nav-pills nav-wizard" style="width: 69%;margin: auto;">
                     <li class="active">
                         <a href="#/client-profile">Basic Information</a>
@@ -42,7 +43,9 @@
                     </li>
                     <li>
                         <div class="nav-wedge"></div>
-                        <a href="#/price-list">Prices</a>
+                        <a href="#/price-list" ng-if="!paramsID">Prices</a>
+                        <a href="#/price-list-client/{{paramsID}}" ng-if="paramsID">Prices </a>
+                        
                         <div class="nav-arrow"></div>
                     </li>
                     <li>

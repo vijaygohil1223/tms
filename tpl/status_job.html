@@ -446,7 +446,7 @@
 
                                         <!-- use for export to excel -->
                                         <div class="table-responsive" id="exportable" style="display:none">
-                                            <table class="table m-b-none default footable-loaded footable">
+                                            <table class="table m-b-none default footable-loaded footable" id="exportableJob_report_table">
                                                 <thead>
                                                     <th>#</th>
                                                     <th>Job Number</th>
@@ -470,7 +470,7 @@
                                                         <td ng-bind="result.customerName"></td>
                                                         <td ng-if="result.ItemLanguage">{{result.ItemLanguage}}</td>
                                                         <td ng-if="!result.ItemLanguage">--</td>
-                                                        <td>{{ result.jobPrice | customNumber}}</td>
+                                                        <td>{{ result.jobPrice | customNumber}} <span class="none">-staticstring-</span> </td>
                                                         <!-- <td>{{ result.itemStatus }}</td> -->
                                                         <td >{{ result.job_due_date | dateFormatDisplayFront }}</td>
                                                     </tr>

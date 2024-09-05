@@ -15313,10 +15313,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.clientUrlName = 'edit-client/'+$scope.redirectToClientViewId;
     }, 100);
     angular.element('.panel-heading').css('background-color', 'white');
-    if ($scope.uType == 2) {
+    console.log('$scope.uType=======>', $scope.uType)
+
+    var currentRoute = $location.path();
+    
+    if ( $scope.uType == 2 || currentRoute.startsWith('/price-list-client') ) {
         $scope.pricePageId = 1;
+        $scope.uType = 2; // 2 for client
     } else {
         $scope.pricePageId = 2;
+        $scope.uType = 1; // 1 for external resource
     }
 
     rest.path = 'getAllSpecialization';
@@ -17312,7 +17318,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //$uibModalInstance.dismiss('cancel');
     //$uibModalInstance.close();
-
+    $scope.paramsID = $routeParams.id
     $timeout(function () {
         $scope.UpdateClientName = $window.localStorage.getItem("ShowuserName");
         $scope.showEditedByName = false;
@@ -17320,6 +17326,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.showEditedByName = true;
         }
     }, 500);
+
+    var currentRoute = $location.path();
+    if ( currentRoute.startsWith('/edit-client') ) {
+        //$window.localStorage.userType = 2
+    }
 
 
     $scope.comapanyBranchError = function () {
@@ -17516,6 +17527,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.uType = $window.localStorage.userType;
+    console.log('$scope.uType==============>', $scope.uType)
     $scope.currentUserName = $window.localStorage.currentUserName;
 
     $scope.customerType = [{
@@ -18232,6 +18244,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //export to excel
     $scope.exportData = function () {
+
+        console.log('tessssssssssss' )
         var count = 0;
         for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
             if ($("#orderCheck" + i).prop('checked') == true) {
@@ -18249,7 +18263,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $("#Export_" + i).hide()
                 }
             }
-            exportTableToExcel('job_report_table','Jobs-status-report')
+            //exportTableToExcel('job_report_table','Jobs-status-report')
+            exportTableToExcel('exportableJob_report_table','Jobs-status-report',[7], 1)
+            
             // var blob = new Blob([document.getElementById('exportable').innerHTML], {
             //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
             // });
@@ -44851,12 +44867,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         DTColumnBuilder.newColumn('invoice_number')
         .withTitle('Invoice Number')
         .renderWith(function(data, type, full, meta) {
-            if (data && full.invoice_number) { 
+            if (data && full.invoice_id) { 
                 var url = '#/client-invoice-show/' + full.invoice_id; 
                 return '<a href="' + url + '">' + $scope.padNumber(data) + '</a>'; 
             }
-            var url = '#/client-invoice-show/' + full.invoice_id; 
-            return '<a href="' + url + '">' + 'invoice' + '</a>'; 
+            return 'invoice'; 
         }),
         DTColumnBuilder.newColumn('clientCompanyName').withTitle('Company name'),
         DTColumnBuilder.newColumn('accounting_tripletex')

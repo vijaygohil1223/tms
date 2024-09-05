@@ -7219,3 +7219,47 @@ app.directive('typeaheadOnPaste', function($timeout) {
         }
     };
 });
+
+app.directive('navWizard', function($route, $routeParams) {
+    return {
+        restrict: 'E',
+        scope: {
+            currentStep: '='
+        },
+        template: `
+            <ul class="nav nav-pills nav-wizard" style="width: 69%; margin: auto;">
+                <li ng-repeat="step in steps" ng-class="{'active': $index === currentStep}">
+                    <div class="nav-wedge" ng-if=" $index !=0 "></div>
+                    <a ng-href="{{step.href}}">{{step.title}} </a>
+                    <div class="nav-arrow" ng-if="$index < steps.length - 1"></div>
+                </li>
+            </ul>
+        `,
+        link: function(scope) {
+            // Define the steps of the wizard within the directive
+            scope.steps = [
+                { title: 'Basic Information', href: '#/client-profile' },
+                { title: 'Contacts', href: '#/contact-person' },
+                { title: 'Prices', href: '#/price-list-client/'+$routeParams.id },
+                { title: 'Payment Information', href: '#/payment_client' },
+                { title: 'Login Details', href: '#/login-detail' }
+            ];
+        }
+    };
+});
+
+app.directive('compileHtml', function($compile) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            console.log('attrs', attrs)
+            scope.$watch(attrs.compileHtml, function(newVal) {
+                if (newVal) {
+                    var compiled = $compile(newVal)(scope);
+                    element.html(compiled);
+                }
+            });
+        }
+    };
+});
+
