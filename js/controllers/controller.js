@@ -18440,7 +18440,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $("#Export_" + i).remove();
                         }
                     }
-                    exportTableToExcel('job_report_table','Jobs-report')
+                    // exportTableToExcel('job_report_table','Jobs-report')
+                    exportTableToExcel('exportableJob_report_table','Jobs-status-report',[7], 1)
                     // var blob = new Blob([document.getElementById('exportable').innerHTML], {
                     //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                     // });
