@@ -2437,4 +2437,16 @@ class jobs_detail
         }
     }
 
+    public function jobsummeryGetByItemidNumber($orderId, $itemNumber)
+    {
+
+        $this->_db->join('tms_users tu', 'tsv.resource = tu.iUserId', 'LEFT');
+        $this->_db->join('tms_users tsu', 'tsv.contact_person = tsu.iUserId', 'LEFT');
+        $this->_db->where('tsv.order_id', $orderId);
+        $this->_db->where('tsv.item_id', $itemNumber);
+        $data = $this->_db->get('tms_summmery_view tsv', null, 'tsv.*,concat(tu.vFirstName, " ", tu.vLastName) as vUserName,tu.vProfilePic as resourcePic,tu.iUserId,tsu.vUserName AS contactPerson,tsu.iUserId AS contactPersonId');
+        //echo $this->_db->getLastQuery();exit;
+        return $data;
+    }
+
 }

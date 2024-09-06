@@ -2719,6 +2719,13 @@ $app->get('/select2JobCodeGet','authenticate', function () {
     $result = $itemsJob->select2JobCodeGet();
     echoResponse(200, $result);
 });
+$app->get('/jobsummeryGetByItemidNumber/:itemId/:itemnumber', 'authenticate',function ($orderId, $itemNumber) use($app) {
+    $itemsJob = new jobs_detail ();
+    $result = $itemsJob->jobsummeryGetByItemidNumber($orderId, $itemNumber);
+    echoResponse(200, $result);
+});
+
+/// client 
 
 $app->get('/clientDirectMessageEmailIdGet','authenticate', function () {
     $client = new client ();

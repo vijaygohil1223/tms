@@ -3,8 +3,15 @@
 //moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
 //Error Callbacj for Api.
+// var errorCallback = function (data) {
+//     notification(data['msg'], 'error');
+// };
 var errorCallback = function (data) {
-    notification(data['msg'], 'error');
+    if (data && data['msg']) {
+        notification(data['msg'], 'error');
+    } else {
+        notification('An unknown error occurred', 'error');
+    }
 };
 
 //Notification message function
@@ -1369,7 +1376,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var isMatchScoop = true;
                 if( ($scope.selectedOrder).split('-').pop().length == 3){
                     if( ($scope.selectedOrder).split(/-(.*)/s)[0].toString().length > 4){
-                        
+                        $scope.scoopItemNumber = 0;
                         var scoopItemNumber = ($scope.selectedOrder).split('-').pop();
                         scoopItemNumber = parseInt(scoopItemNumber, 10);
                         console.log('scoopItemNumber', scoopItemNumber)
@@ -1379,6 +1386,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     $scope.goToScoop = scoopData?.orderId;
                                     $scope.scoopId = scoopData?.itemId;
                                     //$scope.scoopId = scoopData?.item_number;
+                                    $scope.scoopItemNumber = scoopData?.item_number;
                                     isMatchScoop = false;
                                 }
                             }
@@ -1394,8 +1402,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     controller: 'viewScoopPopupController',
                                     size: '',
                                     resolve: {
+                                        // items: function () {
+                                        //     return { scoop_id: viewType, order_id:$scope.goToScoop };
+                                        // }
                                         items: function () {
-                                            return { scoop_id: viewType, order_id:$scope.goToScoop };
+                                            return {scoop_id: viewType,order_id:$scope.goToScoop, scoopItemNumber: $scope.scoopItemNumber};
                                         }
                                     }
                                 });
@@ -39036,6 +39047,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }).error(errorCallback);
 
+        // a-todo remove
         //check itemfile manager and delete
         rest.path = "itemFilemanager/" + $scope.order_id;
         rest.delete().success(function (data) {
@@ -39391,24 +39403,26 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.poNumberExist = false;
     $scope.checkPoNumberExist = function (id, searchText) {
-        if(searchText.length > 1){
-            rest.path = 'checkItemPonumberExist/' + id +'/' + searchText;
-            rest.get().success(function (data) {
-                if(data){
-                    $scope.poNumberExist = true;
-                    angular.element("#po_numberErr" + id).text('PO number has been used before.');
-                    $('#po_numberErr'+id).css('display','block');
-                }else{
-                    //$('#po_numberErr'+id).css('display','none');
-                    angular.element("#po_numberErr" + id).text('');
-                    $scope.poNumberExist = false;
-                }
-            });
-        }else{
-            angular.element("#po_numberErr" + id).text('');
-            //$('#po_numberErr'+id).css('display','none');
-            $scope.poNumberExist = false;
-        }
+        setTimeout(() => {
+            if(searchText.length > 1){
+                rest.path = 'checkItemPonumberExist/' + id +'/' + searchText;
+                rest.get().success(function (data) {
+                    if(data){
+                        $scope.poNumberExist = true;
+                        angular.element("#po_numberErr" + id).text('PO number has been used before.');
+                        $('#po_numberErr'+id).css('display','block');
+                    }else{
+                        //$('#po_numberErr'+id).css('display','none');
+                        angular.element("#po_numberErr" + id).text('');
+                        $scope.poNumberExist = false;
+                    }
+                });
+            }else{
+                angular.element("#po_numberErr" + id).text('');
+                //$('#po_numberErr'+id).css('display','none');
+                $scope.poNumberExist = false;
+            }
+        }, 300);
     }
 
     $scope.workflowChange = false;
@@ -40369,14 +40383,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
         var last = obj.slice(-1)[0];
-        if (last != undefined) {
-            if (last.approveId != undefined && last.requestId != undefined && last.appSt == 0) {
-                rest.path = "filemanagerApproveSend/" + last.approveId + '/' + last.requestId;
-                rest.get().success(function (data) {
-                    $route.reload();
-                }).error(errorCallback);
-            }
-        }
+        // if (last != undefined) {
+        //     if (last.approveId != undefined && last.requestId != undefined && last.appSt == 0) {
+        //         rest.path = "filemanagerApproveSend/" + last.approveId + '/' + last.requestId;
+        //         rest.get().success(function (data) {
+        //             $route.reload();
+        //         }).error(errorCallback);
+        //     }
+        // }
 
     }, 1000);
 
@@ -40447,150 +40461,227 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
     var allitCheked = [];
+
     $scope.itemAll = [];
-    if ($routeParams.id) {
-        $routeParams.id = $scope.order_id;
-        rest.path = 'itemsGet/' + $routeParams.id;
-        rest.get().success(function (data1) {
-            $scope.itemLength = data1.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.item_number);
-            //$scope.itemLength = data1;
-            $routeParams.id = $scope.order_id;
-            rest.path = 'jobsummeryGet/' + $routeParams.id;
-            rest.get().success(function (data) {
-                $scope.itemListFinal = [];
-                rest.path = "getsaveSortedJobsData/" + $scope.order_id;
-                rest.get().success(function (d) {
-                    $scope.availableSortedJobs = d;
-                    if ($scope.availableSortedJobs.length > 0) {
-                        $scope.itemListJob = d;
-                    } else {
-                        $scope.itemListJob = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_id == $scope.item_number);
+    // if ($routeParams.id) {
+    //     $routeParams.id = $scope.order_id;
+    //     rest.path = 'itemsGet/' + $routeParams.id;
+    //     rest.get().success(function (data1) {
+    //         $scope.itemLength = data1.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_number == $scope.item_number);
+    //         //$scope.itemLength = data1;
+    //         $routeParams.id = $scope.order_id;
+    //         rest.path = 'jobsummeryGet/' + $routeParams.id;
+    //         rest.get().success(function (data) {
+    //             $scope.itemListFinal = [];
+    //             rest.path = "getsaveSortedJobsData/" + $scope.order_id;
+    //             rest.get().success(function (d) {
+    //                 $scope.availableSortedJobs = d;
+    //                 if ($scope.availableSortedJobs.length > 0) {
+    //                     $scope.itemListJob = d;
+    //                 } else {
+    //                     $scope.itemListJob = data.filter(jobData => jobData.order_id == $scope.order_id &&  jobData.item_id == $scope.item_number);
                         
-                        //$scope.itemListJob = data;
-                    }
+    //                     //$scope.itemListJob = data;
+    //                 }
 
-                    angular.forEach($scope.itemLength, function (e, i) {
-                        $scope.itemListFinal.push($scope.itemListJob.filter(function (e1, i1) {
-                            return e1.item_id == e.item_number;
-                        }));
-                    });
+    //                 angular.forEach($scope.itemLength, function (e, i) {
+    //                     $scope.itemListFinal.push($scope.itemListJob.filter(function (e1, i1) {
+    //                         return e1.item_id == e.item_number;
+    //                     }));
+    //                 });
 
-                    angular.forEach($scope.itemListJob, function (val, i) {
-                        if (val.job_summmeryId) {
-                            rest.path = 'jobSummeryDetailsGet/' + val.job_summmeryId;
-                            rest.get().success(function (data) {
-                                $timeout(function () {
-                                    //count file
-                                    if (data) {
-                                        rest.path = 'filefolderstget/' + data[0].fmanager_id + '/' + $routeParams.id;
-                                        rest.get().success(function (data) {
-                                            var sourceFile = [];
-                                            var targetFile = [];
-                                            angular.element('.sourceC' + val.job_summmeryId).text(data.source);
-                                            angular.element('.targteC' + val.job_summmeryId).text(data.target);
-                                        }).error(errorCallback);
-                                    }
-                                }, 100);
-                            }).error(errorCallback);
-                        }
-                    })
+    //                 angular.forEach($scope.itemListJob, function (val, i) {
+    //                     if (val.job_summmeryId) {
+    //                         rest.path = 'jobSummeryDetailsGet/' + val.job_summmeryId;
+    //                         rest.get().success(function (data) {
+    //                             $timeout(function () {
+    //                                 //count file
+    //                                 if (data) {
+    //                                     rest.path = 'filefolderstget/' + data[0].fmanager_id + '/' + $routeParams.id;
+    //                                     rest.get().success(function (data) {
+    //                                         var sourceFile = [];
+    //                                         var targetFile = [];
+    //                                         angular.element('.sourceC' + val.job_summmeryId).text(data.source);
+    //                                         angular.element('.targteC' + val.job_summmeryId).text(data.target);
+    //                                     }).error(errorCallback);
+    //                                 }
+    //                             }, 100);
+    //                         }).error(errorCallback);
+    //                     }
+    //                 })
 
-                    $timeout(function () {
-                        $('#tblDataLoading').css('display', 'none');
-                    }, 300);
+    //                 $timeout(function () {
+    //                     $('#tblDataLoading').css('display', 'none');
+    //                 }, 300);
 
-                    // calcualtion for profit margin
-                    angular.forEach($scope.itemjobList, function (val, i) {
-                        var scoopItem = val.item_number;
-                        var totalJobAmount = 0;
-                        angular.forEach($scope.itemListJob, function (value, j) {
-                            //$timeout(function() {
-                            if (val.item_number == value.item_id && val.order_id == value.order_id) {
-                                var tPrice = (value.total_price) ? value.total_price : parseInt(0);
-                                if (tPrice) {
-                                    totalJobAmount += parseFloat(tPrice);
+    //                 // calcualtion for profit margin
+    //                 angular.forEach($scope.itemjobList, function (val, i) {
+    //                     var scoopItem = val.item_number;
+    //                     var totalJobAmount = 0;
+    //                     angular.forEach($scope.itemListJob, function (value, j) {
+    //                         //$timeout(function() {
+    //                         if (val.item_number == value.item_id && val.order_id == value.order_id) {
+    //                             var tPrice = (value.total_price) ? value.total_price : parseInt(0);
+    //                             if (tPrice) {
+    //                                 totalJobAmount += parseFloat(tPrice);
+    //                             }
+    //                         }
+    //                         //}, 100);
+    //                     })
+    //                     if (totalJobAmount == undefined) {
+    //                         totalJobAmount = 0.00;
+    //                     }
+    //                     //var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
+    //                     var scoopAmount = $scope.itemjobList[i].total_price ? parseFloat($scope.itemjobList[i].total_price) : 0;
+                        
+    //                     var jobAmount = parseFloat(totalJobAmount);
+    //                     var profit = scoopAmount - jobAmount;
+    //                     if (scoopAmount) {
+    //                         var marginloss = 0;
+    //                         var profitMargin = ((scoopAmount - jobAmount) * 100) / parseFloat(scoopAmount);
+    //                     } else {
+    //                         var marginloss = 1;
+    //                         if (jobAmount > 0) {
+    //                             profitMargin = -100;
+    //                         } else {
+    //                             profitMargin = 0;
+    //                         }
+    //                     }
+    //                     var grossProfit = scoopAmount - jobAmount;
+    //                     var grossProfit = grossProfit ? grossProfit : 0.00;
+    //                     if (profitMargin) {
+    //                         profitMargin = profitMargin.toFixed(2);
+    //                         var isNegetive = Math.sign(profitMargin);
+    //                         if (isNegetive == -1 || isNegetive == -0) {
+    //                             var marginloss = 1;
+    //                         }
+    //                         profitMargin = $filter('NumbersCommaformat')(profitMargin) + "%";
+    //                     } else {
+    //                         profitMargin = '0,00' + "%";
+    //                         var marginloss = 1;
+    //                     }
+
+    //                     angular.element('#profitMargin' + $scope.itemjobList[i].item_number).text(profitMargin);
+    //                     if (marginloss) {
+    //                         $('#profitMargin' + $scope.itemjobList[i].item_number).css("color", "red");
+    //                     }
+    //                     if (val.due_date != null) {
+    //                         //var sales = val.total_amount
+    //                         var sales = val.total_price
+    //                         console.log('sales=>', sales)
+    //                         sales = $filter('NumbersCommaformat')(sales);
+    //                         var sales = sales ? sales : '0,00';
+    //                         var expense = $filter('NumbersCommaformat')(jobAmount);
+    //                         var expense = expense ? expense : '0,00';
+    //                         var grossProfit = $filter('NumbersCommaformat')(grossProfit);
+    //                         var grossProfit = grossProfit ? grossProfit : '0,00';
+    //                         var html = "<table><tr><td>Sales : </td><td>" + sales + "</td></tr><tr><td>Expense I (Prices) : </td><td> " + expense + " <td></tr><tr><td>Gross profit : </td><td> " + grossProfit + "</td></tr><tr><td>Profit margin : </td><td> " + profitMargin + "</td></tr></table>";
+    //                         $timeout(function () {
+    //                             angular.element("#myPopover" + i).popover({
+    //                                 title: '',
+    //                                 content: html,
+    //                                 html: true,
+    //                             });
+
+    //                         }, 3000);
+    //                     }
+    //                 })
+
+    //                 if (!$scope.itemListJob.length || $scope.itemListJob == "" || $scope.itemListJob == "") {
+    //                     $scope.displayNodata = true;
+    //                 }
+    //             }).error(errorCallback);
+
+    //             $scope.itemjobDataId = [];
+    //             angular.forEach(data, function (val, i) {
+    //                 if (val.item_id != 0) {
+    //                     $scope.itemjobDataId = 1;
+    //                 }
+    //             })
+
+    //         }).error(errorCallback);
+
+    //     })
+
+    //     $scope.manual = false;
+    //     $scope.auto = true;
+    // }
+
+    $scope.showDataLoaderJob = false;
+    $scope.jobDetailsData = function(){
+        if (!$scope.order_id || !$scope.scoopItemNumber) {
+            $scope.showDataLoaderJob = false;
+            notification("Order id and scoop id not not exist, ", 'warning');
+            return;
+        }
+        
+        if ($scope.order_id && $scope.scoopItemNumber ) {
+            $scope.showDataLoaderJob = true;
+
+                $routeParams.id = $scope.order_id;
+                //rest.path = 'jobsummeryGet/' + $routeParams.id;
+                rest.path = 'jobsummeryGetByItemidNumber/' + $scope.order_id + '/'+ $scope.scoopItemNumber;
+                rest.get().success(function (data) {
+                    console.log('jobsummeryGet-----data=======>', data)
+                    try {
+                        $scope.showDataLoaderJob = false;
+
+                        $scope.itemListJob = data;
+                        $scope.itemListFinal = $scope.itemListJob;
+    
+                            angular.forEach($scope.itemListJob, function (val, i) {
+                                if (val.job_summmeryId) {
+                                    rest.path = 'jobSummeryDetailsGet/' + val.job_summmeryId;
+                                    rest.get().success(function (data) {
+                                        $timeout(function () {
+                                            //count file
+                                            if (data) {
+                                                rest.path = 'filefolderstget/' + data[0].fmanager_id + '/' + $routeParams.id;
+                                                rest.get().success(function (data) {
+                                                    var sourceFile = [];
+                                                    var targetFile = [];
+                                                    angular.element('.sourceC' + val.job_summmeryId).text(data.source);
+                                                    angular.element('.targteC' + val.job_summmeryId).text(data.target);
+                                                }).error(errorCallback);
+                                            }
+                                        }, 100);
+                                    }).error(errorCallback);
                                 }
-                            }
-                            //}, 100);
-                        })
-                        if (totalJobAmount == undefined) {
-                            totalJobAmount = 0.00;
-                        }
-                        //var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
-                        var scoopAmount = $scope.itemjobList[i].total_price ? parseFloat($scope.itemjobList[i].total_price) : 0;
-                        
-                        var jobAmount = parseFloat(totalJobAmount);
-                        var profit = scoopAmount - jobAmount;
-                        if (scoopAmount) {
-                            var marginloss = 0;
-                            var profitMargin = ((scoopAmount - jobAmount) * 100) / parseFloat(scoopAmount);
-                        } else {
-                            var marginloss = 1;
-                            if (jobAmount > 0) {
-                                profitMargin = -100;
-                            } else {
-                                profitMargin = 0;
-                            }
-                        }
-                        var grossProfit = scoopAmount - jobAmount;
-                        var grossProfit = grossProfit ? grossProfit : 0.00;
-                        if (profitMargin) {
-                            profitMargin = profitMargin.toFixed(2);
-                            var isNegetive = Math.sign(profitMargin);
-                            if (isNegetive == -1 || isNegetive == -0) {
-                                var marginloss = 1;
-                            }
-                            profitMargin = $filter('NumbersCommaformat')(profitMargin) + "%";
-                        } else {
-                            profitMargin = '0,00' + "%";
-                            var marginloss = 1;
-                        }
-
-                        angular.element('#profitMargin' + $scope.itemjobList[i].item_number).text(profitMargin);
-                        if (marginloss) {
-                            $('#profitMargin' + $scope.itemjobList[i].item_number).css("color", "red");
-                        }
-                        if (val.due_date != null) {
-                            //var sales = val.total_amount
-                            var sales = val.total_price
-                            console.log('sales=>', sales)
-                            sales = $filter('NumbersCommaformat')(sales);
-                            var sales = sales ? sales : '0,00';
-                            var expense = $filter('NumbersCommaformat')(jobAmount);
-                            var expense = expense ? expense : '0,00';
-                            var grossProfit = $filter('NumbersCommaformat')(grossProfit);
-                            var grossProfit = grossProfit ? grossProfit : '0,00';
-                            var html = "<table><tr><td>Sales : </td><td>" + sales + "</td></tr><tr><td>Expense I (Prices) : </td><td> " + expense + " <td></tr><tr><td>Gross profit : </td><td> " + grossProfit + "</td></tr><tr><td>Profit margin : </td><td> " + profitMargin + "</td></tr></table>";
+                            })
+        
                             $timeout(function () {
-                                angular.element("#myPopover" + i).popover({
-                                    title: '',
-                                    content: html,
-                                    html: true,
-                                });
+                                $('#tblDataLoading').css('display', 'none');
+                            }, 300);
+        
+                            if (!$scope.itemListJob.length || $scope.itemListJob == "" || $scope.itemListJob == "") {
+                                $scope.displayNodata = true;
+                            }
+                            
+                        //}).error(errorCallback);
+        
+                        $scope.itemjobDataId = [];
+                        angular.forEach(data, function (val, i) {
+                            if (val.item_id != 0) {
+                                $scope.itemjobDataId = 1;
+                            }
+                        })
 
-                            }, 3000);
-                        }
-                    })
-
-                    if (!$scope.itemListJob.length || $scope.itemListJob == "" || $scope.itemListJob == "") {
-                        $scope.displayNodata = true;
+                    } catch (error) {
+                        console.log('error', error)
+                        
                     }
+    
                 }).error(errorCallback);
-
-                $scope.itemjobDataId = [];
-                angular.forEach(data, function (val, i) {
-                    if (val.item_id != 0) {
-                        $scope.itemjobDataId = 1;
-                    }
-                })
-
-            }).error(errorCallback);
-
-        })
-
-        $scope.manual = false;
-        $scope.auto = true;
+    
+            //})
+    
+            $scope.manual = false;
+            $scope.auto = true;
+        }else{
+            $scope.showDataLoaderJob = false;
+        }
     }
+    //$scope.jobDetailsData();
 
         $scope.countAction = function (id, name) {
         closeWindows();
