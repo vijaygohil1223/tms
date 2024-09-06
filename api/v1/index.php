@@ -2019,7 +2019,7 @@ $app->put('/ItemUpdate/:id', 'authenticate',function ($id) use($app) {
 $app->get('/allRecordsUpdateItems',function ()  {
     $item = new item ();
     $result = $item->allRecordsUpdateItems();
-    echoResponse($result ['status'], $result);
+    echoResponse(200, $result);
 });
 
 $app->get('/itemDelete/:id/:orderId', 'authenticate',function ($id, $orderId) {

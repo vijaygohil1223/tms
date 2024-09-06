@@ -580,40 +580,27 @@ class jobs_detail
 
     public function allRecordsUpdateSummaryView()
     {
-        $qry = "SELECT * FROM tms_summmery_view";
+        // Fetch all required fields from tms_summmery_view and join the relevant tables in a single query
+        $qry = "SELECT tsv.resource, tu.iUserId, tcu.current_curency_rate 
+                FROM tms_summmery_view tsv
+                LEFT JOIN tms_users tu ON tu.iUserId = tsv.resource
+                LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1)";
+        
+        // Fetch all the data
         $data = $this->_db->rawQuery($qry);
-
+        
+        // Iterate through the data and update each record
         foreach ($data as $d) {
-            // if ($d['resource']) {
-                // Use a parameterized query to prevent SQL injection
-                $sql = "SELECT *
-                        FROM tms_summmery_view tsv
-                        LEFT JOIN tms_users tu ON tu.iUserId = tsv.resource
-                        LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1)
-                        WHERE tsv.resource = ?";
-                
-                $base_currency_rate = $this->_db->rawQuery($sql, [$d['resource']]);
-                
-                print_r($base_currency_rate);exit;
-                $updateData = [
-                    'user_base_currency_rate' => !empty($base_currency_rate[0]['current_curency_rate'])
-                        ? $base_currency_rate[0]['current_curency_rate']
-                        : 1
-                ];
-                
-                // Assuming you need to update a specific record identified by an ID or similar
-                
-                $this->_db->where('resource', $d['resource']);
-                $this->_db->update('tms_summmery_view', $updateData);
-            // }else{
-            //     $updateData = [
-            //         'user_base_currency_rate' =>  1
-            //     ];
-            //     $this->_db->where('resource', $d['resource']);
-            //     $this->_db->update('tms_summmery_view', $updateData);
-            // }
+            // Prepare the update data
+            $updateData = [
+                'user_base_currency_rate' => !empty($d['current_curency_rate']) ? $d['current_curency_rate'] : 1
+            ];
+
+            // Update the tms_summmery_view table for the corresponding resource
+            $this->_db->where('resource', $d['resource']);
+            $this->_db->update('tms_summmery_view', $updateData);
         }
-        exit;
+
         return true;
     }
 

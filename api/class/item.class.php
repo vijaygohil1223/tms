@@ -123,45 +123,36 @@ class item {
 
     public function allRecordsUpdateItems()
     {
-        $qry = "SELECT * FROM tms_items ti";
+        // Step 1: Fetch all required data in a single query with necessary joins
+        $qry = "SELECT ti.itemId, ti.order_id, tcu.current_curency_rate, tci.client_currency 
+                FROM tms_items ti
+                LEFT JOIN tms_customer tc ON ti.order_id = tc.order_id
+                LEFT JOIN tms_client tci ON tc.client = tci.iClientId
+                LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tci.client_currency, ',', 1)";
+        
         $data = $this->_db->rawQuery($qry);
 
+        // Step 2: Loop through each record and update the base_currency_rate
         foreach ($data as $d) {
-            if ($d['order_id']) {
-
-                // Use a parameterized query to prevent SQL injection
-                $sql = "SELECT ti.order_id, tcu.current_curency_rate, tci.client_currency
-                        FROM tms_items ti
-                        LEFT JOIN tms_customer tc ON ti.order_id = tc.order_id
-                        LEFT JOIN tms_client tci ON tc.client = tci.iClientId
-                        LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tci.client_currency, ',', 1)";
-                
-                $base_currency_rate = $this->_db->rawQuery($sql);
-                
-                
-                
+            if ($d['order_id'] && isset($d['current_curency_rate'])) {
+                // Case where an order and a currency rate exists
                 $updateData = [
-                    'base_currency_rate' => $base_currency_rate['current_curency_rate']
+                    'base_currency_rate' => $d['current_curency_rate']
                 ];
-
-                print_r
-                
-                
-                // Assuming you need to update a specific record identified by an ID or similar
-                
-                $this->_db->where('itemId', $d['itemId']);
-                $this->_db->update('tms_items', $updateData);
-            }else{
+            } else {
+                // Default base_currency_rate when no order or currency rate is found
                 $updateData = [
-                    'base_currency_rate' =>  1
+                    'base_currency_rate' => 1
                 ];
-                $this->_db->where('itemId', $d['itemId']);
-                $this->_db->update('tms_items', $updateData);
             }
-            exit;
+
+            // Update the record in the tms_items table
+            $this->_db->where('itemId', $d['itemId']);
+            $this->_db->update('tms_items', $updateData);
         }
         return true;
     }
+
     
 
     public function ItemUpdate($id,$data) {
