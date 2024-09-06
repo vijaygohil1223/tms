@@ -27159,6 +27159,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'jobitemsGet/' + $routeParams.id;
         rest.get().success(function (data) {
             $scope.itemjobList = data;
+            
         }).error(errorCallback);
         rest.path = 'jobDetailLanguageGet/' + $routeParams.id;
         rest.get().success(function (data) {
@@ -27239,14 +27240,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         var totalJobAmount = 0;
                         angular.forEach($scope.itemList, function (value, j) {
                             //$timeout(function() {
+                            console.log("value", value);
                             if (val.item_number == value.item_id && val.order_id == value.order_id) {
                                 var tPrice = (value.total_price) ? value.total_price : parseInt(0);
                                 if (tPrice) {
-                                    totalJobAmount += parseFloat(tPrice);
+                                    totalJobAmount += parseFloat(tPrice/value.user_base_currency_rate);
                                 }
                             }
                             //}, 100);
                         })
+
                         if (totalJobAmount == undefined) {
                             totalJobAmount = 0.00;
                         }
@@ -27256,8 +27259,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             val.target_lang = JSON.parse(val.target_lang);
                         val.stLang = (val.source_lang && val.target_lang ) ? val.source_lang.sourceLang + ' > ' + val.target_lang.sourceLang : '';
                         //var scoopAmount = $scope.itemjobList[i].total_amount ? parseFloat($scope.itemjobList[i].total_amount) : 0;
-                        var scoopAmount = $scope.itemjobList[i].total_price ? parseFloat($scope.itemjobList[i].total_price) : 0;
+                        var scoopAmount = $scope.itemjobList[i].total_price ? parseFloat($scope.itemjobList[i].total_price/$scope.itemjobList[i].base_currency_rate ) : 0;
                         var jobAmount = parseFloat(totalJobAmount);
+                        console.log("sdcscscsdc",val);
                         var profit = scoopAmount - jobAmount;
                         if (scoopAmount) {
                             var marginloss = 0;
@@ -27291,13 +27295,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         if (val.due_date != null) {
                             //var sales = val.total_amount
                             var sales = val.total_price
-                            sales = $filter('NumbersCommaformat')(sales);
-                            var sales = sales ? sales : '0,00';
+                            // sales = $filter('NumbersCommaformat')(sales);
+                            var baseCurrency = val.base_currency_rate
+                            var sales = sales ? $filter('NumbersCommaformat')(sales/baseCurrency) : '0,00';
                             var expense = $filter('NumbersCommaformat')(jobAmount);
                             var expense = expense ? expense : '0,00';
                             var grossProfit = $filter('NumbersCommaformat')(grossProfit);
                             var grossProfit = grossProfit ? grossProfit : '0,00';
-                            var html = "<table><tr><td>Sales : </td><td>" + sales + "</td></tr><tr><td>Expense I (Prices) : </td><td> " + expense + " <td></tr><tr><td>Gross profit : </td><td> " + grossProfit + "</td></tr><tr><td>Profit margin : </td><td> " + profitMargin + "</td></tr></table>";
+                            var html = "<table><thead style='margin-left:10px !important;color: #502dc4 !important'>Price in EURO</thead><tbody><tr><td>Sales : </td><td>" + sales + "</td></tr><tr><td>Expense I (Prices) : </td><td> " + expense + " <td></tr><tr><td>Gross profit : </td><td> " + grossProfit + "</td></tr><tr><td>Profit margin : </td><td> " + profitMargin + "</td></tr></tbody></table>";
                             $timeout(function () {
                                 angular.element("#myPopover" + i).popover({
                                     title: '',

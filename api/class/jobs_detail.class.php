@@ -578,6 +578,46 @@ class jobs_detail
         return $data['vEmailAddress'];
     }
 
+    public function allRecordsUpdateSummaryView()
+    {
+        $qry = "SELECT * FROM tms_summmery_view";
+        $data = $this->_db->rawQuery($qry);
+
+        foreach ($data as $d) {
+            // if ($d['resource']) {
+                // Use a parameterized query to prevent SQL injection
+                $sql = "SELECT *
+                        FROM tms_summmery_view tsv
+                        LEFT JOIN tms_users tu ON tu.iUserId = tsv.resource
+                        LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1)
+                        WHERE tsv.resource = ?";
+                
+                $base_currency_rate = $this->_db->rawQuery($sql, [$d['resource']]);
+                
+                print_r($base_currency_rate);exit;
+                $updateData = [
+                    'user_base_currency_rate' => !empty($base_currency_rate[0]['current_curency_rate'])
+                        ? $base_currency_rate[0]['current_curency_rate']
+                        : 1
+                ];
+                
+                // Assuming you need to update a specific record identified by an ID or similar
+                
+                $this->_db->where('resource', $d['resource']);
+                $this->_db->update('tms_summmery_view', $updateData);
+            // }else{
+            //     $updateData = [
+            //         'user_base_currency_rate' =>  1
+            //     ];
+            //     $this->_db->where('resource', $d['resource']);
+            //     $this->_db->update('tms_summmery_view', $updateData);
+            // }
+        }
+        exit;
+        return true;
+    }
+
+
 
 
     public function jobselectContactNameupdate($id, $data)
@@ -689,6 +729,17 @@ class jobs_detail
         if (isset($data['resource'])) {
 
             $data['updated_date'] = date('Y-m-d H:i:s');
+
+            $sql = "SELECT tcu.current_curency_rate
+            FROM tms_summmery_view tsv
+            LEFT JOIN tms_users tu ON tu.iUserId = tsv.resource
+            LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1)
+            WHERE tsv.resource = ".$data['resource']." LIMIT 1";
+            $base_currency_rate = $this->_db->rawQuery($sql, $data['resource']);
+            
+            $data['user_base_currency_rate'] = !empty($base_currency_rate[0]['current_curency_rate']) 
+            ? $base_currency_rate[0]['current_curency_rate'] 
+            : 1;
 
             $this->_db->where('job_summmeryId', $id);
 
@@ -1308,8 +1359,17 @@ class jobs_detail
 
         $data['updated_date'] = date('Y-m-d H:i:s');
 
+        $sql = "SELECT tcu.current_curency_rate
+                FROM tms_summmery_view tsv
+                LEFT JOIN tms_users tu ON tu.iUserId = tsv.resource
+                LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1)
+                WHERE tsv.resource = ".$data['resource']." LIMIT 1";
+        $base_currency_rate = $this->_db->rawQuery($sql, $data['resource']);
+        
+        $data['user_base_currency_rate'] = !empty($base_currency_rate[0]['current_curency_rate']) 
+        ? $base_currency_rate[0]['current_curency_rate'] 
+        : 1;
         $this->_db->where('job_summmeryId', $id);
-
         $update = $this->_db->update('tms_summmery_view', $data);
 
         if ($update && isset($data['order_id'])) {
