@@ -2015,6 +2015,13 @@ $app->put('/ItemUpdate/:id', 'authenticate',function ($id) use($app) {
     $result = $item->ItemUpdate($id, $data);
     echoResponse($result ['status'], $result);
 });
+
+$app->get('/allRecordsUpdateItems',function ()  {
+    $item = new item ();
+    $result = $item->allRecordsUpdateItems();
+    echoResponse(200, $result);
+});
+
 $app->get('/itemDelete/:id/:orderId', 'authenticate',function ($id, $orderId) {
     $item = new item ();
     $result = $item->itemDelete($id, $orderId);
@@ -2551,6 +2558,14 @@ $app->get('/jobselectContactName/:id','authenticate', function ($id) use($app) {
     $result = $itemsJob->jobselectContactName($id);
     echoResponse(200, $result);
 });
+
+$app->get('/allRecordsUpdateSummaryView', function () {
+    $itemsJob = new jobs_detail ();
+    $result = $itemsJob->allRecordsUpdateSummaryView();
+    echoResponse(200, $result);
+});
+
+
 $app->put('/jobselectContactNameupdate/:id','authenticate', function ($id) use($app) {
     $itemsJob = new jobs_detail ();
     $data = json_decode($app->request->getBody(), TRUE);

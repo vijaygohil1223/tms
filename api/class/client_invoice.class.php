@@ -913,8 +913,10 @@ class Client_invoice
 
             $data['created_date'] = date('Y-m-d H:i:s');
             $data['modified_date'] = date('Y-m-d H:i:s');
+            $data['currency_rate'] = (isset($data['currency_rate'])) ? $data['currency_rate'] : 1;
             $data['value_date'] = date('Y-m-d');
             //$data['invoice_date'] = date('Y-m-d');
+
             $id = $this->_db->insert('tms_invoice_client', $data);
             if ($id && $scoopData) {
                 foreach ($scoopData as $item) {

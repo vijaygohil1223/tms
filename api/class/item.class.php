@@ -121,6 +121,40 @@ class item {
         return $results; 
     }
 
+    public function allRecordsUpdateItems()
+    {
+        // Step 1: Fetch all required data in a single query with necessary joins
+        $qry = "SELECT ti.itemId, ti.order_id, tcu.current_curency_rate, tci.client_currency 
+                FROM tms_items ti
+                LEFT JOIN tms_customer tc ON ti.order_id = tc.order_id
+                LEFT JOIN tms_client tci ON tc.client = tci.iClientId
+                LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tci.client_currency, ',', 1)";
+        
+        $data = $this->_db->rawQuery($qry);
+
+        // Step 2: Loop through each record and update the base_currency_rate
+        foreach ($data as $d) {
+            if ($d['order_id'] && isset($d['current_curency_rate'])) {
+                // Case where an order and a currency rate exists
+                $updateData = [
+                    'base_currency_rate' => $d['current_curency_rate']
+                ];
+            } else {
+                // Default base_currency_rate when no order or currency rate is found
+                $updateData = [
+                    'base_currency_rate' => 1
+                ];
+            }
+
+            // Update the record in the tms_items table
+            $this->_db->where('itemId', $d['itemId']);
+            $this->_db->update('tms_items', $updateData);
+        }
+        return true;
+    }
+
+    
+
     public function ItemUpdate($id,$data) {
         unset($data['project_name']);
         unset($data['item_status_name']);
@@ -147,7 +181,15 @@ class item {
                 unset($data['due_date']);
             }
         }
+        $sql = "SELECT tcu.current_curency_rate
+            FROM tms_items ti
+            LEFT JOIN tms_customer tc ON ti.order_id = tc.order_id
+            LEFT JOIN tms_client tci ON tc.client = tci.iClientId
+            LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tci.client_currency, ',', 1)
+            WHERE ti.order_id = ".$data['order_id']." LIMIT 1";
+        $base_currency_rate = $this->_db->rawQuery($sql, $data['order_id']);
 
+        $data['base_currency_rate'] = !empty($base_currency_rate[0]['current_curency_rate']) ? $base_currency_rate[0]['current_curency_rate'] : 1;
         unset($data['currency'],$data['currencyRate']);
         $this->_db->where("itemId", $id);
         $idd = $this->_db->update('tms_items', $data);

@@ -80,8 +80,19 @@ class customer {
             if($data['order_id'] && $qaSpecialist > 0 ){
                 $itemData['qaSpecialist'] = $qaSpecialist;
             }
+
+            $sql = "SELECT tcu.current_curency_rate
+                FROM tms_items ti
+                LEFT JOIN tms_customer tc ON ti.order_id = tc.order_id
+                LEFT JOIN tms_client tci ON tc.client = tci.iClientId
+                LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tci.client_currency, ',', 1)
+                WHERE ti.order_id = ".$data['order_id']." LIMIT 1";
+            $base_currency_rate = $this->_db->rawQuery($sql, $data['order_id']);
+            $itemData['base_currency_rate'] = !empty($base_currency_rate[0]['current_curency_rate']) ? $base_currency_rate[0]['current_curency_rate'] : 1;
+
             $itemData['updated_date'] = $data['modified_date'];
             $itemData['contact_person'] = $data['contact'];
+
             $this->_db->where("order_id", $data['order_id']);
             $itemsId = $this->_db->update('tms_items', $itemData);
 

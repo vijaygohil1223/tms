@@ -172,6 +172,7 @@ class Freelance_invoice
             $data['modified_date'] = date('Y-m-d');
             $data['value_date'] = date('Y-m-d');
             $data['invoice_date'] = (isset($data['invoice_date'])) ? $data['invoice_date'] : date('Y-m-d');
+            $data['currency_rate'] = (isset($data['currency_rate'])) ? $data['currency_rate'] : 1;
             $id = $this->_db->insert('tms_invoice', $data);
             if ($id && $jobData) {
                 foreach ($jobData as $item) {
