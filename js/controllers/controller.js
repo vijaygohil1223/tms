@@ -18554,16 +18554,24 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
         .withOption('footerCallback', function (tfoot, data, start, end, display) {
             var api = this.api();
-            var total = api
-                .column(3, { search: 'applied' })
-                .data()
-                .reduce(function (a, b) {
-                    return parseFloat(a) + parseFloat(b);
+        
+            // Log the data to see what's being processed
+            var columnData = api.column(3, { search: 'applied' }).data();
+        
+            if (columnData && columnData.length) {
+                // Only apply reduce if valid data is present
+                var total = columnData.reduce(function (a, b) {
+                    a = parseFloat(a) || 0; // Safeguard against non-numeric values
+                    b = parseFloat(b) || 0; // Safeguard against non-numeric values
+                    return a + b;
                 }, 0);
-    
-            $(api.column(3).footer()).html(
-                $filter('customNumber')(total.toFixed(2))
-            );
+        
+                $(api.column(3).footer()).html(
+                    $filter('customNumber')(total.toFixed(2))
+                );
+            } else {
+                $(api.column(3).footer()).html('0.00'); // Default footer value
+            }
         })
         .withOption('processing', true) 
         .withOption('serverSide', true) 
