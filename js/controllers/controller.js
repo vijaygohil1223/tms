@@ -10,7 +10,7 @@ var errorCallback = function (data) {
     if (data && data['msg']) {
         notification(data['msg'], 'error');
     } else {
-        notification('An unknown error occurred', 'error');
+        //notification('An unknown error occurred', 'error');
     }
 };
 
@@ -44898,7 +44898,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
     };
-
+    $scope.invoiceReport = {};
     //current year get
     $scope.date = new Date();
     var year = $scope.date.getFullYear();
@@ -44971,7 +44971,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var url = '#/client-invoice-show/' + full.invoice_id; 
                 return '<a href="' + url + '">' + $scope.padNumber(data) + '</a>'; 
             }
-            return 'invoice'; 
+            //return 'invoice'; 
+            var url = '#/client-invoice-show/' + full.invoice_id; 
+            return '<a href="' + url + '">' + 'invoice' + '</a>'; 
         }),
         DTColumnBuilder.newColumn('clientCompanyName').withTitle('Company name'),
         DTColumnBuilder.newColumn('accounting_tripletex')
@@ -45089,6 +45091,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.filterInvoiceFn();
 
     $scope.reseteSearch = function (frmId) {
+        $window.localStorage.scoopReport = '';
+        $scope.invoiceReport = [];
         // $scope.statusResult = [];
         location.reload()
     }
