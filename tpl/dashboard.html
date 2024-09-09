@@ -770,7 +770,7 @@ td { font-size: 11px; } */
                               <span ng-if="!order.jobLinguist.length"> - </span>
                             </td>
                             <td>
-                              <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                              <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId, order.itemId )">
                                 <i style="color:{{order.comment}}"
                                   class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                               </a>
@@ -961,7 +961,7 @@ td { font-size: 11px; } */
                                 <span ng-if="!order.jobLinguist.length"> - </span>
                               </td>
                               <td>
-                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId)">
+                                <a href="javascript:void(0)" ng-click="goTocommentChat(order.orderId, order.itemId )">
                                   <i style="color:{{order.comment}}"
                                     class="fa fa-commenting-o fa-2x cmtclr{{order.orderId}}"></i>
                                 </a>
