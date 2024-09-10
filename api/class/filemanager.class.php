@@ -990,7 +990,8 @@ array(
         return $data;
     }
 
-    public function buildTreeD2(array $elements, $parentId = 0, $itemId=0) {
+    // temp remove
+    public function buildTreeD2_(array $elements, $parentId = 0, $itemId=0) {
         $branch = array();
         foreach ($elements as $element) {
             //if($element['parent_id'] == $parentId)
@@ -1010,7 +1011,49 @@ array(
         }
         return $branch;
     }
-    public function filemanagerScoopPath($itemId, $parentId){
+    public function buildTreeD2(array $elements, $parentId = 0, $itemId = 0) {
+        $branch = array();
+        foreach ($elements as $element) {
+            // Check if current element matches the parentId
+            if ($element['fmanager_id'] == $parentId) {
+                // Recursively build the tree for children elements
+                $children = Self::buildTreeD2($elements, $element['parent_id'], $itemId);
+                $element['children'] = $children; // Add children to the current element
+                $branch[] = $element;
+                
+                // If the current element matches the itemId, return the branch
+                if ($element['item_id'] == $itemId) {
+                    return $branch;
+                }
+            }
+        }
+        return $branch;
+    }
+    
+
+    public function filemanagerScoopPath($itemId, $parentId) {
+        $scoopArray = array();
+    
+        // Fetch the fmanager data for the given itemId
+        // $this->_db->where('item_id', $itemId);
+        // $fmanagerIdTest = $this->_db->getOne('tms_filemanager');   
+        $this->_db->where('fmanager_id',$itemId);
+        $fmanagerData = $this->_db->getOne('tms_filemanager'); 
+    
+        // Fetch all data related to the parent and order it by fmanager_id
+        $this->_db->orderBy('fmanager_id', 'DESC');
+        $allData = $this->_db->get('tms_filemanager');
+        
+        // Build the tree structure if we have a matching fmanager record
+        if ($fmanagerData) {
+            $scoopArray = self::buildTreeD2($allData, $parentId, $itemId);
+        }
+    
+        return $scoopArray;
+    }
+    
+    // alternate
+    public function filemanagerScoopPath_($itemId, $parentId){
         //print_r($parentId);
         $scoopArray = array();
         $this->_db->where('item_id',$itemId);

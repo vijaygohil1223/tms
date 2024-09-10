@@ -3227,6 +3227,11 @@ $app->get('/discussionScoopDetails/:id','authenticate', function($id) {
     $result = $discuss->discussionScoopDetails($id);
     echoResponse(200, $result);
 });
+$app->get('/itemsScoopsDropdown/:id','authenticate', function($id) {
+    $items = new item ();
+    $result = $items->itemsScoopsDropdown($id);
+    echoResponse(200, $result);
+});
 //---------Comment Read Unread--------- //
 $app->put('/discussionCommentread/:orderId','authenticate', function ($orderId) use($app) {
     $discuss = new discussion ();
@@ -3234,6 +3239,7 @@ $app->put('/discussionCommentread/:orderId','authenticate', function ($orderId) 
     $result = $discuss->discussionCommentread($data, $orderId);
     echoResponse(200, $result);
 });
+
 //---------Emoji text--------- //
 $app->get('/emojitext','authenticate', function () use($app) {
     $discuss = new discussion ();

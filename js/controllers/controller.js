@@ -2244,6 +2244,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
             });
+
+            setTimeout(() => {
+                $('.cmtclr' + scoopId).css("color", "#67bb0a");
+            }, 200);
+            modalInstance.result.then(function () {
+                // Change icon color to blue after successful modal open
+                $('.cmtclr' + scoopId).css("color", "#67bb0a");
+            }, function () {
+                // Modal dismissed - handle if needed
+            });
+
         }
     }
 
@@ -4752,6 +4763,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             jobId:jobId,
             isCommentTab: isJobDiscussion && isJobDiscussion==1 ? true : false
         }
+        if(isJobDiscussion && isJobDiscussion==1){
+            setTimeout(() => {
+                $('.jobcmtclr' + jobId).css("color", "#67bb0a");
+            }, 200);
+        }
         var modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'tpl/jobDetailPopup.html',
@@ -4765,6 +4781,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
 
         modalInstance.opened.then(function () {
+            
             $scope.modalOpen = true;
         });
 
@@ -6376,7 +6393,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
                 $window.localStorage.setItem("jobFoldertype", $routeParams.id);
 
-                $interval($scope.getJobRootFileCount, 1000);
+                //$interval($scope.getJobRootFileCount, 1000);
 
                 $route.reload();
             }).error(errorCallback);
@@ -6399,7 +6416,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $window.localStorage.setItem("jobFolderRoot", data[0].fmanager_id);
                 $window.localStorage.setItem("jobFoldertype", $routeParams.id);
 
-                $interval($scope.getJobRootFileCount, 1000);
+                //$interval($scope.getJobRootFileCount, 1000);
                 $route.reload();
             }).error(errorCallback);
         }
@@ -8049,6 +8066,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.folderPathData = [];
         rest.path = 'filemanagerScoopPath/'+scoopId+'/'+parentId;
         rest.get().success(function (data) {
+            console.log('data=========>', data)
             const sortedArray = data.sort((a, b) => a.fmanager_id - b.fmanager_id);
             const newpath = sortedArray.filter( (itm) => { 
                 if(itm.name && itm.ext == '' ){
@@ -28839,6 +28857,84 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }).error(errorCallback);
 
+    $scope.selectedTab = 1; // Default to the first tab
+    setTimeout(() => {
+        $('#linguistJob').val(0).trigger('change');
+    }, 1000);
+    $scope.selectTab = function(tabId) {
+        console.log('tabId', tabId)
+        $scope.selectedTab = tabId;
+        if(tabId ==1){
+            $scope.linguistJob = ''
+            $('#linguistJob').val(0).trigger('change');
+        }
+        if(tabId ==2){
+            $scope.selectScoop = 'select'
+        }
+        
+    };
+
+    $scope.scoopChange = function(id){
+        if(id && id!='select'){
+            $scope.scoopItemId = id;
+            console.log('$scope.scoopItemId========', $scope.scoopItemId)
+            $scope.scoopSidebarDetail = []
+            $scope.projectPriceChat = 0;
+            $scope.projectScoopStatus = 'Assign'
+            rest.path = 'discussionScoopDetails/' + $scope.scoopItemId;
+            rest.get().success(function (data) {
+                $scope.scoopSidebarDetail = data;
+                console.log('scoopDetail', data)
+                $scope.projectScoopStatus = data?.item_status_name || '';
+                $scope.projectPriceChat = data?.total_price || 0;
+            })
+
+        $scope.commentsArrayAll();
+        $scope.commentsFn()
+        setTimeout(() => {
+            jQuery("#addemoji").emojioneArea({
+                autoHideFilters: true,
+                useSprite: true,
+            });
+        }, 200);
+            
+        }
+    }
+
+    $scope.reloadScoop = function(){
+        //$route.reload();
+        $scope.commentsArrayAll();
+        $scope.commentsFn()
+        setTimeout(() => {
+            jQuery("#addemoji").emojioneArea({
+                autoHideFilters: true,
+                useSprite: true,
+            });
+        }, 200);
+    }
+
+    $scope.selectScoop = 'select';
+    rest.path = 'itemsScoopsDropdown/' + $routeParams.id;
+    rest.get().success(function (data) {
+        console.log('data', data)
+        $scope.itemsDropdown = data;
+
+        if(data.length){
+            rest.path = 'discussionScoopDetails/' + data[0].itemId;
+            rest.get().success(function (data) {
+                $scope.scoopSidebarDetail = data;
+                console.log('scoopDetail', data)
+                $scope.projectScoopStatus = data?.item_status_name || '';
+                $scope.projectPriceChat = data?.total_price || 0;
+            })
+        }
+
+
+    })
+
+    
+
+
     $scope.projectPriceChat = 0;
     $scope.projectScoopStatus = 'Assign';
     if ($routeParams.id) {
@@ -28872,6 +28968,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/dashboard1');
         notification('Please create project.', 'warning');
     }
+
     $window.localStorage.getItem("session_iUserId");
     $window.localStorage.getItem("session_vUserName");
     $window.localStorage.getItem("session_iFkUserTypeId");
@@ -28905,11 +29002,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.linguistJob = isLinguistJobChat;
                 }
                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
-                var data = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
+                if($scope.scoopItemId && $scope.scoopItemId>0){
+                    var data = data2.filter( (itm) => { return itm.scoop_id == $scope.scoopItemId } );    
+                }else{
+                    var data = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
+                }
+                console.log('data=============>comments data', data)
                 
                 setTimeout(function () {
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function (val, i) {
+                        console.log('val========>', val)
                         var dataId = val.id;
                         //if( val.externalChat = (($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) ){
                             //val.externalChat = (localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0,
@@ -29099,7 +29202,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 }, 1500);
                 
-                commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
+                if($scope.scoopItemId && $scope.scoopItemId>0){
+                    commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat && itm.scoop_id == $scope.scoopItemId  } );
+                }else{
+                    commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
+                }
                 //console.log('commentsArray==', commentsArray)
                 //commentsArray = data;
                 //var data = data2.filter( (itm) => itm.externalChat == ( ($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) )
@@ -29257,8 +29364,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
                                 //console.log('isLinguistChat=>', isLinguistChat)
                                 //var data = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
-                                var newcommentsArray = data.filter( (itm) =>  { return  itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat } );
-                                
+                                if($scope.scoopItemId && $scope.scoopItemId>0){
+                                    var newcommentsArray = data.filter( (itm) =>  { return  itm.scoop_id == $scope.scoopItemId } );
+                                }else{
+                                    var newcommentsArray = data.filter( (itm) =>  { return  itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat } );
+                                }
                                 var newUserCommentsArr = newcommentsArray.filter(function (NewcommentsArr) { return NewcommentsArr.user_id != loginid });
                                 //var newUserCommentsArr = newcommentsArray.filter(function (newcommentsArray) { return newcommentsArray.user_id != loginid });
                                 var cmtArr = [];
@@ -29387,6 +29497,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 console.log('$window.localStorage.getItem("isLinguistChat")=>post', $window.localStorage.getItem("isLinguistChat"))
                 data.order_id = $routeParams.id;
+                data.scoop_id = $scope.scoopItemId;
                 data.user_id = $window.localStorage.getItem("session_iUserId");
                 data.fullname = $window.localStorage.getItem("session_vUserName");
                 data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
@@ -29481,6 +29592,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $(dataArray).each(function (index, dataArrays) {
                     var obj = {
                         "order_id": $routeParams.id,
+                        'scoop_id' : $scope.scoopItemId,
                         "user_id": $window.localStorage.getItem("session_iUserId"),
                         "fullname": $window.localStorage.getItem("session_vUserName"),
                         "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),

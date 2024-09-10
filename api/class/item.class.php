@@ -586,6 +586,13 @@ class item {
         return $result;
     }
 
+    public function itemsScoopsDropdown($orderId){
+
+        $data = $this->_db->rawQuery("SELECT its.itemId, its.item_number, gen.order_no FROM `tms_items` its LEFT JOIN tms_general gen ON gen.order_id = its.order_id WHERE its.order_id = $orderId ");
+        return $data;
+    }
+
+
 }
 
 ?>
