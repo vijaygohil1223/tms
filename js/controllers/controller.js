@@ -37029,7 +37029,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                     }, 1500);
                     //commentsArray = data.filter( (itm) => { return itm.externalChat === 1 } );
-                    commentsArray = data;
+                    commentsArray = filteredData;
                     
                 }).error(function () {
                     deferred.reject();
@@ -37155,7 +37155,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var newLoginidArr = commentsArray.filter(function (itmCmt) { return itmCmt.user_id != loginid });
                             var usercommentsArrLen = newLoginidArr.length;
                             
-                            setInterval(() => {
+                            let countInterval = 0;  // Initialize the counter
+                            const maxCountInterval = 10;  // Maximum number of executions
+
+                            const intervalId = setInterval(() => {
                                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                                 rest.get().success(function (data2) {
                                     //var newcommentsArray = data;
@@ -37220,6 +37223,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         
                                     }
                                 });
+
+                                countInterval++;
+                                if (countInterval >= maxCountInterval) {
+                                    clearInterval(intervalId);  // Stop the interval
+                                }
                                 
                             }, 10000);
                         }
