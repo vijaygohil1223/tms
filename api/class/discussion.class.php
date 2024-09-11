@@ -244,10 +244,47 @@ class discussion {
             $results['linguistList'] =   $lingsData;
 
         }
-        
 
         return $results ;
     }
+
+    public function discussionJobDetails($id) {
+        // Check if ID is valid
+        if (empty($id)) {
+            return []; // or handle this case as needed
+        }
+
+        $this->_db->where("job_summmeryId", $id);
+        $jobData = $this->_db->getOne('tms_summmery_view', 'order_id, item_id,contact_person ');
+        if (!$jobData) {
+            return []; // No job data found
+        }
+    
+        // Fetch scoop data
+        $this->_db->where("order_id", $jobData['order_id']);
+        $this->_db->where("item_number", $jobData['item_id']);
+        $scoopData = $this->_db->getOne('tms_items');
+    
+        if (!$scoopData) {
+            return []; // No scoop data found
+        }
+        // Fetch discussion scoop details
+        $results = self::discussionScoopDetails($scoopData['itemId']);
+        if ($results) {
+            // Fetch user data
+            $this->_db->where("iUserId", $jobData['contact_person']);
+            $userData = $this->_db->getOne('tms_users', 'vFirstName, vLastName');
+    
+            if ($userData) {
+                $results['pm_fullName'] = $userData['vFirstName'] . ' ' . $userData['vLastName'];
+            } else {
+                $results['pm_fullName'] = 'Unknown'; // Handle case where user data is not found
+            }
+        }
+    
+        return $results;
+    }
+    
         
 
 

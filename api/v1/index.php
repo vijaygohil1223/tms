@@ -3227,6 +3227,11 @@ $app->get('/discussionScoopDetails/:id','authenticate', function($id) {
     $result = $discuss->discussionScoopDetails($id);
     echoResponse(200, $result);
 });
+$app->get('/discussionJobDetails/:id','authenticate', function($id) {
+    $discuss = new discussion ();
+    $result = $discuss->discussionJobDetails($id);
+    echoResponse(200, $result);
+});
 $app->get('/itemsScoopsDropdown/:id','authenticate', function($id) {
     $items = new item ();
     $result = $items->itemsScoopsDropdown($id);

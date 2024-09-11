@@ -1087,7 +1087,7 @@ array(
         return $data;
     }
 
-    public function getScoopFilestotal($id){
+    public function getScoopFilestotal___($id){
         $this->treeArr_data_count = array();
         $this->_db->where('item_id',$id);
         $fmanagerId = $this->_db->getOne('tms_filemanager');    
@@ -1110,6 +1110,48 @@ array(
         }
         return $data;
     }
+    public function getScoopFilesTotal($id) {
+        $this->treeArr_data_count = array();
+    
+        // Fetch the initial fmanager record for the given item_id
+        $this->_db->where('item_id', $id);
+        $fmanagerId = $this->_db->getOne('tms_filemanager');
+    
+        if ($fmanagerId) {
+            // Use a recursive SQL query to fetch all the related records (children)
+            $sql = "WITH RECURSIVE file_hierarchy AS (
+                        SELECT fmanager_id, parent_id, item_id, f_id
+                        FROM tms_filemanager
+                        WHERE fmanager_id = ?
+                        
+                        UNION ALL
+    
+                        SELECT fm.fmanager_id, fm.parent_id, fm.item_id, fm.f_id
+                        FROM tms_filemanager fm
+                        INNER JOIN file_hierarchy fh ON fm.parent_id = fh.fmanager_id
+                    )
+                    SELECT * FROM file_hierarchy";
+            
+            $dataArr = $this->_db->rawQuery($sql, array($fmanagerId['fmanager_id']));
+            //$dataArr = $this->_db->rawQuery($sql);
+
+            // Count the number of files (f_id)
+            $count = 0;
+            foreach ($dataArr as $item) {
+                if (isset($item['f_id']) && $item['f_id'] > 0) {
+                    $count++;
+                }
+            }
+    
+            // Store the total count of files
+            $data[0]['totalfile'] = $count;
+        } else {
+            $data[0]['totalfile'] = 0;
+        }
+    
+        return $data;
+    }
+    
 
     public function getfolderByjobid($jonid) {
         $data = self::filegetByjobId($jonid);

@@ -28796,26 +28796,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
                 angular.element('.QAIcon').html(QApic);
             }
-            // if (val.vResourcePosition == 3) {
-            //     angular.element('#coordinatorIcon').html(val.vUserName);
-            //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
-            //     angular.element('.coordinatorIcon').html(coordpic);
-            // } else if (val.vResourcePosition == 2) {
-            //     angular.element('#managerDesignation').html(val.vUserName);
-            //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
-            //     angular.element('.managerIcon').html(managerpic);
-            // } else if (val.vResourcePosition == 4) {
-            //     angular.element('#QASpecialist').html(val.vUserName);
-            //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
-            //     angular.element('.QAIcon').html(QApic);
-            // }
         })
     }).error(errorCallback);
 
     $routeParams.id = $routeParams.id;
     rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
     rest.get().success(function (data) {
-        console.log('data===general data', data)
         $scope.general = data;
         //$scope.general.order_date = $scope.general.order_date;
         //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
@@ -29185,7 +29171,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //}    
                     });
 
-                        $(".comment-wrapper").each(function (i, v) {
+                        //$(".comment-wrapper").each(function (i, v) {
                             /*var dateTime = $(this).find('time')[0].innerText;
                             
                             //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
@@ -29193,7 +29179,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $(this).find('time')[0].innerText = dateTime;*/
 
                             //$(this).find('time')[0].append("testing");
-                        });
+                        //});
 
                         if (data.length == promises.length) {
                             //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
@@ -29369,6 +29355,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 }else{
                                     var newcommentsArray = data.filter( (itm) =>  { return  itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat } );
                                 }
+
                                 var newUserCommentsArr = newcommentsArray.filter(function (NewcommentsArr) { return NewcommentsArr.user_id != loginid });
                                 //var newUserCommentsArr = newcommentsArray.filter(function (newcommentsArray) { return newcommentsArray.user_id != loginid });
                                 var cmtArr = [];
@@ -29645,6 +29632,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $window.localStorage.setItem("isLinguistChat", true);
             $window.localStorage.setItem("jobIdLinguistChat", linstJobid)
             $scope.isLinguist = true;
+
+            rest.path = 'discussionJobDetails/' + linstJobid;
+            rest.get().success(function (data) {
+                $scope.scoopSidebarDetail = data;
+                $scope.projectScoopStatus = data?.item_status_name || '';
+                $scope.projectPriceChat = data?.total_price || 0;
+            })
+
         }else{
             $window.localStorage.setItem("isLinguistChat", false);
             $window.localStorage.setItem("jobIdLinguistChat", 0)
@@ -36755,21 +36750,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
                     angular.element('.QAIcon').html(QApic);
                 }
-                // if (val.vResourcePosition == 3) {
-                //     angular.element('#coordinatorIcon').html(val.vUserName);
-                //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.coordinatorIcon').html(coordpic);
 
-                // } else if (val.vResourcePosition == 2) {
-                //     angular.element('#managerDesignation').html(val.vUserName);
-                //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.managerIcon').html(managerpic);
-
-                // } else if (val.vResourcePosition == 4) {
-                //     angular.element('#QASpecialist').html(val.vUserName);
-                //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger-img">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.QAIcon').html(QApic);
-                // }
             })
         }).error(errorCallback);
 
@@ -36834,19 +36815,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $scope.projectPriceChat = 0;
         $scope.projectScoopStatus = 'Assign';
-        if ($scope.jobDiscussionRedirect) {
-            rest.path = 'itemsGet/' + $scope.jobDiscussionRedirect;
-            rest.get().success(function (data) {
-                angular.forEach(data, function (val, i) {
-                    $scope.projectScoopStatus = val.item_status_name
-                    if (val.total_price) {
-                        $scope.projectPriceChat += val.total_price;
-                    }
-                });
-                
-            });
+        // if ($scope.jobDiscussionRedirect) {
+        //     rest.path = 'itemsGet/' + $scope.jobDiscussionRedirect;
+        //     rest.get().success(function (data) {
+        //         angular.forEach(data, function (val, i) {
+        //             $scope.projectScoopStatus = val.item_status_name
+        //             if (val.total_price) {
+        //                 $scope.projectPriceChat += val.total_price;
+        //             }
+        //         });
+        //     });
+        // }
 
-        }
+        rest.path = 'discussionJobDetails/' + chatJobId;
+        rest.get().success(function (data) {
+            $scope.scoopSidebarDetail = data;
+            console.log('$scope.scoopSidebarDetail==========>', $scope.scoopSidebarDetail)
+            $scope.projectScoopStatus = data?.item_status_name || '';
+            $scope.projectPriceChat = data?.total_price || 0;
+        })
 
         if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
             $location.path('/dashboard1');
@@ -36878,12 +36865,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                 rest.get().success(function (data2) {
                     let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
-                    var data = data2.filter( (itm) => { return itm.job_id==chatJobId && itm.externalChat == isLinguistChat } );
+                    //var data = data2.filter( (itm) => { return itm.job_id==chatJobId && itm.externalChat == isLinguistChat } );
                     
+                    var filteredData = data2.filter(function (item) {
+                        return item.job_id === chatJobId && item.externalChat === isLinguistChat;
+                    });
+
                     setTimeout(function () {
                         
                         //var setintrvlMenu = setInterval(function() {
-                        angular.forEach(data, function (val, i) {
+                        angular.forEach(filteredData, function (val, i) {
                             var dataId = val.id;
 
                             var msgReadArr = val.read_id.split(",");
