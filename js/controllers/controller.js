@@ -11449,7 +11449,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             angular.forEach($scope.statusInfo, function (value) {
                                 // Directly comparing QuentityDate with Dateobject.id
                                 if (value.QuentityDate && val.id === value.QuentityDate) {
-                                    console.log('Matched QuentityDate:', value);
                                     
                                     // Update Dateobject values with matched statusInfo data
                                     $scope.Dateobject[i].itemAmount = value.totalAmount;
@@ -11464,7 +11463,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                     custObj.push(value.totalAmount);
                                     // Format and assign profit margin
                     
-                                    console.log('$scope.Dateobject after update:', $scope.Dateobject);
                                 }else{
                                     custObj.push(0);
                                 }
