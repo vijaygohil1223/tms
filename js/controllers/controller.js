@@ -9860,6 +9860,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
         $scope.profitMarginReportTotal = $scope.calculateProfitMargin($scope.scoopReportTotal, $scope.jobExpenseReportTotal);
     };
+    
 
     $scope.calculateProfitMargin = function (revenue, cost) {
         if (revenue === 0) {
@@ -9989,7 +9990,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     let newStatusResult = $scope.statusResult;
                     var newResult = [];
                     function groupByData(dataArray, property) {
-                        //console.log('dataArray', dataArray)
+                        // console.log('dataArray', dataArray)
                         return dataArray.reduce(function (res, dvalue) {
                             if (!res[dvalue[property]]) {
                                 res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0, totalJobAmount: 0, totalGrossProfit: 0, totalProfitMargin: 0 };
@@ -10783,6 +10784,1253 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
 
+}).controller('orderstatusReportController1', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder, DTColumnBuilder, $compile, $http) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.iUserId = "";
+    $scope.showDataLoader = false;
+
+    // var Dateobject = [];
+    // for (var i = 11; i >= 0; i--) {
+    //     var now = new Date();
+    //     var date = new Date(now.setMonth(now.getMonth() - i));
+    //     var datex = ("0" + date.getDate()).slice(-2) + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + date.getFullYear();
+    //     var str = pad(date.getMonth() + 1, 2) + "-" + date.getFullYear();
+    //     console.log('str=======>month', str)
+    //     Dateobject.push({
+    //         id: str
+    //     });
+    // }
+
+    // var Dateobject = [];
+    // for (var i = 11; i >= 0; i--) {
+    //     var now = new Date(); // Create a new date object for each iteration
+    //     var date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    //     var str = pad(date.getMonth() + 1, 2) + "-" + date.getFullYear();
+    //     Dateobject.push({
+    //         id: str
+    //     });
+    // }
+
+    
+    //export to excel
+    $scope.exportData = function (action) {
+        switch (action) {
+            case "result":
+                exportTableToExcel('client_scoop_report','scoop-status-report',[11,12,13,14], 1)
+                // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-status-report.xls");
+                break;
+            case "month":
+                exportTableToExcel('scoopMonthReport','scoop-month-status-report', '', 1)
+                // var blob = new Blob([document.getElementById('itemExport').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-month-status-report.xls");
+                break;
+            case "projectType":
+                
+                exportTableToExcel('scoopProjectTypeexport','scoop-Project-Type-status-report', '', 1)
+                // var blob = new Blob([document.getElementById('ProjectTypeexport').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-Project-Type-status-report.xls");
+                break;
+            case "customers":
+                exportTableToExcel('scoopCustomersExports','scoop-customers-status-report', '', 1)
+                // var blob = new Blob([document.getElementById('customersExports').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-customers-status-report.xls");
+                break;
+        }
+    };
+
+    //current year get
+    $scope.date = new Date();
+    var year = $scope.date.getFullYear();
+    $scope.Currentyear = year.toString().substr(2, 2);
+    //get contact person by customers
+    $scope.getContact = function (id, element) {
+        if(id && id != undefined){
+            $routeParams.id = id;
+            rest.path = 'contact';
+            rest.model().success(function (data) {
+                var cont = [];
+                angular.forEach(data.data, function (val, i) {
+                    var obj = {
+                        'id': val.iContactId,
+                        'text': val.vFirstName + ' ' + val.vLastName
+                    };
+                    cont.push(obj);
+                });
+                angular.element('#' + element).select2({
+                    allowClear: true,
+                    data: cont
+                });
+            }).error(errorCallback);
+        }    
+    };
+
+    $scope.clReportTotal = 0;
+    $scope.scoopReportTotal = 0;
+    $scope.jobExpenseReportTotal = 0;
+    $scope.profitMarginReportTotal = 0;
+    $scope.resetTotals = function () {
+        $scope.clReportTotal = 0;
+        $scope.scoopReportTotal = 0;
+        $scope.jobExpenseReportTotal = 0;
+        $scope.profitMarginReportTotal = 0;
+    };
+    // Function to calculate totals for all items
+    $scope.calculateTotals = function () {
+        $scope.resetTotals();
+        angular.forEach($scope.statusResult, function(item) {
+            if (item) {
+                const jobTotalPrice = item.total_job_price ? parseFloat(item.total_job_price) : 0;
+                const itemTotalAmount = item.totalAmount ? parseFloat(item.totalAmount) : 0;
+
+                $scope.clReportTotal += itemTotalAmount - jobTotalPrice;
+                $scope.scoopReportTotal += itemTotalAmount;
+                $scope.jobExpenseReportTotal += jobTotalPrice;
+            }
+        });
+        $scope.profitMarginReportTotal = $scope.calculateProfitMargin($scope.scoopReportTotal, $scope.jobExpenseReportTotal);
+    };
+
+    $scope.calculateProfitMargin = function (revenue, cost) {
+        if (revenue === 0) {
+            return 0; // To handle the case where revenue is zero to avoid division by zero
+        }
+        const profit = revenue - cost;
+        const profitMargin = (profit / revenue) * 100;
+        return profitMargin.toFixed(2); // Rounding to two decimal places
+    }
+    // Watch for changes in statusResult to recalculate totals
+    $scope.$watch('statusResult', function(newVal, oldVal) {
+        if (newVal !== oldVal) {
+            $scope.calculateTotals();
+        }
+    });
+
+    // Initial calculation
+    $scope.calculateTotals();
+
+    $scope.storeScoopOrders = function(id){
+        $window.localStorage.scoopReport = JSON.stringify($scope.orderReport);
+        if (id) {
+            rest.path = 'order/' + id + '/' + $window.localStorage.getItem("session_iUserId");
+            rest.get().success(function (data) {
+                if (data.userName != null) {
+                    $scope.orderdata = data;
+
+                    $window.localStorage.setItem('sessionProjectEditedBy', data.userName);
+                    $window.localStorage.setItem('sessionProjectEditedId', data.order_id);
+                    $window.localStorage.setItem('sessionProjectUserId', data.edited_by);
+
+                    $window.localStorage.orderNo = $scope.orderdata.order_number;
+                    $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+                    $window.localStorage.orderID = id;
+                    $window.localStorage.iUserId = id;
+                    $window.localStorage.userType = 3;
+                    $window.localStorage.currentUserName = data.vClientName;
+                    $window.localStorage.genfC = 1;
+
+                    //set isNewProject to false
+                    $window.localStorage.setItem("isNewProject", "false");
+
+                    $location.path('/general/'+data.order_id);
+                    $window.localStorage.orderBlock = 1;
+                    // $timeout(function () {
+                    //     $scope.cancel();
+                    // }, 500);
+                } else {
+                    notification('Information not available', 'warning');
+                }
+            }).error(errorCallback);
+        }
+    }
+    $rootScope.$on('$locationChangeSuccess', function() {
+        $rootScope.actualLocation = $location.path();
+    });        
+    $rootScope.$watch(function () {return $location.path()}, function (newLocation, oldLocation) {
+        if($rootScope.actualLocation === newLocation && $rootScope.actualLocation == '/Order-status-report') {
+            //alert('Why did you use history back?');
+            if($window.localStorage.scoopReport){
+                $scope.orderReport = JSON.parse($window.localStorage.scoopReport);
+                //console.log('$scope.scoopReport', $scope.orderReport)
+                $scope.statusReportsearch('order-status-report','middle') 
+            }    
+        }
+    });
+    $scope.dtInstance = {};
+
+    // Callback function to handle DataTables initialization
+    $scope.dtInstanceCallback = function(instance) {
+        $scope.dtInstance = instance;
+    };
+
+    //status oreder report find
+    $scope.statusReportsearch = function (frmId, eID) {
+        if ($scope.orderReport == undefined || $scope.orderReport == null || $scope.orderReport == "") {
+            notification('Please Select option', 'information');
+        } else {
+            $scope.showDataLoader = true;
+
+            try {
+                $scope.clReportTotal = 0;
+                if ($scope.orderReport.startCreateDate) {
+                    $scope.orderReport.createDateFrom = originalDateFormatNew($scope.orderReport.startCreateDate);
+                }
+                if ($scope.orderReport.endCreateDate) {
+                    $scope.orderReport.createDateTo = originalDateFormatNew($scope.orderReport.endCreateDate);
+                }
+                if ($scope.orderReport.startDeliveryDate) {
+                    $scope.orderReport.deliveryDateFrom = originalDateFormatNew($scope.orderReport.startDeliveryDate);
+                }
+                if ($scope.orderReport.endDeliveryDate) {
+                    $scope.orderReport.deliveryDateTo = originalDateFormatNew($scope.orderReport.endDeliveryDate);
+                }
+                if ($scope.orderReport.itemDuedate) {
+                    $scope.orderReport.itemDuedateStart = originalDateFormatNew($scope.orderReport.itemDuedate);
+                }
+                if ($scope.orderReport.endItemDuedate) {
+                    $scope.orderReport.itemDuedateEnd = originalDateFormatNew($scope.orderReport.endItemDuedate);
+                }
+
+                if ($scope.dtInstance && $scope.dtInstance.reloadData) {
+                    $scope.dtInstance.reloadData();
+                } else if ($scope.dtInstance && $scope.dtInstance.DataTable) {
+                    $scope.dtInstance.DataTable.ajax.reload();
+                } else {
+                    console.error('DataTable instance not correctly initialized.');
+                }
+                var scrollID = (eID) ? eID : 'middle';
+                scrollToId(scrollID);
+
+            } catch (error) {
+                console.log('error', error)
+                $scope.showDataLoader = false;
+                
+            }
+        }
+    }
+
+   
+
+    $scope.calculateGrossProfit = function (revenue, cost) {
+        const grossProfit = revenue - cost;
+        return grossProfit;
+    }
+
+    //serch data action
+    $scope.statucOrderAction = function (action) {
+        switch (action) {
+            case "Change project status":
+                $scope.projectStatus = true;
+                $scope.itemStatus = false;
+                break;
+            case "Change item status":
+                $scope.itemStatus = true;
+                $scope.projectStatus = false;
+                break;
+            case "Export to excel":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+            case "Remove selection":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+            case "Select all":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+        }
+    }
+
+    //search data action
+    $scope.statusAction = function (action) {
+        switch (action) {
+            case "Change project status":
+                var projectStatus = angular.element('#projectStatusdata').val();
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (orderselect == 'true') {
+                        var orderId = angular.element('#orderCheckData' + i).val();
+                        $routeParams.id = orderId;
+                        rest.path = 'ordersearchProjectStatusUpdate/' + $routeParams.id + '/' + projectStatus;
+                        rest.get().success(function (data) {
+                            $route.reload();
+                        }).error(errorCallback);
+                    }
+                }
+                break;
+            case "Change item status":
+                var itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
+                let scoopIds = [];
+                let promises = []; // Array to store promises
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    
+                    if (orderselect == 'true') {
+                        var orderId = angular.element('#orderCheckData' + i).val();
+                        scoopIds.push(orderId)
+                        promises.push(new Promise(function(resolve, reject) {
+                            resolve();
+                        }));
+                        $routeParams.id = orderId;
+                        rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
+                        rest.get().success(function (data) {
+                            $route.reload();
+                        }).error(errorCallback);
+                    }
+                }
+                Promise.all(promises).then(function() {
+                    let postArr = {
+                        'scoop_status': itemStatus,
+                        'scoop_array': scoopIds
+                    };
+                    rest.path = 'ordersearchItemStatusBulkUpdate';
+                    rest.post(postArr).success(function (data) {
+                        notification('Status updated successfully', 'success');
+                        $route.reload();
+                    }).error(errorCallback);
+                }).catch(function(err) {
+                    console.error("An error occurred:", err);
+                });
+                break;
+            case "Remove selection":
+                $scope.checkdata = false;
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var itemselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (itemselect == 'true') {
+                        var jobId = angular.element('#orderCheckData' + i).val();
+                        $("#orderCheck" + i).prop("checked", false);
+                    }
+                }
+                break;
+            case "Export to excel":
+                for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                    if ($("#orderCheck" + i).prop('checked') == true) {
+                        $("#Export_" + i).show()
+                    } else {
+                        $("#Export_" + i).hide();
+                        $("#Export_" + i).remove();
+                    }
+                }
+                exportTableToExcel('client_scoop_report','Order-status-report',[9,10,11,12], 1)
+                // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-status-report.xls");
+                $route.reload();
+                break;
+            case "Select all":
+                $scope.checkdata = "ordercheck";
+                // $scope.checkdata = true;
+                break;
+        }
+    }
+
+   
+
+    $scope.dtColumnsInternal = [
+        DTColumnBuilder.newColumn(null).withTitle('#').renderWith(function(data, type, full, meta) {
+            var start = meta.settings._iDisplayStart;
+            var index = start + meta.row; // This will give you the index for unique ids
+            var html = '<div>' +
+               '<input type="checkbox" id="orderCheck' + meta.row + '" ' +
+               'name="orderCheck' + meta.row + '" ng-model="checkdata[' + meta.row + ']" ' +
+               'ng-checked="checkdata== \'ordercheck\'">' +
+               '<input type="text" id="orderCheckData' + meta.row + '" ' +
+               'name="orderCheckData' + meta.row + '" style="display: none;" ' +
+               'ng-model="jobData[' + meta.row + ']" ng-init="jobData[' + meta.row + '] = \'' + full.scoopId + '\'">' +
+               '</div>';
+
+            // Use $timeout and $compile to ensure AngularJS processes the bindings
+            $timeout(function() {
+                var compiledHtml = $compile(html)($scope);
+                angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledHtml);
+            }, 0);
+            return ''; 
+            // return `<input type="checkbox" id="orderCheck${index}" name="orderCheck${index}" 
+            //                ng-model="checkor" ng-checked="checkdata == 'ordercheck'">
+            //         <input type="text" id="orderCheckData${index}" name="orderCheckData${index}" 
+            //                style="display: none;" value=${full.scoopId}>`;
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Orders Number').renderWith(function(data, type, full, meta) {
+            var html = '<a ng-click="storeScoopOrders(' + full.orderId + ')" class="summeryColor">' +
+                full.orderNumber + '-' + full.item_number.toString().padStart(3, '0') + '</a>';
+    
+            $timeout(function() {
+                var compiledLink = $compile('<div>' + html + '</div>')($scope);
+                angular.element(document).find('table').find('tbody').find('tr').eq(meta.row).find('td').eq(meta.col).html(compiledLink);
+            }, 0);
+            return '';
+        }),
+        DTColumnBuilder.newColumn('scoopName').withTitle('Scoop Name'),
+        DTColumnBuilder.newColumn('emailSubject').withTitle('Email Subject'),
+        DTColumnBuilder.newColumn(null).withTitle('Client').renderWith(function(data, type, full, meta) {
+            return '<a href="#/viewdirect/' + full.customer + '" class="summeryColor">' + full.contactName ? full.contactName : ''+ '</a>';
+        }),
+        DTColumnBuilder.newColumn('indirectAccountName').withTitle('Account'),
+        DTColumnBuilder.newColumn('scoop_status_name').withTitle('Status'),
+        DTColumnBuilder.newColumn('po_number').withTitle('PO Number'),
+        DTColumnBuilder.newColumn(null).withTitle('Create Date').renderWith(function(data, type, full, meta) {
+            return '<span class="none">' + full.scoopCreateDate + '</span>' +
+                $filter('dateFormatDisplayFront')(full.scoopCreateDate);
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Due Date').renderWith(function(data, type, full, meta) {
+            return '<span class="none">' + full.scoop_due_date + '</span>' +
+                $filter('dateFormatDisplayFront')(full.scoop_due_date);
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Prices').renderWith(function(data, type, full, meta) {
+            return $filter('customNumber')(full.totalAmount) + '&nbsp;' + (full.client_currency ? full.client_currency.split(',')[0] : 'EUR');
+        }),
+        DTColumnBuilder.newColumn('total_job_priceEUR').withTitle('Expense').renderWith(function(data, type, full, meta) {
+            return $filter('customNumber')(data);
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Gross Profit').renderWith(function(data, type, full, meta) {
+            // Use $scope within the renderWith to calculate gross profit
+            return $filter('customNumber')($scope.calculateGrossProfit(full.totalAmountEUR, full.total_job_priceEUR));
+        }),
+        DTColumnBuilder.newColumn(null).withTitle('Profit Margin').renderWith(function(data, type, full, meta) {
+            // Ensure the values are valid numbers
+            var totalAmount = parseFloat(full.totalAmount) || 0;
+            var totalJobPrice = parseFloat(full.total_job_price) || 0;
+            
+            // Calculate margin
+            var margin = $scope.calculateProfitMargin(totalAmount, totalJobPrice);
+            
+            // Assign class based on margin value
+            var className = isNaN(margin) || margin < 50 ? 'red-margin' : 'green-margin';
+            
+            // Format the margin value, default to 0 if NaN
+            var formattedMargin = $filter('customNumber')(isNaN(margin) ? 0 : margin);
+            
+            return '<span class="' + className + '">' + formattedMargin + ' %</span>';
+        })
+    ];
+
+    $scope.Dateobject = [];
+        for (let i = 11; i >= 0; i--) {
+            let now = new Date();
+            let date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            let str = pad(date.getMonth() + 1, 2) + "-" + date.getFullYear();
+            $scope.Dateobject.push({
+                id: str,
+                itemAmount: 0,
+                jobPrice: 0,
+                grossProfit: 0,
+                profitMargin: 0
+            });
+        }
+                    
+    
+    $scope.filterInvoiceFn = function(){
+        $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
+        .withOption('processing', true) 
+        .withOption('serverSide', true) 
+        .withOption('ajax', function(data, callback, settings) {
+
+            var params = {
+                draw: data.draw,
+                start: data.start,
+                length: data.length,
+                order: data.order,
+                search: data.search.value,
+                filterParams: $scope.orderReport
+            };
+
+            // API call to fetch data
+            $http.post('api/statusorderReportFilterCustomPage.php', params)
+                .then(function(response) {
+                    var res = response?.data;
+                    console.log('Server Response:', res.data.totalAmount);
+
+                    // Pass the data to DataTables
+                    callback({
+                        draw: res.draw,
+                        recordsTotal: res.recordsTotal,
+                        recordsFiltered: res.recordsFiltered,
+                        data: res['data']['data'] ? res['data']['data'] : 0
+                    });
+                    
+                    $scope.statusResult = res['data']['data'];
+                    $scope.allStatusResult = res['data']['alldata'];
+                    $scope.totalScoopAmount = res.data.totalAmount;
+                    $scope.totalJobExpenseReport = res.data.jobExpenseReportTotal;
+                    $scope.totalDifference = res.data.totalDifference;
+                    console.log('$scope.statusResult==.', $scope.statusResult)
+                    // $scope.Dateobject = Dateobject;
+
+                   
+                    $scope.showDataLoader = false;
+        
+                    //$scope.statusInfo = data['info'];
+                    //$scope.statusProjectType = data['Typeinfo'];
+                    //$scope.statusCustomerType = data['customerType'];
+                    $scope.totalItemAmout = 0;
+                    $scope.totalJobItemAmout = 0;
+                    $scope.totalGrossProfit = 0;
+                    $scope.totalProfitMargin = 0;
+        
+                    // let newStatusResult = $scope.statusResult;
+                    let newStatusResult = $scope.allStatusResult;
+                    var newResult = [];
+                    function groupByData(dataArray, property) {
+                        // console.log("dataArray", dataArray)
+                        return dataArray?.reduce(function (res, dvalue) {
+                            
+                            if (!res[dvalue[property]]) {
+                                res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, QuentityDate: dvalue.QuentityDate, totalAmount: 0, totalJobAmount: 0, totalGrossProfit: 0, totalProfitMargin: 0 };
+                                newResult.push(res[dvalue[property]])
+                            }
+                            res[dvalue[property]].totalAmount += parseFloat(dvalue.totalAmountEUR);
+                            res[dvalue[property]].totalJobAmount += parseFloat(dvalue.total_job_priceEUR);
+                            res[dvalue[property]].totalGrossProfit += parseFloat(dvalue.totalAmountEUR - dvalue.total_job_priceEUR);
+                            res[dvalue[property]].totalProfitMargin = $scope.calculateProfitMargin(
+                                res[dvalue[property]].totalAmount,
+                                res[dvalue[property]].totalJobAmount
+                            );
+                            
+                            return res;
+                        }, []);
+                    }
+                    let statusInfo = groupByData(newStatusResult, 'QuentityDate');
+                    $scope.statusInfo = newResult;
+                    console.log("!res[dvalue[property]]",newResult);
+                    
+    
+                    // Project type
+                    var resultProjectType = [];
+                    function groupByDataProjType(dataArray, property) {
+                        
+                        return dataArray?.reduce(function (res, dvalue) {
+                            if (!res[dvalue[property]]) {
+                                res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, projectTypeName: dvalue.projectTypeName, contactName: dvalue.contactName, QuentityDate: dvalue.QuentityDate, TotalAmount: 0 };
+                                resultProjectType.push(res[dvalue[property]])
+                            }
+                            res[dvalue[property]].TotalAmount += parseFloat(dvalue.totalAmountEUR);
+                            return res;
+                        }, []);
+                    }
+                    let statusProjectType = groupByDataProjType(newStatusResult, 'projectType');
+                    $scope.statusProjectType = resultProjectType;
+    
+                    // customer type
+                    var resultCustomerType = [];
+                    function groupByDataCustomer(dataArray, property) {
+                        return dataArray?.reduce(function (res, dvalue) {
+                            if (!res[dvalue[property]]) {
+                                res[dvalue[property]] = { item_number: dvalue.item_number, projectType: dvalue.projectType, contactName: dvalue.contactName, QuentityDate: dvalue.QuentityDate, TotalAmount: 0 };
+                                resultCustomerType.push(res[dvalue[property]])
+                            }
+                            res[dvalue[property]].TotalAmount += parseFloat(dvalue.totalAmountEUR);
+                            return res;
+                        }, []);
+                    }
+                    let statusCustomerType = groupByDataCustomer(newStatusResult, 'iClientId');
+                    $scope.statusCustomerType = resultCustomerType;
+    
+                    //set
+                    //Month Chart start
+                    // angular.forEach($scope.Dateobject, function (val, i) {
+                    //     angular.element('#jobPrice' + i).text('0');
+                    //     angular.element('#grossProfit' + i).text('0');
+                    //     angular.forEach($scope.statusInfo, function (value, j) {
+                            
+                    //         $timeout(function () {
+                    //             for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
+                    //                 var QuentityDate = angular.element('#masterQDate' + k).text();
+                    //                 var obj = [];
+                    //                 obj.push(QuentityDate);
+                    //                 // console.log("value2", QuentityDate)
+                    //                 if (value.QuentityDate.trim() === QuentityDate.trim()) {
+                    //                     console.log("SDcsdcsdc");
+                    //                     if (val.id == value.QuentityDate) {
+                    //                         $scope.totalItemAmout += value.totalAmount;
+                    //                         $scope.totalJobItemAmout += value.totalJobAmount;
+                    //                         $scope.totalGrossProfit += value.totalGrossProfit;
+                                            
+                    //                         //$scope.totalProfitMargin += parseFloat(value.totalProfitMargin);
+                    //                         //$scope.totalProfitMargin = $scope.calculateProfitMargin(parseFloat($scope.totalItemAmount), parseFloat($scope.totalJobItemAmount) );
+                    //                         //console.log('$scope.totalProfitMargin==='+i, $scope.totalProfitMargin)
+                    //                         //console.log('value.totalJobAmount', value.totalJobAmount)
+                    //                         //$scope.dtItemAmout += value.totalAmount;
+                    //                         var prn = $scope.totalItemAmout * 12 / 100;
+                    //                         $scope.totalItemAvg = prn;
+                    //                         var prnJob = $scope.totalJobItemAmout * 12 / 100;
+                    //                         $scope.totalJobItemAvg = prnJob;
+                    //                         var prnGrossPrft = $scope.totalJobItemAmout * 12 / 100;
+                    //                         $scope.totalGorssProfitAvg = prnGrossPrft;
+                    //                         // var prnMargin = $scope.totalProfitMargin * 12 / 100;
+                    //                         // $scope.totalProfitMarginAvg = prnMargin;
+                                            
+                    //                         let totalAmt = $filter('customNumber')(value.totalAmount);
+                    //                         angular.element('#itemAmount' + i).text(totalAmt);
+                    //                         let totalJobAmt = $filter('customNumber')(value.totalJobAmount);
+                    //                         angular.element('#jobPrice' + i).text(totalJobAmt);
+                    //                         let totalGrossProfit = $filter('customNumber')(value.totalGrossProfit);
+                    //                         angular.element('#grossProfit' + i).text(totalGrossProfit);
+                    //                         let totalProfitMargin = $filter('customNumber')(value.totalProfitMargin);
+                    //                         angular.element('#profitMargin' + i).text(totalProfitMargin + ' %');
+    
+                    //                         //console.log('$scope.Dateobject=======>'+i, QuentityDate)
+                        
+                                            
+                    //                         //angular.element('#itemAmount' + i).text(value.TotalAmount);
+                    //                     }
+                    //                 }
+                    //             }
+                    //         }, 100);
+                    //     })
+                    // })
+    
+                    //$scope.totalProfitMargin = $scope.calculateProfitMargin($scope.totalItemAmount, $scope.totalJobItemAmount);
+                    //console.log('$scope.totalProfitMargin', $scope.totalProfitMargin)
+                    
+                    
+                    var obj = [];
+                    $timeout(function () {
+                        var dupQuentity = [];
+                        for (var k = 0; k < angular.element('[id^=masterQDate]').length; k++) {
+                            var QuentityDate = angular.element('#masterQDate' + k).text();
+                            dupQuentity.push(QuentityDate);
+                        }
+    
+                        for (var i = 0; i < 12; i++) {
+                            var itemDate = angular.element('#itemDate' + i).text();
+                            if (jQuery.inArray(itemDate, dupQuentity) == -1) {
+                                // angular.element('#itemAmount' + i).text(0);
+                            }
+                        }
+    
+                        $scope.checkOrderItem = angular.element('.orderRClass').length;
+                        for (var i = 0; i < angular.element('[id^=itemAmount]').length; i++) {
+                            var item = angular.element('#itemAmount' + i).text();
+                            var itemTotal = angular.element('#totalItemAmout').text();
+                            if (item != "") {
+                                obj.push(parseInt(item));
+                                var total = parseFloat(item) * 100 / parseFloat(itemTotal);
+                                total.toFixed(2) == 'NaN' ? angular.element('#itemShare' + i).text('0.0%') : angular.element('#itemShare' + i).text(total.toFixed(2) + '%');
+                            } else {
+                                obj.push(0);
+                                // angular.element('#itemAmount' + i).text(0);
+                                // angular.element('#itemShare' + i).text('0.0%');
+                            }
+                        }
+                        // $scope.addItemGraph(obj);
+                    }, 500);
+
+                    $scope.calculateItemShare = function(totalItemAmount) {
+                        // let totalItemAmount = parseFloat(angular.element('#totalItemAmout').text()) || 0;
+                        angular.forEach($scope.Dateobject, function(val, i) {
+                            console.log("total1111", totalItemAmount)
+                            let total = val.itemAmount * 100 / totalItemAmount;
+                            
+                            $scope.Dateobject[i].itemShare = total ? total.toFixed(2) + '%' : '0.0%';
+                        });
+                        $scope.addItemGraph($scope.Dateobject.map(d => d.itemAmount));
+                    }; 
+
+                    
+                    $timeout(function () {
+                        var custObj = [] 
+                        angular.forEach($scope.Dateobject, function (val, i) {
+                            // Resetting values to zero before the comparison
+                            $scope.Dateobject[i].itemAmount = 0;
+                            $scope.Dateobject[i].jobPrice = 0;
+                            $scope.Dateobject[i].grossProfit = 0;
+                            $scope.Dateobject[i].profitMargin = 0;
+                    
+                            angular.forEach($scope.statusInfo, function (value) {
+                                // Directly comparing QuentityDate with Dateobject.id
+                                if (value.QuentityDate && val.id === value.QuentityDate) {
+                                    console.log('Matched QuentityDate:', value);
+                                    
+                                    // Update Dateobject values with matched statusInfo data
+                                    $scope.Dateobject[i].itemAmount = value.totalAmount;
+                                    $scope.totalItemAmout += value.totalAmount;
+                                    $scope.Dateobject[i].jobPrice = value.totalJobAmount;
+                                    $scope.totalJobItemAmout += value.totalJobAmount;
+                                    $scope.Dateobject[i].grossProfit = value.totalGrossProfit;;
+                                    $scope.totalGrossProfit += value.totalGrossProfit;
+                                    let totalProfitMargin = value.totalProfitMargin;
+                                    $scope.Dateobject[i].profitMargin = $filter('customNumber')(totalProfitMargin) + ' %';
+                                   
+                                    custObj.push(value.totalAmount);
+                                    // Format and assign profit margin
+                    
+                                    console.log('$scope.Dateobject after update:', $scope.Dateobject);
+                                }else{
+                                    custObj.push(0);
+                                }
+                            });
+                        });
+                    
+                        // Recalculate item share after updating Dateobject
+                        $scope.addItemGraph(custObj);
+                        $scope.calculateItemShare($scope.totalItemAmout);
+                    }, 200);
+
+                    console.log("$scope.Dateobject", $scope.Dateobject)
+                
+                    //Month Chart end
+    
+                    //project type chart start
+                    $scope.ProjectTypetotal = 0;
+                    $timeout(function () {
+                        for (var i = 0; i < angular.element('[id^=projectTypeName]').length; i++) {
+                            var amount = angular.element('#projectTypeAmount' + i).text();
+                            var totalType = angular.element('[id^=projectTypeName]').length;
+                            $scope.projectAverage = totalType;
+                            $scope.ProjectTypetotal += parseInt(amount);
+                            
+                            $scope.ProjectTypeAverage = $scope.ProjectTypetotal * totalType / 100;
+                        }
+                        var type = [];
+                        for (var i = 0; i < angular.element('[id^=projectTypeName]').length; i++) {
+                            var amount = angular.element('#projectTypeAmount' + i).text();
+                            var total = parseFloat(amount) * 100 / $scope.ProjectTypetotal;
+                            var projectTypeName = angular.element('#projectTypeName' + i).text();
+                            let projectTypeShare = $filter('customNumber')( total.toFixed(2) );
+                            angular.element('#projectTypeShare' + i).text( projectTypeShare + '%');
+                            type.push([projectTypeName, parseFloat(total)]);
+                        }
+                        $scope.projectTypeGraph(type);
+                    }, 500);
+                    //project type chart end
+    
+                    //customers chart start
+                    $scope.CustomersTypeTotal = 0;
+                    $timeout(function () {
+                        for (var i = 0; i < angular.element('[id^=CustomersName]').length; i++) {
+                            var amount = angular.element('#CustomersAmount' + i).text();
+                            $scope.CustomersTypeTotal += parseFloat(amount);
+                            $scope.TotalCustomer = angular.element('[id^=CustomersName]').length;
+                            $scope.customersAverage = parseFloat($scope.CustomersTypeTotal) * parseFloat($scope.TotalCustomer) / 100;
+                            if (isNaN($scope.customersAverage)) {
+                                $scope.customersAverage = 0;
+                            }
+                        }
+    
+                        var custType = [];
+                        for (var i = 0; i < angular.element('[id^=CustomersName]').length; i++) {
+                            var amount = angular.element('#CustomersAmount' + i).text();
+                            if (isNaN($scope.CustomersTypeTotal)) {
+                                $scope.CustomersTypeTotal = 0;
+                            }
+                            var total = parseFloat(amount) * 100 / parseFloat($scope.CustomersTypeTotal);
+                            if (isNaN(total)) {
+                                total = 0;
+                            }
+                            var customerTypeName = angular.element('#CustomersName' + i).text();
+                            let customersShare = $filter('customNumber')( total.toFixed(2) );
+                            angular.element('#customersShare' + i).text(customersShare + '%');
+                            custType.push([customerTypeName, parseFloat(total.toFixed(2))]);
+                        }
+                        $scope.CustomerTypeChart(custType);
+                    }, 500)
+                })
+                .catch(function(error) {
+                    console.error('Error fetching data:', error);
+                });
+        })
+        .withDataProp('data') 
+        .withOption('paging', true) 
+        .withOption('pageLength', 100)
+        .withOption('searching', true) // Enable search
+        .withOption('scrollX', true)
+        .withOption('order', [[0, 'asc']])
+    } 
+    $scope.filterInvoiceFn();
+
+    $scope.calculateTotal = function() {
+        
+        return $scope.totalScoopAmount;
+    };
+
+    $scope.calculatejobExpenseReportTotal = function() {
+        
+        return $scope.totalJobExpenseReport;
+    };
+
+    $scope.calculatetotalDifference = function() {
+        
+        return $scope.totalDifference;
+    };
+
+    //items total graph
+    var chart;
+    $scope.addItemGraph = function (statInfo) {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'monthChart',
+                type: 'column',
+                height: 400,
+                options3d: {
+                    enabled: true,
+                    alpha: 15,
+                    beta: 15,
+                    viewDistance: 25,
+                    depth: 40,
+                },
+                marginTop: 80,
+                marginRight: 40
+            },
+            plotOptions: {
+                column: {
+                    depth: 40,
+                    stacking: true,
+                    grouping: false
+                }
+            },
+            title: {
+                text: 'Total (Orders)/Month (' + $scope.Dateobject[0].id + ' - ' + $scope.Dateobject[11].id + ') '
+            },
+            xAxis: {
+                categories: [$scope.Dateobject[0].id, $scope.Dateobject[1].id, $scope.Dateobject[2].id, $scope.Dateobject[3].id, $scope.Dateobject[4].id, $scope.Dateobject[5].id, $scope.Dateobject[6].id, $scope.Dateobject[7].id, $scope.Dateobject[8].id, $scope.Dateobject[9].id, $scope.Dateobject[10].id, $scope.Dateobject[11].id]
+            },
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Month (' + $scope.Dateobject[0].id + ' - ' + $scope.Dateobject[11].id + ')'
+                }
+            },
+            tooltip: {
+                headerFormat: '<b>{point.key}</b><br>',
+                pointFormat: '<span style="color:{series.color}">\u25CF</span> {series.name}: {point.y} / {point.stackTotal}'
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    depth: 40
+                }
+            },
+            series: []
+        });
+
+        var odata = [{
+            data: statInfo,
+            stack: 0
+        }];
+
+        angular.forEach(odata, function (item, itemNo) {
+            chart.addSeries({
+                data: item.data,
+                stack: item.stack
+            }, false);
+        });
+        chart.redraw();
+    }
+
+    //project type graph
+    $scope.projectTypeGraph = function (type) {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'projectTyp',
+                type: 'pie',
+                height: 300,
+                options3d: {
+                    enabled: true,
+                    alpha: 45,
+                    beta: 0
+                },
+            },
+            title: {
+                text: 'Total (Orders)/Project Types (' + $scope.Dateobject[0].id + ' - ' + $scope.Dateobject[11].id + ') '
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    depth: 35,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.name}'
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Browser share',
+                data: type
+            }]
+        });
+    }
+
+    //customers Chart
+    $scope.CustomerTypeChart = function (cType) {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'CustomerType',
+                type: 'pie',
+                height: 300,
+                options3d: {
+                    enabled: true,
+                    alpha: 45
+                }
+            },
+            title: {
+                text: 'Total (Orders)/Customers (' + $scope.Dateobject[0].id + ' - ' + $scope.Dateobject[11].id + ') '
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: 100,
+                    depth: 45
+                }
+            },
+            series: [{
+                name: 'Customers',
+                data: cType
+            }]
+        });
+    }
+
+    //Display serach remove
+    $scope.reseteSearch = function () {
+        $window.localStorage.scoopReport = '';
+        $route.reload();
+    }
+
+    //redirect to customer page
+    $scope.customerOrder = function (id) {
+        rest.path = 'order/' + id;
+        rest.get().success(function (data) {
+            // debugger;
+            $scope.orderdata = data;
+            $window.localStorage.orderNo = $scope.orderdata.order_number;
+            $window.localStorage.abbrivation = $scope.orderdata.abbrivation;
+            $window.localStorage.orderID = id;
+            $window.localStorage.iUserId = id;
+            $window.localStorage.userType = 3;
+            $window.localStorage.currentUserName = data.vClientName;
+            $location.path('/project-customer');
+        }).error(errorCallback);
+    };
+
+    
+
+    //select field clear
+    $scope.clearCode = function (frmId, action) {
+        switch (action) {
+            case "companyCode":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.companyCode = '';
+                    angular.element('#companyCode1').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "pm_name":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.pm_name = '';
+                    angular.element('#pm_name').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "customer":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.customer = '';
+                    angular.element('#customer1').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "contactPerson":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.contactPerson = '';
+                    angular.element('#conatct-person').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "itemStatus":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.itemStatus = '';
+                    angular.element('#itemStatus').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "projectStatus":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.projectStatus = '';
+                    angular.element('#projectStatus').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "indirect_customer":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.indirect_customer = '';
+                    angular.element('#indirect_customer1').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "projectType":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.projectType = '';
+                    angular.element('#projectType').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "emailSubject":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.emailSubject = '';
+                    angular.element('#emailSubject').text;
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "itemPonumber":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.itemPonumber = '';
+                    angular.element('#itemPonumber').text;
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "itemDuedate":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.itemDuedate = '';
+                    angular.element('#itemDuedate').text;
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "endItemDuedate":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.endItemDuedate = '';
+                    angular.element('#endItemDuedate').text;
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "startCreateDate":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.startCreateDate = '';
+                    angular.element('#startCreateDate').text;
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "endCreateDate":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.endCreateDate = '';
+                    angular.element('#endCreateDate').text;
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "sourceLanguage":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.sourceLanguage = '';
+                    angular.element('#sourceLanguage').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "targetLanguage":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.targetLanguage = '';
+                    angular.element('#targetLanguage').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                        $scope.orderReport = undefined;
+                        $scope.checkOrderItem = undefined;
+                    }
+                }
+                break;
+            case "currency":
+                if ($scope.orderReport != undefined) {
+                    $scope.orderReport.currency = '';
+                    angular.element('#currency').select2('val', '');
+                    angular.forEach($scope.orderReport, function (value, key) {
+                        if (value === "" || value === null) {
+                            delete $scope.orderReport[key];
+                        }
+                    });
+                    if (jQuery.isEmptyObject($scope.orderReport)) {
+                        $scope.statusResult = '';
+                    }
+                }
+                break;
+            case "pm_name_exclude":
+            if ($scope.orderReport != undefined) {
+                $scope.orderReport.pm_name_exclude = '';
+                angular.element('#pm_name_exclude').select2('val', '');
+                angular.forEach($scope.orderReport, function (value, key) {
+                    if (value === "" || value === null) {
+                        delete $scope.orderReport[key];
+                    }
+                });
+                if (jQuery.isEmptyObject($scope.orderReport)) {
+                    $scope.statusResult = '';
+                    $scope.orderReport = undefined;
+                    $scope.checkOrderItem = undefined;
+                }
+            }
+            break;
+        }
+    }
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100).
+    withOption('columnDefs',  [
+        {
+            targets: [9,10],
+            render: function (data, type, row, meta) {
+                if (type === 'sort') {
+                    let tempSort = data.replace(/\./g, '').replace(',', '.');
+                    let sortedValue = parseFloat(tempSort);
+                    // if (meta.col === 10) {
+                    //     //console.log('Sorting price column:', sortedValue);
+                    // } else if (meta.col === 11) {
+                    //     //console.log('Sorting expense column:', sortedValue);
+                    // }
+                    return sortedValue;
+                }
+                return data;
+            }
+        }
+    ]);
 }).controller('projectStatisticsController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
