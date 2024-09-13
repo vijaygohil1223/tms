@@ -54,7 +54,7 @@ class filemanager {
     }
 
     // folder structure tree view
-    public function buildTree(array $elements, $parentId = 0) {
+    public function buildTree__(array $elements, $parentId = 0) {
         $branch = array();
         foreach ($elements as $element) {
             //if($element['parent_id'] == $parentId)
@@ -72,6 +72,34 @@ class filemanager {
         }
         return $branch;
     }
+
+    public function buildTree(array $elements, $parentId = 0, $depth = 0, $maxDepth = 10) {
+        if ($depth >= $maxDepth) {
+            return [];
+        }
+    
+        $branch = array();
+    
+        foreach ($elements as $element) {
+            // Check if the element is a direct child of the current parent
+            if ($element['parent_id'] == $parentId) {
+                // Recursively get the children of this element
+                $children = $this->buildTree($elements, $element['fmanager_id'], $depth + 1, $maxDepth);
+                $element['countchild'] = count($children);
+                
+                // If this element has children, add them to the 'categories'
+                if ($children) {
+                    $element['categories'] = $children;
+                }
+    
+                $branch[] = $element;
+            }
+        }
+    
+        return $branch;
+    }
+    
+    
 
     // to get folder url from tree view flat array
     public function buildTreePath(array $elements, $parentId = 0) {

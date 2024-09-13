@@ -10081,8 +10081,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             angular.element('#profitMargin' + i).text(totalProfitMargin + ' %');
     
                                             //console.log('$scope.Dateobject=======>'+i, QuentityDate)
-                        
-                                            
                                             //angular.element('#itemAmount' + i).text(value.TotalAmount);
                                         }
                                     }
@@ -19876,10 +19874,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             try {
                 // After all promises are resolved
                 const pdfDataArray = await Promise.all(pdfPromises);
-                var pdfFile = pdfDataArray.map((pdfData, index) => ({
-                    name: pdfData.name,
-                    data: pdfData.data
-                }));
+                console.log('pdfDataArray', pdfDataArray)
+                
+                // var pdfFile = pdfDataArray.map((pdfData, index) => ({
+                //     name: pdfData.name,
+                //     data: pdfData.data
+                // }));
+                var pdfFile = pdfDataArray.filter(pdfData => pdfData && pdfData.name && pdfData.data) // Filter out invalid entries
+                    .map((pdfData, index) => ({
+                        name: pdfData.name,
+                        data: pdfData.data
+                    }));
+
     
                 // Add generated PDF files to zip
                 pdfFile.forEach(({ name, data }) => {

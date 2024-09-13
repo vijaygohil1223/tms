@@ -341,4 +341,85 @@ class currency {
 
     }
 
+    public function currencySourceTargetExchange($source, $target){
+        $ch = curl_init();
+        $apiUrl = "https://api.freecurrencyapi.com/v1/latest?apikey=" . CURRENCY_KEY . "&base_currency=" . $source . "&currencies=" .$target;
+        curl_setopt($ch, CURLOPT_URL, $apiUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo 'Curl error: ' . curl_error($ch);
+        } else {
+            $responseData = json_decode($response, true);
+            if (isset($responseData['data'])) {
+                $columnName = 'base_' . $source;
+                foreach($responseData['data'] as $key => $currency){
+                    try{
+                        $rowQuery = "UPDATE `tms_currency` SET `$columnName` = '$currency' WHERE `country_name` = '$key'";
+                        $this->_db->rawQuery($rowQuery);
+                    } catch (Exception $e) {
+                        $return['status'] = 422;
+                        $return['msg'] = "Error currency updating record: " . $e->getMessage();
+                    }
+                }
+            } else {
+                echo 'Invalid response format';
+            }
+        }
+        curl_close($ch);
+
+        // Prepare response
+        $return['status'] = 200;
+        $return['msg'] = 'All currency rates updated successfully';
+        return $return;
+
+    }
+    public function currencyExchangeBase() {
+        $ch = curl_init();
+        $apiUrl = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_8mtnJLyE6T5VMaYAMuQp5TJTqRyuaYFWfSwTv8Lg&&base_currency=EUR&currencies=USD,NOK,CAD,BGN,GBP";
+        curl_setopt($ch, CURLOPT_URL, $apiUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+    
+        if (curl_errno($ch)) {
+            echo 'Curl error: ' . curl_error($ch);
+        } else {
+            $responseData = json_decode($response, true);
+            if (isset($responseData['data'])) {
+                $currencies = ['BGN', 'CAD', 'NOK', 'GBP', 'USD']; // List of currencies you are handling
+                $date = date('Y-m-d H:i:s');
+                
+                foreach ($currencies as $currencyCode) {
+                    if (isset($responseData['data'][$currencyCode])) {
+                        $currencyRate = $responseData['data'][$currencyCode];
+                        $updateData = [
+                            'updated_date' => $date,
+                            'current_curency_rate' => $currencyRate
+                        ];
+                        try {
+                            $this->_db->where('country_name', $currencyCode);
+                            $this->_db->update('tms_currency', $updateData);
+                        } catch (Exception $e) {
+                            $return['status'] = 422;
+                            $return['msg'] = "Error updating currency record for $currencyCode: " . $e->getMessage();
+                            return $return; // Stop further execution on error
+                        }
+                    }
+                }
+            } else {
+                echo 'Invalid response format';
+            }
+        }
+    
+        curl_close($ch);
+    
+        // Prepare response
+        $return['status'] = 200;
+        $return['msg'] = 'All currency rates updated successfully';
+        return $return;
+    }
+    
+
+
 }

@@ -2058,6 +2058,11 @@ $app->get('/currencyGet', 'authenticate',function () {
     $result = $currency->getAll();
     echoResponse(200, $result);
 });
+$app->get('/currencyExchangeBase' ,function () {
+    $currency = new currency ();
+    $result = $currency->currencyExchangeBase();
+    echoResponse(200, $result);
+});
 
 $app->delete('/itemFilemanager/:id', 'authenticate',function($id) {
     $item = new item ();
