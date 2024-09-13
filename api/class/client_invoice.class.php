@@ -1690,6 +1690,26 @@ class Client_invoice
         // Return the response
         return $response;
     }
+    public function checkFIleExist($data)
+    {
+        $isFileExist = false;
+        if(isset($data['filepathName'])){
+            $path = '../../uploads/invoice/'.$data['fileName'];
+            if ( file_exists($path) ) {
+                $isFileExist = true;
+            }
+        }
+        if ($isFileExist) {
+            $result['isFileExist'] = $isFileExist;
+            $result['status'] = 200;
+            $result['msg'] = "File exist";
+        } else {
+            $result['isFileExist'] = $isFileExist;
+            $result['status'] = 422;
+            $result['msg'] = "Not exist";
+        }
+        return $result;
+    }
 
 
 }
