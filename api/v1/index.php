@@ -3844,6 +3844,13 @@ $app->post('/clientInvoiceDueDate', function () use($app) {
     echoResponse(200, $result);
 });
 
+$app->post('/checkFIleExist','authenticate', function () use($app) {
+    $invoice = new Client_invoice ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $invoice->checkFIleExist($data);
+    echoResponse(200, $result);
+});
+
 //-------------------Resource Postion----------------//
 $app->post('/userPosition','authenticate', function () use($app) {
     $userposition = new userposition ();
