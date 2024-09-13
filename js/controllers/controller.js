@@ -9747,7 +9747,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('orderstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder) {
+}).controller('orderstatusReportController1', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
     $scope.showDataLoader = false;
@@ -10442,17 +10442,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
                 exportTableToExcel('client_scoop_report','Order-status-report',[9,10,11,12], 1)
+                
                 // var blob = new Blob([document.getElementById('exportable').innerHTML], {
                 //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
                 // });
                 // saveAs(blob, "Order-status-report.xls");
-                $route.reload();
+
+                // $route.reload();
                 break;
             case "Select all":
                 $scope.checkdata = "ordercheck";
                 break;
         }
     }
+        console.log("$scope.statusResult",$scope.statusResult ) 
+
 
     //select field clear
     $scope.clearCode = function (frmId, action) {
@@ -10782,7 +10786,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
 
-}).controller('orderstatusReportController1', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder, DTColumnBuilder, $compile, $http) {
+}).controller('orderstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder, DTColumnBuilder, $compile, $http) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
     $scope.showDataLoader = false;
@@ -11022,115 +11026,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         return grossProfit;
     }
 
-    //serch data action
-    $scope.statucOrderAction = function (action) {
-        switch (action) {
-            case "Change project status":
-                $scope.projectStatus = true;
-                $scope.itemStatus = false;
-                break;
-            case "Change item status":
-                $scope.itemStatus = true;
-                $scope.projectStatus = false;
-                break;
-            case "Export to excel":
-                $scope.projectStatus = false;
-                $scope.itemStatus = false;
-                break;
-            case "Remove selection":
-                $scope.projectStatus = false;
-                $scope.itemStatus = false;
-                break;
-            case "Select all":
-                $scope.projectStatus = false;
-                $scope.itemStatus = false;
-                break;
-        }
-    }
-
-    //search data action
-    $scope.statusAction = function (action) {
-        switch (action) {
-            case "Change project status":
-                var projectStatus = angular.element('#projectStatusdata').val();
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    if (orderselect == 'true') {
-                        var orderId = angular.element('#orderCheckData' + i).val();
-                        $routeParams.id = orderId;
-                        rest.path = 'ordersearchProjectStatusUpdate/' + $routeParams.id + '/' + projectStatus;
-                        rest.get().success(function (data) {
-                            $route.reload();
-                        }).error(errorCallback);
-                    }
-                }
-                break;
-            case "Change item status":
-                var itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
-                let scoopIds = [];
-                let promises = []; // Array to store promises
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    
-                    if (orderselect == 'true') {
-                        var orderId = angular.element('#orderCheckData' + i).val();
-                        scoopIds.push(orderId)
-                        promises.push(new Promise(function(resolve, reject) {
-                            resolve();
-                        }));
-                        $routeParams.id = orderId;
-                        rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
-                        rest.get().success(function (data) {
-                            $route.reload();
-                        }).error(errorCallback);
-                    }
-                }
-                Promise.all(promises).then(function() {
-                    let postArr = {
-                        'scoop_status': itemStatus,
-                        'scoop_array': scoopIds
-                    };
-                    rest.path = 'ordersearchItemStatusBulkUpdate';
-                    rest.post(postArr).success(function (data) {
-                        notification('Status updated successfully', 'success');
-                        $route.reload();
-                    }).error(errorCallback);
-                }).catch(function(err) {
-                    console.error("An error occurred:", err);
-                });
-                break;
-            case "Remove selection":
-                $scope.checkdata = false;
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var itemselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    if (itemselect == 'true') {
-                        var jobId = angular.element('#orderCheckData' + i).val();
-                        $("#orderCheck" + i).prop("checked", false);
-                    }
-                }
-                break;
-            case "Export to excel":
-                for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
-                    if ($("#orderCheck" + i).prop('checked') == true) {
-                        $("#Export_" + i).show()
-                    } else {
-                        $("#Export_" + i).hide();
-                        $("#Export_" + i).remove();
-                    }
-                }
-                exportTableToExcel('client_scoop_report','Order-status-report',[9,10,11,12], 1)
-                // var blob = new Blob([document.getElementById('exportable').innerHTML], {
-                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
-                // });
-                // saveAs(blob, "Order-status-report.xls");
-                $route.reload();
-                break;
-            case "Select all":
-                $scope.checkdata = "ordercheck";
-                // $scope.checkdata = true;
-                break;
-        }
-    }
+    
 
    
 
@@ -11143,7 +11039,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                'name="orderCheck' + meta.row + '" ng-model="checkdata[' + meta.row + ']" ' +
                'ng-checked="checkdata== \'ordercheck\'">' +
                '<input type="text" id="orderCheckData' + meta.row + '" ' +
-               'name="orderCheckData' + meta.row + '" style="display: none;" ' +
+               'name="orderCheckData' + index + '" style="display: none;" ' +
                'ng-model="jobData[' + meta.row + ']" ng-init="jobData[' + meta.row + '] = \'' + full.scoopId + '\'">' +
                '</div>';
 
@@ -11187,10 +11083,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         DTColumnBuilder.newColumn(null).withTitle('Prices').renderWith(function(data, type, full, meta) {
             return $filter('customNumber')(full.totalAmount) + '&nbsp;' + (full.client_currency ? full.client_currency.split(',')[0] : 'EUR');
         }),
-        DTColumnBuilder.newColumn('total_job_priceEUR').withTitle('Expense').renderWith(function(data, type, full, meta) {
+        DTColumnBuilder.newColumn('total_job_priceEUR').withTitle('Expense (EUR)').renderWith(function(data, type, full, meta) {
             return $filter('customNumber')(data);
         }),
-        DTColumnBuilder.newColumn(null).withTitle('Gross Profit').renderWith(function(data, type, full, meta) {
+        DTColumnBuilder.newColumn(null).withTitle('Gross Profit (EUR)').renderWith(function(data, type, full, meta) {
             // Use $scope within the renderWith to calculate gross profit
             return $filter('customNumber')($scope.calculateGrossProfit(full.totalAmountEUR, full.total_job_priceEUR));
         }),
@@ -11226,7 +11122,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
                     
-    
     $scope.filterInvoiceFn = function(){
         $scope.dtOptionsInternal = DTOptionsBuilder.newOptions()
         .withOption('processing', true) 
@@ -11253,7 +11148,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         draw: res.draw,
                         recordsTotal: res.recordsTotal,
                         recordsFiltered: res.recordsFiltered,
-                        data: res['data']['data'] ? res['data']['data'] : 0
+                        data: res['data']['data'] ? res['data']['data'] : []
                     });
                     
                     $scope.statusResult = res['data']['data'];
@@ -11261,10 +11156,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.totalScoopAmount = res.data.totalAmount;
                     $scope.totalJobExpenseReport = res.data.jobExpenseReportTotal;
                     $scope.totalDifference = res.data.totalDifference;
-                    console.log('$scope.statusResult==.', $scope.statusResult)
+                    console.log('$scope.statusResult==1.', $scope.statusResult)
                     // $scope.Dateobject = Dateobject;
 
-                   
                     $scope.showDataLoader = false;
         
                     //$scope.statusInfo = data['info'];
@@ -12006,6 +11900,132 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
+    //serch data action
+    $scope.statucOrderAction = function (action) {
+        switch (action) {
+            case "Change project status":
+                $scope.projectStatus = true;
+                $scope.itemStatus = false;
+                break;
+            case "Change item status":
+                $scope.itemStatus = true;
+                $scope.projectStatus = false;
+                break;
+            case "Export to excel":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+            case "Remove selection":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+            case "Select all":
+                $scope.projectStatus = false;
+                $scope.itemStatus = false;
+                break;
+        }
+    }
+
+    //search data action
+    $scope.statusAction = function (action) {
+        switch (action) {
+            case "Change project status":
+                var projectStatus = angular.element('#projectStatusdata').val();
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (orderselect == 'true') {
+                        var orderId = angular.element('#orderCheckData' + i).val();
+                        $routeParams.id = orderId;
+                        rest.path = 'ordersearchProjectStatusUpdate/' + $routeParams.id + '/' + projectStatus;
+                        rest.get().success(function (data) {
+                            $route.reload();
+                        }).error(errorCallback);
+                    }
+                }
+                break;
+            case "Change item status":
+                var itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
+                let scoopIds = [];
+                let promises = []; // Array to store promises
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    
+                    if (orderselect == 'true') {
+                        var orderId = angular.element('#orderCheckData' + i).val();
+                        scoopIds.push(orderId)
+                        promises.push(new Promise(function(resolve, reject) {
+                            resolve();
+                        }));
+                        $routeParams.id = orderId;
+                        rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
+                        rest.get().success(function (data) {
+                            $route.reload();
+                        }).error(errorCallback);
+                    }
+                }
+                Promise.all(promises).then(function() {
+                    let postArr = {
+                        'scoop_status': itemStatus,
+                        'scoop_array': scoopIds
+                    };
+                    rest.path = 'ordersearchItemStatusBulkUpdate';
+                    rest.post(postArr).success(function (data) {
+                        notification('Status updated successfully', 'success');
+                        $route.reload();
+                    }).error(errorCallback);
+                }).catch(function(err) {
+                    console.error("An error occurred:", err);
+                });
+                break;
+            case "Remove selection":
+                $scope.checkdata = false;
+                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+                    var itemselect = angular.element('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    if (itemselect == 'true') {
+                        var jobId = angular.element('#orderCheckData' + i).val();
+                        $("#orderCheck" + i).prop("checked", false);
+                    }
+                }
+                break;
+            case "Export to excel":
+                var count = 0;
+                for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                    if ($("#orderCheck" + i).prop('checked') == true) {
+                        count++;
+                    }
+                }
+                if (count == 0) {
+                    notification('Please select record to export', 'information');
+                }
+
+                if (count > 0) {
+                    for (var i = 0; i <= angular.element('[id^=orderCheckData]').length; i++) {
+                        if ($("#orderCheck" + i).prop('checked') == true) {
+                            $("#Export_" + i).show()
+                        } else {
+                            $("#Export_" + i).hide();
+                            $("#Export_" + i).remove();
+                        }
+                    }
+                    exportTableToExcel('client_scoop_report','Order-status-report',[9,10,11,12], 1)
+                    $scope.statusReportsearch();
+                }
+                
+                // var blob = new Blob([document.getElementById('exportable').innerHTML], {
+                //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                // });
+                // saveAs(blob, "Order-status-report.xls");
+                break;
+            case "Select all":
+                $scope.checkdata = "ordercheck";
+                // $scope.checkdata = true;
+                break;
+        }
+    }
+
+    console.log("$scope.statusResult",$scope.statusResult ) 
+
+
     $scope.dtOptions = DTOptionsBuilder.newOptions().
     withOption('responsive', true).
     withOption('pageLength', 100).
@@ -12508,6 +12528,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     //Display serach remove
     $scope.reseteSearch = function () {
+        $window.localStorage.scoopReport = '';
         $route.reload();
     }
 
@@ -19878,7 +19899,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     
     $scope.reseteSearch = function (frmId) {
-        $route.reload();
+        $scope.statusResult = [];
+        location.reload();
     }
 
     // call fn when back to page
@@ -46297,7 +46319,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
 
     };
-    $scope.invoiceReport = {};
     //current year get
     $scope.date = new Date();
     var year = $scope.date.getFullYear();
