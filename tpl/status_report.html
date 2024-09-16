@@ -461,7 +461,7 @@
                                         <div>
                                            <strong>Total:</strong> {{ calculateTotal() | customNumber }} (EUR)
                                         </div>
-                                        <button ng-show="staturRes.length" class="btn m-b-xs btn-info"
+                                        <button class="btn m-b-xs btn-info"
                                            ng-click="exportData('result')">Excel</button>
                                      </div>
                                   </div>
@@ -554,8 +554,7 @@
                                            <td > {{result.totalAmount | customNumber}} &nbsp; {{ (result.client_currency ? result.client_currency.split(',')[0] : 'EUR') }} </td>
                                            <td> {{result.total_job_price | customNumber}} -staticstring- </td>
                                            <td> {{calculateGrossProfit(result.totalAmount, result.total_job_price) | customNumber }} -staticstring- </td>
-                                           <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) | customNumber }} % -staticstring-
-                                           </td>
+                                           <td> {{calculateProfitMargin(result.totalAmount, result.total_job_price) | customNumber }} % -staticstring- </td>
                                         </tr>
                                      </tbody>
                                   </table>

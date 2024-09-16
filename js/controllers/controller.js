@@ -10902,11 +10902,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
     $scope.calculateProfitMargin = function (revenue, cost) {
-        if (revenue === 0) {
+        if (isNaN(revenue) || revenue === 0) {
+        //if (revenue === 0) {
             return 0; // To handle the case where revenue is zero to avoid division by zero
         }
         const profit = revenue - cost;
         const profitMargin = (profit / revenue) * 100;
+        if (!isFinite(profitMargin)) {
+            return '0'; 
+        }
         return profitMargin.toFixed(2); // Rounding to two decimal places
     }
     // Watch for changes in statusResult to recalculate totals
@@ -11073,12 +11077,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         DTColumnBuilder.newColumn('scoop_status_name').withTitle('Status'),
         DTColumnBuilder.newColumn('po_number').withTitle('PO Number'),
         DTColumnBuilder.newColumn(null).withTitle('Create Date').renderWith(function(data, type, full, meta) {
-            return '<span class="none">' + full.scoopCreateDate + '</span>' +
-                $filter('dateFormatDisplayFront')(full.scoopCreateDate);
+            return '<span class="none">' + full.scoopCreateDate + '</span> <span class="nowrap">'+$filter('dateFormatDisplayFront')(full.scoopCreateDate) + '</span>'; 
+                //$filter('dateFormatDisplayFront')(full.scoopCreateDate);
         }),
         DTColumnBuilder.newColumn(null).withTitle('Due Date').renderWith(function(data, type, full, meta) {
-            return '<span class="none">' + full.scoop_due_date + '</span>' +
-                $filter('dateFormatDisplayFront')(full.scoop_due_date);
+            return '<span class="none">' + full.scoop_due_date + '</span> <span class="nowrap">'+$filter('dateFormatDisplayFront')(full.scoop_due_date) + '</span>'; 
+                //$filter('dateFormatDisplayFront')(full.scoop_due_date);
         }),
         DTColumnBuilder.newColumn(null).withTitle('Prices').renderWith(function(data, type, full, meta) {
             return $filter('customNumber')(full.totalAmount) + '&nbsp;' + (full.client_currency ? full.client_currency.split(',')[0] : 'EUR');
@@ -11944,39 +11948,80 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 break;
             case "Change item status":
-                var itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
-                let scoopIds = [];
-                let promises = []; // Array to store promises
-                for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
-                    var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
-                    
-                    if (orderselect == 'true') {
-                        var orderId = angular.element('#orderCheckData' + i).val();
-                        scoopIds.push(orderId)
-                        promises.push(new Promise(function(resolve, reject) {
-                            resolve();
-                        }));
-                        $routeParams.id = orderId;
-                        rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
-                        rest.get().success(function (data) {
+                const itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
+                if (!itemStatus) {
+                    notification('Status not available!', 'warning');
+                    return;
+                }
+                const scoopIds = [];
+                const checkboxes = angular.element('[id^=orderCheckData]');
+                checkboxes.each((index, element) => {
+                    if (document.querySelector(`#orderCheck${index}`).checked) {
+                        const orderId = angular.element(element).val();
+                        scoopIds.push(orderId);
+                    }
+                });
+                if (scoopIds.length === 0) {
+                    notification('No orders selected!', 'warning');
+                    return;
+                }
+                const postArr = {
+                    scoop_status: itemStatus,
+                    scoop_array: scoopIds
+                };
+                const updateStatus = async () => {
+                    try {
+                        rest.path = 'ordersearchItemStatusBulkUpdate';
+                        await rest.post(postArr).success(data => {
+                            notification('Status updated successfully', 'success');
                             $route.reload();
                         }).error(errorCallback);
+                    } catch (err) {
+                        console.error("An error occurred:", err);
                     }
-                }
-                Promise.all(promises).then(function() {
-                    let postArr = {
-                        'scoop_status': itemStatus,
-                        'scoop_array': scoopIds
-                    };
-                    rest.path = 'ordersearchItemStatusBulkUpdate';
-                    rest.post(postArr).success(function (data) {
-                        notification('Status updated successfully', 'success');
-                        $route.reload();
-                    }).error(errorCallback);
-                }).catch(function(err) {
-                    console.error("An error occurred:", err);
-                });
-                break;
+                };
+                updateStatus();
+            
+            break;
+                    
+            // case "Change item status":
+            //     var itemStatus = angular.element('#itemStatusdata').val().split(',').pop();
+            //     if(!itemStatus){
+            //         notification('Status not available!', 'warning');
+            //         return false;
+            //     }
+            //     let scoopIds = [];
+            //     let promises = []; // Array to store promises
+            //     for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
+            //         var orderselect = $('#orderCheck' + i).is(':checked') ? 'true' : 'false';
+                    
+            //         if (orderselect == 'true') {
+            //             var orderId = angular.element('#orderCheckData' + i).val();
+            //             scoopIds.push(orderId)
+            //             promises.push(new Promise(function(resolve, reject) {
+            //                 resolve();
+            //             }));
+            //             $routeParams.id = orderId;
+            //             // rest.path = 'ordersearchItemStatusUpdate/' + $routeParams.id + '/' + itemStatus;
+            //             // rest.get().success(function (data) {
+            //             //     $route.reload();
+            //             // }).error(errorCallback);
+            //         }
+            //     }
+            //     Promise.all(promises).then(function() {
+            //         let postArr = {
+            //             'scoop_status': itemStatus,
+            //             'scoop_array': scoopIds
+            //         };
+            //         rest.path = 'ordersearchItemStatusBulkUpdate';
+            //         rest.post(postArr).success(function (data) {
+            //             notification('Status updated successfully', 'success');
+            //             $route.reload();
+            //         }).error(errorCallback);
+            //     }).catch(function(err) {
+            //         console.error("An error occurred:", err);
+            //     });
+            //     break;
             case "Remove selection":
                 $scope.checkdata = false;
                 for (var i = 0; i < angular.element('[id^=orderCheckData]').length; i++) {
@@ -18169,6 +18214,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 }).controller('viewdirectdetailController', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $log) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    $window.localStorage.userType = 2
     $scope.viewFileManager = function (id) {
         closeWindows();
         $window.localStorage.setItem("contactclientId", id);
