@@ -207,6 +207,25 @@ class db {
         return $this->_dynamicBindResults($stmt);
     }
 
+    public function rawQueryNew($query, $bindParams = null)
+    {
+        // Directly assign the query without sanitization
+        $this->_query = $query;
+        $stmt = $this->_prepareQuery();
+        if (is_array($bindParams)) {
+            $params = array(''); // Create the empty 0 index
+            foreach ($bindParams as $prop => $val) {
+                $params[0] .= $this->_determineType($val);
+                array_push($params, $bindParams[$prop]);
+            }
+            call_user_func_array(array($stmt, 'bind_param'), $this->refValues($params));
+        }
+        $stmt->execute();
+        $this->_stmtError = $stmt->error;
+        $this->reset();
+        return $this->_dynamicBindResults($stmt);
+    }
+
     /**
      *
      * @param string $query   Contains a user-provided select query.
