@@ -36367,7 +36367,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         break;
                     case "Overdue":
                         $scope.invoiceListAll = $scope.overdueInvc;
-                        $scope.calculateTotal($scope.overdueInvc)
+                        //$scope.calculateTotal($scope.overdueInvc)
                         break;    
                     case "Cancelled":
                         $scope.invoiceListAll = $scope.cancelledInvc;
