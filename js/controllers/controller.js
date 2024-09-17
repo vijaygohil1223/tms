@@ -20521,34 +20521,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         withOption('pageLength', 100);
 
 
-        /// Custom pagination extra testing
-
-    // $scope.dtOptionsApproved = DTOptionsBuilder.newOptions()
-    //     .withOption('ajax', function (data, callback, settings) {
-    //         rest.path = "invoiceListingFilter";
-    //         rest.get().then(function (res) {
-    //             console.log('res======>result data', res);
-    //             if (res.data) {
-    //                 // Group the data by create_date
-    //                 var groupedData = groupByCreateDate(res.data.data);
-    //                 console.log('groupedData=====>', groupedData)
-    //                 // Pass the grouped data to the callback function
-    //                 callback({
-    //                     draw: res.data.draw,
-    //                     recordsTotal: res.data.recordsTotal,
-    //                     recordsFiltered: res.data.recordsFiltered,
-    //                     data: groupedData
-    //                 });
-    //             }
-    //         }).catch(errorCallback);
-    //     })
-    //     .withDataProp('data') // Specify the property containing the data array
-    //     .withOption('processing', true)
-    //     .withOption('paging', true)
-    //     .withOption('searching', true)
-    //     .withOption('order', [[0, 'asc']]); // Order by the first column (date)
-    
-
     // Function to group data by create_date
     function groupByCreateDate(data) {
         var groups = {};
@@ -20573,58 +20545,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         return groupedArray;
     }
-
-    
-    // $scope.dtColumnsApproved = [
-    //     DTColumnBuilder.newColumn('create_date').withTitle('Date'),
-    //     DTColumnBuilder.newColumn('name').withTitle('Name'),
-    //     DTColumnBuilder.newColumn('age').withTitle('Age')
-    // ];
-
-    // // Initialize DataTables
-    // $scope.dtInstance = {};
-
-    // // Callback function to handle DataTables initialization
-    // $scope.dtInstanceCallback = function(instance) {
-    //     $scope.dtInstance = instance;
-    // };
-
-    
-    // $scope.dtOptionsApproved = DTOptionsBuilder.newOptions().withOption('ajax', function (data, callback, settings) {
-    //         rest.path = "invoiceListingFilter";
-    //                 rest.get().success(function (res) {
-    //                     console.log('res======>result dataa', res)
-    //                     $scope.users = res.data;
-    //                     if (res) {
-    //                         callback({
-    //                             draw: res.draw,
-    //                             recordsTotal: res.recordsTotal,
-    //                             recordsFiltered: res.recordsFiltered,
-    //                             data: res.data
-    //                         });
-    //                     }
-    //                 }).error(errorCallback);  
-    //     })   
-    //     .withDataProp('data') 
-    //     //.withOption('data', data) // Use static data
-    //     .withOption('processing', true)
-    //     .withOption('paging', true)
-    //     .withOption('searching', true)
-    //     .withOption('order', [[1, 'asc']]);
-    //     .withBootstrap(); // Ensure Bootstrap styling is used
-
-    //     $scope.dtColumnsApproved = [
-    //         DTColumnBuilder.newColumn('id').withTitle('ID'),
-    //         DTColumnBuilder.newColumn('name').withTitle('Name'),
-    //         DTColumnBuilder.newColumn('age').withTitle('Age')
-    //     ];
-
-    // Function to show user info
-    // $scope.showInfo = function(name) {
-    //     alert('User: ' + name);
-    // };
-
-        
 
     $scope.invoiceCheck = function (status, id, statusId) {
         var obj = [];
@@ -21102,18 +21022,47 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         // }
 
                         const fileDetail = {filepathName: fimgUrl , fileName: val.resourceInvoiceFileName }
+                        // rest.path = 'checkFIleExist';
+                        // rest.post( fileDetail ).success(function (response) {
+                        //     if(response.status == 200 && response.isFileExist == true){
+                        //         fileUrls.push({
+                        //             'full_url': fimgUrl,
+                        //             'file_name': downloadfileName
+                        //         });
+                        //     }else{
+                        //         // pData = await $scope.pdfInvoicePopup(val.invoice_id, true);
+                        //         // pdfPromises.push(pData);
+                        //     }
+                        // })
+
                         rest.path = 'checkFIleExist';
-                        rest.post( fileDetail ).success(function (response) {
-                            if(response.status == 200 && response.isFileExist == true){
-                                fileUrls.push({
-                                    'full_url': fimgUrl,
-                                    'file_name': downloadfileName
-                                });
-                            }else{
-                                // pData = await $scope.pdfInvoicePopup(val.invoice_id, true);
-                                // pdfPromises.push(pData);
-                            }
-                        })
+                    
+                        // Wrap the file existence check in a promise to properly await the result
+                        await new Promise((resolve, reject) => {
+                            rest.post(fileDetail).success(async function(response) {
+                                if (response.status == 200 && response.isFileExist == true) {
+                                    fileUrls.push({
+                                        'full_url': fimgUrl,
+                                        'file_name': downloadfileName
+                                    });
+                                    resolve(); // Resolve the promise as the file exists
+                                } else {
+                                    // If file doesn't exist, generate PDF and add it to the pdfPromises array
+                                    try {
+                                        var pData = await $scope.pdfInvoicePopup(val.invoice_id, true);
+                                        console.log('pData=============>called', pData)
+                                        pdfPromises.push(pData);
+                                        resolve(); // Resolve the promise after processing PDF
+                                    } catch (error) {
+                                        console.error('Error generating PDF for missing file:', error);
+                                        reject(error); // Reject the promise if PDF generation fails
+                                    }
+                                }
+                            }).error(function(error) {
+                                console.error('Error checking file existence:', error);
+                                reject(error); // Reject the promise on error
+                            });
+                        });
                         
                         //end
                     }
@@ -23773,7 +23722,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     if(response.status == 200 && response.isFileExist == true){
                         downloadFileCustomFn(fileUrl, fileName)
                     }else{
-                        notification('File not exist', 'warning');
+                        //notification('File not exist', 'warning');
+                        var fileName = "Oversettelsestjenester - " + $scope.invoiceDetail.freelanceName + ' - ' + $scope.invoiceDetail.custom_invoice_no;
+                        $scope.pdfDownloadFn(fileName, true);
+                        notification('Downloading system-generated invoice', 'success');
+
                     }
                 })
                 //downloadFileCustomFn(fileUrl, fileName)
