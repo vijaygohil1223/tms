@@ -168,7 +168,7 @@
                     <tr ng-repeat="invoiceL in invoiceListAll">
                       <td class="nowrap">
                         <input type="checkbox" id="invoiceCheck{{$index}}"
-                          ng-click="checkInvoiceIds(invoiceL.invoice_id)" class="invoiceCheck{{invoiceL.invoice_id}}"
+                          ng-click="checkInvoiceIds(invoiceL.invoice_id, invoiceL.Invoice_cost)" class="invoiceCheck{{invoiceL.invoice_id}}"
                           name="invoiceCheck{{$index}}" ng-model="checkor" ng-checked="checkdata=='invoicecheck'" />
                         <span class="fa fa-check" ng-if="invoiceL.is_excel_download" title="Excel exported"
                           style="margin-left:10px;"></span>
