@@ -179,6 +179,7 @@ class discussion {
 
     public function discussionScoop($id) {
         $this->_db->where('scoop_id',$id);
+        $this->_db->where('externalChat',0);
         $data = $this->_db->get('tms_discussion');
         return $data;
     }
@@ -283,6 +284,13 @@ class discussion {
         }
     
         return $results;
+    }
+
+    public function discussionByJobid($id) {
+        $this->_db->where('job_id',$id);
+        $this->_db->where('externalChat',1);
+        $data = $this->_db->get('tms_discussion');
+        return $data;
     }
     
         

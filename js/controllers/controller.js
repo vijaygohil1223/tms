@@ -30193,6 +30193,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if ($routeParams.id) {
 
         var commentsArray = [];
+        $scope.testcommentsArray = [];
         var newcommentsArray = [];
         $scope.commentReadArray = [];
         var promises = [];
@@ -30200,26 +30201,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var newUserCommentsArr = [];
         $scope.msgIDArr = [];
         $scope.commentsArrayAll = function () {
-            rest.path = "discussionOrder/" + $routeParams.id;
+            let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
+            if ($scope.selectedTab === 1 && $scope.scoopItemId && $scope.scoopItemId > 0) {
+                rest.path = "discussionScoop/" + $scope.scoopItemId;
+            } else if ($scope.selectedTab === 2 && isLinguistJobChat > 0) {
+                rest.path = "discussionByJobid/" + isLinguistJobChat;
+            } else {
+                return; // Exit early if no valid path is set
+            }
+            //rest.path = "discussionOrder/" + $routeParams.id;
             rest.get().success(function (data2) {
-                
-                let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
-                console.log('jobbbb==isLinguistJobChat==>', isLinguistJobChat)
+                //let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
                 if(isLinguistJobChat > 0){
                     $scope.linguistJob = isLinguistJobChat;
                 }
                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
-                if($scope.scoopItemId && $scope.scoopItemId>0){
-                    var data = data2.filter( (itm) => { return itm.scoop_id == $scope.scoopItemId } );    
-                }else{
-                    var data = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
-                }
-                console.log('data=============>comments data', data)
+                console.log('isLinguistChat============>', isLinguistChat)
+                // if($scope.scoopItemId && $scope.scoopItemId>0){
+                //     var data = data2.filter( (itm) => { return itm.scoop_id == $scope.scoopItemId } );    
+                // }else{
+                //     var data = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
+                // }
+                var data = data2
+                commentsArray = data;
                 
                 setTimeout(function () {
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function (val, i) {
-                        console.log('val========>', val)
                         var dataId = val.id;
                         //if( val.externalChat = (($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) ){
                             //val.externalChat = (localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0,
@@ -30402,18 +30410,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //$(this).find('time')[0].append("testing");
                         //});
 
-                        if (data.length == promises.length) {
-                            //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                        }
+                        // if (data.length == promises.length) {
+                        //     //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                        // }
                     
 
                 }, 1500);
                 
-                if($scope.scoopItemId && $scope.scoopItemId>0){
-                    commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat && itm.scoop_id == $scope.scoopItemId  } );
-                }else{
-                    commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
-                }
+                // if($scope.scoopItemId && $scope.scoopItemId>0){
+                //     commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat && itm.scoop_id == $scope.scoopItemId  } );
+                // }else{
+                //     commentsArray = data2.filter( (itm) => { return itm.externalChat == isLinguistChat && itm.job_id == isLinguistJobChat  } );
+                // }
+
+                //$scope.testcommentsArray = commentsArray
                 //console.log('commentsArray==', commentsArray)
                 //commentsArray = data;
                 //var data = data2.filter( (itm) => itm.externalChat == ( ($window.localStorage.getItem("isLinguistChat") == 'true') ? 1 : 0) )
@@ -30832,6 +30842,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }    
     $scope.commentsFn();
 
+    // $scope.$watch('testcommentsArray', function (newValue, oldValue) {
+    //     console.log('oldValue', oldValue);
+    //     console.log('newValue', newValue);
+    //     if (newValue !== oldValue) {
+    //         console.log('commentsArray has changed:', newValue);
+    //         $scope.commentsArrayAll();
+    //         $scope.commentsFn();
+    //     }
+    // }, true); // Deep watch
+
     $scope.chatLinguist = function(){
         $scope.isLinguist = !$scope.isLinguist;
         console.log('$scope.isLinguist', $scope.isLinguist)
@@ -30848,7 +30868,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     $scope.changeLinguistJob = function(jobId){
+        $scope.testcommentsArray = [];
         const linstJobid = jobId ? jobId?.toString().split(',').pop() : $('#linguistJob').val('').trigger('change');
+        console.log('linstJobid', linstJobid)
         if(linstJobid && linstJobid>0){
             $window.localStorage.setItem("isLinguistChat", true);
             $window.localStorage.setItem("jobIdLinguistChat", linstJobid)

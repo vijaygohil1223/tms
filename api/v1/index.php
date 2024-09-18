@@ -3227,6 +3227,11 @@ $app->get('/discussionScoop/:id','authenticate', function($id) {
     $result = $discuss->discussionScoop($id);
     echoResponse(200, $result);
 });
+$app->get('/discussionByJobid/:id','authenticate', function($id) {
+    $discuss = new discussion ();
+    $result = $discuss->discussionByJobid($id);
+    echoResponse(200, $result);
+});
 $app->get('/discussionScoopDetails/:id','authenticate', function($id) {
     $discuss = new discussion ();
     $result = $discuss->discussionScoopDetails($id);
