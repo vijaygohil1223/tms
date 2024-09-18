@@ -231,6 +231,40 @@
     width: 100%;
     height: auto;
   }
+
+  .suggestion-list {
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    z-index: 1000;
+    opacity: 1000;
+    min-width: 160px;
+    width: 100%;
+  }
+
+  .suggestion-item {
+      padding: 8px;
+      cursor: pointer;
+      background-color: white;
+      color: #7b7b7b;
+  }
+
+  .suggestion-item:hover {
+      background-color: #f0f0f0;
+  }
+  .globalSearchInput{
+    color: rgb(123, 123, 123);
+    border-radius: 20px;
+    border-color: #ddd;
+    margin-bottom: 0;
+    border-width: 0;
+    color: #58666e;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
 </style>
 
 <script type="text/javascript">
@@ -447,12 +481,11 @@
     target=".navbar-collapse" role="search" ng-if="userRight==1" ng-submit="searchProject()" name="searcForm">
     <div class="form-group">
       <div class="input-group">
-        <input type="text" ng-model="selectedOrder" ng-change="searchScoopFilter()"
+        <!-- <input type="text" ng-model="selectedOrder" ng-change="searchScoopFilter()"
           typeahead="orderName for orderName in orderNames | filter:$viewValue | limitTo:8"
           class="form-control input-sm bg-light no-border rounded padder" placeholder="Search for scoop, project or job.."
           id="selectedOrder" typeahead-on-select="searchProject($item)" ng-disabled="disableSearch" autocomplete="off" >
         <span class="input-group-btn">
-          <!-- <a href="javascript:void(0);" ng-click="searchProject()" class="btn btn-sm bg-light rounded"><i class="fa fa-search"></i></a> -->
           <a id="clearBtn" ng-if="selectedOrder" href="javascript:void(0)"
             class="clearBtnHide btn btn-sm bg-light rounded" ng-click="clearSearchBox()"><i class="fa fa-close"
               style="color:#333 !important;"></i></a>
@@ -460,10 +493,19 @@
           <button type="submit" class="btn btn-sm bg-light rounded">
             <i class="fa fa-search" id="searchIcon" style="color:#333 !important;"></i>
           </button>
-        </span>
+        </span> -->
+        <input type="text" ng-model="searchTerm" id="selectedOrderData" class="globalSearchInput" ng-change="getSuggestions(searchTerm)" style="color:#7b7b7b" placeholder="Search for scoop, project or job.." />
+        <div class="suggestion-list" ng-show="suggestions.length > 0">
+          <div class="suggestion-item" ng-repeat= "suggestion in suggestions | limitTo:8" ng-click="selectSuggestion(suggestion)">
+            {{ 
+              suggestion.orderNumber && suggestion.item_number 
+                ? suggestion.orderNumber + '-' + ('' + suggestion.item_number).padStart(3, '0') 
+                : suggestion.orderNum + '_' + suggestion.jobCode + ('' + suggestion.jobNo).padStart(3, '0')
+            }}
+          </div>
+        </div>
       </div>
     </div>
-  </form>
   <!-- / search form -->
 </div>
 <!-- / navbar collapse -->

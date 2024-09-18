@@ -3165,6 +3165,14 @@ $app->get('/searchProjectHeader/:id', function ($id) use ($app) {
     $result = $dashboard->searchProjectHeader($id);
     echoResponse(200, $result);
 });
+
+$app->post('/globalSearchProjectHeader', function () use($app) {
+    $dashboard = new dashboard ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $dashboard->globalSearchProjectHeader($data);
+    echoResponse(200, $result);
+});
+
 $app->get('/getUpcomingDeliveries','authenticate', function () {
     $dashboard = new dashboard ();
     $result = $dashboard->getDashboardWidgetData();
