@@ -1172,7 +1172,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.backtoPage = function () {
         $location.path('/');
     }
-}).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
+}).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams, $http) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.superAdmin = $window.localStorage.getItem("session_superAdmin");
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -1297,6 +1297,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
+    $scope.suggestions = [];
+
+    // Function to fetch suggestions from the server
+    $scope.getSuggestions = function(term) {
+        console.log("term", term)
+        if (term.length > 2) {
+            var obj = {searchKey: term}
+            rest.path = "globalSearchProjectHeader";
+            rest.post(obj).success(function (data) { 
+                if (data.scoopData && data.scoopData.length > 0) { 
+                    $scope.suggestions = data.scoopData;
+                    $scope.projectScoop = data.scoopData;
+                } else if (data.jobData && data.jobData.length > 0) { 
+                    $scope.suggestions = data.jobData;
+                    $rootScope.SearchJobList = data.jobData;
+                }
+                console.log('$scope.suggestions', $scope.suggestions)
+            }); 
+        } else {
+            $scope.suggestions = [];
+        }
+    };
+
+    // Function called when a suggestion is clicked
+    $scope.selectSuggestion = function(suggestion) {
+        console.log('suggestion',suggestion)
+        $scope.suggestions = []; // Clear suggestions after selection
+        if(suggestion.formattedOrderItem){
+            $scope.searchTerm = suggestion.formattedOrderItem ; // Update input with selected suggestion
+        }else{
+            $scope.searchTerm = suggestion.formattedOrderJobItem ; // Update input with selected suggestion
+        }
+        $scope.searchProject($scope.searchTerm)
+    };
+
     $scope.onPaste = function() {
         $timeout(function() {
             var pastedValue = angular.element('#selectedOrder').val();
@@ -1315,8 +1350,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.searchProject = function (selectedValue) {
         $scope.selectedOrder = selectedValue;
-        var txtValue = angular.element('#selectedOrder').val()
-
+        // var txtValue = angular.element('#selectedOrder').val()
+        var txtValue = angular.element('#selectedOrderData').val()
+        
+       
         //If submited with enter Or click then replacing $scope.selectedOrder with txtValue
         if ($scope.selectedOrder == undefined || $scope.selectedOrder.length == 0) {
             $scope.selectedOrder = txtValue;
@@ -1326,11 +1363,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please enter project number Or Job Number.', 'warning');
             return false;
         } else {
+           
             $scope.isJobSearch = false;
             if( ($scope.selectedOrder).split('_').length > 1 ){
                 if(($scope.selectedOrder).split(/_(.*)/s)[1].toString().length > 4 && ($scope.selectedOrder).split('-').pop().length != 3)
                     $scope.isJobSearch = true;
             }
+            
             if ($scope.isJobSearch) {
                 //if ($scope.selectedOrder.includes('_')) {    
                 var isMatch = true;

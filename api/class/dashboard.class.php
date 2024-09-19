@@ -494,6 +494,62 @@ class dashboard {
         return $data;
     }
 
+    public function globalSearchProjectHeader($data) {
+        // Extract the search key
+        $searchKey = isset($data['searchKey']) ? $data['searchKey'] : '';
+    
+        // Base query for tms_items with concatenation of orderNumber and item_number
+        $qry = "SELECT  gen.order_no AS orderNumber, its.item_number, 
+                its.itemId, its.heads_up, gen.order_no AS orderNumber, gen.due_date AS DueDate, gen.order_id AS orderId, gen.project_name AS projectName, gen.company_code AS companyCode, its.item_number, its.po_number AS itemPonumber,
+                CONCAT(gen.order_no, '-', LPAD(its.item_number, 3, '0')) AS formattedOrderItem 
+                FROM tms_items AS its 
+                LEFT JOIN tms_general AS gen ON its.order_id = gen.order_id 
+                WHERE its.order_id != 0";
+    
+        // If searchKey exists, add a search condition for the formatted order number
+        if (!empty($searchKey)) {
+            $qry .= " AND (CONCAT(gen.order_no, '-', LPAD(its.item_number, 3, '0')) LIKE '%$searchKey%')";
+        }
+        $qry .= "LIMIT 10";
+    
+        // Execute the query
+        $data['scoopData'] = $this->_db->rawQuery($qry);
+    
+       // Base query for tms_summmery_view with concatenation of orderNumber and item_number
+       $qry2 = "SELECT tg.order_no as orderNum, tmv.job_no AS jobNo,
+            tmv.job_code AS jobCode,
+            CONCAT(tg.order_no, '_', tmv.job_code, LPAD(tmv.job_no, 3, '0')) AS formattedOrderJobItem,
+            tmv.*, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date
+        FROM 
+            tms_items ti
+        INNER JOIN 
+            tms_summmery_view tmv ON ti.order_id = tmv.order_id
+        INNER JOIN 
+            tms_customer tcu ON ti.order_id = tcu.order_id
+        INNER JOIN 
+            tms_client tc ON tcu.client = tc.iClientId
+        INNER JOIN 
+            tms_general tg ON ti.order_id = tg.order_id
+        INNER JOIN 
+            tms_users tu ON tmv.resource = tu.iUserId
+        INNER JOIN 
+            tms_users tmu ON tmv.contact_person = tmu.iUserId
+        WHERE ti.item_number = tmv.item_id";
+
+        // If searchKey exists, add a search condition for the formatted order number in the second query
+        if (!empty($searchKey)) {
+        $qry2 .= " AND CONCAT(tg.order_no, '_', tmv.job_code, LPAD(tmv.job_no, 3, '0')) LIKE '%$searchKey%'";
+        }
+
+        $qry2 .= "LIMIT 10";
+    
+        // Execute the second query
+        $data['jobData'] = $this->_db->rawQuery($qry2);
+    
+        // Return the modified data
+        return $data;
+    }
+
     public function userActivityGet($data) {
         $info = array();
         foreach($data AS $key=>$value) {
