@@ -1224,10 +1224,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/');
     }
 
-    $scope.clearSearchBox = function () {
-        angular.element('#selectedOrder').val('');
-        angular.element('#clearBtn').addClass('clearBtnHide');
-    }
+    
 
 
     //$scope.disableSearch = true;
@@ -1307,11 +1304,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             rest.path = "globalSearchProjectHeader";
             rest.post(obj).success(function (data) { 
                 if (data.scoopData && data.scoopData.length > 0) { 
-                    $scope.suggestions = data.scoopData;
-                    $scope.projectScoop = data.scoopData;
+                    
+                    if(term.includes('-')){
+                        $scope.suggestions = data.scoopData;
+                        $scope.projectScoop = data.scoopData;
+                    }else{
+                        $scope.projectData = UniqueArraybyId(data.scoopData, 'orderNumber'); 
+                        $scope.suggestions = $scope.projectData;
+                    }
+                     
+                   
                 } else if (data.jobData && data.jobData.length > 0) { 
                     $scope.suggestions = data.jobData;
                     $rootScope.SearchJobList = data.jobData;
+                } else{
+                   
                 }
                 console.log('$scope.suggestions', $scope.suggestions)
             }); 
@@ -1323,13 +1330,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Function called when a suggestion is clicked
     $scope.selectSuggestion = function(suggestion) {
         console.log('suggestion',suggestion)
+        var txtValue1 = angular.element('#selectedOrderData').val()
         $scope.suggestions = []; // Clear suggestions after selection
-        if(suggestion.formattedOrderItem){
+        if(!txtValue1.includes('-')){
+            $scope.searchTerm = suggestion.orderNumber;
+        }else if(suggestion.formattedOrderItem){
             $scope.searchTerm = suggestion.formattedOrderItem ; // Update input with selected suggestion
         }else{
             $scope.searchTerm = suggestion.formattedOrderJobItem ; // Update input with selected suggestion
         }
-        $scope.searchProject($scope.searchTerm)
+        $scope.searchProject($scope.searchTerm);
     };
 
     $scope.onPaste = function() {
@@ -1346,10 +1356,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.searchScoopFilter();
         }, 0);
     };
-    
+    $scope.clearSearchBox = function () {
+        angular.element('#selectedOrderData').val('');
+        angular.element('#clearBtn').addClass('clearBtnHide');
+        $scope.suggestions = [];
+    }
 
     $scope.searchProject = function (selectedValue) {
         $scope.selectedOrder = selectedValue;
+        console.log($scope.selectedOrder, $scope.selectedOrder);
         // var txtValue = angular.element('#selectedOrder').val()
         var txtValue = angular.element('#selectedOrderData').val()
         
@@ -1363,7 +1378,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             notification('Please enter project number Or Job Number.', 'warning');
             return false;
         } else {
-           
             $scope.isJobSearch = false;
             if( ($scope.selectedOrder).split('_').length > 1 ){
                 if(($scope.selectedOrder).split(/_(.*)/s)[1].toString().length > 4 && ($scope.selectedOrder).split('-').pop().length != 3)
@@ -1454,7 +1468,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }
                 }
             }else{    
-
+     
                 var isMatch = true;
                 angular.forEach($scope.projectData, function (ordersData) {
                     if (isMatch) {

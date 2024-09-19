@@ -508,8 +508,9 @@ class dashboard {
     
         // If searchKey exists, add a search condition for the formatted order number
         if (!empty($searchKey)) {
-            $qry .= " AND (CONCAT(gen.order_no, '-', LPAD(its.item_number, 3, '0')) LIKE '%$searchKey%')";
+            $qry .= " AND (CONCAT(gen.order_no, '-', LPAD(its.item_number, 3, '0')) LIKE '%$searchKey%' OR gen.order_no LIKE '%$searchKey%')";
         }
+        
         $qry .= " LIMIT 10";
     
         // Execute the query
