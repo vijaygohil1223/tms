@@ -241,6 +241,28 @@
     opacity: 1000;
     min-width: 160px;
     width: 100%;
+    border: 1px solid #dee5e7;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    top: 100%;
+    left: 0;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
   }
 
   .suggestion-item {
@@ -496,7 +518,7 @@
         </span> -->
         <input type="text" ng-model="searchTerm" id="selectedOrderData" class="globalSearchInput" ng-change="getSuggestions(searchTerm)" style="color:#7b7b7b" placeholder="Search for scoop, project or job.." />
         <div class="suggestion-list" ng-show="suggestions.length > 0">
-          <div class="suggestion-item" ng-repeat= "suggestion in suggestions | limitTo:8" ng-click="selectSuggestion(suggestion)">
+          <div class="suggestion-item " ng-repeat= "suggestion in suggestions | limitTo:8" ng-click="selectSuggestion(suggestion)">
             {{ 
               suggestion.orderNumber && suggestion.item_number 
                 ? suggestion.orderNumber + '-' + ('' + suggestion.item_number).padStart(3, '0') 

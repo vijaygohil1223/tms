@@ -510,7 +510,7 @@ class dashboard {
         if (!empty($searchKey)) {
             $qry .= " AND (CONCAT(gen.order_no, '-', LPAD(its.item_number, 3, '0')) LIKE '%$searchKey%')";
         }
-        $qry .= "LIMIT 10";
+        $qry .= " LIMIT 10";
     
         // Execute the query
         $data['scoopData'] = $this->_db->rawQuery($qry);
@@ -534,14 +534,18 @@ class dashboard {
             tms_users tu ON tmv.resource = tu.iUserId
         INNER JOIN 
             tms_users tmu ON tmv.contact_person = tmu.iUserId
-        WHERE ti.item_number = tmv.item_id";
+        WHERE 1 = 1 
+        GROUP BY 
+            tmv.job_summmeryId";
+
+        
 
         // If searchKey exists, add a search condition for the formatted order number in the second query
         if (!empty($searchKey)) {
         $qry2 .= " AND CONCAT(tg.order_no, '_', tmv.job_code, LPAD(tmv.job_no, 3, '0')) LIKE '%$searchKey%'";
         }
 
-        $qry2 .= "LIMIT 10";
+        $qry2 .= " LIMIT 10";
     
         // Execute the second query
         $data['jobData'] = $this->_db->rawQuery($qry2);
