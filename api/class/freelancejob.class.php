@@ -16,15 +16,18 @@ class freelanceJob {
     }
     
     public function freelanceJobget($id) {
+        $this->_db->groupBy('tsv.job_summmeryId');
     	$this->_db->orderBy(' DATE(tsv.due_date) ', 'DESC');
         $this->_db->join('tms_general tg', 'tsv.order_id = tg.order_id', 'INNER');
     	$this->_db->join('tms_users tu', 'tsv.resource = tu.iUserId', 'LEFT');
+        $this->_db->join('tms_discussion td', 'tsv.job_summmeryId = td.job_id', 'LEFT'); 
+    	
     	//$this->_db->where("tsv.resource = $id ");
         $this->_db->where("tsv.resource = $id OR ((tsv.accept = $id OR tsv.accept = 0) AND (tsv.item_status = 'Requested' OR tsv.item_status = 'In preparation' ) AND (FIND_IN_SET($id, tsv.send_request) AND NOT FIND_IN_SET($id, tsv.request_rejected_ids)) )");
     	$this->_db->where("tsv.item_id != '0' ");
         //$this->_db->where("tsv.item_status", array('Requested','Assigned-waiting','In-progress','Delivered','Approved','Invoice Accepted'),"IN");
     	$this->_db->where("tsv.item_status", array('Requested','Waiting','In-progress','Ongoing','Delivered','Completed','Approved','Invoice Ready','Invoice Accepted'),"IN");
-    	$data = $this->_db->get('tms_summmery_view tsv', null, 'tg.order_no,tsv.job_no,tsv.job_code,tsv.item_status,tsv.description,tsv.job_summmeryId, tsv.due_date,tsv.order_id,tsv.item_id,tsv.po_number AS poNumber, tsv.total_price, tsv.comment_read, tg.company_code,  tu.freelance_currency');
+    	$data = $this->_db->get('tms_summmery_view tsv', null, 'tg.order_no,tsv.job_no,tsv.job_code,tsv.item_status,tsv.description,tsv.job_summmeryId, tsv.due_date,tsv.order_id,tsv.item_id,tsv.po_number AS poNumber, tsv.total_price, tsv.comment_read, tg.company_code,  tu.freelance_currency, COUNT(td.job_id) AS comment_count ');
         //echo $this->_db->getLastQuery();
         //exit;
         foreach ($data as $key => $value) { 

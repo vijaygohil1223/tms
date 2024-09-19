@@ -1644,9 +1644,11 @@ td { font-size: 11px; } */
                                             <div style="float:right;">
                                               <a style="margin-left:20px" href="javascript:void(0)"
                                                 ng-click="projectJobdetail(job.job_summmeryId, 1)">
-                                                <span class=""
+                                                <span class="" style="color: {{ job.comment_read == 1 ? 'red' : (job.comment_count == 0 ? '#1da3ce' : '#67bb0a') }}"> <i
+                                                  class="fa fa-commenting-o fa-2x jobcmtclr{{job.job_summmeryId}}"></i> </span>
+                                                <!-- <span class=""
                                                   style="color: {{ job.comment_read==1 ? 'red' : '#67bb0a' }}"> <i
-                                                    class="fa fa-commenting-o fa-2x jobcmtclr{{job.job_summmeryId}}"></i> </span>
+                                                    class="fa fa-commenting-o fa-2x jobcmtclr{{job.job_summmeryId}}"></i> </span> -->
                                               </a>
                                             </div>
                                           </div>

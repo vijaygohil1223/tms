@@ -38161,14 +38161,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.commentsArrayAll = async function () {
                 var deferred = $q.defer();
                 //rest.path = "discussionOrderJob/" + $scope.jobDiscussionRedirect; // to do need to update
-                rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
+                //rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
+                rest.path = "discussionByJobid/" + chatJobId;
                 rest.get().success(function (data2) {
                     let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
                     //var data = data2.filter( (itm) => { return itm.job_id==chatJobId && itm.externalChat == isLinguistChat } );
                     
-                    var filteredData = data2.filter(function (item) {
-                        return item.job_id === chatJobId && item.externalChat === isLinguistChat;
-                    });
+                    var filteredData = data2;
+                    // var filteredData = data2.filter(function (item) {
+                    //     return item.job_id === chatJobId && item.externalChat === isLinguistChat;
+                    // });
 
                     setTimeout(function () {
                         
@@ -38262,15 +38264,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             }
                             //$compile(val.content)($scope);
                             // ------------ Script for date seperating in chat box --------------//
-                            var ndt = new Date(data[i].created);
+                            var ndt = new Date(filteredData[i].created);
                             var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
                             var dd = ("0" + ndt.getDate()).slice(-2);
                             var yy = ndt.getFullYear();
                             //var timeText = dd + '-' + mm + '-' + yy;
                             //var dateSeprt = dd + '-' + mm + '-' + yy;
-                            var dateSeprt = commentDateToformat(data[i].created);
+                            var dateSeprt = commentDateToformat(filteredData[i].created);
 
-                            var timeText = commentDatetimeToText(data[i].created);
+                            var timeText = commentDatetimeToText(filteredData[i].created);
                             if (timeText == "Today") {
                                 $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
                             }
@@ -38281,8 +38283,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
                             if (i > 0) {
-                                var ndt1 = new Date(data[i - 1].created);
-                                var dateSeprt2 = commentDateToformat(data[i - 1].created);
+                                var ndt1 = new Date(filteredData[i - 1].created);
+                                var dateSeprt2 = commentDateToformat(filteredData[i - 1].created);
 
                                 if (dateSeprt != dateSeprt2) {
                                     if ($('#comment-list').find(' > li[new-id=' + dataId + ']').length == 0)
@@ -38329,6 +38331,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }, 1500);
                     //commentsArray = data.filter( (itm) => { return itm.externalChat === 1 } );
                     commentsArray = filteredData;
+
+                    var cmtObjTemp = {
+                        id: 0,
+                        read_id: loginid,
+                        isLinguist: true,
+                        job_id: chatJobId,
+                        is_updateByid: 1
+                    }
+                    rest.path = "discussionCommentread";
+                    rest.put(cmtObjTemp).success(function (res) {
+                        
+                    });
                     
                 }).error(function () {
                     deferred.reject();
@@ -38398,13 +38412,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 console.log('$scope.commentReadArray',$scope.commentReadArray )
                 //$timeout(function() {
-                rest.path = "discussionCommentread";
-                rest.put($scope.commentReadArray).success(function (res) {
+                // rest.path = "discussionCommentread";
+                // rest.put($scope.commentReadArray).success(function (res) {
                     
-                    if (res.status == 1) {
-                        jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
-                    }
-                });
+                //     if (res.status == 1) {
+                //         jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
+                //     }
+                // });
                 //},2300);
             }
 
@@ -38458,12 +38472,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             const maxCountInterval = 10;  // Maximum number of executions
 
                             const intervalId = setInterval(() => {
-                                rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
+                                //rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
+                                rest.path = "discussionByJobid/" + chatJobId;
                                 rest.get().success(function (data2) {
-                                    //var newcommentsArray = data;
                                     let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
-                                    var newcommentsArray = data2.filter( (itm) => { return itm.job_id == chatJobId && itm.externalChat == isLinguistChat } );
-                                    //var newcommentsArray = data.filter( itm => itm.externalChat === 1 );
+                                    //var newcommentsArray = data2.filter( (itm) => { return itm.job_id == chatJobId && itm.externalChat == isLinguistChat } );
+                                    var newcommentsArray = data2;
                                     // other side user send message
                                     var newUserCommentsArr = newcommentsArray.filter(function (newCmt) { return newCmt.user_id != loginid });
                                     // FOR read unread comments
@@ -38483,13 +38497,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                                 job_id: cmtval.job_id
                                             }
                                             $scope.newCommentReadArray.push(newCmtObj);
+                                            console.log('$scope.newCommentReadArray', $scope.newCommentReadArray)
                                             if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                                rest.path = "discussionCommentread";
-                                                rest.put($scope.newCommentReadArray).success(function (res) {
-                                                    if (res.status == 1) {
-                                                        //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                                    }
-                                                });
+                                                // temp hide
+                                                // rest.path = "discussionCommentread";
+                                                // rest.put($scope.newCommentReadArray).success(function (res) {
+                                                //     if (res.status == 1) {
+                                                //         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                                //     }
+                                                // });
                                             }
                                         });
                                     }
@@ -38504,12 +38520,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         //}
 
                                         $('#comment-list').find(' > li[data-id^=c]').hide();
-                                        rest.path = "discussionCommentread";
-                                        rest.put($scope.commentReadArray).success(function (res) {
-                                            if (res.status == 1) {
-                                                jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
-                                            }
-                                        });
+                                        // temp hide
+                                        // rest.path = "discussionCommentread";
+                                        // rest.put($scope.commentReadArray).success(function (res) {
+                                        //     if (res.status == 1) {
+                                        //         jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
+                                        //     }
+                                        // });
                                         $scope.commentsArrayAll();
                                         success(newcommentsArray);
                                         $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');

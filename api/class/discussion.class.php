@@ -158,17 +158,31 @@ class discussion {
         //$cmtData = $this->_db->get("tms_discussion");
         /*$menu_access = $this->_db->rawQuery("SELECT * FROM " . tms_discussion . " WHERE user_id = '" . $orderId . "' AND FIND_IN_SET('" . 1 . "', read_id)");*/
         $return['Status'] = '';
-        foreach ($data as $value) {
-            $reead_id = "'".$value['read_id'].",'";    
-            //$qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE id = " . $value['id'] ;
-            $qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE id = " . $value['id'] . " AND FIND_IN_SET(".$value['read_id'].",read_id)=0 " ;
-            $this->_db->rawQuery($qry);
+
+        if($data && isset($data['is_updateByid']) && $data['is_updateByid'] === 1){
+            if(isset($data['isLinguist']) && $data['isLinguist'] == 1 && isset($data['job_id']) && $data['job_id'] > 0 ){
+                $reead_id = "'".$data['read_id'].",'";    
             
-            if(isset($value['isLinguist']) && $value['isLinguist'] == 1 && isset($value['job_id']) && $value['job_id'] > 0 ){
-                $this->_db->where('job_summmeryId', $value['job_id'] );
+                $qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE job_id = " . $data['job_id'] . " AND FIND_IN_SET(".$data['read_id'].",read_id)=0 " ;
+                $this->_db->rawQuery($qry);
+                
+                $this->_db->where('job_summmeryId', $data['job_id'] );
             	$this->_db->update('tms_summmery_view', array('comment_read'=>0) );
             }
             $return['Status'] = 200;
+        }else{
+            foreach ($data as $value) {
+                $reead_id = "'".$value['read_id'].",'";    
+                //$qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE id = " . $value['id'] ;
+                $qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE id = " . $value['id'] . " AND FIND_IN_SET(".$value['read_id'].",read_id)=0 " ;
+                $this->_db->rawQuery($qry);
+                
+                if(isset($value['isLinguist']) && $value['isLinguist'] == 1 && isset($value['job_id']) && $value['job_id'] > 0 ){
+                    $this->_db->where('job_summmeryId', $value['job_id'] );
+                    $this->_db->update('tms_summmery_view', array('comment_read'=>0) );
+                }
+                $return['Status'] = 200;
+            }
         }
         return $return;
     }
