@@ -534,9 +534,7 @@ class dashboard {
             tms_users tu ON tmv.resource = tu.iUserId
         INNER JOIN 
             tms_users tmu ON tmv.contact_person = tmu.iUserId
-        WHERE 1 = 1 
-        GROUP BY 
-            tmv.job_summmeryId";
+        WHERE 1 = 1";
 
         
 
@@ -545,7 +543,9 @@ class dashboard {
         $qry2 .= " AND CONCAT(tg.order_no, '_', tmv.job_code, LPAD(tmv.job_no, 3, '0')) LIKE '%$searchKey%'";
         }
 
-        $qry2 .= " LIMIT 10";
+        $qry2 .= " GROUP BY 
+            tmv.job_summmeryId LIMIT 10";
+        // print_r($qry2);exit;
     
         // Execute the second query
         $data['jobData'] = $this->_db->rawQuery($qry2);
