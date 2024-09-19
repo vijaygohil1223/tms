@@ -1297,31 +1297,58 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.suggestions = [];
 
     // Function to fetch suggestions from the server
+    var orders22 = [];
     $scope.getSuggestions = function(term) {
-        console.log("term", term)
-        if (term.length > 2) {
-            var obj = {searchKey: term}
-            rest.path = "globalSearchProjectHeader";
-            rest.post(obj).success(function (data) { 
-                if (data.scoopData && data.scoopData.length > 0) { 
+        if (term.length) {
+            setTimeout(() => {
+                orders22 = []
+                var obj = {searchKey: term}
+                rest.path = "globalSearchProjectHeader";
+                rest.post(obj).success(function (data) { 
+                    console.log('data', data)
+                    $scope.projectScoop = data.scoopData;
+                    $rootScope.SearchJobList = data.jobData
+                    angular.forEach($scope.projectScoop, function (scoopData) {
+                        orders22.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
+                    });
+
+                    $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber'); 
+                        
+                    $timeout(function () {
+                        angular.forEach($scope.projectData, function (ordersData) {
+                            orders22.push(ordersData.orderNumber);
+                        });
+                        angular.forEach($rootScope.SearchJobList, function (jdata) {
+                            orders22.push(jdata.po_number);
+                        });
+                        $scope.suggestions = orders22;
+                        console.log('$scope.suggestions', $scope.suggestions)
+                        //console.log('$scope.orderNames', $scope.orderNames)
+                        //$scope.disableSearch = false;
+                        
+                    }, 100);
+                    // if (data.scoopData && data.scoopData.length > 0) { 
+                        
+                    //     if(! term.includes('-')){
+                    //         $scope.projectData = UniqueArraybyId(data.scoopData, 'orderNumber'); 
+                    //         $scope.suggestions = $scope.projectData;
+                    //     }else{
+                    //         $scope.suggestions = data.scoopData;
+                    //         $scope.projectScoop = data.scoopData;
+                    //     }
+
+                        
                     
-                    if(term.includes('-')){
-                        $scope.suggestions = data.scoopData;
-                        $scope.projectScoop = data.scoopData;
-                    }else{
-                        $scope.projectData = UniqueArraybyId(data.scoopData, 'orderNumber'); 
-                        $scope.suggestions = $scope.projectData;
-                    }
-                     
-                   
-                } else if (data.jobData && data.jobData.length > 0) { 
-                    $scope.suggestions = data.jobData;
-                    $rootScope.SearchJobList = data.jobData;
-                } else{
-                   
-                }
-                console.log('$scope.suggestions', $scope.suggestions)
-            }); 
+                    // } else if (data.jobData && data.jobData.length > 0) { 
+                    //     $scope.suggestions = data.jobData;
+                    //     $rootScope.SearchJobList = data.jobData;
+                    // } else{
+                    
+                    // }
+                    console.log('$scope.suggestions', $scope.suggestions)
+                }); 
+            }, 300);
+            
         } else {
             $scope.suggestions = [];
         }
@@ -1333,11 +1360,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var txtValue1 = angular.element('#selectedOrderData').val()
         $scope.suggestions = []; // Clear suggestions after selection
         if(!txtValue1.includes('-')){
-            $scope.searchTerm = suggestion.orderNumber;
+            //$scope.searchTerm = suggestion.orderNumber;
+            $scope.searchTerm = suggestion;
         }else if(suggestion.formattedOrderItem){
-            $scope.searchTerm = suggestion.formattedOrderItem ; // Update input with selected suggestion
+            //$scope.searchTerm = suggestion.formattedOrderItem ; 
+            $scope.searchTerm = suggestion ; 
         }else{
-            $scope.searchTerm = suggestion.formattedOrderJobItem ; // Update input with selected suggestion
+            //$scope.searchTerm = suggestion.formattedOrderJobItem ;
+            $scope.searchTerm = suggestion ; 
         }
         $scope.searchProject($scope.searchTerm);
     };

@@ -537,8 +537,11 @@
           </button>
         </span>
         <div class="suggestion-list" ng-show="suggestions.length > 0">
-          <div class="suggestion-item " ng-repeat= "suggestion in suggestions | limitTo:8" ng-click="selectSuggestion(suggestion)">
+          <div class="suggestion-item " ng-repeat= "suggestion in suggestions | limitTo:8 track by $index" ng-click="selectSuggestion(suggestion)">
             {{ 
+              suggestion
+            }}
+            <!-- {{ 
               suggestion.orderNumber && suggestion.item_number 
                 ?
                 (
@@ -546,7 +549,7 @@
                 ): (
                   searchTerm.includes('_') ? suggestion.orderNum + '_' + suggestion.jobCode + ('' + suggestion.jobNo).padStart(3, '0') : suggestion.orderNumber
                 )
-            }}
+            }} -->
           </div>
         </div>
       </div>
