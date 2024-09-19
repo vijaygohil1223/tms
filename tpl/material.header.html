@@ -287,6 +287,16 @@
     padding-top: 5px;
     padding-bottom: 5px;
   }
+  #clearBtn{
+    background-color: #fff;
+  }
+  .searchbtn{
+    background: #fff;
+    margin: 0;
+    border-left: 1px solid #f4f4fb;
+    border-radius: 0 20px 20px 0;
+  }
+  
 </style>
 
 <script type="text/javascript">
@@ -516,13 +526,26 @@
             <i class="fa fa-search" id="searchIcon" style="color:#333 !important;"></i>
           </button>
         </span> -->
-        <input type="text" ng-model="searchTerm" id="selectedOrderData" class="globalSearchInput" ng-change="getSuggestions(searchTerm)" style="color:#7b7b7b" placeholder="Search for scoop, project or job.." />
+        <input type="text" ng-model="searchTerm" id="selectedOrderData" class="globalSearchInput" autocomplete="off" ng-change="getSuggestions(searchTerm)" style="color:#7b7b7b" placeholder="Search for scoop, project or job.." />
+        <span class="input-group-btn"></span>
+          <a id="clearBtn" ng-if="searchTerm" href="javascript:void(0)"
+            class="btn btn-sm bg-light rounded" ng-click="clearSearchBox()"><i class="fa fa-close"
+              style="color:#333 !important;"></i></a>
+
+          <button type="submit" class="btn btn-sm bg-light rounded searchbtn">
+            <i class="fa fa-search" id="searchIcon" style="color:#333 !important;"></i>
+          </button>
+        </span>
         <div class="suggestion-list" ng-show="suggestions.length > 0">
           <div class="suggestion-item " ng-repeat= "suggestion in suggestions | limitTo:8" ng-click="selectSuggestion(suggestion)">
             {{ 
               suggestion.orderNumber && suggestion.item_number 
-                ? suggestion.orderNumber + '-' + ('' + suggestion.item_number).padStart(3, '0') 
-                : suggestion.orderNum + '_' + suggestion.jobCode + ('' + suggestion.jobNo).padStart(3, '0')
+                ?
+                (
+                  searchTerm.includes('-') ? suggestion.orderNumber + '-' + ('' + suggestion.item_number).padStart(3, '0') : suggestion.orderNumber
+                ): (
+                  searchTerm.includes('_') ? suggestion.orderNum + '_' + suggestion.jobCode + ('' + suggestion.jobNo).padStart(3, '0') : suggestion.orderNumber
+                )
             }}
           </div>
         </div>
