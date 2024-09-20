@@ -578,6 +578,14 @@ class jobs_detail
         return $data['vEmailAddress'];
     }
 
+    public function getJobRequestHistory($id)
+    {
+        $this->_db->join('tms_users tu', 'tu.iUserId = tjr.user_id', 'LEFT');
+        $this->_db->where('job_summmeryId', $id);
+        $data = $this->_db->get('tms_job_requests tjr', null, 'tjr.*, CONCAT(tu.vFirstName, " ", tu.vLastName) as resourceName');
+        return $data;
+    }
+
     public function allRecordsUpdateSummaryView()
     {
         // Fetch all required fields from tms_summmery_view and join the relevant tables in a single query
@@ -1267,6 +1275,14 @@ class jobs_detail
 
                         $send_fn = new functions();
                         $mailResponse = $send_fn->send_email_smtp($to, $to_name, $cc = '', $bcc = '', $subject, $body, $attachments);
+
+                        //save job request mail history
+                        $save['job_summmeryId'] = $jobId;
+                        $save['user_id'] = $val;
+                        $save['subject'] = isset($data['data']['subject']) ? $data['data']['subject'] : "Job Request";;
+                        $save['created_date'] = date('Y-m-d H:i:s');
+                        $save['updated_date'] = date('Y-m-d H:i:s');
+                        $id = $this->_db->insert('tms_job_requests', $save);
                     }
                 }
             }

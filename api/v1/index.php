@@ -2564,6 +2564,12 @@ $app->get('/jobselectContactName/:id','authenticate', function ($id) use($app) {
     echoResponse(200, $result);
 });
 
+$app->get('/getJobRequestHistory/:id','authenticate', function ($id) use($app) {
+    $itemsJob = new jobs_detail ();
+    $result = $itemsJob->getJobRequestHistory($id);
+    echoResponse(200, $result);
+});
+
 $app->get('/allRecordsUpdateSummaryView', function () {
     $itemsJob = new jobs_detail ();
     $result = $itemsJob->allRecordsUpdateSummaryView();
