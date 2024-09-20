@@ -29693,6 +29693,69 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         }).error(errorCallback);
     }
+    $scope.absentPopup = function(id, po){
+    
+        $scope.historyData = [];
+        rest.path = 'getJobRequestHistory/' + id;
+        rest.get().success(function (data) {
+        $scope.historyData = data;
+    
+
+        var html = "";
+
+        if ($scope.historyData.length > 0) {
+            // Build table if there is data
+            html = `
+                <table style='width: 100%; border-collapse: collapse;'>
+                    <thead>
+                        <tr style='color: #502dc4;'>
+                            <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Job ID</th>
+                            <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Resource Name</th>
+                            <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Subject</th>
+                            <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Created Date</th>
+                            <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Updated Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+        
+            // Loop through historyData and add rows to the table
+            angular.forEach($scope.historyData, function (item) {
+                let dateFrom = moment(item.dateFrom).format($window.localStorage.getItem('global_dateFormat'));
+                let dateTo = moment(item.dateTo).format($window.localStorage.getItem('global_dateFormat'));
+        
+                html += `
+                    <tr>
+                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${item.job_summmeryId}</td>
+                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${item.resourceName}</td>
+                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${item.subject}</td>
+                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${dateFrom}</td>
+                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${dateTo}</td>
+                    </tr>`;
+            });
+        
+            // Close the table body and table
+            html += `
+                    </tbody>
+                </table>`;
+        } else {
+            // Show "No records found" if historyData is empty
+            html = "<p style='text-align: center;'>No Request History found</p>";
+        }
+            
+        var dialog = bootbox.dialog({
+            title: 'Job Requests History of: '+ po,
+            message: html,
+            size: 'medium',
+            buttons: {
+                ok: {
+                    label: "close",
+                    className: 'btn-info',
+                }
+            }
+        });
+    });
+
+    }
 
     $scope.deletejobsDetails = function (id, orderId, taskName) {
         bootbox.confirm("Are you sure you want to delete this row?", function (result) {
@@ -34908,6 +34971,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //$scope.cPersonMsg.messageData = '<div>&nbsp;</div><div id="imgData" class="signimgdata">' + data.info.sign_detail + '</br><img src="' + data.info.sign_image + '" width="100px"></div>';
         }).error(errorCallback);
     }    
+
+    
 
     $scope.ok = function (frmId, message) {
         
@@ -42257,6 +42322,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         $uibModalInstance.close();
     }
+
+    
 
     $scope.deletejobsDetails = function (id, orderId, taskName) {
         bootbox.confirm("Are you sure you want to delete this row?", function (result) {
