@@ -496,7 +496,7 @@ class dashboard {
 
     public function globalSearchProjectHeader($data) {
         // Extract the search key
-        $searchKey = isset($data['searchKey']) ? $data['searchKey'] : '';
+        $searchKey = isset($data['searchKey']) ? trim($data['searchKey']) : '';
     
         // Base query for tms_items with concatenation of orderNumber and item_number
         $qry = "SELECT  gen.order_no AS orderNumber, its.item_number, 
@@ -517,35 +517,15 @@ class dashboard {
         $data['scoopData'] = $this->_db->rawQuery($qry);
     
        // Base query for tms_summmery_view with concatenation of orderNumber and item_number
-       $qry2 = "SELECT tg.order_no as orderNum, tmv.job_no AS jobNo,
-            tmv.job_code AS jobCode,
-            CONCAT(tg.order_no, '_', tmv.job_code, LPAD(tmv.job_no, 3, '0')) AS formattedOrderJobItem,
-            tmv.*, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date
-        FROM 
-            tms_items ti
-        INNER JOIN 
-            tms_summmery_view tmv ON ti.order_id = tmv.order_id
-        INNER JOIN 
-            tms_customer tcu ON ti.order_id = tcu.order_id
-        INNER JOIN 
-            tms_client tc ON tcu.client = tc.iClientId
-        INNER JOIN 
-            tms_general tg ON ti.order_id = tg.order_id
-        INNER JOIN 
-            tms_users tu ON tmv.resource = tu.iUserId
-        INNER JOIN 
-            tms_users tmu ON tmv.contact_person = tmu.iUserId
-        WHERE 1 = 1";
-
-        
+       $qry2 = "SELECT tsv.*, ti.item_status AS scoopitem_status FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id WHERE ti.item_number = tsv.item_id ";
 
         // If searchKey exists, add a search condition for the formatted order number in the second query
         if (!empty($searchKey)) {
-        $qry2 .= " AND CONCAT(tg.order_no, '_', tmv.job_code, LPAD(tmv.job_no, 3, '0')) LIKE '%$searchKey%'";
+        $qry2 .= " AND tsv.po_number LIKE '%$searchKey%'";
         }
 
         $qry2 .= " GROUP BY 
-            tmv.job_summmeryId LIMIT 10";
+            tsv.job_summmeryId LIMIT 10";
         // print_r($qry2);exit;
     
         // Execute the second query

@@ -1300,60 +1300,50 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     var orders22 = [];
     $scope.getSuggestions = function(term) {
         angular.element('#clearBtn').removeClass('clearBtnHide');
+        
         if (term.length) {
             setTimeout(() => {
-                orders22 = []
-                var obj = {searchKey: term}
+                orders22 = [];  // Initialize or reset the suggestions array
+                var obj = { searchKey: term };
+                
                 rest.path = "globalSearchProjectHeader";
-                rest.post(obj).success(function (data) { 
-                    console.log('data', data)
+                rest.post(obj).success(function(data) { 
+                    console.log('data', data);
+
                     $scope.projectScoop = data.scoopData;
-                    $rootScope.SearchJobList = data.jobData
-                    angular.forEach($scope.projectScoop, function (scoopData) {
-                        orders22.push(scoopData.orderNumber +'-'+ String(scoopData.item_number).padStart(3, '0') );
+                    $rootScope.SearchJobList = data.jobData;
+
+                    // First collect suggestions from scoopData
+                    angular.forEach($scope.projectScoop, function(scoopData) {
+                        orders22.push(scoopData.orderNumber + '-' + String(scoopData.item_number).padStart(3, '0'));
                     });
 
-                    $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber'); 
-                        
-                    $timeout(function () {
-                        angular.forEach($scope.projectData, function (ordersData) {
-                            orders22.push(ordersData.orderNumber);
-                        });
-                        angular.forEach($rootScope.SearchJobList, function (jdata) {
-                            orders22.push(jdata.po_number);
-                        });
-                        $scope.suggestions = orders22;
-                        console.log('$scope.suggestions', $scope.suggestions)
-                        //console.log('$scope.orderNames', $scope.orderNames)
-                        //$scope.disableSearch = false;
-                        
-                    }, 100);
-                    // if (data.scoopData && data.scoopData.length > 0) { 
-                        
-                    //     if(! term.includes('-')){
-                    //         $scope.projectData = UniqueArraybyId(data.scoopData, 'orderNumber'); 
-                    //         $scope.suggestions = $scope.projectData;
-                    //     }else{
-                    //         $scope.suggestions = data.scoopData;
-                    //         $scope.projectScoop = data.scoopData;
-                    //     }
+                    // Filter and push unique projectData order numbers
+                    $scope.projectData = UniqueArraybyId($scope.projectScoop, 'orderNumber');
+                    angular.forEach($scope.projectData, function(ordersData) {
+                        orders22.push(ordersData.orderNumber);
+                    });
 
-                        
-                    
-                    // } else if (data.jobData && data.jobData.length > 0) { 
-                    //     $scope.suggestions = data.jobData;
-                    //     $rootScope.SearchJobList = data.jobData;
-                    // } else{
-                    
-                    // }
-                    console.log('$scope.suggestions', $scope.suggestions)
-                }); 
-            }, 300);
-            
+                    // Add jobData PO numbers
+                    angular.forEach($rootScope.SearchJobList, function(jdata) {
+                        orders22.push(jdata.po_number);
+                    });
+
+                    // Update the scope suggestions
+                    $scope.suggestions = orders22;
+                    console.log('$scope.suggestions', $scope.suggestions);
+
+                    // Clear the temporary orders array after updating
+                    orders22 = [];
+                });
+            }, 100);
         } else {
+            // Clear suggestions and hide clear button if no search term
             $scope.suggestions = [];
+            angular.element('#clearBtn').addClass('clearBtnHide');
         }
     };
+
 
     // Function called when a suggestion is clicked
     $scope.selectSuggestion = function(suggestion) {
