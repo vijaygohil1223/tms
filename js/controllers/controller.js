@@ -29734,7 +29734,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             size: 'medium',
             buttons: {
                 ok: {
-                    label: "close",
+                    label: "Close",
                     className: 'btn-info',
                 }
             }
