@@ -29681,6 +29681,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         }).error(errorCallback);
     }
+    function escapeHtml(text) {
+        var map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
     $scope.absentPopup = function(id, po){
     
         $scope.historyData = [];
@@ -29709,11 +29719,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             angular.forEach($scope.historyData, function (item, i) {
                 let dateFrom = moment(item.dateFrom).format($window.localStorage.getItem('global_dateFormat'));
                 let dateTo = moment(item.dateTo).format($window.localStorage.getItem('global_dateFormat'));
-        
+                let resourceName = escapeHtml(item.resourceName);
+                
                 html += `
                     <tr>
                         <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${i+1}</td>
-                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${item.resourceName}</td>
+                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${resourceName} </td>
                         <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${item.subject}</td>
                         <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${dateFrom}</td>
                     </tr>`;
@@ -29727,10 +29738,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             // Show "No records found" if historyData is empty
             html = "<p style='text-align: center;'>No Request History found</p>";
         }
-            
+        var compiledHtml = $compile(html)($scope);
+
         var dialog = bootbox.dialog({
             title: 'Job Requests History of: '+ po,
-            message: html,
+            message: compiledHtml,
             size: 'medium',
             buttons: {
                 ok: {
