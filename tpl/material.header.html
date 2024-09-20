@@ -526,9 +526,9 @@
             <i class="fa fa-search" id="searchIcon" style="color:#333 !important;"></i>
           </button>
         </span> -->
-        <input type="text" ng-model="searchTerm" id="selectedOrderData" class="globalSearchInput" autocomplete="off" ng-change="getSuggestions(searchTerm)" style="color:#7b7b7b" placeholder="Search for scoop, project or job.." />
+        <input type="text" ng-model="searchTerm" ng-paste="onPaste()"  id="selectedOrderData" class="globalSearchInput" autocomplete="off" ng-change="getSuggestions(searchTerm)" style="color:#7b7b7b" placeholder="Search for scoop, project or job.." />
         <span class="input-group-btn"></span>
-          <a id="clearBtn" ng-if="searchTerm" href="javascript:void(0)"
+          <a id="clearBtn" ng-if="searchTerm && searchTerm.length > 0" href="javascript:void(0)"
             class="btn btn-sm bg-light rounded" ng-click="clearSearchBox()"><i class="fa fa-close"
               style="color:#333 !important;"></i></a>
 

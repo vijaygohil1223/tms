@@ -1375,23 +1375,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.onPaste = function() {
         $timeout(function() {
-            var pastedValue = angular.element('#selectedOrder').val();
+            var pastedValue = angular.element('#selectedOrderData').val();  // Get the pasted value
             console.log("Pasted Value:", pastedValue);
-            $scope.selectedOrder = pastedValue;
-            console.log("Triggering input and change events");
-            setTimeout(() => {
-                angular.element('#selectedOrder').triggerHandler('input');
-                angular.element('#selectedOrder').triggerHandler('change');
-            }, 100);
+            $scope.searchTerm = pastedValue;  // Set the pasted value to searchTerm model
     
-            //$scope.searchScoopFilter();
+            angular.element('#clearBtn').removeClass('clearBtnHide');  // Show clear button
+            $scope.getSuggestions($scope.searchTerm);  // Trigger suggestion fetch with the pasted value
         }, 0);
     };
+
     $scope.clearSearchBox = function () {
-        angular.element('#selectedOrderData').val('');
-        angular.element('#clearBtn').addClass('clearBtnHide');
-        $scope.suggestions = [];
-    }
+        $scope.searchTerm = '';  // Reset the search term model
+        angular.element('#selectedOrderData').val('');  // Clear input field
+        angular.element('#clearBtn').addClass('clearBtnHide');  // Hide clear button
+        $scope.suggestions = [];  // Clear suggestions
+    };
 
     $scope.searchProject = function (selectedValue) {
         $scope.selectedOrder = selectedValue;
