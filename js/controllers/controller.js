@@ -1299,6 +1299,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Function to fetch suggestions from the server
     var orders22 = [];
     $scope.getSuggestions = function(term) {
+        angular.element('#clearBtn').removeClass('clearBtnHide');
         if (term.length) {
             setTimeout(() => {
                 orders22 = []
