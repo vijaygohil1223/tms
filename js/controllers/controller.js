@@ -24778,6 +24778,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }).error(errorCallback);
             }
 
+            $scope.customer.client = $scope.customer?.client.toString().split(',').pop();
             rest.path = 'client/' + $scope.customer.client;
             rest.get().success(function (cData) {
                 $scope.directClientData = cData
