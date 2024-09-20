@@ -29697,27 +29697,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 <table style='width: 100%; border-collapse: collapse;'>
                     <thead>
                         <tr style='color: #502dc4;'>
-                            <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Job ID</th>
+                            <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>#</th>
                             <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Resource Name</th>
                             <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Subject</th>
                             <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Created Date</th>
-                            <th style='padding: 8px; text-align: left; border-bottom: 2px solid #ddd;'>Updated Date</th>
                         </tr>
                     </thead>
                     <tbody>`;
         
             // Loop through historyData and add rows to the table
-            angular.forEach($scope.historyData, function (item) {
+            angular.forEach($scope.historyData, function (item, i) {
                 let dateFrom = moment(item.dateFrom).format($window.localStorage.getItem('global_dateFormat'));
                 let dateTo = moment(item.dateTo).format($window.localStorage.getItem('global_dateFormat'));
         
                 html += `
                     <tr>
-                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${item.job_summmeryId}</td>
+                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${i+1}</td>
                         <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${item.resourceName}</td>
                         <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${item.subject}</td>
                         <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${dateFrom}</td>
-                        <td style='padding: 8px; text-align: left; border-bottom: 1px solid #ddd;'>${dateTo}</td>
                     </tr>`;
             });
         
