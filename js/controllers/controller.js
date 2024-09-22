@@ -1172,7 +1172,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.backtoPage = function () {
         $location.path('/');
     }
-}).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams, $http) {
+}).controller('headerController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams, $http, $document) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.superAdmin = $window.localStorage.getItem("session_superAdmin");
     if ($cookieStore.get('session_iUserId') != undefined) {
@@ -1302,7 +1302,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element('#clearBtn').removeClass('clearBtnHide');
         
         if (term.length) {
-            setTimeout(() => {
+            //setTimeout(() => {
                 orders22 = [];  // Initialize or reset the suggestions array
                 var obj = { searchKey: term };
                 
@@ -1336,15 +1336,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // Clear the temporary orders array after updating
                     orders22 = [];
                 });
-            }, 100);
+            //}, 100);
         } else {
             // Clear suggestions and hide clear button if no search term
             $scope.suggestions = [];
             angular.element('#clearBtn').addClass('clearBtnHide');
         }
     };
-
-
+    
     // Function called when a suggestion is clicked
     $scope.selectSuggestion = function(suggestion) {
         console.log('suggestion',suggestion)
@@ -1532,6 +1531,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             return;
         }
     }
+
+    // clear suggestion when click outside input or suggetion list
+    $document.on('click', function(event) {
+        var isClickedInside = document.getElementById('selectedOrderData').contains(event.target) ||
+                                document.querySelector('.suggestion-list').contains(event.target);
+
+        if (!isClickedInside) {
+            $scope.$apply(function() {
+                $scope.clearSearchBox();
+            });
+        }
+    });
 
     $scope.menuHoverIn = function (iconId) {
         angular.element('#' + iconId).removeClass('fvIconHide').addClass('fvIconShow');
@@ -24747,7 +24758,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }).error(errorCallback);
     }
 
-
+    console.log('$routeParams.id===========>',$routeParams.id)
     $scope.getContact = function (id, element) {
         if(id && id != undefined){
             var id = id.toString().split(',').pop();
@@ -24778,10 +24789,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }).error(errorCallback);
             }
 
-            $scope.customer.client = $scope.customer?.client.toString().split(',').pop();
+            console.log('insideee$routeParams.id===========>',$routeParams.id)
+
+            $scope.customer.client = id;
             rest.path = 'client/' + $scope.customer.client;
             rest.get().success(function (cData) {
                 $scope.directClientData = cData
+                console.log('$scope.directClientData', $scope.directClientData)
             }).error(function (data, error, status) { });
 
             $scope.customer.contact = ''
@@ -24792,6 +24806,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     //order number get
     $scope.orderNumber = function (id) {
         console.log('id==before', id)
+
         $window.localStorage.checkOrdernm = id;
         rest.path = 'orderNumberget/' + id;
         rest.get().success(function (data) {
@@ -24958,6 +24973,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.isDisabledOnSave = false;
                         }
                         //Project end  recent activity store in cookie
+                        console.log('innnnnnnnnnnnnnnnnnn$routeParams.id===========>',$routeParams.id)
                         rest.path = 'general';
                         rest.put($scope.general).success(function (data) {
                             $scope.isDisabledOnSave = false;

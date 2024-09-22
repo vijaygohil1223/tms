@@ -536,7 +536,7 @@
             <i class="fa fa-search" id="searchIcon" style="color:#333 !important;"></i>
           </button>
         </span>
-        <div class="suggestion-list" ng-show="suggestions.length > 0">
+        <div class="suggestion-list" ng-show="suggestions.length > 0 && searchTerm">
           <div class="suggestion-item " ng-repeat= "suggestion in suggestions | limitTo:8 track by $index" ng-click="selectSuggestion(suggestion)">
             {{ 
               suggestion
