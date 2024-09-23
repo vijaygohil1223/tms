@@ -183,7 +183,7 @@
 
                   <div class="table-responsive " ng-if="invoiceActive === 'Approved' " style="margin-top:10px;" >
                     <input type="search" class="form-control customsearchbox" id="scoopsearch_{{myTabs.tabClassName}}" ng-model="searchText" placeholder="Search..." style="width: 200px; float: right; margin: 15px 15px 15px 0;">
-                    <table class="table table-striped b-b" dt-options="dtOptions" id="approvedInvoiceList">
+                    <table class="table table-striped b-b" dt-options="dtOptions" id="approvedInvoiceList" dt-options="dtOptionsClInvc"  dtOptionsClInvc> 
                       <!-- <table datatable dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped b-b" id="approvedInvoiceList"> -->
                       <thead>
                         <th>#</th>
@@ -294,6 +294,13 @@
                         </tr>
                         <tr ng-repeat-end></tr>
                       </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="5" style="text-align: left;white-space: nowrap;">Selected Invoice Total (In EUR  ) : <strong>{{ totalSelectedPrice ? totalSelectedPrice : 0 | customNumber }} </strong></td>
+                          <td colspan="4"> </td>
+                          <td colspan="2"></td>
+                        </tr>
+                      </tfoot>
                     </table>
                   </div>
 
