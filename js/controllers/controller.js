@@ -24973,7 +24973,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             $scope.isDisabledOnSave = false;
                         }
                         //Project end  recent activity store in cookie
-                        console.log('innnnnnnnnnnnnnnnnnn$routeParams.id===========>',$routeParams.id)
+                        
                         rest.path = 'general';
                         rest.put($scope.general).success(function (data) {
                             $scope.isDisabledOnSave = false;
