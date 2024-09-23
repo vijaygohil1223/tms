@@ -20715,10 +20715,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // $scope.invoiceItems = []; 
     // $scope.selectedItems = {};
     // $scope.selectAll = false;
-
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id, item){
+        console.log("item", item);
         //var result = arrayRemove(array, 6);
+        if (!$scope.totalSelectedPrice) {
+            $scope.totalSelectedPrice = 0;
+        }
         if(id){
             if(id == 'all'){
                 
@@ -20734,11 +20737,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //         $scope.checkedIds.push(invoiceIds.toString());
                     //     }
                     // }
-                    angular.forEach($scope.invoiceListAll, function(item) {
-                        var invoiceselected = $('.invoiceCheck' + item.invoice_id).is(':checked') ? 'true' : 'false';
+
+                    angular.forEach($scope.invoiceListAll, function(item1) {
+                        var invoiceselected = $('.invoiceCheck' + item1.invoice_id).is(':checked') ? 'true' : 'false';
                         if (invoiceselected == 'true') {
-                            var invoiceIds = angular.element('.invoiceCheckData' + item.invoice_id).val();
+                            var invoiceIds = angular.element('.invoiceCheckData' + item1.invoice_id).val();
                             $scope.checkedIds.push(invoiceIds.toString());
+                            $scope.totalSelectedPrice += item1.Invoice_costEUR;
+                        }else{
+                            $scope.totalSelectedPrice -= item1.Invoice_costEUR;
                         }
                     });        
                 }else{
@@ -20746,18 +20753,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $('input[id^=checkAll]:checkbox').removeAttr('checked');
                     //$('#checkAll').removeAttr('checked');
                     $scope.checkedIds = [];
+                    $scope.totalSelectedPrice = 0; 
                 }
                 // angular.forEach($scope.invoiceListAll, function(item) {
                 //     $scope.selectedItems[item.invoice_id] = true;
                 // });
 
-            }else{
+            } else {
                 let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
-                if(isChecked == 'true')
+                if(isChecked == 'true'){
                     $scope.checkedIds.push(id.toString());
-                else
+                    $scope.totalSelectedPrice += item.Invoice_costEUR;
+                }else{
                     $scope.checkedIds = arrayRemove($scope.checkedIds, id);
-
+                    $scope.totalSelectedPrice -= item.Invoice_costEUR;
+                }
                 // if ($scope.selectedItems[item.invoice_id]) {
                 //     delete $scope.selectedItems[item.invoice_id];
                 // } else {
@@ -20769,6 +20779,45 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }    
                         
     }
+
+    $scope.dtOptionsClInvc = DTOptionsBuilder.newOptions().
+        withOption('scrollX', 'true').
+        withOption('responsive', true).
+        withOption('pageLength', 100).
+        withOption('drawCallback', function(settings) {
+            $timeout(function() {
+              var table = $('#approvedInvoiceList').DataTable();
+              console.log("WEfwefwef",filteredData );
+              var filteredData = table.rows({ filter: 'applied' }).data().toArray();
+               
+              $scope.totalPrice = 0;
+              angular.forEach(filteredData, function(item) {
+                // Assuming the 4th column contains the price data
+                var htmlContent = item[3]; // Adjust the column index as needed
+          
+                // Directly extract text from HTML content
+                var extractedText = $('<div>').html(htmlContent).text().trim();
+          
+                // Parse and accumulate the value
+                var value = parseFloat(extractedText.replace(/\./g, '').replace(',', '.'));
+                if (!isNaN(value)) {
+                  $scope.totalPrice += value;
+                }
+
+                // var invoiceId = item[0]; 
+                // // Check if the checkbox for the corresponding row is checked
+                // var isChecked = $('.invoiceCheck' + invoiceId).is(':checked');
+                // // Only add to the total price if the checkbox is checked
+                // if (isChecked && !isNaN(value)) {
+                //     $scope.totalSelectedPrice += value;
+                // }
+
+              });
+          
+              // Update the scope with the new total
+              $scope.$apply(); // Apply scope changes
+            });
+          });
 
     $scope.dtExcelTable = function(type){
         if(type=='create-date')    
@@ -36687,7 +36736,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     
         if (id) {
-           
+            
             if (id === 'all') {
                 let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
                
@@ -36711,7 +36760,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
             } else {
                 let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
-    
                 if (isChecked === 'true') {
                     $scope.checkedIds.push(id);
                     $scope.totalSelectedPrice += totalp; // Add price to total
