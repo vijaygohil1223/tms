@@ -1532,7 +1532,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // clear suggestion when click outside input or suggetion list
     $document.on('click', function(event) {
-        var inputElement = document.getElementById('selectedOrderData');
+        //var inputElement = document.getElementById('selectedOrderData');
+        var inputElement = document.getElementById('suggestionSearch');
         var suggestionList = document.querySelector('.suggestion-list');
         var isClickedInside = (inputElement && inputElement.contains(event.target)) ||
                             (suggestionList && suggestionList.contains(event.target));
@@ -1540,6 +1541,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if (!isClickedInside) {
             $scope.$apply(function() {
                 $scope.clearSearchBox();
+                //$scope.suggestions = [];
             });
         }
     });
