@@ -1328,10 +1328,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     angular.forEach($rootScope.SearchJobList, function(jdata) {
                         orders22.push(jdata.po_number);
                     });
-
                     // Update the scope suggestions
                     $scope.suggestions = orders22;
-                    console.log('$scope.suggestions', $scope.suggestions);
 
                     // Clear the temporary orders array after updating
                     orders22 = [];
@@ -1534,10 +1532,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // clear suggestion when click outside input or suggetion list
     $document.on('click', function(event) {
-        var isClickedInside = document.getElementById('selectedOrderData').contains(event.target) ||
-                                document.querySelector('.suggestion-list').contains(event.target);
+        var inputElement = document.getElementById('selectedOrderData');
+        var suggestionList = document.querySelector('.suggestion-list');
+        var isClickedInside = (inputElement && inputElement.contains(event.target)) ||
+                            (suggestionList && suggestionList.contains(event.target));
 
-        if (!isClickedInside) {
+    if (!isClickedInside) {
             $scope.$apply(function() {
                 $scope.clearSearchBox();
             });
@@ -24788,8 +24788,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.orderNumber(data);
                 }).error(errorCallback);
             }
-
-            console.log('insideee$routeParams.id===========>',$routeParams.id)
 
             $scope.customer.client = id;
             rest.path = 'client/' + $scope.customer.client;
