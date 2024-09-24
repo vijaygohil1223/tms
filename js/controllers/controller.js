@@ -36163,7 +36163,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 
                 val.invoice_number = val.custom_invoice_no && val.custom_invoice_no !== '' ? val.custom_invoice_no : val.invoice_number;
                 
-                val.freelance_currency = val.freelance_currency ? val.freelance_currency.split(',')[0] : 'EUR'; 
+                val.freelance_currency = val.freelance_currency ? val.freelance_currency.toString().split(',')[0] : 'EUR'; 
                 val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Outstanding' : val.invoice_status;
                 //val.invoice_status = (val.invoice_status == 'Open' && val.is_approved == 1) ? 'Approved' : val.invoice_status;
                 
