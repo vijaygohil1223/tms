@@ -1163,46 +1163,70 @@ class Client_invoice
         $data['scoop_id'] = $scoopString;
         $this->_db->where('invoice_id', $id);
         $updateId = $this->_db->update('tms_invoice_client', $data);
-        // print_r($scoopString);
-        // exit;
+        
         if ($id) {
         //if ($updateId) {
                 try {
-                foreach ($scoopArr as $item) {
-                    
-                    if ($item && isset($item['id'])) {
+                    foreach ($scoopArr as $item) {
                         
-                        $this->_db->where('invc_scoop_id', $item['id']);
-                        $scoopExist = $this->_db->getOne('tms_invoice_scoops iscp','iscp.id');
-                        
+                        if ($item && isset($item['id'])) {
+                            
+                            $this->_db->where('invc_scoop_id', $item['id']);
+                            $scoopExist = $this->_db->getOne('tms_invoice_scoops iscp','iscp.id');
+                            
+                            if(! $scoopExist){
+                                $this->_db->where('itemId', $item['id']);
+                                $this->_db->join('tms_general tgn', 'tgn.order_id=its.order_id', 'LEFT');
+                                $scoopOneData = $this->_db->getOne('tms_items its','its.order_id, its.item_number, its.item_name, its.total_price, its.po_number, its.accounting_inv_comment, tgn.order_no');
 
-                        if(! $scoopExist){
+                                $insertData['invc_Id'] = $id;
+                                $insertData['invc_scoop_id'] = $item['id'];
+                                $insertData['scoop_price'] = $scoopOneData['total_price'];
+                                $insertData['scoop_order_number'] = $scoopOneData['order_no'];
+                                $insertData['scoop_order_id'] = $scoopOneData['order_id'];
+                                $insertData['scoop_item_number'] = $scoopOneData['item_number'];
+                                $insertData['scoop_name'] = $scoopOneData['item_name'];
+                                $insertData['scoop_po_number'] = $scoopOneData['po_number'];
+                                $insertData['accounting_inv_comment'] = $scoopOneData['accounting_inv_comment'];
+                                $insertData['created_date'] = date('Y-m-d H:i:s');
+                                $insertData['modified_date'] = date('Y-m-d H:i:s');
+
+                                $insertedInScpID = $this->_db->insert('tms_invoice_scoops', $insertData);
+                            }
+
+                            $scpData['updated_date'] = date('Y-m-d H:i:s');
+                            $scpData['item_status'] = 6;
                             $this->_db->where('itemId', $item['id']);
-                            $this->_db->join('tms_general tgn', 'tgn.order_id=its.order_id', 'LEFT');
-                            $scoopOneData = $this->_db->getOne('tms_items its','its.order_id, its.item_number, its.item_name, its.total_price, its.po_number, its.accounting_inv_comment, tgn.order_no');
+                            $scpstsId = $this->_db->update('tms_items', $scpData);
 
-                            $insertData['invc_Id'] = $id;
-                            $insertData['invc_scoop_id'] = $item['id'];
-                            $insertData['scoop_price'] = $scoopOneData['total_price'];
-                            $insertData['scoop_order_number'] = $scoopOneData['order_no'];
-                            $insertData['scoop_order_id'] = $scoopOneData['order_id'];
-                            $insertData['scoop_item_number'] = $scoopOneData['item_number'];
-                            $insertData['scoop_name'] = $scoopOneData['item_name'];
-                            $insertData['scoop_po_number'] = $scoopOneData['po_number'];
-                            $insertData['accounting_inv_comment'] = $scoopOneData['accounting_inv_comment'];
-                            $insertData['created_date'] = date('Y-m-d H:i:s');
-                            $insertData['modified_date'] = date('Y-m-d H:i:s');
-
-                            $insertedInScpID = $this->_db->insert('tms_invoice_scoops', $insertData);
                         }
-
-                        $scpData['updated_date'] = date('Y-m-d H:i:s');
-                        $scpData['item_status'] = 6;
-                        $this->_db->where('itemId', $item['id']);
-                        $scpstsId = $this->_db->update('tms_items', $scpData);
-
                     }
-                }
+
+                    $this->_db->where('invoice_id', $id );
+                    $this->_db->join('tms_payment tp', 'tp.iClientId = tci.customer_id AND tp.iType = 2', 'LEFT');
+                    $this->_db->join('tms_tax tx', 'tp.tax_rate = tx.tax_id', 'LEFT');
+                    $taxPercentage = $this->_db->getOne('tms_invoice_client tci','tx.tax_percentage');
+                    
+                    $taxPercentageRate = 0;
+                    if($taxPercentage && isset($taxPercentage['tax_percentage']) ){
+                        $taxPercentageRate = $taxPercentage['tax_percentage'] > 0 ? $taxPercentage['tax_percentage'] : 0; 
+                    }
+                    $this->_db->where('invc_Id', $id);
+                    $invoiceSoops = $this->_db->get('tms_invoice_scoops iscp',null,'iscp.scoop_price');
+                    
+                    $priceTotal = 0;
+                    foreach ($invoiceSoops as $scpInc) {
+                        $priceTotal += $scpInc['scoop_price'];
+                    }
+
+                    // Calculate the tax amount
+                    $taxAmount = ($priceTotal * $taxPercentageRate) / 100;
+                    // Calculate the final total
+                    $finalTotal = $priceTotal + $taxAmount;
+
+                    $this->_db->where('invoice_id', $id);
+                    $invClientUpdt = $this->_db->update('tms_invoice_client', ['Invoice_cost'=> $finalTotal, 'item_total'=> $finalTotal ] );
+
             }catch (Exception $e) {
             }
 
