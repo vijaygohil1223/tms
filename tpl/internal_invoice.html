@@ -290,13 +290,19 @@
                             <td colspan="8" style="text-align: right !important; font-weight: bold;">Total:</td>
                             <td>
                                 {{ calculateTotalForFilteredDueDate(filteredInvoices, invoiceL.inv_due_date) | customNumber }}
+                                
                             </td>
                         </tr>
                         <tr ng-repeat-end></tr>
                       </tbody>
                       <tfoot>
                         <tr>
-                          <td colspan="5" style="text-align: left;white-space: nowrap;">Selected Invoice Total (In EUR  ) : <strong>{{ totalSelectedPrice ? totalSelectedPrice : 0 | customNumber }} </strong></td>
+                          <td colspan="5" style="text-align: left;white-space: nowrap;">
+                            Selected Invoice Total (In EUR  ) : <strong>
+                              <!-- {{ totalSelectedPrice ? totalSelectedPrice : 0 | customNumber }}  -->
+                              {{totalPriceSelected | customNumber }}
+                            </strong>
+                          </td>
                           <td colspan="4"> </td>
                           <td colspan="2"></td>
                         </tr>

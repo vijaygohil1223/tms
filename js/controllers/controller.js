@@ -20413,6 +20413,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             console.log('$scope.clientInvoiceListData', $scope.clientInvoiceListData)
             
             angular.forEach($scope.clientInvoiceListData, function (val, i) {
+                val.selectedNew = false;
                 //let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : invoiceDuePeriodDays
                 let invoicePeriod = val.invoice_no_of_days ? val.invoice_no_of_days : $scope.invoiceNumOfdays
                 
@@ -20718,6 +20719,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id, item){
         console.log("item", item);
+
+        console.log('filteredInvoices=======>',$scope.approvedInvc )
         //var result = arrayRemove(array, 6);
         if (!$scope.totalSelectedPrice) {
             $scope.totalSelectedPrice = 0;
@@ -20759,6 +20762,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     $scope.selectedItems[item.invoice_id] = true;
                 // });
 
+                angular.forEach($scope.approvedInvc, function(item) {
+                    item.SELECTED = 1;
+                });
+                $scope.calculateTotalForSelectedInv() 
+
             } else {
                 let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
                 if(isChecked == 'true'){
@@ -20772,7 +20780,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //     delete $scope.selectedItems[item.invoice_id];
                 // } else {
                 //     $scope.selectedItems[item.invoice_id] = true;
-                // }              
+                // }   
+                $scope.calculateTotalForSelectedInv()           
 
             }        
             
@@ -21348,6 +21357,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 item.SELECTED = 0;
             }
         });
+        $scope.calculateTotalForSelectedInv() 
+
         angular.element('[id^=checkAllDate]').each(function() {
             if (this.id !== 'checkAllDate' + invDuedate) {
                 angular.element(this).attr('checked', false);
@@ -21373,6 +21384,32 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
+
+
+        // $scope.calculateTotalForSelectedInv = function() {
+    //     $scope.totalPriceSelected = 0;
+    //     angular.forEach($scope.approvedInvc, function(item) {
+    //         if (item.SELECTED) {
+    //             if (!isNaN(parseFloat(item.Invoice_costEUR))) {
+    //                 $scope.totalPriceSelected += parseFloat(item.Invoice_costEUR);
+    //             }
+    //         }
+    //     });
+    // };
+    $scope.calculateTotalForSelectedInv = function() {
+        $scope.$applyAsync(function() {
+            $scope.totalPriceSelected = 0;
+            angular.forEach($scope.approvedInvc, function(item) {
+                if (item.SELECTED) {
+                    var cost = parseFloat(item.Invoice_costEUR);
+                    if (!isNaN(cost)) {
+                        $scope.totalPriceSelected += cost;
+                    }
+                }
+            });
+        });
+    };
+    $scope.totalPriceSelected = 0;
 
 
 }).controller('clientInvoiceShowController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $route, $uibModal, $filter, $http, $compile, $q) {
