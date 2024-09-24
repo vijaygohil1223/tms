@@ -38644,81 +38644,82 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             let countInterval = 0;  // Initialize the counter
                             const maxCountInterval = 10;  // Maximum number of executions
 
-                            const intervalId = setInterval(() => {
-                                //rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
-                                rest.path = "discussionByJobid/" + chatJobId;
-                                rest.get().success(function (data2) {
-                                    let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
-                                    //var newcommentsArray = data2.filter( (itm) => { return itm.job_id == chatJobId && itm.externalChat == isLinguistChat } );
-                                    var newcommentsArray = data2;
-                                    // other side user send message
-                                    var newUserCommentsArr = newcommentsArray.filter(function (newCmt) { return newCmt.user_id != loginid });
-                                    // FOR read unread comments
-                                    var cmtArr = [];
-                                    var cmtArr = newcommentsArray.filter(function (newcommentsArray) { var isReadtrue = newcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                            // const intervalId = setInterval(() => {
+                            //     //rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
+                            //     rest.path = "discussionByJobid/" + chatJobId;
+                            //     rest.get().success(function (data2) {
+                            //         let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
+                            //         //var newcommentsArray = data2.filter( (itm) => { return itm.job_id == chatJobId && itm.externalChat == isLinguistChat } );
+                            //         var newcommentsArray = data2;
+                            //         // other side user send message
+                            //         var newUserCommentsArr = newcommentsArray.filter(function (newCmt) { return newCmt.user_id != loginid });
+                            //         // FOR read unread comments
+                            //         var cmtArr = [];
+                            //         var cmtArr = newcommentsArray.filter(function (newcommentsArray) { var isReadtrue = newcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
                                     
-                                    var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                            //         var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
-                                    // --- update read id //
-                                    $scope.newCommentReadArray = [];
-                                    if (cmtArr) {
-                                        angular.forEach(cmtArr, function (cmtval, cmti) {
-                                            var newCmtObj = {
-                                                id: cmtval.id,
-                                                read_id: loginid,
-                                                isLinguist: 1,
-                                                job_id: cmtval.job_id
-                                            }
-                                            $scope.newCommentReadArray.push(newCmtObj);
-                                            console.log('$scope.newCommentReadArray', $scope.newCommentReadArray)
-                                            if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                                // temp hide
-                                                // rest.path = "discussionCommentread";
-                                                // rest.put($scope.newCommentReadArray).success(function (res) {
-                                                //     if (res.status == 1) {
-                                                //         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                                //     }
-                                                // });
-                                            }
-                                        });
-                                    }
-                                    //if( (newcommentsArray.length > commentsArray.length && ) )
+                            //         // --- update read id //
+                            //         $scope.newCommentReadArray = [];
+                            //         if (cmtArr) {
+                            //             angular.forEach(cmtArr, function (cmtval, cmti) {
+                            //                 var newCmtObj = {
+                            //                     id: cmtval.id,
+                            //                     read_id: loginid,
+                            //                     isLinguist: 1,
+                            //                     job_id: cmtval.job_id
+                            //                 }
+                            //                 $scope.newCommentReadArray.push(newCmtObj);
+                            //                 console.log('$scope.newCommentReadArray', $scope.newCommentReadArray)
+                            //                 if ($scope.newCommentReadArray.length == cmtArr.length) {
+                            //                     // temp hide
+                            //                     // rest.path = "discussionCommentread";
+                            //                     // rest.put($scope.newCommentReadArray).success(function (res) {
+                            //                     //     if (res.status == 1) {
+                            //                     //         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                            //                     //     }
+                            //                     // });
+                            //                 }
+                            //             });
+                            //         }
+                            //         //if( (newcommentsArray.length > commentsArray.length && ) )
                                     
-                                    var arrayNotload = $('#comment-list').find(' > li').length;
+                            //         var arrayNotload = $('#comment-list').find(' > li').length;
 
-                                    //if(newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)){
-                                    if (newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)) {
-                                        //if(usercommentsArrLen == 0 ){
-                                        usercommentsArrLen = newUserCommentsArr.length;
-                                        //}
+                            //         //if(newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)){
+                            //         if (newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)) {
+                            //             //if(usercommentsArrLen == 0 ){
+                            //             usercommentsArrLen = newUserCommentsArr.length;
+                            //             //}
 
-                                        $('#comment-list').find(' > li[data-id^=c]').hide();
-                                        // temp hide
-                                        // rest.path = "discussionCommentread";
-                                        // rest.put($scope.commentReadArray).success(function (res) {
-                                        //     if (res.status == 1) {
-                                        //         jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
-                                        //     }
-                                        // });
-                                        $scope.commentsArrayAll();
-                                        success(newcommentsArray);
-                                        $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                                        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                                        if ($('#comment-list').length > 0) {
-                                            $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                                            $('#comment-list').find(' > li[data-id^=c]').hide();
-                                        }
-                                        usercommentsArr = [];
+                            //             $('#comment-list').find(' > li[data-id^=c]').hide();
+                            //             // temp hide
+                            //             // rest.path = "discussionCommentread";
+                            //             // rest.put($scope.commentReadArray).success(function (res) {
+                            //             //     if (res.status == 1) {
+                            //             //         jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
+                            //             //     }
+                            //             // });
+                            //             $scope.commentsArrayAll();
+                            //             success(newcommentsArray);
+                            //             $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                            //             //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                            //             if ($('#comment-list').length > 0) {
+                            //                 $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                            //                 $('#comment-list').find(' > li[data-id^=c]').hide();
+                            //             }
+                            //             usercommentsArr = [];
                                         
-                                    }
-                                });
+                            //         }
+                            //     });
 
-                                countInterval++;
-                                if (countInterval >= maxCountInterval) {
-                                    clearInterval(intervalId);  // Stop the interval
-                                }
+                            //     countInterval++;
+                            //     if (countInterval >= maxCountInterval) {
+                            //         clearInterval(intervalId);  // Stop the interval
+                            //     }
                                 
-                            }, 10000);
+                            // }, 10000);
+
                         }
 
                         success(commentsArray);

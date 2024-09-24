@@ -172,7 +172,17 @@ class Freelance_invoice
             $data['modified_date'] = date('Y-m-d');
             $data['value_date'] = date('Y-m-d');
             $data['invoice_date'] = (isset($data['invoice_date'])) ? $data['invoice_date'] : date('Y-m-d');
-            $data['currency_rate'] = (isset($data['currency_rate'])) ? $data['currency_rate'] : 1;
+            
+            $linguistId =  $data['freelance_id'];
+            $data['currency_rate'] = 1;
+            try{
+                $qry = "SELECT tu.iUserId, tcu.current_curency_rate FROM tms_users tu LEFT JOIN tms_currency tcu ON SUBSTRING_INDEX(tcu.currency_code, ',', 1) = SUBSTRING_INDEX(tu.freelance_currency, ',', 1) WHERE tu.iUserId = $linguistId ";
+                $getOne = $this->_db->rawQuery($qry);
+                $data['currency_rate'] = !empty($getOne) && isset($getOne[0]['current_curency_rate']) && $getOne[0]['current_curency_rate'] != '' ? $getOne[0]['current_curency_rate'] : 1;
+            }catch (Exception $e) {
+                // 
+            }
+            //$data['currency_rate'] = (isset($data['currency_rate'])) ? $data['currency_rate'] : 1;
             $id = $this->_db->insert('tms_invoice', $data);
             if ($id && $jobData) {
                 foreach ($jobData as $item) {
