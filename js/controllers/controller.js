@@ -47495,4 +47495,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
               $scope.$apply();
             });
         });
-});
+}).controller('financeController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
+    $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
+    //$window.localStorage.iUserId = "";
+
+    $scope.activeTab = 1; // Default tab
+
+    $scope.setActiveTab = function(tabIndex) {
+        $scope.activeTab = tabIndex;
+    };
+})

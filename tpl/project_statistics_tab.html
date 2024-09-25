@@ -1,0 +1,328 @@
+<div class="panel panel-default">
+   <form id="order-status-report">
+      <div class="panel-body">
+         <!--   TAB1 -->
+         <div class="row">
+            <div class="col-sm-12">
+               <div class="panel panel-default">
+                  <div class="panel-heading font-bold">Select</div>
+                  <div class="">
+                     <div class="col-sm-4 form-group">
+                        <div class="row">
+                           <div class="col-sm-11">
+                              <label>
+                                 Project Manager
+                              </label>
+                              <input type="text" select2-manager id="projectManager" class="form-control"
+                                 name="pm_id" ng-model="orderReport.pm_id" />
+                           </div>
+                           <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                              <a href="javascript:void(0)"
+                                 ng-click="clearCode('order-status-report','projectManager')"
+                                 ng-if="orderReport.pm_id"><i class="iconDelete glyph-icon fa-times"
+                                    aria-hidden="true"></i></a>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-sm-4 form-group">
+                        <div class="row">
+                           <div class="col-sm-11">
+                              <label>
+                                 Project Coordinator
+                              </label>
+                              <input type="text" select2-coordinator id="projectCoordinator"
+                                 class="form-control" name="cordinator_id"
+                                 ng-model="orderReport.cordinator_id" />
+                           </div>
+                           <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                              <a href="javascript:void(0)"
+                                 ng-click="clearCode('order-status-report','projectCoordinator')"
+                                 ng-if="orderReport.cordinator_id">
+                                 <i class="iconDelete glyph-icon fa-times" aria-hidden="true"></i></a>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-sm-4 form-group">
+                        <div class="row">
+                           <div class="col-sm-11">
+                              <label>
+                                 Quality Assurance Specialist
+                              </label>
+                              <input type="text" select2-qaspa id="qaSpecialist" class="form-control"
+                                 name="qa_id" ng-model="orderReport.qa_id" />
+                           </div>
+                           <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                              <a href="javascript:void(0)"
+                                 ng-click="clearCode('order-status-report','qaSpecialist')"
+                                 ng-if="orderReport.qa_id"><i class="iconDelete glyph-icon fa-times"
+                                    aria-hidden="true"></i></a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!--   TAB1 -->
+      <div class="panel-footer" id='middle'>
+         <a class="btn btn-info btn-leftside"
+            ng-click="statusReportsearch('order-status-report','middle')">Update search</a>
+         <button class="btn btn-info btn-leftside"
+            ng-click="reseteSearch('order-status-report',orderReport)">Delete Search</button>
+      </div>
+   </form>
+</div>
+<div class="panel panel-default">
+   <div class="panel-body">
+      <div class="">
+         <div class="panel panel-default">
+            <div class="panel-heading font-bold">
+               <h4>Result <span ng-if="staturRes.length"> : (Projects - {{staturRes.length}}) </span></h4>
+               <h4></h4>
+            </div>
+            <div class="panel-body">
+               <div class="col-sm-12">
+                  <!-- <div class="row wrapper" ng-show="staturRes.length">
+                     <div class="col-sm-6 m-b-xs">
+                        <div class="col-sm-4">
+                           <select class="input-sm form-control w-sm inline v-middle" ng-model="action"
+                              ng-change="statucOrderAction(action)">
+                              <option>Change project status</option>
+                              <option>Change scoop status</option>
+                              <option>Export to excel</option>
+                              <option>Remove selection</option>
+                              <option>Select all</option>
+                           </select>
+                        </div>
+                        <div class="col-sm-5" ng-show="projectStatus">
+                           <input type="text" select2-proj-jobs data-typeid="2" id="projectStatusdata"
+                              class="input-sm form-control w-sm inline v-middle" ng-model="projectStatus" />
+                        </div>
+                        <div class="col-sm-5" ng-show="itemStatus">
+                           <input type="text" select2-job-detailitm-status data-typeid="2"
+                              id="itemStatusdata" class="input-sm form-control w-sm inline v-middle"
+                              ng-model="itemStatus" />
+                        </div>
+                        <div class="col-sm-1">
+                           <button class="btn btn-sm btn-info"
+                              ng-click="statusAction(action,projectStatus)"><i
+                                 class="glyphicon glyphicon-ok"></i></button>
+                        </div>
+                     </div>
+                     <div>
+                        <button ng-show="staturRes.length" class="btn m-b-xs btn-info pull-right"
+                           ng-click="exportData('result')">Excel</button>
+                     </div>
+                  </div> -->
+                  <div class="table-responsive">
+                     <table class="table m-b-none default footable-loaded footable">
+                        <thead>
+                           <th>#</th>
+                           <th>Orders Number</th>
+                           <!-- <th>Order Date</th> -->
+                           <th>Project name</th>
+                           <th>
+                              <!-- Customers -->Client
+                           </th>
+                           <th>Order Date</th>
+                           <th>Status</th>
+                        </thead>
+                        <tbody>
+                           <!-- <tr ng-repeat="result in staturRes=(statusResult)" class="orderRClass"
+                              ng-init="setTotals(result)"
+                              ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice"> -->
+                              <tr ng-repeat="result in staturRes=(statusResult | filter : orderReport)"
+                                 class="orderRClass" ng-init="setTotals(result)"
+                                 ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice"> 
+                              <td>
+                                 {{$index +1}}
+                                 <!-- <input type="checkbox" id="orderCheck{{$index}}"
+                                    name="orderCheck{{$index}}" ng-model="checkor"
+                                    ng-checked="checkdata=='ordercheck'">
+                                 <input type="text" id="orderCheckData{{$index}}"
+                                    name="orderCheckData{{$index}}" style="display: none;"
+                                    ng-model="result.orderId"> -->
+                              </td>
+                              <td>
+                                 <a href="#/general/{{result.orderId}}"
+                                    class="summeryColor">{{result.orderNumber}}</a>
+                                 <!-- <a href="#/viewProject/{{result.orderId}}"
+                                    class="summeryColor">{{result.orderNumber}}</a> -->
+                              </td>
+                              <td>{{ result.projectName }}</td>
+                              <td><a href="#/viewdirect/{{result.customer}}"
+                                    class="summeryColor"><span>{{result.contactName}}</span></a></td>
+                              <td> <span ng-bind="result.orderDate | globalDtFormat"></span></td>
+                              <td ng-bind="result.clientStatus"></td>
+                              <!-- <td ng-bind="result.totalAmount | customNumber">--</td> -->
+                           </tr>
+                           <!-- <tr ng-if="staturRes.length">
+                              <td colspan="5"></td>
+                              <td> <strong> Gross Profit </strong> </td>
+                              <td> <strong>{{ clReportTotal | customNumber }}</strong> </td>
+                           </tr>
+                           <tr ng-show="!staturRes.length">
+                              <td colspan="7" ng-bind="dataNotFound"></td>
+                           </tr> -->
+                        </tbody>
+                     </table>
+                  </div>
+                  <!-- use for export excel -->
+                  <div class="table-responsive" id="exportable" style="display: none">
+                     <table class="table m-b-none default footable-loaded footable">
+                        <thead>
+                           <th>#</th>
+                           <th>Orders Number</th>
+                           <!-- <th>Order Date</th> -->
+                           <th>Project name</th>
+                           <th>Email Subject</th>
+                           <th>
+                              <!-- Customers -->Client
+                           </th>
+                           <th>Status</th>
+                           <th>Prices</th>
+
+                        </thead>
+                        <tbody>
+                           <tr id="Export_{{$index}}" ng-repeat="result in statusResult">
+                              <td>{{$index + 1}}</td>
+                              <td><span>{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3
+                                    }}</span></td>
+                              <td>{{ result.projectName }}</td>
+                              <td>{{ result.emailSubject }}</td>
+                              <td><span>{{result.contactName}}</span></td>
+                              <!-- <td ng-bind="result.projectName"></td> -->
+                              <td ng-bind="result.clientStatus"></td>
+                              <td ng-bind="result.totalAmount | customNumber">--</td>
+
+
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="panel panel-default">
+   <div class="panel-body">
+      <div class="">
+         <div class="panel panel-default">
+            <div class="panel-heading font-bold">
+               <h4>Linguist Projects <span ng-if="linguistRes.length"> : (Projects - {{linguistRes.length}}) </span></h4>
+               <h4></h4>
+            </div>
+            <div class="panel-body">
+               <form id="order-linguist-report">
+                  <div class="col-sm-12">
+                     <div class="col-sm-4 form-group">
+                        <div class="row">
+                           <div class="col-sm-11">
+                              <label>
+                                 External Resource
+                              </label>
+                              <input type="text" select2-job-detail-resource id="externalresource" class="form-control"
+                                 name="resource_id" ng-model="linguistReport.resource_id" />
+                           </div>
+                           <div class="col-sm-1" style="margin:33px 0 0 -14px;">
+                              <a href="javascript:void(0)"
+                                 ng-click="clearCodeLinguist('order-linguist-report','externalresource')"
+                                 ng-if="linguistReport.resource_id"><i class="iconDelete glyph-icon fa-times"
+                                    aria-hidden="true"></i></a>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-sm-4">
+                        <div class="row" style="margin-top:25px;">
+                           <a class="btn btn-info btn-leftside"
+                           ng-click="linguistReportsearch('order-linguist-report','middle')">Update search</a>
+                           <button class="btn btn-info btn-leftside"
+                              ng-click="linguistReseteSearch('order-linguist-report',linguistReport)">Delete Search</button>
+                        </div>      
+                     </div>
+                  </div> 
+               </form>     
+               <div class="col-sm-12">
+                  <div class="table-responsive">
+                     <table class="table m-b-none default footable-loaded footable">
+                        <thead>
+                           <th>#</th>
+                           <th>Orders Number</th>
+                           <!-- <th>Order Date</th> -->
+                           <th>Project name</th>
+                           <th>Client</th>
+                           <th>Account</th>
+                           <th>Contact Person</th>
+                           <th>Order Date</th>
+                           <th>Status</th>
+                        </thead>
+                        <tbody>
+                              <tr ng-repeat="result in linguistRes=(linguistResult)"
+                                 class="orderRClass"> 
+                              <td>
+                                 {{$index +1}}
+                              </td>
+                              <td><a href="#/general/{{result.orderId}}"
+                                    class="summeryColor">{{result.orderNumber}}</a></td>
+                              <td>{{ result.projectName }}</td>
+                              <td><a href="#/viewdirect/{{result.customer}}"
+                                    class="summeryColor"><span>{{result.contactName}}</span></a></td>
+                              <td>{{result.accountName}}</td>
+                              <td>{{result.contact_person}}</td>
+                              <td> <span ng-bind="result.orderDate | globalDtFormat"></span></td>
+                              <td ng-bind="result.clientStatus"></td>
+                              <!-- <td ng-bind="result.totalAmount | customNumber">--</td> -->
+                           </tr>
+                           <!-- <tr ng-if="linguistRes.length">
+                              <td colspan="5"></td>
+                              <td> <strong> Gross Profit </strong> </td>
+                              <td> <strong>{{ clReportTotal | customNumber }}</strong> </td>
+                           </tr>
+                           <tr ng-show="!linguistRes.length">
+                              <td colspan="7" ng-bind="dataNotFound"></td>
+                           </tr> -->
+                        </tbody>
+                     </table>
+                  </div>
+                  <!-- use for export excel -->
+                  <div class="table-responsive" id="exportable" style="display: none">
+                     <table class="table m-b-none default footable-loaded footable">
+                        <thead>
+                           <th>#</th>
+                           <th>Orders Number</th>
+                           <!-- <th>Order Date</th> -->
+                           <th>Project name</th>
+                           <th>Email Subject</th>
+                           <th>
+                              <!-- Customers -->Client
+                           </th>
+                           <th>Status</th>
+                           <th>Prices</th>
+
+                        </thead>
+                        <tbody>
+                           <tr id="Export_{{$index}}" ng-repeat="result in linguistReport">
+                              <td>{{$index + 1}}</td>
+                              <td><span>{{result.orderNumber}}-{{ result.item_number | numberFixedLen:3
+                                    }}</span></td>
+                              <td>{{ result.projectName }}</td>
+                              <td>{{ result.emailSubject }}</td>
+                              <td><span>{{result.contactName}}</span></td>
+                              
+                              <!-- <td ng-bind="result.projectName"></td> -->
+                              <td ng-bind="result.clientStatus"></td>
+                              <td ng-bind="result.totalAmount | customNumber">--</td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

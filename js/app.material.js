@@ -501,7 +501,11 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'projectStatisticsController',
             activetab: 'overview-report',
             role: '1'
-
+        }).when('/finance-report', {
+            templateUrl: modulesPath + 'finance_report.html',
+            controller: 'financeController',
+            activetab: 'overview-report',
+            role: '1'
         }).when('/Invoice-status-report', {
             templateUrl: modulesPath + 'invoice_report.html',
             controller: 'invoicestatusReportController',
