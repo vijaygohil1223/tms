@@ -4843,38 +4843,42 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.projectJobdetail = function (jobId, isJobDiscussion) {
         scrollBodyToTop();
         //$location.path('/job-summery-details/' + id);
-        $routeParams.id = jobId;
-        const itemObj = {
-            jobId:jobId,
-            isCommentTab: isJobDiscussion && isJobDiscussion==1 ? true : false
-        }
-        if(isJobDiscussion && isJobDiscussion==1){
-            setTimeout(() => {
-                $('.jobcmtclr' + jobId).css("color", "#67bb0a");
-            }, 200);
-        }
-        var modalInstance = $uibModal.open({
-            animation: $scope.animationsEnabled,
-            templateUrl: 'tpl/jobDetailPopup.html',
-            controller: 'projectjobDetailPopupController',
-            size: '',
-            resolve: {
-                items: function () {
-                    return itemObj;
-                }
+        if(jobId){
+            $routeParams.id = jobId;
+            const itemObj = {
+                jobId:jobId,
+                isCommentTab: isJobDiscussion && isJobDiscussion==1 ? true : false
             }
-        });
+            if(isJobDiscussion && isJobDiscussion==1){
+                setTimeout(() => {
+                    $('.jobcmtclr' + jobId).css("color", "#67bb0a");
+                }, 200);
+            }
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'tpl/jobDetailPopup.html',
+                controller: 'projectjobDetailPopupController',
+                size: '',
+                resolve: {
+                    items: function () {
+                        return itemObj;
+                    }
+                }
+            });
 
-        modalInstance.opened.then(function () {
-            
-            $scope.modalOpen = true;
-        });
+            modalInstance.opened.then(function () {
+                
+                $scope.modalOpen = true;
+            });
 
-        // we want to update state whether the modal closed or was dismissed,
-        // so use finally to handle both resolved and rejected promises.
-        modalInstance.result.finally(function (selectedItem) {
-            $scope.modalOpen = false;
-        });
+            // we want to update state whether the modal closed or was dismissed,
+            // so use finally to handle both resolved and rejected promises.
+            modalInstance.result.finally(function (selectedItem) {
+                $scope.modalOpen = false;
+            });
+        }else{
+            notification('Record not exist.', 'warning');
+        }
     
     }
 
@@ -30770,25 +30774,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
         //$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
-        var addEmojiElement = $("#addemoji");
-        if(addEmojiElement.length){
-            addEmojiElement.emojioneArea({
-                autoHideFilters: true,
-                useSprite: true,
-                //accepts values: 'image',
-                //default: 'unicode',
-                //accepts values: 'unicode' | 'shortname' | 'image'
-                //pickerPosition: "bottom"
-            });
+        // var addEmojiElement = $("#addemoji");
+        // if(addEmojiElement.length){
+        //     addEmojiElement.emojioneArea({
+        //         autoHideFilters: true,
+        //         useSprite: true,
+        //         //accepts values: 'image',
+        //         //default: 'unicode',
+        //         //accepts values: 'unicode' | 'shortname' | 'image'
+        //         //pickerPosition: "bottom"
+        //     });
 
-            var el = addEmojiElement.emojioneArea();
-            el[0].emojioneArea.on("emojibtn.click", function () {
-                const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-                const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
-                $('.textarea').append(emoji).trigger("change");
-            });
+        //     var el = addEmojiElement.emojioneArea();
+        //     el[0].emojioneArea.on("emojibtn.click", function () {
+        //         const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+        //         const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
+        //         $('.textarea').append(emoji).trigger("change");
+        //     });
 
-        }
+        // }
 
     }, 2800);
 
@@ -30822,10 +30826,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 $timeout(function () {
                     if ($routeParams.id) {
                         var interval = setInterval(() => {
-                            rest.path = "discussionOrder/" + $routeParams.id;
+                            //rest.path = "discussionOrder/" + $routeParams.id;
+                            let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
+                            if ($scope.selectedTab === 1 && $scope.scoopItemId && $scope.scoopItemId > 0) {
+                                rest.path = "discussionScoop/" + $scope.scoopItemId;
+                            } else if ($scope.selectedTab === 2 && isLinguistJobChat > 0) {
+                                rest.path = "discussionByJobid/" + isLinguistJobChat;
+                            } else {
+                                return; // Exit early if no valid path is set
+                            }
                             rest.get().success(function (data) {
                                 
-                                let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
+                                //let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
                                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
                                 //console.log('isLinguistChat=>', isLinguistChat)
                                 //var data = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
@@ -30867,6 +30879,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 //if( (newcommentsArray.length > commentsArray.length && ) )
                                 
                                 var arrayNotload = $('#comment-list').find(' > li').length;
+                                
                                 if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
                                     $('#comment-list').find(' > li[data-id^=c]').hide();
                                     rest.path = "discussionCommentread";
@@ -30875,13 +30888,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                             jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
                                         }
                                     });
-                                    $scope.commentsArrayAll();
+                                    //$scope.commentsArrayAll();
                                     // issue while changes job (last active)
                                     //success(newcommentsArray);
                                     
                                     
-                                    $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                                    
+                                    //$('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                    $timeout(function() {
+                                        var ulNavigation = $('ul.navigation').find('li[data-sort-key="oldest"]');
+                                        if (ulNavigation.length) {
+                                            ulNavigation.trigger('click');
+                                        }
+                                    }, 0);
+
                                     if ($('.cmtleft').length > 0 || $('.cmtright').length > 0)
                                         jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                                     $('#comment-list').find(' > li[data-id^=c]').hide();
@@ -30918,6 +30937,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
                     $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
                     $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
+
+                    $timeout( function(){
+                        var addEmojiElement = $("#addemoji");
+                        if(addEmojiElement.length){
+                            addEmojiElement.emojioneArea({
+                                autoHideFilters: true,
+                                useSprite: true,
+                            });
+                            var el = addEmojiElement.emojioneArea();
+                            el[0].emojioneArea.on("emojibtn.click", function () {
+                                const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+                                const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
+                                $('.textarea').append(emoji).trigger("change");
+                            });
+                        }
+                    },100)
 
                 }, 1500);
             },
@@ -37928,9 +37963,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.jobfolderId = $routeParams.id;
     // $window.localStorage.orderID = " ";
     const userRight = $scope.userRight  
-    setTimeout(() => {
-        $scope.isCooementTab = items && items.isCommentTab == true ? $('#linguistJobDiscussion').click() : false;
-    }, 500);
+    // setTimeout(() => {
+    //     $scope.isCooementTab = items && items.isCommentTab == true ? $('#linguistJobDiscussion').click() : false;
+    // }, 500);
     
     $window.localStorage.pId = " ";
     $window.localStorage.setItem("parentId", " ");
@@ -38054,6 +38089,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     //$scope.currencyCodeDisplay = $scope.vBankInfo.currency_code;
                 }).error(errorCallback);
             }
+
+            setTimeout(() => {
+                $scope.isCooementTab = items && items.isCommentTab == true ? $('#linguistJobDiscussion').click() : false;
+            }, 200);
 
         }).error(errorCallback);
     }
@@ -38243,22 +38282,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 const resPosition = val?.vResourcePosition ? val.vResourcePosition.toString().split(',') : '';
                 const fullName = val?.vFirstName + ' ' + val?.vLastName
                 // index based on api (project_coordinator,project_manager QA_specialist)
-                if (i===0 && resPosition.includes('3') ) {
-                    angular.element('#coordinatorIcon').html(fullName);
-                    var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
-                    angular.element('.coordinatorIcon').html(coordpic);
-                } 
-                if (i===1 && resPosition.includes('2')) {
-                    angular.element('#managerDesignation').html(fullName);
-                    console.log('val', val)
-                    var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
-                    angular.element('.managerIcon').html(managerpic);
-                } 
-                if (i===2 && resPosition.includes('4')) {
-                    angular.element('#QASpecialist').html(fullName);
-                    var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
-                    angular.element('.QAIcon').html(QApic);
-                }
+                // if (i===0 && resPosition.includes('3') ) {
+                //     angular.element('#coordinatorIcon').html(fullName);
+                //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.coordinatorIcon').html(coordpic);
+                // } 
+                // if (i===1 && resPosition.includes('2')) {
+                //     angular.element('#managerDesignation').html(fullName);
+                //     console.log('val', val)
+                //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.managerIcon').html(managerpic);
+                // } 
+                // if (i===2 && resPosition.includes('4')) {
+                //     angular.element('#QASpecialist').html(fullName);
+                //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
+                //     angular.element('.QAIcon').html(QApic);
+                // }
 
             })
         }).error(errorCallback);
@@ -38337,6 +38376,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         // }
 
         rest.path = 'discussionJobDetails/' + chatJobId;
+        console.log('chatJobId======>', chatJobId)
         rest.get().success(function (data) {
             $scope.scoopSidebarDetail = data;
             console.log('$scope.scoopSidebarDetail==========>', $scope.scoopSidebarDetail)
@@ -38492,18 +38532,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             //$('.att_count').text(totalAttachment);
 
 
-                            if (i > 0) {
-                                var ndt1 = new Date(filteredData[i - 1].created);
-                                var dateSeprt2 = commentDateToformat(filteredData[i - 1].created);
+                            // if (i > 0) {
+                            //     var ndt1 = new Date(filteredData[i - 1].created);
+                            //     var dateSeprt2 = commentDateToformat(filteredData[i - 1].created);
 
-                                if (dateSeprt != dateSeprt2) {
-                                    if ($('#comment-list').find(' > li[new-id=' + dataId + ']').length == 0)
-                                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                }
-                            } else {
-                                if ($('li[new-id=' + dataId + ']').length === 0)
-                                    $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                            }
+                            //     if (dateSeprt != dateSeprt2) {
+                            //         if ($('#comment-list').find(' > li[new-id=' + dataId + ']').length == 0)
+                            //             $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                            //     }
+                            // } else {
+                            //     if ($('li[new-id=' + dataId + ']').length === 0)
+                            //         $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                            // }
 
 
                             var msgRead_id = val.read_id;
@@ -38533,6 +38573,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         });
 
                         deferred.resolve(promises);
+                        //$scope.commentsFn();
                         
                         // if (data.length == promises.length) {
                         //     //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
@@ -38541,6 +38582,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     }, 1500);
                     //commentsArray = data.filter( (itm) => { return itm.externalChat === 1 } );
                     commentsArray = filteredData;
+                    $scope.commentsFn();
 
                     var cmtObjTemp = {
                         id: 0,
@@ -38645,267 +38687,285 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
 
         $timeout(function () {
-            var el = $("#addemoji").emojioneArea();
-            el[0].emojioneArea.on("emojibtn.click", function () {
-                const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-                //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
-                const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
-                $('.textarea').append(emoji).trigger("change");
+            // var el = $("#addemoji").emojioneArea();
+            // el[0].emojioneArea.on("emojibtn.click", function () {
+            //     const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+            //     //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+            //     const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
+            //     $('.textarea').append(emoji).trigger("change");
 
-                //$('.textarea').val($('.textarea').val()+emoji);
-            });
+            //     //$('.textarea').val($('.textarea').val()+emoji);
+            // });
 
             jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
             jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
         }, 3000);
 
-        $timeout(function () {
+        $scope.commentsFn = function(){
+            $timeout(function () {
 
-            var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
-                roundProfilePictures: true,
-                textareaRows: 1,
-                enableAttachments: true,
-                enablePinging: true,
-                currentUserId: loginid,
-                enableHashtags: true,
-                textareaPlaceholderText: 'Type message here...',
-                getComments: function (success, error) {
+                var CommentedElement = $('#comments-container').comments({ //profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
+                    roundProfilePictures: true,
+                    textareaRows: 1,
+                    enableAttachments: true,
+                    enablePinging: true,
+                    currentUserId: loginid,
+                    enableHashtags: true,
+                    textareaPlaceholderText: 'Type message here...',
+                    getComments: function (success, error) {
 
-                    $timeout(function () {
-                        if ($scope.jobDiscussionRedirect) {
+                        $timeout(function () {
+                            if ($scope.jobDiscussionRedirect) {
 
-                            var newLoginidArr = commentsArray.filter(function (itmCmt) { return itmCmt.user_id != loginid });
-                            var usercommentsArrLen = newLoginidArr.length;
-                            
-                            let countInterval = 0;  // Initialize the counter
-                            const maxCountInterval = 10;  // Maximum number of executions
-
-                            // const intervalId = setInterval(() => {
-                            //     //rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
-                            //     rest.path = "discussionByJobid/" + chatJobId;
-                            //     rest.get().success(function (data2) {
-                            //         let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
-                            //         //var newcommentsArray = data2.filter( (itm) => { return itm.job_id == chatJobId && itm.externalChat == isLinguistChat } );
-                            //         var newcommentsArray = data2;
-                            //         // other side user send message
-                            //         var newUserCommentsArr = newcommentsArray.filter(function (newCmt) { return newCmt.user_id != loginid });
-                            //         // FOR read unread comments
-                            //         var cmtArr = [];
-                            //         var cmtArr = newcommentsArray.filter(function (newcommentsArray) { var isReadtrue = newcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-                                    
-                            //         var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
-
-                            //         // --- update read id //
-                            //         $scope.newCommentReadArray = [];
-                            //         if (cmtArr) {
-                            //             angular.forEach(cmtArr, function (cmtval, cmti) {
-                            //                 var newCmtObj = {
-                            //                     id: cmtval.id,
-                            //                     read_id: loginid,
-                            //                     isLinguist: 1,
-                            //                     job_id: cmtval.job_id
-                            //                 }
-                            //                 $scope.newCommentReadArray.push(newCmtObj);
-                            //                 console.log('$scope.newCommentReadArray', $scope.newCommentReadArray)
-                            //                 if ($scope.newCommentReadArray.length == cmtArr.length) {
-                            //                     // temp hide
-                            //                     // rest.path = "discussionCommentread";
-                            //                     // rest.put($scope.newCommentReadArray).success(function (res) {
-                            //                     //     if (res.status == 1) {
-                            //                     //         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                            //                     //     }
-                            //                     // });
-                            //                 }
-                            //             });
-                            //         }
-                            //         //if( (newcommentsArray.length > commentsArray.length && ) )
-                                    
-                            //         var arrayNotload = $('#comment-list').find(' > li').length;
-
-                            //         //if(newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)){
-                            //         if (newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)) {
-                            //             //if(usercommentsArrLen == 0 ){
-                            //             usercommentsArrLen = newUserCommentsArr.length;
-                            //             //}
-
-                            //             $('#comment-list').find(' > li[data-id^=c]').hide();
-                            //             // temp hide
-                            //             // rest.path = "discussionCommentread";
-                            //             // rest.put($scope.commentReadArray).success(function (res) {
-                            //             //     if (res.status == 1) {
-                            //             //         jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
-                            //             //     }
-                            //             // });
-                            //             $scope.commentsArrayAll();
-                            //             success(newcommentsArray);
-                            //             $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                            //             //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                            //             if ($('#comment-list').length > 0) {
-                            //                 $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                            //                 $('#comment-list').find(' > li[data-id^=c]').hide();
-                            //             }
-                            //             usercommentsArr = [];
-                                        
-                            //         }
-                            //     });
-
-                            //     countInterval++;
-                            //     if (countInterval >= maxCountInterval) {
-                            //         clearInterval(intervalId);  // Stop the interval
-                            //     }
+                                var newLoginidArr = commentsArray.filter(function (itmCmt) { return itmCmt.user_id != loginid });
+                                var usercommentsArrLen = newLoginidArr.length;
                                 
-                            // }, 10000);
+                                let countInterval = 0;  // Initialize the counter
+                                const maxCountInterval = 10;  // Maximum number of executions
 
+                                // const intervalId = setInterval(() => {
+                                //     //rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
+                                //     rest.path = "discussionByJobid/" + chatJobId;
+                                //     rest.get().success(function (data2) {
+                                //         let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
+                                //         //var newcommentsArray = data2.filter( (itm) => { return itm.job_id == chatJobId && itm.externalChat == isLinguistChat } );
+                                //         var newcommentsArray = data2;
+                                //         // other side user send message
+                                //         var newUserCommentsArr = newcommentsArray.filter(function (newCmt) { return newCmt.user_id != loginid });
+                                //         // FOR read unread comments
+                                //         var cmtArr = [];
+                                //         var cmtArr = newcommentsArray.filter(function (newcommentsArray) { var isReadtrue = newcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                        
+                                //         var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+
+                                //         // --- update read id //
+                                //         $scope.newCommentReadArray = [];
+                                //         if (cmtArr) {
+                                //             angular.forEach(cmtArr, function (cmtval, cmti) {
+                                //                 var newCmtObj = {
+                                //                     id: cmtval.id,
+                                //                     read_id: loginid,
+                                //                     isLinguist: 1,
+                                //                     job_id: cmtval.job_id
+                                //                 }
+                                //                 $scope.newCommentReadArray.push(newCmtObj);
+                                //                 console.log('$scope.newCommentReadArray', $scope.newCommentReadArray)
+                                //                 if ($scope.newCommentReadArray.length == cmtArr.length) {
+                                //                     // temp hide
+                                //                     // rest.path = "discussionCommentread";
+                                //                     // rest.put($scope.newCommentReadArray).success(function (res) {
+                                //                     //     if (res.status == 1) {
+                                //                     //         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                //                     //     }
+                                //                     // });
+                                //                 }
+                                //             });
+                                //         }
+                                //         //if( (newcommentsArray.length > commentsArray.length && ) )
+                                        
+                                //         var arrayNotload = $('#comment-list').find(' > li').length;
+
+                                //         //if(newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)){
+                                //         if (newUserCommentsArr.length > usercommentsArrLen || cmtArr.length > 0 || (!arrayNotload)) {
+                                //             //if(usercommentsArrLen == 0 ){
+                                //             usercommentsArrLen = newUserCommentsArr.length;
+                                //             //}
+
+                                //             $('#comment-list').find(' > li[data-id^=c]').hide();
+                                //             // temp hide
+                                //             // rest.path = "discussionCommentread";
+                                //             // rest.put($scope.commentReadArray).success(function (res) {
+                                //             //     if (res.status == 1) {
+                                //             //         jQuery('.cmtclr' + $scope.jobDiscussionRedirect).css({ "color": "green" });
+                                //             //     }
+                                //             // });
+                                //             $scope.commentsArrayAll();
+                                //             success(newcommentsArray);
+                                //             $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                //             //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                                //             if ($('#comment-list').length > 0) {
+                                //                 $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                                //                 $('#comment-list').find(' > li[data-id^=c]').hide();
+                                //             }
+                                //             usercommentsArr = [];
+                                            
+                                //         }
+                                //     });
+
+                                //     countInterval++;
+                                //     if (countInterval >= maxCountInterval) {
+                                //         clearInterval(intervalId);  // Stop the interval
+                                //     }
+                                    
+                                // }, 10000);
+
+                            }
+
+                            success(commentsArray);
+                            $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                            //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                            //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                            $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
+                            $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
+
+                            $timeout( function(){
+                                var addEmojiElement = $("#addemoji");
+                                if(addEmojiElement.length){
+                                    addEmojiElement.emojioneArea({
+                                        autoHideFilters: true,
+                                        useSprite: true,
+                                    });
+                                    var el = addEmojiElement.emojioneArea();
+                                    el[0].emojioneArea.on("emojibtn.click", function () {
+                                        const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+                                        const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
+                                        $('.textarea').append(emoji).trigger("change");
+                                    });
+                                }
+                            },100)
+
+                        }, 500);
+                    },
+                    searchUsers: function (term, success, error) {
+                        setTimeout(function () {
+                            success($scope.usersArray.filter(function (user) {
+
+                                var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
+                                var isNotSelf = user.id != loginid;
+                                return containsSearchTerm && isNotSelf;
+                            }));
+                        }, 1000);
+                    },
+
+                    searchEmojitext: function (term, success, error) {
+                        setTimeout(function () {
+                            success($scope.emojitext.filter(function (emojitxt) {
+                                var containsSearchTerm = emojitxt.emojiname.toLowerCase().indexOf(term.toLowerCase()) != -1;
+                                return containsSearchTerm;
+                            }));
+                        }, 500);
+                    },
+                    postComment: function (data, success, error) {
+                        data.job_id = defaultParamsJobid;
+                        data.order_id = $scope.jobDiscussionRedirect;
+                        data.user_id = $window.localStorage.getItem("session_iUserId");
+                        data.fullname = $window.localStorage.getItem("session_vUserName");
+                        data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                        data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
+                        data.externalChat = ($scope.userRight == '2') ? '1' : '0';
+
+                        function escapeSpecialChars(regex) {
+                            return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
+                        }
+                        for (var i in emojimap) {
+                            var regex = new RegExp(escapeSpecialChars(i), 'gim');
+                            data.content = data.content.replace(regex, emojimap[i]);
                         }
 
-                        success(commentsArray);
-                        $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                        //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                        //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
-                        $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
-                        $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
+                        var pingsvalue = [];
+                        if (data.content) {
+                            $(Object.keys(data.pings)).each(function (index, userId) {
+                                var fullname = data.pings[userId];
+                                var pingText = '@' + fullname;
+                                data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
 
-                    }, 500);
-                },
-                searchUsers: function (term, success, error) {
-                    setTimeout(function () {
-                        success($scope.usersArray.filter(function (user) {
-
-                            var containsSearchTerm = user.fullname.toLowerCase().indexOf(term.toLowerCase()) != -1;
-                            var isNotSelf = user.id != loginid;
-                            return containsSearchTerm && isNotSelf;
-                        }));
-                    }, 1000);
-                },
-
-                searchEmojitext: function (term, success, error) {
-                    setTimeout(function () {
-                        success($scope.emojitext.filter(function (emojitxt) {
-                            var containsSearchTerm = emojitxt.emojiname.toLowerCase().indexOf(term.toLowerCase()) != -1;
-                            return containsSearchTerm;
-                        }));
-                    }, 500);
-                },
-                postComment: function (data, success, error) {
-                    data.job_id = defaultParamsJobid;
-                    data.order_id = $scope.jobDiscussionRedirect;
-                    data.user_id = $window.localStorage.getItem("session_iUserId");
-                    data.fullname = $window.localStorage.getItem("session_vUserName");
-                    data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-                    data.read_id = $window.localStorage.getItem("session_iUserId") + ',';
-                    data.externalChat = ($scope.userRight == '2') ? '1' : '0';
-
-                    function escapeSpecialChars(regex) {
-                        return regex.replace(/([()[{*+.$^\\|?])/g, '\\$1');
-                    }
-                    for (var i in emojimap) {
-                        var regex = new RegExp(escapeSpecialChars(i), 'gim');
-                        data.content = data.content.replace(regex, emojimap[i]);
-                    }
-
-                    var pingsvalue = [];
-                    if (data.content) {
-                        $(Object.keys(data.pings)).each(function (index, userId) {
-                            var fullname = data.pings[userId];
-                            var pingText = '@' + fullname;
-                            data.content = data.content.replace(new RegExp('@' + userId, 'g'), pingText);
-
-                            pingsvalue[index] = Object.keys(data.pings)[index];
-                        });
-                    }
-                    
-                    data.pings = pingsvalue.toString();
-                    rest.path = "discussionOrder";
-                    rest.post(data).success(function (info) {
-
-                    }).error(errorCallback);
-                    $timeout(function () {
-                        success(data);
-                    }, 500);
-                },
-                putComment: function (data, success, error) {
-                    $routeParams.id = data.id;
-                    data.login_userid = $window.localStorage.getItem("session_iUserId");
-                    rest.path = 'discussionOrder';
-                    rest.put(data).success(function (res) {
-                        if (res.Status == 401) {
-                            notification("You can not edit other user message", "error");
-                            $timeout(function () {
-                                location.reload();
-                            }, 1000);
-                        } else if (res.Status == 200) {
-                            notification("Successfully edited", "success");
-                        } else {
-                            notification("Please try later", "warning");
+                                pingsvalue[index] = Object.keys(data.pings)[index];
+                            });
                         }
-                    }).error(errorCallback);
-                    $timeout(function () {
-                        success(data);
-                    }, 500);
-                },
-                deleteComment: function (data, success, error) {
-                    data.login_userid = $window.localStorage.getItem("session_iUserId");
-                    rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
-                    rest.delete(data).success(function (data) {
-                        if (data.Status == 401) {
-                            notification("You can not edit other user message", "error");
-                            $timeout(function () {
-                                location.reload();
-                            }, 1000);
-                        } else if (data.Status == 200) {
-                            notification("Successfully edited", "success");
-                        } else {
-                            notification("Please try later", "warning");
-                        }
-                    }).error(errorCallback);
-                    $timeout(function () {
-                        success();
-                    }, 500);
-                },
-                upvoteComment: function (data, success, error) {
-                    $routeParams.id = data.id;
-                    rest.path = 'discussionOrder';
-                    rest.put(data).success(function (data) {
-
-                    }).error(errorCallback);
-                    $timeout(function () {
-                        success(data);
-                    }, 500);
-                },
-                uploadAttachments: function (dataArray, success, error, data) {
-                    /*"fileURL":dataArray[0].file_url,*/
-                    $(dataArray).each(function (index, dataArrays) {
-                        var obj = {
-                            "order_id": $scope.jobDiscussionRedirect,
-                            "user_id": $window.localStorage.getItem("session_iUserId"),
-                            "fullname": $window.localStorage.getItem("session_vUserName"),
-                            "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
-                            "fileURL": "uploads/discussionfile/" + dataArray[index].file.name2,
-                            "fileMimeType": dataArray[index].file.type,
-                            "created": dataArray[index].created,
-                            "modified": dataArray[index].modified,
-                            "created_by_current_user": '1',
-                            "upvote_count": '0',
-                            "job_id": defaultParamsJobid,
-                            "user_has_upvoted": '0',
-                            "read_id": $window.localStorage.getItem("session_iUserId") + ',',
-                            'externalChat' : ($scope.userRight == '2') ? 1 : 0,
-
-                        }
+                        
+                        data.pings = pingsvalue.toString();
                         rest.path = "discussionOrder";
-                        rest.post(obj).success(function (info) {
+                        rest.post(data).success(function (info) {
 
                         }).error(errorCallback);
-                        dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
-                        dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
-                    });
-                    $timeout(function () {
-                        success(dataArray);
-                    }, 500);
-                }
-            });
-        }, 1000);
+                        $timeout(function () {
+                            success(data);
+                        }, 500);
+                    },
+                    putComment: function (data, success, error) {
+                        $routeParams.id = data.id;
+                        data.login_userid = $window.localStorage.getItem("session_iUserId");
+                        rest.path = 'discussionOrder';
+                        rest.put(data).success(function (res) {
+                            if (res.Status == 401) {
+                                notification("You can not edit other user message", "error");
+                                $timeout(function () {
+                                    location.reload();
+                                }, 1000);
+                            } else if (res.Status == 200) {
+                                notification("Successfully edited", "success");
+                            } else {
+                                notification("Please try later", "warning");
+                            }
+                        }).error(errorCallback);
+                        $timeout(function () {
+                            success(data);
+                        }, 500);
+                    },
+                    deleteComment: function (data, success, error) {
+                        data.login_userid = $window.localStorage.getItem("session_iUserId");
+                        rest.path = 'discussionOrder/' + data.id + '/' + data.login_userid;
+                        rest.delete(data).success(function (data) {
+                            if (data.Status == 401) {
+                                notification("You can not edit other user message", "error");
+                                $timeout(function () {
+                                    location.reload();
+                                }, 1000);
+                            } else if (data.Status == 200) {
+                                notification("Successfully edited", "success");
+                            } else {
+                                notification("Please try later", "warning");
+                            }
+                        }).error(errorCallback);
+                        $timeout(function () {
+                            success();
+                        }, 500);
+                    },
+                    upvoteComment: function (data, success, error) {
+                        $routeParams.id = data.id;
+                        rest.path = 'discussionOrder';
+                        rest.put(data).success(function (data) {
+
+                        }).error(errorCallback);
+                        $timeout(function () {
+                            success(data);
+                        }, 500);
+                    },
+                    uploadAttachments: function (dataArray, success, error, data) {
+                        /*"fileURL":dataArray[0].file_url,*/
+                        $(dataArray).each(function (index, dataArrays) {
+                            var obj = {
+                                "order_id": $scope.jobDiscussionRedirect,
+                                "user_id": $window.localStorage.getItem("session_iUserId"),
+                                "fullname": $window.localStorage.getItem("session_vUserName"),
+                                "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
+                                "fileURL": "uploads/discussionfile/" + dataArray[index].file.name2,
+                                "fileMimeType": dataArray[index].file.type,
+                                "created": dataArray[index].created,
+                                "modified": dataArray[index].modified,
+                                "created_by_current_user": '1',
+                                "upvote_count": '0',
+                                "job_id": defaultParamsJobid,
+                                "user_has_upvoted": '0',
+                                "read_id": $window.localStorage.getItem("session_iUserId") + ',',
+                                'externalChat' : ($scope.userRight == '2') ? 1 : 0,
+
+                            }
+                            rest.path = "discussionOrder";
+                            rest.post(obj).success(function (info) {
+
+                            }).error(errorCallback);
+                            dataArray[0].fullname = $window.localStorage.getItem("session_vUserName");
+                            dataArray[0].profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
+                        });
+                        $timeout(function () {
+                            success(dataArray);
+                        }, 500);
+                    }
+                });
+            }, 1000);
+        }
     };
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');

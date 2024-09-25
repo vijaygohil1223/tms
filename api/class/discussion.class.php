@@ -293,7 +293,7 @@ class discussion {
             if ($userData) {
                 $results['pm_fullName'] = $userData['vFirstName'] . ' ' . $userData['vLastName'];
             } else {
-                $results['pm_fullName'] = 'Unknown'; // Handle case where user data is not found
+                $results['pm_fullName'] = ''; // Handle case where user data is not found
             }
         }
     

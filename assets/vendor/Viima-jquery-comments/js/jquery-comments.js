@@ -196,8 +196,8 @@
                     createdByCurrentUser: 'created_by_current_user',
                     upvoteCount: 'upvote_count',
                     userHasUpvoted: 'user_has_upvoted',
-                    externalChat: 'externalChat'
-                    //read_id:'readId'        
+                    externalChat: 'externalChat',
+                    read_id:'read_id'        
                 },
 
                 searchUsers: function(term, success, error) { success([]) },
@@ -842,14 +842,105 @@
                 //this.sortComments(mainLevelComments, 'linguist');
             }
             // Rearrange the main level comments
-                    
+            var loginid = localStorage.getItem("session_iUserId");      
             $(mainLevelComments).each(function(index, commentModel) {
-                    var commentEl = commentList.find('> li.comment[data-id=' + commentModel.id + ']');
-                    var commentEl2 = commentList.find('> li.comment[new-id=' + commentModel.id + ']');
+                //console.log('commentModel===>', commentModel);
+            
+                var commentEl = commentList.find('> li.comment[data-id=' + commentModel.id + ']');
+                var commentEl2 = commentList.find('> li.comment[new-id=' + commentModel.id + ']');
+            
+                // Handle file attachment logic
+                var filedata = '';
+                if (commentModel.fileURL != "") {
+                    var filetype = commentModel.fileMimeType;
+                    var mimeTypeParts = filetype.split('/');
+                    var file_format = mimeTypeParts[1];
+                    var file_type = mimeTypeParts[0];
+            
+                    // Icon determination based on file type
+                    var iconClass = 'fa fa-file-o';
+                    var extName = commentModel.fileURL.split('.').pop();
+            
+                    var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                        'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'];
+            
+                    if (availableIcons.indexOf(file_format) > 0) {
+                        iconClass = 'fa fa-file-' + file_format + '-o';
+                    } else if (extName == 'docx' || extName == 'rtf') {
+                        iconClass = 'fa fa-file-word-o';
+                    } else if (extName == 'xlsx' || extName == 'xlsm') {
+                        iconClass = 'fa fa-file-excel-o';
+                    } else if (extName == 'zip') {
+                        iconClass = 'fa fa-file-archive-o';
+                    }
+            
+                    var filehtml = '';
+                    var cmtimgName = commentModel.fileURL + '?v=' + jQuery.now();
+            
+                    if (file_type === 'image') {
+                        filehtml = '<img src="' + cmtimgName + '" />';
+                    } else if (file_type === 'video') {
+                        filehtml = '<video src="' + cmtimgName + '" controls="controls"></video>';
+                    } else {
+                        filehtml = '<i class="' + iconClass + '"></i> ' + commentModel.fileURL.replace('uploads/discussionfile/', '');
+                    }
+            
+                    filedata = '<a class="attachment" href="' + commentModel.fileURL + '" target="_blank">' + filehtml + '</a>';
+                }
+            
+                // Check if the user is the comment owner
+                if (commentModel.user_id == loginid) {
+                    commentEl.find('.usrnamespan').addClass('hideusername');
+            
+                    // Display a checkmark for read messages
+                    // if (commentModel.read_id.split(',').filter(function(el) {
+                    //     return teamArrayNew.indexOf(parseInt(el)) != -1;
+                    // }).length > 0) {
+                    //     commentEl.find('.comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
+                    // }
+                }
+            
+                // Add content if available
+                if (commentModel.content) {
+                    commentEl.find('.content').html(commentModel.content);
+                }
+            
+                // Date formatting and handling
+                var createdDate = new Date(commentModel.created);
+                var dateSeprt = commentDateToformat(commentModel.created); // Custom function to format date
+                var timeText = commentDatetimeToText(commentModel.created); // Custom function for relative time like "Today"
+                
+                if (timeText === "Today") {
+                    commentEl.prepend('<div id="dtseperator"></div>');
+                }
+            
+                // Insert date separator if necessary
+                if (index > 0) {
+                    var prevDateSeprt = commentDateToformat(mainLevelComments[index - 1].created);
+                    if (dateSeprt != prevDateSeprt) {
+                        if (commentList.find('> li[new-id=' + commentModel.id + ']').length == 0) {
+                            commentEl.before('<li class="seperatordate comment" new-id=' + commentModel.id + '> <span>' + timeText + '</span> </li>');
+                        }
+                    }
+                } else {
+                    if (commentList.find('li[new-id=' + commentModel.id + ']').length === 0) {
+                        commentEl.before('<li class="seperatordate comment" new-id=' + commentModel.id + '> <span>' + timeText + '</span> </li>');
+                    }
+                }
+            
+                // Append the processed comment element
+                commentList.append(commentEl2);
+                commentList.append(commentEl);
+            });           
+            
+            // $(mainLevelComments).each(function(index, commentModel) {
+            //     console.log('commentModel===>', commentModel)
+            //         var commentEl = commentList.find('> li.comment[data-id=' + commentModel.id + ']');
+            //         var commentEl2 = commentList.find('> li.comment[new-id=' + commentModel.id + ']');
                     
-                    commentList.append(commentEl2);
-                    commentList.append(commentEl);
-            });
+            //         commentList.append(commentEl2);
+            //         commentList.append(commentEl);
+            // });
         },
 
         showActiveSort: function() {
@@ -1056,6 +1147,30 @@
             commentJSON = this.applyExternalMappings(commentJSON);
 
             var success = function(commentJSON) {
+                self.createComment(commentJSON);
+                // Close the commenting field
+                commentingField.find('.close').trigger('click');
+                // Check if the separator already exists
+                if ($("#dtseperator").length === 0) {
+                    // Prepare the new separator
+                    var newSeparator = '<li class="seperatordate comment" new-id=' + commentJSON.id + '> Today </li>';
+                    var commentItem = $('#comment-list').find('> li[data-id=' + commentJSON.id + ']');
+                    // Use $timeout to ensure DOM updates are safe
+                    $timeout(function() {
+                        commentItem.before(newSeparator);
+                        commentItem.prepend('<div id="dtseperator"></div>');
+                        commentItem.find('.usrnamespan').addClass('hideusername');
+                        commentItem.find('.content').html(commentJSON.content);
+                        $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
+                    });
+                }
+                // Prevent default drag behavior on user profiles
+                $('.userprof').on('dragstart', function(event) {
+                    event.preventDefault();
+                });
+            };
+            
+            var success__ = function(commentJSON) {
                 self.createComment(commentJSON);
                 commentingField.find('.close').trigger('click');
                 // to add date seperator
