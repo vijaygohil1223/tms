@@ -20722,9 +20722,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // $scope.selectAll = false;
     $scope.checkedIds = [];
     $scope.checkInvoiceIds = function(id, item){
-        console.log("item", item);
 
-        console.log('filteredInvoices=======>',$scope.approvedInvc )
         //var result = arrayRemove(array, 6);
         if (!$scope.totalSelectedPrice) {
             $scope.totalSelectedPrice = 0;
@@ -20733,8 +20731,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if(id == 'all'){
                 
                 let isCheckedAll = $('#checkAll').is(':checked') ? 'true' : 'false';
-                console.log('isCheckedAll', isCheckedAll)
-                console.log(`angular.element('[id^=invoiceCheck]').length`, angular.element('[id^=invoiceCheck]').length)
+                
                 if(isCheckedAll == 'true'){
                     $("input[id^=invoiceCheck]:checkbox").prop("checked", true);
                     // for (var i = 0; i < angular.element('[id^=invoiceCheck]').length; i++) {
@@ -20754,28 +20751,37 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         }else{
                             $scope.totalSelectedPrice -= item1.Invoice_costEUR;
                         }
-                    });        
+                    });
+                    
+                    angular.forEach($scope.approvedInvc, function(item) {
+                        item.SELECTED = 1;
+                    });
+                    
                 }else{
                     $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
                     $('input[id^=checkAll]:checkbox').removeAttr('checked');
                     //$('#checkAll').removeAttr('checked');
                     $scope.checkedIds = [];
                     $scope.totalSelectedPrice = 0; 
+                    $scope.totalPriceSelected = 0; 
+                    angular.forEach($scope.approvedInvc, function(item) {
+                        item.SELECTED = 0;
+                    });
                 }
                 // angular.forEach($scope.invoiceListAll, function(item) {
                 //     $scope.selectedItems[item.invoice_id] = true;
                 // });
-
-                angular.forEach($scope.approvedInvc, function(item) {
-                    item.SELECTED = 1;
-                });
                 $scope.calculateTotalForSelectedInv() 
 
             } else {
+                // when checked single uncheck check-all input
+                $("#checkAll").prop("checked", false);
                 let isChecked = $('.invoiceCheck' + id).is(':checked') ? 'true' : 'false';
+                console.log('isChecked============>', isChecked)
                 if(isChecked == 'true'){
                     $scope.checkedIds.push(id.toString());
                     $scope.totalSelectedPrice += item.Invoice_costEUR;
+                    
                 }else{
                     $scope.checkedIds = arrayRemove($scope.checkedIds, id);
                     $scope.totalSelectedPrice -= item.Invoice_costEUR;
