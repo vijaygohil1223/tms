@@ -30474,7 +30474,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.linguistJob = isLinguistJobChat;
                 }
                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
-                console.log('isLinguistChat============>', isLinguistChat)
+                console.log('isLinguistChat============>AAAAAAAAA', isLinguistChat)
                 // if($scope.scoopItemId && $scope.scoopItemId>0){
                 //     var data = data2.filter( (itm) => { return itm.scoop_id == $scope.scoopItemId } );    
                 // }else{
@@ -38234,6 +38234,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $routeParams.id = $scope.jobDiscussionRedirect;
         var loginid = $window.localStorage.getItem("session_iUserId");
         var userprofilepic = $window.localStorage.getItem("session_vProfilePic");
+        console.log('userprofilepic', userprofilepic)
         $scope.login_userid = $window.localStorage.getItem("session_iUserId");
 
         
@@ -38281,33 +38282,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
         var projectTeam = [];
-        rest.path = 'contactPerson';
-        rest.model().success(function (data) {
-            
-            angular.forEach(data, function (val, i) {
-                const resPosition = val?.vResourcePosition ? val.vResourcePosition.toString().split(',') : '';
-                const fullName = val?.vFirstName + ' ' + val?.vLastName
-                // index based on api (project_coordinator,project_manager QA_specialist)
-                // if (i===0 && resPosition.includes('3') ) {
-                //     angular.element('#coordinatorIcon').html(fullName);
-                //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.coordinatorIcon').html(coordpic);
-                // } 
-                // if (i===1 && resPosition.includes('2')) {
-                //     angular.element('#managerDesignation').html(fullName);
-                //     console.log('val', val)
-                //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.managerIcon').html(managerpic);
-                // } 
-                // if (i===2 && resPosition.includes('4')) {
-                //     angular.element('#QASpecialist').html(fullName);
-                //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.QAIcon').html(QApic);
-                // }
-
-            })
-        }).error(errorCallback);
-
+        
         $routeParams.id = $routeParams.id;
         rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
         rest.get().success(function (data) {
@@ -38420,6 +38395,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 //rest.path = "discussionOrder/" + $scope.jobDiscussionRedirect;
                 rest.path = "discussionByJobid/" + chatJobId;
                 rest.get().success(function (data2) {
+                    console.log('data2=======>', data2)
                     let isLinguistChat = (localStorage.getItem("isLinguistChat") == 'true' || $scope.userRight == 2) ? 1 : 0
                     //var data = data2.filter( (itm) => { return itm.job_id==chatJobId && itm.externalChat == isLinguistChat } );
                     
@@ -38451,73 +38427,73 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
                             }
                             var filedata = '';
-                            if (val.fileURL != "") {
-                                var filetype = val.fileMimeType;
-                                var filetype1 = filetype.includes("image/");
-                                var file_format = '';
-                                var file_type = '';
-                                var mimeTypeParts = val.fileMimeType.split('/');
-                                if (mimeTypeParts.length == 2) {
-                                    file_format = mimeTypeParts[1];
-                                    file_type = mimeTypeParts[0];
-                                }
-                                // Icon
-                                var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
-                                    'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
-                                ];
+                            // if (val.fileURL != "") {
+                            //     var filetype = val.fileMimeType;
+                            //     var filetype1 = filetype.includes("image/");
+                            //     var file_format = '';
+                            //     var file_type = '';
+                            //     var mimeTypeParts = val.fileMimeType.split('/');
+                            //     if (mimeTypeParts.length == 2) {
+                            //         file_format = mimeTypeParts[1];
+                            //         file_type = mimeTypeParts[0];
+                            //     }
+                            //     // Icon
+                            //     var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                            //         'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
+                            //     ];
 
-                                var iconClass = 'fa fa-file-o';
-                                // File Extension name
-                                var extName = '';
-                                var extParts = val.fileURL.split('/');
-                                var extFileName = extParts[extParts.length - 1];
-                                var extFileName = extFileName.split('?')[0];
-                                extName = extFileName.split('.')[1];
+                            //     var iconClass = 'fa fa-file-o';
+                            //     // File Extension name
+                            //     var extName = '';
+                            //     var extParts = val.fileURL.split('/');
+                            //     var extFileName = extParts[extParts.length - 1];
+                            //     var extFileName = extFileName.split('?')[0];
+                            //     extName = extFileName.split('.')[1];
                                 
-                                if (availableIcons.indexOf(file_format) > 0) {
-                                    iconClass = 'fa fa-file-' + file_format + '-o';
-                                } else if (availableIcons.indexOf(file_type) > 0) {
-                                    iconClass = 'fa fa-file-' + file_type + '-o';
-                                } else if (extName == 'docx' || extName == 'rtf') {
-                                    iconClass = 'fa fa-file-word-o';
-                                } else if (extName == 'xlsx' || extName == 'xlsm') {
-                                    iconClass = 'fa fa-file-excel-o';
-                                } else if (extName == 'zip') {
-                                    iconClass = 'fa fa-file-archive-o';
-                                }
+                            //     if (availableIcons.indexOf(file_format) > 0) {
+                            //         iconClass = 'fa fa-file-' + file_format + '-o';
+                            //     } else if (availableIcons.indexOf(file_type) > 0) {
+                            //         iconClass = 'fa fa-file-' + file_type + '-o';
+                            //     } else if (extName == 'docx' || extName == 'rtf') {
+                            //         iconClass = 'fa fa-file-word-o';
+                            //     } else if (extName == 'xlsx' || extName == 'xlsm') {
+                            //         iconClass = 'fa fa-file-excel-o';
+                            //     } else if (extName == 'zip') {
+                            //         iconClass = 'fa fa-file-archive-o';
+                            //     }
 
-                                //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
-                                //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
-                                var cmtimgName = val.fileURL + '?v=' + jQuery.now();
+                            //     //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                            //     //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                            //     var cmtimgName = val.fileURL + '?v=' + jQuery.now();
 
-                                if (file_type == 'image') {
-                                    var filehtml = '<img src=' + cmtimgName + '></img>';
-                                } else if (file_type == 'video') {
-                                    var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
-                                } else {
-                                    var filename = val.fileURL;
-                                    var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
-                                }
-                                var hrefClass = 'attachment';
-                                var hrefTarget = '_blank';
-                                filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+                            //     if (file_type == 'image') {
+                            //         var filehtml = '<img src=' + cmtimgName + '></img>';
+                            //     } else if (file_type == 'video') {
+                            //         var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
+                            //     } else {
+                            //         var filename = val.fileURL;
+                            //         var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
+                            //     }
+                            //     var hrefClass = 'attachment';
+                            //     var hrefTarget = '_blank';
+                            //     filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
 
-                            }
-                            if (val.user_id == loginid) {
-                                //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
-                                $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+                            // }
+                            // if (val.user_id == loginid) {
+                            //     //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                            //     $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
 
-                                if (msgReadArrFilter.length > 0) {
-                                    $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
-                                }
-                            }
+                            //     if (msgReadArrFilter.length > 0) {
+                            //         $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
+                            //     }
+                            // }
                             // if (file_type == 'image' || file_type == 'video') {
                             //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                             // }
                             
-                            if (val.content) {
-                                $('li[data-id=' + dataId + ']').find('.content').html(val.content);
-                            }
+                            // if (val.content) {
+                            //     $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                            // }
                             //$compile(val.content)($scope);
                             // ------------ Script for date seperating in chat box --------------//
                             var ndt = new Date(filteredData[i].created);
@@ -38529,12 +38505,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             var dateSeprt = commentDateToformat(filteredData[i].created);
 
                             var timeText = commentDatetimeToText(filteredData[i].created);
-                            if (timeText == "Today") {
-                                $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                            }
+                            // if (timeText == "Today") {
+                            //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                            // }
                             // ------count total attachment------//
-                            let totalAttachment = 0;
-                            totalAttachment = $('#attachment-list').find('li .attachment').length;
+                            // let totalAttachment = 0;
+                            // totalAttachment = $('#attachment-list').find('li .attachment').length;
                             //$('.att_count').text(totalAttachment);
 
 
@@ -38703,8 +38679,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             //     //$('.textarea').val($('.textarea').val()+emoji);
             // });
 
-            jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-            jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+            // jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+            // jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
 
         }, 3000);
 

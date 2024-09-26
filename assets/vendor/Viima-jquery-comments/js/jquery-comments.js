@@ -33,6 +33,28 @@
 
     var isExternalChat2 = localStorage.getItem('isLinguistChat') == 'true' || localStorage.getItem("session_iFkUserTypeId") == 2 ? 1 : 0
             
+    function formatDateToRelativeText(date) {
+        var commentDate = new Date(date);
+        var now = new Date();
+        var commentDateOnly = new Date(commentDate.getFullYear(), commentDate.getMonth(), commentDate.getDate());
+        var nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        var diffInTime = nowDateOnly.getTime() - commentDateOnly.getTime();
+        var diffInDays = diffInTime / (1000 * 3600 * 24); // Convert milliseconds to days
+
+        if (diffInDays === 0) {
+            return "Today";
+        } else if (diffInDays === 1) {
+            return "Yesterday";
+        } else {
+            return commentDate.toLocaleDateString(); // Customize date format here if needed
+        }
+    }
+
+    function formatDate(date) {
+        var d = new Date(date);
+        return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    }
 
     var Comments = {
         // Instance variables
@@ -606,9 +628,7 @@
                     // Enable upload button and remove spinners
                     uploadButton.addClass('enabled');
                     commentListSpinner.remove();
-                    //attachmentListSpinner.remove();
-
-
+                    attachmentListSpinner.remove();
 
                 };
 
@@ -841,8 +861,8 @@
             if(isLinguistChat){
                 //this.sortComments(mainLevelComments, 'linguist');
             }
-            // Rearrange the main level comments
             var loginid = localStorage.getItem("session_iUserId");      
+            // Rearrange the main level comments
             $(mainLevelComments).each(function(index, commentModel) {
                 //console.log('commentModel===>', commentModel);
             
@@ -891,7 +911,6 @@
                 // Check if the user is the comment owner
                 if (commentModel.user_id == loginid) {
                     commentEl.find('.usrnamespan').addClass('hideusername');
-            
                     // Display a checkmark for read messages
                     // if (commentModel.read_id.split(',').filter(function(el) {
                     //     return teamArrayNew.indexOf(parseInt(el)) != -1;
@@ -906,31 +925,35 @@
                 }
             
                 // Date formatting and handling
-                var createdDate = new Date(commentModel.created);
-                var dateSeprt = commentDateToformat(commentModel.created); // Custom function to format date
-                var timeText = commentDatetimeToText(commentModel.created); // Custom function for relative time like "Today"
-                
-                if (timeText === "Today") {
+                var relativeTimeText = formatDateToRelativeText(commentModel.created); // For "Today", "Yesterday", etc.
+                var formattedDate = formatDate(commentModel.created); // For "YYYY-MM-DD" or any other custom format
+
+                if (relativeTimeText === "Today") {
                     commentEl.prepend('<div id="dtseperator"></div>');
                 }
-            
                 // Insert date separator if necessary
                 if (index > 0) {
-                    var prevDateSeprt = commentDateToformat(mainLevelComments[index - 1].created);
-                    if (dateSeprt != prevDateSeprt) {
+                    var prevDateSeprt = formatDateToRelativeText(mainLevelComments[index - 1].created);
+                    if (relativeTimeText !== prevDateSeprt) {
                         if (commentList.find('> li[new-id=' + commentModel.id + ']').length == 0) {
-                            commentEl.before('<li class="seperatordate comment" new-id=' + commentModel.id + '> <span>' + timeText + '</span> </li>');
+                            commentEl.before('<li class="seperatordate comment" new-id=' + commentModel.id + '> <span>' + relativeTimeText + '</span> </li>');
                         }
                     }
                 } else {
                     if (commentList.find('li[new-id=' + commentModel.id + ']').length === 0) {
-                        commentEl.before('<li class="seperatordate comment" new-id=' + commentModel.id + '> <span>' + timeText + '</span> </li>');
+                        commentEl.before('<li class="seperatordate comment" new-id=' + commentModel.id + '> <span>' + relativeTimeText + '</span> </li>');
                     }
                 }
             
                 // Append the processed comment element
                 commentList.append(commentEl2);
                 commentList.append(commentEl);
+
+                setTimeout(() => {
+                    jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                    jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
+                }, 1000);
+
             });           
             
             // $(mainLevelComments).each(function(index, commentModel) {
@@ -1156,13 +1179,14 @@
                     var newSeparator = '<li class="seperatordate comment" new-id=' + commentJSON.id + '> Today </li>';
                     var commentItem = $('#comment-list').find('> li[data-id=' + commentJSON.id + ']');
                     // Use $timeout to ensure DOM updates are safe
-                    $timeout(function() {
+                    setTimeout(() => {
                         commentItem.before(newSeparator);
                         commentItem.prepend('<div id="dtseperator"></div>');
                         commentItem.find('.usrnamespan').addClass('hideusername');
                         commentItem.find('.content').html(commentJSON.content);
                         $('#comment-list').scrollTop($('#comment-list')[0].scrollHeight);
-                    });
+                    }, 100);
+
                 }
                 // Prevent default drag behavior on user profiles
                 $('.userprof').on('dragstart', function(event) {

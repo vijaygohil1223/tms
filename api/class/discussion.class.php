@@ -192,9 +192,11 @@ class discussion {
     }
 
     public function discussionScoop($id) {
-        $this->_db->where('scoop_id',$id);
-        $this->_db->where('externalChat',0);
-        $data = $this->_db->get('tms_discussion');
+        $this->_db->where('td.scoop_id',$id);
+        $this->_db->where('td.externalChat',0);
+        $this->_db->join('tms_users AS tu','tu.iUserId = td.user_id','LEFT');
+        $data = $this->_db->get('tms_discussion td', null, ' td.*, CONCAT(tu.vFirstName, " ", tu.vLastName) AS fullname, CONCAT("uploads/profilePic/",tu.vProfilePic) AS profile_picture_url, tu.vProfilePic as profileURL ');
+        //$data = $this->_db->get('tms_discussion');
         return $data;
     }
     
@@ -301,9 +303,10 @@ class discussion {
     }
 
     public function discussionByJobid($id) {
-        $this->_db->where('job_id',$id);
-        $this->_db->where('externalChat',1);
-        $data = $this->_db->get('tms_discussion');
+        $this->_db->where('td.job_id',$id);
+        $this->_db->where('td.externalChat',1);
+        $this->_db->join('tms_users AS tu','tu.iUserId = td.user_id','LEFT');
+        $data = $this->_db->get('tms_discussion td', null, 'td.*, CONCAT(tu.vFirstName, " ", tu.vLastName) AS fullname, CONCAT("uploads/profilePic/",tu.vProfilePic) AS profile_picture_url, tu.vProfilePic as profileURL ');
         return $data;
     }
     
