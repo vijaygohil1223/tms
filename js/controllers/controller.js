@@ -4993,7 +4993,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
 
-}).controller('knowledgeCalendarController', function ($rootScope, $scope, $log, $location, rest, $window, $cookieStore, $timeout, $route, $routeParams) {
+}).controller('knowledgeCalendarController', function ($rootScope, $scope, $log, $location, rest, $window, $cookieStore, $timeout, $route, $routeParams, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.dateMatch = function (startD, endD) {
@@ -5114,6 +5114,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#calenderEvent').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('jobSummeryDetailsController', function ($interval, $uibModalInstance, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $rootScope, $location, $cookieStore, $route, $routeParams, $q, $filter) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -12181,7 +12188,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     ]);
-}).controller('projectStatisticsController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout) {
+}).controller('projectStatisticsController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, DTOptionsBuilder ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
 
@@ -12440,7 +12447,17 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('overviewReportController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $cookieStore, $filter) {
+    $scope.dtOptions = $scope.dtOptions1 =  $scope.dtOptions2 = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#customerStatus').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#projectStatistics').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#linguistReport').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('overviewReportController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $cookieStore, $filter, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.iUserId = "";
     $scope.currencyCode = '€';
@@ -12542,8 +12559,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             if($scope.orderReport.itemStatusId)
                 $scope.orderReport.itemStatusId = parseInt($scope.orderReport.itemStatusId);
 
-            rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId");
-            rest.get().success(function (data) {
+            var searchValue = {searchValue: $scope.orderReport.itemStatusId}
+            rest.path = "dashboardProjectsOrderGetSearch/" + $window.localStorage.getItem("session_iUserId");
+            rest.post(searchValue).success(function (data) {
                 $scope.statusResult = data;
                 console.log('$scope.statusResult', $scope.statusResult)
                 // angular.forEach(data, function(val, i) {
@@ -13075,7 +13093,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     $scope.getClientinvoiceData();
 
-}).controller('resourcesController', function ($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams, $cookieStore, $timeout, $filter) {
+    $scope.dtOptions = $scope.dtOptions1 = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#overviewReport').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#overviewJobData').DataTable().order([[2, 'asc']]).draw();  // Sorting applied after data loads        
+    }, 1000);
+
+}).controller('resourcesController', function ($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams, $cookieStore, $timeout, $filter, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     //country holiday get
     $scope.countryHolidayGet = function (country) {
@@ -13308,7 +13335,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     // Resource position END
 
 
-}).controller('userController', function ($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams) {
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $scope.dtOptions1 = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#resourceAdmin').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#resourcePosition').DataTable().order([[1, 'asc']]).draw(); 
+    }, 1000);
+
+}).controller('userController', function ($scope, $log, $location, $route, fileReader, rest, $uibModal, $window, $rootScope, $routeParams, $timeout, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("parentId", " ");
     $window.localStorage.setItem("contactUserId", " ");
@@ -13404,7 +13445,21 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     };
-}).controller('viewInternaldetailController', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams) {
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $scope.dtOptions1 = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#internalUserList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#externalUserList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('viewInternaldetailController', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams,DTOptionsBuilder ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.loginUserId = $window.localStorage.getItem("session_iUserId");
     $scope.viewFileManagerInternal = function (id) {
@@ -13609,31 +13664,33 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             var address = [];
 
             address.push($scope.viewExternalCommunicational.vAddress1);
-
-            angular.forEach(JSON.parse(data.address1Detail), function (val, i) {
-              //angular.element('#' + val.id).html(val.value);
-              try {
-                switch (val.id) {
-                  case "address1_locality":
-                    $scope.externalResCity = val?.value;
-                    break;
-                  case "address1_administrative_area_level_1":
-                    $scope.externalResState = val?.value;
-                    break;
-                  case "address1_country":
-                    $scope.externalResCountry = (val?.value).split(",").pop();
-                    break;
-                  case "address1_postal_code":
-                    $scope.externalResPostalcode = val?.value;
-                    break;
+            console.log("111111", data?.address1Detail)
+            if (data?.address1Detail) {
+                angular.forEach(JSON.parse(data?.address1Detail), function (val, i) {
+                //angular.element('#' + val.id).html(val.value);
+                try {
+                    switch (val.id) {
+                    case "address1_locality":
+                        $scope.externalResCity = val?.value;
+                        break;
+                    case "address1_administrative_area_level_1":
+                        $scope.externalResState = val?.value;
+                        break;
+                    case "address1_country":
+                        $scope.externalResCountry = (val?.value).split(",").pop();
+                        break;
+                    case "address1_postal_code":
+                        $scope.externalResPostalcode = val?.value;
+                        break;
+                    }
+                } catch (error) {
+                    console.log("error", error);
                 }
-              } catch (error) {
-                console.log("error", error);
-              }
-              if (val.id !== "address1_street_number") {
-                address.push(val.value);
-              }
-            });
+                if (val.id !== "address1_street_number") {
+                    address.push(val.value);
+                }
+                });
+            }
             angular
               .element("#address1")
               .text($.grep(address, Boolean).join(", "));
@@ -13740,6 +13797,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             .error(errorCallback);
         }
       };
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
 
 }).controller('messageController', function ($scope, $log, $uibModalInstance, $location, $route, rest, fileReader, $window, $rootScope, $uibModal, $routeParams, $timeout, items) {
     
@@ -14088,7 +14149,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-}).controller('viewExternaldetailController', function ($cookieStore, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $route, $rootScope, $routeParams, $location) {
+}).controller('viewExternaldetailController', function ($cookieStore, $scope, $window, $compile, $timeout, $uibModal, $log, rest, $route, $rootScope, $routeParams, $location, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.loginUserId = $window.localStorage.getItem("session_iUserId");
     
@@ -14937,6 +14998,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         
     }
+    $scope.dtOptions = $scope.dtOptions1 = $scope.dtOptions2 =DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#propertyDetails').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#priceList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#contactPerson').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('communicationController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $cookieStore, $timeout, $filter ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -16263,7 +16333,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     });     
     
     
-}).controller('contactController', function ($scope, $log, $location, $route, rest, $window, $routeParams, $uibModal, $timeout) {
+}).controller('contactController', function ($scope, $log, $location, $route, rest, $window, $routeParams, $uibModal, $timeout, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
     $scope.user_Id = $window.localStorage.getItem("contactUserId");
@@ -16545,7 +16615,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('propController', function ($timeout, $scope, $log, $location, $route, fileReader, rest, $window, $routeParams) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#contactInfo').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('propController', function ($timeout, $scope, $log, $location, $route, fileReader, rest, $window, $routeParams, DTOptionsBuilder ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.ContactPersonName = $window.localStorage.getItem("contactPersonId");
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
@@ -16715,7 +16793,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/price-list1');
     }
 
-}).controller('pricelistController', function ($scope,$rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#propertiesList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('pricelistController', function ($scope,$rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder, ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.clientPriceId = $window.localStorage.getItem("clientpricelistdataId");
     $scope.inputCounter = 1;
@@ -17659,6 +17745,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     };
 
+    $scope.dtOptions = $scope.dtOptions1 = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#priceList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#priceList1').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        
+    }, 1000);
+
 
 }).controller('paymentController', function ($scope, $log, $location, $route, fileReader, rest, $window, $routeParams, $timeout, $interval) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -18140,7 +18236,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('clientController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal) {
+}).controller('clientController', function ($scope, $log, $location, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, $timeout, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("priceListClientId", " ");
     $window.localStorage.setItem("parentId", " ");
@@ -18301,7 +18397,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('viewdirectdetailController', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $log) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $scope.dtOptions1 = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#externalUserList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#internalUserList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('viewdirectdetailController', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $log, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.userType = 2
     $scope.viewFileManager = function (id) {
@@ -18477,6 +18586,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
+
+    $scope.dtOptions = $scope.dtOptions1 = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#contactPerson').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#loginDetails').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+    
 }).controller('viewIndirectdetailController', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.viewFileManager = function (id) {
@@ -19543,7 +19662,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('clientLoginController', function ($scope, $log, $location, $route, rest, $window, $rootScope, $routeParams, $timeout, $interval) {
+}).controller('clientLoginController', function ($scope, $log, $location, $route, rest, $window, $rootScope, $routeParams, $timeout, $interval, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.currentUserName = $window.localStorage.currentUserName;
     $scope.user_name = $window.localStorage.getItem("ShowuserName");
@@ -19666,6 +19785,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#loginDetails').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('jobstatusReportController', function ($scope, $rootScope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder,  $timeout, DTColumnBuilder, $http, $filter, $compile) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -24038,7 +24165,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
 
-}).controller('statementController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter) {
+}).controller('statementController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userId = $window.localStorage.getItem("session_iUserId");
     $scope.dueAmount = 0;
@@ -24246,7 +24373,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('statementClientController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#statementData').DataTable().order([[2, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('statementClientController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.userId = $window.localStorage.getItem("session_iUserId");
     $scope.dueAmount = 0;
@@ -24456,6 +24591,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }).error(errorCallback);
         }
     }
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#clientSatatement').DataTable().order([[2, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('orderController', function ($scope, $log, $location, $route, rest, $window, $rootScope, $timeout, $interval) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -31283,7 +31426,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('clientstatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+}).controller('clientstatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'statustype/2';
     rest.get().success(function (data) {
@@ -31333,6 +31476,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#customerStatus').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
 }).controller('customerGroupController', function ($window, $log, $scope, $location, $route, rest, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.save = function (formId) {
@@ -31377,7 +31528,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-}).controller('currencyController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+}).controller('currencyController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder , $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'currency';
     rest.get().success(function (data) {
@@ -31488,7 +31639,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         this.hoverEdit = false;
     };
 
-}).controller('bankingDetailsController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#currencyData').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('bankingDetailsController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'bankDetails';
     rest.get().success(function (data) {
@@ -31561,7 +31720,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.hoverOut = function () {
         this.hoverEdit = false;
     };
-}).controller('invoiceSettingController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#bankingDetails').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('invoiceSettingController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     
     rest.path = 'invoiceSettings';
@@ -31623,6 +31791,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.hoverOut = function () {
         this.hoverEdit = false;
     };
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#invoiceSetting').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('holidayController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $timeout, $cookieStore) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -31752,7 +31928,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         
     }
 
-}).controller('PropertyController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+}).controller('PropertyController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.value_form = false;
     $scope.edit_value = false;
@@ -31894,7 +32070,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('langController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#externalUserList111').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('langController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'language';
     rest.get().success(function (data) {
@@ -31949,7 +32133,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }).error(errorCallback);
 
-}).controller('centerController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#langList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('centerController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.CurrentDate = new Date();
 
@@ -32037,7 +32229,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-}).controller('signController', function ($compile, $scope, $log, $location, $timeout, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#businessUnit').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('signController', function ($compile, $scope, $log, $location, $timeout, $route, fileReader, rest, $window, $rootScope, $routeParams, $uibModal, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.emails = {};
     rest.path = 'emailSignCheck';
@@ -32270,7 +32470,20 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('projectTypeController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $scope.dtOptions1 = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#emailSign').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+        $('#emailTemp').DataTable().order([[1, 'asc']]).draw(); 
+    }, 1000);
+
+}).controller('projectTypeController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     rest.path = 'prtype';
     rest.get().success(function (data) {
@@ -32317,6 +32530,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#projectType').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('projectStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -32372,7 +32593,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('projectScoopStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+}).controller('projectScoopStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.save = function (formId) {
         if (angular.element("#" + formId).valid()) {
@@ -32426,8 +32647,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#scoopType').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
-}).controller('jobStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+}).controller('jobStatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.save = function (formId) {
         if (angular.element("#" + formId).valid()) {
@@ -32482,7 +32710,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
-}).controller('jobController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#jobStatus').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('jobController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.save = function (formId) {
         if (angular.element("#" + formId).valid()) {
@@ -32624,7 +32860,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         }
     }
-}).controller('newjobchaincontroller', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams) {
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#jobsData').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('newjobchaincontroller', function ($scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.name = $window.localStorage.getItem("session_vUserName");
     $window.localStorage.job_chain_id = " ";
@@ -32699,6 +32944,14 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     rest.get().success(function (data) {
 
     }).error(errorCallback);
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $("#newJob").DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('jobchaincontroller', function ($compile, $timeout, $scope, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -33045,7 +33298,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-}).controller('masterpriceController', function ($window, $log, $scope, $location, $route, rest, $routeParams, DTOptionsBuilder) {
+}).controller('masterpriceController', function ($window, $log, $scope, $location, $route, rest, $routeParams, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.save = function (formId, id) {
@@ -33122,10 +33375,19 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 setTimeout( () => {
                     $window.localStorage.setItem('curruntPageNo', 0);
                     $window.localStorage.setItem('curruntPageLength', 0);
-                }, 100)
+                    $('#masterPrice').DataTable().order([[1, 'asc']]).draw();
+                }, 1000)
             });
         }
     }
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#masterPriceList').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('childpriceController', function ($window, $log, $scope, $location, $route, rest, $routeParams, DTOptionsBuilder ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -34024,7 +34286,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
 
-}).controller('taxstatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+}).controller('taxstatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.save = function (formId) {
         if (angular.element("#" + formId).valid()) {
@@ -34082,7 +34344,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     };
-}).controller('knowledgecategoryController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore) {
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#taxStatus').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+}).controller('knowledgecategoryController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, DTOptionsBuilder,  $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     $scope.getCategoryData = function () {
@@ -34196,7 +34466,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('knowledgeArticleController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#knowledgeCategory').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('knowledgeArticleController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     getData();
     angular.element('#edit').froalaEditor({
@@ -34299,7 +34577,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
-}).controller('knowledgeNewsController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore) {
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#knowledgeArticle').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('knowledgeNewsController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, DTOptionsBuilder,  $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     getData();
     angular.element('.editDATA').froalaEditor({
@@ -34398,7 +34685,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
-}).controller('knowledgefunPicController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore) {
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#knowledgeNews').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('knowledgefunPicController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     rest.path = "funpicGet/" + $cookieStore.get('session_iUserId');
@@ -34415,7 +34711,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('reportedImagesController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#funnyImage').DataTable().order([[2, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('reportedImagesController', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $route, $filter, DTOptionsBuilder) {
     rest.path = "getReportedImages";
     rest.get().success(function (data) {
         $scope.reportedImages = data;
@@ -34427,6 +34731,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     }
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#reportImage').DataTable().order([[2, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
 }).controller('addEventController', function ($scope, $uibModalInstance, items, rest, $routeParams, $window, $log) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     var date = new Date();
@@ -35936,7 +36249,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $route.reload();
         });
     };
-}).controller('projectjobstatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal) {
+}).controller('projectjobstatusController', function ($scope, $log, $location, $route, rest, $routeParams, $window, $uibModal, DTOptionsBuilder , $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.uId = $window.localStorage.getItem("session_iUserId");
     $window.localStorage.clientnamec = "";
@@ -35980,11 +36293,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         } else {
 
             console.log('$scope.jobReport', $scope.jobReport)
+            var searchData = { user_id: $scope.uId, searchValue: $scope.jobReport.jobStatus }
             //rest.path = 'statusJobReportFind';
-            rest.path = 'getJobsFromTmsSummeryView';
-            rest.get().success(function (data) {
+            rest.path = 'getJobsFromTmsSummeryViewSearch';
+            rest.post(searchData).success(function (data) {
+                console.log("111111", data)
                 $scope.statusResult = data;
-                console.log('$scope.statusResult', $scope.statusResult)
+                $scope.resultStatus = data;
                 angular.forEach($scope.statusResult, function (val, i) {
                     if (val.ItemLanguage) {
                         //val.ItemLanguage = val.ItemLanguage.split('>')[0].trim().substring(0, 3).toUpperCase() + ' > ' + val.ItemLanguage.split('>')[1].trim().substring(0, 3).toUpperCase();
@@ -36090,7 +36405,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
     }
 
-}).controller('freelanceInvoiceController', function ($scope, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $filter, $q, invoiceDuePeriodDays) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
+
+    $timeout(function() {
+        $('#projectJobStatus').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('freelanceInvoiceController', function ($scope, $log, $timeout, $window, rest, $location, $rootScope, $cookieStore, $uibModal, $route, $filter, $q, invoiceDuePeriodDays, DTOptionsBuilder ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.invoiceNumOfdays = $window.localStorage.getItem("linguist_invoice_due_days");
 
@@ -36344,6 +36667,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.invcStatusRecord('all');
     });
     // ****** END invioce TABS ******* //
+
+    $scope.dtOptionsJob = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
 
 }).controller('invoiceCreatePopupCtrl', function ($scope, $log, $timeout, $window, rest, $location, $routeParams, $cookieStore, $uibModal, $uibModalInstance, $route, items) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
@@ -43502,7 +43829,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     };
 
 
-}).controller('dateFormatController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+}).controller('dateFormatController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.toDayDate = new Date();
     $scope.dateFormatD = moment($scope.toDayDate).format($window.localStorage.getItem('global_dateFormat'));
@@ -43664,7 +43991,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     };
 
-}).controller('decimalSeparatorController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#dateformatData').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
+}).controller('decimalSeparatorController', function ($scope, $log, $location, $route, rest, $routeParams, $window, DTOptionsBuilder, $timeout) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.loginUserId = $window.localStorage.getItem('session_iUserId');
 
@@ -43799,6 +44134,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
     };
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+    
+    $timeout(function() {
+        $('#decimalSeperatorData').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
 }).controller('mailjetemailController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.loginUserId = $window.localStorage.getItem('session_iUserId');
@@ -44348,7 +44692,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }
     };
-}).controller('languagesController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, $filter, fileReader) {
+}).controller('languagesController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, $filter, fileReader, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.CurrentDate = new Date();
     $scope.editOn = 0;
@@ -44474,10 +44818,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.loadData(); // Reload data when search criteria change
     };
 
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#languagesData').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
+
     //$scope.loadData(); 
     //** END */ 
 
-}).controller('specializedController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout) {
+}).controller('specializedController', function ($scope, $log, $location, $route, rest, $uibModal, $rootScope, $window, $routeParams, $timeout, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.CurrentDate = new Date();
     $scope.editOn = 0;
@@ -44543,6 +44895,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             }
         });
     }
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+        withOption('responsive', true).
+        withOption('pageLength', 100)
+
+    $timeout(function() {
+        $('#specializedData').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+    }, 1000);
 
 }).controller('commentchatController', function ($scope, $q, $log, $location, $route, rest, $routeParams, $window, $uibModal, $cookieStore, $timeout, $uibModalInstance, items) {
 
@@ -46104,7 +46463,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
     };
     
-}).controller('activitydetailController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams) {
+}).controller('activitydetailController', function ($uibModal, $timeout, $scope, $window, $location, $log, $interval, rest, $rootScope, $cookieStore, $route, $routeParams, DTOptionsBuilder) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
     /*Recent Activity Code start*/
@@ -46324,6 +46683,10 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.refresh = function(){
         $route.reload();
     }
+
+    $scope.dtOptions = DTOptionsBuilder.newOptions().
+    withOption('responsive', true).
+    withOption('pageLength', 100);
     
 }).controller('jobacceptrejectController', function ($scope, $log, rest, $window, $location, $cookieStore, $timeout, $route, $routeParams, $rootScope, fileReader) {
     /*-------Check for login--------*/

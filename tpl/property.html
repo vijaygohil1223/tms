@@ -114,7 +114,7 @@
                                 <h4>Properties List</h4>
                             </div>
                             <div class="panel-body">
-                                <table class="table table-bordered table-striped">
+                                <table class="table table-bordered table-striped" datatable="ng" dt-options="dtOptions" id="propertiesList">
                                     <thead>
                                         <th>#</th>
                                         <th>Property Name</th>
@@ -133,9 +133,9 @@
                                                     href="javascript:void(0)" ng-click="deleteProperty(t.id)"
                                                     title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                         </tr>
-                                        <tr ng-show="propLisEmpty">
+                                        <!-- <tr ng-show="propLisEmpty">
                                             <td colspan="4">No records found</td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>

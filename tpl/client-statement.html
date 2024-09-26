@@ -90,7 +90,7 @@
 
         <!-- Statment data for admin statement page -->
         <div class="panel panel-default" ng-if="userRight==1">
-          <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
+          <table st-table="rowCollectionBasic" class="table table-bordered table-striped" datatable="ng" dt-options="dtOptions" id="clientSatatement">
             <thead>
               <th>#</th>
               <th>Invoice No</th>
@@ -115,9 +115,9 @@
                 <td>{{s.Amount - s.paid_amount | customNumber}}</td>
                 <td>{{s.client_currency}}</td>
               </tr>
-              <tr ng-show="!stamementList.length">
+              <!-- <tr ng-show="!stamementList.length">
                 <td colspan="8" ng-bind="dataNotFound"></td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>

@@ -194,7 +194,7 @@
                                     <h4> Absent/Holiday List </h4>
                                 </div>
                                 <div class="table-responsive">
-                                    <table class="table table-striped b-t b-b">
+                                    <table class="table table-striped b-t b-b" datatable="ng" dt-options="dtOptions">
                                         <thead>
                                             <th>#</th>
                                             <th>From Date</th>
@@ -216,9 +216,9 @@
                                                     <a ng-click="removeRowDates($index)"> <i class="fa fa-remove"> </i> </a>
                                                 </td>
                                             </tr>
-                                            <tr ng-show="!abscentHolidayData.length">
+                                            <!-- <tr ng-show="!abscentHolidayData.length">
                                                 <td colspan="5" ng-bind="dataNotFound"></td>
-                                            </tr>
+                                            </tr> -->
                                         </tbody>
                                     </table>
                                 </div>

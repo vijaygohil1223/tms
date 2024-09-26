@@ -1849,6 +1849,30 @@ class jobs_detail
         return $return;
     }
 
+    public function getJobsFromTmsSummeryViewSearch($data)
+    {
+        if (!empty($data)) {
+            $qry_invc = " AND (tsv.resource = '" . $data['user_id'] . "' 
+                        AND tsv.item_status = '" . $data['searchValue'] . "'
+                        )";
+        }
+        
+        
+        $qry = "SELECT tcus.client AS Client, tcus.indirect_customer AS indirectClient, tsv.*, tsv.item_status AS jobStatus, ti.item_status AS scoopitem_status, ti.source_lang AS item_source_lang, ti.target_lang AS item_target_lang, ti.due_date AS item_due_date, tjb.service_name AS job_type_name, tcus.project_coordinator AS project_coordinator_id, tcus.project_manager AS project_manager_id, tcus.QA_specialist AS qa_specialist_id, tpc.iUserId AS job_manager_id, tc.vUserName AS clientName, tc.vLogo AS clientLogo, tic.vUserName AS indirectClientName, tu.vFirstName AS resourceFirstName, tu.vLastName AS resourceLastName, tu2.vFirstName AS contactFirstName, tu2.vLastName AS contactLastName FROM tms_summmery_view AS tsv INNER JOIN tms_general AS tg ON tsv.order_id = tg.order_id INNER JOIN tms_customer AS tcus ON tsv.order_id = tcus.order_id INNER JOIN tms_items AS ti ON tsv.order_id = ti.order_id LEFT JOIN tms_users tpc ON tpc.iUserId = tsv.contact_person LEFT JOIN tms_jobs AS tjb ON tsv.job_id = tjb.job_id LEFT JOIN tms_client AS tc ON tcus.client = tc.iClientId LEFT JOIN tms_client_indirect AS tic ON tcus.indirect_customer = tic.iClientId LEFT JOIN tms_users AS tu ON tsv.resource = tu.iUserId LEFT JOIN tms_users AS tu2 ON tsv.contact_person = tu2.iUserId WHERE ti.item_number = tsv.item_id". $qry_invc;
+
+        $data1 = $this->_db->rawQuery($qry);
+
+        foreach ($data1 as &$row) {
+            $row['Client'] = isset($row['clientName']) ? $row['clientName'] : '';
+            $row['clientlogo'] = isset($row['clientLogo']) ? $row['clientLogo'] : '';
+            $row['indirectClient'] = isset($row['indirectClientName']) ? $row['indirectClientName'] : '';
+            $row['resource'] = isset($row['resourceFirstName']) ? $row['resourceFirstName'] . " " . $row['resourceLastName'] : '';
+            $row['resourceId'] = isset($row['resource']) ? $row['resource'] : '';
+            $row['contact_person'] = isset($row['contactFirstName']) ? $row['contactFirstName'] . " " . $row['contactLastName'] : '';
+        }
+
+        return $data1;
+    }
 
 
     public function getJobsFromTmsSummeryView()

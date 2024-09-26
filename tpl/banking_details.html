@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
+                    <table st-table="rowCollectionBasic" class="table table-bordered table-striped" datatable="ng" dt-options="dtOptions" id="bankingDetails">
                         <thead>
                             <th>#</th>
                             <th>Bank name</th>
@@ -109,9 +109,9 @@
                                     <span ng-if="t.is_default==1">(Default)</span>
                                 </td>
                             </tr>
-                            <tr ng-show="bankingInfoEmpty">
+                            <!-- <tr ng-show="bankingInfoEmpty">
                                 <td colspan="4" ng-bind="dataNotFound"></td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>

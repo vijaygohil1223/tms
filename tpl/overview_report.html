@@ -276,7 +276,9 @@
 
                       <div class="table-responsive">
                         <table
-                          class="table m-b-none default footable-loaded footable"
+                          class="table m-b-none default footable-loaded footable" 
+                          datatable="ng" dt-options="dtOptions" id="overviewReport"
+
                         >
                           <thead>
                             <!-- <th>#</th> -->
@@ -290,7 +292,7 @@
                           </thead>
                           <tbody>
                             <tr
-                              ng-repeat="result in staturRes=(statusResult | filter : orderReport : true)"
+                              ng-repeat="result in statusResult"
                               class="orderRClass"
                             >
                               <!-- <td>
@@ -332,9 +334,9 @@
                               </td>
                               
                             </tr>
-                            <tr ng-show="!staturRes.length">
+                            <!-- <tr ng-show="!staturRes.length">
                               <td colspan="8" ng-bind="dataNotFound"></td>
-                            </tr>
+                            </tr> -->
                           </tbody>
                         </table>
                       </div>
@@ -541,7 +543,7 @@
                     </form>
                     <div class="col-md-12">  
                       <div class="table-responsive">
-                        <table class="table m-b-none default footable-loaded footable">
+                        <table class="table m-b-none default footable-loaded footable" datatable="ng" dt-options="dtOptions1" id="overviewJobData">
                             <thead>
                                 <th>Sr.no</th>
                                 <th>Job Number</th>
@@ -554,7 +556,7 @@
                             </thead>
                             <tbody>
                                 <tr
-                                    ng-repeat="result in statusRes=(jobstatusResult | filter : jobReport : true)">
+                                    ng-repeat="result in jobstatusResult">
                                     <td ng-bind="$index + 1"></td>
                                     <td>{{result.company_code}}_{{result.job_code}}{{result.job_no |
                                         numberFixedLen:3}}</td>
@@ -576,9 +578,9 @@
                                     <td ng-bind="result.item_status"></td>
                                     <td>{{result.total_price | customNumber}}</td>
                                 </tr>
-                                <tr ng-show="!statusRes.length">
+                                <!-- <tr ng-show="!statusRes.length">
                                     <td colspan="8" ng-bind="dataNotFound"></td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
                       </div>

@@ -91,7 +91,8 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
+                    <table st-table="rowCollectionBasic" class="table table-bordered table-striped" datatable="ng"
+                    dt-options="dtOptions" id="currencyData">
                         <thead>
                             <th>#</th>
                             <th>Currency name</th>
@@ -143,9 +144,9 @@
                                     </span>
                                 </td>
                             </tr>
-                            <tr ng-show="currencyEmpty">
+                            <!-- <tr ng-show="currencyEmpty">
                                 <td colspan="4" ng-bind="dataNotFound"></td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>

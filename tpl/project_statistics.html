@@ -134,7 +134,7 @@
                                  </div>
                               </div> -->
                               <div class="table-responsive">
-                                 <table class="table m-b-none default footable-loaded footable">
+                                 <table class="table m-b-none default footable-loaded footable" datatable="ng" dt-options="dtOptions1" id="projectStatistics">
                                     <thead>
                                        <th>#</th>
                                        <th>Orders Number</th>
@@ -147,10 +147,8 @@
                                        <th>Status</th>
                                     </thead>
                                     <tbody>
-                                       <!-- <tr ng-repeat="result in staturRes=(statusResult)" class="orderRClass"
-                                          ng-init="setTotals(result)"
-                                          ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice"> -->
-                                          <tr ng-repeat="result in staturRes=(statusResult | filter : orderReport)"
+
+                                          <tr ng-repeat="result in statusResult"
                                              class="orderRClass" ng-init="setTotals(result)"
                                              ng-init="result.totalValue = staturRes[$index-1].totalValue + result.jobTotalPrice"> 
                                           <td>
@@ -266,7 +264,7 @@
                            </form>     
                            <div class="col-sm-12">
                               <div class="table-responsive">
-                                 <table class="table m-b-none default footable-loaded footable">
+                                 <table class="table m-b-none default footable-loaded footable" datatable="ng" dt-options="dtOptions2" id="linguistReport">
                                     <thead>
                                        <th>#</th>
                                        <th>Orders Number</th>
