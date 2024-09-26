@@ -254,8 +254,8 @@
                                 <i class="fa fa-male"></i>
                                 <span>Contact Person</span>
                             </tab-heading>
-                            <div class="col-sm-6">
-                                <table class="table table-striped b-t b-b">
+                            <div class="col-sm-6"  style="margin-top:15px" >
+                                <table class="table table-striped b-t b-b"datatable="ng" dt-options="dtOptions" id="contactPerson">
                                     <thead>
                                         <th>#</th>
                                         <th>Contact Person</th>
@@ -269,9 +269,9 @@
                                             <td>{{contact.vEmail}}</td>
                                             <td>{{contact.vDepartment}}</td>
                                         </tr>
-                                        <tr ng-show="!contactList1.length">
+                                        <!-- <tr ng-show="!contactList1.length">
                                             <td colspan="4" ng-bind="dataNotFound"></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
@@ -281,8 +281,8 @@
                                 <i class="fa fa-building"></i>
                                 <span>Property List</span>
                             </tab-heading>
-                            <div class="col-sm-6">
-                                <table class="table table-striped b-t b-b">
+                            <div class="col-sm-6" style="margin-top:15px">
+                                <table class="table table-striped b-t b-b"  datatable="ng" dt-options="dtOptions" id="propertyDetails">
                                     <thead>
                                         <th>#</th>
                                         <th>Property Name</th>
@@ -294,9 +294,9 @@
                                             <td ng-bind="t.property_name"></td>
                                             <td ng-bind="t.values_names"></td>
                                         </tr>
-                                        <tr ng-show="!propList.length">
+                                        <!-- <tr ng-show="!propList.length">
                                             <td colspan="3" ng-bind="dataNotFound"></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
@@ -306,8 +306,8 @@
                                 <i class="fa fa-list"></i>
                                 <span>Price List</span>
                             </tab-heading>
-                            <div class="col-sm-6">
-                                <table class="table table-striped b-t b-b">
+                            <div class="col-sm-6" style="margin-top:15px">
+                                <table class="table table-striped b-t b-b" datatable="ng" dt-options="dtOptions1" id="priceList">
                                     <thead>
                                         <th>#</th>
                                         <th>Price Name</th>
@@ -320,9 +320,9 @@
                                             <!-- <td ng-bind="p.price_name"></td> -->
                                             <td ng-bind="p.price_currency"></td>
                                         </tr>
-                                        <tr ng-show="!lngstPriceList.length">
+                                        <!-- <tr ng-show="!lngstPriceList.length">
                                             <td colspan="3" ng-bind="dataNotFound"></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>
@@ -715,7 +715,7 @@
                                         <h4> Absent/Holiday List </h4>
                                     </div>
                                     <div class="table-responsive">
-                                        <table class="table table-striped b-t b-b">
+                                        <table class="table table-striped b-t b-b"  datatable="ng" dt-options="dtOptions2">
                                             <thead>
                                                 <th>#</th>
                                                 <th>From Date</th>
@@ -737,9 +737,9 @@
                                                         <a ng-click="removeRowDates($index)"> <i class="fa fa-remove"> </i> </a>
                                                     </td>
                                                 </tr>
-                                                <tr ng-show="!abscentHolidayData.length">
+                                                <!-- <tr ng-show="!abscentHolidayData.length">
                                                     <td colspan="5" ng-bind="dataNotFound"></td>
-                                                </tr>
+                                                </tr> -->
                                             </tbody>
                                         </table>
                                     </div>

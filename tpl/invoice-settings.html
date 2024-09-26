@@ -112,7 +112,7 @@
           </div>
           </div>
           <div class="panel panel-default">
-            <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
+            <table st-table="rowCollectionBasic" class="table table-bordered table-striped" datatable="ng" dt-options="dtOptions" id="invoiceSetting">
               <thead>
               <th>#</th>
               <th>Name</th>
@@ -135,9 +135,9 @@
                         <!-- <a href="javascript:void(0)" ng-click="deleteModel(t.id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a> -->
                       </td>
                   </tr>
-                  <tr ng-show="invcPoSettingEmpty">
+                  <!-- <tr ng-show="invcPoSettingEmpty">
                       <td colspan="5" ng-bind="dataNotFound"></td>
-                  </tr>
+                  </tr> -->
               </tbody>
           </table>
           </div>

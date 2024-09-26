@@ -189,7 +189,7 @@
                             <div class="panel panel-default panel-labeled">
                                 <div class="panel-body">
                                     <h4 style="text-align: center;color: #636e7a;">Contact Person</h4>
-                                    <table class="table table-striped b-t b-b table-bordered">
+                                    <table class="table table-striped b-t b-b table-bordered" datatable="ng" dt-options="dtOptions" id="contactPerson">
                                         <thead>
                                             <th>#</th>
                                             <th>Name</th>
@@ -206,9 +206,9 @@
                                                             aria-hidden="true"></i></a></td>
                                                 <!-- <td ng-bind="c.vDepartment"></td> -->
                                             </tr>
-                                            <tr ng-show="!contactlist.length">
+                                            <!-- <tr ng-show="!contactlist.length">
                                                 <td colspan="4" ng-bind="dataNotFound"></td>
-                                            </tr>
+                                            </tr> -->
                                         </tbody>
                                     </table>
                                 </div>
@@ -256,7 +256,7 @@
                             <div class="panel panel-default panel-labeled">
                                 <div class="panel-body">
                                     <h4 style="text-align: center;color: #636e7a;">Login Detail</h4>
-                                    <table class="table table-striped b-t b-b table-bordered" datatable="ng">
+                                    <table class="table table-striped b-t b-b table-bordered" datatable="ng" dt-options="dtOptions1" id="loginDetails" >
                                         <thead>
                                             <th>Description</th>
                                             <th>User Name</th>

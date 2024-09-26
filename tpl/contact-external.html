@@ -145,7 +145,7 @@
                                 </div>
                             </div>
                         </form>
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped" id="contactInfo"  datatable="ng" dt-options="dtOptions" >
                             <thead>
                                 <th>#</th>
                                 <th>Name</th>
@@ -167,9 +167,9 @@
                                             ng-click="deleteExternalContact(c.iContactId)"><i
                                                 class="iconDelete glyph-icon fa-times"></i></a></td>
                                 </tr>
-                                <tr ng-show="contactExternalEmpty">
+                                <!-- <tr ng-show="contactExternalEmpty">
                                     <td colspan="4" ng-bind="dataNotFound"></td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
                     </div>

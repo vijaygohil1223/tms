@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="panel panel-default">
-                    <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
+                    <table  class="table table-bordered table-striped" id="funnyImage" dt-options="dtOptions">
                         <thead>
                             <th>#</th>
                             <th>Picture</th>
@@ -47,9 +47,9 @@
                                 <td><span>Like (<span ng-bind="funpic.flag_like"></span>)</span>
                                 </td>
                             </tr>
-                            <tr ng-if="!funpicList">
+                            <!-- <tr ng-if="!funpicList">
                                 <td colspan="4" ng-bind="dataNotFound"></td>
-                            </tr>
+                            </tr> -->
                             
                         </tbody>
                         <tbody ng-if="!picture.user_id">
@@ -62,9 +62,9 @@
                                 <td><span>Like (<span ng-bind="funpic.flag_like"></span>)</span>
                                 </td>
                             </tr>
-                            <tr ng-if="!funpicList">
+                            <!-- <tr ng-if="!funpicList">
                                 <td colspan="4" ng-bind="dataNotFound"></td>
-                            </tr>
+                            </tr> -->
                              
                         </tbody>
                     </table>

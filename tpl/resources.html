@@ -132,25 +132,25 @@
                         </div>
                     </form>
                     <hr>
-                    <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
-                    <thead>
-                                                <th>#</th>
-                                                <th>Name of Resource Status</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="t in userStatus" ng-class="(t.status_id == status.status_id) ? 'rowactivate' : ''">
-                                                        <td ng-bind="$index + 1"></td>
-                                                        <td ng-bind="t.status_name"></td>
-                                                        <td ng-if="t.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
-                                                        <td ng-if="t.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td> 
-                                                        <td><a href="javascript:void(0)" ng-click="getStatus(t.status_id,'statuses');" title="edit"><i class="glyph-icon fa-edit"></i></a>   <a href="javascript:void(0)" ng-click="deleteStatusModel(t.status_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
-                                                    </tr>
-                                                    <tr ng-show="userstatusEmpty">
-                                                        <td colspan="4" ng-bind="dataNotFound"></td>
-                                                    </tr>
-                                                </tbody>
+                    <table datatable="ng" dt-options="dtOptions" class="table table-bordered table-striped" id="resourceAdmin">
+                        <thead>
+                            <th>#</th>
+                            <th>Name of Resource Status</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="t in userStatus" ng-class="(t.status_id == status.status_id) ? 'rowactivate' : ''">
+                                <td ng-bind="$index + 1"></td>
+                                <td ng-bind="t.status_name"></td>
+                                <td ng-if="t.is_active == '1'"><span class="label bg-success" title="active">Active</span></td>
+                                <td ng-if="t.is_active == '0'"><span class="label bg-danger" title="Inactive">Inactive</span></td> 
+                                <td><a href="javascript:void(0)" ng-click="getStatus(t.status_id,'statuses');" title="edit"><i class="glyph-icon fa-edit"></i></a>   <a href="javascript:void(0)" ng-click="deleteStatusModel(t.status_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
+                            </tr>
+                            <!-- <tr ng-show="userstatusEmpty">
+                                <td colspan="4" ng-bind="dataNotFound"></td>
+                            </tr> -->
+                        </tbody>
                     </table>
                     </div>
                 </div>
@@ -185,7 +185,8 @@
                         <button class="btn btn-info " ng-click="savePosition('user-position-form');"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save</button>
                     </div>
                 </form>
-                <table st-table="rowCollectionBasic" class="table table-bordered table-striped">
+                <!-- <table datatable="ng" dt-option="dtOptions1" class="table table-bordered table-striped"> -->
+                <table class="table table-bordered table-striped" datatable="ng" dt-options="dtOptions1" id="resourcePosition">
                 <thead>
                                             <th>#</th>
                                             <th>Name of Resource Position</th>
@@ -207,9 +208,9 @@
                                                     ng-class="{disabledAnchor:up.position_id == 1 ||up.position_id == 2 ||up.position_id == 3||up.position_id == 4||up.position_id == 5}"
                                                     ng-click="deletePositionModel(up.position_id)" title="delete"><i class="iconDelete glyph-icon fa-times"></i></a></td>
                                                 </tr>
-                                                <tr ng-show="!userPosition.length">
+                                                <!-- <tr ng-show="!userPosition.length">
                                                     <td colspan="4" ng-bind="dataNotFound"></td>
-                                                </tr>
+                                                </tr> -->
                                             </tbody>
                 </table>
                 </div>

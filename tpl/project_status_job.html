@@ -76,7 +76,8 @@
                                 </div>
                             </div>
                             <div class="table-responsive" id="middle">
-                                <table class="table m-b-none default footable-loaded footable">
+                                
+                                <table class="table m-b-none default footable-loaded footable" datatable="ng" dt-options="dtOptions" id="projectJobStatus">
                                     <thead>
                                         <th>#</th>
                                         <th>Job Number</th>
@@ -88,9 +89,8 @@
                                         <!-- <th>Time</th> -->
                                     </thead>
                                     <tbody>
-                                        <tr id="{{}}"
-                                            ng-repeat="result in resultStatus=(statusResult | filter : jobReport )"
-                                            ng-if="result.resourceId == uId">
+                                       
+                                            <tr ng-repeat="result in statusResult">
                                             <td>
                                                 <input type="checkbox" id="orderCheck{{$index}}"
                                                     name="orderCheck{{$index}}" ng-model="checkor"
@@ -150,9 +150,9 @@
                                             <td>{{result.total_price | customNumber}}</td>
                                             <!-- <td>--</td> -->
                                         </tr>
-                                        <tr ng-show="!resultStatus.length">
+                                        <!-- <tr ng-show="!resultStatus.length">
                                             <td colspan="8" ng-bind="dataNotFound"></td>
-                                        </tr>
+                                        </tr> -->
                                     </tbody>
                                 </table>
                             </div>

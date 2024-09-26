@@ -3155,6 +3155,14 @@ $app->get('/dashboardProjectsOrderGet/:id', function ($id) use ($app) {
     $result = $dashboard->ProjectsOrderGet($id);
     echoResponse(200, $result);
 });
+
+$app->post('/dashboardProjectsOrderGetSearch/:id', function ($id) use ($app) {
+    $dashboard = new dashboard ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $dashboard->ProjectsOrderGetSearch($id, $data);
+    echoResponse(200, $result);
+});
+
 $app->get('/dashboardProjectsOrderScoopGet/:id', function ($id) use ($app) {
     $dashboard = new dashboard ();
     $result = $dashboard->projectsOrderScoopGet($id);
@@ -3949,6 +3957,14 @@ $app->get('/getJobsFromTmsSummeryView', function () {
     $result = $jobList->getJobsFromTmsSummeryView();
     echoResponse(200, $result);
 });
+
+$app->post('/getJobsFromTmsSummeryViewSearch','authenticate', function () use($app) {
+    $jobList = new jobs_detail ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $jobList->getJobsFromTmsSummeryViewSearch($data);
+    echoResponse(200, $result);
+});
+
 $app->get('/getJobsFromTmsSummeryViewDashboard', function () {
     $jobList = new jobs_detail ();
     $result = $jobList->getJobsFromTmsSummeryViewDashboard();
