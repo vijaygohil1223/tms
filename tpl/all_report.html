@@ -1,0 +1,96 @@
+<style>
+  .boxfv ul.list-group {
+      overflow-y: auto;
+      height: auto;
+  }
+  .boxfv{
+    padding-right: 7px;
+    width: 20%;
+  }
+  .boxfv small.text-muted{
+    color: #777;
+  }
+  .boxfv .panel-heading{
+    padding: 10px;
+    border-radius: 6px 6px 0 0;
+  }
+  .boxfv h5{
+    color: white;
+  }
+  .boxfv .panel {
+      border: 0.5px solid #efeaea;
+      border-radius: 7px 7px 0 0;
+  }
+</style>
+
+<div
+  ng-init="app.settings.container = false;"
+  class="md-navbar navbar blue md-whiteframe-z1"
+  data-ng-include=" 'tpl/material.header.html' "
+></div>
+<div layout="row">
+  <div
+    flex
+    class="bg-white md-whiteframe-z0 md-aside md-content hidden-xs"
+    data-ng-include=" 'tpl/material.aside.html' "
+  ></div>
+  <div flex layout="column">
+    <div ui-butterbar></div>
+    <a
+      href
+      class="off-screen-toggle hide"
+      ui-toggle-class="off-screen"
+      data-target=".md-aside"
+    ></a>
+    <div class="md-content page_content_wrapper" id="top">
+      <!-- <div class="content_head bg-light wrapper-md ng-scope">
+            <a href="javascript:history.back()" class="btn m-b-xs btn-info pull-right"><span
+                  class="fa fa-arrow-left"></span> Back</a>
+         </div> -->
+      <div class="content_head bg-light lter b-b wrapper-md">
+        <div class="row">
+          <div class="col-sm-12">
+            <!-- <h1 class="m-n font-thin h3 text-black">Reports</h1>
+            <small class="text-muted">Dashboard</small> -->
+            <div>
+              <ul class="projectjobdv2 overviewli">
+                <li ng-click="setActiveTab(1)" ng-class="{active: activeTab === 1}" class="list-group-item"> <a href="javascript:void(0)">Scoops Report</a> </li>
+                <li ng-click="setActiveTab(2)" ng-class="{active: activeTab === 2}" class="list-group-item"> <a href="javascript:void(0)"> Jobs Report</a> </li>
+                <li ng-click="setActiveTab(3)" ng-class="{active: activeTab === 3}" class="list-group-item"> <a href="javascript:void(0)">Invoice Report</a> </li>
+                <li ng-click="setActiveTab(4)" ng-class="{active: activeTab === 4}" class="list-group-item"> <a href="javascript:void(0)"> Linguist Report</a> </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wrapper-md ng-scope ">
+        <div ng-if="activeTab === 1">
+          <div ng-controller="orderstatusReportController">
+            <div data-ng-include=" 'tpl/scoop_report_tab.html' "></div>
+          </div>
+        </div>
+
+        <div ng-if="activeTab === 2">
+          <div ng-controller="jobstatusReportController">
+            <div data-ng-include=" 'tpl/jobs_report_tab.html' "></div>
+          </div>
+        </div>   
+        
+        <div ng-if="activeTab === 3">
+          <div ng-controller="invoicestatusReportController">
+            <div data-ng-include=" 'tpl/invoice_report_tab.html' "></div>
+          </div>
+        </div>
+
+        <!-- <div ng-if="activeTab === 4"></div>
+          <div ng-controller="linguistInvoicestatusReportController">
+            <div data-ng-include=" 'tpl/linguist_report_tab.html' "></div>
+          </div>
+        </div> -->
+
+        <!-- footer copy right -->
+        <div data-ng-include="'tpl/copyRight.html'"></div>
+      </div>
+    </div>
+  </div>
+</div>

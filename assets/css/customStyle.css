@@ -698,6 +698,11 @@ div.dataTables_length select{margin: 0 5px;}
     right: -30px;
     bottom: -12px;
   }
+
+  .overviewli1>li.active>a::after{
+    bottom: 0px !important;
+  }
+
   .overview-list{
       position: relative;
   }

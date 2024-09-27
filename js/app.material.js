@@ -5,7 +5,7 @@ var app = angular.module('app', ['ui.bootstrap.contextMenu', 'ngRoute', 'ngAnima
     'internationalPhoneNumber', 'polyglotLanguageSwitcher', 'textAngular', 'ngLoadingSpinner', 'ui.sortable'
 ]);
 
-app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileProvider, $translateProvider) {
+app.config(function($locationProvider, $routeProvider, $httpProvider, $compileProvider, $translateProvider) {
     // To remove Hash tag # from url. 
     // Please also add base tag in index.html page (<base href="/">).
     // $locationProvider.html5Mode({
@@ -16,54 +16,54 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
     //$locationProvider.html5Mode(true);
     var modulesPath = 'tpl/';
     $routeProvider.when('/', {
-        templateUrl: modulesPath + 'login.html',
-        controller: 'loginController',
-    }).when('/dashboard', {
-        templateUrl: modulesPath + 'dashboard.html',
-        controller: 'dashboardController',
-        activetab: 'dashboard',
-        role: ['1', '2']
-    }).when('/dashboard1', {
-        templateUrl: modulesPath + 'dashboard.html',
-        controller: 'dashboardController',
-        activetab: 'dashboard',
-        role: ['1', '2']
-    }).when('/dashboard-user/:id', {
-        templateUrl: modulesPath + 'dashboardUser.html',
-        controller: 'dashboardUserController',
-        activetab: 'dashboard',
-        role: ['1', '2']
-    }).when('/resetpassword', {
-        templateUrl: modulesPath + 'resetPassword.html',
-        controller: 'loginController',
-        activetab: 'dashboard',
-        //role : ['1','2']
-    }).when('/resetpassword/:id', {
-        templateUrl: modulesPath + 'resetPassword1.html',
-        controller: 'passwordResetController',
-        activetab: 'dashboard',
-        //role : ['1','2']
-    }).when('/user/:id', {
-        templateUrl: modulesPath + 'user.html',
-        controller: 'userController',
-        activetab: 'dashboard',
-        role: '1'
-    }).when('/csv-linguist-profile', {
-        templateUrl: modulesPath + 'csv-linguist-profile.html',
-        controller: 'csvLingstProfileController',
-        activetab: 'dashboard',
-        role: '1'
-    }).when('/csv-client-profile', {
-        templateUrl: modulesPath + 'csv-client-profile.html',
-        controller: 'csvClientProfileController',
-        activetab: 'dashboard',
-        role: '1'        
-    }).when('/resourcetype', {
-        templateUrl: modulesPath + 'user-type.html',
-        controller: 'usertypeController',
-        activetab: 'dashboard',
-        role: '1'
-    })
+            templateUrl: modulesPath + 'login.html',
+            controller: 'loginController',
+        }).when('/dashboard', {
+            templateUrl: modulesPath + 'dashboard.html',
+            controller: 'dashboardController',
+            activetab: 'dashboard',
+            role: ['1', '2']
+        }).when('/dashboard1', {
+            templateUrl: modulesPath + 'dashboard.html',
+            controller: 'dashboardController',
+            activetab: 'dashboard',
+            role: ['1', '2']
+        }).when('/dashboard-user/:id', {
+            templateUrl: modulesPath + 'dashboardUser.html',
+            controller: 'dashboardUserController',
+            activetab: 'dashboard',
+            role: ['1', '2']
+        }).when('/resetpassword', {
+            templateUrl: modulesPath + 'resetPassword.html',
+            controller: 'loginController',
+            activetab: 'dashboard',
+            //role : ['1','2']
+        }).when('/resetpassword/:id', {
+            templateUrl: modulesPath + 'resetPassword1.html',
+            controller: 'passwordResetController',
+            activetab: 'dashboard',
+            //role : ['1','2']
+        }).when('/user/:id', {
+            templateUrl: modulesPath + 'user.html',
+            controller: 'userController',
+            activetab: 'dashboard',
+            role: '1'
+        }).when('/csv-linguist-profile', {
+            templateUrl: modulesPath + 'csv-linguist-profile.html',
+            controller: 'csvLingstProfileController',
+            activetab: 'dashboard',
+            role: '1'
+        }).when('/csv-client-profile', {
+            templateUrl: modulesPath + 'csv-client-profile.html',
+            controller: 'csvClientProfileController',
+            activetab: 'dashboard',
+            role: '1'
+        }).when('/resourcetype', {
+            templateUrl: modulesPath + 'user-type.html',
+            controller: 'usertypeController',
+            activetab: 'dashboard',
+            role: '1'
+        })
         // ------------user profiles --------------------//
         .when('/user-profile', {
             templateUrl: modulesPath + 'communication.html',
@@ -127,77 +127,77 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             role: '2'
         })
 
-        // ------------------- client profile ------------------------//
-        .when('/client/:id', {
-            templateUrl: modulesPath + 'client.html',
-            controller: 'clientController',
-            //activetab: 'dashboard',
-            role: '1'
-        }).when('/client', {
-            templateUrl: modulesPath + 'client.html',
-            controller: 'clientController',
-            activetab: 'client',
-            role: '1'
-        }).when('/client-profile', {
-            templateUrl: modulesPath + 'client-profile.html',
-            controller: 'basicinfoController',
-            activetab: 'client',
-            role: '1'
-        }).when('/edit-indirect/:id', {
-            templateUrl: modulesPath + 'client-profile1.html',
-            controller: 'indirectclientController',
-            activetab: 'client',
-            role: '1'
-        }).when('/client-profile1', {
-            templateUrl: modulesPath + 'client-profile1.html',
-            controller: 'indirectclientController',
-            activetab: 'dashboard',
-            role: '1'
-        }).when('/edit-client/:id', {
-            templateUrl: modulesPath + 'client-profile.html',
-            controller: 'basicinfoController',
-            activetab: 'client',
-            role: '1'
-        }).when('/contact-person', {
-            templateUrl: modulesPath + 'contact-person.html',
-            controller: 'contactController',
-            activetab: 'client',
-            role: '1'
-        }).when('/Resource_assesment', {
-            templateUrl: modulesPath + 'resource_assesment.html',
-            controller: 'resourceAssetsController',
-            activetab: 'client',
-            role: '1'
-        }).when('/price-list', {
-            templateUrl: modulesPath + 'price-list.html',
-            controller: 'pricelistController',
-            activetab: 'client',
-            role: '1'
-        }).when('/price-list-client/:id', {
-            templateUrl: modulesPath + 'price-list.html',
-            controller: 'pricelistController',
-            activetab: 'client',
-            role: '1'    
-        }).when('/price-list1', {
-            templateUrl: modulesPath + 'price-list1.html',
-            controller: 'pricelistController',
-            activetab: 'client',
-            role: ['1']
-        }).when('/price-list1/:id', {
-            templateUrl: modulesPath + 'price-list1.html',
-            controller: 'pricelistController',
-            activetab: 'client',
-            role: ['1']
-        }).when('/login-detail', {
-            templateUrl: modulesPath + 'login-detail.html',
-            controller: 'clientLoginController',
-            activetab: 'client',
-            role: '1'
-        })
+    // ------------------- client profile ------------------------//
+    .when('/client/:id', {
+        templateUrl: modulesPath + 'client.html',
+        controller: 'clientController',
+        //activetab: 'dashboard',
+        role: '1'
+    }).when('/client', {
+        templateUrl: modulesPath + 'client.html',
+        controller: 'clientController',
+        activetab: 'client',
+        role: '1'
+    }).when('/client-profile', {
+        templateUrl: modulesPath + 'client-profile.html',
+        controller: 'basicinfoController',
+        activetab: 'client',
+        role: '1'
+    }).when('/edit-indirect/:id', {
+        templateUrl: modulesPath + 'client-profile1.html',
+        controller: 'indirectclientController',
+        activetab: 'client',
+        role: '1'
+    }).when('/client-profile1', {
+        templateUrl: modulesPath + 'client-profile1.html',
+        controller: 'indirectclientController',
+        activetab: 'dashboard',
+        role: '1'
+    }).when('/edit-client/:id', {
+        templateUrl: modulesPath + 'client-profile.html',
+        controller: 'basicinfoController',
+        activetab: 'client',
+        role: '1'
+    }).when('/contact-person', {
+        templateUrl: modulesPath + 'contact-person.html',
+        controller: 'contactController',
+        activetab: 'client',
+        role: '1'
+    }).when('/Resource_assesment', {
+        templateUrl: modulesPath + 'resource_assesment.html',
+        controller: 'resourceAssetsController',
+        activetab: 'client',
+        role: '1'
+    }).when('/price-list', {
+        templateUrl: modulesPath + 'price-list.html',
+        controller: 'pricelistController',
+        activetab: 'client',
+        role: '1'
+    }).when('/price-list-client/:id', {
+        templateUrl: modulesPath + 'price-list.html',
+        controller: 'pricelistController',
+        activetab: 'client',
+        role: '1'
+    }).when('/price-list1', {
+        templateUrl: modulesPath + 'price-list1.html',
+        controller: 'pricelistController',
+        activetab: 'client',
+        role: ['1']
+    }).when('/price-list1/:id', {
+        templateUrl: modulesPath + 'price-list1.html',
+        controller: 'pricelistController',
+        activetab: 'client',
+        role: ['1']
+    }).when('/login-detail', {
+        templateUrl: modulesPath + 'login-detail.html',
+        controller: 'clientLoginController',
+        activetab: 'client',
+        role: '1'
+    })
 
-        // ----------------order section ---------------//
+    // ----------------order section ---------------//
 
-        .when('/project', {
+    .when('/project', {
             templateUrl: modulesPath + 'order.html',
             controller: 'orderController',
             activetab: 'order',
@@ -281,7 +281,7 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'projectStatusController',
             role: '1'
         }).when('/project-scoop-status', {
-        templateUrl: modulesPath + 'project-scoop-status.html',
+            templateUrl: modulesPath + 'project-scoop-status.html',
             controller: 'projectScoopStatusController',
             role: '1'
         }).when('/job-status', {
@@ -423,7 +423,7 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             controller: 'invoiceSettingController',
             activetab: 'invoice-settings',
             role: '1'
-            
+
         }).when('/jobs-detail/:id', {
             templateUrl: modulesPath + 'jobs-detail.html',
             controller: 'jobDetailController',
@@ -520,12 +520,12 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             templateUrl: modulesPath + 'project_job_detail.html',
             controller: 'projectjobDetailController',
             activetab: 'project-job-detail',
-            role: ['1','2']    
+            role: ['1', '2']
         }).when('/job-download-file/:id', {
             templateUrl: modulesPath + 'project_job_detail.html',
             controller: 'projectjobDetailController',
             activetab: 'project-job-detail',
-            role: '2'    
+            role: '2'
         }).when('/project-detail/:id', {
             templateUrl: modulesPath + 'project_detail.html',
             controller: 'projectDetailController',
@@ -705,7 +705,8 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
             templateUrl: modulesPath + 'decimal-separator.html',
             controller: 'decimalSeparatorController',
             activetab: 'decimal-separator',
-            role: '1'})
+            role: '1'
+        })
         .when('/sent-email-list', {
             templateUrl: modulesPath + 'sent-email-list.html',
             controller: 'mailjetemailController',
@@ -738,14 +739,14 @@ app.config(function ($locationProvider, $routeProvider, $httpProvider, $compileP
     $httpProvider.interceptors.push('authInterceptor');
 });
 
-app.run(function ($rootScope, $log, $location, $interval, $window, $cookieStore, $timeout) {
+app.run(function($rootScope, $log, $location, $interval, $window, $cookieStore, $timeout) {
 
-    $('body').on('change', '.select2-offscreen', function () {
+    $('body').on('change', '.select2-offscreen', function() {
         var select2Id = $(this).attr('id');
         console.log("select2Id", select2Id);
         if (select2Id) {
-            $('#' + select2Id + '-error').remove();//if error label contains id
-            $('#' + select2Id).next().remove();//if not error label contains id
+            $('#' + select2Id + '-error').remove(); //if error label contains id
+            $('#' + select2Id).next().remove(); //if not error label contains id
         }
     });
 
@@ -753,18 +754,18 @@ app.run(function ($rootScope, $log, $location, $interval, $window, $cookieStore,
     $rootScope.dataNotFound = "No data found";
     //cookies Expire and auto logout
     var lastDigestRun = Date.now();
-    var idleCheck = $interval(function () {
+    var idleCheck = $interval(function() {
         //console.log("lastDigestRun", lastDigestRun);
         var now = Date.now();
         //console.log("now", now);
         if (now - lastDigestRun > 12 * 60 * 60 * 1000) {
             $window.sessionStorage.clear();
             $window.localStorage.clear();
-            angular.forEach(["session_iUserId", "auth", "session_iFkUserTypeId", "session_vEmailAddress", "session_password", "internalUserEdit", "internalUserAdd", "jobRecentEdit", "jobRecentAdd", "session_holidayCountry", "generalEdit", "editInternalUser"], function (key) {
+            angular.forEach(["session_iUserId", "auth", "session_iFkUserTypeId", "session_vEmailAddress", "session_password", "internalUserEdit", "internalUserAdd", "jobRecentEdit", "jobRecentAdd", "session_holidayCountry", "generalEdit", "editInternalUser"], function(key) {
                 $cookieStore.remove(key);
             });
             //All popup modal close after auto logout
-            $timeout(function () {
+            $timeout(function() {
                 $('button.close').click();
                 //$('.modal button.btn').click();
                 $('.modal').click();
@@ -777,9 +778,9 @@ app.run(function ($rootScope, $log, $location, $interval, $window, $cookieStore,
     $rootScope.adminRole = $cookieStore.get('session_iFkUserTypeId');
     $rootScope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
 
-    $rootScope.$on('$routeChangeStart', function (event, next) {
+    $rootScope.$on('$routeChangeStart', function(event, next) {
         //console.log('next', next)
-        $timeout(function () {
+        $timeout(function() {
             $('.butterbar').removeClass('hide').addClass('active');
         }, 200);
         var userRole = jQuery.inArray($window.localStorage.getItem("session_iFkUserTypeId"), next.role);
@@ -800,18 +801,18 @@ app.run(function ($rootScope, $log, $location, $interval, $window, $cookieStore,
         lastDigestRun = Date.now();
     });
 
-    $rootScope.$on('$routeChangeSuccess', function (event, next) {
-        $timeout(function () {
+    $rootScope.$on('$routeChangeSuccess', function(event, next) {
+        $timeout(function() {
             $('.butterbar').addClass('hide').removeClass('active');
         }, 1000);
     });
 
-}).run(['$rootScope', '$location', function ($rootScope, $location) {
-    var path = function () {
+}).run(['$rootScope', '$location', function($rootScope, $location) {
+    var path = function() {
         return $location.path();
     };
 
-    $rootScope.$watch(path, function (newVal, oldVal) {
+    $rootScope.$watch(path, function(newVal, oldVal) {
         $rootScope.activetab = newVal;
         $rootScope.Oldtab = oldVal;
     });
