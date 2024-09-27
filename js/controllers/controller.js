@@ -1532,19 +1532,39 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     // clear suggestion when click outside input or suggetion list
     $document.on('click', function(event) {
-        //var inputElement = document.getElementById('selectedOrderData');
-        var inputElement = document.getElementById('suggestionSearch');
-        var suggestionList = document.querySelector('.suggestion-list');
-        var isClickedInside = (inputElement && inputElement.contains(event.target)) ||
-                            (suggestionList && suggestionList.contains(event.target));
-
-    if (!isClickedInside) {
-            $scope.$apply(function() {
+        // Wrap the handler in $timeout to ensure it's safely executed within Angular's context
+        $timeout(function() {
+            var inputElement = document.getElementById('suggestionSearch');
+            var suggestionList = document.querySelector('.suggestion-list');
+            var isClickedInside = (inputElement && inputElement.contains(event.target)) ||
+                                  (suggestionList && suggestionList.contains(event.target));
+    
+            if (!isClickedInside) {
+                // Clear search box if click is outside the input or suggestion list
                 $scope.clearSearchBox();
-                //$scope.suggestions = [];
-            });
-        }
+            }
+        });
     });
+    
+    // $document.on('click', function(event) {
+    //     var inputElement = document.getElementById('suggestionSearch');
+    //     var suggestionList = document.querySelector('.suggestion-list');
+    //     var isClickedInside = (inputElement && inputElement.contains(event.target)) ||
+    //                           (suggestionList && suggestionList.contains(event.target));
+    
+    //     if (!isClickedInside) {
+    //         if (!$scope.$$phase && !$scope.$root.$$phase) {
+    //             // Only call $apply if not already in a digest cycle
+    //             $scope.$apply(function() {
+    //                 $scope.clearSearchBox();
+    //             });
+    //         } else {
+    //             // If already in a digest cycle, directly call the function
+    //             $scope.clearSearchBox();
+    //         }
+    //     }
+    // });
+    
 
     $scope.menuHoverIn = function (iconId) {
         angular.element('#' + iconId).removeClass('fvIconHide').addClass('fvIconShow');
@@ -27330,12 +27350,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }else{
             $scope.workflowChange = $scope.workflowChange ? $scope.workflowChange : false;
         }
-        // setTimeout(() => {
+        $timeout(function() {
             $('#project_type'+itemId).removeAttr('required');
             $('#upcomingDate'+itemId).removeAttr('required');
             $('#EmailSub'+itemId).removeAttr('required');
             $scope.saveitems(itemId, index);
-        // }, 100);
+        });
     }
     // substitute pm,cm,qa 
     $scope.checksubPm = [];
