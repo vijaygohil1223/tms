@@ -45635,9 +45635,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     // $timeout(function () {
                     //     success(data);
                     // }, 500);
-                    data.job_id = 0;
+                    //data.job_id = 0;
                     data.order_id = $routeParams.id;
-                    data.scoop_id = $scope.scoopItemId;
+                    //data.scoop_id = $scope.scoopItemId;
+                    data.scoop_id = ($window.localStorage.getItem("isLinguistChat") != 'true') ? $scope.scoopItemId : 0;
+                    data.job_id = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0; // insert job id for specific job
+                    data.isCommentEmailsend = localStorage.getItem("jobIdLinguistChat") > 0 ? true : false; 
+                    
                     data.user_id = $window.localStorage.getItem("session_iUserId");
                     data.fullname = $window.localStorage.getItem("session_vUserName");
                     data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
