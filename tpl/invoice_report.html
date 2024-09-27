@@ -10,10 +10,23 @@
         <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".md-aside"></a>
         <div class="md-content page_content_wrapper" id="top">
 
-            <div class="content_head bg-light wrapper-md ng-scope">
-                <a href="javascript:history.back()" class="btn m-b-xs btn-info pull-right"><span
-                        class="fa fa-arrow-left"></span> Back</a>
-            </div>
+            <div class="content_head bg-light lter b-b wrapper-md">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <!-- <h1 class="m-n font-thin h3 text-black">Reports</h1>
+                    <small class="text-muted">Dashboard</small> -->
+                    <div>
+                      <ul class="projectjobdv2 overviewli1 overviewli">
+                        <!-- <li ng-click="setActiveTab(2)" ng-class="{active: activeTab === 2}" class="list-group-item active"> <a href="#/Jobs-status-report"> Internal Statistics</a> </li> -->
+                        <li ng-click="setActiveTab(1)" class="list-group-item"> <a href="#/Order-status-report">Scoops Report</a> </li>
+                        <li ng-click="setActiveTab(2)" class="list-group-item"> <a href="#/Jobs-status-report"> Jobs Report</a> </li>
+                        <li ng-click="setActiveTab(3)" class="list-group-item active"> <a href="#/Invoice-status-report">Invoice Report</a> </li>
+                        <li ng-click="setActiveTab(4)" class="list-group-item"> <a href="#/Linguist-invoice-status-report"> Linguist Report</a> </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+             </div>
             <div class="wrapper-md ng-scope">
                 <div class="panel panel-default">
                     <div class="panel-body">

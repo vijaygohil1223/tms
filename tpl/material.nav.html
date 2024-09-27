@@ -178,7 +178,7 @@
                                     </a>
 
                                 </li> -->
-      <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
+      <!-- <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
         <a href="#/overview-report" md-ink-ripple>
           <span class="font-bol">Overview Reports</span>
         </a>
@@ -221,6 +221,23 @@
       <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
         <a href="#/Linguist-invoice-status-report" md-ink-ripple>
           <span class="font-bol">Linguist Invoice</span>
+        </a>
+
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="srjMenu" title="Add to Favourite"></i>
+      </li> -->
+      <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
+        <a href="#/Order-status-report" md-ink-ripple>
+          <span class="font-bol">Reports</span>
+        </a>
+
+        <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
+          ng-click="addToFavouriteMenu($event);" id="srjMenu" title="Add to Favourite"></i>
+      </li>
+
+      <li ng-mouseover="menuHoverIn('srjMenu');" ng-mouseleave="menuHoverOut('srjMenu')">
+        <a href="#/overview-report" md-ink-ripple>
+          <span class="font-bol">Finance report</span>
         </a>
 
         <i class="glyphicon glyphicon glyphicon-plus-sign AddFavourite fvIconHide"
