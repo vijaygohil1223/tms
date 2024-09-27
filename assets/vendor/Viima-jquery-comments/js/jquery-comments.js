@@ -32,6 +32,7 @@
 }(function($) {
 
     var isExternalChat2 = localStorage.getItem('isLinguistChat') == 'true' || localStorage.getItem("session_iFkUserTypeId") == 2 ? 1 : 0
+    var loginUserId = localStorage.getItem("session_iUserId")
             
     function formatDateToRelativeText(date) {
         var commentDate = new Date(date);

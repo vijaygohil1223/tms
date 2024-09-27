@@ -159,6 +159,8 @@ class discussion {
         /*$menu_access = $this->_db->rawQuery("SELECT * FROM " . tms_discussion . " WHERE user_id = '" . $orderId . "' AND FIND_IN_SET('" . 1 . "', read_id)");*/
         $return['Status'] = '';
 
+        
+
         if($data && isset($data['is_updateByid']) && $data['is_updateByid'] === 1){
             if(isset($data['isLinguist']) && $data['isLinguist'] == 1 && isset($data['job_id']) && $data['job_id'] > 0 ){
                 $reead_id = "'".$data['read_id'].",'";    
@@ -168,6 +170,13 @@ class discussion {
                 
                 $this->_db->where('job_summmeryId', $data['job_id'] );
             	$this->_db->update('tms_summmery_view', array('comment_read'=>0) );
+            }
+
+            if(isset($data['is_scoopUpdate']) && $data['is_scoopUpdate'] == true && isset($data['scoop_id']) && $data['scoop_id'] > 0 ){
+                $reead_id = "'".$data['read_id'].",'";    
+                
+                $qry="UPDATE tms_discussion set read_id=concat(read_id, ".$reead_id.") WHERE scoop_id = " . $data['scoop_id'] . " AND FIND_IN_SET(".$data['read_id'].",read_id)=0 " ;
+                $this->_db->rawQuery($qry);
             }
             $return['Status'] = 200;
         }else{

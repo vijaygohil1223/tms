@@ -30498,7 +30498,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             })
 
         $scope.commentsArrayAll();
-        $scope.commentsFn()
+        //$scope.commentsFn()
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
                 autoHideFilters: true,
@@ -30512,7 +30512,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.reloadScoop = function(){
         //$route.reload();
         $scope.commentsArrayAll();
-        $scope.commentsFn()
+        //$scope.commentsFn()
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
                 autoHideFilters: true,
@@ -30581,6 +30581,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $window.localStorage.getItem("session_vUserName");
     $window.localStorage.getItem("session_iFkUserTypeId");
     $window.localStorage.setItem("isLinguistChat", $scope.isLinguist)
+
+    function updateDiscussionComment(isScoop, itemId, isLinguistChat) {
+        var cmtObjTemp = {
+            id: 0,
+            read_id: loginid,
+            isLinguist: isLinguistChat,
+            is_updateByid: 1,
+            [isScoop ? 'scoop_id' : 'job_id']: itemId,
+            [isScoop ? 'is_scoopUpdate' : 'is_jobUpdate']: true
+        };
+    
+        rest.path = "discussionCommentread";
+        rest.put(cmtObjTemp).success(function (res) {
+            // Handle success response if needed
+        });
+    }
     
     $scope.backtoPage = function () {
         if ($window.localStorage.getItem("session_iFkUserTypeId") == 1) {
@@ -30610,6 +30626,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             } else {
                 return; // Exit early if no valid path is set
             }
+            
             //rest.path = "discussionOrder/" + $routeParams.id;
             rest.get().success(function (data2) {
                 //let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
@@ -30617,7 +30634,6 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $scope.linguistJob = isLinguistJobChat;
                 }
                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
-                console.log('isLinguistChat============>AAAAAAAAA', isLinguistChat)
                 // if($scope.scoopItemId && $scope.scoopItemId>0){
                 //     var data = data2.filter( (itm) => { return itm.scoop_id == $scope.scoopItemId } );    
                 // }else{
@@ -30625,6 +30641,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 // }
                 var data = data2
                 commentsArray = data;
+                $scope.commentsFn();
                 
                 setTimeout(function () {
                     //var setintrvlMenu = setInterval(function() {
@@ -30641,141 +30658,142 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 return 0;
                             });
 
-                            $('#comment-list').find(' > li[data-id^=c]').hide();
+                            //$('#comment-list').find(' > li[data-id^=c]').hide();
                             //$('#comment-list').find(' > li[data-id^=c]').css('display','none');
                             //$('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
                             //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
 
                             if (userprofilepic) {
-                                $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
+                               // $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
                             }
                             var filedata = '';
-                            if (val.fileURL != "") {
-                                var filetype = val.fileMimeType;
-                                var filetype1 = filetype.includes("image/");
-                                var file_format = '';
-                                var file_type = '';
-                                var mimeTypeParts = val.fileMimeType.split('/');
-                                if (mimeTypeParts.length == 2) {
-                                    file_format = mimeTypeParts[1];
-                                    file_type = mimeTypeParts[0];
-                                }
-                                // Icon
-                                var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
-                                    'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
-                                ];
 
-                                var iconClass = 'fa fa-file-o';
-                                // File Extension name
-                                var extName = '';
-                                var extParts = val.fileURL.split('/');
-                                var extFileName = extParts[extParts.length - 1];
-                                var extFileName = extFileName.split('?')[0];
-                                extName = extFileName.split('.')[1];
+                            // if (val.fileURL != "") {
+                            //     var filetype = val.fileMimeType;
+                            //     var filetype1 = filetype.includes("image/");
+                            //     var file_format = '';
+                            //     var file_type = '';
+                            //     var mimeTypeParts = val.fileMimeType.split('/');
+                            //     if (mimeTypeParts.length == 2) {
+                            //         file_format = mimeTypeParts[1];
+                            //         file_type = mimeTypeParts[0];
+                            //     }
+                            //     // Icon
+                            //     var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                            //         'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
+                            //     ];
 
-                                if (availableIcons.indexOf(file_format) > 0) {
-                                    iconClass = 'fa fa-file-' + file_format + '-o';
-                                } else if (availableIcons.indexOf(file_type) > 0) {
-                                    iconClass = 'fa fa-file-' + file_type + '-o';
-                                } else if (extName == 'docx' || extName == 'rtf') {
-                                    iconClass = 'fa fa-file-word-o';
-                                } else if (extName == 'xlsx' || extName == 'xlsm') {
-                                    iconClass = 'fa fa-file-excel-o';
-                                } else if (extName == 'zip') {
-                                    iconClass = 'fa fa-file-archive-o';
-                                }
+                            //     var iconClass = 'fa fa-file-o';
+                            //     // File Extension name
+                            //     var extName = '';
+                            //     var extParts = val.fileURL.split('/');
+                            //     var extFileName = extParts[extParts.length - 1];
+                            //     var extFileName = extFileName.split('?')[0];
+                            //     extName = extFileName.split('.')[1];
 
-                                //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
-                                //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
-                                var cmtimgName = val.fileURL + '?v=' + jQuery.now();
+                            //     if (availableIcons.indexOf(file_format) > 0) {
+                            //         iconClass = 'fa fa-file-' + file_format + '-o';
+                            //     } else if (availableIcons.indexOf(file_type) > 0) {
+                            //         iconClass = 'fa fa-file-' + file_type + '-o';
+                            //     } else if (extName == 'docx' || extName == 'rtf') {
+                            //         iconClass = 'fa fa-file-word-o';
+                            //     } else if (extName == 'xlsx' || extName == 'xlsm') {
+                            //         iconClass = 'fa fa-file-excel-o';
+                            //     } else if (extName == 'zip') {
+                            //         iconClass = 'fa fa-file-archive-o';
+                            //     }
 
-                                if (file_type == 'image') {
-                                    var filehtml = '<img src=' + cmtimgName + '></img>';
-                                } else if (file_type == 'video') {
-                                    var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
-                                } else {
-                                    var filename = val.fileURL;
-                                    var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
-                                }
-                                var hrefClass = 'attachment';
-                                var hrefTarget = '_blank';
-                                filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+                            //     //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                            //     //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                            //     var cmtimgName = val.fileURL + '?v=' + jQuery.now();
 
-                            }
-                                if (val.user_id == loginid) {
-                                    //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
-                                    $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+                            //     if (file_type == 'image') {
+                            //         var filehtml = '<img src=' + cmtimgName + '></img>';
+                            //     } else if (file_type == 'video') {
+                            //         var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
+                            //     } else {
+                            //         var filename = val.fileURL;
+                            //         var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
+                            //     }
+                            //     var hrefClass = 'attachment';
+                            //     var hrefTarget = '_blank';
+                            //     filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
 
-                                    if (val.content == '' || val.content == null) {
-                                        //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                        //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                                    } else {
-                                        //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
-                                        //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
-                                    }
-                                    if (msgReadArrFilter.length > 0) {
-                                        $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
-                                    }
-                                } else {
-                                    //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
-                                    //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
-                                    if (val.content == "" || val.content == null) {
-                                        //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                        //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                                    }
-                                }
+                            // }
+                                // if (val.user_id == loginid) {
+                                //     //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                                //     $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+
+                                //     if (val.content == '' || val.content == null) {
+                                //         //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                                //         //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                                //     } else {
+                                //         //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
+                                //         //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
+                                //     }
+                                //     if (msgReadArrFilter.length > 0) {
+                                //         $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
+                                //     }
+                                // } else {
+                                //     //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
+                                //     //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
+                                //     if (val.content == "" || val.content == null) {
+                                //         //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                                //         //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                                //     }
+                                // }
                                 // if (file_type == 'image' || file_type == 'video') {
                                 //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                                 // }
                                 
-                                if (val.content) {
-                                    $('li[data-id=' + dataId + ']').find('.content').html(val.content);
-                                }
-                                //$compile(val.content)($scope);
-                                // ------------ Script for date seperating in chat box --------------//
-                                var ndt = new Date(data[i].created);
-                                var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                                var dd = ("0" + ndt.getDate()).slice(-2);
-                                var yy = ndt.getFullYear();
-                                //var timeText = dd + '-' + mm + '-' + yy;
-                                //var dateSeprt = dd + '-' + mm + '-' + yy;
-                                var dateSeprt = commentDateToformat(data[i].created);
-
-                                // const todayDate = new Date();
-                                // if (ndt.getDate() == todayDate.getDate() &&
-                                //     ndt.getMonth() == todayDate.getMonth() &&
-                                //     ndt.getFullYear() == todayDate.getFullYear()) {
-                                //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                                //     var timeText = 'Today';
+                                // if (val.content) {
+                                //     $('li[data-id=' + dataId + ']').find('.content').html(val.content);
                                 // }
-                                var timeText = commentDatetimeToText(data[i].created);
-                                if (timeText == "Today") {
-                                    $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                                }
-                                // ------count total attachment------//
-                                let totalAttachment = 0;
-                                totalAttachment = $('#attachment-list').find('li .attachment').length;
-                                //$('.att_count').text(totalAttachment);
+                                // //$compile(val.content)($scope);
+                                // // ------------ Script for date seperating in chat box --------------//
+                                // var ndt = new Date(data[i].created);
+                                // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                                // var dd = ("0" + ndt.getDate()).slice(-2);
+                                // var yy = ndt.getFullYear();
+                                // //var timeText = dd + '-' + mm + '-' + yy;
+                                // //var dateSeprt = dd + '-' + mm + '-' + yy;
+                                // var dateSeprt = commentDateToformat(data[i].created);
+
+                                // // const todayDate = new Date();
+                                // // if (ndt.getDate() == todayDate.getDate() &&
+                                // //     ndt.getMonth() == todayDate.getMonth() &&
+                                // //     ndt.getFullYear() == todayDate.getFullYear()) {
+                                // //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                                // //     var timeText = 'Today';
+                                // // }
+                                // var timeText = commentDatetimeToText(data[i].created);
+                                // if (timeText == "Today") {
+                                //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                                // }
+                                // // ------count total attachment------//
+                                // let totalAttachment = 0;
+                                // totalAttachment = $('#attachment-list').find('li .attachment').length;
+                                // //$('.att_count').text(totalAttachment);
 
 
-                                if (i > 0) {
-                                    var ndt1 = new Date(data[i - 1].created);
-                                    // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                                    // var dd = ("0" + ndt.getDate()).slice(-2);
-                                    // var yy = ndt.getFullYear();
-                                    //var dateSeprt2 = dd + '-' + mm + '-' + yy;
-                                    var dateSeprt2 = commentDateToformat(data[i - 1].created);
+                                // if (i > 0) {
+                                //     var ndt1 = new Date(data[i - 1].created);
+                                //     // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                                //     // var dd = ("0" + ndt.getDate()).slice(-2);
+                                //     // var yy = ndt.getFullYear();
+                                //     //var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                                //     var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
-                                    if (dateSeprt != dateSeprt2) {
-                                        if ($('li[new-id=' + dataId + ']').length === 0)
-                                            $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                        //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                    }
-                                } else {
-                                    if ($('li[new-id=' + dataId + ']').length === 0)
-                                        $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                                    //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
-                                }
+                                //     if (dateSeprt != dateSeprt2) {
+                                //         if ($('li[new-id=' + dataId + ']').length === 0)
+                                //             $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                //         //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                //     }
+                                // } else {
+                                //     if ($('li[new-id=' + dataId + ']').length === 0)
+                                //         $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                                //     //$('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                                // }
 
 
                                 var msgRead_id = val.read_id;
@@ -30814,6 +30832,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         // if (data.length == promises.length) {
                         //     //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                         // }
+
+                    // update read id
+                    if ($scope.selectedTab === 1 && $scope.scoopItemId > 0) {
+                        updateDiscussionComment(true, $scope.scoopItemId, false);
+                    } 
+                    
+                    if ($scope.selectedTab === 2 && isLinguistJobChat > 0) {
+                        updateDiscussionComment(false, isLinguistJobChat, true);
+                    }
                     
 
                 }, 1500);
@@ -30974,7 +31001,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             getComments: function (success, error) {
                 $timeout(function () {
                     if ($routeParams.id) {
-                        var interval = setInterval(() => {
+                        //var interval = setInterval(() => {
                             //rest.path = "discussionOrder/" + $routeParams.id;
                             let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
                             if ($scope.selectedTab === 1 && $scope.scoopItemId && $scope.scoopItemId > 0) {
@@ -31013,13 +31040,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                         }
                                         $scope.newCommentReadArray.push(newCmtObj);
                                         if ($scope.newCommentReadArray.length == cmtArr.length) {
-                                            rest.path = "discussionCommentread";
-                                            rest.put($scope.newCommentReadArray).success(function (res) {
+                                            // rest.path = "discussionCommentread";
+                                            // rest.put($scope.newCommentReadArray).success(function (res) {
                                                 
-                                                if (res.status == 1) {
-                                                    //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                                }
-                                            });
+                                            //     if (res.status == 1) {
+                                            //         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                            //     }
+                                            // });
                                         }
                                     });
                                 }
@@ -31030,13 +31057,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                                 var arrayNotload = $('#comment-list').find(' > li').length;
                                 
                                 if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
-                                    $('#comment-list').find(' > li[data-id^=c]').hide();
-                                    rest.path = "discussionCommentread";
-                                    rest.put($scope.commentReadArray).success(function (res) {
-                                        if (res.status == 1) {
-                                            jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                        }
-                                    });
+                                    //$('#comment-list').find(' > li[data-id^=c]').hide();
+                                    // rest.path = "discussionCommentread";
+                                    // rest.put($scope.commentReadArray).success(function (res) {
+                                    //     if (res.status == 1) {
+                                    //         jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                    //     }
+                                    // });
                                     //$scope.commentsArrayAll();
                                     // issue while changes job (last active)
                                     //success(newcommentsArray);
@@ -31068,13 +31095,13 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             });
                             
                             //interval
-                            var urlExist = window.location.href;
-                            if (!(urlExist.includes('#/discussion/'))) {
-                                clearInterval(interval);
-                                //return;
-                            }
+                        //     var urlExist = window.location.href;
+                        //     if (!(urlExist.includes('#/discussion/'))) {
+                        //         clearInterval(interval);
+                        //         //return;
+                        //     }
 
-                        }, 5000);
+                        // }, 5000);
                     }
 
                             
@@ -31147,7 +31174,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
                 console.log('$window.localStorage.getItem("isLinguistChat")=>post', $window.localStorage.getItem("isLinguistChat"))
                 data.order_id = $routeParams.id;
-                data.scoop_id = $scope.scoopItemId;
+                data.scoop_id = ($window.localStorage.getItem("isLinguistChat") != 'true') ? $scope.scoopItemId : 0;
                 data.user_id = $window.localStorage.getItem("session_iUserId");
                 data.fullname = $window.localStorage.getItem("session_vUserName");
                 data.profile_picture_url = 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic");
@@ -31272,7 +31299,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             },
         });
     }    
-    $scope.commentsFn();
+    //$scope.commentsFn();
 
     // $scope.$watch('testcommentsArray', function (newValue, oldValue) {
     //     console.log('oldValue', oldValue);
@@ -31289,7 +31316,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('$scope.isLinguist', $scope.isLinguist)
         $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
         $scope.commentsArrayAll();
-        $scope.commentsFn()
+        //$scope.commentsFn()
 
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
@@ -31324,7 +31351,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         setTimeout( ()=>{
             console.log('linstJobid',linstJobid )
             $scope.commentsArrayAll();
-            $scope.commentsFn()
+            //$scope.commentsFn()
             setTimeout(() => {
                 jQuery("#addemoji").emojioneArea({
                     autoHideFilters: true,
@@ -44914,6 +44941,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     if (items && items.orderId) {
         console.log('items', items)
         $routeParams.id = items.orderId;
+        $scope.orderId = items.orderId
         $scope.scoopItemId = items.scoopId;
     }else{
         if(items){
@@ -44926,6 +44954,61 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
     
     $scope.login_userid = $window.localStorage.getItem("session_iUserId");
+
+    $scope.selectedTab = 1; // Default to the first tab
+    setTimeout(() => {
+        $('#linguistJob').val(0).trigger('change');
+    }, 1000);
+    $scope.selectTab = function(tabId) {
+        console.log('tabId', tabId)
+        $scope.selectedTab = tabId;
+        if(tabId ==1){
+            $scope.linguistJob = ''
+            $('#linguistJob').val(0).trigger('change');
+        }
+        if(tabId ==2){
+            $scope.selectScoop = 'select'
+        }
+        
+    };
+
+    $scope.scoopChange = function(id){
+        if(id && id!='select'){
+            $scope.scoopItemId = id;
+            console.log('$scope.scoopItemId========', $scope.scoopItemId)
+            $scope.scoopSidebarDetail = []
+            $scope.projectPriceChat = 0;
+            $scope.projectScoopStatus = 'Assign'
+            rest.path = 'discussionScoopDetails/' + $scope.scoopItemId;
+            rest.get().success(function (data) {
+                $scope.scoopSidebarDetail = data;
+                console.log('scoopDetail', data)
+                $scope.projectScoopStatus = data?.item_status_name || '';
+                $scope.projectPriceChat = data?.total_price || 0;
+            })
+        $scope.commentsArrayAll();
+        //$scope.commentsFn()
+        setTimeout(() => {
+            jQuery("#addemoji").emojioneArea({
+                autoHideFilters: true,
+                useSprite: true,
+            });
+        }, 200);
+            
+        }
+    }
+
+    $scope.reloadScoop = function(){
+        //$route.reload();
+        $scope.commentsArrayAll();
+        //$scope.commentsFn()
+        setTimeout(() => {
+            jQuery("#addemoji").emojioneArea({
+                autoHideFilters: true,
+                useSprite: true,
+            });
+        }, 200);
+    }
     
     rest.path = 'viewProjectCustomerDetail';
     rest.model().success(function (data) {
@@ -44966,95 +45049,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         });
     }
     var projectTeam = [];
-    rest.path = 'contactPerson';
-    rest.model().success(function (data) {
-        
-        angular.forEach(data, function (val, i) {
-            if(val){
-                const resPosition = val.vResourcePosition.toString().split(',')
-                const fullName = val.vFirstName + ' ' + val.vLastName
-                // index based on api (project_coordinator,project_manager QA_specialist)
-                if (i===0 && resPosition.includes('3') ) {
-                    angular.element('#coordinatorIcon').html(fullName);
-                    var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
-                    angular.element('.coordinatorIcon').html(coordpic);
-                } 
-                if (i===1 && resPosition.includes('2')) {
-                    angular.element('#managerDesignation').html(fullName);
-                    console.log('val', val)
-                    var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
-                    angular.element('.managerIcon').html(managerpic);
-                } 
-                if (i===2 && resPosition.includes('4')) {
-                    angular.element('#QASpecialist').html(fullName);
-                    var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
-                    angular.element('.QAIcon').html(QApic);
-                }
-                // if (val.vResourcePosition == 3) {
-                //     angular.element('#coordinatorIcon').html(val.vUserName);
-                //     var coordpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Cordinator">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.coordinatorIcon').html(coordpic);
-
-                // } else if (val.vResourcePosition == 2) {
-                //     angular.element('#managerDesignation').html(val.vUserName);
-                //     var managerpic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="Manger">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.managerIcon').html(managerpic);
-
-                // } else if (val.vResourcePosition == 4) {
-                //     angular.element('#QASpecialist').html(val.vUserName);
-                //     var QApic = (val.vProfilePic) ? '<img class="img-full" src="uploads/profilePic/' + val.vProfilePic + '"  alt="QA">' : '<i class="fa fa-user"></i>';
-                //     angular.element('.QAIcon').html(QApic);
-
-                // }
-            }
-        })
-    }).error(errorCallback);
 
     $routeParams.id = $routeParams.id;
-    rest.path = 'generalVieData/' + $routeParams.id + '/' + $window.localStorage.ClientName;
-    rest.get().success(function (data) {
-        $scope.general = data;
-        
-        //$scope.general.order_date = $scope.general.order_date;
-        //$scope.general.order_date = moment($scope.general.order_date).format($window.localStorage.getItem('global_dateFormat'));
-        //$scope.general.due_date = $scope.general.due_date.split(' ')[0].split('.').reverse().join('-');
-        if ($scope.general.due_date)
-            $scope.general.due_date = moment($scope.general.due_date).format("DD-MM-YYYY | HH:mm");
-        if ($scope.general.heads_up) {
-            if ($scope.general.expected_start_date && $scope.general.expected_start_date != '0000-00-00 00:00:00' && $scope.general.expected_start_date != "Invalid Date") {
-                $scope.general.expected_start_date = $scope.general.expected_start_date.split(' ')[0].split('.').reverse().join('-');
-                $scope.general.expected_start_date = moment($scope.general.expected_start_date).format("DD-MM-YYYY");
-            } else {
-                $scope.general.expected_start_date = '-';
-            }
-        } else {
-            if ($scope.general.order_date) {
-                $scope.general.expected_start_date = $scope.general.order_date.split(' ')[0].split('.').reverse().join('-');
-                $scope.general.expected_start_date = moment($scope.general.order_date).format("DD-MM-YYYY");
-            } else {
-                $scope.general.expected_start_date = '-';
-            }
-        }
-
-        // if ($scope.general.order_date == undefined) {
-        //     var currentdate = new Date();
-        //     $scope.general.order_date = getDatetime(currentdate);
-        // }
-        $scope.generaldata = {};
-        //$scope.generaldata.order_no = $window.localStorage.orderNo;
-        //$scope.generaldata.abbrivation = $window.localStorage.abbrivation;
-
-        if ($scope.general == null) {
-            $scope.general = {};
-            $scope.generaldata = {};
-            //$scope.generaldata.order_no = $window.localStorage.orderNo;
-            //$scope.generaldata.abbrivation = $window.localStorage.abbrivation;
-            // if ($scope.general.order_no == "") {
-
-            // }
-        }
-        
-    }).error(errorCallback);
 
     $scope.scoopSidebarDetail = []
     $scope.projectPriceChat = 0;
@@ -45065,6 +45061,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         console.log('scoopDetail', data)
         $scope.projectScoopStatus = data?.item_status_name || '';
         $scope.projectPriceChat = data?.total_price || 0;
+        $scope.scoopItemnumber = data?.item_number || 0;
+                console.log('$scope.scoopItemnumber', $scope.scoopItemnumber)
     })
 
     if ($routeParams.id) {
@@ -45095,6 +45093,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     }
 
+    function updateDiscussionComment(isScoop, itemId, isLinguistChat) {
+        var cmtObjTemp = {
+            id: 0,
+            read_id: loginid,
+            isLinguist: isLinguistChat,
+            is_updateByid: 1,
+            [isScoop ? 'scoop_id' : 'job_id']: itemId,
+            [isScoop ? 'is_scoopUpdate' : 'is_jobUpdate']: true
+        };
+    
+        rest.path = "discussionCommentread";
+        rest.put(cmtObjTemp).success(function (res) {
+            // Handle success response if needed
+        });
+    }
+
     if ($scope.isNewProject === 'true' && $scope.userRight == 1) {
         $location.path('/dashboard1');
         notification('Please create project.', 'warning');
@@ -45120,12 +45134,23 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         var newUserCommentsArr = [];
         $scope.msgIDArr = [];
         $scope.commentsArrayAll = async function () {
+            commentsArray = [];
             var deferred = $q.defer();
             //rest.path = "discussionOrder/" + $routeParams.id;
-            rest.path = "discussionScoop/" + $scope.scoopItemId;
+            let isLinguistJobChat = localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0;
+            if ($scope.selectedTab === 1 && $scope.scoopItemId && $scope.scoopItemId > 0) {
+                rest.path = "discussionScoop/" + $scope.scoopItemId;
+            } else if ($scope.selectedTab === 2 && isLinguistJobChat > 0) {
+                rest.path = "discussionByJobid/" + isLinguistJobChat;
+            } else {
+                return; // Exit early if no valid path is set
+            }
             rest.get().success(function (data2) {
                 let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
-                var data = data2.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
+                var data = data2;
+                commentsArray = data;
+                $scope.commentsFn();
+                
                 setTimeout(function () {
                     //var setintrvlMenu = setInterval(function() {
                     angular.forEach(data, function (val, i) {
@@ -45152,105 +45177,105 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             return 0;
                         });
 
-                        $('#comment-list').find(' > li[data-id^=c]').css('display', 'none');
-                        $('#comment-list').find(' > li[data-id^=c]').hide();
+                        //$('#comment-list').find(' > li[data-id^=c]').css('display', 'none');
+                        //$('#comment-list').find(' > li[data-id^=c]').hide();
                         //$('li[data-id=c' + val.id + ']').addClass('pull-right cmtright');
                         //$('.upload').html('<i class="fa fa-paperclip"></i><input id="discussionFileUpload" type="file" data-role="none" multiple="multiple">');
 
                         if (userprofilepic) {
-                            $('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
+                            //$('.commenting-field .profile-picture').replaceWith('<img src=" uploads/profilePic/' + userprofilepic + '" class="img-circle round userpic" alt="...">');
                         }
-                        var filedata = '';
-                        if (val.fileURL != "") {
-                            var filetype = val.fileMimeType;
-                            var filetype1 = filetype.includes("image/");
-                            var file_format = '';
-                            var file_type = '';
-                            var mimeTypeParts = val.fileMimeType.split('/');
-                            if (mimeTypeParts.length == 2) {
-                                file_format = mimeTypeParts[1];
-                                file_type = mimeTypeParts[0];
-                            }
-                            // Icon
-                            var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
-                                'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
-                            ];
+                        // var filedata = '';
+                        // if (val.fileURL != "") {
+                        //     var filetype = val.fileMimeType;
+                        //     var filetype1 = filetype.includes("image/");
+                        //     var file_format = '';
+                        //     var file_type = '';
+                        //     var mimeTypeParts = val.fileMimeType.split('/');
+                        //     if (mimeTypeParts.length == 2) {
+                        //         file_format = mimeTypeParts[1];
+                        //         file_type = mimeTypeParts[0];
+                        //     }
+                        //     // Icon
+                        //     var availableIcons = ['archive', 'audio', 'code', 'excel', 'image', 'movie', 'pdf', 'photo',
+                        //         'picture', 'powerpoint', 'sound', 'video', 'word', 'zip'
+                        //     ];
 
-                            var iconClass = 'fa fa-file-o';
-                            // File Extension name
-                            var extName = '';
-                            var extParts = val.fileURL.split('/');
-                            var extFileName = extParts[extParts.length - 1];
-                            var extFileName = extFileName.split('?')[0];
-                            extName = extFileName.split('.')[1];
+                        //     var iconClass = 'fa fa-file-o';
+                        //     // File Extension name
+                        //     var extName = '';
+                        //     var extParts = val.fileURL.split('/');
+                        //     var extFileName = extParts[extParts.length - 1];
+                        //     var extFileName = extFileName.split('?')[0];
+                        //     extName = extFileName.split('.')[1];
 
-                            if (availableIcons.indexOf(file_format) > 0) {
-                                iconClass = 'fa fa-file-' + file_format + '-o';
-                            } else if (availableIcons.indexOf(file_type) > 0) {
-                                iconClass = 'fa fa-file-' + file_type + '-o';
-                            } else if (extName == 'docx'  || extName == 'rtf') {
-                                iconClass = 'fa fa-file-word-o';
-                            } else if (extName == 'xlsx' || extName == 'xlsm') {
-                                iconClass = 'fa fa-file-excel-o';
-                            } else if (extName == 'zip') {
-                                iconClass = 'fa fa-file-archive-o';
-                            }
+                        //     if (availableIcons.indexOf(file_format) > 0) {
+                        //         iconClass = 'fa fa-file-' + file_format + '-o';
+                        //     } else if (availableIcons.indexOf(file_type) > 0) {
+                        //         iconClass = 'fa fa-file-' + file_type + '-o';
+                        //     } else if (extName == 'docx'  || extName == 'rtf') {
+                        //         iconClass = 'fa fa-file-word-o';
+                        //     } else if (extName == 'xlsx' || extName == 'xlsm') {
+                        //         iconClass = 'fa fa-file-excel-o';
+                        //     } else if (extName == 'zip') {
+                        //         iconClass = 'fa fa-file-archive-o';
+                        //     }
 
-                            //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
-                            //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
-                            var cmtimgName = val.fileURL + '?v=' + jQuery.now();
+                        //     //$window.localStorage.setItem("chatimg_"+val.fileURL, val.fileURL);
+                        //     //var cmtimgName = $window.localStorage.getItem("chatimg_"+val.fileURL);
+                        //     var cmtimgName = val.fileURL + '?v=' + jQuery.now();
 
-                            if (file_type == 'image') {
-                                var filehtml = '<img src=' + cmtimgName + '></img>';
-                            } else if (file_type == 'video') {
-                                var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
-                            } else {
-                                var filename = val.fileURL;
-                                var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
-                            }
-                            var hrefClass = 'attachment';
-                            var hrefTarget = '_blank';
-                            filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
+                        //     if (file_type == 'image') {
+                        //         var filehtml = '<img src=' + cmtimgName + '></img>';
+                        //     } else if (file_type == 'video') {
+                        //         var filehtml = '<video src=' + cmtimgName + ' controls="controls"></video>';
+                        //     } else {
+                        //         var filename = val.fileURL;
+                        //         var filehtml = '<i class="' + iconClass + '"></i> ' + filename.replace('uploads/discussionfile/', '');
+                        //     }
+                        //     var hrefClass = 'attachment';
+                        //     var hrefTarget = '_blank';
+                        //     filedata = '<a class=' + hrefClass + ' href=' + val.fileURL + ' target=' + hrefTarget + '>' + filehtml + '</a>';
 
-                        }
-                        if (val.user_id == loginid) {
-                            //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
-                            $('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
+                        // }
+                        // if (val.user_id == loginid) {
+                        //     //$('li[data-id=' + val.id + ']').addClass('pull-right cmtright');
+                        //     //$('li[data-id=' + val.id + ']').find('.usrnamespan').addClass('hideusername');
 
-                            if (val.content == '' || val.content == null) {
-                                //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                            } else {
-                                //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
-                                //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
-                            }
-                            if (msgReadArrFilter.length > 0) {
-                                $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
-                            }
-                        } else {
-                            //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
-                            //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
-                            if (val.content == "" || val.content == null) {
-                                //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
-                                //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
-                            }
-                        }
+                        //     if (val.content == '' || val.content == null) {
+                        //         //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                        //         //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                        //     } else {
+                        //         //var htmldata = '<a href class="pull-right thumb-sm avatar"><img src=" '+ val.profile_picture_url +'" class="img-circle" alt="..."></a> <div class="m-r-xxl"> <div class="pos-rlt wrapper bg-info r r-2x"> <span class="arrow right pull-up arrow-info"></span> <p class="m-b-none"> '+ val.content +' </p> </div> <small class="text-muted">1 minutes ago</small> </div>';
+                        //         //$('li[data-id=' + val.id + ']').find('.content').html(htmldata);
+                        //     }
+                        //     if (msgReadArrFilter.length > 0) {
+                        //        // $('li[data-id=' + dataId + ']').find(' .comment-wrapper').after('<div style="color: #27c24c;position: absolute;right: 40px;font-size: 12px;"><i class="fa fa-check" aria-hidden="true"></i></div>');
+                        //     }
+                        // } else {
+                        //     //$('li[data-id=' + val.id + ']').addClass('pull-left cmtleft');
+                        //     //$('li[data-id=' + val.id + ']').find('.profile-picture').addClass('pull-left thumb-sm avatar');
+                        //     if (val.content == "" || val.content == null) {
+                        //         //$('li[data-id=' + dataId + ']').find('.content').html(filedata);
+                        //         //$('li[data-id=' + dataId + ']').clone(true).appendTo('#attachment-list');
+                        //     }
+                        // }
                         // if (file_type == 'image' || file_type == 'video') {
                         //     $('li[data-id=' + dataId + ']').find('.wrapper').addClass('imgblock');
                         // }
                         
-                        if (val.content) {
-                            $('li[data-id=' + dataId + ']').find('.content').html(val.content);
-                        }
+                        // if (val.content) {
+                        //     $('li[data-id=' + dataId + ']').find('.content').html(val.content);
+                        // }
                         //$compile(val.content)($scope);
                         // ------------ Script for date seperating in chat box --------------//
-                        var ndt = new Date(data[i].created);
-                        var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                        var dd = ("0" + ndt.getDate()).slice(-2);
-                        var yy = ndt.getFullYear();
-                        //var timeText = dd + '-' + mm + '-' + yy;
-                        //var dateSeprt = dd + '-' + mm + '-' + yy;
-                        var dateSeprt = commentDateToformat(data[i].created);
+                        // var ndt = new Date(data[i].created);
+                        // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                        // var dd = ("0" + ndt.getDate()).slice(-2);
+                        // var yy = ndt.getFullYear();
+                        // //var timeText = dd + '-' + mm + '-' + yy;
+                        // //var dateSeprt = dd + '-' + mm + '-' + yy;
+                        // var dateSeprt = commentDateToformat(data[i].created);
 
                         // const todayDate = new Date();
                         // if (ndt.getDate() == todayDate.getDate() &&
@@ -45259,31 +45284,31 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
                         //     var timeText = 'Today';
                         // }
-                        var timeText = commentDatetimeToText(data[i].created);
-                        if (timeText == "Today") {
-                            $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
-                        }
-                        // ------count total attachment------//
-                        let totalAttachment = 0;
-                        totalAttachment = $('#attachment-list').find('li .attachment').length;
+                        // var timeText = commentDatetimeToText(data[i].created);
+                        // if (timeText == "Today") {
+                        //     $('li[data-id=' + dataId + ']').prepend('<div id="dtseperator"></div>');
+                        // }
+                        // // ------count total attachment------//
+                        // let totalAttachment = 0;
+                        // totalAttachment = $('#attachment-list').find('li .attachment').length;
                         //$('.att_count').text(totalAttachment);
 
-                        if (i > 0) {
-                            var ndt1 = new Date(data[i - 1].created);
-                            // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
-                            // var dd = ("0" + ndt.getDate()).slice(-2);
-                            // var yy = ndt.getFullYear();
-                            //var dateSeprt2 = dd + '-' + mm + '-' + yy;
-                            var dateSeprt2 = commentDateToformat(data[i - 1].created);
+                        // if (i > 0) {
+                        //     var ndt1 = new Date(data[i - 1].created);
+                        //     // var mm = ("0" + (ndt.getMonth() + 1)).slice(-2);
+                        //     // var dd = ("0" + ndt.getDate()).slice(-2);
+                        //     // var yy = ndt.getFullYear();
+                        //     //var dateSeprt2 = dd + '-' + mm + '-' + yy;
+                        //     var dateSeprt2 = commentDateToformat(data[i - 1].created);
 
-                            if (dateSeprt != dateSeprt2) {
-                                if ($('li[new-id=' + dataId + ']').length === 0)
-                                    $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
-                            }
-                        } else {
-                            if ($('li[new-id=' + dataId + ']').length === 0)
-                                $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
-                        }
+                        //     if (dateSeprt != dateSeprt2) {
+                        //         if ($('li[new-id=' + dataId + ']').length === 0)
+                        //             $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + '</span> </li>');
+                        //     }
+                        // } else {
+                        //     if ($('li[new-id=' + dataId + ']').length === 0)
+                        //         $('#comment-list').find(' > li[data-id=' + dataId + ']').before('<li class="seperatordate comment" new-id=' + dataId + '> <span>' + timeText + ' </span></li>');
+                        // }
 
                         var msgRead_id = val.read_id;
 
@@ -45310,7 +45335,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     });
 
                     deferred.resolve(promises);
-                    $(".comment-wrapper").each(function (i, v) {
+                    //$(".comment-wrapper").each(function (i, v) {
                         /*var dateTime = $(this).find('time')[0].innerText;
                         
                         //dateTime = moment(dateTime).format($window.localStorage.getItem('global_dateFormat'));
@@ -45318,15 +45343,22 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         $(this).find('time')[0].innerText = dateTime;*/
 
                         //$(this).find('time')[0].append("testing");
-                    });
+                    //});
 
                     if (data.length == promises.length) {
                         //jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
                     }
 
                 }, 1500);
-                commentsArray = data;
+
+                if ($scope.selectedTab === 1 && $scope.scoopItemId > 0) {
+                    updateDiscussionComment(true, $scope.scoopItemId, false);
+                } 
                 
+                if ($scope.selectedTab === 2 && isLinguistJobChat > 0) {
+                    updateDiscussionComment(false, isLinguistJobChat, true);
+                }
+
                 //var usercommentsArr = commentsArray.filter(function(commentsArray) { return commentsArray.user_id != loginid });
                 
             }).error(errorCallback);
@@ -45426,29 +45458,29 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
         //$('.textarea-wrapper').before('<input type="text" id="addemoji" data-emoji-placeholder=":smiley:" />');
 
-        jQuery("#addemoji").emojioneArea({
-            autoHideFilters: true,
-            useSprite: true,
-            //accepts values: 'image',
-            //default: 'unicode',
-            //accepts values: 'unicode' | 'shortname' | 'image'
-            //pickerPosition: "bottom"
-        });
+        // jQuery("#addemoji").emojioneArea({
+        //     autoHideFilters: true,
+        //     useSprite: true,
+        //     //accepts values: 'image',
+        //     //default: 'unicode',
+        //     //accepts values: 'unicode' | 'shortname' | 'image'
+        //     //pickerPosition: "bottom"
+        // });
 
     }, 2800);
 
 
 
     $timeout(function () {
-        var el = $("#addemoji").emojioneArea();
-        el[0].emojioneArea.on("emojibtn.click", function () {
-            const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
-            //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
-            const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
-            $('.textarea').append(emoji).trigger("change");
+        // var el = $("#addemoji").emojioneArea();
+        // el[0].emojioneArea.on("emojibtn.click", function () {
+        //     const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+        //     //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+        //     const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
+        //     $('.textarea').append(emoji).trigger("change");
 
-            //$('.textarea').val($('.textarea').val()+emoji);
-        });
+        //     //$('.textarea').val($('.textarea').val()+emoji);
+        // });
 
         jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
         jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
@@ -45468,77 +45500,78 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 getComments: function (success, error) {
                     $timeout(function () {
                         if ($routeParams.id) {
-                            $scope.stopTime = setInterval(() => {
+                            //$scope.stopTime = setInterval(() => {
                                 //rest.path = "discussionOrder/" + $routeParams.id;
-                                rest.path = "discussionScoop/" + $scope.scoopItemId;
-                                rest.get().success(function (data) {
-                                    //var NewcommentsArray = data;
-                                    let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
-                                    var NewcommentsArray = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
+                                // rest.path = "discussionScoop/" + $scope.scoopItemId;
+                                // rest.get().success(function (data) {
+                                //     //var NewcommentsArray = data;
+                                //     let isLinguistChat = localStorage.getItem("isLinguistChat") == 'true' ? 1 : 0
+                                //     var NewcommentsArray = data.filter( (itm) =>  { return itm.externalChat == isLinguistChat } );
                                     
-                                    var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
+                                //     var newUserCommentsArr = NewcommentsArray.filter(function (NewcommentsArray) { return NewcommentsArray.user_id != loginid });
                                     
-                                    // FOR read unread comments
-                                    var cmtArr = [];
-                                    var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                //     // FOR read unread comments
+                                //     var cmtArr = [];
+                                //     var cmtArr = NewcommentsArray.filter(function (NewcommentsArray) { var isReadtrue = NewcommentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
-                                    var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
+                                //     var newcmtArr = commentsArray.filter(function (commentsArray) { var isReadtrue = commentsArray.read_id.match(new RegExp("(?:^|,)" + loginid + "(?:,|$)")); return (!isReadtrue) });
 
-                                    // --- update read id //
-                                    $scope.newCommentReadArray = [];
-                                    if (cmtArr) {
-                                        angular.forEach(cmtArr, function (cmtval, cmti) {
-                                            var newCmtObj = {
-                                                id: cmtval.id,
-                                                read_id: loginid
-                                            }
-                                            $scope.newCommentReadArray.push(newCmtObj);
-                                            if ($scope.newCommentReadArray.length == cmtArr.length) {
+                                //     // --- update read id //
+                                //     $scope.newCommentReadArray = [];
+                                //     if (cmtArr) {
+                                //         angular.forEach(cmtArr, function (cmtval, cmti) {
+                                //             var newCmtObj = {
+                                //                 id: cmtval.id,
+                                //                 read_id: loginid
+                                //             }
+                                //             $scope.newCommentReadArray.push(newCmtObj);
+                                //             if ($scope.newCommentReadArray.length == cmtArr.length) {
                                                 
-                                                rest.path = "discussionCommentread";
-                                                rest.put($scope.newCommentReadArray).success(function (res) {
-                                                    if (res.status == 1) {
-                                                        //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                    //if( (NewcommentsArray.length > commentsArray.length && ) )
+                                //                 rest.path = "discussionCommentread";
+                                //                 rest.put($scope.newCommentReadArray).success(function (res) {
+                                //                     if (res.status == 1) {
+                                //                         //jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                //                     }
+                                //                 });
+                                //             }
+                                //         });
+                                //     }
+                                //     //if( (NewcommentsArray.length > commentsArray.length && ) )
 
-                                    var arrayNotload = $('#comment-list').find(' > li').length;
-                                    if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
-                                        $('#comment-list').find(' > li[data-id^=c]').hide();
-                                        rest.path = "discussionCommentread";
-                                        rest.put($scope.commentReadArray).success(function (res) {
+                                //     var arrayNotload = $('#comment-list').find(' > li').length;
+                                //     if (newUserCommentsArr.length > usercommentsArr.length || cmtArr.length > 0 || (!arrayNotload)) {
+                                //         $('#comment-list').find(' > li[data-id^=c]').hide();
+                                //         rest.path = "discussionCommentread";
+                                //         rest.put($scope.commentReadArray).success(function (res) {
                                             
-                                            if (res.status == 1) {
-                                                jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
-                                            }
-                                        });
+                                //             if (res.status == 1) {
+                                //                 jQuery('.cmtclr' + $routeParams.id).css({ "color": "green" });
+                                //             }
+                                //         });
                                         
-                                        $scope.commentsArrayAll();
-                                        success(NewcommentsArray);
+                                //         $scope.commentsArrayAll();
+                                //         success(NewcommentsArray);
 
-                                        $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
-                                        if ($('#comment-list').find(' > li').length)
-                                            jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
-                                        $('#comment-list').find(' > li[data-id^=c]').hide();
-                                        usercommentsArr = [];
-                                        // to remove same li date div
-                                        // var seen = {};
-                                        // $('.seperatordate').each(function() {
-                                        //     var txt = $(this).text();
-                                        //     if (seen[txt])
-                                        //         $(this).remove();
-                                        //     else
-                                        //         seen[txt] = true;
-                                        // });
-                                        // end script
-                                    }
-                                });
+                                //         $('ul.navigation').find('li[data-sort-key="oldest"]').trigger('click');
+                                //         if ($('#comment-list').find(' > li').length)
+                                //             jQuery('#comment-list').scrollTop(jQuery('#comment-list')[0].scrollHeight);
+                                //         $('#comment-list').find(' > li[data-id^=c]').hide();
+                                //         usercommentsArr = [];
+                                //         // to remove same li date div
+                                //         // var seen = {};
+                                //         // $('.seperatordate').each(function() {
+                                //         //     var txt = $(this).text();
+                                //         //     if (seen[txt])
+                                //         //         $(this).remove();
+                                //         //     else
+                                //         //         seen[txt] = true;
+                                //         // });
+                                //         // end script
+                                //     }
+                                // });
                                 
-                            }, 5000);
+                            //}, 5000);
+
                         }
 
                         success(commentsArray);
@@ -45547,6 +45580,25 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         //jQuery('#attachment-list').scrollTop(jQuery('#attachment-list')[0].scrollHeight);
                         $('.userprof').on('dragstart', function (event) { event.preventDefault(); });
                         $('#comment-list').on('dragstart', function (event) { event.preventDefault(); });
+
+                        // Emoji
+                        jQuery("#addemoji").emojioneArea({
+                            autoHideFilters: true,
+                            useSprite: true,
+                            //accepts values: 'image',
+                            //default: 'unicode',
+                            //accepts values: 'unicode' | 'shortname' | 'image'
+                            //pickerPosition: "bottom"
+                        });
+                        var el = $("#addemoji").emojioneArea();
+                        el[0].emojioneArea.on("emojibtn.click", function () {
+                            const emoji1 = $('.emojibtn').find('.emojioneemoji').attr('src');
+                            //const emoji = $('.emojionearea-editor').find('img[src="' + emoji1 + '"]').attr('alt');
+                            const emoji = '<img class="emojiImg" src="' + emoji1 + '">';
+                            $('.textarea').append(emoji).trigger("change");
+
+                            //$('.textarea').val($('.textarea').val()+emoji);
+                        });
 
                     }, 500);
                 },
@@ -45705,7 +45757,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             });
         }, 1000);
     }
-    $scope.commentsFn()
+    //$scope.commentsFn()
 
     $scope.chatLinguist = function(){
         $scope.isLinguist = !$scope.isLinguist;
@@ -45713,7 +45765,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $window.localStorage.setItem("isLinguistChat", $scope.isLinguist);
         $scope.commentsArrayAll();
         //$scope.isLinguistCall = true
-        $scope.commentsFn()
+        //$scope.commentsFn()
 
         setTimeout(() => {
             jQuery("#addemoji").emojioneArea({
@@ -45727,6 +45779,41 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $uibModalInstance.dismiss('cancel');
         clearInterval($scope.stopTime);
     };
+
+    $scope.changeLinguistJob = function(jobId){
+        const linstJobid = jobId ? jobId?.toString().split(',').pop() : $('#linguistJob').val('').trigger('change');
+        console.log('linstJobid', linstJobid)
+        if(linstJobid && linstJobid>0){
+            $window.localStorage.setItem("isLinguistChat", true);
+            $window.localStorage.setItem("jobIdLinguistChat", linstJobid)
+            $scope.isLinguist = true;
+
+            rest.path = 'discussionJobDetails/' + linstJobid;
+            rest.get().success(function (data) {
+                $scope.scoopSidebarDetail = data;
+                $scope.projectScoopStatus = data?.item_status_name || '';
+                $scope.projectPriceChat = data?.total_price || 0;
+            })
+
+        }else{
+            $window.localStorage.setItem("isLinguistChat", false);
+            $window.localStorage.setItem("jobIdLinguistChat", 0)
+            $scope.isLinguist = false;
+            $scope.isLinguist = '';
+        }
+        setTimeout( ()=>{
+            console.log('linstJobid',linstJobid )
+            $scope.commentsArrayAll();
+            //$scope.commentsFn()
+            setTimeout(() => {
+                jQuery("#addemoji").emojioneArea({
+                    autoHideFilters: true,
+                    useSprite: true,
+                });
+            }, 200);
+            //$route.reload();
+        },100)
+    }
 
 }).controller('workInstructionsController', function ($scope, $log, $location, $route, rest, $routeParams, $window) {
     //debugger;

@@ -274,20 +274,65 @@ li.seperatordate.comment {
   <h3 class="modal-title" style="display: block;">
     <span>Discussion Board</span>
     <!-- <button class="btn linguistDiscussion" data-sort-key="isLinguist=='true' ? 1 : 0" ng-class=" {'btn-default':!isLinguist, 'btn-success':isLinguist }" ng-click="chatLinguist()"  style="margin-left:20px;">{{  isLinguist ? 'Linguist' : 'Internal' }} Chat</button> -->
-  
+    <button class="btn linguistDiscussion" ng-click="reloadScoop()" style="margin-left:20px;"> <i class="fa fa-refresh"></i></button>
 
   </h3>
   <!-- <div ng-click="cancel()" style="margin-rigth:10px;"><a><i class="fa fa-times-circle"></i></a></div> -->
   <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()" style="font-size: 30px;">×</button>
 </div>
 <div class="modal-body" style="padding:0 15px;">
-      
+      <div>
+        <div class="col-sm-12"></div>
+          <div style="margin-left:50px;">
+            <div class="nav-tabs-alt">
+              <ul class="nav nav-tabs">
+                <li ng-class="{active: selectedTab === 1}">
+                  <a href="" ng-click="selectTab(1)">Scoops {{linguistJob}} {{selectScoop}}</a>
+                </li>
+                <li ng-class="{active: selectedTab === 2}">
+                  <a href="" ng-click="selectTab(2)">Jobs</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="tab-content">
+            <div class="tab-pane " ng-class="{active: selectedTab === 1}" id="tab-1" ng-show="selectedTab === 1">
+              <div class="d-flex">
+                <div style="margin-left: 30px;width:20%;">
+                  <!-- <label> Select scoop</label>
+                  <select class="form-control m-b" id="selectScoop" name="selectScoop" ng-model="selectScoop"
+                    ng-init="itemsDropdown.itemId = 'select'" ng-change="scoopChange(selectScoop)">
+                    <option value="select">--Please Select scoop--</option>
+                    <option ng-repeat="itm in itemsDropdown track by $index" value="{{itm.itemId}}">
+                      {{itm.order_no}}-{{itm.item_number | numberFixedLen:3}}</option>
+                  </select> -->
+                </div>
+                <!-- <button class="btn linguistDiscussion" ng-click="reloadScoop()" style="margin-left:20px;"> <i class="fa fa-refresh"></i></button> -->
+              </div>
+            </div>
+            <div class="tab-pane" id="tab-2" ng-class="{active: selectedTab === 2}" ng-show="selectedTab === 2">
+              <div class="d-flex">
+                <div style="margin-left:30px;margin-bottom:25px;width:30%;">
+                  <label> Select Job  </label>
+                  <input type="text" select2-jobs typeid="{{orderId}}" scoopItemnumber="{{scoopItemnumber}}" id="linguistJob" class="form-control"
+                    name="linguistJob" ng-model="linguistJob" ng-change="changeLinguistJob(linguistJob)" />
+                </div>
+                <!-- <button class="btn linguistDiscussion" ng-click="changeLinguistJob()" style="margin-left:20px;">
+                  <i class="fa fa-refresh"></i></button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="panel panel-default" style="background: #f4f4fb;">
+        
         <!-- <div class="panel-heading">Chat </div> -->
         <div class="panel-body chatbox">
           <div class="row d-flex">
             <div class="col-sm-8 livemsg w-100">
-                <div id="comments-container"></div>
+              <div id="comments-container" ng-hide=" selectedTab == 2 && linguistJob == 0 "></div>
             </div>
             <div class="col-md-4 statusBox">
               <span style="display: inline-block; padding:0px 20px 10px 20px"><b>Scoop detail</b></span> 
@@ -370,7 +415,8 @@ li.seperatordate.comment {
                           </div>
                           <div class="team-list">
                             <div class="list-item" ng-repeat="linguist in scoopSidebarDetail.linguistList" >
-                              <figure style="background: url(uploads/profilePic/{{linguist.vProfilePic}}) no-repeat center;background-size: cover;">  </figure>
+                              <!-- <figure style="background: url(uploads/profilePic/{{linguist.vProfilePic}}) no-repeat center;background-size: cover;">  </figure> -->
+                              <figure style="">  </figure>
                               <div class="right">
                                 <strong>{{linguist.resource_fullName}}</strong>
                                 <span class="designation">Linguist</span>

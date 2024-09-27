@@ -1362,10 +1362,15 @@ app.directive('select2Jobs', function($http, rest, $timeout, $log) {
         restrict: 'EA',
         require: 'ngModel',
         link: function(scope, element, attrs) {
+            console.log('attrs', attrs)
             rest.path = 'select2Jobdata';
             rest.get().success(function(data) {
-
-                const jobData = attrs?.typeid > 0 && data.filter((itms) => itms.order_id == attrs.typeid) || data;
+                
+                if(attrs.scoopitemnumber){
+                   jobData = data.filter(itms => itms.order_id == attrs.typeid && itms.item_id == attrs.scoopitemnumber);
+                }else{
+                    var jobData = attrs?.typeid > 0 && data.filter((itms) => itms.order_id == attrs.typeid ) || data;
+                }
                 var prType = [];
                 angular.forEach(jobData, function(value, key) {
                     var obj = {
