@@ -442,12 +442,14 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="team-list">
-                                <div class="list-item" ng-repeat="linguist in scoopSidebarDetail.linguistList">
-                                  <figure
-                                    style="background: url(uploads/profilePic/{{linguist.vProfilePic}}) no-repeat center;background-size: cover;">
+                              <div class="team-list" >
+                                <div class="list-item" ng-repeat="linguist in scoopSidebarDetail.linguistList" ng-if="linguistJob > 0 && linguist.job_summmeryId == linguistJob">
+                                  <figure style="">
                                   </figure>
-                                  <div class="right">
+                                  <!-- <figure
+                                    style="background: url(uploads/profilePic/{{linguist.vProfilePic}}) no-repeat center;background-size: cover;">
+                                  </figure> -->
+                                  <div class="right" >
                                     <strong>{{linguist.resource_fullName}}</strong>
                                     <span class="designation">Linguist</span>
                                   </div>
