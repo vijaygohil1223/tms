@@ -38602,6 +38602,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $location.path('/project-detail/' + $routeParams.id);
     }
 
+    
     // Start comment chat Linguist Dashboard
     $scope.discussionChat = function (chatJobId) {
         console.log('chatJobId=====>', chatJobId)
@@ -39322,6 +39323,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 });
             }, 1000);
         }
+
+        $scope.reloadPage = function(){
+            $scope.commentsArrayAll();
+        }
+        
     };
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
