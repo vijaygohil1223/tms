@@ -39349,6 +39349,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         }
         
     };
+    
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
@@ -45769,7 +45770,8 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     $(dataArray).each(function (index, dataArrays) {
                         var obj = {
                             "order_id": $routeParams.id,
-                            "scoop_id": $scope.scoopItemId,
+                            //"scoop_id": $scope.scoopItemId,
+                            "scoop_id": ($window.localStorage.getItem("isLinguistChat") != 'true') ? $scope.scoopItemId : 0,
                             "user_id": $window.localStorage.getItem("session_iUserId"),
                             "fullname": $window.localStorage.getItem("session_vUserName"),
                             "profile_picture_url": 'uploads/profilePic/' + $window.localStorage.getItem("session_vProfilePic"),
@@ -45779,10 +45781,12 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             "modified": dataArray[index].modified,
                             "created_by_current_user": '1',
                             "upvote_count": '0',
-                            "job_id": 0,
+                            //"job_id": 0,
+                            "job_id": localStorage.getItem("jobIdLinguistChat") > 0 ? localStorage.getItem("jobIdLinguistChat") : 0,
                             "user_has_upvoted": '0',
                             "read_id": $window.localStorage.getItem("session_iUserId") + ',',
                             "externalChat" :($window.localStorage.getItem("isLinguistChat") === 'true') ? 1 : 0,
+                            "isCommentEmailsend": localStorage.getItem("jobIdLinguistChat") > 0 ? true : false, 
 
                         }
                         rest.path = "discussionOrder";

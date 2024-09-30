@@ -266,7 +266,8 @@ class discussion {
             $this->_db->where('jsv.order_id', $results['order_id']);        
             $this->_db->where('jsv.item_id', $results['item_number']);        
             $this->_db->join('tms_users AS user','user.iUserId = jsv.resource','LEFT');
-            $lingsData = $this->_db->get('tms_summmery_view as jsv',null , 'jsv.job_summmeryId, CONCAT( user.vFirstName, " ", user.vLastName ) AS resource_fullName, user.vProfilePic ');
+            //$this->_db->groupBy('user.iUserId');
+            $lingsData = $this->_db->get('tms_summmery_view as jsv',null , 'jsv.job_summmeryId, user.iUserId as linguistId, CONCAT( user.vFirstName, " ", user.vLastName ) AS resource_fullName, user.vProfilePic ');
             $results['linguistList'] =   $lingsData;
 
         }

@@ -649,12 +649,12 @@
                       <div flex-no-shrink="" style="background:#fff; border-radius: 5px;">
                         <nav ui-nav="">
                           <ul class="nav">
-                            <li>
+                            <!-- <li>
                               <span class="nav-text">
                                 <span class="projstatus m-t-sm"><i class="fa fa-circle text-xs"
                                     style="color: {{general.status_color}}"></i> {{projectScoopStatus}}</span>
                                 <small class="block text-muted"> </small></span>
-                            </li>
+                            </li> -->
                             <li class="projectName">
                               <i class="fa fa-tasks"></i>
                               <div class="caption">
@@ -708,7 +708,7 @@
                                   </div>
                                 </div>
                                 <div class="team-list">
-                                  <div class="list-item" ng-repeat="linguist in jobLinguist">
+                                  <div class="list-item" ng-repeat="linguist in jobLinguist" ng-if="linguist.job_summmeryId == jobdetail.job_summmeryId " >
                                     <!-- <figure
                                       style="background: url(uploads/profilePic/{{linguist.resourcePic}}) no-repeat center;background-size: cover;">
                                     </figure> -->

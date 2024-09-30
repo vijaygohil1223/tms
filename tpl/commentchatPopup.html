@@ -414,7 +414,7 @@ li.seperatordate.comment {
                             </div>
                           </div>
                           <div class="team-list">
-                            <div class="list-item" ng-repeat="linguist in scoopSidebarDetail.linguistList" >
+                            <div class="list-item" ng-repeat="linguist in scoopSidebarDetail.linguistList" ng-if="selectedTab == 2 && linguist.job_summmeryId == (linguistJob.split(',').pop()) ">
                               <!-- <figure style="background: url(uploads/profilePic/{{linguist.vProfilePic}}) no-repeat center;background-size: cover;">  </figure> -->
                               <figure style="">  </figure>
                               <div class="right">
