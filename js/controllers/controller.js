@@ -16864,8 +16864,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
             $scope.clientUrlName = 'edit-client/'+$scope.redirectToClientViewId;
     }, 100);
     angular.element('.panel-heading').css('background-color', 'white');
-    console.log('$scope.uType=======>', $scope.uType)
-
+    
     var currentRoute = $location.path();
     
     if ( $scope.uType == 2 || currentRoute.startsWith('/price-list-client') ) {
@@ -16961,7 +16960,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         angular.element(this).addClass('rowactivate');
     });
 
-    $scope.removePriceLanguage = function (id) {
+    $scope.removePriceLanguage__ = function (id) {
         if($scope.priceLanguageList.length)
             $scope.priceLanguageList.splice(id, 1);
         
@@ -16971,6 +16970,44 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         //     notification('Delete from last record', 'warning');
         // }
     }
+    $scope.removePriceLanguage = function (id) {
+        let currentVal = $('#customerPriceName').val();
+        if (id < 0 || id >= $scope.priceLanguageList.length) {
+            console.error('Invalid ID:', id);
+            return false; // Exit early if the ID is invalid
+        }
+        const removedLang = $scope.priceLanguageList[id];
+        const langParts = removedLang.languagePrice.split('>');
+        // Helper function to get abbreviation
+        if(langParts.length==2){
+            const getAbbreviation = (lang) => lang.trim().substring(0, 3).toUpperCase();
+            const sourceAbbr = getAbbreviation(langParts[0]);
+            const targetAbbr = getAbbreviation(langParts[1]);
+            const languagePair = `${sourceAbbr} > ${targetAbbr}`;
+            // Split current languages and trim whitespace
+            let languagesPairName = currentVal.split(' | ').map(val => val.trim());
+            const indexToRemove = languagesPairName.indexOf(languagePair);
+            if (indexToRemove !== -1) {
+                languagesPairName.splice(indexToRemove, 1);
+            }
+            if (languagesPairName.length === 1) {
+                currentVal = languagesPairName + ' | ';
+            } else {
+                currentVal = languagesPairName.join(' | ');
+            }
+            $('#customerPriceName').val(currentVal);
+            // Update the scope with the new value
+            $timeout(() => {
+                $scope.customerPrice.price_name = currentVal;
+            });
+        }
+    
+        // Remove the language from the priceLanguageList if it exists
+        if ($scope.priceLanguageList.length) {
+            $scope.priceLanguageList.splice(id, 1);
+        }
+
+    };
 
     $scope.sendPriceLanguage = function (id) {
         var specialization = angular.element('#specialization').select2('data');
@@ -17305,16 +17342,16 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 if (setPriceLanguage == 'Change prices') {
                     if (angular.element('[id^=priceLanguageID]').length > 0) {
-                        $('#priceLanguageID0').css('border', '1px solid red');
-                        $('#priceLanguageID0').addClass('face');
+                        // $('#priceLanguageID0').css('border', '1px solid red');
+                        // $('#priceLanguageID0').addClass('face');
 
-                        $timeout(function () {
-                            $('#priceLanguageID0').removeClass('face');
-                            $('#priceLanguageID0').css('border', '0px solid red');
-                        }, 3000);
+                        // $timeout(function () {
+                        //     $('#priceLanguageID0').removeClass('face');
+                        //     $('#priceLanguageID0').css('border', '0px solid red');
+                        // }, 3000);
 
-                        notification('Please set language', 'warning');
-                        return false;
+                        // notification('Please set language', 'warning');
+                        // return false;
                     } else {
                         $('.itemList').css('border', '1px solid red');
                         $('.itemList').addClass('face');
@@ -21049,15 +21086,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = 'freelanceInvoiceExcelStatus';
                         rest.post($scope.checkedIds).success(function (data) {
                             if (data.status == 200) {
-                                // $route.reload();
+                                $route.reload();
                                 //notification('File downloaded successfully', 'success');
                                 $scope.checkedIds = [];
                             }
                         }).error(errorCallback);
                         $scope.getAllInvoice = allInvoiceListArr
                         // Remove selected
-                        // $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
-                        // $('input[id^=checkAll]:checkbox').removeAttr('checked');
+                        $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+                        $('input[id^=checkAll]:checkbox').removeAttr('checked');
     
                     }, 500);
                 } catch (error) {
@@ -44818,9 +44855,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         rest.path = 'languagesGet';
         rest.get().success(function (data) {
             $scope.langsList = data;
-            $timeout(function() {
-                $('#languagesData').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
-            }, 100);
+            // $timeout(function() {
+            //     $('#languagesData').DataTable().order([[1, 'asc']]).draw();  // Sorting applied after data loads
+            // }, 100);
         }).error(errorCallback);
 
     }
@@ -44887,9 +44924,28 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.loadData(); // Reload data when search criteria change
     };
 
-    $scope.dtOptions = DTOptionsBuilder.newOptions().
-        withOption('responsive', true).
-        withOption('pageLength', 100)
+    // $scope.dtOptions = DTOptionsBuilder.newOptions().
+    //     withOption('responsive', true).
+    //     withOption('pageLength', 100)
+    $scope.dtInstance = {};
+    $scope.dtOptions = DTOptionsBuilder.newOptions()
+    .withOption('responsive', true)
+    .withOption('pageLength', 100)
+    .withOption('order', [[1, 'asc']])
+    // .withOption('columnDefs', [{
+    //     targets: 0, // Target the first column (index column)
+    //     render: function (data, type, full, meta) {
+    //         var pageInfo = $scope.dtInstance.DataTable.page.info(); 
+    //         var index = pageInfo.start + meta.row + 1; 
+    //         return index; 
+    //     }
+    // }])
+    .withOption('drawCallback', function(settings) {
+        // Trigger a digest cycle to update AngularJS bindings
+        $timeout(function() {
+            $scope.$apply();
+        });
+    });
 
     //$scope.loadData(); 
     //** END */ 

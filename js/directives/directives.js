@@ -5028,10 +5028,29 @@ app.directive('languagePriceList', function($http, rest, $timeout, $compile, $lo
                 if(scope.priceLanguageList.length ==1){
                     if($('#customerPriceName').val().split('|').length > 1 && $('#customerPriceName').val().split('|')[1].trim() == '' ){
                         setTimeout(() => {
-                            $('#priceLanguageID0').click();
+                            //$('#priceLanguageID0').click();
                         }, 1000); 
                     }
                 }
+                let currentVal = $('#customerPriceName').val();
+                const getAbbreviation = (lang) => lang.trim().substring(0, 3).toUpperCase();
+                let sourceAbbr = source.map(lang => getAbbreviation(lang)).join(', ');
+                let targetAbbr = target.map(lang => getAbbreviation(lang)).join(', ');
+                let newSourceLang = sourceAbbr + ' > ' + targetAbbr;
+                let pipeSym = ' | ';
+                if(scope.priceLanguageList.length ==1){
+                    pipeSym = "";
+                }
+                if (currentVal) {
+                    currentVal = currentVal + pipeSym + newSourceLang;
+                } else {
+                    currentVal = newSourceLang;
+                }
+                $('#customerPriceName').val(currentVal);
+                $timeout(function() {
+                    scope.customerPrice.price_name = currentVal;
+                });
+                
                 // var sourceLength = source.length;
                 // var targetLength = target.length;
                 // var j = 0;
