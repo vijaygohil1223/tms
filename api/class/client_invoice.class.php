@@ -392,6 +392,7 @@ class Client_invoice
             unset($data['is_update']);
         }
         $data['modified_date'] = date('Y-m-d');
+        $data['paid_date'] = "0000-00-00 00:00:00";
         $this->_db->where('invoice_id', $id);
         $idd = $this->_db->update('tms_invoice_client', $data);
 
