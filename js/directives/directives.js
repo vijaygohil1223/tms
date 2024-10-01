@@ -4795,7 +4795,7 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                 }else{
                     scope.itemPriceUni[scope.it.itemId] = [];
                 }
-                if(exists){
+                // if(exists){
                     var amount = temp[1];
                     var total = amount * quantity;
                     var decimalPoint = decimalNumberCount(total);
@@ -4837,9 +4837,9 @@ app.directive('itemsAdd2', ['$compile', function($compile) { // inject $compile 
                     } else {
                         notification('Please select item', 'warning');
                     }
-                }else{
-                    notification('Price list already exists.', 'warning');
-                }
+                // }else{
+                //     notification('Price list already exists.', 'warning');
+                // }
             });
         }
     }

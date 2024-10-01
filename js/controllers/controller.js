@@ -21049,15 +21049,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = 'freelanceInvoiceExcelStatus';
                         rest.post($scope.checkedIds).success(function (data) {
                             if (data.status == 200) {
-                                $route.reload();
+                                // $route.reload();
                                 //notification('File downloaded successfully', 'success');
                                 $scope.checkedIds = [];
                             }
                         }).error(errorCallback);
                         $scope.getAllInvoice = allInvoiceListArr
                         // Remove selected
-                        $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
-                        $('input[id^=checkAll]:checkbox').removeAttr('checked');
+                        // $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+                        // $('input[id^=checkAll]:checkbox').removeAttr('checked');
     
                     }, 500);
                 } catch (error) {
