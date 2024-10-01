@@ -1797,7 +1797,12 @@ $app->put('/priceExternalListUpdate/:id','authenticate', function ($id) use($app
     $result = $price->priceExternalListUpdate($id, $data);
     echoResponse($result ['status'], $result);
 });
-
+$app->post('/priceListCopyToOtherUser','authenticate', function () use($app) {
+    $price = new pricelist ();
+    $data = json_decode($app->request->getBody(), TRUE);
+    $result = $price->priceListCopyToOtherUser($data);
+    echoResponse($result ['status'], $result);
+});
 //--------------------customer price list----------------------//
 $app->post('/customerpriceSave','authenticate', function() use($app) {
     $cusPrice = new Customerpricelist ();

@@ -16838,7 +16838,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
 
     
 
-}).controller('pricelistController', function ($scope,$rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder, ) {
+}).controller('pricelistController', function ($scope,$rootScope, $log, $location, $route, rest, $routeParams, $window, $timeout, $filter, DTOptionsBuilder, $compile ) {
     $scope.userRight = $window.localStorage.getItem("session_iFkUserTypeId");
     $scope.clientPriceId = $window.localStorage.getItem("clientpricelistdataId");
     $scope.inputCounter = 1;
@@ -17826,6 +17826,53 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.dtOptions = $scope.dtOptions1 = DTOptionsBuilder.newOptions().
     withOption('responsive', true).
     withOption('pageLength', 100);
+
+
+    $scope.copyPriceListToUser = function(id, typeId){
+        console.log('id', id)
+        const htmlContent = ` <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;"> <div class="col-sm-6"> <lable><strong> Select option </strong> <lable> <input type="text" select2-client data-typeid="2" id="clientId" class="form-control" name="customer" ng-model="clientId" style="margin-top: 20px;" /> </div></div> `;
+        var html = angular.element(htmlContent);
+        $compile(html)($scope);
+
+        var dialog = bootbox.dialog({
+            title: "Copy Price record to other External User/ Client",
+            message: html,
+            buttons: {
+                success: {
+                    label: "Save",
+                    onEscape: true,
+                    className: "btn-info",
+                    callback: function () {
+                        var slectedClient = $('#clientId').val();
+                        console.log('clientId', slectedClient)
+                        console.log('clientId-model',clientId)
+                        if(slectedClient !== ''){
+                            
+                            let objStatus = {
+                                'price_list_id':id,
+                                'externalUserClient':slectedClient,
+                                'typeId':typeId,
+                            }
+                            rest.path = "priceListCopyToOtherUser";
+                            rest.post(objStatus).success(function (data) {
+                                if(data && data.status == 200 ){
+                                    notification('Price list successfully created', 'success');
+                                    //$route.reload();
+                                }else{
+                                    notification('Something went wrong', 'error');
+                                }
+                            }).error( function(){
+                                notification('Something went wrong', 'error');
+                            });  
+                        }else{
+                            notification("Please select option", 'warning');
+                            return false;
+                        }
+                    }
+                }
+            }
+        });
+    }
 
 
 }).controller('paymentController', function ($scope, $log, $location, $route, fileReader, rest, $window, $routeParams, $timeout, $interval) {
@@ -21086,15 +21133,15 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = 'freelanceInvoiceExcelStatus';
                         rest.post($scope.checkedIds).success(function (data) {
                             if (data.status == 200) {
-                                $route.reload();
+                                //$route.reload();
                                 //notification('File downloaded successfully', 'success');
                                 $scope.checkedIds = [];
                             }
                         }).error(errorCallback);
                         $scope.getAllInvoice = allInvoiceListArr
                         // Remove selected
-                        $('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
-                        $('input[id^=checkAll]:checkbox').removeAttr('checked');
+                        //$('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
+                        //$('input[id^=checkAll]:checkbox').removeAttr('checked');
     
                     }, 500);
                 } catch (error) {

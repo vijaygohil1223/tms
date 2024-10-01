@@ -109,5 +109,37 @@ class pricelist {
     	}
     	return $return;
     }
+
+	public function priceListCopyToOtherUser($data)
+    {
+
+		$data['externalUserClient'];
+		$data['typeId'];
+		if(isset($data['typeId']) && $data['typeId'] == 1){
+			$typeId =1 ;
+		}else{
+			$typeId =2 ;
+		}
+		
+		$this->_db->where('price_list_id',$data['price_list_id']);
+    	$result = $this->_db->getone('tms_customer_price_list');
+
+		$postData = $result;
+		$postData['resource_id'] =  $data['externalUserClient'];
+		$postData['price_id'] =  $typeId;
+		$postData['created_date'] = date('Y-m-d H:i:s');
+    	$postData['modified_date'] = date('Y-m-d H:i:s');
+		
+		unset($postData['price_list_id']);
+    	$id = $this->_db->insert('tms_customer_price_list', $postData);
+    	if ($id) {
+	    	$return['status'] = 200;
+	    	$return['id'] = $id;
+    	} else {
+    	    $return['status'] = 422;
+    	    $return['msg'] = 'Not inserted.';
+    	}
+    	return $return;
+    }
     
 }

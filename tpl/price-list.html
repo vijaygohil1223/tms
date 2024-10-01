@@ -42,46 +42,28 @@
                         <a href="#/{{clientUrlName}}">Basic Information</a>
                         <div class="nav-arrow"></div>
                     </li>
-
                     <li>
-
                         <div class="nav-wedge"></div>
-
                         <a href="#/contact-person">Contacts</a>
-
                         <div class="nav-arrow"></div>
-
                     </li>
 
                     <li class="active">
-
                         <div class="nav-wedge"></div>
-
                         <a href="#/price-list">Prices</a>
-
                         <div class="nav-arrow"></div>
-
                     </li>
 
                     <li>
-
                         <div class="nav-wedge"></div>
-
                         <a href="#/payment_client">Payment Information</a>
-
                         <div class="nav-arrow"></div>
-
                     </li>
 
                     <li>
-
                         <div class="nav-wedge"></div>
-
                         <a href="#/login-detail">Login Details</a>
-
                     </li>
-
-
 
                 </ul>
 
@@ -675,6 +657,7 @@
                                         <thead style="background-color: #e0e0e0;">
                                             <th>#</th>
                                             <th>Name</th>
+                                            <th>Copy price</th>
                                             <th>Action</th>
                                         </thead>
                                         <tbody>
@@ -682,6 +665,9 @@
                                                 <td ng-bind="$index + 1"></td>
                                                 <td> 
                                                     <a ng-click="customerChange(prc.price_list_id, 'true')" >{{prc.price_name}}</a>
+                                                </td>
+                                                <td> 
+                                                    <a ng-click="copyPriceListToUser(prc.price_list_id, 1)" title="copy price list to other Client" class="btn btn-info"> Copy Price</a>
                                                 </td>
                                                 <td>
                                                     <a><i class="iconDelete glyph-icon fa-times" ng-click="deletePriceList(prc.price_list_id, pricePageId)"></i></a>
