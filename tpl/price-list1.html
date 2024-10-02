@@ -236,8 +236,9 @@
                                             <tr class="rowactivate priceLPrice">
                                                 <td colspan="3"><strong>Change prices</strong></td>
                                             </tr>
+                                            <!-- removed this fn = ng-click="sendPriceLanguage($index)" -->
                                             <tr class="priceLPrice" ng-repeat="langPrice in priceLanguageList"
-                                                id="priceLanguageID{{$index}}" ng-click="sendPriceLanguage($index)"
+                                                id="priceLanguageID{{$index}}" 
                                                 style="cursor:pointer;" title="Set Price Languages">
                                                 <td class="priceLanguage{{$index}}" ng-bind="langPrice.languagePrice">
                                                 </td>
@@ -424,6 +425,7 @@
                                         <thead style="background-color: #e0e0e0;">
                                             <th>#</th>
                                             <th>Name</th>
+                                            <th>Copy price</th>
                                             <th>Action</th>
                                         </thead>
                                         <tbody>
@@ -431,6 +433,9 @@
                                                 <td ng-bind="$index + 1"></td>
                                                 <td> 
                                                     <a ng-click="customerChange(prc.price_list_id, 'true')" >{{prc.price_name}}</a>
+                                                </td>
+                                                <td> 
+                                                    <a ng-click="copyPriceListToUser(prc.price_list_id, 2)" title="copy price list to other Client" class="btn btn-info"> Copy Price</a>
                                                 </td>
                                                 <td>
                                                     <a><i class="iconDelete glyph-icon fa-times" ng-click="deletePriceList(prc.price_list_id, pricePageId)"></i></a>

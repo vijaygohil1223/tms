@@ -358,9 +358,9 @@
                                                 <td colspan="3"><strong>Change prices</strong></td>
 
                                             </tr>
-
+                                            <!-- ng-click="sendPriceLanguage($index)" removed this fn -->
                                             <tr class="priceLPrice" ng-repeat="langPrice in priceLanguageList"
-                                                id="priceLanguageID{{$index}}" ng-click="sendPriceLanguage($index)"
+                                                id="priceLanguageID{{$index}}" 
                                                 style="cursor:pointer;" title="Set Price Languages">
                                                 <td class="priceLanguage{{$index}}" ng-bind="langPrice.languagePrice">
                                                 </td>
