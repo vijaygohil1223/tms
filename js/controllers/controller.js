@@ -21134,11 +21134,11 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.post($scope.checkedIds).success(function (data) {
                             if (data.status == 200) {
                                 //$route.reload();
-                                //notification('File downloaded successfully', 'success');
-                                $scope.checkedIds = [];
+                                notification('File downloaded successfully', 'success');
+                                // $scope.checkedIds = [];
                             }
                         }).error(errorCallback);
-                        $scope.getAllInvoice = allInvoiceListArr
+                        // $scope.getAllInvoice = allInvoiceListArr
                         // Remove selected
                         //$('input[id^=invoiceCheck]:checkbox').removeAttr('checked');
                         //$('input[id^=checkAll]:checkbox').removeAttr('checked');
@@ -21524,9 +21524,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         const content = await zipdwnld.generateAsync({ type: 'blob' });
                         saveAs(content, 'Invoices.zip');
                         notification("Download successful.", "success");
-                        setTimeout(() => {
-                            $route.reload();
-                        }, 200);
+                        // setTimeout(() => {
+                        //     $route.reload();
+                        // }, 200);
                     } catch (error) {
                         console.error('Error generating zip with files:', error);
                     }
@@ -21535,9 +21535,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     const content = await zipdwnld.generateAsync({ type: 'blob' });
                     saveAs(content, 'Invoices.zip');
                     notification("Download successful.", "success");
-                    setTimeout(() => {
-                        $route.reload();
-                    }, 200);
+                    // setTimeout(() => {
+                    //     $route.reload();
+                    // }, 200);
                 }
             } catch (error) {
                 console.error('Error generating PDFs:', error);
