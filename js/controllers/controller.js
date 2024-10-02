@@ -17297,7 +17297,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 rest.put($scope.customerPrice).success(function (data) {
                     notification('Price list successfully updated', 'success');
                     $timeout(function () {
-                        angular.element("#customerPriceId").select2('data', { id: data.LastIsertedData.price_list_id, text: data.LastIsertedData.price_name });
+                        //angular.element("#customerPriceId").select2('data', { id: data.LastIsertedData.price_list_id, text: data.LastIsertedData.price_name });
                     }, 200);
                     var obj = [];
                     rest.path = 'customerpriceAll/' + data.LastIsertedData.price_id;
@@ -17314,6 +17314,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             });
                         });
                         $scope.priceListExtrnlClntFn();
+                        
                     });
                     angular.element('#customerPriceId').select2({
                         allowClear: true,
@@ -17334,6 +17335,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                             });
                         }    
                     });
+
+                    $route.reload();
+
                 }).error(errorCallback);
             } else {
                 if ($scope.currentUserName == undefined || !$scope.currentUserName) {
@@ -17421,7 +17425,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     notification('Price list successfully saved', 'success');
                     $scope.customerPrice.price_list_id = data.LastIsertedData.price_list_id;
                     $timeout(function () {
-                        angular.element("#customerPriceId").select2('data', { id: data.LastIsertedData.price_list_id, text: data.LastIsertedData.price_name });
+                        //angular.element("#customerPriceId").select2('data', { id: data.LastIsertedData.price_list_id, text: data.LastIsertedData.price_name });
+
+                        $route.reload();
                     }, 200);
                     var obj = [];
                     rest.path = 'customerpriceAll/' + data.LastIsertedData.price_id;
@@ -17827,52 +17833,70 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     withOption('responsive', true).
     withOption('pageLength', 100);
 
-
-    $scope.copyPriceListToUser = function(id, typeId){
-        console.log('id', id)
-        const htmlContent = ` <style> .modal-footer { border-top: none; } </style>  <div class="col-sm-12" style="margin-top:20px;"> <div class="col-sm-6"> <lable><strong> Select option </strong> <lable> <input type="text" select2-client data-typeid="2" id="clientId" class="form-control" name="customer" ng-model="clientId" style="margin-top: 20px;" /> </div></div> `;
-        var html = angular.element(htmlContent);
+    // To copy price list to other Linguist/Client
+    $scope.copyPriceListToUser = function(id, typeId) {
+        $scope.selectedOptionId = 0;
+        if(!id || !typeId){
+            notification("Please select price list")
+            return false;
+        }
+        const typeName = typeId === 1 ? 'Client' : 'Linguist';
+        const directiveName = typeId === 1 ? 'select2-client' : 'select2-job-detail-resource';
+        const createModalContent = () => `
+            <style> .modal-footer { border-top: none; } </style>
+            <div class="col-sm-12" style="margin-top:20px;">
+                <div class="col-sm-6">
+                    <label><strong>Select option</strong></label>
+                    <input type="text" ${directiveName} data-typeid="2" id="optionType" 
+                        class="form-control" ng-model="selectedOptionId" style="margin-top: 20px;" />
+                </div>
+            </div>
+        `;
+        const html = angular.element(createModalContent());
         $compile(html)($scope);
-
-        var dialog = bootbox.dialog({
-            title: "Copy Price record to other External User/ Client",
+        // Create the dialog
+        bootbox.dialog({
+            title: "Copy Price record to other " + typeName,
             message: html,
             buttons: {
                 success: {
                     label: "Save",
-                    onEscape: true,
                     className: "btn-info",
                     callback: function () {
-                        var slectedClient = $('#clientId').val();
-                        console.log('clientId', slectedClient)
-                        console.log('clientId-model',clientId)
-                        if(slectedClient !== ''){
-                            
-                            let objStatus = {
-                                'price_list_id':id,
-                                'externalUserClient':slectedClient,
-                                'typeId':typeId,
-                            }
+                        const selectedOption = $('#optionType').val().toString().split(',').pop();
+                        console.log('optionType', selectedOption);
+                        console.log('selectedOptionId=======>', $scope.selectedOptionId)
+                        
+                        if($scope.selectedOptionId ==0){
+                            notification("Please select an option", 'warning');
+                            return false;
+                        }
+                        if ($scope.selectedOptionId !=0 && selectedOption ) {
+                            const objStatus = {
+                                price_list_id: id,
+                                externalUserClient: selectedOption,
+                                typeId: typeId,
+                            };
+    
                             rest.path = "priceListCopyToOtherUser";
-                            rest.post(objStatus).success(function (data) {
-                                if(data && data.status == 200 ){
-                                    notification('Price list successfully created', 'success');
-                                    //$route.reload();
-                                }else{
+                            rest.post(objStatus).then(function (response) {
+                                if (response.data && response.data.status === 200) {
+                                    notification('The price list has been successfully copied.', 'success');
+                                } else {
                                     notification('Something went wrong', 'error');
                                 }
-                            }).error( function(){
+                            }).catch(function() {
                                 notification('Something went wrong', 'error');
-                            });  
-                        }else{
-                            notification("Please select option", 'warning');
+                            });
+                        } else {
+                            notification("Please select an option", 'warning');
                             return false;
                         }
                     }
                 }
             }
         });
-    }
+    };
 
 
 }).controller('paymentController', function ($scope, $log, $location, $route, fileReader, rest, $window, $routeParams, $timeout, $interval) {
