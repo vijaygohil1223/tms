@@ -84,8 +84,8 @@
                             <div class="panel-body">
                                 <form id="price-List-form" class="row">
                                     <div class="col-sm-12">
-                                        <div class="col-sm-6" style="padding: 20px;border: 1px solid #ccc;background:#eee;border-radius:15px;">
-                                            <div class="col-sm-5">
+                                        <div class="col-sm-6" style="padding: 30px;border: 1px solid #ccc;background:#eee;border-radius:15px;">
+                                            <!-- <div class="col-sm-5">
                                                 <div class="form-group">
                                                     <label>Select price list</label>
                                                 </div>
@@ -97,7 +97,7 @@
                                             </div>
                                             <div class="col-sm-1" id="showRemoveButton" ng-show="customerPriceId" style="top: 7px;left: -22px;">
                                                 <a><i class="glyphicon glyphicon-refresh" ng-click="removecustomerPriceId()"></i></a>
-                                                <!-- <a><i class="iconDelete glyph-icon fa-times" ng-click="removecustomerPriceId()"></i></a> -->
+                                                
                                             </div>
                                             <div class="col-sm-5">
                                                 <div class="form-group">
@@ -108,7 +108,7 @@
                                                 <div class="form-group">
                                                     <input type="text" class="form-control" placeholder="Change Name" name="customerPriceName" ng-model="customerPrice.price_name">
                                                 </div>
-                                            </div>
+                                            </div> -->
                                             <div class="col-sm-12" style="margin-top:2%">
                                                 <div class="form-group">
                                                     <label><strong>New price list</strong></label>
@@ -438,6 +438,7 @@
                                                     <a ng-click="copyPriceListToUser(prc.price_list_id, 2)" title="copy price list to other Client" class="btn btn-info"> Copy Price</a>
                                                 </td>
                                                 <td>
+                                                    <a ng-click="customerChange(prc.price_list_id, 'true')" > <i class="glyph-icon fa-edit">  </i> </a>
                                                     <a><i class="iconDelete glyph-icon fa-times" ng-click="deletePriceList(prc.price_list_id, pricePageId)"></i></a>
                                                 </td>
                                             </tr>

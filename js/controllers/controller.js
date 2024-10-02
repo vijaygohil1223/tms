@@ -17073,6 +17073,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         if(id){
             rest.path = 'customerpriceGetOne/' + id;
             rest.get().success(function (data) {
+                console.log('data', data)
                 $scope.customerPrice = data;
                 angular.element('#price_currency').select2('val', data.price_currency);
                 angular.element('#calculation_basis').select2('val', data.calculation_basis);

@@ -86,32 +86,21 @@
                                     <div class="col-sm-12">
 
                                         <div class="col-sm-6"
-                                            style="padding: 20px;border: 1px solid #ccc;background:#eee;border-radius:15px;">
+                                            style="padding: 30px;border: 1px solid #ccc;background:#eee;border-radius:15px;">
 
-
-
-                                            <div class="col-sm-5">
-
+                                            <!-- <div class="col-sm-5">
                                                 <div class="form-group">
-
                                                     <label>Select price list</label>
-
                                                 </div>
-
                                             </div>
-
                                             <div class="col-sm-6">
-
                                                 <div class="form-group">
-
                                                     <input type="text" select2-price-list data-typeid="1"
                                                         id="customerPriceId" class="form-control" name="currency"
                                                         ng-model="customerPriceId"
                                                         ng-change="customerChange(customerPriceId)" />
-
                                                 </div>
-
-                                            </div>
+                                            </div> -->
 
                                             <div class="col-sm-1" ng-show="customerPriceId" style="top: 7px;left: -22px;">
                                                 <a><i class="glyphicon glyphicon-refresh" ng-click="removecustomerPriceId()"></i></a>
@@ -670,6 +659,7 @@
                                                     <a ng-click="copyPriceListToUser(prc.price_list_id, 1)" title="copy price list to other Client" class="btn btn-info"> Copy Price</a>
                                                 </td>
                                                 <td>
+                                                    <a ng-click="customerChange(prc.price_list_id, 'true')" > <i class="glyph-icon fa-edit">  </i> </a>
                                                     <a><i class="iconDelete glyph-icon fa-times" ng-click="deletePriceList(prc.price_list_id, pricePageId)"></i></a>
                                                 </td>
                                             </tr>
