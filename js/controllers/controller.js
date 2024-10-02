@@ -16874,7 +16874,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.pricePageId = 2;
         $scope.uType = 1; // 1 for external resource
     }
-
+    
     rest.path = 'getAllSpecialization';
     rest.get().success(function(data) {
         $scope.specializationArr = data;
