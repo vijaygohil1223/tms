@@ -16874,7 +16874,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
         $scope.pricePageId = 2;
         $scope.uType = 1; // 1 for external resource
     }
-    
+
     rest.path = 'getAllSpecialization';
     rest.get().success(function(data) {
         $scope.specializationArr = data;
@@ -21158,7 +21158,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = 'freelanceInvoiceExcelStatus';
                         rest.post($scope.checkedIds).success(function (data) {
                             if (data.status == 200) {
-                                //$route.reload();
+                                $route.reload();
                                 notification('File downloaded successfully', 'success');
                                 // $scope.checkedIds = [];
                             }
@@ -21549,9 +21549,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         const content = await zipdwnld.generateAsync({ type: 'blob' });
                         saveAs(content, 'Invoices.zip');
                         notification("Download successful.", "success");
-                        // setTimeout(() => {
-                        //     $route.reload();
-                        // }, 200);
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 200);
                     } catch (error) {
                         console.error('Error generating zip with files:', error);
                     }
@@ -21560,9 +21560,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     const content = await zipdwnld.generateAsync({ type: 'blob' });
                     saveAs(content, 'Invoices.zip');
                     notification("Download successful.", "success");
-                    // setTimeout(() => {
-                    //     $route.reload();
-                    // }, 200);
+                    setTimeout(() => {
+                        $route.reload();
+                    }, 200);
                 }
             } catch (error) {
                 console.error('Error generating PDFs:', error);
@@ -37935,38 +37935,38 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.searchOrderNumber = '';
 
     $scope.scoopIds = [];
-    rest.path = "getClientInvoicelistAll";
-    rest.get().success(function (data) {
-        $scope.allInvoice = data;
+    // rest.path = "getClientInvoicelistAll";
+    // rest.get().success(function (data) {
+    //     $scope.allInvoice = data;
         
-        $scope.allInvoice.filter(function(allInvoice) {
-            try {
-                let scoopIds = JSON.parse(allInvoice.scoop_id);
-                if (Array.isArray(scoopIds)) {
-                    scoopIds.forEach(function(elm) {
-                        $scope.scoopIds.push(elm.id);
-                    });
-                } else {
-                    console.error("scoop_id is not an array:", scoopIds);
-                }
-            } catch (error) {
-                console.error("Error parsing scoop_id:", error);
-            }
-        });
+    //     $scope.allInvoice.filter(function(allInvoice) {
+    //         try {
+    //             let scoopIds = JSON.parse(allInvoice.scoop_id);
+    //             if (Array.isArray(scoopIds)) {
+    //                 scoopIds.forEach(function(elm) {
+    //                     $scope.scoopIds.push(elm.id);
+    //                 });
+    //             } else {
+    //                 console.error("scoop_id is not an array:", scoopIds);
+    //             }
+    //         } catch (error) {
+    //             console.error("Error parsing scoop_id:", error);
+    //         }
+    //     });
 
         // rest.path = "dashboardProjectsOrderGet/" + $window.localStorage.getItem("session_iUserId"); // below applied new api here as on 30may2024
         rest.path = "clientInvoiceApprovedScoop/" + $window.localStorage.getItem("session_iUserId");
         rest.get().success(function (data) {
-            //$scope.InvoiceResult = data;
+            $scope.InvoiceResult = data;
             
-            $scope.InvoiceResult = data.filter(function (el) {
-                el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
-                // status Approved = 5 id
-                //if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
-                // if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId)) // below applied new api here as on 30may2024
-                if(! $scope.scoopIds.includes(el.itemId))
-                    return el;
-            });
+            // $scope.InvoiceResult = data.filter(function (el) {
+            //     el.client_currency = el.client_currency ? el.client_currency.split(',')[0] : 'EUR';
+            //     // status Approved = 5 id
+            //     //if(el.itemStatus == 'Approved' && ! $scope.scoopIds.includes(el.itemId))
+            //     // if(el.itemStatusId == '5' && ! $scope.scoopIds.includes(el.itemId)) // below applied new api here as on 30may2024
+            //     if(! $scope.scoopIds.includes(el.itemId))
+            //         return el;
+            // });
             console.log('$scope.InvoiceResult', $scope.InvoiceResult)
             
             
@@ -37981,10 +37981,18 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                 }
                 return 0;
             });
-        })    
+        }) 
+
     
-    })  
+    //})  
     
+
+    // rest.path = "clientInvoiceApprovedScoopTemp/" + $window.localStorage.getItem("session_iUserId");
+    // rest.get().success(function (data) {
+    //     $scope.tempdata =data;
+    //     console.log('data====>temp data', data)
+    
+    // })
 
     // async function fetchData() {
     //     try {
@@ -44924,7 +44932,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     if ($window.localStorage.getItem("session_iUserId")) {
-        rest.path = 'languagesGet';
+        rest.path = 'languagesAdminGetAll';
         rest.get().success(function (data) {
             $scope.langsList = data;
             // $timeout(function() {
@@ -45003,7 +45011,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withOption('responsive', true)
     .withOption('pageLength', 100)
-    .withOption('order', [[1, 'asc']])
+    //.withOption('order', [[1, 'asc']])
     // .withOption('columnDefs', [{
     //     targets: 0, // Target the first column (index column)
     //     render: function (data, type, full, meta) {
@@ -45015,7 +45023,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     .withOption('drawCallback', function(settings) {
         // Trigger a digest cycle to update AngularJS bindings
         $timeout(function() {
-            $scope.$apply();
+           // $scope.$apply();
         });
     });
 

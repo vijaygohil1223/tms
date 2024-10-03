@@ -202,6 +202,7 @@ class language {
                 $uniqueID = $this->generateUniqueIdentifier($this->getLletter().$data['title'], $this->getCLetter().$data['name']);
             }
             $data['id'] = $uniqueID;
+            //$data['is_active'] = 1;
             $data['flagTitle'] = $data['title'];
             $data['created_date'] = date('Y-m-d H:i:s');
             $data['modified_date'] = date('Y-m-d H:i:s');
@@ -289,7 +290,44 @@ class language {
         return NULL;
     }
 
-    public function uploadimage($data) {
+    public function uploadImage($data) {
+        // Split the image data to extract the base64 string
+        $result = explode(',', $data['image']);
+        $getFileType = explode(';', explode(':', $result[0])[1]);
+        $finalString = base64_decode($result[1]);
+    
+        // Determine the MIME type
+        $mimeType = self::getImageMimeType($finalString, $getFileType[0]);
+        if ($mimeType === 'jpeg') {
+            $mimeType = 'jpg';
+        }
+    
+        $originalTitle = preg_replace('/[^a-zA-Z0-9_]/', '_', $data['title']); // Sanitize the title
+        $timestamp = time();
+        $filename = $originalTitle . "_" . $timestamp . "." . $mimeType;
+    
+        // Correct the output file path
+        $outputFile = DOCUMENT_ROOT . "/assets/vendor/Polyglot-Language-Switcher-2-master/images/flags/" . $filename;
+    
+        // Ensure the directory exists
+        if (!file_exists(dirname($outputFile))) {
+            mkdir(dirname($outputFile), 0755, true);
+        }
+    
+        // Attempt to write the file
+        $ifp = fopen($outputFile, "wb");
+        if ($ifp) {
+            fwrite($ifp, $finalString);
+            fclose($ifp);
+            return $filename;
+        } else {
+            //throw new Exception("Failed to open stream: Unable to create file at " . $outputFile);
+            return '';
+        }
+    }
+    
+
+    public function uploadimage__($data) {
         $result = explode(',', $data['image']);
         $getFileType = explode(';',explode(':',$result[0])[1]);
         $finalstring = base64_decode($result[1]);
@@ -333,4 +371,12 @@ class language {
         $results = $this->_db->get('tms_languages');
         return $results;
     }
+
+    public function languagesAdminGetAll() {
+        //$this->_db->where('is_active','1');
+        $this->_db->orderBy('title', 'ASC');
+        $results = $this->_db->get('tms_languages');
+        return $results;
+    }
+
 }

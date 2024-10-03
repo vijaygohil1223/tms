@@ -1507,6 +1507,11 @@ $app->get('/languagesGet','authenticate', function () {
     $result = $language->languagesGetAll();
     echoResponse(200, $result);
 });
+$app->get('/languagesAdminGetAll','authenticate', function () {
+    $language = new language ();
+    $result = $language->languagesAdminGetAll();
+    echoResponse(200, $result);
+});
 $app->get('/languagesGetWithStatus','authenticate', function () {
     $language = new language ();
     $result = $language->languagesGetAllWithStatus();
@@ -3846,6 +3851,11 @@ $app->put('/updateScoopIds/:id','authenticate', function ($id) use($app) {
 $app->get('/clientInvoiceApprovedScoop/:id', function ($id) use ($app) {
     $invoice = new Client_invoice ();
     $result = $invoice->getClientInvoiceApprovedScoop($id);
+    echoResponse(200, $result);
+});
+$app->get('/clientInvoiceApprovedScoopTemp/:id', function ($id) use ($app) {
+    $invoice = new Client_invoice ();
+    $result = $invoice->getClientInvoiceApprovedScoopTemp($id);
     echoResponse(200, $result);
 });
 $app->get('/getClientInvoiceByScoopId/:id','authenticate', function ($id) {
