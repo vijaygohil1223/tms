@@ -21158,7 +21158,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         rest.path = 'freelanceInvoiceExcelStatus';
                         rest.post($scope.checkedIds).success(function (data) {
                             if (data.status == 200) {
-                                //$route.reload();
+                                $route.reload();
                                 notification('File downloaded successfully', 'success');
                                 // $scope.checkedIds = [];
                             }
@@ -21549,9 +21549,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                         const content = await zipdwnld.generateAsync({ type: 'blob' });
                         saveAs(content, 'Invoices.zip');
                         notification("Download successful.", "success");
-                        // setTimeout(() => {
-                        //     $route.reload();
-                        // }, 200);
+                        setTimeout(() => {
+                            $route.reload();
+                        }, 200);
                     } catch (error) {
                         console.error('Error generating zip with files:', error);
                     }
@@ -21560,9 +21560,9 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
                     const content = await zipdwnld.generateAsync({ type: 'blob' });
                     saveAs(content, 'Invoices.zip');
                     notification("Download successful.", "success");
-                    // setTimeout(() => {
-                    //     $route.reload();
-                    // }, 200);
+                    setTimeout(() => {
+                        $route.reload();
+                    }, 200);
                 }
             } catch (error) {
                 console.error('Error generating PDFs:', error);
@@ -44932,7 +44932,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     }
 
     if ($window.localStorage.getItem("session_iUserId")) {
-        rest.path = 'languagesGet';
+        rest.path = 'languagesAdminGetAll';
         rest.get().success(function (data) {
             $scope.langsList = data;
             // $timeout(function() {
@@ -45011,7 +45011,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     $scope.dtOptions = DTOptionsBuilder.newOptions()
     .withOption('responsive', true)
     .withOption('pageLength', 100)
-    .withOption('order', [[1, 'asc']])
+    //.withOption('order', [[1, 'asc']])
     // .withOption('columnDefs', [{
     //     targets: 0, // Target the first column (index column)
     //     render: function (data, type, full, meta) {
@@ -45023,7 +45023,7 @@ app.controller('loginController', function ($scope, $log, rest, $window, $locati
     .withOption('drawCallback', function(settings) {
         // Trigger a digest cycle to update AngularJS bindings
         $timeout(function() {
-            $scope.$apply();
+           // $scope.$apply();
         });
     });
 

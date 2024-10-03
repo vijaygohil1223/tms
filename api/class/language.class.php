@@ -202,7 +202,7 @@ class language {
                 $uniqueID = $this->generateUniqueIdentifier($this->getLletter().$data['title'], $this->getCLetter().$data['name']);
             }
             $data['id'] = $uniqueID;
-            $data['is_active'] = 1;
+            //$data['is_active'] = 1;
             $data['flagTitle'] = $data['title'];
             $data['created_date'] = date('Y-m-d H:i:s');
             $data['modified_date'] = date('Y-m-d H:i:s');
@@ -371,4 +371,12 @@ class language {
         $results = $this->_db->get('tms_languages');
         return $results;
     }
+
+    public function languagesAdminGetAll() {
+        //$this->_db->where('is_active','1');
+        $this->_db->orderBy('title', 'ASC');
+        $results = $this->_db->get('tms_languages');
+        return $results;
+    }
+
 }

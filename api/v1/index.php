@@ -1507,6 +1507,11 @@ $app->get('/languagesGet','authenticate', function () {
     $result = $language->languagesGetAll();
     echoResponse(200, $result);
 });
+$app->get('/languagesAdminGetAll','authenticate', function () {
+    $language = new language ();
+    $result = $language->languagesAdminGetAll();
+    echoResponse(200, $result);
+});
 $app->get('/languagesGetWithStatus','authenticate', function () {
     $language = new language ();
     $result = $language->languagesGetAllWithStatus();
